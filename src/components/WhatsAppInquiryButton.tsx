@@ -48,7 +48,8 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
   const { language } = useLanguage();
   const { user, profile } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const [inquiryType, setInquiryType] = useState<InquiryType>(defaultType);
+  const [inquiryType, setInquiryType] = useState<InquiryType | 'other'>(defaultType);
+  const [customInquiryType, setCustomInquiryType] = useState('');
   
   // User info - auto-pickup from profile if logged in
   const [userName, setUserName] = useState('');
@@ -58,7 +59,9 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
   // Inquiry preferences
   const [preferredArea, setPreferredArea] = useState('');
   const [budgetRange, setBudgetRange] = useState('');
+  const [customBudget, setCustomBudget] = useState('');
   const [timeline, setTimeline] = useState('');
+  const [customTimeline, setCustomTimeline] = useState('');
   const [customMessage, setCustomMessage] = useState('');
 
   // Auto-fill user data when profile loads or modal opens
@@ -99,7 +102,8 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
         'visa': '🛂 Visa Information',
         'family-benefits': '👨‍👩‍👧‍👦 Family Benefits',
         'citizenship': '🇮🇩 Citizenship & Residency',
-        'taxation': '💰 Taxation'
+        'taxation': '💰 Taxation',
+        'other': '✏️ Other (Specify)'
       },
       budgetOptions: {
         'under-1b': 'Under IDR 1 Billion',
@@ -107,15 +111,18 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
         '3b-5b': 'IDR 3-5 Billion',
         '5b-10b': 'IDR 5-10 Billion',
         'above-10b': 'Above IDR 10 Billion',
-        'flexible': 'Flexible / Discuss'
+        'flexible': 'Flexible / Discuss',
+        'other': '✏️ Other (Specify)'
       },
       timelineOptions: {
         'immediate': 'Immediately (1-3 months)',
         'soon': 'Soon (3-6 months)',
         'planning': 'Planning (6-12 months)',
         'exploring': 'Just Exploring',
-        'flexible': 'Flexible Timeline'
-      }
+        'flexible': 'Flexible Timeline',
+        'other': '✏️ Other (Specify)'
+      },
+      otherPlaceholder: 'Please specify...'
     },
     id: {
       title: "Pertanyaan WhatsApp",
@@ -143,7 +150,8 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
         'visa': '🛂 Informasi Visa',
         'family-benefits': '👨‍👩‍👧‍👦 Manfaat Keluarga',
         'citizenship': '🇮🇩 Kewarganegaraan',
-        'taxation': '💰 Perpajakan'
+        'taxation': '💰 Perpajakan',
+        'other': '✏️ Lainnya (Sebutkan)'
       },
       budgetOptions: {
         'under-1b': 'Di bawah IDR 1 Miliar',
@@ -151,15 +159,18 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
         '3b-5b': 'IDR 3-5 Miliar',
         '5b-10b': 'IDR 5-10 Miliar',
         'above-10b': 'Di atas IDR 10 Miliar',
-        'flexible': 'Fleksibel / Diskusi'
+        'flexible': 'Fleksibel / Diskusi',
+        'other': '✏️ Lainnya (Sebutkan)'
       },
       timelineOptions: {
         'immediate': 'Segera (1-3 bulan)',
         'soon': 'Segera (3-6 bulan)',
         'planning': 'Perencanaan (6-12 bulan)',
         'exploring': 'Hanya Menjelajahi',
-        'flexible': 'Timeline Fleksibel'
-      }
+        'flexible': 'Timeline Fleksibel',
+        'other': '✏️ Lainnya (Sebutkan)'
+      },
+      otherPlaceholder: 'Silakan sebutkan...'
     }
   };
 
@@ -168,7 +179,9 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
   const generateSmartMessage = (): string => {
     const lang = language;
     const isLoggedIn = !!user;
-    const inquiryLabel = t.types[inquiryType] || t.types.general;
+    const inquiryLabel = inquiryType === 'other' 
+      ? `✏️ ${customInquiryType || (lang === 'en' ? 'Custom Inquiry' : 'Pertanyaan Khusus')}`
+      : (t.types[inquiryType] || t.types.general);
     
     let message = lang === 'en' 
       ? `Hello ASTRA Villa! 👋\n\n`
@@ -205,12 +218,16 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
       if (preferredArea) {
         message += lang === 'en' ? `• Preferred Area: ${preferredArea}\n` : `• Area Pilihan: ${preferredArea}\n`;
       }
-      if (budgetRange && t.budgetOptions[budgetRange as keyof typeof t.budgetOptions]) {
-        const budgetLabel = t.budgetOptions[budgetRange as keyof typeof t.budgetOptions];
+      if (budgetRange) {
+        const budgetLabel = budgetRange === 'other' 
+          ? customBudget || (lang === 'en' ? 'Custom Budget' : 'Anggaran Khusus')
+          : (t.budgetOptions[budgetRange as keyof typeof t.budgetOptions] || budgetRange);
         message += lang === 'en' ? `• Budget: ${budgetLabel}\n` : `• Anggaran: ${budgetLabel}\n`;
       }
-      if (timeline && t.timelineOptions[timeline as keyof typeof t.timelineOptions]) {
-        const timelineLabel = t.timelineOptions[timeline as keyof typeof t.timelineOptions];
+      if (timeline) {
+        const timelineLabel = timeline === 'other'
+          ? customTimeline || (lang === 'en' ? 'Custom Timeline' : 'Timeline Khusus')
+          : (t.timelineOptions[timeline as keyof typeof t.timelineOptions] || timeline);
         message += lang === 'en' ? `• Timeline: ${timelineLabel}\n` : `• Timeline: ${timelineLabel}\n`;
       }
       message += `\n`;
@@ -278,6 +295,8 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
             <SmartInquiryForm
               inquiryType={inquiryType}
               setInquiryType={setInquiryType}
+              customInquiryType={customInquiryType}
+              setCustomInquiryType={setCustomInquiryType}
               userName={userName}
               setUserName={setUserName}
               userEmail={userEmail}
@@ -288,8 +307,12 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
               setPreferredArea={setPreferredArea}
               budgetRange={budgetRange}
               setBudgetRange={setBudgetRange}
+              customBudget={customBudget}
+              setCustomBudget={setCustomBudget}
               timeline={timeline}
               setTimeline={setTimeline}
+              customTimeline={customTimeline}
+              setCustomTimeline={setCustomTimeline}
               customMessage={customMessage}
               setCustomMessage={setCustomMessage}
               onSubmit={handleSendMessage}
@@ -355,6 +378,8 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
         <SmartInquiryForm
           inquiryType={inquiryType}
           setInquiryType={setInquiryType}
+          customInquiryType={customInquiryType}
+          setCustomInquiryType={setCustomInquiryType}
           userName={userName}
           setUserName={setUserName}
           userEmail={userEmail}
@@ -365,8 +390,12 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
           setPreferredArea={setPreferredArea}
           budgetRange={budgetRange}
           setBudgetRange={setBudgetRange}
+          customBudget={customBudget}
+          setCustomBudget={setCustomBudget}
           timeline={timeline}
           setTimeline={setTimeline}
+          customTimeline={customTimeline}
+          setCustomTimeline={setCustomTimeline}
           customMessage={customMessage}
           setCustomMessage={setCustomMessage}
           onSubmit={handleSendMessage}
@@ -380,8 +409,10 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
 
 // Smart Inquiry Form Component
 interface SmartInquiryFormProps {
-  inquiryType: InquiryType;
-  setInquiryType: (type: InquiryType) => void;
+  inquiryType: InquiryType | 'other';
+  setInquiryType: (type: InquiryType | 'other') => void;
+  customInquiryType: string;
+  setCustomInquiryType: (type: string) => void;
   userName: string;
   setUserName: (name: string) => void;
   userEmail: string;
@@ -392,8 +423,12 @@ interface SmartInquiryFormProps {
   setPreferredArea: (area: string) => void;
   budgetRange: string;
   setBudgetRange: (budget: string) => void;
+  customBudget: string;
+  setCustomBudget: (budget: string) => void;
   timeline: string;
   setTimeline: (timeline: string) => void;
+  customTimeline: string;
+  setCustomTimeline: (timeline: string) => void;
   customMessage: string;
   setCustomMessage: (msg: string) => void;
   onSubmit: () => void;
@@ -404,6 +439,8 @@ interface SmartInquiryFormProps {
 const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
   inquiryType,
   setInquiryType,
+  customInquiryType,
+  setCustomInquiryType,
   userName,
   setUserName,
   userEmail,
@@ -414,8 +451,12 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
   setPreferredArea,
   budgetRange,
   setBudgetRange,
+  customBudget,
+  setCustomBudget,
   timeline,
   setTimeline,
+  customTimeline,
+  setCustomTimeline,
   customMessage,
   setCustomMessage,
   onSubmit,
@@ -427,7 +468,7 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
       {/* Inquiry Type */}
       <div className="space-y-1.5">
         <Label className="text-xs font-medium">{t.inquiryType}</Label>
-        <Select value={inquiryType} onValueChange={(v) => setInquiryType(v as InquiryType)}>
+        <Select value={inquiryType} onValueChange={(v) => setInquiryType(v as InquiryType | 'other')}>
           <SelectTrigger className="h-9 text-sm">
             <SelectValue />
           </SelectTrigger>
@@ -439,6 +480,14 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
             ))}
           </SelectContent>
         </Select>
+        {inquiryType === 'other' && (
+          <Input
+            value={customInquiryType}
+            onChange={(e) => setCustomInquiryType(e.target.value)}
+            placeholder={t.otherPlaceholder}
+            className="h-9 text-sm mt-2"
+          />
+        )}
       </div>
 
       {/* Contact Info Section */}
@@ -513,6 +562,14 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
               ))}
             </SelectContent>
           </Select>
+          {budgetRange === 'other' && (
+            <Input
+              value={customBudget}
+              onChange={(e) => setCustomBudget(e.target.value)}
+              placeholder={t.otherPlaceholder}
+              className="h-9 text-sm mt-2"
+            />
+          )}
         </div>
       </div>
 
@@ -534,6 +591,14 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
             ))}
           </SelectContent>
         </Select>
+        {timeline === 'other' && (
+          <Input
+            value={customTimeline}
+            onChange={(e) => setCustomTimeline(e.target.value)}
+            placeholder={t.otherPlaceholder}
+            className="h-9 text-sm mt-2"
+          />
+        )}
       </div>
 
       {/* Additional Message */}
