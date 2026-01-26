@@ -47,22 +47,10 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
 
   useEffect(() => {
     // Fetch logo from settings with proper category filter
+    // Welcome Screen hierarchy: welcomeScreenLogo → headerLogo → fallback
     const loadLogo = async () => {
       try {
-        // Try loadingPageLogo first
-        const { data: loadingLogoData } = await supabase
-          .from('system_settings')
-          .select('value')
-          .eq('category', 'branding')
-          .eq('key', 'loadingPageLogo')
-          .maybeSingle();
-
-        if (loadingLogoData?.value && typeof loadingLogoData.value === 'string' && loadingLogoData.value.trim() !== '') {
-          setLogoUrl(loadingLogoData.value);
-          return;
-        }
-
-        // Fallback to welcomeScreenLogo
+        // Try welcomeScreenLogo first (this is the Welcome Screen, not Loading Popup)
         const { data: welcomeLogoData } = await supabase
           .from('system_settings')
           .select('value')
