@@ -715,51 +715,49 @@ const PhoneInputWithValidation: React.FC<PhoneInputProps> = ({
   
   return (
     <div className="space-y-1.5">
-      {/* Country selector + Phone input in single row */}
-      <div className="flex items-center gap-1.5">
-        {/* Country Selector */}
-        <Select value={selectedCountry} onValueChange={handleCountrySelect}>
-          <SelectTrigger className="w-[85px] h-9 px-2 text-sm shrink-0">
-            <SelectValue>
-              <span className="flex items-center gap-1">
-                <span className="text-base">{currentCountry.flag}</span>
-                <span className="text-xs text-muted-foreground">{currentCountry.dialCode}</span>
+      {/* Country Selector - separate row */}
+      <Select value={selectedCountry} onValueChange={handleCountrySelect}>
+        <SelectTrigger className="w-full h-9 px-2 text-sm">
+          <SelectValue>
+            <span className="flex items-center gap-2">
+              <span className="text-base">{currentCountry.flag}</span>
+              <span className="font-medium text-xs">{currentCountry.name}</span>
+              <span className="text-xs text-muted-foreground">{currentCountry.dialCode}</span>
+            </span>
+          </SelectValue>
+        </SelectTrigger>
+        <SelectContent className="max-h-[280px]">
+          {countryList.map((country) => (
+            <SelectItem key={country.code} value={country.code} className="text-sm">
+              <span className="flex items-center gap-2">
+                <span className="text-base">{country.flag}</span>
+                <span className="font-medium">{country.name}</span>
+                <span className="text-muted-foreground text-xs">{country.dialCode}</span>
               </span>
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent className="max-h-[280px]">
-            {countryList.map((country) => (
-              <SelectItem key={country.code} value={country.code} className="text-sm">
-                <span className="flex items-center gap-2">
-                  <span className="text-base">{country.flag}</span>
-                  <span className="font-medium">{country.name}</span>
-                  <span className="text-muted-foreground text-xs">{country.dialCode}</span>
-                </span>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        
-        {/* Phone Input */}
-        <div className="relative flex-1">
-          <Input
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={placeholder}
-            className={`h-9 text-sm pr-10 ${validation.isValid ? 'border-green-500 focus:border-green-500' : value.length > 3 ? 'border-destructive' : ''}`}
-            disabled={disabled}
-            type="tel"
-          />
-          {value && (
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-              {validation.isValid ? (
-                <Check className="h-4 w-4 text-green-500" />
-              ) : value.length > 3 ? (
-                <AlertCircle className="h-4 w-4 text-destructive" />
-              ) : null}
-            </div>
-          )}
-        </div>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      
+      {/* Phone Input - separate row */}
+      <div className="relative">
+        <Input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className={`h-9 text-sm pr-10 ${validation.isValid ? 'border-green-500 focus:border-green-500' : value.length > 3 ? 'border-destructive' : ''}`}
+          disabled={disabled}
+          type="tel"
+        />
+        {value && (
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            {validation.isValid ? (
+              <Check className="h-4 w-4 text-green-500" />
+            ) : value.length > 3 ? (
+              <AlertCircle className="h-4 w-4 text-destructive" />
+            ) : null}
+          </div>
+        )}
       </div>
       
       {/* Validation feedback */}
