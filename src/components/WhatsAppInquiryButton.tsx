@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { MessageCircle, Send, User, FileText, MapPin, DollarSign, Calendar, Check, Mail, Phone, AlertCircle } from 'lucide-react';
+import { MessageCircle, Send, User, FileText, MapPin, DollarSign, Calendar, Check, Mail, Phone, AlertCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { openWhatsAppChat, InquiryType } from '@/utils/whatsappUtils';
 import { Badge } from '@/components/ui/badge';
 import { validatePhoneNumber, validateEmail, validateName, PhoneValidationResult } from '@/utils/phoneValidation';
+import { useToast } from '@/hooks/use-toast';
 
 interface WhatsAppInquiryButtonProps {
   defaultType?: InquiryType;
@@ -94,6 +96,11 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
       messagePlaceholder: "Any specific requirements or questions...",
       sendMessage: "Send via WhatsApp",
       quickInquiry: "WhatsApp Inquiry",
+      formProgress: "Form Progress",
+      requiredFields: "Required",
+      readyToSend: "Ready to send!",
+      sending: "Opening WhatsApp...",
+      invalidEmail: "Invalid email format",
       types: {
         'general': '💬 General Inquiry',
         'wna-investment': '🌍 WNA Investment',
@@ -142,6 +149,11 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
       messagePlaceholder: "Persyaratan atau pertanyaan spesifik...",
       sendMessage: "Kirim via WhatsApp",
       quickInquiry: "Pertanyaan WhatsApp",
+      formProgress: "Progres Form",
+      requiredFields: "Diperlukan",
+      readyToSend: "Siap kirim!",
+      sending: "Membuka WhatsApp...",
+      invalidEmail: "Format email tidak valid",
       types: {
         'general': '💬 Pertanyaan Umum',
         'wna-investment': '🌍 Investasi WNA',
@@ -249,12 +261,61 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
     return message;
   };
 
+  const { toast } = useToast();
+  const [isSending, setIsSending] = useState(false);
+
   const handleSendMessage = () => {
-    const message = generateSmartMessage();
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/6285716008080?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
-    setIsOpen(false);
+    // Validate required fields
+    if (!validateName(userName)) {
+      toast({
+        title: language === 'en' ? "Name Required" : "Nama Diperlukan",
+        description: language === 'en' ? "Please enter your name (minimum 2 characters)" : "Silakan masukkan nama Anda (minimal 2 karakter)",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!validatePhoneNumber(userPhone).isValid) {
+      toast({
+        title: language === 'en' ? "Valid Phone Required" : "Nomor Telepon Valid Diperlukan",
+        description: language === 'en' ? "Please enter a valid phone number with country code" : "Silakan masukkan nomor telepon yang valid dengan kode negara",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSending(true);
+    
+    try {
+      const message = generateSmartMessage();
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/6285716008080?text=${encodedMessage}`;
+      
+      // Open WhatsApp
+      const newWindow = window.open(whatsappUrl, '_blank');
+      
+      if (newWindow) {
+        toast({
+          title: language === 'en' ? "WhatsApp Opened!" : "WhatsApp Terbuka!",
+          description: language === 'en' ? "Your inquiry has been prepared. Send it in WhatsApp!" : "Pertanyaan Anda telah disiapkan. Kirim di WhatsApp!",
+        });
+        setIsOpen(false);
+      } else {
+        toast({
+          title: language === 'en' ? "Popup Blocked" : "Popup Diblokir",
+          description: language === 'en' ? "Please allow popups to open WhatsApp" : "Izinkan popup untuk membuka WhatsApp",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: language === 'en' ? "Error" : "Kesalahan",
+        description: language === 'en' ? "Failed to open WhatsApp. Please try again." : "Gagal membuka WhatsApp. Silakan coba lagi.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const handleQuickSend = () => {
@@ -319,6 +380,7 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
               onSubmit={handleSendMessage}
               t={t}
               isLoggedIn={!!user}
+              isSending={isSending}
             />
           </DialogContent>
         </Dialog>
@@ -402,6 +464,7 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
           onSubmit={handleSendMessage}
           t={t}
           isLoggedIn={!!user}
+          isSending={isSending}
         />
       </DialogContent>
     </Dialog>
@@ -435,6 +498,7 @@ interface SmartInquiryFormProps {
   onSubmit: () => void;
   t: any;
   isLoggedIn: boolean;
+  isSending?: boolean;
 }
 
 const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
@@ -462,10 +526,71 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
   setCustomMessage,
   onSubmit,
   t,
-  isLoggedIn
+  isLoggedIn,
+  isSending = false
 }) => {
+  // Calculate form completion progress
+  const isNameValid = validateName(userName);
+  const isPhoneValid = validatePhoneNumber(userPhone).isValid;
+  
+  const requiredFields = [
+    { name: t.yourName || 'Name', filled: isNameValid, required: true },
+    { name: t.yourPhone || 'Phone', filled: isPhoneValid, required: true },
+  ];
+  
+  const optionalFields = [
+    { name: t.yourEmail || 'Email', filled: !!userEmail && validateEmail(userEmail) },
+    { name: t.preferredArea || 'Area', filled: !!preferredArea },
+    { name: t.budgetRange || 'Budget', filled: !!budgetRange },
+    { name: t.timeline || 'Timeline', filled: !!timeline },
+    { name: t.additionalMessage || 'Message', filled: !!customMessage },
+  ];
+  
+  const requiredFilled = requiredFields.filter(f => f.filled).length;
+  const optionalFilled = optionalFields.filter(f => f.filled).length;
+  const totalRequired = requiredFields.length;
+  const totalOptional = optionalFields.length;
+  
+  // Progress: required fields = 60%, optional fields = 40%
+  const requiredProgress = (requiredFilled / totalRequired) * 60;
+  const optionalProgress = (optionalFilled / totalOptional) * 40;
+  const totalProgress = Math.round(requiredProgress + optionalProgress);
+  
+  const missingRequired = requiredFields.filter(f => !f.filled);
+  const isFormValid = missingRequired.length === 0;
+
   return (
     <div className="space-y-3 pt-2">
+      {/* Progress Bar */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between text-[10px]">
+          <span className="text-muted-foreground font-medium">
+            {t.formProgress || 'Form Progress'}
+          </span>
+          <span className={`font-semibold ${totalProgress >= 60 ? 'text-green-600' : totalProgress >= 30 ? 'text-amber-600' : 'text-destructive'}`}>
+            {totalProgress}%
+          </span>
+        </div>
+        <Progress value={totalProgress} className="h-2" />
+        
+        {/* Missing required fields warning */}
+        {!isFormValid && (
+          <div className="flex items-center gap-1.5 text-[10px] text-amber-600 bg-amber-50 dark:bg-amber-950/30 px-2 py-1.5 rounded">
+            <AlertCircle className="h-3 w-3 shrink-0" />
+            <span>
+              {t.requiredFields || 'Required'}: {missingRequired.map(f => f.name).join(', ')}
+            </span>
+          </div>
+        )}
+        
+        {isFormValid && (
+          <div className="flex items-center gap-1.5 text-[10px] text-green-600 bg-green-50 dark:bg-green-950/30 px-2 py-1.5 rounded">
+            <Check className="h-3 w-3 shrink-0" />
+            <span>{t.readyToSend || 'Ready to send!'}</span>
+          </div>
+        )}
+      </div>
+
       {/* Inquiry Type */}
       <div className="space-y-1.5">
         <Label className="text-xs font-medium">{t.inquiryType}</Label>
@@ -646,11 +771,20 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
       {/* Submit Button */}
       <Button
         onClick={onSubmit}
-        disabled={!validateName(userName) || !validatePhoneNumber(userPhone).isValid}
-        className="w-full bg-green-500 hover:bg-green-600 text-white gap-2 h-10"
+        disabled={!validateName(userName) || !validatePhoneNumber(userPhone).isValid || isSending}
+        className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white gap-2 h-10"
       >
-        <Send className="h-4 w-4" />
-        {t.sendMessage}
+        {isSending ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            {t.sending || 'Opening WhatsApp...'}
+          </>
+        ) : (
+          <>
+            <Send className="h-4 w-4" />
+            {t.sendMessage}
+          </>
+        )}
       </Button>
     </div>
   );
