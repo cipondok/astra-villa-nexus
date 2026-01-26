@@ -11207,6 +11207,45 @@ export type Database = {
         }
         Relationships: []
       }
+      bpjs_verifications_safe: {
+        Row: {
+          bpjs_type: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string | null
+          is_valid: boolean | null
+          updated_at: string | null
+          vendor_id: string | null
+          verification_status: string | null
+          verification_summary: Json | null
+          verified_at: string | null
+        }
+        Insert: {
+          bpjs_type?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string | null
+          is_valid?: boolean | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          verification_status?: string | null
+          verification_summary?: never
+          verified_at?: string | null
+        }
+        Update: {
+          bpjs_type?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string | null
+          is_valid?: boolean | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          verification_status?: string | null
+          verification_summary?: never
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       public_properties: {
         Row: {
           advance_booking_days: number | null
@@ -11393,6 +11432,7 @@ export type Database = {
       }
       clean_expired_otp_codes: { Args: never; Returns: undefined }
       cleanup_expired_sessions: { Args: never; Returns: undefined }
+      cleanup_old_bpjs_responses: { Args: never; Returns: undefined }
       create_account_lockout: {
         Args: {
           p_duration_minutes?: number
@@ -12179,6 +12219,14 @@ export type Database = {
       }
       log_financial_data_access: {
         Args: { p_metadata?: Json; p_operation: string; p_table_name: string }
+        Returns: undefined
+      }
+      log_health_data_access: {
+        Args: {
+          p_accessed_user_id: string
+          p_action: string
+          p_data_type: string
+        }
         Returns: undefined
       }
       log_identity_verification_access: {
