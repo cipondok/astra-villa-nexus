@@ -260,15 +260,17 @@ const ChatButton = ({
                       isButtonActive ? "text-foreground" : "text-foreground/60"
                     )} aria-hidden="true" />
                   ) : (
-                    <Icons.aiLogo 
-                      logoUrl={chatbotLogoUrl}
+                    <img 
+                      src={chatbotLogoUrl}
+                      alt="AI Assistant"
                       className={cn(
-                        "h-[55px] w-[55px] transition-all duration-500",
+                        "h-[40px] w-[40px] object-contain transition-all duration-500 rounded-lg",
                         isButtonActive 
                           ? "drop-shadow-[0_0_8px_hsla(var(--primary),0.5)]" 
                           : "opacity-70",
                         !isDragging && isButtonActive && "hover:rotate-12"
-                      )} 
+                      )}
+                      style={{ background: 'transparent' }}
                       aria-hidden="true" 
                     />
                   )}

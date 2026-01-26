@@ -14,14 +14,19 @@ interface MetaAILogoProps extends LucideProps {
 }
 
 const MetaAILogo = ({ logoUrl, ...props }: MetaAILogoProps) => (
-  <div className="relative inline-flex items-center justify-center">
+  <div className="relative inline-flex items-center justify-center" style={{ background: 'transparent' }}>
     <img 
       src={logoUrl || astraLogoFallback} 
       alt="ASTRA AI" 
       width={props.size || 32}
       height={props.size || 32}
       className={cn("relative z-10 object-contain", props.className)}
-      style={{ width: props.size || 32, height: props.size || 32 }}
+      style={{ 
+        width: props.size || 32, 
+        height: props.size || 32,
+        background: 'transparent',
+        mixBlendMode: 'normal'
+      }}
     />
   </div>
 );
