@@ -46,28 +46,45 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Fetch logo from settings
+    // Fetch logo from settings with proper category filter
     const loadLogo = async () => {
       try {
-        const { data: logoData } = await supabase
+        // Try loadingPageLogo first
+        const { data: loadingLogoData } = await supabase
           .from('system_settings')
           .select('value')
+          .eq('category', 'branding')
+          .eq('key', 'loadingPageLogo')
+          .maybeSingle();
+
+        if (loadingLogoData?.value && typeof loadingLogoData.value === 'string' && loadingLogoData.value.trim() !== '') {
+          setLogoUrl(loadingLogoData.value);
+          return;
+        }
+
+        // Fallback to welcomeScreenLogo
+        const { data: welcomeLogoData } = await supabase
+          .from('system_settings')
+          .select('value')
+          .eq('category', 'branding')
           .eq('key', 'welcomeScreenLogo')
           .maybeSingle();
 
-        if (logoData?.value && typeof logoData.value === 'string') {
-          setLogoUrl(logoData.value);
-        } else {
-          // Fallback to header logo
-          const { data: headerLogoData } = await supabase
-            .from('system_settings')
-            .select('value')
-            .eq('key', 'headerLogo')
-            .maybeSingle();
-          
-          if (headerLogoData?.value && typeof headerLogoData.value === 'string') {
-            setLogoUrl(headerLogoData.value);
-          }
+        if (welcomeLogoData?.value && typeof welcomeLogoData.value === 'string' && welcomeLogoData.value.trim() !== '') {
+          setLogoUrl(welcomeLogoData.value);
+          return;
+        }
+
+        // Fallback to headerLogo
+        const { data: headerLogoData } = await supabase
+          .from('system_settings')
+          .select('value')
+          .eq('category', 'branding')
+          .eq('key', 'headerLogo')
+          .maybeSingle();
+        
+        if (headerLogoData?.value && typeof headerLogoData.value === 'string' && headerLogoData.value.trim() !== '') {
+          setLogoUrl(headerLogoData.value);
         }
       } catch (error) {
         console.error('Error loading logo:', error);
