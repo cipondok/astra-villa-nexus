@@ -667,75 +667,112 @@ interface PhoneInputProps {
 const PhoneInputWithValidation: React.FC<PhoneInputProps> = ({
   value,
   onChange,
-  placeholder = "+62 812 3456 7890",
+  placeholder = "812 3456 7890",
   disabled = false
 }) => {
   const validation = useMemo(() => validatePhoneNumber(value), [value]);
+  const [selectedCountry, setSelectedCountry] = useState<string>('ID');
   
-  const formatExamples = [
-    { flag: '🇮🇩', format: '+62 812 xxxx xxxx' },
-    { flag: '🇲🇾', format: '+60 1x xxxx xxxx' },
-    { flag: '🇸🇬', format: '+65 9xxx xxxx' },
-    { flag: '🇺🇸', format: '+1 xxx xxx xxxx' },
+  const countryList = [
+    { code: 'ID', name: 'Indonesia', flag: '🇮🇩', dialCode: '+62' },
+    { code: 'MY', name: 'Malaysia', flag: '🇲🇾', dialCode: '+60' },
+    { code: 'SG', name: 'Singapore', flag: '🇸🇬', dialCode: '+65' },
+    { code: 'US', name: 'United States', flag: '🇺🇸', dialCode: '+1' },
+    { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', dialCode: '+44' },
+    { code: 'AU', name: 'Australia', flag: '🇦🇺', dialCode: '+61' },
+    { code: 'JP', name: 'Japan', flag: '🇯🇵', dialCode: '+81' },
+    { code: 'KR', name: 'South Korea', flag: '🇰🇷', dialCode: '+82' },
+    { code: 'AE', name: 'UAE', flag: '🇦🇪', dialCode: '+971' },
+    { code: 'SA', name: 'Saudi Arabia', flag: '🇸🇦', dialCode: '+966' },
+    { code: 'DE', name: 'Germany', flag: '🇩🇪', dialCode: '+49' },
+    { code: 'NL', name: 'Netherlands', flag: '🇳🇱', dialCode: '+31' },
+    { code: 'TW', name: 'Taiwan', flag: '🇹🇼', dialCode: '+886' },
+    { code: 'HK', name: 'Hong Kong', flag: '🇭🇰', dialCode: '+852' },
+    { code: 'TH', name: 'Thailand', flag: '🇹🇭', dialCode: '+66' },
+    { code: 'PH', name: 'Philippines', flag: '🇵🇭', dialCode: '+63' },
+    { code: 'VN', name: 'Vietnam', flag: '🇻🇳', dialCode: '+84' },
+    { code: 'IN', name: 'India', flag: '🇮🇳', dialCode: '+91' },
+    { code: 'CN', name: 'China', flag: '🇨🇳', dialCode: '+86' },
+    { code: 'FR', name: 'France', flag: '🇫🇷', dialCode: '+33' },
+    { code: 'CA', name: 'Canada', flag: '🇨🇦', dialCode: '+1' },
+    { code: 'NZ', name: 'New Zealand', flag: '🇳🇿', dialCode: '+64' },
+    { code: 'QA', name: 'Qatar', flag: '🇶🇦', dialCode: '+974' },
+    { code: 'KW', name: 'Kuwait', flag: '🇰🇼', dialCode: '+965' },
+    { code: 'BN', name: 'Brunei', flag: '🇧🇳', dialCode: '+673' },
   ];
+  
+  const currentCountry = countryList.find(c => c.code === selectedCountry) || countryList[0];
+  
+  const handleCountrySelect = (code: string) => {
+    setSelectedCountry(code);
+    const country = countryList.find(c => c.code === code);
+    if (country) {
+      // Replace existing dial code or add new one
+      const cleanValue = value.replace(/^\+\d+\s*/, '');
+      onChange(`${country.dialCode} ${cleanValue}`);
+    }
+  };
   
   return (
     <div className="space-y-1.5">
-      {/* Single row input with validation indicator */}
-      <div className="flex items-center gap-2">
+      {/* Country selector + Phone input in single row */}
+      <div className="flex items-center gap-1.5">
+        {/* Country Selector */}
+        <Select value={selectedCountry} onValueChange={handleCountrySelect}>
+          <SelectTrigger className="w-[85px] h-9 px-2 text-sm shrink-0">
+            <SelectValue>
+              <span className="flex items-center gap-1">
+                <span className="text-base">{currentCountry.flag}</span>
+                <span className="text-xs text-muted-foreground">{currentCountry.dialCode}</span>
+              </span>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent className="max-h-[280px]">
+            {countryList.map((country) => (
+              <SelectItem key={country.code} value={country.code} className="text-sm">
+                <span className="flex items-center gap-2">
+                  <span className="text-base">{country.flag}</span>
+                  <span className="font-medium">{country.name}</span>
+                  <span className="text-muted-foreground text-xs">{country.dialCode}</span>
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        
+        {/* Phone Input */}
         <div className="relative flex-1">
           <Input
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
-            className={`h-9 text-sm pr-16 ${validation.isValid ? 'border-green-500 focus:border-green-500' : value.length > 3 ? 'border-destructive' : ''}`}
+            className={`h-9 text-sm pr-10 ${validation.isValid ? 'border-green-500 focus:border-green-500' : value.length > 3 ? 'border-destructive' : ''}`}
             disabled={disabled}
             type="tel"
           />
           {value && (
             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-              {validation.isValid && validation.country && (
-                <>
-                  <span className="text-sm">{validation.country.flag}</span>
-                  <Check className="h-4 w-4 text-green-500" />
-                </>
-              )}
-              {!validation.isValid && value.length > 3 && (
+              {validation.isValid ? (
+                <Check className="h-4 w-4 text-green-500" />
+              ) : value.length > 3 ? (
                 <AlertCircle className="h-4 w-4 text-destructive" />
-              )}
+              ) : null}
             </div>
           )}
         </div>
       </div>
       
-      {/* Validation result - single row */}
+      {/* Validation feedback */}
       {validation.isValid && validation.country ? (
         <div className="flex items-center gap-1.5 text-[10px] text-green-600 bg-green-50 dark:bg-green-950/30 px-2 py-1 rounded">
           <Check className="h-3 w-3 shrink-0" />
           <span className="font-medium">{validation.country.flag} {validation.country.name}</span>
-          {validation.country.dialCode && (
-            <span className="text-green-500">({validation.country.dialCode})</span>
-          )}
-        </div>
-      ) : !value ? (
-        /* Format examples - horizontal scroll for easy selection */
-        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
-          {formatExamples.map((example, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => onChange(example.format.replace(/x/g, '').trim())}
-              className="flex items-center gap-1 px-2 py-0.5 text-[9px] bg-muted/50 hover:bg-muted rounded border border-border/50 whitespace-nowrap shrink-0 active:scale-95 transition-transform"
-            >
-              <span>{example.flag}</span>
-              <span className="text-muted-foreground font-mono">{example.format}</span>
-            </button>
-          ))}
+          <span className="text-green-500">({validation.country.dialCode})</span>
         </div>
       ) : value.length > 5 && !validation.isValid ? (
         <p className="text-[10px] text-destructive flex items-center gap-1">
           <AlertCircle className="h-3 w-3" />
-          Invalid format. Try: +62 812 xxxx xxxx
+          Invalid format. Enter number after dial code
         </p>
       ) : null}
     </div>
