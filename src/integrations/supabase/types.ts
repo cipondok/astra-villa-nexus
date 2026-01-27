@@ -1987,6 +1987,213 @@ export type Database = {
           },
         ]
       }
+      community_contributions: {
+        Row: {
+          content_id: string | null
+          contribution_type: string
+          created_at: string | null
+          id: string
+          points_earned: number
+          quality_bonus: number | null
+          user_id: string
+        }
+        Insert: {
+          content_id?: string | null
+          contribution_type: string
+          created_at?: string | null
+          id?: string
+          points_earned: number
+          quality_bonus?: number | null
+          user_id: string
+        }
+        Update: {
+          content_id?: string | null
+          contribution_type?: string
+          created_at?: string | null
+          id?: string
+          points_earned?: number
+          quality_bonus?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      community_events: {
+        Row: {
+          city: string
+          cover_image_url: string | null
+          created_at: string | null
+          current_attendees: number | null
+          description: string | null
+          end_datetime: string | null
+          event_type: string
+          id: string
+          is_featured: boolean | null
+          is_free: boolean | null
+          is_online: boolean | null
+          latitude: number | null
+          location_address: string | null
+          location_name: string | null
+          longitude: number | null
+          max_attendees: number | null
+          online_link: string | null
+          organizer_id: string | null
+          registration_deadline: string | null
+          slug: string
+          start_datetime: string
+          state: string | null
+          status: string | null
+          tags: string[] | null
+          ticket_price: number | null
+          timezone: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          city: string
+          cover_image_url?: string | null
+          created_at?: string | null
+          current_attendees?: number | null
+          description?: string | null
+          end_datetime?: string | null
+          event_type: string
+          id?: string
+          is_featured?: boolean | null
+          is_free?: boolean | null
+          is_online?: boolean | null
+          latitude?: number | null
+          location_address?: string | null
+          location_name?: string | null
+          longitude?: number | null
+          max_attendees?: number | null
+          online_link?: string | null
+          organizer_id?: string | null
+          registration_deadline?: string | null
+          slug: string
+          start_datetime: string
+          state?: string | null
+          status?: string | null
+          tags?: string[] | null
+          ticket_price?: number | null
+          timezone?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          city?: string
+          cover_image_url?: string | null
+          created_at?: string | null
+          current_attendees?: number | null
+          description?: string | null
+          end_datetime?: string | null
+          event_type?: string
+          id?: string
+          is_featured?: boolean | null
+          is_free?: boolean | null
+          is_online?: boolean | null
+          latitude?: number | null
+          location_address?: string | null
+          location_name?: string | null
+          longitude?: number | null
+          max_attendees?: number | null
+          online_link?: string | null
+          organizer_id?: string | null
+          registration_deadline?: string | null
+          slug?: string
+          start_datetime?: string
+          state?: string | null
+          status?: string | null
+          tags?: string[] | null
+          ticket_price?: number | null
+          timezone?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      community_leaderboard: {
+        Row: {
+          answers_count: number | null
+          badges_earned: Json | null
+          created_at: string | null
+          current_rank: number | null
+          current_tier: string | null
+          events_organized: number | null
+          guides_count: number | null
+          helpful_votes_received: number | null
+          id: string
+          last_contribution_at: string | null
+          reviews_count: number | null
+          streak_days: number | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          answers_count?: number | null
+          badges_earned?: Json | null
+          created_at?: string | null
+          current_rank?: number | null
+          current_tier?: string | null
+          events_organized?: number | null
+          guides_count?: number | null
+          helpful_votes_received?: number | null
+          id?: string
+          last_contribution_at?: string | null
+          reviews_count?: number | null
+          streak_days?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          answers_count?: number | null
+          badges_earned?: Json | null
+          created_at?: string | null
+          current_rank?: number | null
+          current_tier?: string | null
+          events_organized?: number | null
+          guides_count?: number | null
+          helpful_votes_received?: number | null
+          id?: string
+          last_contribution_at?: string | null
+          reviews_count?: number | null
+          streak_days?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      community_moderators: {
+        Row: {
+          assigned_categories: string[] | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          permissions: Json | null
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          assigned_categories?: string[] | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          permissions?: Json | null
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          assigned_categories?: string[] | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          permissions?: Json | null
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       content_categories: {
         Row: {
           created_at: string | null
@@ -2027,6 +2234,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      content_reports: {
+        Row: {
+          action_taken: string | null
+          content_id: string
+          content_type: string
+          created_at: string | null
+          description: string | null
+          id: string
+          moderator_id: string | null
+          moderator_notes: string | null
+          reason: string
+          reporter_id: string | null
+          resolved_at: string | null
+          status: string | null
+        }
+        Insert: {
+          action_taken?: string | null
+          content_id: string
+          content_type: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          moderator_id?: string | null
+          moderator_notes?: string | null
+          reason: string
+          reporter_id?: string | null
+          resolved_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          action_taken?: string | null
+          content_id?: string
+          content_type?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          moderator_id?: string | null
+          moderator_notes?: string | null
+          reason?: string
+          reporter_id?: string | null
+          resolved_at?: string | null
+          status?: string | null
+        }
+        Relationships: []
       }
       country_blocks: {
         Row: {
@@ -2721,6 +2973,47 @@ export type Database = {
         }
         Relationships: []
       }
+      event_registrations: {
+        Row: {
+          checked_in_at: string | null
+          created_at: string | null
+          event_id: string
+          id: string
+          notes: string | null
+          registration_type: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          checked_in_at?: string | null
+          created_at?: string | null
+          event_id: string
+          id?: string
+          notes?: string | null
+          registration_type?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          checked_in_at?: string | null
+          created_at?: string | null
+          event_id?: string
+          id?: string
+          notes?: string | null
+          registration_type?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "community_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favorites: {
         Row: {
           created_at: string
@@ -3258,6 +3551,133 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_deal_participants: {
+        Row: {
+          confirmed_at: string | null
+          deal_id: string
+          id: string
+          joined_at: string | null
+          quantity: number | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          confirmed_at?: string | null
+          deal_id: string
+          id?: string
+          joined_at?: string | null
+          quantity?: number | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          confirmed_at?: string | null
+          deal_id?: string
+          id?: string
+          joined_at?: string | null
+          quantity?: number | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_deal_participants_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "group_deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_deals: {
+        Row: {
+          category: string
+          cover_image_url: string | null
+          created_at: string | null
+          creator_id: string | null
+          current_participants: number | null
+          description: string | null
+          discount_percentage: number | null
+          end_date: string
+          group_price: number | null
+          id: string
+          is_featured: boolean | null
+          max_participants: number | null
+          min_participants: number
+          original_price: number | null
+          provider_id: string | null
+          provider_name: string | null
+          slug: string
+          start_date: string
+          status: string | null
+          target_cities: string[] | null
+          target_neighborhoods: string[] | null
+          terms_conditions: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          cover_image_url?: string | null
+          created_at?: string | null
+          creator_id?: string | null
+          current_participants?: number | null
+          description?: string | null
+          discount_percentage?: number | null
+          end_date: string
+          group_price?: number | null
+          id?: string
+          is_featured?: boolean | null
+          max_participants?: number | null
+          min_participants: number
+          original_price?: number | null
+          provider_id?: string | null
+          provider_name?: string | null
+          slug: string
+          start_date: string
+          status?: string | null
+          target_cities?: string[] | null
+          target_neighborhoods?: string[] | null
+          terms_conditions?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string | null
+          creator_id?: string | null
+          current_participants?: number | null
+          description?: string | null
+          discount_percentage?: number | null
+          end_date?: string
+          group_price?: number | null
+          id?: string
+          is_featured?: boolean | null
+          max_participants?: number | null
+          min_participants?: number
+          original_price?: number | null
+          provider_id?: string | null
+          provider_name?: string | null
+          slug?: string
+          start_date?: string
+          status?: string | null
+          target_cities?: string[] | null
+          target_neighborhoods?: string[] | null
+          terms_conditions?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_deals_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "local_service_providers"
             referencedColumns: ["id"]
           },
         ]
@@ -4104,6 +4524,99 @@ export type Database = {
         }
         Relationships: []
       }
+      local_service_providers: {
+        Row: {
+          address: string | null
+          business_name: string
+          category: string
+          certifications: string[] | null
+          city: string
+          contact_email: string | null
+          contact_phone: string | null
+          contact_whatsapp: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_featured: boolean | null
+          is_verified: boolean | null
+          logo_url: string | null
+          operating_hours: Json | null
+          owner_id: string | null
+          price_range: string | null
+          rating_avg: number | null
+          review_count: number | null
+          service_areas: string[] | null
+          services_offered: Json | null
+          slug: string
+          state: string | null
+          status: string | null
+          subcategory: string | null
+          updated_at: string | null
+          website_url: string | null
+        }
+        Insert: {
+          address?: string | null
+          business_name: string
+          category: string
+          certifications?: string[] | null
+          city: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          contact_whatsapp?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          operating_hours?: Json | null
+          owner_id?: string | null
+          price_range?: string | null
+          rating_avg?: number | null
+          review_count?: number | null
+          service_areas?: string[] | null
+          services_offered?: Json | null
+          slug: string
+          state?: string | null
+          status?: string | null
+          subcategory?: string | null
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          address?: string | null
+          business_name?: string
+          category?: string
+          certifications?: string[] | null
+          city?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          contact_whatsapp?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          operating_hours?: Json | null
+          owner_id?: string | null
+          price_range?: string | null
+          rating_avg?: number | null
+          review_count?: number | null
+          service_areas?: string[] | null
+          services_offered?: Json | null
+          slug?: string
+          state?: string | null
+          status?: string | null
+          subcategory?: string | null
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       location_admin_settings: {
         Row: {
           created_at: string | null
@@ -4350,6 +4863,75 @@ export type Database = {
           method?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      neighborhood_guides: {
+        Row: {
+          author_id: string | null
+          city: string
+          content: Json | null
+          cover_image_url: string | null
+          created_at: string | null
+          highlights: Json | null
+          id: string
+          is_featured: boolean | null
+          like_count: number | null
+          neighborhood_name: string
+          published_at: string | null
+          ratings: Json | null
+          slug: string
+          state: string | null
+          status: string | null
+          summary: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+          view_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          city: string
+          content?: Json | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          highlights?: Json | null
+          id?: string
+          is_featured?: boolean | null
+          like_count?: number | null
+          neighborhood_name: string
+          published_at?: string | null
+          ratings?: Json | null
+          slug: string
+          state?: string | null
+          status?: string | null
+          summary?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          city?: string
+          content?: Json | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          highlights?: Json | null
+          id?: string
+          is_featured?: boolean | null
+          like_count?: number | null
+          neighborhood_name?: string
+          published_at?: string | null
+          ratings?: Json | null
+          slug?: string
+          state?: string | null
+          status?: string | null
+          summary?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+          view_count?: number | null
         }
         Relationships: []
       }
@@ -5165,6 +5747,56 @@ export type Database = {
         }
         Relationships: []
       }
+      property_answers: {
+        Row: {
+          author_id: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_accepted: boolean | null
+          is_owner_response: boolean | null
+          is_resident_response: boolean | null
+          question_id: string
+          status: string | null
+          updated_at: string | null
+          upvote_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_accepted?: boolean | null
+          is_owner_response?: boolean | null
+          is_resident_response?: boolean | null
+          question_id: string
+          status?: string | null
+          updated_at?: string | null
+          upvote_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_accepted?: boolean | null
+          is_owner_response?: boolean | null
+          is_resident_response?: boolean | null
+          question_id?: string
+          status?: string | null
+          updated_at?: string | null
+          upvote_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "property_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_bookings: {
         Row: {
           booking_type: string
@@ -5611,6 +6243,57 @@ export type Database = {
           street_address?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      property_questions: {
+        Row: {
+          answer_count: number | null
+          author_id: string | null
+          category: string | null
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          is_pinned: boolean | null
+          is_resolved: boolean | null
+          property_id: string
+          question: string
+          status: string | null
+          updated_at: string | null
+          upvote_count: number | null
+          view_count: number | null
+        }
+        Insert: {
+          answer_count?: number | null
+          author_id?: string | null
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_pinned?: boolean | null
+          is_resolved?: boolean | null
+          property_id: string
+          question: string
+          status?: string | null
+          updated_at?: string | null
+          upvote_count?: number | null
+          view_count?: number | null
+        }
+        Update: {
+          answer_count?: number | null
+          author_id?: string | null
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_pinned?: boolean | null
+          is_resolved?: boolean | null
+          property_id?: string
+          question?: string
+          status?: string | null
+          updated_at?: string | null
+          upvote_count?: number | null
+          view_count?: number | null
         }
         Relationships: []
       }
@@ -6488,6 +7171,96 @@ export type Database = {
           },
         ]
       }
+      resident_connections: {
+        Row: {
+          avg_response_time_hours: number | null
+          bio: string | null
+          created_at: string | null
+          id: string
+          is_available_for_questions: boolean | null
+          is_current_resident: boolean | null
+          is_verified: boolean | null
+          property_id: string
+          residence_end_date: string | null
+          residence_start_date: string | null
+          resident_id: string
+          response_rate: number | null
+          topics_willing_to_discuss: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          avg_response_time_hours?: number | null
+          bio?: string | null
+          created_at?: string | null
+          id?: string
+          is_available_for_questions?: boolean | null
+          is_current_resident?: boolean | null
+          is_verified?: boolean | null
+          property_id: string
+          residence_end_date?: string | null
+          residence_start_date?: string | null
+          resident_id: string
+          response_rate?: number | null
+          topics_willing_to_discuss?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          avg_response_time_hours?: number | null
+          bio?: string | null
+          created_at?: string | null
+          id?: string
+          is_available_for_questions?: boolean | null
+          is_current_resident?: boolean | null
+          is_verified?: boolean | null
+          property_id?: string
+          residence_end_date?: string | null
+          residence_start_date?: string | null
+          resident_id?: string
+          response_rate?: number | null
+          topics_willing_to_discuss?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      resident_inquiries: {
+        Row: {
+          created_at: string | null
+          id: string
+          inquirer_id: string | null
+          is_anonymous: boolean | null
+          message: string
+          property_id: string
+          resident_id: string | null
+          responded_at: string | null
+          response: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          inquirer_id?: string | null
+          is_anonymous?: boolean | null
+          message: string
+          property_id: string
+          resident_id?: string | null
+          responded_at?: string | null
+          response?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          inquirer_id?: string | null
+          is_anonymous?: boolean | null
+          message?: string
+          property_id?: string
+          resident_id?: string | null
+          responded_at?: string | null
+          response?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
       resubmission_history: {
         Row: {
           admin_notes: string | null
@@ -6923,6 +7696,59 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      service_provider_reviews: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          helpful_count: number | null
+          id: string
+          is_verified_purchase: boolean | null
+          photos: string[] | null
+          provider_id: string
+          rating: number
+          reviewer_id: string | null
+          service_used: string | null
+          status: string | null
+          title: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          is_verified_purchase?: boolean | null
+          photos?: string[] | null
+          provider_id: string
+          rating: number
+          reviewer_id?: string | null
+          service_used?: string | null
+          status?: string | null
+          title?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          is_verified_purchase?: boolean | null
+          photos?: string[] | null
+          provider_id?: string
+          rating?: number
+          reviewer_id?: string | null
+          service_used?: string | null
+          status?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_provider_reviews_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "local_service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       share_analytics: {
         Row: {

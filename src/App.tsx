@@ -100,6 +100,7 @@ const Help = lazy(() => import('@/pages/Help'));
 const WNIPage = lazy(() => import('@/pages/investor/WNIPage'));
 const WNAPage = lazy(() => import('@/pages/investor/WNAPage'));
 const VerificationCenter = lazy(() => import('@/pages/VerificationCenter'));
+const CommunityHub = lazy(() => import('@/pages/CommunityHub'));
 
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
@@ -186,6 +187,7 @@ const AppContent = () => {
             <Route path="/partners/ventures" element={<JointVentures />} />
             <Route path="/mobile-demo" element={<MobileFirstDemo />} />
             <Route path="/community" element={<Community />} />
+            <Route path="/community-hub" element={<CommunityHub />} />
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/marketplace/category/:categoryId" element={<MarketplaceCategory />} />
             <Route path="/vendor-registration" element={<VendorRegistration />} />
