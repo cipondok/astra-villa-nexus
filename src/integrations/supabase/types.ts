@@ -8984,6 +8984,93 @@ export type Database = {
         }
         Relationships: []
       }
+      user_verifications: {
+        Row: {
+          badge_tier: Database["public"]["Enums"]["badge_tier"] | null
+          bank_details_added: boolean | null
+          bank_details_verified: boolean | null
+          basic_completed_at: string | null
+          created_at: string | null
+          current_level:
+            | Database["public"]["Enums"]["verification_level"]
+            | null
+          email_verified: boolean | null
+          enhanced_completed_at: string | null
+          id: string
+          id_document_uploaded: boolean | null
+          id_document_verified: boolean | null
+          license_number: string | null
+          license_verified: boolean | null
+          phone_verified: boolean | null
+          premium_completed_at: string | null
+          professional_completed_at: string | null
+          references_count: number | null
+          references_verified: number | null
+          social_media_linked: Json | null
+          trust_score: number | null
+          updated_at: string | null
+          user_id: string
+          video_verification_completed: boolean | null
+          video_verification_url: string | null
+        }
+        Insert: {
+          badge_tier?: Database["public"]["Enums"]["badge_tier"] | null
+          bank_details_added?: boolean | null
+          bank_details_verified?: boolean | null
+          basic_completed_at?: string | null
+          created_at?: string | null
+          current_level?:
+            | Database["public"]["Enums"]["verification_level"]
+            | null
+          email_verified?: boolean | null
+          enhanced_completed_at?: string | null
+          id?: string
+          id_document_uploaded?: boolean | null
+          id_document_verified?: boolean | null
+          license_number?: string | null
+          license_verified?: boolean | null
+          phone_verified?: boolean | null
+          premium_completed_at?: string | null
+          professional_completed_at?: string | null
+          references_count?: number | null
+          references_verified?: number | null
+          social_media_linked?: Json | null
+          trust_score?: number | null
+          updated_at?: string | null
+          user_id: string
+          video_verification_completed?: boolean | null
+          video_verification_url?: string | null
+        }
+        Update: {
+          badge_tier?: Database["public"]["Enums"]["badge_tier"] | null
+          bank_details_added?: boolean | null
+          bank_details_verified?: boolean | null
+          basic_completed_at?: string | null
+          created_at?: string | null
+          current_level?:
+            | Database["public"]["Enums"]["verification_level"]
+            | null
+          email_verified?: boolean | null
+          enhanced_completed_at?: string | null
+          id?: string
+          id_document_uploaded?: boolean | null
+          id_document_verified?: boolean | null
+          license_number?: string | null
+          license_verified?: boolean | null
+          phone_verified?: boolean | null
+          premium_completed_at?: string | null
+          professional_completed_at?: string | null
+          references_count?: number | null
+          references_verified?: number | null
+          social_media_linked?: Json | null
+          trust_score?: number | null
+          updated_at?: string | null
+          user_id?: string
+          video_verification_completed?: boolean | null
+          video_verification_url?: string | null
+        }
+        Relationships: []
+      }
       validation_logs: {
         Row: {
           application_id: string
@@ -11671,6 +11758,84 @@ export type Database = {
         }
         Relationships: []
       }
+      verification_documents: {
+        Row: {
+          created_at: string | null
+          document_type: string
+          document_url: string
+          id: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          document_type: string
+          document_url: string
+          id?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          document_type?: string
+          document_url?: string
+          id?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      verification_references: {
+        Row: {
+          created_at: string | null
+          id: string
+          reference_email: string
+          reference_name: string
+          reference_phone: string | null
+          relationship: string
+          status: string | null
+          user_id: string
+          verification_code: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          reference_email: string
+          reference_name: string
+          reference_phone?: string | null
+          relationship: string
+          status?: string | null
+          user_id: string
+          verification_code?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          reference_email?: string
+          reference_name?: string
+          reference_phone?: string | null
+          relationship?: string
+          status?: string | null
+          user_id?: string
+          verification_code?: string | null
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       web_analytics: {
         Row: {
           browser: string | null
@@ -13056,6 +13221,7 @@ export type Database = {
         | "order_tracking"
         | "ai_bot_management"
       affiliate_status: "pending" | "active" | "suspended" | "inactive"
+      badge_tier: "bronze" | "silver" | "gold" | "platinum" | "diamond"
       feedback_type:
         | "bug_report"
         | "feature_request"
@@ -13135,6 +13301,7 @@ export type Database = {
         | "verified"
         | "rejected"
         | "suspended"
+      verification_level: "basic" | "enhanced" | "professional" | "premium"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -13274,6 +13441,7 @@ export const Constants = {
         "ai_bot_management",
       ],
       affiliate_status: ["pending", "active", "suspended", "inactive"],
+      badge_tier: ["bronze", "silver", "gold", "platinum", "diamond"],
       feedback_type: [
         "bug_report",
         "feature_request",
@@ -13356,6 +13524,7 @@ export const Constants = {
         "rejected",
         "suspended",
       ],
+      verification_level: ["basic", "enhanced", "professional", "premium"],
     },
   },
 } as const
