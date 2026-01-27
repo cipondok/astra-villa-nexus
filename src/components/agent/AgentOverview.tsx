@@ -20,6 +20,7 @@ import ClientManagement from "./tools/ClientManagement";
 import BookingPaymentManager from "./BookingPaymentManager";
 import PayoutManagement from "./PayoutManagement";
 import { AgentAnalyticsDashboard } from "@/components/agent-analytics";
+import { ListingSuccessPredictor } from "@/components/ai/listing";
 import { 
   Building, 
   PlusCircle, 
@@ -52,7 +53,8 @@ import {
   FileText,
   Settings,
   Trophy,
-  Brain
+  Brain,
+  Sparkles
 } from "lucide-react";
 
 const AgentOverview = () => {
@@ -279,6 +281,10 @@ const AgentOverview = () => {
               <Brain className="h-3 w-3" />
               Analytics
             </TabsTrigger>
+            <TabsTrigger value="predictor" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex items-center gap-1">
+              <Sparkles className="h-3 w-3" />
+              AI Predictor
+            </TabsTrigger>
             <TabsTrigger value="quick-add" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Quick Add</TabsTrigger>
             <TabsTrigger value="add-property" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Full Form</TabsTrigger>
             <TabsTrigger value="my-properties" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Properties</TabsTrigger>
@@ -357,6 +363,11 @@ const AgentOverview = () => {
         {/* Analytics Dashboard - Comprehensive Agent Analytics */}
         <TabsContent value="analytics" className="space-y-2">
           <AgentAnalyticsDashboard />
+        </TabsContent>
+
+        {/* AI Listing Success Predictor */}
+        <TabsContent value="predictor" className="space-y-2">
+          <ListingSuccessPredictor />
         </TabsContent>
 
         {/* Quick Add - Simplified 3-Step Form */}
