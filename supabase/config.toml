@@ -105,3 +105,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.ai-content-generator]
     verify_jwt = false
+
+  [functions.property-valuation]
+    verify_jwt = false
