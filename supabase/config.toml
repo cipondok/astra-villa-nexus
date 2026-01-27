@@ -96,3 +96,9 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.property-listing-assistant]
     verify_jwt = false
+
+  [functions.listing-success-predictor]
+    verify_jwt = false
+
+  [functions.deepseek-ai]
+    verify_jwt = false
