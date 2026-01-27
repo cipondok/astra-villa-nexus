@@ -5105,6 +5105,114 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_history: {
+        Row: {
+          action_url: string | null
+          body: string
+          created_at: string
+          icon: string | null
+          id: string
+          image: string | null
+          is_read: boolean
+          is_sent: boolean
+          metadata: Json | null
+          notification_type: string
+          read_at: string | null
+          sent_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          action_url?: string | null
+          body: string
+          created_at?: string
+          icon?: string | null
+          id?: string
+          image?: string | null
+          is_read?: boolean
+          is_sent?: boolean
+          metadata?: Json | null
+          notification_type: string
+          read_at?: string | null
+          sent_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          action_url?: string | null
+          body?: string
+          created_at?: string
+          icon?: string | null
+          id?: string
+          image?: string | null
+          is_read?: boolean
+          is_sent?: boolean
+          metadata?: Json | null
+          notification_type?: string
+          read_at?: string | null
+          sent_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          booking_updates: boolean
+          created_at: string
+          email_enabled: boolean
+          id: string
+          messages: boolean
+          new_listings: boolean
+          price_changes: boolean
+          promotions: boolean
+          push_enabled: boolean
+          quiet_end_time: string | null
+          quiet_hours_enabled: boolean
+          quiet_start_time: string | null
+          sms_enabled: boolean
+          system_alerts: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          booking_updates?: boolean
+          created_at?: string
+          email_enabled?: boolean
+          id?: string
+          messages?: boolean
+          new_listings?: boolean
+          price_changes?: boolean
+          promotions?: boolean
+          push_enabled?: boolean
+          quiet_end_time?: string | null
+          quiet_hours_enabled?: boolean
+          quiet_start_time?: string | null
+          sms_enabled?: boolean
+          system_alerts?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          booking_updates?: boolean
+          created_at?: string
+          email_enabled?: boolean
+          id?: string
+          messages?: boolean
+          new_listings?: boolean
+          price_changes?: boolean
+          promotions?: boolean
+          push_enabled?: boolean
+          quiet_end_time?: string | null
+          quiet_hours_enabled?: boolean
+          quiet_start_time?: string | null
+          sms_enabled?: boolean
+          system_alerts?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       office_locations: {
         Row: {
           address_en: string

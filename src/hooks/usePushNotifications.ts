@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 /**
  * Push Notification Strategy Hook
@@ -17,6 +18,11 @@ export interface NotificationPreferences {
   messageAlerts: boolean;
   marketUpdates: boolean;
   dailyDigest: boolean;
+  push_enabled: boolean;
+  email_enabled: boolean;
+  quiet_hours_enabled: boolean;
+  quiet_start_time: string;
+  quiet_end_time: string;
 }
 
 export interface PushSubscriptionData {
@@ -27,20 +33,43 @@ export interface PushSubscriptionData {
   };
 }
 
-const VAPID_PUBLIC_KEY = 'YOUR_VAPID_PUBLIC_KEY'; // Replace with actual key from secrets
+export interface NotificationHistoryItem {
+  id: string;
+  title: string;
+  body: string;
+  icon?: string;
+  image?: string;
+  action_url?: string;
+  notification_type: string;
+  metadata: Record<string, any>;
+  is_read: boolean;
+  created_at: string;
+}
+
+const VAPID_PUBLIC_KEY = 'BNbxGYNMhEIi9zrneh7mqB9EzTvB0y3JbYlgDHCvxyHDR8Lf7mWN1oP3Wk7WpMvxjsNFYKK7MvJ0Lg6E_xQA5Qc';
+
+const defaultPreferences: NotificationPreferences = {
+  priceDrops: true,
+  newMatches: true,
+  messageAlerts: true,
+  marketUpdates: false,
+  dailyDigest: false,
+  push_enabled: true,
+  email_enabled: true,
+  quiet_hours_enabled: false,
+  quiet_start_time: '22:00',
+  quiet_end_time: '07:00',
+};
 
 export const usePushNotifications = () => {
   const { user } = useAuth();
   const [isSupported, setIsSupported] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>('default');
-  const [preferences, setPreferences] = useState<NotificationPreferences>({
-    priceDrops: true,
-    newMatches: true,
-    messageAlerts: true,
-    marketUpdates: false,
-    dailyDigest: false,
-  });
+  const [preferences, setPreferences] = useState<NotificationPreferences>(defaultPreferences);
+  const [notifications, setNotifications] = useState<NotificationHistoryItem[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // Check browser support
   useEffect(() => {
@@ -53,10 +82,11 @@ export const usePushNotifications = () => {
     }
   }, []);
 
-  // Load user preferences from storage/database
+  // Load user preferences and notifications
   useEffect(() => {
     if (user) {
       loadPreferences();
+      loadNotifications();
     }
   }, [user]);
 
@@ -73,19 +103,104 @@ export const usePushNotifications = () => {
   const loadPreferences = async () => {
     if (!user) return;
     
+    try {
+      // Try database first
+      const { data } = await supabase
+        .from('notification_preferences')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (data) {
+        setPreferences({
+          priceDrops: data.price_changes ?? true,
+          newMatches: data.new_listings ?? true,
+          messageAlerts: data.messages ?? true,
+          marketUpdates: data.promotions ?? false,
+          dailyDigest: false,
+          push_enabled: data.push_enabled ?? true,
+          email_enabled: data.email_enabled ?? true,
+          quiet_hours_enabled: data.quiet_hours_enabled ?? false,
+          quiet_start_time: data.quiet_start_time || '22:00',
+          quiet_end_time: data.quiet_end_time || '07:00',
+        });
+        return;
+      }
+    } catch (error) {
+      console.error('Error loading preferences from DB:', error);
+    }
+
+    // Fallback to localStorage
     const stored = localStorage.getItem(`push_prefs_${user.id}`);
     if (stored) {
-      setPreferences(JSON.parse(stored));
+      setPreferences({ ...defaultPreferences, ...JSON.parse(stored) });
+    }
+  };
+
+  const loadNotifications = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('notification_history')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (data) {
+        setNotifications(data as unknown as NotificationHistoryItem[]);
+        setUnreadCount(data.filter(n => !n.is_read).length);
+      }
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    }
+  };
+
+  const updatePreferences = async (newPrefs: Partial<NotificationPreferences>): Promise<boolean> => {
+    if (!user) return false;
+    
+    setIsLoading(true);
+    const updatedPrefs = { ...preferences, ...newPrefs };
+    setPreferences(updatedPrefs);
+    
+    try {
+      // Save to database
+      const { error } = await supabase
+        .from('notification_preferences')
+        .upsert({
+          user_id: user.id,
+          new_listings: updatedPrefs.newMatches,
+          price_changes: updatedPrefs.priceDrops,
+          booking_updates: true,
+          messages: updatedPrefs.messageAlerts,
+          promotions: updatedPrefs.marketUpdates,
+          system_alerts: true,
+          push_enabled: updatedPrefs.push_enabled,
+          email_enabled: updatedPrefs.email_enabled,
+          quiet_hours_enabled: updatedPrefs.quiet_hours_enabled,
+          quiet_start_time: updatedPrefs.quiet_start_time,
+          quiet_end_time: updatedPrefs.quiet_end_time,
+          updated_at: new Date().toISOString(),
+        });
+
+      if (error) throw error;
+      
+      // Also save to localStorage as backup
+      localStorage.setItem(`push_prefs_${user.id}`, JSON.stringify(updatedPrefs));
+      toast.success('Preferences saved');
+      return true;
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+      toast.error('Failed to save preferences');
+      return false;
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const savePreferences = async (newPrefs: NotificationPreferences) => {
-    if (!user) return;
-    
-    setPreferences(newPrefs);
-    localStorage.setItem(`push_prefs_${user.id}`, JSON.stringify(newPrefs));
-    
-    // Optionally sync to server for cross-device preferences
+    await updatePreferences(newPrefs);
   };
 
   const requestPermission = async (): Promise<boolean> => {
@@ -107,57 +222,111 @@ export const usePushNotifications = () => {
       if (!granted) return false;
     }
 
+    setIsLoading(true);
     try {
       const registration = await navigator.serviceWorker.ready;
       
-      // Check for existing subscription
       let subscription = await registration.pushManager.getSubscription();
       
       if (!subscription) {
-      const applicationServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
-      subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: applicationServerKey.buffer as ArrayBuffer,
-      });
-    }
+        const applicationServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: applicationServerKey.buffer as ArrayBuffer,
+        });
+      }
 
       // Save subscription to server
       if (user && subscription) {
-        const subscriptionData: PushSubscriptionData = {
-          endpoint: subscription.endpoint,
-          keys: {
-            p256dh: arrayBufferToBase64(subscription.getKey('p256dh')!),
-            auth: arrayBufferToBase64(subscription.getKey('auth')!),
+        const { error } = await supabase.functions.invoke('push-notifications', {
+          body: {
+            action: 'subscribe',
+            subscription: {
+              endpoint: subscription.endpoint,
+              keys: {
+                p256dh: arrayBufferToBase64(subscription.getKey('p256dh')!),
+                auth: arrayBufferToBase64(subscription.getKey('auth')!),
+              },
+              deviceType: 'web',
+              browser: navigator.userAgent,
+            },
           },
-        };
+        });
 
-        // Store in database (you'd create an edge function for this)
-        console.log('Push subscription:', subscriptionData);
+        if (error) throw error;
       }
 
       setIsSubscribed(true);
+      toast.success('Push notifications enabled!');
       return true;
     } catch (error) {
       console.error('Failed to subscribe:', error);
+      toast.error('Failed to enable notifications');
       return false;
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const unsubscribe = async (): Promise<boolean> => {
+    setIsLoading(true);
     try {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
       
       if (subscription) {
         await subscription.unsubscribe();
-        // Remove from server database
+        
+        await supabase.functions.invoke('push-notifications', {
+          body: {
+            action: 'unsubscribe',
+            subscription: { endpoint: subscription.endpoint },
+          },
+        });
       }
 
       setIsSubscribed(false);
+      toast.success('Push notifications disabled');
       return true;
     } catch (error) {
       console.error('Failed to unsubscribe:', error);
       return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const markAsRead = async (notificationId: string): Promise<void> => {
+    try {
+      await supabase
+        .from('notification_history')
+        .update({ is_read: true, read_at: new Date().toISOString() })
+        .eq('id', notificationId);
+
+      setNotifications(prev =>
+        prev.map(n => n.id === notificationId ? { ...n, is_read: true } : n)
+      );
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error('Error marking as read:', error);
+    }
+  };
+
+  const markAllAsRead = async (): Promise<void> => {
+    if (!user) return;
+
+    try {
+      await supabase
+        .from('notification_history')
+        .update({ is_read: true, read_at: new Date().toISOString() })
+        .eq('user_id', user.id)
+        .eq('is_read', false);
+
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      setUnreadCount(0);
+      toast.success('All notifications marked as read');
+    } catch (error) {
+      console.error('Error marking all as read:', error);
     }
   };
 
@@ -170,11 +339,10 @@ export const usePushNotifications = () => {
 
     try {
       const registration = await navigator.serviceWorker.ready;
-      // Filter out non-standard options for TypeScript
       const { vibrate, actions, ...standardOptions } = options || {};
       await registration.showNotification(title, {
-        icon: '/icon-192x192.png',
-        badge: '/badge-72x72.png',
+        icon: '/icon-192.png',
+        badge: '/icon-192.png',
         ...standardOptions,
       } as NotificationOptions);
     } catch (error) {
@@ -244,12 +412,19 @@ export const usePushNotifications = () => {
   return {
     isSupported,
     isSubscribed,
+    isLoading,
     permission,
     preferences,
+    notifications,
+    unreadCount,
     requestPermission,
     subscribe,
     unsubscribe,
     savePreferences,
+    updatePreferences,
+    loadNotifications,
+    markAsRead,
+    markAllAsRead,
     showLocalNotification,
     notifyPriceDrop,
     notifyNewMatch,
