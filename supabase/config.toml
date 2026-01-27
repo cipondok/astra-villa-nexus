@@ -102,3 +102,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.deepseek-ai]
     verify_jwt = false
+
+  [functions.ai-content-generator]
+    verify_jwt = false

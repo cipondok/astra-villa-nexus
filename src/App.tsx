@@ -101,6 +101,7 @@ const WNIPage = lazy(() => import('@/pages/investor/WNIPage'));
 const WNAPage = lazy(() => import('@/pages/investor/WNAPage'));
 const VerificationCenter = lazy(() => import('@/pages/VerificationCenter'));
 const CommunityHub = lazy(() => import('@/pages/CommunityHub'));
+const AIContentGenerator = lazy(() => import('@/pages/AIContentGenerator'));
 
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
@@ -205,6 +206,8 @@ const AppContent = () => {
             <Route path="/investor/wna" element={<WNAPage />} />
             <Route path="/verification" element={<VerificationCenter />} />
             <Route path="/verification-center" element={<VerificationCenter />} />
+            <Route path="/ai-content-generator" element={<AIContentGenerator />} />
+            <Route path="/content-generator" element={<AIContentGenerator />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Suspense>
