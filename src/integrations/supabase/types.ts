@@ -4333,6 +4333,84 @@ export type Database = {
         }
         Relationships: []
       }
+      kyc_verifications: {
+        Row: {
+          created_at: string
+          document_expiry: string | null
+          document_image_url: string | null
+          document_number: string | null
+          document_type: string | null
+          expires_at: string | null
+          extracted_data: Json | null
+          face_match_passed: boolean | null
+          face_match_score: number | null
+          id: string
+          liveness_passed: boolean | null
+          liveness_score: number | null
+          provider: string | null
+          provider_reference_id: string | null
+          provider_response: Json | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          selfie_image_url: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          verification_type: string
+        }
+        Insert: {
+          created_at?: string
+          document_expiry?: string | null
+          document_image_url?: string | null
+          document_number?: string | null
+          document_type?: string | null
+          expires_at?: string | null
+          extracted_data?: Json | null
+          face_match_passed?: boolean | null
+          face_match_score?: number | null
+          id?: string
+          liveness_passed?: boolean | null
+          liveness_score?: number | null
+          provider?: string | null
+          provider_reference_id?: string | null
+          provider_response?: Json | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selfie_image_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          verification_type: string
+        }
+        Update: {
+          created_at?: string
+          document_expiry?: string | null
+          document_image_url?: string | null
+          document_number?: string | null
+          document_type?: string | null
+          expires_at?: string | null
+          extracted_data?: Json | null
+          face_match_passed?: boolean | null
+          face_match_score?: number | null
+          id?: string
+          liveness_passed?: boolean | null
+          liveness_score?: number | null
+          provider?: string | null
+          provider_reference_id?: string | null
+          provider_response?: Json | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selfie_image_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          verification_type?: string
+        }
+        Relationships: []
+      }
       leaderboard_snapshots: {
         Row: {
           area: string | null
@@ -14275,6 +14353,7 @@ export type Database = {
         Args: { p_user_id?: string }
         Returns: Json
       }
+      get_user_kyc_level: { Args: { p_user_id: string }; Returns: string }
       get_user_role: {
         Args: { p_user_id: string }
         Returns: Database["public"]["Enums"]["user_role"]
