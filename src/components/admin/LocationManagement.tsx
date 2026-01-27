@@ -122,7 +122,8 @@ const LocationManagement = () => {
     is_active: true
   });
 
-  // Fetch locations
+  // Fetch locations - Indonesia has ~83,000+ kelurahan/desa (level 4)
+  // Use higher limit to ensure all subdistricts are fetched
   const { data: locations = [], isLoading, error } = useQuery({
     queryKey: ['locations', searchTerm, selectedProvince, selectedCity],
     queryFn: async () => {
@@ -132,7 +133,8 @@ const LocationManagement = () => {
         .order('province_name', { ascending: true })
         .order('city_name', { ascending: true })
         .order('district_name', { ascending: true })
-        .order('subdistrict_name', { ascending: true });
+        .order('subdistrict_name', { ascending: true })
+        .limit(100000); // Increase limit for Indonesian location data (83K+ subdistricts)
 
       if (searchTerm) {
         query = query.or(`province_name.ilike.%${searchTerm}%,city_name.ilike.%${searchTerm}%,district_name.ilike.%${searchTerm}%,subdistrict_name.ilike.%${searchTerm}%,area_name.ilike.%${searchTerm}%`);
