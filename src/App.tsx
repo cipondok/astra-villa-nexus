@@ -31,6 +31,7 @@ import LoadingProgressPopup from '@/components/ui/LoadingProgressPopup';
 import NewArrivalsPopup from '@/components/ui/NewArrivalsPopup';
 import SessionExpirationHandler from '@/components/SessionExpirationHandler';
 import AuthNotificationHandler from '@/components/AuthNotificationHandler';
+import OnboardingHandler from '@/components/OnboardingHandler';
 
 // Critical pages - load immediately
 import Index from '@/pages/Index';
@@ -262,6 +263,7 @@ function App() {
                             <LoadingProgressPopup />
                             <SessionExpirationHandler />
                             <AuthNotificationHandler />
+                            <OnboardingHandler />
                           </PropertyComparisonProvider>
                         </NotificationProvider>
                       </AuthProvider>
