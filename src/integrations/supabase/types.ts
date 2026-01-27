@@ -1577,6 +1577,98 @@ export type Database = {
         }
         Relationships: []
       }
+      business_partners: {
+        Row: {
+          business_name: string
+          business_type: string
+          campaign_id: string | null
+          co_marketing_approved: boolean | null
+          commission_rate: number | null
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string | null
+          customer_rating: number | null
+          featured_on_platform: boolean | null
+          id: string
+          lead_cost: number | null
+          leads_converted: number | null
+          leads_received: number | null
+          logo_url: string | null
+          marketing_materials: Json | null
+          partnership_tier: string | null
+          revenue_generated: number | null
+          review_count: number | null
+          service_areas: Json | null
+          status: string | null
+          updated_at: string | null
+          verified_at: string | null
+          website_url: string | null
+        }
+        Insert: {
+          business_name: string
+          business_type: string
+          campaign_id?: string | null
+          co_marketing_approved?: boolean | null
+          commission_rate?: number | null
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string | null
+          customer_rating?: number | null
+          featured_on_platform?: boolean | null
+          id?: string
+          lead_cost?: number | null
+          leads_converted?: number | null
+          leads_received?: number | null
+          logo_url?: string | null
+          marketing_materials?: Json | null
+          partnership_tier?: string | null
+          revenue_generated?: number | null
+          review_count?: number | null
+          service_areas?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          verified_at?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          business_name?: string
+          business_type?: string
+          campaign_id?: string | null
+          co_marketing_approved?: boolean | null
+          commission_rate?: number | null
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string | null
+          customer_rating?: number | null
+          featured_on_platform?: boolean | null
+          id?: string
+          lead_cost?: number | null
+          leads_converted?: number | null
+          leads_received?: number | null
+          logo_url?: string | null
+          marketing_materials?: Json | null
+          partnership_tier?: string | null
+          revenue_generated?: number | null
+          review_count?: number | null
+          service_areas?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          verified_at?: string | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_partners_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "partner_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       carousel_settings: {
         Row: {
           auto_scroll: boolean | null
@@ -5171,6 +5263,140 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_campaigns: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean | null
+          marketing_budget: number | null
+          name: string
+          partner_incentive_budget: number | null
+          signed_partners: number | null
+          slug: string
+          start_date: string
+          target_partner_types: Json | null
+          target_partners: number | null
+          total_leads_generated: number | null
+          total_revenue_generated: number | null
+          updated_at: string | null
+          value_proposition: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          marketing_budget?: number | null
+          name: string
+          partner_incentive_budget?: number | null
+          signed_partners?: number | null
+          slug: string
+          start_date: string
+          target_partner_types?: Json | null
+          target_partners?: number | null
+          total_leads_generated?: number | null
+          total_revenue_generated?: number | null
+          updated_at?: string | null
+          value_proposition?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          marketing_budget?: number | null
+          name?: string
+          partner_incentive_budget?: number | null
+          signed_partners?: number | null
+          slug?: string
+          start_date?: string
+          target_partner_types?: Json | null
+          target_partners?: number | null
+          total_leads_generated?: number | null
+          total_revenue_generated?: number | null
+          updated_at?: string | null
+          value_proposition?: Json | null
+        }
+        Relationships: []
+      }
+      partner_leads: {
+        Row: {
+          budget_range: string | null
+          contact_email: string | null
+          contact_name: string
+          contact_phone: string | null
+          conversion_value: number | null
+          created_at: string | null
+          id: string
+          lead_source: string | null
+          lead_type: string
+          notes: string | null
+          partner_id: string | null
+          partner_response_time: number | null
+          preferred_contact_method: string | null
+          property_id: string | null
+          service_needed: string | null
+          status: string | null
+          timeline: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          budget_range?: string | null
+          contact_email?: string | null
+          contact_name: string
+          contact_phone?: string | null
+          conversion_value?: number | null
+          created_at?: string | null
+          id?: string
+          lead_source?: string | null
+          lead_type: string
+          notes?: string | null
+          partner_id?: string | null
+          partner_response_time?: number | null
+          preferred_contact_method?: string | null
+          property_id?: string | null
+          service_needed?: string | null
+          status?: string | null
+          timeline?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          budget_range?: string | null
+          contact_email?: string | null
+          contact_name?: string
+          contact_phone?: string | null
+          conversion_value?: number | null
+          created_at?: string | null
+          id?: string
+          lead_source?: string | null
+          lead_type?: string
+          notes?: string | null
+          partner_id?: string | null
+          partner_response_time?: number | null
+          preferred_contact_method?: string | null
+          property_id?: string | null
+          service_needed?: string | null
+          status?: string | null
+          timeline?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_leads_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "business_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_logs: {
         Row: {
           amount: number
@@ -6996,6 +7222,158 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_campaigns: {
+        Row: {
+          actual_conversions: number | null
+          actual_referrals: number | null
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          referee_reward_amount: number
+          referee_reward_type: string
+          referrer_reward_amount: number
+          referrer_reward_type: string
+          share_channels: Json | null
+          share_message_template: string | null
+          slug: string
+          spent_budget: number | null
+          start_date: string
+          target_conversions: number | null
+          target_referrals: number | null
+          tier_bonuses: Json | null
+          total_budget: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          actual_conversions?: number | null
+          actual_referrals?: number | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          referee_reward_amount?: number
+          referee_reward_type?: string
+          referrer_reward_amount?: number
+          referrer_reward_type?: string
+          share_channels?: Json | null
+          share_message_template?: string | null
+          slug: string
+          spent_budget?: number | null
+          start_date: string
+          target_conversions?: number | null
+          target_referrals?: number | null
+          tier_bonuses?: Json | null
+          total_budget?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          actual_conversions?: number | null
+          actual_referrals?: number | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          referee_reward_amount?: number
+          referee_reward_type?: string
+          referrer_reward_amount?: number
+          referrer_reward_type?: string
+          share_channels?: Json | null
+          share_message_template?: string | null
+          slug?: string
+          spent_budget?: number | null
+          start_date?: string
+          target_conversions?: number | null
+          target_referrals?: number | null
+          tier_bonuses?: Json | null
+          total_budget?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      referral_tracking: {
+        Row: {
+          bonus_applied: number | null
+          campaign_id: string | null
+          click_count: number | null
+          converted_at: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          landing_page: string | null
+          referee_id: string | null
+          referee_reward_amount: number | null
+          referral_code: string
+          referrer_id: string
+          referrer_reward_amount: number | null
+          rewarded_at: string | null
+          share_channel: string | null
+          signed_up_at: string | null
+          status: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          bonus_applied?: number | null
+          campaign_id?: string | null
+          click_count?: number | null
+          converted_at?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          landing_page?: string | null
+          referee_id?: string | null
+          referee_reward_amount?: number | null
+          referral_code: string
+          referrer_id: string
+          referrer_reward_amount?: number | null
+          rewarded_at?: string | null
+          share_channel?: string | null
+          signed_up_at?: string | null
+          status?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          bonus_applied?: number | null
+          campaign_id?: string | null
+          click_count?: number | null
+          converted_at?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          landing_page?: string | null
+          referee_id?: string | null
+          referee_reward_amount?: number | null
+          referral_code?: string
+          referrer_id?: string
+          referrer_reward_amount?: number | null
+          rewarded_at?: string | null
+          share_channel?: string | null
+          signed_up_at?: string | null
+          status?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_tracking_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "referral_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       referrals: {
         Row: {
           affiliate_id: string
@@ -8470,6 +8848,190 @@ export type Database = {
           trend_score?: number | null
         }
         Relationships: []
+      }
+      ugc_challenges: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string
+          id: string
+          judging_criteria: Json | null
+          judging_method: string | null
+          marketing_budget: number | null
+          participation_rules: Json | null
+          prize_budget: number | null
+          prizes: Json | null
+          slug: string
+          status: string | null
+          submission_end: string
+          submission_start: string
+          theme: string
+          title: string
+          total_submissions: number | null
+          total_views: number | null
+          total_votes: number | null
+          updated_at: string | null
+          voting_end: string | null
+          voting_start: string | null
+          winners_announced: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description: string
+          id?: string
+          judging_criteria?: Json | null
+          judging_method?: string | null
+          marketing_budget?: number | null
+          participation_rules?: Json | null
+          prize_budget?: number | null
+          prizes?: Json | null
+          slug: string
+          status?: string | null
+          submission_end: string
+          submission_start: string
+          theme: string
+          title: string
+          total_submissions?: number | null
+          total_views?: number | null
+          total_votes?: number | null
+          updated_at?: string | null
+          voting_end?: string | null
+          voting_start?: string | null
+          winners_announced?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string
+          id?: string
+          judging_criteria?: Json | null
+          judging_method?: string | null
+          marketing_budget?: number | null
+          participation_rules?: Json | null
+          prize_budget?: number | null
+          prizes?: Json | null
+          slug?: string
+          status?: string | null
+          submission_end?: string
+          submission_start?: string
+          theme?: string
+          title?: string
+          total_submissions?: number | null
+          total_views?: number | null
+          total_votes?: number | null
+          updated_at?: string | null
+          voting_end?: string | null
+          voting_start?: string | null
+          winners_announced?: string | null
+        }
+        Relationships: []
+      }
+      ugc_submissions: {
+        Row: {
+          approved_at: string | null
+          challenge_id: string | null
+          comment_count: number | null
+          created_at: string | null
+          description: string
+          final_score: number | null
+          id: string
+          judge_scores: Json | null
+          location: string | null
+          media_urls: Json
+          moderation_notes: string | null
+          property_id: string | null
+          rank: number | null
+          share_count: number | null
+          status: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+          view_count: number | null
+          vote_count: number | null
+        }
+        Insert: {
+          approved_at?: string | null
+          challenge_id?: string | null
+          comment_count?: number | null
+          created_at?: string | null
+          description: string
+          final_score?: number | null
+          id?: string
+          judge_scores?: Json | null
+          location?: string | null
+          media_urls?: Json
+          moderation_notes?: string | null
+          property_id?: string | null
+          rank?: number | null
+          share_count?: number | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+          view_count?: number | null
+          vote_count?: number | null
+        }
+        Update: {
+          approved_at?: string | null
+          challenge_id?: string | null
+          comment_count?: number | null
+          created_at?: string | null
+          description?: string
+          final_score?: number | null
+          id?: string
+          judge_scores?: Json | null
+          location?: string | null
+          media_urls?: Json
+          moderation_notes?: string | null
+          property_id?: string | null
+          rank?: number | null
+          share_count?: number | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          view_count?: number | null
+          vote_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ugc_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "ugc_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ugc_votes: {
+        Row: {
+          created_at: string | null
+          id: string
+          submission_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          submission_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          submission_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ugc_votes_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "ugc_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       unified_transactions: {
         Row: {
