@@ -108,3 +108,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.property-valuation]
     verify_jwt = false
+
+  [functions.enhanced-kyc]
+    verify_jwt = false
