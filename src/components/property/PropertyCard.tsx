@@ -12,6 +12,7 @@ import { usePropertyRatings } from '@/hooks/usePropertyRatings';
 import { BaseProperty } from "@/types/property";
 import VerificationBadge from '@/components/ui/VerificationBadge';
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
+import SocialProofWidget from "./SocialProofWidget";
 
 interface PropertyCardProps {
   id: string;
@@ -203,6 +204,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               </Badge>
             </div>
           )}
+
+          {/* Social Proof Widget - Top Right Corner */}
+          <div className="absolute bottom-2 right-2">
+            <SocialProofWidget propertyId={id} variant="compact" />
+          </div>
         </div>
 
         <CardHeader>
