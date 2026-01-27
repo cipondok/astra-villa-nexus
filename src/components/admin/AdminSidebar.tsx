@@ -28,7 +28,7 @@ const categoryIcons: Record<string, LucideIcon> = {
   "transactions": DollarSign,
   "astra-token": Coins,
   "tools": Wrench,
-  "core-management": Users,
+  "core-management": Building2,
   "customer-service": Headphones,
   "vendor-management": ShoppingBag,
   "analytics-monitoring": BarChart3,
