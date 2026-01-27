@@ -13,7 +13,9 @@ import AgentTools from "./AgentTools";
 import AgentSettings from "./AgentSettings";
 import AgentNotifications from "./AgentNotifications";
 import AgentProfileProgress from "./AgentProfileProgress";
+import AgentLeaderboard from "./AgentLeaderboard";
 import RoleBasedPropertyForm from "@/components/property/RoleBasedPropertyForm";
+import QuickPropertyForm from "@/components/property/QuickPropertyForm";
 import ClientManagement from "./tools/ClientManagement";
 import BookingPaymentManager from "./BookingPaymentManager";
 import PayoutManagement from "./PayoutManagement";
@@ -271,14 +273,13 @@ const AgentOverview = () => {
         <div className="overflow-x-auto -mx-1 px-1 pb-1">
           <TabsList className="inline-flex w-max min-w-full sm:w-full h-8 sm:h-9 md:h-10 p-0.5 bg-muted/30 border border-border/50 rounded-lg gap-0.5">
             <TabsTrigger value="overview" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
-            <TabsTrigger value="add-property" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Add</TabsTrigger>
+            <TabsTrigger value="quick-add" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Quick Add</TabsTrigger>
+            <TabsTrigger value="add-property" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Full Form</TabsTrigger>
             <TabsTrigger value="my-properties" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Properties</TabsTrigger>
+            <TabsTrigger value="leaderboard" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Rankings</TabsTrigger>
             <TabsTrigger value="clients" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Clients</TabsTrigger>
-            <TabsTrigger value="analytics" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Analytics</TabsTrigger>
             <TabsTrigger value="bookings" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Bookings</TabsTrigger>
             <TabsTrigger value="payouts" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Payouts</TabsTrigger>
-            <TabsTrigger value="feedback" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Feedback</TabsTrigger>
-            <TabsTrigger value="support" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Support</TabsTrigger>
             <TabsTrigger value="tools" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Tools</TabsTrigger>
             <TabsTrigger value="settings" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
           </TabsList>
@@ -347,19 +348,41 @@ const AgentOverview = () => {
           </div>
         </TabsContent>
 
+        {/* Quick Add - Simplified 3-Step Form */}
+        <TabsContent value="quick-add" className="space-y-2">
+          <Card className="bg-card/80">
+            <CardHeader className="p-2 pb-1.5">
+              <CardTitle className="flex items-center gap-1 text-xs">
+                <PlusCircle className="h-3 w-3 text-primary" />
+                Quick Add Property
+              </CardTitle>
+              <CardDescription className="text-[9px]">3-step fast listing - Basic, Photos, Price</CardDescription>
+            </CardHeader>
+            <CardContent className="p-2 pt-0">
+              <QuickPropertyForm onComplete={() => setActiveTab('my-properties')} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Full Form - Original Multi-Step */}
         <TabsContent value="add-property" className="space-y-2">
           <Card className="bg-card/80">
             <CardHeader className="p-2 pb-1.5">
               <CardTitle className="flex items-center gap-1 text-xs">
                 <PlusCircle className="h-3 w-3 text-primary" />
-                Add New Property
+                Complete Property Form
               </CardTitle>
-              <CardDescription className="text-[9px]">Create a listing for sale or rent</CardDescription>
+              <CardDescription className="text-[9px]">Full listing with all details and features</CardDescription>
             </CardHeader>
             <CardContent className="p-2 pt-0">
               <RoleBasedPropertyForm />
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Leaderboard Tab */}
+        <TabsContent value="leaderboard" className="space-y-2">
+          <AgentLeaderboard />
         </TabsContent>
 
         <TabsContent value="my-properties" className="space-y-2">
