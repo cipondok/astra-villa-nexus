@@ -19,6 +19,7 @@ import QuickPropertyForm from "@/components/property/QuickPropertyForm";
 import ClientManagement from "./tools/ClientManagement";
 import BookingPaymentManager from "./BookingPaymentManager";
 import PayoutManagement from "./PayoutManagement";
+import { AgentAnalyticsDashboard } from "@/components/agent-analytics";
 import { 
   Building, 
   PlusCircle, 
@@ -50,7 +51,8 @@ import {
   Send,
   FileText,
   Settings,
-  Trophy
+  Trophy,
+  Brain
 } from "lucide-react";
 
 const AgentOverview = () => {
@@ -273,6 +275,10 @@ const AgentOverview = () => {
         <div className="overflow-x-auto -mx-1 px-1 pb-1">
           <TabsList className="inline-flex w-max min-w-full sm:w-full h-8 sm:h-9 md:h-10 p-0.5 bg-muted/30 border border-border/50 rounded-lg gap-0.5">
             <TabsTrigger value="overview" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
+            <TabsTrigger value="analytics" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex items-center gap-1">
+              <Brain className="h-3 w-3" />
+              Analytics
+            </TabsTrigger>
             <TabsTrigger value="quick-add" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Quick Add</TabsTrigger>
             <TabsTrigger value="add-property" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Full Form</TabsTrigger>
             <TabsTrigger value="my-properties" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Properties</TabsTrigger>
@@ -346,6 +352,11 @@ const AgentOverview = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        {/* Analytics Dashboard - Comprehensive Agent Analytics */}
+        <TabsContent value="analytics" className="space-y-2">
+          <AgentAnalyticsDashboard />
         </TabsContent>
 
         {/* Quick Add - Simplified 3-Step Form */}
