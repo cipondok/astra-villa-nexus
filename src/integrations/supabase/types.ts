@@ -7063,6 +7063,75 @@ export type Database = {
         }
         Relationships: []
       }
+      property_valuations: {
+        Row: {
+          comparable_properties: Json | null
+          confidence_score: number | null
+          created_at: string
+          currency: string
+          estimated_value: number
+          id: string
+          market_trend: string | null
+          price_range_high: number | null
+          price_range_low: number | null
+          property_id: string | null
+          requested_by: string | null
+          updated_at: string
+          valid_until: string | null
+          valuation_factors: Json | null
+          valuation_method: string
+        }
+        Insert: {
+          comparable_properties?: Json | null
+          confidence_score?: number | null
+          created_at?: string
+          currency?: string
+          estimated_value: number
+          id?: string
+          market_trend?: string | null
+          price_range_high?: number | null
+          price_range_low?: number | null
+          property_id?: string | null
+          requested_by?: string | null
+          updated_at?: string
+          valid_until?: string | null
+          valuation_factors?: Json | null
+          valuation_method?: string
+        }
+        Update: {
+          comparable_properties?: Json | null
+          confidence_score?: number | null
+          created_at?: string
+          currency?: string
+          estimated_value?: number
+          id?: string
+          market_trend?: string | null
+          price_range_high?: number | null
+          price_range_low?: number | null
+          property_id?: string | null
+          requested_by?: string | null
+          updated_at?: string
+          valid_until?: string | null
+          valuation_factors?: Json | null
+          valuation_method?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_valuations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_valuations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_watermark_settings: {
         Row: {
           applies_to_all: boolean | null
