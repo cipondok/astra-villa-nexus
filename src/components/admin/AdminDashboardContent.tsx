@@ -1,79 +1,81 @@
 
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Home, ChevronRight } from "lucide-react";
+import { ArrowLeft, Home, ChevronRight, Loader2, AlertCircle } from "lucide-react";
 import { AdminCategoryTabs } from "./AdminCategoryTabs";
-import AdminOverview from "./AdminOverview";
-import EnhancedUserManagement from "./EnhancedUserManagement";
-import PropertyManagementAdvanced from "./PropertyManagementAdvanced";
-import AdminPropertyManagement from "./AdminPropertyManagement";
-import SystemSettings from "./SystemSettings";
-import WebTrafficAnalytics from "./WebTrafficAnalytics";
-import AIBotManagement from "./AIBotManagement";
-import FeedbackManagement from "./FeedbackManagement";
-import CustomerServiceCenter from "./CustomerServiceCenter";
-import ContactManagement from "./ContactManagement";
-import ContentManagement from "./ContentManagement";
-import SearchFiltersManagement from "./SearchFiltersManagement";
-import BillingManagement from "./BillingManagement";
-import DatabaseTableManagement from "./DatabaseTableManagement";
-import SecurityMonitoringDashboard from "./SecurityMonitoringDashboard";
-import PerformanceMonitor from "../PerformanceMonitor";
-import ReportExportFunction from "./ReportExportFunction";
-import PropertyComparison from "../PropertyComparison";
-import EnhancedSearchFilters from "../EnhancedSearchFilters";
-import SystemReports from "./SystemReports";
-import DailyCheckInManagement from "./DailyCheckInManagement";
-import ASTRATokenHub from "./ASTRATokenHub";
-import ToolsManagementDashboard from "./ToolsManagementDashboard";
-import SEOSettings from "./SEOSettings";
-import ProjectDiagnosticSystem from "./ProjectDiagnosticSystem";
-import IndonesianPaymentMerchantConfig from "./IndonesianPaymentMerchantConfig";
-import VendorsHubContent from "./VendorsHubContent";
-import EnhancedVendorAgentControl from "./EnhancedVendorAgentControl";
-import AuthorizationMonitoringSystem from "./AuthorizationMonitoringSystem";
-import AdminAlertSystem from "./AdminAlertSystem";
-import CustomerServiceControlPanel from "./CustomerServiceControlPanel";
-import DatabaseErrorManager from "./cs-tools/DatabaseErrorManager";
-import Property3DViewSettings from "./Property3DViewSettings";
-import PropertySurveyManagement from "./PropertySurveyManagement";
-import EmailSettings from "@/pages/admin/EmailSettings";
-import LocationManagement from "./LocationManagement";
-import APISettingsManagement from "./APISettingsManagement";
-import AIPropertyAssistant from "./AIPropertyAssistant";
-import BookingPaymentSettings from "./BookingPaymentSettings";
-import BPJSAPISettings from "./BPJSAPISettings";
-import AdminKYCReview from "./AdminKYCReview";
-import { KYCAnalyticsDashboard } from "./KYCAnalyticsDashboard";
-import { BulkKYCOperations } from "./BulkKYCOperations";
-import { DocumentOCR } from "./DocumentOCR";
-import ErrorLogsTable from "./ErrorLogsTable";
-import ErrorMonitoringDashboard from "./ErrorMonitoringDashboard";
-import UserExperienceTips from "./UserExperienceTips";
-import { AlgorithmDashboard } from "./AlgorithmDashboard";
-import { AdminNotificationsCenter } from "./AdminNotificationsCenter";
-import LaunchReadinessDashboard from "./LaunchReadinessDashboard";
-import { AIFeedbackAnalytics } from "./AIFeedbackAnalytics";
-import HomepageSliderSettings from "./HomepageSliderSettings";
-import CarouselSettingsManager from "./CarouselSettingsManager";
-import ProjectMapVisualization from "./ProjectMapVisualization";
-import CookieConsentSettings from "./CookieConsentSettings";
-import CaptchaSettings from "./CaptchaSettings";
-import CloudflareSettings from "./CloudflareSettings";
-import PropertyFiltersManagement from "./PropertyFiltersManagement";
-import SocialMediaSettings from "./SocialMediaSettings";
-import VerificationManagement from "./VerificationManagement";
-import UserUpgradeApplications from "./UserUpgradeApplications";
-import UserLevelManagement from "./UserLevelManagement";
-import { BugErrorDashboard } from "./diagnostics/BugErrorDashboard";
-import VisitorAnalytics from "./VisitorAnalytics";
-import TestingDashboard from "./TestingDashboard";
-import VIPAnalyticsDashboard from "./VIPAnalyticsDashboard";
-import BookingManagement from "./BookingManagement";
-import TransactionManagementTabs from "./TransactionManagementTabs";
-import LiveChatManagement from "./LiveChatManagement";
-import InvestorSettingsHub from "./InvestorSettingsHub";
+
+// Lazy load all admin components to prevent module import failures
+const AdminOverview = lazy(() => import("./AdminOverview"));
+const EnhancedUserManagement = lazy(() => import("./EnhancedUserManagement"));
+const PropertyManagementAdvanced = lazy(() => import("./PropertyManagementAdvanced"));
+const AdminPropertyManagement = lazy(() => import("./AdminPropertyManagement"));
+const SystemSettings = lazy(() => import("./SystemSettings"));
+const WebTrafficAnalytics = lazy(() => import("./WebTrafficAnalytics"));
+const AIBotManagement = lazy(() => import("./AIBotManagement"));
+const FeedbackManagement = lazy(() => import("./FeedbackManagement"));
+const CustomerServiceCenter = lazy(() => import("./CustomerServiceCenter"));
+const ContactManagement = lazy(() => import("./ContactManagement"));
+const ContentManagement = lazy(() => import("./ContentManagement"));
+const SearchFiltersManagement = lazy(() => import("./SearchFiltersManagement"));
+const BillingManagement = lazy(() => import("./BillingManagement"));
+const DatabaseTableManagement = lazy(() => import("./DatabaseTableManagement"));
+const SecurityMonitoringDashboard = lazy(() => import("./SecurityMonitoringDashboard"));
+const PerformanceMonitor = lazy(() => import("../PerformanceMonitor"));
+const ReportExportFunction = lazy(() => import("./ReportExportFunction"));
+const PropertyComparison = lazy(() => import("../PropertyComparison"));
+const EnhancedSearchFilters = lazy(() => import("../EnhancedSearchFilters"));
+const SystemReports = lazy(() => import("./SystemReports"));
+const DailyCheckInManagement = lazy(() => import("./DailyCheckInManagement"));
+const ASTRATokenHub = lazy(() => import("./ASTRATokenHub"));
+const ToolsManagementDashboard = lazy(() => import("./ToolsManagementDashboard"));
+const SEOSettings = lazy(() => import("./SEOSettings"));
+const ProjectDiagnosticSystem = lazy(() => import("./ProjectDiagnosticSystem"));
+const IndonesianPaymentMerchantConfig = lazy(() => import("./IndonesianPaymentMerchantConfig"));
+const VendorsHubContent = lazy(() => import("./VendorsHubContent"));
+const EnhancedVendorAgentControl = lazy(() => import("./EnhancedVendorAgentControl"));
+const AuthorizationMonitoringSystem = lazy(() => import("./AuthorizationMonitoringSystem"));
+const AdminAlertSystem = lazy(() => import("./AdminAlertSystem"));
+const CustomerServiceControlPanel = lazy(() => import("./CustomerServiceControlPanel"));
+const DatabaseErrorManager = lazy(() => import("./cs-tools/DatabaseErrorManager"));
+const Property3DViewSettings = lazy(() => import("./Property3DViewSettings"));
+const PropertySurveyManagement = lazy(() => import("./PropertySurveyManagement"));
+const EmailSettings = lazy(() => import("@/pages/admin/EmailSettings"));
+const LocationManagement = lazy(() => import("./LocationManagement"));
+const APISettingsManagement = lazy(() => import("./APISettingsManagement"));
+const AIPropertyAssistant = lazy(() => import("./AIPropertyAssistant"));
+const BookingPaymentSettings = lazy(() => import("./BookingPaymentSettings"));
+const BPJSAPISettings = lazy(() => import("./BPJSAPISettings"));
+const AdminKYCReview = lazy(() => import("./AdminKYCReview"));
+const KYCAnalyticsDashboard = lazy(() => import("./KYCAnalyticsDashboard").then(m => ({ default: m.KYCAnalyticsDashboard })));
+const BulkKYCOperations = lazy(() => import("./BulkKYCOperations").then(m => ({ default: m.BulkKYCOperations })));
+const DocumentOCR = lazy(() => import("./DocumentOCR").then(m => ({ default: m.DocumentOCR })));
+const ErrorLogsTable = lazy(() => import("./ErrorLogsTable"));
+const ErrorMonitoringDashboard = lazy(() => import("./ErrorMonitoringDashboard"));
+const UserExperienceTips = lazy(() => import("./UserExperienceTips"));
+const AlgorithmDashboard = lazy(() => import("./AlgorithmDashboard").then(m => ({ default: m.AlgorithmDashboard })));
+const AdminNotificationsCenter = lazy(() => import("./AdminNotificationsCenter").then(m => ({ default: m.AdminNotificationsCenter })));
+const LaunchReadinessDashboard = lazy(() => import("./LaunchReadinessDashboard"));
+const AIFeedbackAnalytics = lazy(() => import("./AIFeedbackAnalytics").then(m => ({ default: m.AIFeedbackAnalytics })));
+const HomepageSliderSettings = lazy(() => import("./HomepageSliderSettings"));
+const CarouselSettingsManager = lazy(() => import("./CarouselSettingsManager"));
+const ProjectMapVisualization = lazy(() => import("./ProjectMapVisualization"));
+const CookieConsentSettings = lazy(() => import("./CookieConsentSettings"));
+const CaptchaSettings = lazy(() => import("./CaptchaSettings"));
+const CloudflareSettings = lazy(() => import("./CloudflareSettings"));
+const PropertyFiltersManagement = lazy(() => import("./PropertyFiltersManagement"));
+const SocialMediaSettings = lazy(() => import("./SocialMediaSettings"));
+const VerificationManagement = lazy(() => import("./VerificationManagement"));
+const UserUpgradeApplications = lazy(() => import("./UserUpgradeApplications"));
+const UserLevelManagement = lazy(() => import("./UserLevelManagement"));
+const BugErrorDashboard = lazy(() => import("./diagnostics/BugErrorDashboard").then(m => ({ default: m.BugErrorDashboard })));
+const VisitorAnalytics = lazy(() => import("./VisitorAnalytics"));
+const TestingDashboard = lazy(() => import("./TestingDashboard"));
+const VIPAnalyticsDashboard = lazy(() => import("./VIPAnalyticsDashboard"));
+const BookingManagement = lazy(() => import("./BookingManagement"));
+const TransactionManagementTabs = lazy(() => import("./TransactionManagementTabs"));
+const LiveChatManagement = lazy(() => import("./LiveChatManagement"));
+const InvestorSettingsHub = lazy(() => import("./InvestorSettingsHub"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -161,6 +163,65 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "wni-mortgage-settings": { label: "WNI Mortgage Settings", category: "Investor Management" },
   "investor-analytics": { label: "Investor Analytics", category: "Investor Management" },
 };
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center min-h-[400px]">
+    <div className="flex flex-col items-center gap-3">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <p className="text-sm text-muted-foreground">Loading section...</p>
+    </div>
+  </div>
+);
+
+// Error fallback for lazy components
+class SectionErrorBoundary extends React.Component<
+  { children: React.ReactNode; onRetry?: () => void },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: React.ReactNode; onRetry?: () => void }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Admin section error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex flex-col items-center gap-4 p-6 bg-destructive/5 rounded-lg border border-destructive/20">
+            <AlertCircle className="h-10 w-10 text-destructive" />
+            <div className="text-center">
+              <h3 className="font-semibold text-lg mb-1">Failed to load section</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                {this.state.error?.message || 'An error occurred while loading this section'}
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  this.setState({ hasError: false, error: undefined });
+                  window.location.reload();
+                }}
+              >
+                Reload Page
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboardContentProps) => {
   const isOverview = activeSection === "overview";
@@ -352,52 +413,51 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
             {/* Breadcrumb Separator */}
             <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground shrink-0" />
 
-            {/* Home Link */}
-            <button
+            {/* Home Icon */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-5 w-5 md:h-6 md:w-6 shrink-0 hover:bg-primary/10"
               onClick={handleBackToDashboard}
-              className="flex items-center gap-0.5 md:gap-1 text-[9px] md:text-[10px] text-muted-foreground hover:text-primary transition-colors shrink-0"
             >
               <Home className="h-2.5 w-2.5 md:h-3 md:w-3" />
-              <span className="hidden xs:inline">Dashboard</span>
-            </button>
+            </Button>
 
             <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground shrink-0" />
 
             {/* Category Badge */}
             {currentSection.category && (
               <>
-                <Badge variant="outline" className="text-[8px] md:text-[9px] h-4 md:h-5 px-1 md:px-1.5 border-border/50 bg-background/50 shrink-0">
+                <Badge 
+                  variant="outline" 
+                  className="text-[8px] md:text-[9px] px-1 md:px-1.5 py-0.5 bg-secondary/50 border-secondary shrink-0"
+                >
                   {currentSection.category}
                 </Badge>
-                <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground shrink-0 hidden sm:block" />
+                <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground shrink-0" />
               </>
             )}
 
-            {/* Active Section Indicator */}
-            <div className="flex items-center gap-1 md:gap-2 shrink-0">
-              <div className="flex items-center gap-1 md:gap-1.5 px-1.5 md:px-2 py-0.5 md:py-1 rounded-md bg-primary/10 border border-primary/30">
-                <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-[9px] md:text-[10px] font-semibold text-primary truncate max-w-[80px] md:max-w-none">
-                  {currentSection.label}
-                </span>
-              </div>
-              <Badge variant="secondary" className="text-[7px] md:text-[8px] h-3.5 md:h-4 px-1 md:px-1.5 bg-green-500/10 text-green-600 border-green-500/30 hidden sm:flex">
-                Active
-              </Badge>
-            </div>
+            {/* Section Title */}
+            <span className="text-[10px] md:text-xs font-medium text-foreground shrink-0">
+              {currentSection.label}
+            </span>
           </div>
         </div>
       )}
 
-      {/* Category Tabs - Shows all related links for current category */}
-      {!isOverview && onSectionChange && (
-        <AdminCategoryTabs 
-          activeSection={activeSection} 
-          onSectionChange={onSectionChange} 
-        />
-      )}
-
-      {renderContent()}
+      {/* Main Content Area */}
+      <div className="animate-in fade-in duration-300">
+        {isOverview ? (
+          <AdminCategoryTabs activeSection={activeSection} onSectionChange={onSectionChange} />
+        ) : (
+          <SectionErrorBoundary>
+            <Suspense fallback={<LoadingFallback />}>
+              {renderContent()}
+            </Suspense>
+          </SectionErrorBoundary>
+        )}
+      </div>
     </div>
   );
 };
