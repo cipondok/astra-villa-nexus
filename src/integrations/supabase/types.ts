@@ -1379,6 +1379,48 @@ export type Database = {
           },
         ]
       }
+      badge_definitions: {
+        Row: {
+          badge_key: string
+          category: string
+          created_at: string | null
+          criteria: Json
+          description: string
+          display_order: number | null
+          icon: string
+          id: string
+          is_active: boolean | null
+          name: string
+          xp_reward: number | null
+        }
+        Insert: {
+          badge_key: string
+          category: string
+          created_at?: string | null
+          criteria: Json
+          description: string
+          display_order?: number | null
+          icon: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          xp_reward?: number | null
+        }
+        Update: {
+          badge_key?: string
+          category?: string
+          created_at?: string | null
+          criteria?: Json
+          description?: string
+          display_order?: number | null
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          xp_reward?: number | null
+        }
+        Relationships: []
+      }
       billing_plans: {
         Row: {
           billing_cycle: string | null
@@ -3125,6 +3167,36 @@ export type Database = {
           },
         ]
       }
+      gamification_config: {
+        Row: {
+          config_key: string
+          config_value: Json
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          config_key: string
+          config_value?: Json
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          config_key?: string
+          config_value?: Json
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       generated_functions: {
         Row: {
           complexity: string | null
@@ -3746,6 +3818,39 @@ export type Database = {
           ip_address?: unknown
           is_permanent?: boolean | null
           reason?: string | null
+        }
+        Relationships: []
+      }
+      leaderboard_snapshots: {
+        Row: {
+          area: string | null
+          category: string
+          created_at: string | null
+          id: string
+          period_end: string
+          period_start: string
+          period_type: string
+          rankings: Json
+        }
+        Insert: {
+          area?: string | null
+          category: string
+          created_at?: string | null
+          id?: string
+          period_end: string
+          period_start: string
+          period_type: string
+          rankings: Json
+        }
+        Update: {
+          area?: string | null
+          category?: string
+          created_at?: string | null
+          id?: string
+          period_end?: string
+          period_start?: string
+          period_type?: string
+          rankings?: Json
         }
         Relationships: []
       }
@@ -7561,6 +7666,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_achievements: {
+        Row: {
+          achievement_data: Json
+          achievement_type: string
+          created_at: string | null
+          id: string
+          is_shared: boolean | null
+          share_image_url: string | null
+          share_text: string | null
+          shared_at: string | null
+          user_id: string
+        }
+        Insert: {
+          achievement_data: Json
+          achievement_type: string
+          created_at?: string | null
+          id?: string
+          is_shared?: boolean | null
+          share_image_url?: string | null
+          share_text?: string | null
+          shared_at?: string | null
+          user_id: string
+        }
+        Update: {
+          achievement_data?: Json
+          achievement_type?: string
+          created_at?: string | null
+          id?: string
+          is_shared?: boolean | null
+          share_image_url?: string | null
+          share_text?: string | null
+          shared_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_activity_logs: {
         Row: {
           activity_type: string
@@ -7601,6 +7742,41 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string | null
+          id: string
+          is_displayed: boolean | null
+          is_new: boolean | null
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string | null
+          id?: string
+          is_displayed?: boolean | null
+          is_new?: boolean | null
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string | null
+          id?: string
+          is_displayed?: boolean | null
+          is_new?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badge_definitions"
             referencedColumns: ["id"]
           },
         ]
@@ -7866,6 +8042,72 @@ export type Database = {
           saved_value?: Json
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_gamification_stats: {
+        Row: {
+          created_at: string | null
+          current_level: number | null
+          current_streak: number | null
+          id: string
+          inquiries_received: number | null
+          inquiries_sent: number | null
+          last_login_date: string | null
+          longest_streak: number | null
+          properties_listed: number | null
+          properties_saved: number | null
+          properties_shared: number | null
+          referrals_completed: number | null
+          reviews_written: number | null
+          total_logins: number | null
+          total_xp: number | null
+          updated_at: string | null
+          user_id: string
+          user_type: string | null
+          viewings_booked: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_level?: number | null
+          current_streak?: number | null
+          id?: string
+          inquiries_received?: number | null
+          inquiries_sent?: number | null
+          last_login_date?: string | null
+          longest_streak?: number | null
+          properties_listed?: number | null
+          properties_saved?: number | null
+          properties_shared?: number | null
+          referrals_completed?: number | null
+          reviews_written?: number | null
+          total_logins?: number | null
+          total_xp?: number | null
+          updated_at?: string | null
+          user_id: string
+          user_type?: string | null
+          viewings_booked?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          current_level?: number | null
+          current_streak?: number | null
+          id?: string
+          inquiries_received?: number | null
+          inquiries_sent?: number | null
+          last_login_date?: string | null
+          longest_streak?: number | null
+          properties_listed?: number | null
+          properties_saved?: number | null
+          properties_shared?: number | null
+          referrals_completed?: number | null
+          reviews_written?: number | null
+          total_logins?: number | null
+          total_xp?: number | null
+          updated_at?: string | null
+          user_id?: string
+          user_type?: string | null
+          viewings_booked?: number | null
         }
         Relationships: []
       }
@@ -8354,6 +8596,42 @@ export type Database = {
           location_data?: Json | null
           os?: string | null
           session_token?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_status_symbols: {
+        Row: {
+          created_at: string | null
+          flair_badges: string[] | null
+          id: string
+          profile_frame: string | null
+          show_level: boolean | null
+          show_xp: boolean | null
+          title_override: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          flair_badges?: string[] | null
+          id?: string
+          profile_frame?: string | null
+          show_level?: boolean | null
+          show_xp?: boolean | null
+          title_override?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          flair_badges?: string[] | null
+          id?: string
+          profile_frame?: string | null
+          show_level?: boolean | null
+          show_xp?: boolean | null
+          title_override?: string | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -11195,6 +11473,39 @@ export type Database = {
         }
         Relationships: []
       }
+      xp_transactions: {
+        Row: {
+          action_type: string
+          created_at: string | null
+          description: string | null
+          id: string
+          reference_id: string | null
+          reference_type: string | null
+          user_id: string
+          xp_amount: number
+        }
+        Insert: {
+          action_type: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          user_id: string
+          xp_amount: number
+        }
+        Update: {
+          action_type?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          user_id?: string
+          xp_amount?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       ai_reaction_analytics: {
@@ -11382,6 +11693,22 @@ export type Database = {
         Returns: undefined
       }
       aggregate_filter_analytics: { Args: never; Returns: undefined }
+      award_badge: {
+        Args: { p_badge_key: string; p_user_id: string }
+        Returns: Json
+      }
+      award_xp: {
+        Args: {
+          p_action_type: string
+          p_description?: string
+          p_reference_id?: string
+          p_reference_type?: string
+          p_user_id: string
+          p_xp_amount: number
+        }
+        Returns: Json
+      }
+      calculate_level_from_xp: { Args: { p_xp: number }; Returns: number }
       can_access_financial_reward_config_strict: {
         Args: { operation?: string }
         Returns: boolean
@@ -12293,6 +12620,7 @@ export type Database = {
         Args: { data_type: string; data_value: string }
         Returns: string
       }
+      process_daily_login: { Args: { p_user_id: string }; Returns: Json }
       reset_admin_password: { Args: { new_password: string }; Returns: string }
       resolve_database_error: {
         Args: {

@@ -32,6 +32,7 @@ import NewArrivalsPopup from '@/components/ui/NewArrivalsPopup';
 import SessionExpirationHandler from '@/components/SessionExpirationHandler';
 import AuthNotificationHandler from '@/components/AuthNotificationHandler';
 import OnboardingHandler from '@/components/OnboardingHandler';
+import { DailyLoginReward } from '@/components/gamification';
 
 // Critical pages - load immediately
 import Index from '@/pages/Index';
@@ -264,6 +265,7 @@ function App() {
                             <SessionExpirationHandler />
                             <AuthNotificationHandler />
                             <OnboardingHandler />
+                            <DailyLoginReward autoShow />
                           </PropertyComparisonProvider>
                         </NotificationProvider>
                       </AuthProvider>
