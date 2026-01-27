@@ -155,7 +155,7 @@ export const navigationSections = {
     {
       key: "property-management-hub",
       label: "Property Management Hub",
-      icon: LayoutDashboard,
+      icon: Building2,
       description: "Centralized property management dashboard"
     },
     {
