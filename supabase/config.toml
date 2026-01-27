@@ -90,3 +90,9 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.sync-indonesia-locations]
     verify_jwt = false
+
+  [functions.smart-recommendation-engine]
+    verify_jwt = false
+
+  [functions.property-listing-assistant]
+    verify_jwt = false
