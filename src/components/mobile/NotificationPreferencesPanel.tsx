@@ -179,7 +179,7 @@ const NotificationPreferencesPanel: React.FC = () => {
             </div>
             
             <Switch
-              checked={preferences[type.key]}
+              checked={Boolean(preferences[type.key])}
               onCheckedChange={(checked) => handleToggle(type.key, checked)}
               disabled={!isSubscribed}
             />
