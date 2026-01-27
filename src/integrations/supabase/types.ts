@@ -3854,6 +3854,48 @@ export type Database = {
         }
         Relationships: []
       }
+      learned_preferences: {
+        Row: {
+          confidence_score: number | null
+          created_at: string | null
+          decay_factor: number | null
+          id: string
+          last_reinforced_at: string | null
+          pattern_key: string
+          pattern_type: string
+          pattern_value: Json
+          sample_count: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          confidence_score?: number | null
+          created_at?: string | null
+          decay_factor?: number | null
+          id?: string
+          last_reinforced_at?: string | null
+          pattern_key: string
+          pattern_type: string
+          pattern_value: Json
+          sample_count?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          confidence_score?: number | null
+          created_at?: string | null
+          decay_factor?: number | null
+          id?: string
+          last_reinforced_at?: string | null
+          pattern_key?: string
+          pattern_type?: string
+          pattern_value?: Json
+          sample_count?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       live_chat_messages: {
         Row: {
           content: string
@@ -4206,6 +4248,45 @@ export type Database = {
           success?: boolean
           user_agent?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      market_trend_factors: {
+        Row: {
+          avg_days_on_market: number | null
+          created_at: string | null
+          demand_score: number | null
+          id: string
+          location: string
+          period_end: string
+          period_start: string
+          price_trend: number | null
+          property_type: string | null
+          seasonality_factor: number | null
+        }
+        Insert: {
+          avg_days_on_market?: number | null
+          created_at?: string | null
+          demand_score?: number | null
+          id?: string
+          location: string
+          period_end: string
+          period_start: string
+          price_trend?: number | null
+          property_type?: string | null
+          seasonality_factor?: number | null
+        }
+        Update: {
+          avg_days_on_market?: number | null
+          created_at?: string | null
+          demand_score?: number | null
+          id?: string
+          location?: string
+          period_end?: string
+          period_start?: string
+          price_trend?: number | null
+          property_type?: string | null
+          seasonality_factor?: number | null
         }
         Relationships: []
       }
@@ -6184,6 +6265,54 @@ export type Database = {
         }
         Relationships: []
       }
+      recommendation_history: {
+        Row: {
+          created_at: string | null
+          discovery_reasons: Json | null
+          discovery_score: number | null
+          feedback_at: string | null
+          id: string
+          match_reasons: Json
+          overall_score: number
+          position_shown: number | null
+          preference_score: number | null
+          property_id: string
+          recommendation_context: string | null
+          user_feedback: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          discovery_reasons?: Json | null
+          discovery_score?: number | null
+          feedback_at?: string | null
+          id?: string
+          match_reasons: Json
+          overall_score: number
+          position_shown?: number | null
+          preference_score?: number | null
+          property_id: string
+          recommendation_context?: string | null
+          user_feedback?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          discovery_reasons?: Json | null
+          discovery_score?: number | null
+          feedback_at?: string | null
+          id?: string
+          match_reasons?: Json
+          overall_score?: number
+          position_shown?: number | null
+          preference_score?: number | null
+          property_id?: string
+          recommendation_context?: string | null
+          user_feedback?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       referrals: {
         Row: {
           affiliate_id: string
@@ -7781,6 +7910,60 @@ export type Database = {
           },
         ]
       }
+      user_behavior_signals: {
+        Row: {
+          comparison_properties: string[] | null
+          created_at: string | null
+          device_type: string | null
+          id: string
+          photos_viewed: number | null
+          property_id: string | null
+          property_snapshot: Json | null
+          referrer: string | null
+          scroll_depth: number | null
+          sections_expanded: string[] | null
+          session_id: string | null
+          signal_strength: number | null
+          signal_type: string
+          time_spent_seconds: number | null
+          user_id: string
+        }
+        Insert: {
+          comparison_properties?: string[] | null
+          created_at?: string | null
+          device_type?: string | null
+          id?: string
+          photos_viewed?: number | null
+          property_id?: string | null
+          property_snapshot?: Json | null
+          referrer?: string | null
+          scroll_depth?: number | null
+          sections_expanded?: string[] | null
+          session_id?: string | null
+          signal_strength?: number | null
+          signal_type: string
+          time_spent_seconds?: number | null
+          user_id: string
+        }
+        Update: {
+          comparison_properties?: string[] | null
+          created_at?: string | null
+          device_type?: string | null
+          id?: string
+          photos_viewed?: number | null
+          property_id?: string | null
+          property_snapshot?: Json | null
+          referrer?: string | null
+          scroll_depth?: number | null
+          sections_expanded?: string[] | null
+          session_id?: string | null
+          signal_strength?: number | null
+          signal_type?: string
+          time_spent_seconds?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_departments: {
         Row: {
           color: string | null
@@ -8338,6 +8521,81 @@ export type Database = {
           title?: string
           total_amount?: number | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_preference_profiles: {
+        Row: {
+          created_at: string | null
+          deal_breakers: string[] | null
+          discovery_openness: number | null
+          features_weight: number | null
+          id: string
+          location_weight: number | null
+          max_bedrooms: number | null
+          max_budget: number | null
+          max_land_size: number | null
+          min_bathrooms: number | null
+          min_bedrooms: number | null
+          min_budget: number | null
+          min_land_size: number | null
+          must_have_features: string[] | null
+          preferred_discovery_types: string[] | null
+          preferred_locations: string[] | null
+          preferred_property_types: string[] | null
+          price_weight: number | null
+          size_weight: number | null
+          type_weight: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          deal_breakers?: string[] | null
+          discovery_openness?: number | null
+          features_weight?: number | null
+          id?: string
+          location_weight?: number | null
+          max_bedrooms?: number | null
+          max_budget?: number | null
+          max_land_size?: number | null
+          min_bathrooms?: number | null
+          min_bedrooms?: number | null
+          min_budget?: number | null
+          min_land_size?: number | null
+          must_have_features?: string[] | null
+          preferred_discovery_types?: string[] | null
+          preferred_locations?: string[] | null
+          preferred_property_types?: string[] | null
+          price_weight?: number | null
+          size_weight?: number | null
+          type_weight?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          deal_breakers?: string[] | null
+          discovery_openness?: number | null
+          features_weight?: number | null
+          id?: string
+          location_weight?: number | null
+          max_bedrooms?: number | null
+          max_budget?: number | null
+          max_land_size?: number | null
+          min_bathrooms?: number | null
+          min_bedrooms?: number | null
+          min_budget?: number | null
+          min_land_size?: number | null
+          must_have_features?: string[] | null
+          preferred_discovery_types?: string[] | null
+          preferred_locations?: string[] | null
+          preferred_property_types?: string[] | null
+          price_weight?: number | null
+          size_weight?: number | null
+          type_weight?: number | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
