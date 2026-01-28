@@ -19,26 +19,67 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [claimed, setClaimed] = useState(false);
   const [claimResult, setClaimResult] = useState<any>(null);
+  const [alreadyClaimed, setAlreadyClaimed] = useState(false);
+
+  // Helper to check if last login was within 24 hours
+  const hasClaimedWithin24Hours = (lastLoginDate: string | null) => {
+    if (!lastLoginDate) return false;
+    
+    // Parse the date and check if it's within the last 24 hours
+    const lastLogin = new Date(lastLoginDate);
+    const now = new Date();
+    const hoursSinceLastLogin = (now.getTime() - lastLogin.getTime()) / (1000 * 60 * 60);
+    
+    return hoursSinceLastLogin < 24;
+  };
 
   // Check if should show on mount
   useEffect(() => {
     if (!autoShow || !user?.id || !stats) return;
 
-    const today = new Date().toISOString().split('T')[0];
-    const lastLogin = stats.last_login_date;
-
-    // If not logged in today, show the popup after a delay
-    if (lastLogin !== today) {
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-      }, 2000);
-      return () => clearTimeout(timer);
+    // Check using localStorage for session persistence + 24hr check
+    const claimKey = `daily_login_claimed_${user.id}`;
+    const lastClaimTime = localStorage.getItem(claimKey);
+    
+    // Check if claimed within last 24 hours (using localStorage as backup)
+    if (lastClaimTime) {
+      const hoursSinceClaim = (Date.now() - parseInt(lastClaimTime)) / (1000 * 60 * 60);
+      if (hoursSinceClaim < 24) {
+        setAlreadyClaimed(true);
+        return;
+      }
     }
+
+    // Also check database last_login_date
+    if (hasClaimedWithin24Hours(stats.last_login_date)) {
+      setAlreadyClaimed(true);
+      return;
+    }
+
+    // Not claimed in 24 hours, show popup after delay
+    const timer = setTimeout(() => {
+      setIsOpen(true);
+    }, 2000);
+    return () => clearTimeout(timer);
   }, [autoShow, user?.id, stats]);
 
   const handleClaim = async () => {
+    if (!user?.id) return;
+    
     try {
       const result = await claimDailyLogin.mutateAsync();
+      
+      // Check if already claimed (backend returned already_claimed)
+      if (result?.already_claimed) {
+        setAlreadyClaimed(true);
+        setIsOpen(false);
+        return;
+      }
+      
+      // Successfully claimed - store in localStorage with timestamp
+      const claimKey = `daily_login_claimed_${user.id}`;
+      localStorage.setItem(claimKey, Date.now().toString());
+      
       setClaimResult(result);
       setClaimed(true);
       
