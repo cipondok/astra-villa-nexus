@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Sparkles, Flame, X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { useGamification } from '@/hooks/useGamification';
 import { useAuth } from '@/contexts/AuthContext';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import confetti from 'canvas-confetti';
 
 interface DailyLoginRewardProps {
@@ -71,7 +72,12 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-sm p-0 gap-0 overflow-hidden bg-gradient-to-b from-primary/10 via-background to-background">
+      <DialogContent className="max-w-sm p-0 gap-0 overflow-hidden bg-gradient-to-b from-primary/10 via-background to-background" autoClose={false}>
+        <VisuallyHidden>
+          <DialogTitle>Daily Login Reward</DialogTitle>
+          <DialogDescription>Claim your daily XP bonus for logging in</DialogDescription>
+        </VisuallyHidden>
+        
         {/* Close button */}
         <button
           onClick={handleClose}
