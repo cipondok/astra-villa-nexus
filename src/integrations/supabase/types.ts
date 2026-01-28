@@ -5619,6 +5619,63 @@ export type Database = {
           },
         ]
       }
+      payment_disputes: {
+        Row: {
+          admin_notes: string | null
+          against_user: string | null
+          amount: number
+          created_at: string
+          dispute_reason: string
+          dispute_reference: string
+          dispute_type: string
+          evidence: Json | null
+          id: string
+          raised_by: string
+          resolution: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          transaction_id: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          against_user?: string | null
+          amount: number
+          created_at?: string
+          dispute_reason: string
+          dispute_reference: string
+          dispute_type: string
+          evidence?: Json | null
+          id?: string
+          raised_by: string
+          resolution?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          transaction_id: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          against_user?: string | null
+          amount?: number
+          created_at?: string
+          dispute_reason?: string
+          dispute_reference?: string
+          dispute_type?: string
+          evidence?: Json | null
+          id?: string
+          raised_by?: string
+          resolution?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          transaction_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       payment_logs: {
         Row: {
           amount: number
@@ -5976,6 +6033,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      platform_commission_settings: {
+        Row: {
+          commission_rate: number
+          created_at: string
+          id: string
+          is_active: boolean | null
+          max_commission: number | null
+          min_commission: number | null
+          transaction_type: string
+          updated_at: string
+        }
+        Insert: {
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          max_commission?: number | null
+          min_commission?: number | null
+          transaction_type: string
+          updated_at?: string
+        }
+        Update: {
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          max_commission?: number | null
+          min_commission?: number | null
+          transaction_type?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -8550,6 +8640,117 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_invoices: {
+        Row: {
+          amount: number
+          billing_period_end: string | null
+          billing_period_start: string | null
+          created_at: string
+          currency: string
+          due_date: string | null
+          id: string
+          invoice_number: string
+          line_items: Json | null
+          metadata: Json | null
+          paid_at: string | null
+          payment_order_id: string | null
+          status: string
+          subscription_id: string | null
+          tax_amount: number | null
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          billing_period_end?: string | null
+          billing_period_start?: string | null
+          created_at?: string
+          currency?: string
+          due_date?: string | null
+          id?: string
+          invoice_number: string
+          line_items?: Json | null
+          metadata?: Json | null
+          paid_at?: string | null
+          payment_order_id?: string | null
+          status?: string
+          subscription_id?: string | null
+          tax_amount?: number | null
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          billing_period_end?: string | null
+          billing_period_start?: string | null
+          created_at?: string
+          currency?: string
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          line_items?: Json | null
+          metadata?: Json | null
+          paid_at?: string | null
+          payment_order_id?: string | null
+          status?: string
+          subscription_id?: string | null
+          tax_amount?: number | null
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          currency: string
+          description: string | null
+          display_order: number | null
+          features: Json | null
+          id: string
+          is_active: boolean | null
+          listing_limit: number | null
+          name: string
+          price_annual: number | null
+          price_monthly: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          display_order?: number | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          listing_limit?: number | null
+          name: string
+          price_annual?: number | null
+          price_monthly?: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          display_order?: number | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          listing_limit?: number | null
+          name?: string
+          price_annual?: number | null
+          price_monthly?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       support_tickets: {
         Row: {
           assigned_to: string | null
@@ -9127,6 +9328,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      transaction_commissions: {
+        Row: {
+          buyer_id: string | null
+          commission_amount: number
+          commission_rate: number
+          created_at: string
+          gross_amount: number
+          hold_until: string | null
+          id: string
+          metadata: Json | null
+          net_amount: number
+          payout_id: string | null
+          released_at: string | null
+          seller_id: string
+          status: string
+          tax_amount: number | null
+          transaction_id: string
+          transaction_type: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_id?: string | null
+          commission_amount: number
+          commission_rate: number
+          created_at?: string
+          gross_amount: number
+          hold_until?: string | null
+          id?: string
+          metadata?: Json | null
+          net_amount: number
+          payout_id?: string | null
+          released_at?: string | null
+          seller_id: string
+          status?: string
+          tax_amount?: number | null
+          transaction_id: string
+          transaction_type: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string | null
+          commission_amount?: number
+          commission_rate?: number
+          created_at?: string
+          gross_amount?: number
+          hold_until?: string | null
+          id?: string
+          metadata?: Json | null
+          net_amount?: number
+          payout_id?: string | null
+          released_at?: string | null
+          seller_id?: string
+          status?: string
+          tax_amount?: number | null
+          transaction_id?: string
+          transaction_type?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       trending_topics: {
         Row: {
@@ -12447,6 +12708,123 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      vendor_payout_settings: {
+        Row: {
+          account_holder_name: string
+          account_number: string
+          auto_payout_enabled: boolean | null
+          bank_code: string | null
+          bank_name: string
+          created_at: string
+          id: string
+          is_verified: boolean | null
+          minimum_payout: number | null
+          payout_schedule: string | null
+          tax_id: string | null
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          account_holder_name: string
+          account_number: string
+          auto_payout_enabled?: boolean | null
+          bank_code?: string | null
+          bank_name: string
+          created_at?: string
+          id?: string
+          is_verified?: boolean | null
+          minimum_payout?: number | null
+          payout_schedule?: string | null
+          tax_id?: string | null
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          account_holder_name?: string
+          account_number?: string
+          auto_payout_enabled?: boolean | null
+          bank_code?: string | null
+          bank_name?: string
+          created_at?: string
+          id?: string
+          is_verified?: boolean | null
+          minimum_payout?: number | null
+          payout_schedule?: string | null
+          tax_id?: string | null
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
+      vendor_payouts: {
+        Row: {
+          account_holder_name: string
+          account_number: string
+          amount: number
+          bank_name: string
+          commission_ids: string[] | null
+          completed_at: string | null
+          created_at: string
+          currency: string
+          failure_reason: string | null
+          fee: number | null
+          gateway_response: Json | null
+          id: string
+          metadata: Json | null
+          net_amount: number
+          payout_reference: string
+          processed_at: string | null
+          status: string
+          updated_at: string
+          vendor_id: string
+        }
+        Insert: {
+          account_holder_name: string
+          account_number: string
+          amount: number
+          bank_name: string
+          commission_ids?: string[] | null
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          fee?: number | null
+          gateway_response?: Json | null
+          id?: string
+          metadata?: Json | null
+          net_amount: number
+          payout_reference: string
+          processed_at?: string | null
+          status?: string
+          updated_at?: string
+          vendor_id: string
+        }
+        Update: {
+          account_holder_name?: string
+          account_number?: string
+          amount?: number
+          bank_name?: string
+          commission_ids?: string[] | null
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          fee?: number | null
+          gateway_response?: Json | null
+          id?: string
+          metadata?: Json | null
+          net_amount?: number
+          payout_reference?: string
+          processed_at?: string | null
+          status?: string
+          updated_at?: string
+          vendor_id?: string
+        }
+        Relationships: []
       }
       vendor_performance_analytics: {
         Row: {
