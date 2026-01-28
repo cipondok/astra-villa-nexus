@@ -114,3 +114,9 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.push-notifications]
     verify_jwt = false
+
+  [functions.notification-scheduler]
+    verify_jwt = false
+
+  [functions.check-search-notifications]
+    verify_jwt = false

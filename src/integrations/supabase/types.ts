@@ -5105,6 +5105,36 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_analytics: {
+        Row: {
+          created_at: string
+          event_data: Json | null
+          event_type: string
+          id: string
+          notification_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          notification_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          notification_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       notification_history: {
         Row: {
           action_url: string | null
@@ -5159,8 +5189,10 @@ export type Database = {
       notification_preferences: {
         Row: {
           booking_updates: boolean
+          consent_ip: unknown
           created_at: string
           email_enabled: boolean
+          gdpr_consent_at: string | null
           id: string
           messages: boolean
           new_listings: boolean
@@ -5177,8 +5209,10 @@ export type Database = {
         }
         Insert: {
           booking_updates?: boolean
+          consent_ip?: unknown
           created_at?: string
           email_enabled?: boolean
+          gdpr_consent_at?: string | null
           id?: string
           messages?: boolean
           new_listings?: boolean
@@ -5195,8 +5229,10 @@ export type Database = {
         }
         Update: {
           booking_updates?: boolean
+          consent_ip?: unknown
           created_at?: string
           email_enabled?: boolean
+          gdpr_consent_at?: string | null
           id?: string
           messages?: boolean
           new_listings?: boolean
@@ -7401,28 +7437,46 @@ export type Database = {
       }
       push_subscriptions: {
         Row: {
+          auth_key: string | null
+          browser: string | null
           created_at: string
+          device_name: string | null
+          device_type: string | null
+          endpoint: string | null
           id: string
           is_active: boolean
-          search_id: string
+          p256dh_key: string | null
+          search_id: string | null
           subscription: Json
           updated_at: string
           user_id: string
         }
         Insert: {
+          auth_key?: string | null
+          browser?: string | null
           created_at?: string
+          device_name?: string | null
+          device_type?: string | null
+          endpoint?: string | null
           id?: string
           is_active?: boolean
-          search_id: string
+          p256dh_key?: string | null
+          search_id?: string | null
           subscription: Json
           updated_at?: string
           user_id: string
         }
         Update: {
+          auth_key?: string | null
+          browser?: string | null
           created_at?: string
+          device_name?: string | null
+          device_type?: string | null
+          endpoint?: string | null
           id?: string
           is_active?: boolean
-          search_id?: string
+          p256dh_key?: string | null
+          search_id?: string | null
           subscription?: Json
           updated_at?: string
           user_id?: string
