@@ -70,6 +70,8 @@ html {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh !important;
   min-height: -webkit-fill-available;
   overflow-x: hidden;
@@ -78,10 +80,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+main {
+  flex: 1;
+}
+
 /* Footer positioning fix */
 footer {
   position: relative !important;
   bottom: auto !important;
+  margin-top: auto;
 }
 
 @supports (-webkit-touch-callout: none) {
