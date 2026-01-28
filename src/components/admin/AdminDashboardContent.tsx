@@ -448,15 +448,14 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
 
       {/* Main Content Area */}
       <div className="animate-in fade-in duration-300">
-        {isOverview ? (
+        {!isOverview && (
           <AdminCategoryTabs activeSection={activeSection} onSectionChange={onSectionChange} />
-        ) : (
-          <SectionErrorBoundary>
-            <Suspense fallback={<LoadingFallback />}>
-              {renderContent()}
-            </Suspense>
-          </SectionErrorBoundary>
         )}
+        <SectionErrorBoundary>
+          <Suspense fallback={<LoadingFallback />}>
+            {renderContent()}
+          </Suspense>
+        </SectionErrorBoundary>
       </div>
     </div>
   );
