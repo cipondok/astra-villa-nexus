@@ -8,6 +8,7 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "start_url": "/",
+  "gcm_sender_id": "103953800507",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -62,5 +63,8 @@
         }
       ]
     }
+  ],
+  "permissions": [
+    "notifications"
   ]
 }
