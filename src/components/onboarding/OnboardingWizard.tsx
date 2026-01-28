@@ -209,7 +209,7 @@ const OnboardingWizard = ({ isOpen, onClose, initialUserType }: OnboardingWizard
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg p-0 gap-0 bg-gradient-to-br from-background via-background to-primary/5 border-border/50 overflow-hidden">
+      <DialogContent className="max-w-[340px] md:max-w-md p-0 gap-0 bg-gradient-to-br from-background via-background to-primary/5 border-border/50 overflow-hidden max-h-[85vh] overflow-y-auto" autoClose={false}>
         {/* Header with Progress */}
         {onboardingData.userType && !isComplete && (
           <div className="p-4 pb-2 border-b border-border/30">
