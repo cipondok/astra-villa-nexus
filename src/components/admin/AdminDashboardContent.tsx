@@ -76,6 +76,7 @@ const BookingManagement = lazy(() => import("./BookingManagement"));
 const TransactionManagementTabs = lazy(() => import("./TransactionManagementTabs"));
 const LiveChatManagement = lazy(() => import("./LiveChatManagement"));
 const InvestorSettingsHub = lazy(() => import("./InvestorSettingsHub"));
+const WebsiteDesignControl = lazy(() => import("./WebsiteDesignControl"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -388,6 +389,9 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <InvestorSettingsHub initialTab="wni" />;
       case "investor-analytics":
         return <InvestorSettingsHub initialTab="analytics" />;
+      case "design-system":
+      case "website-design":
+        return <WebsiteDesignControl />;
       default:
         return <AdminOverview />;
     }
