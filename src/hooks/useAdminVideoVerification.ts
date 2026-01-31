@@ -64,17 +64,29 @@ export const useAdminVideoVerification = () => {
   const { data: pendingSessions = [], isLoading: loadingPending } = useQuery({
     queryKey: ['admin-video-sessions', 'pending'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First fetch sessions
+      const { data: sessions, error } = await supabase
         .from('video_verification_sessions')
-        .select(`
-          *,
-          user:profiles!video_verification_sessions_user_id_fkey(full_name, email, avatar_url)
-        `)
+        .select('*')
         .in('status', ['pending_review', 'scheduled', 'in_progress'])
         .order('scheduled_at', { ascending: true });
 
       if (error) throw error;
-      return data as unknown as AdminVideoSession[];
+      if (!sessions || sessions.length === 0) return [];
+
+      // Fetch user profiles separately
+      const userIds = [...new Set(sessions.map(s => s.user_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, avatar_url')
+        .in('id', userIds);
+
+      // Merge user data
+      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+      return sessions.map(session => ({
+        ...session,
+        user: profileMap.get(session.user_id) || null
+      })) as AdminVideoSession[];
     },
     enabled: !!user,
   });
@@ -83,18 +95,30 @@ export const useAdminVideoVerification = () => {
   const { data: completedSessions = [], isLoading: loadingCompleted } = useQuery({
     queryKey: ['admin-video-sessions', 'completed'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First fetch sessions
+      const { data: sessions, error } = await supabase
         .from('video_verification_sessions')
-        .select(`
-          *,
-          user:profiles!video_verification_sessions_user_id_fkey(full_name, email, avatar_url)
-        `)
+        .select('*')
         .in('status', ['completed', 'failed', 'cancelled'])
         .order('ended_at', { ascending: false })
         .limit(50);
 
       if (error) throw error;
-      return data as unknown as AdminVideoSession[];
+      if (!sessions || sessions.length === 0) return [];
+
+      // Fetch user profiles separately
+      const userIds = [...new Set(sessions.map(s => s.user_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, avatar_url')
+        .in('id', userIds);
+
+      // Merge user data
+      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+      return sessions.map(session => ({
+        ...session,
+        user: profileMap.get(session.user_id) || null
+      })) as AdminVideoSession[];
     },
     enabled: !!user,
   });
