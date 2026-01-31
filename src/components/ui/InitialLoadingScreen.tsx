@@ -16,31 +16,50 @@ const InitialLoadingScreen = () => {
   const [logoUrl, setLogoUrl] = useState<string>(astraLogoFallback);
   const { toast } = useToast();
 
-  // Fetch dynamic logo from system settings
+  // Fetch dynamic logo from system settings (check both "general" and "branding" categories)
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        // Try welcomeScreenLogo first
-        const { data: welcomeData } = await supabase
-          .from('system_settings')
-          .select('value')
-          .eq('key', 'welcomeScreenLogo')
-          .maybeSingle();
+        // Helper to get logo value from either category
+        const getLogoValue = async (key: string): Promise<string | null> => {
+          // Try "general" category first (where BrandingSettings saves)
+          const { data: generalData } = await supabase
+            .from('system_settings')
+            .select('value')
+            .eq('category', 'general')
+            .eq('key', key)
+            .maybeSingle();
 
-        if (welcomeData?.value && typeof welcomeData.value === 'string') {
-          setLogoUrl(welcomeData.value);
+          if (generalData?.value && typeof generalData.value === 'string' && generalData.value.trim() !== '') {
+            return generalData.value;
+          }
+
+          // Fallback to "branding" category
+          const { data: brandingData } = await supabase
+            .from('system_settings')
+            .select('value')
+            .eq('category', 'branding')
+            .eq('key', key)
+            .maybeSingle();
+
+          if (brandingData?.value && typeof brandingData.value === 'string' && brandingData.value.trim() !== '') {
+            return brandingData.value;
+          }
+
+          return null;
+        };
+
+        // Try welcomeScreenLogo first
+        const welcomeLogo = await getLogoValue('welcomeScreenLogo');
+        if (welcomeLogo) {
+          setLogoUrl(welcomeLogo);
           return;
         }
 
         // Fallback to headerLogo
-        const { data: headerData } = await supabase
-          .from('system_settings')
-          .select('value')
-          .eq('key', 'headerLogo')
-          .maybeSingle();
-
-        if (headerData?.value && typeof headerData.value === 'string') {
-          setLogoUrl(headerData.value);
+        const headerLogo = await getLogoValue('headerLogo');
+        if (headerLogo) {
+          setLogoUrl(headerLogo);
         }
       } catch (error) {
         console.error('Error fetching logo:', error);

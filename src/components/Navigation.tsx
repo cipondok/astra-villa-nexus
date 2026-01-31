@@ -18,8 +18,7 @@ import EnhancedAuthModal from "./auth/EnhancedAuthModal";
 import { useNavigate, useLocation } from "react-router-dom";
 import NotificationDropdown from "./NotificationDropdown";
 import UserIconWithBadge from "./ui/UserIconWithBadge";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useHeaderLogo } from "@/hooks/useBrandingLogo";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,24 +31,8 @@ const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Fetch header logo from system settings (branding category)
-  const { data: headerLogoUrl, isLoading: isLogoLoading } = useQuery({
-    queryKey: ['branding', 'headerLogo'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('system_settings')
-        .select('value')
-        .eq('category', 'branding')
-        .eq('key', 'headerLogo')
-        .maybeSingle();
-      
-      if (error || !data?.value) return null;
-      const value = typeof data.value === 'string' ? data.value : null;
-      return value && value.trim() !== '' ? value : null;
-    },
-    staleTime: 60_000, // Cache for 1 minute to prevent flicker
-    refetchOnWindowFocus: false,
-  });
+  // Fetch header logo from system settings (checks both categories)
+  const { logoUrl: headerLogoUrl, isLoading: isLogoLoading, hasCustomLogo } = useHeaderLogo();
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -186,7 +169,7 @@ const Navigation = () => {
               className="flex items-center cursor-pointer group flex-shrink-0 -ml-1" 
               onClick={() => navigate('/')}
             >
-              {headerLogoUrl ? (
+              {hasCustomLogo ? (
                 <div className="relative group/logo overflow-visible rounded-sm">
                   {/* Logo - larger size, crisp rendering */}
                   <img 
@@ -212,7 +195,11 @@ const Navigation = () => {
               ) : (
                 <>
                   <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-primary/80 via-accent/70 to-primary/60 backdrop-blur-sm border border-primary/40 flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-2xl group-hover:shadow-primary/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
-                    <Brain className="h-5 w-5 md:h-6 md:w-6 text-background animate-pulse group-hover:text-primary-foreground transition-colors duration-500" />
+                    <img 
+                      src={headerLogoUrl} 
+                      alt="ASTRA Villa" 
+                      className="h-7 w-7 md:h-8 md:w-8 object-contain"
+                    />
                   </div>
                   <div className="hidden sm:flex items-center space-x-1">
                     <span className="text-lg font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl">ASTRA</span>
