@@ -165,10 +165,12 @@ export const useSystemSettings = () => {
               key,
               value: String(value),
               category,
-              description: `System setting for ${key}`
+              description: `System setting for ${key}`,
+              updated_at: new Date().toISOString()
             },
             {
-              onConflict: 'key'
+              onConflict: 'key',
+              ignoreDuplicates: false
             }
           );
         
