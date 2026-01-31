@@ -126,3 +126,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.rate-limiter]
     verify_jwt = false
+
+  [functions.ai-property-recommendations]
+    verify_jwt = false
