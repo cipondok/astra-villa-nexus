@@ -245,30 +245,44 @@ function App() {
 
   useEffect(() => {
     const checkWelcomeScreen = async () => {
-      // Check if we've already loaded in this session
-      const hasLoaded = sessionStorage.getItem('astra_app_loaded');
-      
-      if (hasLoaded) {
-        setIsLoading(false);
-        return;
-      }
-
       try {
-        // Check if welcome screen is enabled in admin settings
-        const { createClient } = await import('@supabase/supabase-js');
-        const supabaseUrl = 'https://zymrajuuyyfkzdmptebl.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5bXJhanV1eXlma3pkbXB0ZWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNDM5NjksImV4cCI6MjA2NDcxOTk2OX0.jcdUvzLIWj7b0ay5UvuzJ7RVsAzkSWQQ_-o83kNaYYk';
-        const supabase = createClient(supabaseUrl, supabaseKey);
+        // Import supabase client
+        const { supabase } = await import('@/integrations/supabase/client');
         
-        const { data } = await supabase
+        // Fetch welcome screen settings from the correct category
+        const { data: settingsData } = await supabase
           .from('system_settings')
-          .select('value')
-          .eq('key', 'welcomeScreenEnabled')
-          .maybeSingle();
+          .select('key, value')
+          .eq('category', 'loading_page')
+          .in('key', ['welcomeScreenEnabled', 'welcomeSkipOnReturn', 'welcomeLoadingDuration']);
 
-        // Default to enabled if not set, or parse the value
-        const isEnabled = data?.value === undefined || data?.value === null || data?.value === true || data?.value === 'true';
+        // Parse settings
+        const settings: Record<string, any> = {};
+        settingsData?.forEach(row => {
+          settings[row.key] = row.value;
+        });
+
+        // Default to enabled if not set
+        const isEnabled = settings.welcomeScreenEnabled === undefined || 
+                          settings.welcomeScreenEnabled === null || 
+                          settings.welcomeScreenEnabled === true || 
+                          settings.welcomeScreenEnabled === 'true';
+        
+        const skipOnReturn = settings.welcomeSkipOnReturn === true || 
+                            settings.welcomeSkipOnReturn === 'true';
+        
+        const loadingDuration = typeof settings.welcomeLoadingDuration === 'number' 
+          ? settings.welcomeLoadingDuration 
+          : parseInt(settings.welcomeLoadingDuration) || 2000;
+
         setWelcomeEnabled(isEnabled);
+
+        // Check if we should skip on return visit
+        const hasLoaded = sessionStorage.getItem('astra_app_loaded');
+        if (hasLoaded && skipOnReturn) {
+          setIsLoading(false);
+          return;
+        }
 
         if (!isEnabled) {
           setIsLoading(false);
@@ -276,11 +290,11 @@ function App() {
           return;
         }
 
-        // Show welcome screen for configured duration (default 2 seconds)
+        // Show welcome screen for configured duration
         const timer = setTimeout(() => {
           setIsLoading(false);
           sessionStorage.setItem('astra_app_loaded', 'true');
-        }, 2000);
+        }, loadingDuration);
 
         return () => clearTimeout(timer);
       } catch (error) {
