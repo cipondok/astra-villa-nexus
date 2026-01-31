@@ -55,7 +55,8 @@ import {
   Landmark,
   Sparkles,
   Palette,
-  Video
+  Video,
+  Calculator
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -130,6 +131,13 @@ export const navigationSections = {
       label: "Transaction Management",
       icon: DollarSign,
       description: "Complete transaction management with tabs: Transactions, Tax Config, Live Monitor, Audit Trail, and Feedback",
+      badge: "New"
+    },
+    {
+      key: "mortgage-management",
+      label: "Mortgage (KPR) Management",
+      icon: Calculator,
+      description: "Manage partner banks, interest rates, and KPR customer inquiries",
       badge: "New"
     }
   ],

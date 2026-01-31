@@ -80,6 +80,7 @@ const VideoVerificationReviewDashboard = lazy(() => import("./video-verification
 const WebsiteDesignControl = lazy(() => import("./WebsiteDesignControl"));
 const RateLimitingDashboard = lazy(() => import("./RateLimitingDashboard"));
 const VideoTourManager = lazy(() => import("./VideoTourManager"));
+const MortgageManagement = lazy(() => import("./MortgageManagement"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -166,6 +167,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "testing-dashboard": { label: "Testing Dashboard", category: "Quality Assurance" },
   "vip-analytics": { label: "VIP Analytics", category: "Analytics" },
   "transaction-hub": { label: "Transaction Management", category: "Transactions" },
+  "mortgage-management": { label: "Mortgage Management", category: "Transactions" },
   "wna-investment-settings": { label: "WNA Investment Settings", category: "Investor Management" },
   "wni-mortgage-settings": { label: "WNI Mortgage Settings", category: "Investor Management" },
   "investor-analytics": { label: "Investor Analytics", category: "Investor Management" },
@@ -395,6 +397,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <VIPAnalyticsDashboard onNavigate={onSectionChange} />;
       case "transaction-hub":
         return <TransactionManagementTabs />;
+      case "mortgage-management":
+        return <MortgageManagement />;
       case "wna-investment-settings":
         return <InvestorSettingsHub initialTab="wna" />;
       case "wni-mortgage-settings":
