@@ -167,6 +167,13 @@ export const navigationSections = {
       description: "Centralized property management dashboard"
     },
     {
+      key: "video-tours",
+      label: "Video Tours (360°)",
+      icon: Video,
+      description: "Manage 360° virtual tours, panoramas, hotspots, and VR experiences",
+      badge: "New"
+    },
+    {
       key: "property-survey-management",
       label: "Property Survey Booking",
       icon: Calendar,

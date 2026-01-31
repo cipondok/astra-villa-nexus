@@ -79,6 +79,7 @@ const InvestorSettingsHub = lazy(() => import("./InvestorSettingsHub"));
 const VideoVerificationReviewDashboard = lazy(() => import("./video-verification/VideoVerificationReviewDashboard"));
 const WebsiteDesignControl = lazy(() => import("./WebsiteDesignControl"));
 const RateLimitingDashboard = lazy(() => import("./RateLimitingDashboard"));
+const VideoTourManager = lazy(() => import("./VideoTourManager"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -140,6 +141,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "ai-assistant": { label: "AI Assistant", category: "AI & Tools" },
   "booking-payment-settings": { label: "Booking Payments", category: "System" },
   "booking-management": { label: "Booking Management", category: "Core Management" },
+  "video-tours": { label: "Video Tours (360°)", category: "Core Management" },
   "bpjs-api-settings": { label: "BPJS API", category: "System" },
   "admin-kyc-review": { label: "KYC Review", category: "Verification" },
   "video-verification-review": { label: "Video Verification Review", category: "Verification" },
@@ -343,6 +345,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <BookingPaymentSettings />;
       case "booking-management":
         return <BookingManagement />;
+      case "video-tours":
+        return <VideoTourManager />;
       case "bpjs-api-settings":
         return <BPJSAPISettings />;
       case "admin-kyc-review":
