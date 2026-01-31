@@ -9442,6 +9442,169 @@ export type Database = {
           },
         ]
       }
+      tour_analytics: {
+        Row: {
+          created_at: string
+          device_type: string | null
+          duration_seconds: number | null
+          ended_at: string | null
+          hotspots_clicked: string[] | null
+          id: string
+          ip_address: unknown
+          is_vr_session: boolean | null
+          scenes_visited: string[] | null
+          session_id: string
+          started_at: string
+          tour_id: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          device_type?: string | null
+          duration_seconds?: number | null
+          ended_at?: string | null
+          hotspots_clicked?: string[] | null
+          id?: string
+          ip_address?: unknown
+          is_vr_session?: boolean | null
+          scenes_visited?: string[] | null
+          session_id: string
+          started_at?: string
+          tour_id: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          device_type?: string | null
+          duration_seconds?: number | null
+          ended_at?: string | null
+          hotspots_clicked?: string[] | null
+          id?: string
+          ip_address?: unknown
+          is_vr_session?: boolean | null
+          scenes_visited?: string[] | null
+          session_id?: string
+          started_at?: string
+          tour_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_analytics_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "video_tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_hotspots: {
+        Row: {
+          created_at: string
+          description: string | null
+          hotspot_type: string
+          icon: string | null
+          id: string
+          link_url: string | null
+          media_url: string | null
+          position: Json
+          scene_id: string
+          style: Json | null
+          target_scene_id: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          hotspot_type: string
+          icon?: string | null
+          id?: string
+          link_url?: string | null
+          media_url?: string | null
+          position?: Json
+          scene_id: string
+          style?: Json | null
+          target_scene_id?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          hotspot_type?: string
+          icon?: string | null
+          id?: string
+          link_url?: string | null
+          media_url?: string | null
+          position?: Json
+          scene_id?: string
+          style?: Json | null
+          target_scene_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_hotspots_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "tour_scenes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tour_hotspots_target_scene_id_fkey"
+            columns: ["target_scene_id"]
+            isOneToOne: false
+            referencedRelation: "tour_scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_scenes: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          initial_view: Json | null
+          is_entry_point: boolean | null
+          scene_order: number | null
+          thumbnail_url: string | null
+          title: string
+          tour_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          initial_view?: Json | null
+          is_entry_point?: boolean | null
+          scene_order?: number | null
+          thumbnail_url?: string | null
+          title: string
+          tour_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          initial_view?: Json | null
+          is_entry_point?: boolean | null
+          scene_order?: number | null
+          thumbnail_url?: string | null
+          title?: string
+          tour_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_scenes_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "video_tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transaction_alerts: {
         Row: {
           alert_type: string
@@ -14315,6 +14478,69 @@ export type Database = {
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "video_verification_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_tours: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_published: boolean | null
+          is_vr_enabled: boolean | null
+          property_id: string
+          settings: Json | null
+          thumbnail_url: string | null
+          title: string
+          tour_type: string | null
+          updated_at: string
+          view_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          is_vr_enabled?: boolean | null
+          property_id: string
+          settings?: Json | null
+          thumbnail_url?: string | null
+          title: string
+          tour_type?: string | null
+          updated_at?: string
+          view_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          is_vr_enabled?: boolean | null
+          property_id?: string
+          settings?: Json | null
+          thumbnail_url?: string | null
+          title?: string
+          tour_type?: string | null
+          updated_at?: string
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_tours_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "video_tours_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
