@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -11,11 +11,11 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useLivePresence, PresenceUser } from '@/hooks/useLivePresence';
+import { useLivePresence } from '@/hooks/useLivePresence';
+import { usePlatformStats } from '@/hooks/usePlatformStats';
 import { 
   Users, 
   Activity, 
-  Wifi, 
   WifiOff,
   Monitor,
   Smartphone,
@@ -27,7 +27,6 @@ import {
   MousePointer,
   RefreshCw,
   Bell,
-  Globe,
   Server,
   Database,
   Zap,
@@ -40,7 +39,18 @@ import {
   Cpu,
   HardDrive,
   BarChart3,
-  LineChart
+  LineChart,
+  Store,
+  Building2,
+  Mail,
+  MessageSquare,
+  Star,
+  ThumbsUp,
+  Ticket,
+  UserPlus,
+  Home,
+  FileText,
+  Shield
 } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -92,6 +102,8 @@ const LiveMonitoringDashboard = () => {
     totalOnline 
   } = useLivePresence('admin_monitoring');
 
+  const { stats, refreshStats } = usePlatformStats(true, 15000);
+
   const [metrics, setMetrics] = useState<SystemMetrics>({
     cpu: 0,
     memory: 0,
@@ -105,7 +117,7 @@ const LiveMonitoringDashboard = () => {
   const [activityStream, setActivityStream] = useState<ActivityEvent[]>([]);
   const [performanceData, setPerformanceData] = useState<PerformancePoint[]>([]);
   const [autoRefresh, setAutoRefresh] = useState(true);
-  const [refreshInterval, setRefreshInterval] = useState(5000);
+  const [refreshInterval] = useState(5000);
   const [isLive, setIsLive] = useState(true);
 
   // Simulated real-time metrics update
@@ -120,7 +132,6 @@ const LiveMonitoringDashboard = () => {
       uptime: prev.uptime
     }));
 
-    // Add performance data point
     setPerformanceData(prev => {
       const newPoint = {
         time: format(new Date(), 'HH:mm:ss'),
@@ -139,7 +150,7 @@ const LiveMonitoringDashboard = () => {
         .from('activity_logs')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(20);
+        .limit(50);
 
       if (error) throw error;
 
@@ -231,44 +242,46 @@ const LiveMonitoringDashboard = () => {
     }
   };
 
-  const MetricCard = ({ 
+  const StatCard = ({ 
     title, 
     value, 
-    unit, 
+    subValue,
     icon: Icon, 
-    trend, 
+    trend,
+    trendValue, 
     color = 'primary',
     progress 
   }: {
     title: string;
     value: number | string;
-    unit?: string;
+    subValue?: string;
     icon: React.ElementType;
     trend?: 'up' | 'down' | 'stable';
+    trendValue?: string;
     color?: string;
     progress?: number;
   }) => (
-    <Card className={`border-l-4 border-l-${color} bg-card/50`}>
+    <Card className="bg-card/50 hover:bg-card/80 transition-colors border-border/50">
       <CardContent className="p-3">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-1">
           <div className={`p-1.5 rounded-lg bg-${color}/10`}>
             <Icon className={`h-4 w-4 text-${color}`} />
           </div>
           {trend && (
-            <Badge variant="outline" className={`text-[8px] ${
+            <Badge variant="outline" className={`text-[8px] px-1 ${
               trend === 'up' ? 'text-green-500 border-green-500/30' :
               trend === 'down' ? 'text-red-500 border-red-500/30' :
               'text-muted-foreground'
             }`}>
               {trend === 'up' ? <TrendingUp className="h-2 w-2 mr-0.5" /> :
                trend === 'down' ? <TrendingDown className="h-2 w-2 mr-0.5" /> : null}
-              {trend}
+              {trendValue || trend}
             </Badge>
           )}
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-xl font-bold">{typeof value === 'number' ? value.toFixed(1) : value}</span>
-          {unit && <span className="text-[10px] text-muted-foreground">{unit}</span>}
+          <span className="text-xl font-bold">{value}</span>
+          {subValue && <span className="text-[10px] text-muted-foreground">{subValue}</span>}
         </div>
         <p className="text-[10px] text-muted-foreground mt-0.5">{title}</p>
         {progress !== undefined && (
@@ -277,6 +290,18 @@ const LiveMonitoringDashboard = () => {
       </CardContent>
     </Card>
   );
+
+  const handleRefreshAll = async () => {
+    await Promise.all([
+      updateMetrics(),
+      fetchRecentActivity(),
+      refreshStats()
+    ]);
+    toast({
+      title: "Dashboard refreshed",
+      description: "All metrics have been updated",
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -300,108 +325,128 @@ const LiveMonitoringDashboard = () => {
               )}
             </h1>
             <p className="text-xs text-muted-foreground">
-              Real-time system metrics, user activity, and performance tracking
+              Real-time platform metrics • Last updated: {stats.lastUpdated ? format(stats.lastUpdated, 'HH:mm:ss') : 'Loading...'}
             </p>
           </div>
         </div>
         
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <Switch 
-              id="live-mode" 
-              checked={isLive} 
-              onCheckedChange={setIsLive}
-            />
-            <Label htmlFor="live-mode" className="text-xs">Live Mode</Label>
+            <Switch id="live-mode" checked={isLive} onCheckedChange={setIsLive} />
+            <Label htmlFor="live-mode" className="text-xs">Live</Label>
           </div>
           <div className="flex items-center gap-2">
-            <Switch 
-              id="auto-refresh" 
-              checked={autoRefresh} 
-              onCheckedChange={setAutoRefresh}
-            />
-            <Label htmlFor="auto-refresh" className="text-xs">Auto Refresh</Label>
+            <Switch id="auto-refresh" checked={autoRefresh} onCheckedChange={setAutoRefresh} />
+            <Label htmlFor="auto-refresh" className="text-xs">Auto</Label>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => {
-              updateMetrics();
-              fetchRecentActivity();
-            }}
-            className="h-8"
-          >
-            <RefreshCw className="h-3 w-3 mr-1" />
+          <Button variant="outline" size="sm" onClick={handleRefreshAll} className="h-8">
+            <RefreshCw className={`h-3 w-3 mr-1 ${stats.isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
-        <MetricCard 
-          title="Online Users" 
-          value={totalOnline} 
+      {/* Platform Statistics - Main Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+        <StatCard 
+          title="Total Users" 
+          value={stats.totalUsers}
+          subValue={stats.newUsersToday > 0 ? `+${stats.newUsersToday} today` : undefined}
           icon={Users} 
+          trend={stats.newUsersToday > 0 ? 'up' : 'stable'}
+          trendValue={stats.newUsersWeek > 0 ? `+${stats.newUsersWeek}/wk` : undefined}
           color="primary"
         />
-        <MetricCard 
-          title="CPU Usage" 
-          value={metrics.cpu} 
-          unit="%" 
-          icon={Cpu} 
-          progress={metrics.cpu}
-          trend={metrics.cpu > 70 ? 'up' : 'stable'}
+        <StatCard 
+          title="Vendors" 
+          value={stats.totalVendors}
+          icon={Store} 
           color="accent"
         />
-        <MetricCard 
-          title="Memory" 
-          value={metrics.memory} 
-          unit="%" 
-          icon={HardDrive} 
-          progress={metrics.memory}
+        <StatCard 
+          title="Properties" 
+          value={stats.totalProperties}
+          subValue={`${stats.activeProperties} active`}
+          icon={Building2} 
+          trend={stats.newPropertiesWeek > 0 ? 'up' : 'stable'}
+          trendValue={stats.newPropertiesWeek > 0 ? `+${stats.newPropertiesWeek}/wk` : undefined}
           color="secondary"
         />
-        <MetricCard 
-          title="Database" 
-          value={metrics.database} 
-          unit="%" 
-          icon={Database} 
-          progress={metrics.database}
+        <StatCard 
+          title="Services" 
+          value={stats.totalServices}
+          subValue={`${stats.activeServices} active`}
+          icon={Zap} 
           color="primary"
         />
-        <MetricCard 
-          title="Requests/min" 
-          value={metrics.requests} 
+        <StatCard 
+          title="Online Now" 
+          value={totalOnline}
+          icon={Radio} 
+          color="green-500"
+        />
+        <StatCard 
+          title="Activities (24h)" 
+          value={stats.activities24h}
+          subValue={`${stats.totalActivities} total`}
           icon={Activity} 
-          trend="up"
           color="accent"
-        />
-        <MetricCard 
-          title="Response Time" 
-          value={metrics.responseTime} 
-          unit="ms" 
-          icon={Clock} 
-          trend={metrics.responseTime > 150 ? 'up' : 'stable'}
-          color="secondary"
-        />
-        <MetricCard 
-          title="Errors" 
-          value={metrics.errors} 
-          icon={AlertTriangle} 
-          trend={metrics.errors > 0 ? 'up' : 'stable'}
-          color="destructive"
-        />
-        <MetricCard 
-          title="Uptime" 
-          value={metrics.uptime} 
-          icon={CheckCircle} 
-          color="primary"
         />
       </div>
 
-      <Tabs defaultValue="users" className="space-y-4">
-        <TabsList className="grid grid-cols-4 h-9">
+      {/* Secondary Stats Row */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+        <StatCard 
+          title="Support Tickets" 
+          value={stats.totalTickets}
+          subValue={stats.openTickets > 0 ? `${stats.openTickets} open` : undefined}
+          icon={Ticket} 
+          trend={stats.openTickets > 5 ? 'up' : 'stable'}
+          color="orange-500"
+        />
+        <StatCard 
+          title="Reviews" 
+          value={stats.totalReviews}
+          subValue={stats.avgRating > 0 ? `${stats.avgRating}★ avg` : undefined}
+          icon={Star} 
+          color="yellow-500"
+        />
+        <StatCard 
+          title="User Feedback" 
+          value={stats.totalFeedback}
+          icon={ThumbsUp} 
+          color="blue-500"
+        />
+        <StatCard 
+          title="Unread Alerts" 
+          value={stats.unreadAlerts}
+          subValue={stats.criticalAlerts > 0 ? `${stats.criticalAlerts} critical` : undefined}
+          icon={Bell} 
+          trend={stats.unreadAlerts > 10 ? 'up' : 'stable'}
+          color="red-500"
+        />
+        <StatCard 
+          title="CPU Usage" 
+          value={metrics.cpu.toFixed(0)}
+          subValue="%"
+          icon={Cpu} 
+          progress={metrics.cpu}
+          color="primary"
+        />
+        <StatCard 
+          title="Response Time" 
+          value={metrics.responseTime}
+          subValue="ms"
+          icon={Clock} 
+          color="accent"
+        />
+      </div>
+
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList className="grid grid-cols-5 h-9">
+          <TabsTrigger value="overview" className="text-xs gap-1">
+            <BarChart3 className="h-3 w-3" /> Overview
+          </TabsTrigger>
           <TabsTrigger value="users" className="text-xs gap-1">
             <Users className="h-3 w-3" /> Users
           </TabsTrigger>
@@ -409,17 +454,151 @@ const LiveMonitoringDashboard = () => {
             <Activity className="h-3 w-3" /> Activity
           </TabsTrigger>
           <TabsTrigger value="performance" className="text-xs gap-1">
-            <BarChart3 className="h-3 w-3" /> Performance
+            <LineChart className="h-3 w-3" /> Performance
           </TabsTrigger>
           <TabsTrigger value="health" className="text-xs gap-1">
             <Server className="h-3 w-3" /> Health
           </TabsTrigger>
         </TabsList>
 
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Platform Summary */}
+            <Card className="lg:col-span-2">
+              <CardHeader className="py-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4 text-primary" />
+                  Platform Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-3 rounded-lg bg-primary/5 border border-primary/20">
+                    <Users className="h-6 w-6 mx-auto text-primary mb-2" />
+                    <p className="text-2xl font-bold">{stats.totalUsers}</p>
+                    <p className="text-xs text-muted-foreground">Total Users</p>
+                    {stats.newUsersWeek > 0 && (
+                      <Badge className="mt-1 text-[9px]" variant="outline">+{stats.newUsersWeek} this week</Badge>
+                    )}
+                  </div>
+                  <div className="text-center p-3 rounded-lg bg-accent/5 border border-accent/20">
+                    <Store className="h-6 w-6 mx-auto text-accent mb-2" />
+                    <p className="text-2xl font-bold">{stats.totalVendors}</p>
+                    <p className="text-xs text-muted-foreground">Vendors</p>
+                    <Badge className="mt-1 text-[9px]" variant="outline">{stats.activeVendors} active</Badge>
+                  </div>
+                  <div className="text-center p-3 rounded-lg bg-secondary/5 border border-secondary/20">
+                    <Building2 className="h-6 w-6 mx-auto text-secondary mb-2" />
+                    <p className="text-2xl font-bold">{stats.totalProperties}</p>
+                    <p className="text-xs text-muted-foreground">Properties</p>
+                    <Badge className="mt-1 text-[9px]" variant="outline">{stats.activeProperties} active</Badge>
+                  </div>
+                  <div className="text-center p-3 rounded-lg bg-green-500/5 border border-green-500/20">
+                    <Zap className="h-6 w-6 mx-auto text-green-500 mb-2" />
+                    <p className="text-2xl font-bold">{stats.totalServices}</p>
+                    <p className="text-xs text-muted-foreground">Services</p>
+                    <Badge className="mt-1 text-[9px]" variant="outline">{stats.activeServices} active</Badge>
+                  </div>
+                </div>
+                
+                <Separator />
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                    <Activity className="h-5 w-5 text-blue-500" />
+                    <div>
+                      <p className="text-sm font-semibold">{stats.activities24h}</p>
+                      <p className="text-[10px] text-muted-foreground">Activities (24h)</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                    <Ticket className="h-5 w-5 text-orange-500" />
+                    <div>
+                      <p className="text-sm font-semibold">{stats.openTickets}/{stats.totalTickets}</p>
+                      <p className="text-[10px] text-muted-foreground">Open Tickets</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                    <Star className="h-5 w-5 text-yellow-500" />
+                    <div>
+                      <p className="text-sm font-semibold">{stats.totalReviews}</p>
+                      <p className="text-[10px] text-muted-foreground">Reviews ({stats.avgRating}★)</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                    <ThumbsUp className="h-5 w-5 text-green-500" />
+                    <div>
+                      <p className="text-sm font-semibold">{stats.totalFeedback}</p>
+                      <p className="text-[10px] text-muted-foreground">Feedback</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Alerts */}
+            <Card>
+              <CardHeader className="py-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Bell className="h-4 w-4 text-orange-500" />
+                  Alerts & Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className={`p-3 rounded-lg ${stats.unreadAlerts > 0 ? 'bg-red-500/10 border border-red-500/20' : 'bg-green-500/10 border border-green-500/20'}`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium">Unread Alerts</span>
+                    <Badge variant={stats.unreadAlerts > 0 ? 'destructive' : 'default'} className="text-[9px]">
+                      {stats.unreadAlerts}
+                    </Badge>
+                  </div>
+                  {stats.criticalAlerts > 0 && (
+                    <p className="text-[10px] text-red-500 mt-1">{stats.criticalAlerts} critical alerts require attention</p>
+                  )}
+                </div>
+                
+                <div className="p-3 rounded-lg bg-muted/30 border border-border/30">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-medium">System Health</span>
+                    <Badge variant="outline" className="text-[9px] text-green-500">Healthy</Badge>
+                  </div>
+                  <Progress value={95} className="h-1.5" />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="flex items-center gap-1.5">
+                      <Radio className={`h-3 w-3 ${isConnected ? 'text-green-500' : 'text-red-500'}`} />
+                      Realtime Connection
+                    </span>
+                    <span className={isConnected ? 'text-green-500' : 'text-red-500'}>
+                      {isConnected ? 'Connected' : 'Disconnected'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="flex items-center gap-1.5">
+                      <Database className="h-3 w-3 text-blue-500" />
+                      Database
+                    </span>
+                    <span className="text-green-500">Online</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="flex items-center gap-1.5">
+                      <Zap className="h-3 w-3 text-yellow-500" />
+                      Edge Functions
+                    </span>
+                    <span className="text-green-500">Active</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
         {/* Users Tab */}
         <TabsContent value="users" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            {/* Online Users List */}
             <Card className="lg:col-span-2">
               <CardHeader className="py-3">
                 <CardTitle className="text-sm flex items-center gap-2">
@@ -458,9 +637,7 @@ const LiveMonitoringDashboard = () => {
                             </div>
                             <div className="flex items-center gap-2">
                               {getDeviceIcon(user.device)}
-                              <Badge variant="outline" className="text-[8px]">
-                                {user.role || 'user'}
-                              </Badge>
+                              <Badge variant="outline" className="text-[8px]">{user.role || 'user'}</Badge>
                               <span className="text-[9px] text-muted-foreground">
                                 {formatDistanceToNow(new Date(user.online_at), { addSuffix: true })}
                               </span>
@@ -480,7 +657,6 @@ const LiveMonitoringDashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Recent Joins/Leaves */}
             <Card>
               <CardHeader className="py-3">
                 <CardTitle className="text-sm">Session Activity</CardTitle>
@@ -610,12 +786,7 @@ const LiveMonitoringDashboard = () => {
                         fontSize: 12 
                       }} 
                     />
-                    <Area 
-                      type="monotone" 
-                      dataKey="responseTime" 
-                      stroke="hsl(var(--primary))" 
-                      fill="hsl(var(--primary) / 0.2)" 
-                    />
+                    <Area type="monotone" dataKey="responseTime" stroke="hsl(var(--primary))" fill="hsl(var(--primary) / 0.2)" />
                   </AreaChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -641,20 +812,8 @@ const LiveMonitoringDashboard = () => {
                         fontSize: 12 
                       }} 
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="requests" 
-                      stroke="hsl(var(--accent))" 
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="errors" 
-                      stroke="hsl(var(--destructive))" 
-                      strokeWidth={2}
-                      dot={false}
-                    />
+                    <Line type="monotone" dataKey="requests" stroke="hsl(var(--accent))" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="errors" stroke="hsl(var(--destructive))" strokeWidth={2} dot={false} />
                   </RechartsLineChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -671,7 +830,7 @@ const LiveMonitoringDashboard = () => {
               { name: 'Edge Functions', status: 'healthy', latency: '89ms', icon: Zap },
               { name: 'Storage', status: 'healthy', latency: '23ms', icon: HardDrive },
               { name: 'Realtime', status: isConnected ? 'healthy' : 'degraded', latency: '5ms', icon: Radio },
-              { name: 'Authentication', status: 'healthy', latency: '34ms', icon: Users },
+              { name: 'Authentication', status: 'healthy', latency: '34ms', icon: Shield },
             ].map((service) => (
               <Card key={service.name} className={`border-l-4 ${
                 service.status === 'healthy' ? 'border-l-green-500' : 
