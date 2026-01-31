@@ -245,7 +245,7 @@ serve(async (req: Request): Promise<Response> => {
           value: updatedSchedules,
           description: 'Email scheduling configuration',
           is_public: false
-        }, { onConflict: 'category,key' });
+        }, { onConflict: 'key' });
     }
 
     // Handle manual send

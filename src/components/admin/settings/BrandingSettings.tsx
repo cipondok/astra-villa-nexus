@@ -82,9 +82,11 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
   const persistSetting = async (settingKey: string, value: string) => {
     const payload = { category: "general", key: settingKey, value, is_public: true, description: `System setting for ${settingKey}` };
     const attempt = async (onConflict: string) => supabase.from("system_settings").upsert(payload, { onConflict });
-    const { error: err1 } = await attempt("category,key");
+    // Current DB constraint is unique(key), so conflict must be on `key`.
+    // Keep a fallback for older schemas.
+    const { error: err1 } = await attempt("key");
     if (!err1) return;
-    const { error: err2 } = await attempt("key");
+    const { error: err2 } = await attempt("category,key");
     if (err2) throw err2;
   };
 
