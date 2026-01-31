@@ -240,27 +240,67 @@ const queryClient = new QueryClient({
 
 function App() {
   // Only show initial loading on first app load (not on navigation)
-  const [isLoading, setIsLoading] = useState(() => {
-    // Check if we've already loaded in this session
-    const hasLoaded = sessionStorage.getItem('astra_app_loaded');
-    return !hasLoaded;
-  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [welcomeEnabled, setWelcomeEnabled] = useState(true);
 
   useEffect(() => {
-    if (isLoading) {
-      const timer = setTimeout(() => {
+    const checkWelcomeScreen = async () => {
+      // Check if we've already loaded in this session
+      const hasLoaded = sessionStorage.getItem('astra_app_loaded');
+      
+      if (hasLoaded) {
         setIsLoading(false);
-        sessionStorage.setItem('astra_app_loaded', 'true');
-      }, 1500);
+        return;
+      }
 
-      return () => clearTimeout(timer);
-    }
-  }, [isLoading]);
+      try {
+        // Check if welcome screen is enabled in admin settings
+        const { createClient } = await import('@supabase/supabase-js');
+        const supabaseUrl = 'https://zymrajuuyyfkzdmptebl.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5bXJhanV1eXlma3pkbXB0ZWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNDM5NjksImV4cCI6MjA2NDcxOTk2OX0.jcdUvzLIWj7b0ay5UvuzJ7RVsAzkSWQQ_-o83kNaYYk';
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        
+        const { data } = await supabase
+          .from('system_settings')
+          .select('value')
+          .eq('key', 'welcomeScreenEnabled')
+          .maybeSingle();
+
+        // Default to enabled if not set, or parse the value
+        const isEnabled = data?.value === undefined || data?.value === null || data?.value === true || data?.value === 'true';
+        setWelcomeEnabled(isEnabled);
+
+        if (!isEnabled) {
+          setIsLoading(false);
+          sessionStorage.setItem('astra_app_loaded', 'true');
+          return;
+        }
+
+        // Show welcome screen for configured duration (default 2 seconds)
+        const timer = setTimeout(() => {
+          setIsLoading(false);
+          sessionStorage.setItem('astra_app_loaded', 'true');
+        }, 2000);
+
+        return () => clearTimeout(timer);
+      } catch (error) {
+        console.error('Error checking welcome screen setting:', error);
+        // On error, show welcome screen briefly then proceed
+        const timer = setTimeout(() => {
+          setIsLoading(false);
+          sessionStorage.setItem('astra_app_loaded', 'true');
+        }, 1500);
+        return () => clearTimeout(timer);
+      }
+    };
+
+    checkWelcomeScreen();
+  }, []);
 
   return (
     <ErrorBoundary>
       <AnimatePresence mode="wait">
-        {isLoading ? (
+        {isLoading && welcomeEnabled ? (
           <InitialLoadingScreen key="loading" />
         ) : (
           <Router key="app">
