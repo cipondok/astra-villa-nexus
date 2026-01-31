@@ -5078,6 +5078,333 @@ export type Database = {
         }
         Relationships: []
       }
+      mortgage_banks: {
+        Row: {
+          admin_fee: number | null
+          appraisal_fee: number | null
+          bank_code: string
+          bank_name: string
+          contact_phone: string | null
+          created_at: string
+          description: string | null
+          id: string
+          insurance_required: boolean | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          logo_url: string | null
+          max_loan_amount: number | null
+          max_loan_term_years: number | null
+          min_down_payment_percent: number | null
+          min_loan_amount: number | null
+          notary_fee_percent: number | null
+          processing_fee_percent: number | null
+          requirements: Json | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          admin_fee?: number | null
+          appraisal_fee?: number | null
+          bank_code: string
+          bank_name: string
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          insurance_required?: boolean | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          logo_url?: string | null
+          max_loan_amount?: number | null
+          max_loan_term_years?: number | null
+          min_down_payment_percent?: number | null
+          min_loan_amount?: number | null
+          notary_fee_percent?: number | null
+          processing_fee_percent?: number | null
+          requirements?: Json | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          admin_fee?: number | null
+          appraisal_fee?: number | null
+          bank_code?: string
+          bank_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          insurance_required?: boolean | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          logo_url?: string | null
+          max_loan_amount?: number | null
+          max_loan_term_years?: number | null
+          min_down_payment_percent?: number | null
+          min_loan_amount?: number | null
+          notary_fee_percent?: number | null
+          processing_fee_percent?: number | null
+          requirements?: Json | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      mortgage_inquiries: {
+        Row: {
+          admin_notes: string | null
+          bank_id: string
+          bank_notes: string | null
+          contacted_at: string | null
+          created_at: string
+          email: string
+          employment_type: string | null
+          full_name: string
+          id: string
+          loan_amount_requested: number | null
+          loan_term_requested: number | null
+          monthly_income: number | null
+          phone: string
+          processed_at: string | null
+          property_id: string | null
+          simulation_id: string | null
+          status: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          bank_id: string
+          bank_notes?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          email: string
+          employment_type?: string | null
+          full_name: string
+          id?: string
+          loan_amount_requested?: number | null
+          loan_term_requested?: number | null
+          monthly_income?: number | null
+          phone: string
+          processed_at?: string | null
+          property_id?: string | null
+          simulation_id?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          bank_id?: string
+          bank_notes?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          email?: string
+          employment_type?: string | null
+          full_name?: string
+          id?: string
+          loan_amount_requested?: number | null
+          loan_term_requested?: number | null
+          monthly_income?: number | null
+          phone?: string
+          processed_at?: string | null
+          property_id?: string | null
+          simulation_id?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mortgage_inquiries_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "mortgage_banks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_inquiries_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_inquiries_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_inquiries_simulation_id_fkey"
+            columns: ["simulation_id"]
+            isOneToOne: false
+            referencedRelation: "mortgage_simulations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mortgage_rates: {
+        Row: {
+          bank_id: string
+          conditions: string | null
+          created_at: string
+          id: string
+          interest_rate_year1: number
+          interest_rate_year2: number | null
+          interest_rate_year3_plus: number | null
+          is_active: boolean | null
+          max_loan_amount: number | null
+          max_term_years: number | null
+          min_loan_amount: number | null
+          min_term_years: number | null
+          promo_end_date: string | null
+          rate_name: string
+          rate_type: string
+          updated_at: string
+        }
+        Insert: {
+          bank_id: string
+          conditions?: string | null
+          created_at?: string
+          id?: string
+          interest_rate_year1: number
+          interest_rate_year2?: number | null
+          interest_rate_year3_plus?: number | null
+          is_active?: boolean | null
+          max_loan_amount?: number | null
+          max_term_years?: number | null
+          min_loan_amount?: number | null
+          min_term_years?: number | null
+          promo_end_date?: string | null
+          rate_name: string
+          rate_type: string
+          updated_at?: string
+        }
+        Update: {
+          bank_id?: string
+          conditions?: string | null
+          created_at?: string
+          id?: string
+          interest_rate_year1?: number
+          interest_rate_year2?: number | null
+          interest_rate_year3_plus?: number | null
+          is_active?: boolean | null
+          max_loan_amount?: number | null
+          max_term_years?: number | null
+          min_loan_amount?: number | null
+          min_term_years?: number | null
+          promo_end_date?: string | null
+          rate_name?: string
+          rate_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mortgage_rates_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "mortgage_banks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mortgage_simulations: {
+        Row: {
+          affordability_ratio: number | null
+          comparison_data: Json | null
+          created_at: string
+          down_payment: number
+          down_payment_percent: number
+          id: string
+          interest_rate: number
+          loan_amount: number
+          loan_term_years: number
+          monthly_income: number | null
+          monthly_payment: number
+          property_id: string | null
+          property_price: number
+          selected_bank_id: string | null
+          selected_rate_id: string | null
+          session_id: string | null
+          total_interest: number
+          total_payment: number
+          user_id: string | null
+        }
+        Insert: {
+          affordability_ratio?: number | null
+          comparison_data?: Json | null
+          created_at?: string
+          down_payment: number
+          down_payment_percent: number
+          id?: string
+          interest_rate: number
+          loan_amount: number
+          loan_term_years: number
+          monthly_income?: number | null
+          monthly_payment: number
+          property_id?: string | null
+          property_price: number
+          selected_bank_id?: string | null
+          selected_rate_id?: string | null
+          session_id?: string | null
+          total_interest: number
+          total_payment: number
+          user_id?: string | null
+        }
+        Update: {
+          affordability_ratio?: number | null
+          comparison_data?: Json | null
+          created_at?: string
+          down_payment?: number
+          down_payment_percent?: number
+          id?: string
+          interest_rate?: number
+          loan_amount?: number
+          loan_term_years?: number
+          monthly_income?: number | null
+          monthly_payment?: number
+          property_id?: string | null
+          property_price?: number
+          selected_bank_id?: string | null
+          selected_rate_id?: string | null
+          session_id?: string | null
+          total_interest?: number
+          total_payment?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mortgage_simulations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_simulations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_simulations_selected_bank_id_fkey"
+            columns: ["selected_bank_id"]
+            isOneToOne: false
+            referencedRelation: "mortgage_banks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_simulations_selected_rate_id_fkey"
+            columns: ["selected_rate_id"]
+            isOneToOne: false
+            referencedRelation: "mortgage_rates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       neighborhood_guides: {
         Row: {
           author_id: string | null
