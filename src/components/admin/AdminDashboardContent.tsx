@@ -78,6 +78,7 @@ const LiveChatManagement = lazy(() => import("./LiveChatManagement"));
 const InvestorSettingsHub = lazy(() => import("./InvestorSettingsHub"));
 const VideoVerificationReviewDashboard = lazy(() => import("./video-verification/VideoVerificationReviewDashboard"));
 const WebsiteDesignControl = lazy(() => import("./WebsiteDesignControl"));
+const RateLimitingDashboard = lazy(() => import("./RateLimitingDashboard"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -125,6 +126,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "daily-checkin": { label: "Daily Check-In", category: "Tokens" },
   "astra-token-hub": { label: "ASTRA Token Hub", category: "Tokens" },
   "tools-management": { label: "Tools Management", category: "System & Tools" },
+  "rate-limiting": { label: "API Rate Limiting", category: "System & Tools" },
   "customer-service-control": { label: "CS Control Panel", category: "Support" },
   "seo-settings": { label: "SEO Settings", category: "Settings" },
   "vendor-agent-control": { label: "Vendor/Agent Control", category: "Vendors & Services" },
@@ -313,6 +315,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <ASTRATokenHub />;
       case "tools-management":
         return <ToolsManagementDashboard />;
+      case "rate-limiting":
+        return <RateLimitingDashboard />;
       case "customer-service-control":
         return <CustomerServiceControlPanel />;
       case "seo-settings":

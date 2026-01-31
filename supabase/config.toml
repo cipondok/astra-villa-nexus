@@ -123,3 +123,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.check-search-notifications]
     verify_jwt = false
+
+  [functions.rate-limiter]
+    verify_jwt = false

@@ -1457,6 +1457,48 @@ export type Database = {
         }
         Relationships: []
       }
+      blocked_ips: {
+        Row: {
+          blocked_at: string
+          blocked_by: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          ip_address: string
+          is_permanent: boolean
+          notes: string | null
+          reason: string
+          updated_at: string
+          violation_count: number
+        }
+        Insert: {
+          blocked_at?: string
+          blocked_by?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          ip_address: string
+          is_permanent?: boolean
+          notes?: string | null
+          reason: string
+          updated_at?: string
+          violation_count?: number
+        }
+        Update: {
+          blocked_at?: string
+          blocked_by?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          ip_address?: string
+          is_permanent?: boolean
+          notes?: string | null
+          reason?: string
+          updated_at?: string
+          violation_count?: number
+        }
+        Relationships: []
+      }
       booking_payments: {
         Row: {
           amount: number
@@ -5485,6 +5527,60 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_api_keys: {
+        Row: {
+          allowed_endpoints: string[] | null
+          api_key: string
+          created_at: string
+          created_by: string | null
+          custom_limits: Json | null
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          is_whitelisted: boolean
+          last_used_at: string | null
+          partner_email: string
+          partner_name: string
+          rate_limit_multiplier: number
+          total_requests: number
+          updated_at: string
+        }
+        Insert: {
+          allowed_endpoints?: string[] | null
+          api_key: string
+          created_at?: string
+          created_by?: string | null
+          custom_limits?: Json | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_whitelisted?: boolean
+          last_used_at?: string | null
+          partner_email: string
+          partner_name: string
+          rate_limit_multiplier?: number
+          total_requests?: number
+          updated_at?: string
+        }
+        Update: {
+          allowed_endpoints?: string[] | null
+          api_key?: string
+          created_at?: string
+          created_by?: string | null
+          custom_limits?: Json | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_whitelisted?: boolean
+          last_used_at?: string | null
+          partner_email?: string
+          partner_name?: string
+          rate_limit_multiplier?: number
+          total_requests?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       partner_campaigns: {
         Row: {
           created_at: string | null
@@ -7570,6 +7666,162 @@ export type Database = {
           subscription?: Json
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      rate_limit_analytics: {
+        Row: {
+          avg_requests_per_ip: number | null
+          blocked_requests: number
+          created_at: string
+          endpoint_pattern: string
+          hour_bucket: string
+          id: string
+          top_ips: Json | null
+          total_requests: number
+          unique_ips: number
+          unique_users: number
+        }
+        Insert: {
+          avg_requests_per_ip?: number | null
+          blocked_requests?: number
+          created_at?: string
+          endpoint_pattern: string
+          hour_bucket: string
+          id?: string
+          top_ips?: Json | null
+          total_requests?: number
+          unique_ips?: number
+          unique_users?: number
+        }
+        Update: {
+          avg_requests_per_ip?: number | null
+          blocked_requests?: number
+          created_at?: string
+          endpoint_pattern?: string
+          hour_bucket?: string
+          id?: string
+          top_ips?: Json | null
+          total_requests?: number
+          unique_ips?: number
+          unique_users?: number
+        }
+        Relationships: []
+      }
+      rate_limit_config: {
+        Row: {
+          applies_to: string
+          burst_limit: number | null
+          created_at: string
+          endpoint_name: string
+          endpoint_pattern: string
+          id: string
+          is_active: boolean
+          requests_per_window: number
+          updated_at: string
+          window_seconds: number
+        }
+        Insert: {
+          applies_to?: string
+          burst_limit?: number | null
+          created_at?: string
+          endpoint_name: string
+          endpoint_pattern: string
+          id?: string
+          is_active?: boolean
+          requests_per_window?: number
+          updated_at?: string
+          window_seconds?: number
+        }
+        Update: {
+          applies_to?: string
+          burst_limit?: number | null
+          created_at?: string
+          endpoint_name?: string
+          endpoint_pattern?: string
+          id?: string
+          is_active?: boolean
+          requests_per_window?: number
+          updated_at?: string
+          window_seconds?: number
+        }
+        Relationships: []
+      }
+      rate_limit_entries: {
+        Row: {
+          created_at: string
+          endpoint_pattern: string
+          id: string
+          identifier: string
+          identifier_type: string
+          request_count: number
+          updated_at: string
+          window_end: string
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          endpoint_pattern: string
+          id?: string
+          identifier: string
+          identifier_type: string
+          request_count?: number
+          updated_at?: string
+          window_end: string
+          window_start?: string
+        }
+        Update: {
+          created_at?: string
+          endpoint_pattern?: string
+          id?: string
+          identifier?: string
+          identifier_type?: string
+          request_count?: number
+          updated_at?: string
+          window_end?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
+      rate_limit_violations: {
+        Row: {
+          created_at: string
+          endpoint_pattern: string
+          first_violation_at: string
+          id: string
+          identifier: string
+          identifier_type: string
+          last_violation_at: string
+          metadata: Json | null
+          request_path: string | null
+          user_agent: string | null
+          violation_count: number
+        }
+        Insert: {
+          created_at?: string
+          endpoint_pattern: string
+          first_violation_at?: string
+          id?: string
+          identifier: string
+          identifier_type: string
+          last_violation_at?: string
+          metadata?: Json | null
+          request_path?: string | null
+          user_agent?: string | null
+          violation_count?: number
+        }
+        Update: {
+          created_at?: string
+          endpoint_pattern?: string
+          first_violation_at?: string
+          id?: string
+          identifier?: string
+          identifier_type?: string
+          last_violation_at?: string
+          metadata?: Json | null
+          request_path?: string | null
+          user_agent?: string | null
+          violation_count?: number
         }
         Relationships: []
       }
@@ -14261,6 +14513,30 @@ export type Database = {
         }
         Relationships: []
       }
+      whitelisted_ips: {
+        Row: {
+          added_by: string | null
+          created_at: string
+          description: string | null
+          id: string
+          ip_address: string
+        }
+        Insert: {
+          added_by?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          ip_address: string
+        }
+        Update: {
+          added_by?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          ip_address?: string
+        }
+        Relationships: []
+      }
       xp_transactions: {
         Row: {
           action_type: string
@@ -14548,6 +14824,7 @@ export type Database = {
       clean_expired_otp_codes: { Args: never; Returns: undefined }
       cleanup_expired_sessions: { Args: never; Returns: undefined }
       cleanup_old_bpjs_responses: { Args: never; Returns: undefined }
+      cleanup_rate_limit_entries: { Args: never; Returns: undefined }
       create_account_lockout: {
         Args: {
           p_duration_minutes?: number
@@ -15308,6 +15585,8 @@ export type Database = {
       is_authenticated: { Args: never; Returns: boolean }
       is_authorized_support_user: { Args: never; Returns: boolean }
       is_current_user_admin: { Args: never; Returns: boolean }
+      is_ip_blocked: { Args: { check_ip: string }; Returns: boolean }
+      is_ip_whitelisted: { Args: { check_ip: string }; Returns: boolean }
       is_owner: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
       is_super_admin_by_email: { Args: never; Returns: boolean }
