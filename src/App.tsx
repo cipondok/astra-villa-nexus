@@ -92,6 +92,7 @@ const BecomePartner = lazy(() => import('@/pages/partners/BecomePartner'));
 const PartnerBenefits = lazy(() => import('@/pages/partners/PartnerBenefits'));
 const JointVentures = lazy(() => import('@/pages/partners/JointVentures'));
 const SharedSearch = lazy(() => import('@/pages/SharedSearch'));
+const AdvancedSearchPage = lazy(() => import('@/pages/AdvancedSearchPage'));
 const AstraDevelopment = lazy(() => import('@/pages/AstraDevelopment'));
 const BookingsPage = lazy(() => import('@/pages/BookingsPage'));
 const LocationMap = lazy(() => import('@/pages/LocationMap'));
@@ -132,6 +133,7 @@ const AppContent = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/search" element={<Search />} />
+            <Route path="/search-advanced" element={<AdvancedSearchPage />} />
             <Route path="/saved" element={<Saved />} />
             <Route path="/favorites" element={<Saved />} />
             <Route path="/profile" element={<Profile />} />
