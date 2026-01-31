@@ -394,16 +394,19 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
                     {/* Security & Monitoring */}
                     <div className="bg-red-50 dark:bg-red-950/50 p-2 rounded-lg">
                       <div className="px-2 py-1 text-xs font-bold text-red-700 dark:text-red-300 uppercase tracking-wide">🛡️ Security & Monitoring</div>
-                      <DropdownMenuItem onClick={() => onTabChange?.('security-monitor')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
+                      <DropdownMenuItem onClick={() => onTabChange?.('live-monitoring')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
+                        📡 Live Monitoring
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('security-monitoring')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
                         🛡️ Security Monitor
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onTabChange?.('auth-monitor')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
+                      <DropdownMenuItem onClick={() => onTabChange?.('authorization-monitoring')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
                         🔐 Auth Monitor
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onTabChange?.('alert-system')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
+                      <DropdownMenuItem onClick={() => onTabChange?.('admin-alerts')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
                         🚨 Alert System
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onTabChange?.('error-reporting')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
+                      <DropdownMenuItem onClick={() => onTabChange?.('error-monitoring')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
                         ⚠️ Error Reports
                       </DropdownMenuItem>
                     </div>
