@@ -149,6 +149,13 @@ export const navigationSections = {
       label: "Tools Management",
       icon: Wrench,
       description: "Manage various tools and utilities"
+    },
+    {
+      key: "rate-limiting",
+      label: "API Rate Limiting",
+      icon: Shield,
+      description: "Configure rate limits, manage blocked IPs, partner API keys, and monitor abuse",
+      badge: "New"
     }
   ],
 
