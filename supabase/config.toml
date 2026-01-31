@@ -129,3 +129,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.ai-property-recommendations]
     verify_jwt = false
+
+  [functions.email-scheduler]
+    verify_jwt = false

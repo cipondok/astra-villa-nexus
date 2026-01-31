@@ -6,7 +6,7 @@ const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 interface EmailRequest {
@@ -16,31 +16,83 @@ interface EmailRequest {
   variables?: Record<string, string>;
   html?: string;
   text?: string;
+  skipAuth?: boolean; // For system emails (webhooks, cron)
+}
+
+interface EmailConfig {
+  provider: string;
+  fromEmail: string;
+  fromName: string;
+  replyToEmail: string;
+  isEnabled: boolean;
+  siteUrl: string;
+  verificationBaseUrl: string;
+  passwordResetUrl: string;
+  loginUrl: string;
 }
 
 interface EmailBranding {
-  company_name: string;
-  company_logo_url: string;
-  company_website: string;
-  company_address: string;
-  company_phone: string;
-  support_email: string;
-  primary_color: string;
-  secondary_color: string;
-  social_facebook: string;
-  social_instagram: string;
-  social_twitter: string;
-  social_linkedin: string;
-  footer_text: string;
-  copyright_text: string;
+  companyName: string;
+  companyLogoUrl: string;
+  companyWebsite: string;
+  companyAddress: string;
+  companyPhone: string;
+  supportEmail: string;
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  socialFacebook: string;
+  socialInstagram: string;
+  socialTwitter: string;
+  socialLinkedin: string;
+  footerText: string;
+  copyrightText: string;
 }
 
-interface SMTPConfig {
-  fromEmail: string;
-  fromName: string;
-  replyToEmail?: string;
-  isEnabled: boolean;
+interface EmailTemplate {
+  id: string;
+  name: string;
+  subject: string;
+  preheader: string;
+  headerText: string;
+  body: string;
+  buttonText: string;
+  buttonUrl: string;
+  showSocialLinks: boolean;
+  showUnsubscribe: boolean;
+  isActive: boolean;
+  category: string;
 }
+
+const defaultConfig: EmailConfig = {
+  provider: 'resend',
+  fromEmail: 'noreply@astravilla.com',
+  fromName: 'ASTRA Villa',
+  replyToEmail: 'support@astravilla.com',
+  isEnabled: true,
+  siteUrl: 'https://astravilla.com',
+  verificationBaseUrl: 'https://astravilla.com/verify',
+  passwordResetUrl: 'https://astravilla.com/reset-password',
+  loginUrl: 'https://astravilla.com/auth'
+};
+
+const defaultBranding: EmailBranding = {
+  companyName: 'ASTRA Villa',
+  companyLogoUrl: '',
+  companyWebsite: 'https://astravilla.com',
+  companyAddress: 'Jakarta, Indonesia',
+  companyPhone: '+62 857 1600 8080',
+  supportEmail: 'support@astravilla.com',
+  primaryColor: '#B8860B',
+  secondaryColor: '#0066FF',
+  accentColor: '#D4AF37',
+  socialFacebook: '',
+  socialInstagram: '',
+  socialTwitter: '',
+  socialLinkedin: '',
+  footerText: 'Thank you for choosing ASTRA Villa - Your trusted partner in luxury real estate.',
+  copyrightText: '© 2024 ASTRA Villa. All rights reserved.'
+};
 
 serve(async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -48,123 +100,97 @@ serve(async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Require authentication
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      console.error('send-email: Missing Authorization header');
-      return new Response(
-        JSON.stringify({ success: false, error: 'Authorization required' }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // Verify the user's token
-    const supabaseAuth = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const { data: { user }, error: userError } = await supabaseAuth.auth.getUser();
-    if (userError || !user) {
-      console.error('send-email: Invalid user token', userError);
-      return new Response(
-        JSON.stringify({ success: false, error: 'Invalid or expired token' }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    console.log('send-email: Authenticated user:', user.id);
-
-    // Use service role for database operations
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { to, subject, template, variables, html, text }: EmailRequest = await req.json();
-    
-    // Validate recipient - only allow sending to the authenticated user's email or approved admin operations
-    const toAddresses = Array.isArray(to) ? to : [to];
-    
-    // Check if user is admin for sending to other recipients
-    const { data: isAdmin } = await supabase.rpc('has_role', { 
-      user_id: user.id, 
-      role: 'admin' 
-    });
-    
-    // Non-admins can only send to their own email
-    if (!isAdmin) {
-      const userEmail = user.email?.toLowerCase();
-      const allToOwnEmail = toAddresses.every(addr => addr.toLowerCase() === userEmail);
-      if (!allToOwnEmail) {
-        console.error('send-email: Non-admin attempted to send to other addresses');
+    const { to, subject, template, variables, html, text, skipAuth }: EmailRequest = await req.json();
+
+    // Authentication check (skip for system emails)
+    if (!skipAuth) {
+      const authHeader = req.headers.get('Authorization');
+      if (!authHeader) {
+        console.error('send-email: Missing Authorization header');
         return new Response(
-          JSON.stringify({ success: false, error: 'You can only send emails to your own address' }),
-          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          JSON.stringify({ success: false, error: 'Authorization required' }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
+      }
+
+      const supabaseAuth = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+        { global: { headers: { Authorization: authHeader } } }
+      );
+
+      const { data: { user }, error: userError } = await supabaseAuth.auth.getUser();
+      if (userError || !user) {
+        console.error('send-email: Invalid user token', userError);
+        return new Response(
+          JSON.stringify({ success: false, error: 'Invalid or expired token' }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Check admin permission for sending to others
+      const toAddresses = Array.isArray(to) ? to : [to];
+      const { data: isAdmin } = await supabase.rpc('has_role', { user_id: user.id, role: 'admin' });
+      
+      if (!isAdmin) {
+        const userEmail = user.email?.toLowerCase();
+        const allToOwnEmail = toAddresses.every(addr => addr.toLowerCase() === userEmail);
+        if (!allToOwnEmail) {
+          return new Response(
+            JSON.stringify({ success: false, error: 'You can only send emails to your own address' }),
+            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
       }
     }
 
-    // Fetch SMTP config
-    const { data: smtpData } = await supabase
+    // Fetch email config
+    const { data: configData } = await supabase
       .from('system_settings')
-      .select('value')
-      .eq('category', 'smtp')
-      .eq('key', 'config')
-      .single();
+      .select('key, value')
+      .eq('category', 'email')
+      .in('key', ['config', 'branding', 'templates']);
 
-    const smtpConfig = smtpData?.value as SMTPConfig || {
-      fromEmail: 'noreply@astravilla.com',
-      fromName: 'ASTRA Villa',
-      isEnabled: true
-    };
+    let config = { ...defaultConfig };
+    let branding = { ...defaultBranding };
+    let templates: EmailTemplate[] = [];
 
-    if (!smtpConfig.isEnabled) {
+    configData?.forEach((item) => {
+      if (item.key === 'config' && item.value) config = { ...config, ...(item.value as Partial<EmailConfig>) };
+      if (item.key === 'branding' && item.value) branding = { ...branding, ...(item.value as Partial<EmailBranding>) };
+      if (item.key === 'templates' && Array.isArray(item.value)) templates = item.value as EmailTemplate[];
+    });
+
+    if (!config.isEnabled) {
       console.log('Email sending is disabled');
-      return new Response(JSON.stringify({ success: false, error: 'Email sending is disabled' }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ success: false, error: 'Email sending is disabled' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    // Fetch branding
-    const { data: brandingData } = await supabase
-      .from('system_settings')
-      .select('value')
-      .eq('category', 'email_branding')
-      .eq('key', 'config')
-      .single();
-
-    const branding = brandingData?.value as EmailBranding || {
-      company_name: 'ASTRA Villa',
-      company_logo_url: '',
-      company_website: 'https://astravilla.com',
-      company_address: 'Jakarta, Indonesia',
-      company_phone: '+62 857 1600 8080',
-      support_email: 'support@astravilla.com',
-      primary_color: '#B8860B', // Gold - luxury accent
-      secondary_color: '#0066FF', // Samsung Blue
-      social_facebook: '',
-      social_instagram: '',
-      social_twitter: '',
-      social_linkedin: '',
-      footer_text: 'Thank you for choosing ASTRA Villa.',
-      copyright_text: '© 2024 ASTRA Villa. All rights reserved.'
-    };
-
-    // Merge branding variables
-    const allVariables = {
-      company_name: branding.company_name,
-      company_logo_url: branding.company_logo_url,
-      company_website: branding.company_website,
-      company_address: branding.company_address,
-      company_phone: branding.company_phone,
-      support_email: branding.support_email,
-      primary_color: branding.primary_color,
-      secondary_color: branding.secondary_color,
-      footer_text: branding.footer_text,
-      copyright_text: branding.copyright_text,
+    // Merge all variables
+    const allVariables: Record<string, string> = {
+      company_name: branding.companyName,
+      company_logo_url: branding.companyLogoUrl,
+      company_website: branding.companyWebsite,
+      company_address: branding.companyAddress,
+      company_phone: branding.companyPhone,
+      support_email: branding.supportEmail,
+      primary_color: branding.primaryColor,
+      secondary_color: branding.secondaryColor,
+      accent_color: branding.accentColor,
+      footer_text: branding.footerText,
+      copyright_text: branding.copyrightText,
+      site_url: config.siteUrl,
+      verification_url: config.verificationBaseUrl,
+      reset_url: config.passwordResetUrl,
+      login_url: config.loginUrl,
       ...variables
     };
 
@@ -173,53 +199,52 @@ serve(async (req: Request): Promise<Response> => {
     let emailSubject = subject;
 
     if (template) {
-      // Fetch template
-      const { data: templateData } = await supabase
-        .from('system_settings')
-        .select('value')
-        .eq('category', 'email_templates')
-        .eq('key', template)
-        .single();
+      const emailTemplate = templates.find(t => t.id === template);
+      
+      if (!emailTemplate) {
+        console.warn(`Template "${template}" not found, using default template`);
+      }
 
-      const emailTemplate = templateData?.value as {
-        subject?: string;
-        preheader?: string;
-        header_text?: string;
-        body?: string;
-        button_text?: string;
-        button_url?: string;
-        show_social_links?: boolean;
-        show_unsubscribe?: boolean;
-      } || {};
+      const tpl = emailTemplate || {
+        subject: subject || 'Notification from ASTRA Villa',
+        preheader: '',
+        headerText: '',
+        body: variables?.message || text || '',
+        buttonText: '',
+        buttonUrl: '',
+        showSocialLinks: true,
+        showUnsubscribe: true
+      };
 
-      emailSubject = emailSubject || emailTemplate.subject || 'Notification from ASTRA Villa';
+      emailSubject = emailSubject || tpl.subject;
       
       // Replace variables in template
       const replaceVariables = (text: string) => {
         let result = text;
         for (const [key, value] of Object.entries(allVariables)) {
-          result = result.replace(new RegExp(`{{${key}}}`, 'g'), value || '');
+          result = result.replace(new RegExp(`\\{\\{${key}\\}\\}`, 'g'), value || '');
         }
         return result;
       };
 
       emailSubject = replaceVariables(emailSubject);
-      const bodyContent = replaceVariables(emailTemplate.body || allVariables.message || '');
-      const headerText = replaceVariables(emailTemplate.header_text || '');
-      const buttonText = replaceVariables(emailTemplate.button_text || '');
-      const buttonUrl = replaceVariables(emailTemplate.button_url || '');
+      const bodyContent = replaceVariables(tpl.body);
+      const headerText = replaceVariables(tpl.headerText);
+      const buttonText = replaceVariables(tpl.buttonText);
+      const buttonUrl = replaceVariables(tpl.buttonUrl);
+      const preheader = replaceVariables(tpl.preheader);
 
-      // Build social links HTML with elegant styling
-      const socialLinksHtml = branding.social_facebook || branding.social_instagram || branding.social_twitter || branding.social_linkedin
+      // Build social links HTML
+      const socialLinksHtml = (branding.socialFacebook || branding.socialInstagram || branding.socialTwitter || branding.socialLinkedin) && tpl.showSocialLinks
         ? `<div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #E8E0D5;">
-            ${branding.social_facebook ? `<a href="${branding.social_facebook}" style="display: inline-block; margin: 0 8px; color: ${branding.primary_color}; text-decoration: none; font-size: 13px;">Facebook</a>` : ''}
-            ${branding.social_instagram ? `<a href="${branding.social_instagram}" style="display: inline-block; margin: 0 8px; color: ${branding.primary_color}; text-decoration: none; font-size: 13px;">Instagram</a>` : ''}
-            ${branding.social_twitter ? `<a href="${branding.social_twitter}" style="display: inline-block; margin: 0 8px; color: ${branding.primary_color}; text-decoration: none; font-size: 13px;">Twitter</a>` : ''}
-            ${branding.social_linkedin ? `<a href="${branding.social_linkedin}" style="display: inline-block; margin: 0 8px; color: ${branding.primary_color}; text-decoration: none; font-size: 13px;">LinkedIn</a>` : ''}
+            ${branding.socialFacebook ? `<a href="${branding.socialFacebook}" style="display: inline-block; margin: 0 8px; color: ${branding.primaryColor}; text-decoration: none; font-size: 13px;">Facebook</a>` : ''}
+            ${branding.socialInstagram ? `<a href="${branding.socialInstagram}" style="display: inline-block; margin: 0 8px; color: ${branding.primaryColor}; text-decoration: none; font-size: 13px;">Instagram</a>` : ''}
+            ${branding.socialTwitter ? `<a href="${branding.socialTwitter}" style="display: inline-block; margin: 0 8px; color: ${branding.primaryColor}; text-decoration: none; font-size: 13px;">Twitter</a>` : ''}
+            ${branding.socialLinkedin ? `<a href="${branding.socialLinkedin}" style="display: inline-block; margin: 0 8px; color: ${branding.primaryColor}; text-decoration: none; font-size: 13px;">LinkedIn</a>` : ''}
           </div>`
         : '';
 
-      // Luxury light email template matching website design
+      // Luxury email template
       emailHtml = `
 <!DOCTYPE html>
 <html lang="en">
@@ -227,7 +252,7 @@ serve(async (req: Request): Promise<Response> => {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  ${emailTemplate.preheader ? `<meta name="x-apple-disable-message-reformatting"><!--[if !mso]><!--><style>*{-webkit-text-size-adjust:none;}</style><!--<![endif]--><span style="display:none!important;visibility:hidden;mso-hide:all;font-size:0;max-height:0;line-height:0;">${replaceVariables(emailTemplate.preheader)}</span>` : ''}
+  ${preheader ? `<span style="display:none!important;visibility:hidden;mso-hide:all;font-size:0;max-height:0;line-height:0;">${preheader}</span>` : ''}
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
   </style>
@@ -236,27 +261,20 @@ serve(async (req: Request): Promise<Response> => {
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background: linear-gradient(135deg, #FFFBF5 0%, #FFF8F0 50%, #FFFDF9 100%);">
     <tr>
       <td align="center" style="padding: 40px 20px;">
-        <!-- Main Container -->
         <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="background-color: #FFFFFF; border-radius: 16px; overflow: hidden; max-width: 100%; box-shadow: 0 4px 24px rgba(184, 134, 11, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);">
           
-          <!-- Elegant Header with Gold Accent -->
+          <!-- Top Gold Accent -->
           <tr>
-            <td style="padding: 0;">
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td style="height: 4px; background: linear-gradient(90deg, ${branding.primary_color} 0%, #D4AF37 50%, ${branding.primary_color} 100%);"></td>
-                </tr>
-              </table>
-            </td>
+            <td style="height: 4px; background: linear-gradient(90deg, ${branding.primaryColor} 0%, ${branding.accentColor} 50%, ${branding.primaryColor} 100%);"></td>
           </tr>
           
           <!-- Logo Section -->
           <tr>
             <td align="center" style="padding: 32px 24px 24px 24px; background: linear-gradient(180deg, #FFFDF9 0%, #FFFFFF 100%);">
-              ${branding.company_logo_url 
-                ? `<img src="${branding.company_logo_url}" alt="${branding.company_name}" style="max-height: 56px; max-width: 200px;">`
+              ${branding.companyLogoUrl 
+                ? `<img src="${branding.companyLogoUrl}" alt="${branding.companyName}" style="max-height: 56px; max-width: 200px;">`
                 : `<div style="font-family: 'Playfair Display', Georgia, serif;">
-                    <span style="color: ${branding.primary_color}; font-size: 32px; font-weight: 600; letter-spacing: 2px;">ASTRA</span>
+                    <span style="color: ${branding.primaryColor}; font-size: 32px; font-weight: 600; letter-spacing: 2px;">ASTRA</span>
                     <span style="color: #2D2A26; font-size: 32px; font-weight: 400; letter-spacing: 2px;"> Villa</span>
                   </div>
                   <p style="margin: 8px 0 0 0; color: #8B7355; font-size: 12px; letter-spacing: 3px; text-transform: uppercase;">Luxury Real Estate</p>`
@@ -270,8 +288,8 @@ serve(async (req: Request): Promise<Response> => {
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                 <tr>
                   <td style="border-bottom: 1px solid #E8E0D5;"></td>
-                  <td style="padding: 0 16px;">
-                    <div style="width: 8px; height: 8px; background: ${branding.primary_color}; transform: rotate(45deg); display: inline-block;"></div>
+                  <td style="padding: 0 16px; width: 20px;">
+                    <div style="width: 8px; height: 8px; background: ${branding.primaryColor}; transform: rotate(45deg);"></div>
                   </td>
                   <td style="border-bottom: 1px solid #E8E0D5;"></td>
                 </tr>
@@ -286,7 +304,7 @@ serve(async (req: Request): Promise<Response> => {
               <div style="color: #4A4540; font-size: 15px; line-height: 1.7; white-space: pre-wrap;">${bodyContent}</div>
               ${buttonText && buttonUrl ? `
                 <div style="margin-top: 32px; text-align: center;">
-                  <a href="${buttonUrl}" style="display: inline-block; background: linear-gradient(135deg, ${branding.primary_color} 0%, #D4AF37 100%); color: #FFFFFF; padding: 14px 36px; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);">${buttonText}</a>
+                  <a href="${buttonUrl}" style="display: inline-block; background: linear-gradient(135deg, ${branding.primaryColor} 0%, ${branding.accentColor} 100%); color: #FFFFFF; padding: 14px 36px; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);">${buttonText}</a>
                 </div>
               ` : ''}
             </td>
@@ -295,24 +313,24 @@ serve(async (req: Request): Promise<Response> => {
           <!-- Footer Section -->
           <tr>
             <td style="background: linear-gradient(180deg, #FAFAF8 0%, #F5F3F0 100%); padding: 32px 40px; text-align: center;">
-              <p style="margin: 0 0 12px 0; color: #6B635A; font-size: 14px; font-style: italic;">${branding.footer_text}</p>
-              <p style="margin: 0 0 8px 0; color: #8B8580; font-size: 13px;">${branding.company_address}</p>
+              <p style="margin: 0 0 12px 0; color: #6B635A; font-size: 14px; font-style: italic;">${branding.footerText}</p>
+              <p style="margin: 0 0 8px 0; color: #8B8580; font-size: 13px;">${branding.companyAddress}</p>
               <p style="margin: 0; color: #8B8580; font-size: 13px;">
-                <a href="tel:${branding.company_phone}" style="color: ${branding.primary_color}; text-decoration: none;">${branding.company_phone}</a>
+                <a href="tel:${branding.companyPhone}" style="color: ${branding.primaryColor}; text-decoration: none;">${branding.companyPhone}</a>
                 &nbsp;•&nbsp;
-                <a href="mailto:${branding.support_email}" style="color: ${branding.primary_color}; text-decoration: none;">${branding.support_email}</a>
+                <a href="mailto:${branding.supportEmail}" style="color: ${branding.primaryColor}; text-decoration: none;">${branding.supportEmail}</a>
               </p>
-              ${emailTemplate.show_social_links !== false ? socialLinksHtml : ''}
+              ${socialLinksHtml}
               <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #E8E0D5;">
-                <p style="margin: 0; color: #A8A29E; font-size: 11px; letter-spacing: 0.5px;">${branding.copyright_text}</p>
-                ${emailTemplate.show_unsubscribe !== false ? `<p style="margin: 8px 0 0 0;"><a href="${branding.company_website}/unsubscribe" style="color: #A8A29E; font-size: 11px; text-decoration: underline;">Unsubscribe from emails</a></p>` : ''}
+                <p style="margin: 0; color: #A8A29E; font-size: 11px; letter-spacing: 0.5px;">${branding.copyrightText}</p>
+                ${tpl.showUnsubscribe ? `<p style="margin: 8px 0 0 0;"><a href="${branding.companyWebsite}/unsubscribe" style="color: #A8A29E; font-size: 11px; text-decoration: underline;">Unsubscribe from emails</a></p>` : ''}
               </div>
             </td>
           </tr>
           
           <!-- Bottom Gold Accent -->
           <tr>
-            <td style="height: 4px; background: linear-gradient(90deg, ${branding.primary_color} 0%, #D4AF37 50%, ${branding.primary_color} 100%);"></td>
+            <td style="height: 4px; background: linear-gradient(90deg, ${branding.primaryColor} 0%, ${branding.accentColor} 50%, ${branding.primaryColor} 100%);"></td>
           </tr>
         </table>
         
@@ -331,42 +349,37 @@ serve(async (req: Request): Promise<Response> => {
 </html>`;
     }
 
-    // Use fallback HTML if neither template nor custom HTML provided
+    // Fallback HTML if no template
     if (!emailHtml) {
       emailHtml = `
 <!DOCTYPE html>
 <html>
-<head>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;500&display=swap');
-  </style>
-</head>
-<body style="margin: 0; padding: 40px 20px; background: linear-gradient(135deg, #FFFBF5 0%, #FFF8F0 100%); font-family: 'Inter', -apple-system, sans-serif;">
+<body style="margin: 0; padding: 40px 20px; background: linear-gradient(135deg, #FFFBF5 0%, #FFF8F0 100%); font-family: -apple-system, sans-serif;">
   <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="margin: 0 auto; background: #FFFFFF; border-radius: 16px; box-shadow: 0 4px 24px rgba(184, 134, 11, 0.08);">
-    <tr><td style="height: 4px; background: linear-gradient(90deg, ${branding.primary_color} 0%, #D4AF37 100%);"></td></tr>
+    <tr><td style="height: 4px; background: linear-gradient(90deg, ${branding.primaryColor} 0%, ${branding.accentColor} 100%);"></td></tr>
     <tr>
       <td style="padding: 40px;">
-        <h1 style="margin: 0 0 24px 0; color: #2D2A26; font-family: 'Playfair Display', Georgia, serif; font-size: 24px;">${emailSubject}</h1>
-        <p style="margin: 0 0 24px 0; color: #4A4540; font-size: 15px; line-height: 1.7;">${text || variables?.message || 'No content'}</p>
+        <h1 style="margin: 0 0 24px 0; color: #2D2A26; font-size: 24px;">${emailSubject || 'Notification'}</h1>
+        <p style="margin: 0 0 24px 0; color: #4A4540; font-size: 15px; line-height: 1.7;">${text || allVariables.message || 'No content'}</p>
         <hr style="border: none; border-top: 1px solid #E8E0D5; margin: 24px 0;">
-        <p style="margin: 0; color: #8B8580; font-size: 12px;">${branding.company_name} • ${branding.copyright_text}</p>
+        <p style="margin: 0; color: #8B8580; font-size: 12px;">${branding.companyName} • ${branding.copyrightText}</p>
       </td>
     </tr>
-    <tr><td style="height: 4px; background: linear-gradient(90deg, ${branding.primary_color} 0%, #D4AF37 100%);"></td></tr>
+    <tr><td style="height: 4px; background: linear-gradient(90deg, ${branding.primaryColor} 0%, ${branding.accentColor} 100%);"></td></tr>
   </table>
 </body>
 </html>`;
     }
 
     // Send email via Resend
-    const fromAddress = `${smtpConfig.fromName} <${smtpConfig.fromEmail || 'onboarding@resend.dev'}>`;
+    const fromAddress = `${config.fromName} <${config.fromEmail || 'onboarding@resend.dev'}>`;
     
     const emailResponse = await resend.emails.send({
       from: fromAddress,
       to: Array.isArray(to) ? to : [to],
       subject: emailSubject || 'Notification',
       html: emailHtml,
-      reply_to: smtpConfig.replyToEmail || undefined,
+      reply_to: config.replyToEmail || undefined,
     });
 
     console.log("Email sent successfully:", emailResponse);
