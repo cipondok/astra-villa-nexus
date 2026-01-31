@@ -178,7 +178,7 @@ const BookingPaymentSettings = () => {
       for (const setting of settingsToSave) {
         await supabase
           .from('system_settings')
-          .upsert(setting, { onConflict: 'category,key' });
+          .upsert(setting, { onConflict: 'key' });
       }
 
       showSuccess('Settings saved successfully');

@@ -364,7 +364,7 @@ const EmailManagementSettings: React.FC = () => {
           value,
           description: `Email ${key} configuration`,
           is_public: false
-        }, { onConflict: 'category,key' });
+        }, { onConflict: 'key' });
 
       if (error) throw error;
       toast({ title: "Saved", description: `Email ${key} updated successfully` });

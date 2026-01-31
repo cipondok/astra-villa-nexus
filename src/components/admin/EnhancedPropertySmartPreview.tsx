@@ -340,7 +340,7 @@ const EnhancedPropertySmartPreview = () => {
           category: 'property_display',
           description: 'Enhanced property preview settings'
         }, {
-          onConflict: 'category,key'
+           onConflict: 'key'
         });
 
       if (error) {

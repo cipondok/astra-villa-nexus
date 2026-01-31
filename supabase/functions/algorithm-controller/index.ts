@@ -39,7 +39,7 @@ serve(async (req) => {
               value: setting.value,
               description: setting.description,
               updated_at: new Date().toISOString()
-            }, { onConflict: 'category,key' });
+            }, { onConflict: 'key' });
 
           if (error) {
             console.error('Error saving setting:', setting.key, error);
