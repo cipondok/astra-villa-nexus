@@ -6,17 +6,34 @@ export const useChatbotLogo = () => {
   const { data: chatbotLogoUrl, isLoading } = useQuery({
     queryKey: ["system-setting", "chatbotLogo"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Try "general" category first (where BrandingSettings saves)
+      const { data: generalData } = await supabase
         .from("system_settings")
         .select("value")
         .eq("category", "general")
         .eq("key", "chatbotLogo")
         .maybeSingle();
-      if (error) return null;
-      return (data?.value as string) || null;
+      
+      if (generalData?.value && typeof generalData.value === 'string' && generalData.value.trim() !== '') {
+        return generalData.value;
+      }
+
+      // Fallback to "branding" category for consistency
+      const { data: brandingData } = await supabase
+        .from("system_settings")
+        .select("value")
+        .eq("category", "branding")
+        .eq("key", "chatbotLogo")
+        .maybeSingle();
+      
+      if (brandingData?.value && typeof brandingData.value === 'string' && brandingData.value.trim() !== '') {
+        return brandingData.value;
+      }
+
+      return null;
     },
-    staleTime: 5_000,
-    refetchOnMount: "always",
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
   });
 
   return {
