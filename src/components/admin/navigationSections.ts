@@ -54,7 +54,8 @@ import {
   Building2,
   Landmark,
   Sparkles,
-  Palette
+  Palette,
+  Video
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -233,6 +234,13 @@ export const navigationSections = {
       label: "Verification Management",
       icon: ShieldCheck,
       description: "Approve and manage owner, agent, and agency verifications",
+      badge: "New"
+    },
+    {
+      key: "video-verification-review",
+      label: "Video Verification Review",
+      icon: Video,
+      description: "Review Level 4 video verification sessions for premium user identity verification",
       badge: "New"
     },
     {

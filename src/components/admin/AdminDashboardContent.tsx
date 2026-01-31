@@ -76,6 +76,7 @@ const BookingManagement = lazy(() => import("./BookingManagement"));
 const TransactionManagementTabs = lazy(() => import("./TransactionManagementTabs"));
 const LiveChatManagement = lazy(() => import("./LiveChatManagement"));
 const InvestorSettingsHub = lazy(() => import("./InvestorSettingsHub"));
+const VideoVerificationReviewDashboard = lazy(() => import("./video-verification/VideoVerificationReviewDashboard"));
 const WebsiteDesignControl = lazy(() => import("./WebsiteDesignControl"));
 
 interface AdminDashboardContentProps {
@@ -139,6 +140,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "booking-management": { label: "Booking Management", category: "Core Management" },
   "bpjs-api-settings": { label: "BPJS API", category: "System" },
   "admin-kyc-review": { label: "KYC Review", category: "Verification" },
+  "video-verification-review": { label: "Video Verification Review", category: "Verification" },
   "kyc-analytics": { label: "KYC Analytics", category: "Verification" },
   "bulk-kyc-operations": { label: "Bulk KYC", category: "Verification" },
   "document-ocr": { label: "Document OCR", category: "Verification" },
@@ -341,6 +343,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <BPJSAPISettings />;
       case "admin-kyc-review":
         return <AdminKYCReview />;
+      case "video-verification-review":
+        return <VideoVerificationReviewDashboard />;
       case "kyc-analytics":
         return <KYCAnalyticsDashboard />;
       case "bulk-kyc-operations":
