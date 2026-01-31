@@ -3,3 +3,6 @@ export { VerificationBadge, type BadgeTier, type VerificationLevel } from './Ver
 export { VerificationLevelCard, verificationLevels, type LevelConfig, type VerificationStep } from './VerificationLevelCard';
 export { VerificationProgress } from './VerificationProgress';
 export { TrustIndicator, CompactTrustBadge } from './TrustIndicator';
+
+// Video Verification Components
+export * from './video';

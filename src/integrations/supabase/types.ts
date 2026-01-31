@@ -13911,6 +13911,296 @@ export type Database = {
         }
         Relationships: []
       }
+      video_call_participants: {
+        Row: {
+          connection_quality: string | null
+          created_at: string | null
+          device_info: Json | null
+          id: string
+          is_active: boolean | null
+          joined_at: string | null
+          left_at: string | null
+          role: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          connection_quality?: string | null
+          created_at?: string | null
+          device_info?: Json | null
+          id?: string
+          is_active?: boolean | null
+          joined_at?: string | null
+          left_at?: string | null
+          role: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          connection_quality?: string | null
+          created_at?: string | null
+          device_info?: Json | null
+          id?: string
+          is_active?: boolean | null
+          joined_at?: string | null
+          left_at?: string | null
+          role?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_call_participants_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "video_verification_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_fraud_detection_logs: {
+        Row: {
+          confidence_score: number | null
+          created_at: string | null
+          details: Json | null
+          detection_type: string
+          flagged_by: string | null
+          id: string
+          resolution_notes: string | null
+          resolved: boolean | null
+          resolved_at: string | null
+          resolved_by: string | null
+          session_id: string
+          severity: string
+        }
+        Insert: {
+          confidence_score?: number | null
+          created_at?: string | null
+          details?: Json | null
+          detection_type: string
+          flagged_by?: string | null
+          id?: string
+          resolution_notes?: string | null
+          resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          session_id: string
+          severity: string
+        }
+        Update: {
+          confidence_score?: number | null
+          created_at?: string | null
+          details?: Json | null
+          detection_type?: string
+          flagged_by?: string | null
+          id?: string
+          resolution_notes?: string | null
+          resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          session_id?: string
+          severity?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_fraud_detection_logs_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "video_verification_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_session_documents: {
+        Row: {
+          created_at: string | null
+          document_name: string | null
+          document_type: string
+          document_url: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          ocr_data: Json | null
+          session_id: string
+          verification_notes: string | null
+          verification_status: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          document_name?: string | null
+          document_type: string
+          document_url: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          ocr_data?: Json | null
+          session_id: string
+          verification_notes?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          document_name?: string | null
+          document_type?: string
+          document_url?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          ocr_data?: Json | null
+          session_id?: string
+          verification_notes?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_session_documents_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "video_verification_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_verification_reviews: {
+        Row: {
+          badge_tier_awarded: string | null
+          created_at: string | null
+          decision: string
+          document_authenticity_score: number | null
+          fraud_detected: boolean | null
+          fraud_indicators: Json | null
+          id: string
+          identity_match_score: number | null
+          liveness_score: number | null
+          overall_confidence: number | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewer_id: string
+          session_id: string
+          trust_score_awarded: number | null
+        }
+        Insert: {
+          badge_tier_awarded?: string | null
+          created_at?: string | null
+          decision: string
+          document_authenticity_score?: number | null
+          fraud_detected?: boolean | null
+          fraud_indicators?: Json | null
+          id?: string
+          identity_match_score?: number | null
+          liveness_score?: number | null
+          overall_confidence?: number | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewer_id: string
+          session_id: string
+          trust_score_awarded?: number | null
+        }
+        Update: {
+          badge_tier_awarded?: string | null
+          created_at?: string | null
+          decision?: string
+          document_authenticity_score?: number | null
+          fraud_detected?: boolean | null
+          fraud_indicators?: Json | null
+          id?: string
+          identity_match_score?: number | null
+          liveness_score?: number | null
+          overall_confidence?: number | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewer_id?: string
+          session_id?: string
+          trust_score_awarded?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_verification_reviews_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "video_verification_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_verification_sessions: {
+        Row: {
+          agent_id: string | null
+          calendly_event_id: string | null
+          calendly_event_uri: string | null
+          consent_given: boolean | null
+          created_at: string | null
+          ended_at: string | null
+          fraud_flags: Json | null
+          id: string
+          meeting_url: string | null
+          metadata: Json | null
+          notes: string | null
+          recording_consent: boolean | null
+          recording_encrypted: boolean | null
+          recording_url: string | null
+          room_id: string | null
+          scheduled_at: string
+          started_at: string | null
+          status: string
+          updated_at: string | null
+          user_id: string
+          verification_type: string
+        }
+        Insert: {
+          agent_id?: string | null
+          calendly_event_id?: string | null
+          calendly_event_uri?: string | null
+          consent_given?: boolean | null
+          created_at?: string | null
+          ended_at?: string | null
+          fraud_flags?: Json | null
+          id?: string
+          meeting_url?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          recording_consent?: boolean | null
+          recording_encrypted?: boolean | null
+          recording_url?: string | null
+          room_id?: string | null
+          scheduled_at: string
+          started_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id: string
+          verification_type?: string
+        }
+        Update: {
+          agent_id?: string | null
+          calendly_event_id?: string | null
+          calendly_event_uri?: string | null
+          consent_given?: boolean | null
+          created_at?: string | null
+          ended_at?: string | null
+          fraud_flags?: Json | null
+          id?: string
+          meeting_url?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          recording_consent?: boolean | null
+          recording_encrypted?: boolean | null
+          recording_url?: string | null
+          room_id?: string | null
+          scheduled_at?: string
+          started_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+          verification_type?: string
+        }
+        Relationships: []
+      }
       web_analytics: {
         Row: {
           browser: string | null
