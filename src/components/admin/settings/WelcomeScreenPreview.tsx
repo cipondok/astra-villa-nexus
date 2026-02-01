@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Monitor, Smartphone, Bot, Loader2 } from 'lucide-react';
+import { Monitor, Smartphone, Bot, Loader2, Download, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import astraLogoFallback from '@/assets/astra-logo.png';
 
@@ -17,12 +17,22 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
   // Loading Popup: loadingPageLogo → welcomeScreenLogo → headerLogo → fallback (shown during data loading)
   const loadingPopupLogo = settings.loadingPageLogo || settings.welcomeScreenLogo || settings.headerLogo || astraLogoFallback;
   
+  // PWA Install: pwaLogo → headerLogo → fallback (shown in PWA install prompt)
+  const pwaLogo = settings.pwaLogo || settings.headerLogo || astraLogoFallback;
+  
   // Chatbot
   const chatbotLogo = settings.chatbotLogo || astraLogoFallback;
-
+  
   // Determine which logo key is being used for welcome screen
   const getWelcomeLogoKey = () => {
     if (settings.welcomeScreenLogo) return 'welcomeScreenLogo';
+    if (settings.headerLogo) return 'headerLogo';
+    return 'fallback';
+  };
+  
+  // Determine which logo key is being used for PWA
+  const getPwaLogoKey = () => {
+    if (settings.pwaLogo) return 'pwaLogo';
     if (settings.headerLogo) return 'headerLogo';
     return 'fallback';
   };
@@ -189,6 +199,59 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
             <div className="absolute bottom-1 left-1">
               <Badge variant="secondary" className="text-[7px] px-1 py-0 bg-background/80">
                 {getLoadingLogoKey()}
+              </Badge>
+            </div>
+          </div>
+        </div>
+
+        {/* PWA Install Prompt Preview */}
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <Download className="h-3 w-3 text-green-500" />
+            <span className="text-[10px] font-medium text-foreground">PWA Install Prompt</span>
+            <span className="text-[8px] text-muted-foreground">(browser install)</span>
+          </div>
+          <div className="relative overflow-hidden rounded-lg border border-border/50 bg-muted/20 h-24 flex items-end justify-end p-2">
+            {/* Simulated page behind */}
+            <div className="absolute inset-2 flex flex-col gap-1">
+              <div className="h-2 w-3/4 bg-muted/30 rounded" />
+              <div className="h-2 w-1/2 bg-muted/20 rounded" />
+            </div>
+            
+            {/* PWA Install Card Preview */}
+            <div className="relative z-10 bg-card/95 backdrop-blur rounded-lg border border-primary/20 shadow-lg p-2 w-32">
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 flex items-center justify-center overflow-hidden">
+                  <img 
+                    src={pwaLogo}
+                    alt="PWA Logo"
+                    className="w-6 h-6 object-contain"
+                    style={{ imageRendering: 'crisp-edges' }}
+                    onError={(e) => { (e.target as HTMLImageElement).src = astraLogoFallback; }}
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="text-[8px] font-medium text-foreground flex items-center gap-1">
+                    <Download className="h-2 w-2 text-primary" />
+                    Install App
+                  </p>
+                  <p className="text-[6px] text-muted-foreground">Better experience</p>
+                </div>
+              </div>
+              <div className="flex gap-1">
+                <div className="flex-1 h-4 bg-primary rounded text-[6px] text-primary-foreground flex items-center justify-center">
+                  Install
+                </div>
+                <div className="h-4 w-4 bg-muted rounded flex items-center justify-center">
+                  <X className="h-2 w-2" />
+                </div>
+              </div>
+            </div>
+            
+            {/* Label */}
+            <div className="absolute bottom-1 left-1">
+              <Badge variant="secondary" className="text-[7px] px-1 py-0 bg-background/80">
+                {getPwaLogoKey()}
               </Badge>
             </div>
           </div>
