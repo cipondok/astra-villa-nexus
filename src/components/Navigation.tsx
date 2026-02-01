@@ -258,10 +258,10 @@ const Navigation = () => {
               <Button 
                 size="sm"
                 onClick={() => navigate('/add-property')}
-                className="h-10 px-4 text-xs font-medium bg-gradient-to-r from-primary via-accent to-primary hover:from-accent hover:via-primary hover:to-accent text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 hover:scale-110 rounded-xl transition-all duration-500 border border-primary/20 backdrop-blur-sm animate-gradient"
+                className="group/add h-10 px-4 text-xs font-medium bg-gradient-to-r from-primary via-accent to-primary hover:from-accent hover:via-primary hover:to-accent text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 hover:scale-105 rounded-xl transition-all duration-700 ease-out border border-primary/20 backdrop-blur-sm animate-gradient"
               >
-                <Plus className="h-4 w-4 mr-1.5 transition-transform duration-500 group-hover:rotate-90" />
-                Add Property
+                <Plus className="h-4 w-4 mr-1.5 transition-transform duration-700 ease-out group-hover/add:rotate-180" />
+                <span className="transition-all duration-700 ease-out">Add Property</span>
               </Button>
 
               {/* Investment Dropdown */}
