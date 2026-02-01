@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,6 +18,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import NotificationDropdown from "./NotificationDropdown";
 import UserIconWithBadge from "./ui/UserIconWithBadge";
 import { useHeaderLogo } from "@/hooks/useBrandingLogo";
+import CrystalLogo3D from "./effects/CrystalLogo3D";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -170,32 +170,21 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               {hasCustomLogo ? (
-                <div className="relative group/logo overflow-visible rounded-sm" style={{ perspective: '800px' }}>
-                  {/* Logo - Subtle 3D tilt on hover */}
-                  <img 
-                    src={headerLogoUrl} 
-                    alt="ASTRA Villa" 
-                    className="relative h-14 md:h-16 lg:h-20 w-auto object-contain transition-all duration-500 ease-out group-hover/logo:scale-105 group-hover/logo:[transform:rotateY(-8deg)_rotateX(4deg)]"
-                    style={{ 
-                      imageRendering: 'crisp-edges',
-                      WebkitFontSmoothing: 'antialiased',
-                      transformStyle: 'preserve-3d',
-                      filter: 'drop-shadow(0 4px 8px hsl(var(--primary) / 0.15))'
-                    }}
-                    loading="eager"
-                    decoding="async"
-                  />
-                  
-                  {/* Soft shadow that responds to hover */}
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2/3 h-1.5 bg-foreground/10 rounded-full blur-sm transition-all duration-500 group-hover/logo:w-1/2 group-hover/logo:blur-md group-hover/logo:bg-foreground/5" />
-                  
-                  {/* Golden Sparkle Effects */}
-                  <div className="absolute top-0 right-1 pointer-events-none opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300">
-                    <Sparkles className="h-2.5 w-2.5 text-amber-400 animate-sparkle drop-shadow-[0_0_4px_rgba(251,191,36,0.8)]" />
-                  </div>
-                  <div className="absolute top-2 right-4 pointer-events-none opacity-0 group-hover/logo:opacity-100 transition-opacity duration-500 delay-100">
-                    <Sparkles className="h-2 w-2 text-yellow-300 animate-sparkle-delayed drop-shadow-[0_0_3px_rgba(253,224,71,0.8)]" />
-                  </div>
+                <div className="relative group/logo overflow-visible">
+                  {/* 3D Crystal Glass Cube with Logo */}
+                  <Suspense fallback={
+                    <img 
+                      src={headerLogoUrl} 
+                      alt="ASTRA Villa" 
+                      className="h-14 md:h-16 lg:h-20 w-auto object-contain"
+                    />
+                  }>
+                    <CrystalLogo3D 
+                      logoUrl={headerLogoUrl} 
+                      size="md"
+                      className="md:!h-24 md:!w-24 lg:!h-28 lg:!w-28"
+                    />
+                  </Suspense>
                 </div>
               ) : (
                 <>
