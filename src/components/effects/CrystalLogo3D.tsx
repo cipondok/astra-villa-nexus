@@ -9,15 +9,15 @@ interface CrystalLogo3DProps {
 
 const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DProps) => {
   const sizeClasses = {
-    sm: 'h-12 w-12',
-    md: 'h-16 w-16',
-    lg: 'h-20 w-20',
+    sm: 'h-8 w-8',
+    md: 'h-10 w-10',
+    lg: 'h-12 w-12',
   };
 
   const logoSizes = {
-    sm: 'h-8 w-8',
-    md: 'h-11 w-11',
-    lg: 'h-14 w-14',
+    sm: 'h-6 w-6',
+    md: 'h-7 w-7',
+    lg: 'h-9 w-9',
   };
 
   return (
@@ -28,29 +28,28 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
         className
       )}
     >
-      {/* Outer holographic glow ring - smaller */}
+      {/* Outer holographic glow ring - tight around logo */}
       <div 
-        className="absolute inset-2 rounded-full opacity-50"
+        className="absolute inset-0.5 rounded-full opacity-50"
         style={{
           background: 'conic-gradient(from 0deg, #ff006620, #00ffff30, #ff00ff25, #ffff0020, #00ff6620, #ff006620)',
-          filter: 'blur(6px)',
+          filter: 'blur(4px)',
           animation: 'spin 8s linear infinite',
         }}
       />
 
-      {/* Crystal bubble container */}
+      {/* Crystal bubble container - tight */}
       <div 
-        className="absolute inset-1 rounded-full"
+        className="absolute inset-0.5 rounded-full"
         style={{
           background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.3) 100%)',
-          backdropFilter: 'blur(12px)',
+          backdropFilter: 'blur(8px)',
           boxShadow: `
-            inset 0 2px 20px rgba(255,255,255,0.5),
-            inset 0 -2px 20px rgba(255,255,255,0.2),
-            0 8px 32px rgba(0,0,0,0.1),
-            0 0 60px rgba(100,200,255,0.15)
+            inset 0 1px 10px rgba(255,255,255,0.5),
+            inset 0 -1px 10px rgba(255,255,255,0.2),
+            0 4px 16px rgba(0,0,0,0.08)
           `,
-          border: '1.5px solid rgba(255,255,255,0.5)',
+          border: '1px solid rgba(255,255,255,0.4)',
         }}
       >
         {/* Static rainbow gradient overlay - no animation */}
@@ -63,35 +62,31 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
 
         {/* Inner glass refraction effect */}
         <div 
-          className="absolute inset-2 rounded-full"
+          className="absolute inset-1 rounded-full"
           style={{
-            background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, transparent 60%)',
+            background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6) 0%, transparent 50%)',
           }}
         />
 
         {/* Secondary refraction */}
         <div 
-          className="absolute bottom-2 right-2 w-1/3 h-1/4 rounded-full"
+          className="absolute bottom-1 right-1 w-1/4 h-1/5 rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%)',
-            filter: 'blur(2px)',
+            background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)',
+            filter: 'blur(1px)',
           }}
         />
       </div>
 
-      {/* Floating particles */}
+      {/* Floating particles - smaller */}
       <div className="absolute inset-0 pointer-events-none">
         <div 
-          className="absolute top-1 left-2 w-1 h-1 bg-white rounded-full"
+          className="absolute top-0.5 left-1 w-0.5 h-0.5 bg-white rounded-full"
           style={{ animation: 'float 4s ease-in-out infinite' }}
         />
         <div 
-          className="absolute top-3 right-1 w-0.5 h-0.5 bg-cyan-200 rounded-full"
+          className="absolute top-1.5 right-0.5 w-0.5 h-0.5 bg-cyan-200 rounded-full"
           style={{ animation: 'float 3s ease-in-out infinite 0.5s' }}
-        />
-        <div 
-          className="absolute bottom-2 left-3 w-0.5 h-0.5 bg-pink-200 rounded-full"
-          style={{ animation: 'float 3.5s ease-in-out infinite 1s' }}
         />
       </div>
 
