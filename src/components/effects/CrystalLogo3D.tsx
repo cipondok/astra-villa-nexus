@@ -37,8 +37,8 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
             width: '100%',
             height: '100%',
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
-            opacity: 0.6,
-            filter: 'blur(8px)',
+            opacity: 0.7,
+            filter: 'blur(2px)',
             animation: 'siri-blob-1 4s ease-in-out infinite',
           }}
         />
@@ -50,8 +50,8 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
             width: '90%',
             height: '90%',
             background: 'linear-gradient(225deg, #f093fb 0%, #667eea 50%, #00d4ff 100%)',
-            opacity: 0.5,
-            filter: 'blur(6px)',
+            opacity: 0.6,
+            filter: 'blur(1px)',
             animation: 'siri-blob-2 4s ease-in-out infinite 0.5s',
           }}
         />
@@ -63,8 +63,7 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
             width: '95%',
             height: '95%',
             background: 'linear-gradient(45deg, #00d4ff 0%, #764ba2 50%, #667eea 100%)',
-            opacity: 0.4,
-            filter: 'blur(5px)',
+            opacity: 0.5,
             animation: 'siri-blob-3 4s ease-in-out infinite 1s',
           }}
         />
