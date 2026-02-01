@@ -5,16 +5,16 @@ import {
   Environment, 
   Float,
   useTexture,
-  RoundedBox
+  Sphere
 } from '@react-three/drei';
 import * as THREE from 'three';
 
-interface CrystalCubeProps {
+interface CrystalBubbleProps {
   logoUrl: string;
 }
 
-const CrystalCube = ({ logoUrl }: CrystalCubeProps) => {
-  const cubeRef = useRef<THREE.Mesh>(null);
+const CrystalBubble = ({ logoUrl }: CrystalBubbleProps) => {
+  const bubbleRef = useRef<THREE.Mesh>(null);
   const logoRef = useRef<THREE.Mesh>(null);
   const hologramRef = useRef<THREE.Mesh>(null);
   
@@ -22,7 +22,7 @@ const CrystalCube = ({ logoUrl }: CrystalCubeProps) => {
   const logoTexture = useTexture(logoUrl);
   logoTexture.colorSpace = THREE.SRGBColorSpace;
   
-  // Holographic gradient material
+  // Vibrant holographic rainbow material
   const hologramMaterial = useMemo(() => {
     return new THREE.ShaderMaterial({
       uniforms: {
@@ -30,9 +30,11 @@ const CrystalCube = ({ logoUrl }: CrystalCubeProps) => {
       },
       vertexShader: `
         varying vec2 vUv;
+        varying vec3 vNormal;
         varying vec3 vPosition;
         void main() {
           vUv = uv;
+          vNormal = normalize(normalMatrix * normal);
           vPosition = position;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
@@ -40,6 +42,7 @@ const CrystalCube = ({ logoUrl }: CrystalCubeProps) => {
       fragmentShader: `
         uniform float time;
         varying vec2 vUv;
+        varying vec3 vNormal;
         varying vec3 vPosition;
         
         vec3 hsv2rgb(vec3 c) {
@@ -49,94 +52,109 @@ const CrystalCube = ({ logoUrl }: CrystalCubeProps) => {
         }
         
         void main() {
-          float hue = fract(vUv.x + vUv.y + time * 0.3);
-          vec3 rainbow = hsv2rgb(vec3(hue, 0.6, 0.9));
-          float alpha = 0.15 + 0.1 * sin(vUv.y * 10.0 + time * 2.0);
+          // Create vibrant rainbow based on viewing angle
+          float fresnel = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 2.0);
+          float hue = fract(vUv.x * 0.5 + vUv.y * 0.5 + vPosition.x * 0.3 + time * 0.15);
+          vec3 rainbow = hsv2rgb(vec3(hue, 0.9, 1.0));
+          
+          // Shimmer effect
+          float shimmer = sin(vUv.x * 20.0 + time * 3.0) * 0.5 + 0.5;
+          shimmer *= sin(vUv.y * 15.0 - time * 2.0) * 0.5 + 0.5;
+          
+          float alpha = fresnel * 0.4 + shimmer * 0.15;
           gl_FragColor = vec4(rainbow, alpha);
         }
       `,
       transparent: true,
-      side: THREE.DoubleSide,
+      side: THREE.BackSide,
+      depthWrite: false,
     });
   }, []);
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     
-    if (cubeRef.current) {
-      cubeRef.current.rotation.y = Math.sin(t * 0.3) * 0.15;
-      cubeRef.current.rotation.x = Math.cos(t * 0.2) * 0.08;
+    if (bubbleRef.current) {
+      bubbleRef.current.rotation.y = t * 0.15;
+      bubbleRef.current.rotation.x = Math.sin(t * 0.1) * 0.1;
     }
     
     if (hologramRef.current) {
       hologramMaterial.uniforms.time.value = t;
+      hologramRef.current.rotation.y = -t * 0.1;
     }
   });
 
   return (
     <Float
-      speed={2}
-      rotationIntensity={0.2}
-      floatIntensity={0.3}
-      floatingRange={[-0.05, 0.05]}
+      speed={1.5}
+      rotationIntensity={0.15}
+      floatIntensity={0.4}
+      floatingRange={[-0.08, 0.08]}
     >
       <group>
-        {/* Crystal Glass Cube */}
-        <RoundedBox
-          ref={cubeRef}
-          args={[1.6, 1.6, 1.6]}
-          radius={0.15}
-          smoothness={4}
-        >
+        {/* Crystal Glass Bubble - Outer */}
+        <Sphere ref={bubbleRef} args={[1, 64, 64]}>
           <MeshTransmissionMaterial
             backside
-            samples={16}
-            resolution={512}
-            transmission={0.95}
-            roughness={0.02}
-            thickness={0.5}
-            ior={1.5}
-            chromaticAberration={0.15}
-            anisotropy={0.3}
-            distortion={0.1}
-            distortionScale={0.2}
-            temporalDistortion={0.1}
+            samples={32}
+            resolution={1024}
+            transmission={0.98}
+            roughness={0}
+            thickness={0.8}
+            ior={2.4}
+            chromaticAberration={1}
+            anisotropy={0.5}
+            distortion={0.5}
+            distortionScale={0.8}
+            temporalDistortion={0.2}
             clearcoat={1}
-            attenuationDistance={0.5}
+            clearcoatRoughness={0}
+            attenuationDistance={0.3}
             attenuationColor="#ffffff"
-            color="#f0f8ff"
+            color="#f8faff"
+            reflectivity={1}
           />
-        </RoundedBox>
+        </Sphere>
 
-        {/* Holographic overlay on cube edges */}
-        <RoundedBox
-          ref={hologramRef}
-          args={[1.65, 1.65, 1.65]}
-          radius={0.15}
-          smoothness={4}
-          material={hologramMaterial}
-        />
+        {/* Holographic rainbow overlay */}
+        <Sphere ref={hologramRef} args={[1.02, 64, 64]} material={hologramMaterial} />
 
-        {/* Logo inside the cube */}
-        <mesh ref={logoRef} position={[0, 0, 0]}>
-          <planeGeometry args={[1.1, 1.1]} />
+        {/* Inner bubble layer for depth */}
+        <Sphere args={[0.85, 32, 32]}>
+          <meshPhysicalMaterial
+            transparent
+            opacity={0.1}
+            roughness={0}
+            metalness={0.1}
+            clearcoat={1}
+            side={THREE.BackSide}
+          />
+        </Sphere>
+
+        {/* Logo inside the bubble */}
+        <mesh ref={logoRef} position={[0, 0, 0.1]}>
+          <planeGeometry args={[1.2, 1.2]} />
           <meshStandardMaterial
             map={logoTexture}
             transparent
             alphaTest={0.1}
             side={THREE.DoubleSide}
             emissive="#d6b67e"
-            emissiveIntensity={0.2}
+            emissiveIntensity={0.3}
           />
         </mesh>
 
-        {/* Inner glow */}
-        <pointLight position={[0, 0, 0]} intensity={0.5} color="#d6b67e" distance={2} />
+        {/* Inner glow for logo */}
+        <pointLight position={[0, 0, 0.5]} intensity={0.8} color="#d6b67e" distance={2} />
         
-        {/* Subtle rim lights for holographic effect */}
-        <pointLight position={[1, 0.5, 1]} intensity={0.3} color="#00ffff" distance={3} />
-        <pointLight position={[-1, 0.5, -1]} intensity={0.3} color="#ff00ff" distance={3} />
-        <pointLight position={[0, -1, 0]} intensity={0.2} color="#ffff00" distance={3} />
+        {/* Rainbow rim lights for vibrant refraction */}
+        <pointLight position={[1.5, 0, 0]} intensity={0.6} color="#ff0066" distance={4} />
+        <pointLight position={[-1.5, 0, 0]} intensity={0.6} color="#00ffff" distance={4} />
+        <pointLight position={[0, 1.5, 0]} intensity={0.5} color="#ff00ff" distance={4} />
+        <pointLight position={[0, -1.5, 0]} intensity={0.5} color="#00ff66" distance={4} />
+        <pointLight position={[0, 0, 1.5]} intensity={0.4} color="#ffff00" distance={4} />
+        <pointLight position={[0, 0, -1.5]} intensity={0.4} color="#0066ff" distance={4} />
       </group>
     </Float>
   );
@@ -150,30 +168,32 @@ interface CrystalLogo3DProps {
 
 const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DProps) => {
   const sizeClasses = {
-    sm: 'h-14 w-14',
-    md: 'h-20 w-20',
-    lg: 'h-28 w-28',
+    sm: 'h-16 w-16',
+    md: 'h-24 w-24',
+    lg: 'h-32 w-32',
   };
 
   return (
     <div className={`${sizeClasses[size]} ${className}`}>
       <Canvas
-        camera={{ position: [0, 0, 4], fov: 35 }}
+        camera={{ position: [0, 0, 3.5], fov: 40 }}
         dpr={[1, 2]}
         gl={{ 
           antialias: true,
           alpha: true,
-          preserveDrawingBuffer: true
+          preserveDrawingBuffer: true,
+          powerPreference: 'high-performance'
         }}
         style={{ background: 'transparent' }}
       >
-        <ambientLight intensity={0.4} />
-        <directionalLight position={[5, 5, 5]} intensity={0.8} />
-        <directionalLight position={[-5, 5, -5]} intensity={0.4} color="#e0e7ff" />
+        <ambientLight intensity={0.3} />
+        <directionalLight position={[5, 5, 5]} intensity={1} />
+        <directionalLight position={[-5, 3, -5]} intensity={0.6} color="#e8e0ff" />
+        <directionalLight position={[0, -5, 0]} intensity={0.4} color="#ffe0f0" />
         
-        <CrystalCube logoUrl={logoUrl} />
+        <CrystalBubble logoUrl={logoUrl} />
         
-        <Environment preset="city" />
+        <Environment preset="studio" />
       </Canvas>
     </div>
   );
