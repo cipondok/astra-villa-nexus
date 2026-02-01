@@ -9,15 +9,21 @@ interface CrystalLogo3DProps {
 
 const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DProps) => {
   const sizeClasses = {
-    sm: 'h-8 w-8',
-    md: 'h-10 w-10',
-    lg: 'h-12 w-12',
+    sm: 'h-10 w-10',
+    md: 'h-12 w-12',
+    lg: 'h-14 w-14',
   };
 
   const logoSizes = {
     sm: 'h-6 w-6',
     md: 'h-7 w-7',
-    lg: 'h-9 w-9',
+    lg: 'h-8 w-8',
+  };
+
+  const ringSizes = {
+    sm: 'inset-[-2px]',
+    md: 'inset-[-3px]',
+    lg: 'inset-[-4px]',
   };
 
   return (
@@ -27,110 +33,98 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
         sizeClasses[size],
         className
       )}
+      style={{ perspective: '600px' }}
     >
-      {/* Outer holographic glow ring - tight around logo */}
+      {/* 3D Crystal Glass Ring - Outer */}
       <div 
-        className="absolute inset-0.5 rounded-full opacity-50"
+        className={cn("absolute rounded-full", ringSizes[size])}
         style={{
-          background: 'conic-gradient(from 0deg, #ff006620, #00ffff30, #ff00ff25, #ffff0020, #00ff6620, #ff006620)',
-          filter: 'blur(4px)',
-          animation: 'spin 8s linear infinite',
+          background: 'conic-gradient(from 180deg, rgba(100,200,255,0.6), rgba(200,100,255,0.5), rgba(255,150,200,0.5), rgba(100,255,200,0.5), rgba(100,200,255,0.6))',
+          animation: 'ring-rotate 6s linear infinite',
+          transformStyle: 'preserve-3d',
+          transform: 'rotateX(75deg)',
+          filter: 'blur(0.5px)',
         }}
       />
 
-      {/* Crystal bubble container - tight */}
+      {/* 3D Ring - Inner glow */}
       <div 
-        className="absolute inset-0.5 rounded-full"
+        className={cn("absolute rounded-full", ringSizes[size])}
         style={{
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.3) 100%)',
-          backdropFilter: 'blur(8px)',
-          boxShadow: `
-            inset 0 1px 10px rgba(255,255,255,0.5),
-            inset 0 -1px 10px rgba(255,255,255,0.2),
-            0 4px 16px rgba(0,0,0,0.08)
-          `,
-          border: '1px solid rgba(255,255,255,0.4)',
+          background: 'conic-gradient(from 0deg, rgba(255,255,255,0.8), rgba(200,220,255,0.4), rgba(255,255,255,0.8), rgba(220,200,255,0.4), rgba(255,255,255,0.8))',
+          animation: 'ring-rotate 6s linear infinite reverse',
+          transformStyle: 'preserve-3d',
+          transform: 'rotateX(75deg)',
+          opacity: 0.7,
         }}
-      >
-        {/* Static rainbow gradient overlay - no animation */}
-        <div 
-          className="absolute inset-0 rounded-full overflow-hidden opacity-30"
-          style={{
-            background: 'linear-gradient(135deg, rgba(255,100,150,0.2) 0%, rgba(100,200,255,0.2) 50%, rgba(150,255,150,0.2) 100%)',
-          }}
-        />
+      />
 
-        {/* Inner glass refraction effect */}
-        <div 
-          className="absolute inset-1 rounded-full"
-          style={{
-            background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6) 0%, transparent 50%)',
-          }}
-        />
+      {/* Glass sphere backdrop */}
+      <div 
+        className="absolute inset-0 rounded-full"
+        style={{
+          background: 'radial-gradient(circle at 35% 25%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 25%, rgba(200,220,255,0.15) 50%, rgba(180,200,255,0.1) 100%)',
+          boxShadow: `
+            inset 0 2px 15px rgba(255,255,255,0.8),
+            inset 0 -3px 10px rgba(100,150,255,0.15),
+            0 4px 20px rgba(100,150,255,0.15),
+            0 0 30px rgba(150,100,255,0.1)
+          `,
+          border: '1px solid rgba(255,255,255,0.6)',
+          backdropFilter: 'blur(8px)',
+        }}
+      />
 
-        {/* Secondary refraction */}
-        <div 
-          className="absolute bottom-1 right-1 w-1/4 h-1/5 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)',
-            filter: 'blur(1px)',
-          }}
-        />
-      </div>
+      {/* Top highlight reflection */}
+      <div 
+        className="absolute top-[8%] left-[15%] w-[35%] h-[20%] rounded-full"
+        style={{
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%)',
+          filter: 'blur(1px)',
+        }}
+      />
 
-      {/* Floating particles - smaller */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div 
-          className="absolute top-0.5 left-1 w-0.5 h-0.5 bg-white rounded-full"
-          style={{ animation: 'float 4s ease-in-out infinite' }}
-        />
-        <div 
-          className="absolute top-1.5 right-0.5 w-0.5 h-0.5 bg-cyan-200 rounded-full"
-          style={{ animation: 'float 3s ease-in-out infinite 0.5s' }}
-        />
-      </div>
+      {/* Bottom subtle reflection */}
+      <div 
+        className="absolute bottom-[12%] right-[18%] w-[20%] h-[10%] rounded-full"
+        style={{
+          background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)',
+        }}
+      />
 
-      {/* Logo - perfectly centered and clear */}
+      {/* Logo - centered and clear */}
       <div className="absolute inset-0 flex items-center justify-center z-10">
         <img
           src={logoUrl}
           alt="Logo"
-          className={cn(
-            'object-contain',
-            logoSizes[size]
-          )}
+          className={cn('object-contain', logoSizes[size])}
           style={{
             imageRendering: 'crisp-edges',
-            filter: 'drop-shadow(0 2px 8px rgba(214,182,126,0.4))',
+            filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.1))',
           }}
           loading="eager"
           decoding="async"
         />
       </div>
 
-      {/* Subtle pulsing glow behind logo */}
+      {/* Ambient glow */}
       <div 
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        style={{ animation: 'pulse-glow 2.5s ease-in-out infinite' }}
-      >
-        <div 
-          className={cn('rounded-full bg-amber-400/20 blur-md', logoSizes[size])}
-        />
-      </div>
+        className="absolute inset-[-20%] rounded-full pointer-events-none -z-10"
+        style={{
+          background: 'radial-gradient(circle, rgba(150,180,255,0.15) 0%, transparent 60%)',
+          animation: 'ambient-pulse 3s ease-in-out infinite',
+        }}
+      />
 
       {/* CSS Animations */}
       <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) scale(1); opacity: 0.6; }
-          50% { transform: translateY(-4px) scale(1.2); opacity: 1; }
+        @keyframes ring-rotate {
+          from { transform: rotateX(75deg) rotateZ(0deg); }
+          to { transform: rotateX(75deg) rotateZ(360deg); }
         }
-        @keyframes pulse-glow {
-          0%, 100% { transform: scale(0.9); opacity: 0.4; }
-          50% { transform: scale(1.1); opacity: 0.7; }
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+        @keyframes ambient-pulse {
+          0%, 100% { opacity: 0.6; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.05); }
         }
       `}</style>
     </div>
