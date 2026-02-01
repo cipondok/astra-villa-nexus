@@ -28,12 +28,12 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
         className
       )}
     >
-      {/* Outer holographic glow ring */}
+      {/* Outer holographic glow ring - smaller */}
       <div 
-        className="absolute inset-0 rounded-full opacity-60 transition-opacity duration-500"
+        className="absolute inset-2 rounded-full opacity-50"
         style={{
           background: 'conic-gradient(from 0deg, #ff006620, #00ffff30, #ff00ff25, #ffff0020, #00ff6620, #ff006620)',
-          filter: 'blur(8px)',
+          filter: 'blur(6px)',
           animation: 'spin 8s linear infinite',
         }}
       />
@@ -53,12 +53,11 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
           border: '1.5px solid rgba(255,255,255,0.5)',
         }}
       >
-        {/* Rainbow shimmer overlay */}
+        {/* Static rainbow gradient overlay - no animation */}
         <div 
-          className="absolute inset-0 rounded-full overflow-hidden opacity-40 transition-opacity duration-300"
+          className="absolute inset-0 rounded-full overflow-hidden opacity-30"
           style={{
-            background: 'linear-gradient(135deg, transparent 20%, rgba(255,100,150,0.3) 30%, rgba(100,200,255,0.3) 50%, rgba(150,255,150,0.3) 70%, transparent 80%)',
-            animation: 'shimmer 3s ease-in-out infinite',
+            background: 'linear-gradient(135deg, rgba(255,100,150,0.2) 0%, rgba(100,200,255,0.2) 50%, rgba(150,255,150,0.2) 100%)',
           }}
         />
 
@@ -126,10 +125,6 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
 
       {/* CSS Animations */}
       <style>{`
-        @keyframes shimmer {
-          0%, 100% { transform: translateX(-100%) rotate(0deg); }
-          50% { transform: translateX(100%) rotate(5deg); }
-        }
         @keyframes float {
           0%, 100% { transform: translateY(0px) scale(1); opacity: 0.6; }
           50% { transform: translateY(-4px) scale(1.2); opacity: 1; }
