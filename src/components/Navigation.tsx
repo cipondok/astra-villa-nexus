@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -171,20 +171,11 @@ const Navigation = () => {
             >
               {hasCustomLogo ? (
                 <div className="relative group/logo overflow-visible">
-                  {/* 3D Crystal Glass Cube with Logo */}
-                  <Suspense fallback={
-                    <img 
-                      src={headerLogoUrl} 
-                      alt="ASTRA Villa" 
-                      className="h-14 md:h-16 lg:h-20 w-auto object-contain"
-                    />
-                  }>
-                    <CrystalLogo3D 
-                      logoUrl={headerLogoUrl} 
-                      size="md"
-                      className="md:!h-24 md:!w-24 lg:!h-28 lg:!w-28"
-                    />
-                  </Suspense>
+                  {/* Crystal Glass Logo Effect */}
+                  <CrystalLogo3D 
+                    logoUrl={headerLogoUrl} 
+                    size="lg"
+                  />
                 </div>
               ) : (
                 <>

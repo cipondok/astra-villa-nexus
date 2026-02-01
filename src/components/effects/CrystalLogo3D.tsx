@@ -1,106 +1,5 @@
-import React, { useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { 
-  MeshTransmissionMaterial, 
-  Environment, 
-  Float,
-  useTexture
-} from '@react-three/drei';
-import * as THREE from 'three';
-
-interface CrystalBubbleProps {
-  logoUrl: string;
-}
-
-const CrystalBubble = ({ logoUrl }: CrystalBubbleProps) => {
-  const bubbleRef = useRef<THREE.Mesh>(null);
-  const logoRef = useRef<THREE.Mesh>(null);
-  
-  // Load logo texture
-  const logoTexture = useTexture(logoUrl);
-  logoTexture.colorSpace = THREE.SRGBColorSpace;
-
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    
-    if (bubbleRef.current) {
-      bubbleRef.current.rotation.y = t * 0.12;
-      bubbleRef.current.rotation.x = Math.sin(t * 0.08) * 0.05;
-    }
-  });
-
-  return (
-    <Float
-      speed={1.2}
-      rotationIntensity={0.1}
-      floatIntensity={0.3}
-      floatingRange={[-0.05, 0.05]}
-    >
-      <group>
-        {/* Logo - positioned in FRONT for maximum clarity */}
-        <mesh ref={logoRef} position={[0, 0, 0.6]}>
-          <planeGeometry args={[1.4, 1.4]} />
-          <meshStandardMaterial
-            map={logoTexture}
-            transparent
-            alphaTest={0.1}
-            side={THREE.DoubleSide}
-            emissive="#d6b67e"
-            emissiveIntensity={0.4}
-            toneMapped={false}
-          />
-        </mesh>
-
-        {/* Crystal Glass Bubble - Behind logo with subtle effect */}
-        <mesh ref={bubbleRef} position={[0, 0, -0.2]}>
-          <sphereGeometry args={[1.1, 64, 64]} />
-          <MeshTransmissionMaterial
-            backside
-            samples={8}
-            resolution={256}
-            transmission={0.85}
-            roughness={0.05}
-            thickness={0.3}
-            ior={1.3}
-            chromaticAberration={0.4}
-            anisotropy={0.2}
-            distortion={0.1}
-            distortionScale={0.15}
-            temporalDistortion={0.05}
-            clearcoat={1}
-            attenuationDistance={1}
-            attenuationColor="#ffffff"
-            color="#f0f8ff"
-          />
-        </mesh>
-
-        {/* Subtle iridescent rim */}
-        <mesh position={[0, 0, -0.2]}>
-          <sphereGeometry args={[1.12, 48, 48]} />
-          <meshPhysicalMaterial
-            transparent
-            opacity={0.12}
-            roughness={0}
-            metalness={0.3}
-            clearcoat={1}
-            iridescence={1}
-            iridescenceIOR={2}
-            iridescenceThicknessRange={[100, 600]}
-            side={THREE.FrontSide}
-          />
-        </mesh>
-
-        {/* Bright lighting for logo visibility */}
-        <pointLight position={[0, 0, 1.5]} intensity={1.5} color="#ffffff" distance={4} />
-        <pointLight position={[0, 0, -1]} intensity={0.5} color="#d6b67e" distance={3} />
-        
-        {/* Subtle colored rim lights */}
-        <pointLight position={[1.2, 0, 0]} intensity={0.25} color="#00ffff" distance={3} />
-        <pointLight position={[-1.2, 0, 0]} intensity={0.25} color="#ff00ff" distance={3} />
-      </group>
-    </Float>
-  );
-};
+import React from 'react';
+import { cn } from '@/lib/utils';
 
 interface CrystalLogo3DProps {
   logoUrl: string;
@@ -110,33 +9,143 @@ interface CrystalLogo3DProps {
 
 const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DProps) => {
   const sizeClasses = {
-    sm: 'h-16 w-16',
-    md: 'h-24 w-24',
-    lg: 'h-32 w-32',
+    sm: 'h-14 w-14',
+    md: 'h-20 w-20',
+    lg: 'h-28 w-28',
+  };
+
+  const logoSizes = {
+    sm: 'h-8 w-8',
+    md: 'h-12 w-12',
+    lg: 'h-18 w-18',
   };
 
   return (
-    <div className={`${sizeClasses[size]} ${className}`}>
-      <Canvas
-        camera={{ position: [0, 0, 3.2], fov: 45 }}
-        dpr={[1, 2]}
-        gl={{ 
-          antialias: true,
-          alpha: true,
-          preserveDrawingBuffer: true,
-          powerPreference: 'high-performance'
+    <div 
+      className={cn(
+        'relative group/crystal cursor-pointer',
+        sizeClasses[size],
+        className
+      )}
+      style={{ perspective: '1000px' }}
+    >
+      {/* Outer holographic glow ring */}
+      <div 
+        className="absolute inset-0 rounded-full opacity-60 group-hover/crystal:opacity-100 transition-opacity duration-500 animate-spin-slow"
+        style={{
+          background: 'conic-gradient(from 0deg, #ff006620, #00ffff30, #ff00ff25, #ffff0020, #00ff6620, #ff006620)',
+          filter: 'blur(8px)',
+          animation: 'spin 8s linear infinite',
         }}
-        style={{ background: 'transparent' }}
+      />
+
+      {/* Crystal bubble container */}
+      <div 
+        className="absolute inset-1 rounded-full transition-all duration-500 group-hover/crystal:scale-105"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.3) 100%)',
+          backdropFilter: 'blur(12px)',
+          boxShadow: `
+            inset 0 2px 20px rgba(255,255,255,0.5),
+            inset 0 -2px 20px rgba(255,255,255,0.2),
+            0 8px 32px rgba(0,0,0,0.1),
+            0 0 60px rgba(100,200,255,0.15)
+          `,
+          border: '1.5px solid rgba(255,255,255,0.5)',
+          transformStyle: 'preserve-3d',
+          transform: 'rotateX(0deg) rotateY(0deg)',
+        }}
       >
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[0, 0, 5]} intensity={1.2} />
-        <directionalLight position={[5, 5, 5]} intensity={0.6} />
-        <directionalLight position={[-5, 3, -5]} intensity={0.4} color="#e8e0ff" />
-        
-        <CrystalBubble logoUrl={logoUrl} />
-        
-        <Environment preset="studio" />
-      </Canvas>
+        {/* Rainbow shimmer overlay */}
+        <div 
+          className="absolute inset-0 rounded-full overflow-hidden opacity-40 group-hover/crystal:opacity-70 transition-opacity duration-300"
+          style={{
+            background: 'linear-gradient(135deg, transparent 20%, rgba(255,100,150,0.3) 30%, rgba(100,200,255,0.3) 50%, rgba(150,255,150,0.3) 70%, transparent 80%)',
+            animation: 'shimmer 3s ease-in-out infinite',
+          }}
+        />
+
+        {/* Inner glass refraction effect */}
+        <div 
+          className="absolute inset-2 rounded-full"
+          style={{
+            background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, transparent 60%)',
+          }}
+        />
+
+        {/* Secondary refraction */}
+        <div 
+          className="absolute bottom-2 right-2 w-1/3 h-1/4 rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%)',
+            filter: 'blur(2px)',
+          }}
+        />
+      </div>
+
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div 
+          className="absolute top-1 left-2 w-1 h-1 bg-white rounded-full"
+          style={{ animation: 'float 4s ease-in-out infinite' }}
+        />
+        <div 
+          className="absolute top-3 right-1 w-0.5 h-0.5 bg-cyan-200 rounded-full"
+          style={{ animation: 'float 3s ease-in-out infinite 0.5s' }}
+        />
+        <div 
+          className="absolute bottom-2 left-3 w-0.5 h-0.5 bg-pink-200 rounded-full"
+          style={{ animation: 'float 3.5s ease-in-out infinite 1s' }}
+        />
+      </div>
+
+      {/* Logo - perfectly centered and clear */}
+      <div className="absolute inset-0 flex items-center justify-center z-10">
+        <img
+          src={logoUrl}
+          alt="Logo"
+          className={cn(
+            'object-contain transition-all duration-500 group-hover/crystal:scale-110',
+            logoSizes[size]
+          )}
+          style={{
+            imageRendering: 'crisp-edges',
+            filter: 'drop-shadow(0 2px 8px rgba(214,182,126,0.4))',
+          }}
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+
+      {/* Subtle pulsing glow behind logo */}
+      <div 
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{ animation: 'pulse-glow 2.5s ease-in-out infinite' }}
+      >
+        <div 
+          className={cn('rounded-full bg-amber-400/20 blur-md', logoSizes[size])}
+        />
+      </div>
+
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes shimmer {
+          0%, 100% { transform: translateX(-100%) rotate(0deg); }
+          50% { transform: translateX(100%) rotate(5deg); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) scale(1); opacity: 0.6; }
+          50% { transform: translateY(-4px) scale(1.2); opacity: 1; }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { transform: scale(0.9); opacity: 0.4; }
+          50% { transform: scale(1.1); opacity: 0.7; }
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };
