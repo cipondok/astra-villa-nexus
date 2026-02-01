@@ -8,123 +8,86 @@ interface CrystalLogo3DProps {
 }
 
 const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DProps) => {
-  const sizeClasses = {
-    sm: 'h-10 w-10',
-    md: 'h-12 w-12',
-    lg: 'h-14 w-14',
+  const containerSizes = {
+    sm: 'h-10 gap-1',
+    md: 'h-12 gap-1.5',
+    lg: 'h-14 gap-2',
   };
 
   const logoSizes = {
+    sm: 'h-8 w-8',
+    md: 'h-10 w-10',
+    lg: 'h-12 w-12',
+  };
+
+  const ringSizes = {
     sm: 'h-6 w-6',
     md: 'h-7 w-7',
     lg: 'h-8 w-8',
   };
 
-  const ringSizes = {
-    sm: 'inset-[-2px]',
-    md: 'inset-[-3px]',
-    lg: 'inset-[-4px]',
-  };
-
   return (
     <div 
       className={cn(
-        'relative cursor-pointer',
-        sizeClasses[size],
+        'flex items-center cursor-pointer',
+        containerSizes[size],
         className
       )}
-      style={{ perspective: '600px' }}
     >
-      {/* 3D Crystal Glass Ring - Outer */}
-      <div 
-        className={cn("absolute rounded-full", ringSizes[size])}
+      {/* Logo - clear and visible */}
+      <img
+        src={logoUrl}
+        alt="Logo"
+        className={cn('object-contain flex-shrink-0', logoSizes[size])}
         style={{
-          background: 'conic-gradient(from 180deg, rgba(100,200,255,0.6), rgba(200,100,255,0.5), rgba(255,150,200,0.5), rgba(100,255,200,0.5), rgba(100,200,255,0.6))',
-          animation: 'ring-rotate 6s linear infinite',
-          transformStyle: 'preserve-3d',
-          transform: 'rotateX(75deg)',
-          filter: 'blur(0.5px)',
+          imageRendering: 'crisp-edges',
+          filter: 'drop-shadow(0 2px 8px rgba(214,182,126,0.3))',
         }}
+        loading="eager"
+        decoding="async"
       />
 
-      {/* 3D Ring - Inner glow */}
+      {/* Single 3D Crystal Glass Ring - next to logo */}
       <div 
-        className={cn("absolute rounded-full", ringSizes[size])}
-        style={{
-          background: 'conic-gradient(from 0deg, rgba(255,255,255,0.8), rgba(200,220,255,0.4), rgba(255,255,255,0.8), rgba(220,200,255,0.4), rgba(255,255,255,0.8))',
-          animation: 'ring-rotate 6s linear infinite reverse',
-          transformStyle: 'preserve-3d',
-          transform: 'rotateX(75deg)',
-          opacity: 0.7,
-        }}
-      />
-
-      {/* Glass sphere backdrop */}
-      <div 
-        className="absolute inset-0 rounded-full"
-        style={{
-          background: 'radial-gradient(circle at 35% 25%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 25%, rgba(200,220,255,0.15) 50%, rgba(180,200,255,0.1) 100%)',
-          boxShadow: `
-            inset 0 2px 15px rgba(255,255,255,0.8),
-            inset 0 -3px 10px rgba(100,150,255,0.15),
-            0 4px 20px rgba(100,150,255,0.15),
-            0 0 30px rgba(150,100,255,0.1)
-          `,
-          border: '1px solid rgba(255,255,255,0.6)',
-          backdropFilter: 'blur(8px)',
-        }}
-      />
-
-      {/* Top highlight reflection */}
-      <div 
-        className="absolute top-[8%] left-[15%] w-[35%] h-[20%] rounded-full"
-        style={{
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%)',
-          filter: 'blur(1px)',
-        }}
-      />
-
-      {/* Bottom subtle reflection */}
-      <div 
-        className="absolute bottom-[12%] right-[18%] w-[20%] h-[10%] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)',
-        }}
-      />
-
-      {/* Logo - centered and clear */}
-      <div className="absolute inset-0 flex items-center justify-center z-10">
-        <img
-          src={logoUrl}
-          alt="Logo"
-          className={cn('object-contain', logoSizes[size])}
+        className={cn('relative flex-shrink-0', ringSizes[size])}
+        style={{ perspective: '400px' }}
+      >
+        <div 
+          className="absolute inset-0 rounded-full"
           style={{
-            imageRendering: 'crisp-edges',
-            filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.1))',
+            border: '3px solid transparent',
+            borderRadius: '50%',
+            background: 'conic-gradient(from 0deg, #60a5fa, #a78bfa, #f472b6, #34d399, #60a5fa) border-box',
+            WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+            WebkitMaskComposite: 'xor',
+            mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+            maskComposite: 'exclude',
+            transformStyle: 'preserve-3d',
+            transform: 'rotateX(70deg)',
+            animation: 'ring-spin 4s linear infinite',
+            boxShadow: '0 0 15px rgba(150,120,255,0.4)',
           }}
-          loading="eager"
-          decoding="async"
+        />
+
+        {/* Ring glow */}
+        <div 
+          className="absolute inset-[-4px] rounded-full pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle, rgba(150,120,255,0.2) 0%, transparent 70%)',
+            animation: 'glow-pulse 2s ease-in-out infinite',
+          }}
         />
       </div>
 
-      {/* Ambient glow */}
-      <div 
-        className="absolute inset-[-20%] rounded-full pointer-events-none -z-10"
-        style={{
-          background: 'radial-gradient(circle, rgba(150,180,255,0.15) 0%, transparent 60%)',
-          animation: 'ambient-pulse 3s ease-in-out infinite',
-        }}
-      />
-
       {/* CSS Animations */}
       <style>{`
-        @keyframes ring-rotate {
-          from { transform: rotateX(75deg) rotateZ(0deg); }
-          to { transform: rotateX(75deg) rotateZ(360deg); }
+        @keyframes ring-spin {
+          from { transform: rotateX(70deg) rotateZ(0deg); }
+          to { transform: rotateX(70deg) rotateZ(360deg); }
         }
-        @keyframes ambient-pulse {
-          0%, 100% { opacity: 0.6; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.05); }
+        @keyframes glow-pulse {
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 1; }
         }
       `}</style>
     </div>
