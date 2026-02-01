@@ -15,9 +15,9 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
   };
 
   const logoSizes = {
-    sm: 'h-10 w-10',
-    md: 'h-12 w-12',
-    lg: 'h-14 w-14',
+    sm: 'h-9 w-9',
+    md: 'h-11 w-11',
+    lg: 'h-13 w-13',
   };
 
   return (
@@ -27,44 +27,129 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
         containerSizes[size],
         className
       )}
-      style={{ perspective: '500px' }}
     >
-      {/* Single 3D Crystal Glass Ring - around logo */}
-      <div 
-        className="absolute inset-0 rounded-full"
-        style={{
-          border: '3px solid transparent',
-          borderRadius: '50%',
-          background: 'conic-gradient(from 0deg, #60a5fa, #a78bfa, #f472b6, #34d399, #60a5fa) border-box',
-          WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
-          WebkitMaskComposite: 'xor',
-          mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
-          maskComposite: 'exclude',
-          transformStyle: 'preserve-3d',
-          transform: 'rotateX(70deg)',
-          animation: 'ring-spin 5s linear infinite',
-          boxShadow: '0 0 12px rgba(150,120,255,0.35)',
-        }}
-      />
+      {/* Siri-style animated bubble background */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        {/* Blob 1 - Primary */}
+        <div 
+          className="absolute rounded-full"
+          style={{
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+            opacity: 0.6,
+            filter: 'blur(8px)',
+            animation: 'siri-blob-1 4s ease-in-out infinite',
+          }}
+        />
+        
+        {/* Blob 2 - Secondary */}
+        <div 
+          className="absolute rounded-full"
+          style={{
+            width: '90%',
+            height: '90%',
+            background: 'linear-gradient(225deg, #f093fb 0%, #667eea 50%, #00d4ff 100%)',
+            opacity: 0.5,
+            filter: 'blur(6px)',
+            animation: 'siri-blob-2 4s ease-in-out infinite 0.5s',
+          }}
+        />
+        
+        {/* Blob 3 - Accent */}
+        <div 
+          className="absolute rounded-full"
+          style={{
+            width: '95%',
+            height: '95%',
+            background: 'linear-gradient(45deg, #00d4ff 0%, #764ba2 50%, #667eea 100%)',
+            opacity: 0.4,
+            filter: 'blur(5px)',
+            animation: 'siri-blob-3 4s ease-in-out infinite 1s',
+          }}
+        />
 
-      {/* Logo - centered inside the ring, clear and visible */}
+        {/* Inner glow core */}
+        <div 
+          className="absolute rounded-full"
+          style={{
+            width: '75%',
+            height: '75%',
+            background: 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 40%, transparent 70%)',
+            animation: 'siri-core 3s ease-in-out infinite',
+          }}
+        />
+      </div>
+
+      {/* Logo - centered inside, clear and visible */}
       <img
         src={logoUrl}
         alt="Logo"
         className={cn('object-contain relative z-10', logoSizes[size])}
         style={{
           imageRendering: 'crisp-edges',
-          filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.15))',
+          filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.2))',
         }}
         loading="eager"
         decoding="async"
       />
 
-      {/* CSS Animations */}
+      {/* CSS Animations - Siri style */}
       <style>{`
-        @keyframes ring-spin {
-          from { transform: rotateX(70deg) rotateZ(0deg); }
-          to { transform: rotateX(70deg) rotateZ(360deg); }
+        @keyframes siri-blob-1 {
+          0%, 100% { 
+            transform: scale(1) rotate(0deg);
+            border-radius: 50%;
+          }
+          25% { 
+            transform: scale(1.05) rotate(90deg);
+            border-radius: 45% 55% 55% 45%;
+          }
+          50% { 
+            transform: scale(0.95) rotate(180deg);
+            border-radius: 55% 45% 45% 55%;
+          }
+          75% { 
+            transform: scale(1.02) rotate(270deg);
+            border-radius: 48% 52% 52% 48%;
+          }
+        }
+        
+        @keyframes siri-blob-2 {
+          0%, 100% { 
+            transform: scale(1) rotate(0deg);
+            border-radius: 55% 45% 50% 50%;
+          }
+          33% { 
+            transform: scale(1.08) rotate(-120deg);
+            border-radius: 45% 55% 55% 45%;
+          }
+          66% { 
+            transform: scale(0.92) rotate(-240deg);
+            border-radius: 50% 50% 45% 55%;
+          }
+        }
+        
+        @keyframes siri-blob-3 {
+          0%, 100% { 
+            transform: scale(1.02) rotate(0deg);
+            border-radius: 48% 52% 55% 45%;
+          }
+          50% { 
+            transform: scale(0.98) rotate(180deg);
+            border-radius: 52% 48% 45% 55%;
+          }
+        }
+        
+        @keyframes siri-core {
+          0%, 100% { 
+            transform: scale(1);
+            opacity: 0.8;
+          }
+          50% { 
+            transform: scale(1.1);
+            opacity: 1;
+          }
         }
       `}</style>
     </div>
