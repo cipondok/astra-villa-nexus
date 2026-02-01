@@ -318,6 +318,14 @@ const config: Config = {
             opacity: "0",
             transform: "translateY(-20px) scale(0)"
           }
+        },
+        "pulse-glow": {
+          "0%, 100%": {
+            boxShadow: "0 0 10px hsl(var(--primary) / 0.4), 0 0 20px hsl(var(--primary) / 0.2), 0 0 30px hsl(var(--accent) / 0.1)"
+          },
+          "50%": {
+            boxShadow: "0 0 20px hsl(var(--primary) / 0.6), 0 0 40px hsl(var(--primary) / 0.4), 0 0 60px hsl(var(--accent) / 0.3)"
+          }
         }
       },
       animation: {
@@ -345,6 +353,7 @@ const config: Config = {
         "sparkle-delayed": "sparkle 2s ease-in-out infinite 0.5s",
         "sparkle-delayed-2": "sparkle 2s ease-in-out infinite 1s",
         "sparkle-float": "sparkle-float 3s ease-out infinite",
+        "pulse-glow": "pulse-glow 2.5s ease-in-out infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',
