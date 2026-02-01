@@ -9,29 +9,28 @@ interface CrystalLogo3DProps {
 
 const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DProps) => {
   const sizeClasses = {
-    sm: 'h-10 w-10',
-    md: 'h-12 w-12',
-    lg: 'h-14 w-14',
+    sm: 'h-12 w-12',
+    md: 'h-16 w-16',
+    lg: 'h-20 w-20',
   };
 
   const logoSizes = {
-    sm: 'h-6 w-6',
-    md: 'h-8 w-8',
-    lg: 'h-9 w-9',
+    sm: 'h-8 w-8',
+    md: 'h-11 w-11',
+    lg: 'h-14 w-14',
   };
 
   return (
     <div 
       className={cn(
-        'relative group/crystal cursor-pointer',
+        'relative cursor-pointer',
         sizeClasses[size],
         className
       )}
-      style={{ perspective: '1000px' }}
     >
       {/* Outer holographic glow ring */}
       <div 
-        className="absolute inset-0 rounded-full opacity-60 group-hover/crystal:opacity-100 transition-opacity duration-500 animate-spin-slow"
+        className="absolute inset-0 rounded-full opacity-60 transition-opacity duration-500"
         style={{
           background: 'conic-gradient(from 0deg, #ff006620, #00ffff30, #ff00ff25, #ffff0020, #00ff6620, #ff006620)',
           filter: 'blur(8px)',
@@ -41,7 +40,7 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
 
       {/* Crystal bubble container */}
       <div 
-        className="absolute inset-1 rounded-full transition-all duration-500 group-hover/crystal:scale-105"
+        className="absolute inset-1 rounded-full"
         style={{
           background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.3) 100%)',
           backdropFilter: 'blur(12px)',
@@ -52,13 +51,11 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
             0 0 60px rgba(100,200,255,0.15)
           `,
           border: '1.5px solid rgba(255,255,255,0.5)',
-          transformStyle: 'preserve-3d',
-          transform: 'rotateX(0deg) rotateY(0deg)',
         }}
       >
         {/* Rainbow shimmer overlay */}
         <div 
-          className="absolute inset-0 rounded-full overflow-hidden opacity-40 group-hover/crystal:opacity-70 transition-opacity duration-300"
+          className="absolute inset-0 rounded-full overflow-hidden opacity-40 transition-opacity duration-300"
           style={{
             background: 'linear-gradient(135deg, transparent 20%, rgba(255,100,150,0.3) 30%, rgba(100,200,255,0.3) 50%, rgba(150,255,150,0.3) 70%, transparent 80%)',
             animation: 'shimmer 3s ease-in-out infinite',
@@ -105,7 +102,7 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
           src={logoUrl}
           alt="Logo"
           className={cn(
-            'object-contain transition-all duration-500 group-hover/crystal:scale-110',
+            'object-contain',
             logoSizes[size]
           )}
           style={{
