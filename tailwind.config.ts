@@ -326,6 +326,30 @@ const config: Config = {
           "50%": {
             boxShadow: "0 0 20px hsl(var(--primary) / 0.6), 0 0 40px hsl(var(--primary) / 0.4), 0 0 60px hsl(var(--accent) / 0.3)"
           }
+        },
+        "logo-3d-float": {
+          "0%, 100%": {
+            transform: "translateY(0px) rotateX(0deg) rotateY(0deg)"
+          },
+          "25%": {
+            transform: "translateY(-3px) rotateX(2deg) rotateY(-3deg)"
+          },
+          "50%": {
+            transform: "translateY(-5px) rotateX(0deg) rotateY(0deg)"
+          },
+          "75%": {
+            transform: "translateY(-3px) rotateX(-2deg) rotateY(3deg)"
+          }
+        },
+        "logo-shadow": {
+          "0%, 100%": {
+            opacity: "0.3",
+            transform: "translateX(-50%) scale(1)"
+          },
+          "50%": {
+            opacity: "0.15",
+            transform: "translateX(-50%) scale(0.85)"
+          }
         }
       },
       animation: {
@@ -354,6 +378,8 @@ const config: Config = {
         "sparkle-delayed-2": "sparkle 2s ease-in-out infinite 1s",
         "sparkle-float": "sparkle-float 3s ease-out infinite",
         "pulse-glow": "pulse-glow 2.5s ease-in-out infinite",
+        "logo-3d-float": "logo-3d-float 4s ease-in-out infinite",
+        "logo-shadow": "logo-shadow 4s ease-in-out infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',

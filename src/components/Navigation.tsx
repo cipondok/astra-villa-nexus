@@ -170,19 +170,23 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               {hasCustomLogo ? (
-                <div className="relative group/logo overflow-visible rounded-sm">
-                  {/* Logo - larger size, crisp rendering */}
+                <div className="relative group/logo overflow-visible rounded-sm perspective-[1000px]">
+                  {/* Logo - 3D floating effect */}
                   <img 
                     src={headerLogoUrl} 
                     alt="ASTRA Villa" 
-                    className="relative h-14 md:h-16 lg:h-20 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105"
+                    className="relative h-14 md:h-16 lg:h-20 w-auto object-contain animate-logo-3d-float transition-all duration-500 group-hover/logo:scale-110"
                     style={{ 
                       imageRendering: 'crisp-edges',
-                      WebkitFontSmoothing: 'antialiased'
+                      WebkitFontSmoothing: 'antialiased',
+                      transformStyle: 'preserve-3d'
                     }}
                     loading="eager"
                     decoding="async"
                   />
+                  
+                  {/* 3D Shadow underneath */}
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3/4 h-2 bg-primary/20 rounded-full blur-md animate-logo-shadow" />
                   
                   {/* Golden Sparkle Effects */}
                   <div className="absolute top-0 right-1 pointer-events-none">
