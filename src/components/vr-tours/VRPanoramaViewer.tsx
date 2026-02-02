@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Sphere, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { cn } from '@/lib/utils';
 import { RotateCw } from 'lucide-react';
@@ -8,7 +7,7 @@ import type { VRHotspot } from './VRPropertyTourManager';
 import { ThreeCanvasBoundary } from './ThreeCanvasBoundary';
 
 interface PanoramaSphereProps {
-  imageUrl: string;
+  texture: THREE.Texture;
   rotationRef: React.MutableRefObject<{ yaw: number; pitch: number }>;
   autoRotate: boolean;
   rotateSpeed: number;
@@ -16,34 +15,13 @@ interface PanoramaSphereProps {
 }
 
 const PanoramaSphere: React.FC<PanoramaSphereProps> = ({
-  imageUrl,
+  texture,
   rotationRef,
   autoRotate,
   rotateSpeed,
   isDayMode
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
-  const [texture, setTexture] = useState<THREE.Texture | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(true);
-    const loader = new THREE.TextureLoader();
-    loader.load(
-      imageUrl,
-      (loadedTexture) => {
-        loadedTexture.mapping = THREE.EquirectangularReflectionMapping;
-        loadedTexture.colorSpace = THREE.SRGBColorSpace;
-        setTexture(loadedTexture);
-        setIsLoading(false);
-      },
-      undefined,
-      (error) => {
-        console.error('Error loading panorama texture:', error);
-        setIsLoading(false);
-      }
-    );
-  }, [imageUrl]);
 
   useFrame((state, delta) => {
     if (autoRotate && meshRef.current) {
@@ -57,21 +35,6 @@ const PanoramaSphere: React.FC<PanoramaSphereProps> = ({
     }
   });
 
-  if (isLoading) {
-    return (
-      <Html center>
-        <div className="flex items-center gap-2 text-white bg-black/50 rounded-full px-4 py-2">
-          <RotateCw className="h-5 w-5 animate-spin" />
-          <span>Loading panorama...</span>
-        </div>
-      </Html>
-    );
-  }
-
-  if (!texture) {
-    return null;
-  }
-
   // Apply day/night filter through material properties
   const materialProps = isDayMode
     ? { color: new THREE.Color(1, 1, 1) }
@@ -79,21 +42,22 @@ const PanoramaSphere: React.FC<PanoramaSphereProps> = ({
 
   return (
     <group>
-      <Sphere ref={meshRef} args={[5, 64, 64]} scale={[-1, 1, 1]}>
+      <mesh ref={meshRef} scale={[-1, 1, 1]}>
+        <sphereGeometry args={[5, 64, 64]} />
         <meshBasicMaterial map={texture} side={THREE.BackSide} {...materialProps} />
-      </Sphere>
+      </mesh>
     </group>
   );
 };
 
 // Scene content component
 function SceneContent({
-  imageUrl,
+  texture,
   rotationRef,
   autoRotate,
   isDayMode
 }: {
-  imageUrl: string;
+  texture: THREE.Texture;
   rotationRef: React.MutableRefObject<{ yaw: number; pitch: number }>;
   autoRotate: boolean;
   isDayMode: boolean;
@@ -114,7 +78,7 @@ function SceneContent({
         </>
       )}
       <PanoramaSphere
-        imageUrl={imageUrl}
+        texture={texture}
         rotationRef={rotationRef}
         autoRotate={autoRotate}
         rotateSpeed={0.5}
@@ -148,8 +112,40 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
     lastY: 0,
   });
 
+  const [texture, setTexture] = useState<THREE.Texture | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    setTexture(null);
+
+    const loader = new THREE.TextureLoader();
+    loader.load(
+      imageUrl,
+      (loaded) => {
+        loaded.mapping = THREE.EquirectangularReflectionMapping;
+        loaded.colorSpace = THREE.SRGBColorSpace;
+        setTexture(loaded);
+        setIsLoading(false);
+      },
+      undefined,
+      (err) => {
+        console.error('Error loading panorama texture:', err);
+        setIsLoading(false);
+      }
+    );
+  }, [imageUrl]);
+
   return (
     <div className={cn("relative w-full h-full bg-black", className)}>
+      {isLoading && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
+          <div className="flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 text-white">
+            <RotateCw className="h-5 w-5 animate-spin" />
+            <span>Loading panorama...</span>
+          </div>
+        </div>
+      )}
       <ThreeCanvasBoundary
         fallback={({ reset, error }) => (
           <div className="absolute inset-0">
@@ -214,12 +210,14 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
           }}
         >
           <Suspense fallback={null}>
-            <SceneContent
-              imageUrl={imageUrl}
-              rotationRef={rotationRef}
-              autoRotate={autoRotate}
-              isDayMode={isDayMode}
-            />
+            {texture ? (
+              <SceneContent
+                texture={texture}
+                rotationRef={rotationRef}
+                autoRotate={autoRotate}
+                isDayMode={isDayMode}
+              />
+            ) : null}
           </Suspense>
         </Canvas>
       </ThreeCanvasBoundary>
