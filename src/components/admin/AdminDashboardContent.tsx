@@ -84,6 +84,7 @@ const VRTourSettings = lazy(() => import("./VRTourSettings"));
 const MortgageManagement = lazy(() => import("./MortgageManagement"));
 const LiveMonitoringDashboard = lazy(() => import("./LiveMonitoringDashboard"));
 const AdminBlockchainManagement = lazy(() => import("./AdminBlockchainManagement"));
+const B2BMarketplaceManagement = lazy(() => import("./B2BMarketplaceManagement"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -173,6 +174,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "transaction-hub": { label: "Transaction Management", category: "Transactions" },
   "mortgage-management": { label: "Mortgage Management", category: "Transactions" },
   "blockchain-management": { label: "Blockchain Management", category: "Transactions" },
+  "b2b-marketplace": { label: "B2B Data Marketplace", category: "Transactions" },
   "wna-investment-settings": { label: "WNA Investment Settings", category: "Investor Management" },
   "wni-mortgage-settings": { label: "WNI Mortgage Settings", category: "Investor Management" },
   "investor-analytics": { label: "Investor Analytics", category: "Investor Management" },
@@ -409,6 +411,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <MortgageManagement />;
       case "blockchain-management":
         return <AdminBlockchainManagement />;
+      case "b2b-marketplace":
+        return <B2BMarketplaceManagement />;
       case "wna-investment-settings":
         return <InvestorSettingsHub initialTab="wna" />;
       case "wni-mortgage-settings":

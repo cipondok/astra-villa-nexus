@@ -132,3 +132,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.email-scheduler]
     verify_jwt = false
+
+  [functions.b2b-api]
+    verify_jwt = false

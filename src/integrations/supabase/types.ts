@@ -1379,6 +1379,691 @@ export type Database = {
           },
         ]
       }
+      b2b_api_keys: {
+        Row: {
+          allowed_endpoints: string[] | null
+          api_key_hash: string
+          api_key_prefix: string
+          client_id: string
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          ip_whitelist: string[] | null
+          is_active: boolean | null
+          key_name: string
+          last_used_at: string | null
+          permissions: Json | null
+        }
+        Insert: {
+          allowed_endpoints?: string[] | null
+          api_key_hash: string
+          api_key_prefix: string
+          client_id: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_whitelist?: string[] | null
+          is_active?: boolean | null
+          key_name: string
+          last_used_at?: string | null
+          permissions?: Json | null
+        }
+        Update: {
+          allowed_endpoints?: string[] | null
+          api_key_hash?: string
+          api_key_prefix?: string
+          client_id?: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_whitelist?: string[] | null
+          is_active?: boolean | null
+          key_name?: string
+          last_used_at?: string | null
+          permissions?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_api_keys_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      b2b_api_usage: {
+        Row: {
+          api_key_id: string | null
+          client_id: string
+          created_at: string | null
+          credits_used: number | null
+          endpoint: string
+          id: string
+          ip_address: unknown
+          method: string
+          request_params: Json | null
+          response_status: number | null
+          response_time_ms: number | null
+          user_agent: string | null
+        }
+        Insert: {
+          api_key_id?: string | null
+          client_id: string
+          created_at?: string | null
+          credits_used?: number | null
+          endpoint: string
+          id?: string
+          ip_address?: unknown
+          method: string
+          request_params?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          user_agent?: string | null
+        }
+        Update: {
+          api_key_id?: string | null
+          client_id?: string
+          created_at?: string | null
+          credits_used?: number | null
+          endpoint?: string
+          id?: string
+          ip_address?: unknown
+          method?: string
+          request_params?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_api_usage_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_api_keys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "b2b_api_usage_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      b2b_clients: {
+        Row: {
+          api_rate_limit: number | null
+          client_type: Database["public"]["Enums"]["b2b_client_type"]
+          company_address: string | null
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string | null
+          credits_balance: number | null
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          lifetime_credits_purchased: number | null
+          lifetime_credits_used: number | null
+          logo_url: string | null
+          metadata: Json | null
+          notes: string | null
+          tax_id: string | null
+          tier: Database["public"]["Enums"]["b2b_tier"] | null
+          updated_at: string | null
+          user_id: string | null
+          website_url: string | null
+          white_label_config: Json | null
+          white_label_enabled: boolean | null
+        }
+        Insert: {
+          api_rate_limit?: number | null
+          client_type: Database["public"]["Enums"]["b2b_client_type"]
+          company_address?: string | null
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string | null
+          credits_balance?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          lifetime_credits_purchased?: number | null
+          lifetime_credits_used?: number | null
+          logo_url?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          tax_id?: string | null
+          tier?: Database["public"]["Enums"]["b2b_tier"] | null
+          updated_at?: string | null
+          user_id?: string | null
+          website_url?: string | null
+          white_label_config?: Json | null
+          white_label_enabled?: boolean | null
+        }
+        Update: {
+          api_rate_limit?: number | null
+          client_type?: Database["public"]["Enums"]["b2b_client_type"]
+          company_address?: string | null
+          company_name?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string | null
+          credits_balance?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          lifetime_credits_purchased?: number | null
+          lifetime_credits_used?: number | null
+          logo_url?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          tax_id?: string | null
+          tier?: Database["public"]["Enums"]["b2b_tier"] | null
+          updated_at?: string | null
+          user_id?: string | null
+          website_url?: string | null
+          white_label_config?: Json | null
+          white_label_enabled?: boolean | null
+        }
+        Relationships: []
+      }
+      b2b_credit_packages: {
+        Row: {
+          bonus_credits: number | null
+          created_at: string | null
+          credits: number
+          description: string | null
+          id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          name: string
+          price_idr: number
+          price_usd: number | null
+          updated_at: string | null
+          valid_days: number | null
+        }
+        Insert: {
+          bonus_credits?: number | null
+          created_at?: string | null
+          credits: number
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name: string
+          price_idr: number
+          price_usd?: number | null
+          updated_at?: string | null
+          valid_days?: number | null
+        }
+        Update: {
+          bonus_credits?: number | null
+          created_at?: string | null
+          credits?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name?: string
+          price_idr?: number
+          price_usd?: number | null
+          updated_at?: string | null
+          valid_days?: number | null
+        }
+        Relationships: []
+      }
+      b2b_credit_transactions: {
+        Row: {
+          balance_after: number
+          client_id: string
+          created_at: string | null
+          created_by: string | null
+          credits: number
+          description: string | null
+          id: string
+          payment_id: string | null
+          reference_id: string | null
+          reference_type: string | null
+          transaction_type: string
+        }
+        Insert: {
+          balance_after: number
+          client_id: string
+          created_at?: string | null
+          created_by?: string | null
+          credits: number
+          description?: string | null
+          id?: string
+          payment_id?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          transaction_type: string
+        }
+        Update: {
+          balance_after?: number
+          client_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          credits?: number
+          description?: string | null
+          id?: string
+          payment_id?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_credit_transactions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      b2b_custom_reports: {
+        Row: {
+          client_id: string
+          created_at: string | null
+          credits_spent: number
+          expires_at: string | null
+          generated_at: string | null
+          id: string
+          parameters: Json
+          report_data: Json | null
+          report_title: string
+          report_type: string
+          report_url: string | null
+          status: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string | null
+          credits_spent: number
+          expires_at?: string | null
+          generated_at?: string | null
+          id?: string
+          parameters: Json
+          report_data?: Json | null
+          report_title: string
+          report_type: string
+          report_url?: string | null
+          status?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string | null
+          credits_spent?: number
+          expires_at?: string | null
+          generated_at?: string | null
+          id?: string
+          parameters?: Json
+          report_data?: Json | null
+          report_title?: string
+          report_type?: string
+          report_url?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_custom_reports_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      b2b_data_products: {
+        Row: {
+          created_at: string | null
+          credit_cost: number
+          data_schema: Json | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          is_premium: boolean | null
+          name: string
+          product_type: string
+          sample_data: Json | null
+          target_clients:
+            | Database["public"]["Enums"]["b2b_client_type"][]
+            | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          credit_cost: number
+          data_schema?: Json | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_premium?: boolean | null
+          name: string
+          product_type: string
+          sample_data?: Json | null
+          target_clients?:
+            | Database["public"]["Enums"]["b2b_client_type"][]
+            | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          credit_cost?: number
+          data_schema?: Json | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_premium?: boolean | null
+          name?: string
+          product_type?: string
+          sample_data?: Json | null
+          target_clients?:
+            | Database["public"]["Enums"]["b2b_client_type"][]
+            | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      b2b_insight_purchases: {
+        Row: {
+          client_id: string
+          created_at: string | null
+          credits_spent: number
+          downloaded_at: string | null
+          id: string
+          insight_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string | null
+          credits_spent: number
+          downloaded_at?: string | null
+          id?: string
+          insight_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string | null
+          credits_spent?: number
+          downloaded_at?: string | null
+          id?: string
+          insight_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_insight_purchases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "b2b_insight_purchases_insight_id_fkey"
+            columns: ["insight_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_market_insights"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      b2b_lead_purchases: {
+        Row: {
+          client_id: string
+          contact_result: string | null
+          contacted_at: string | null
+          conversion_status: string | null
+          created_at: string | null
+          credits_spent: number
+          id: string
+          lead_data: Json
+          lead_id: string
+          notes: string | null
+          purchase_price_idr: number | null
+        }
+        Insert: {
+          client_id: string
+          contact_result?: string | null
+          contacted_at?: string | null
+          conversion_status?: string | null
+          created_at?: string | null
+          credits_spent: number
+          id?: string
+          lead_data: Json
+          lead_id: string
+          notes?: string | null
+          purchase_price_idr?: number | null
+        }
+        Update: {
+          client_id?: string
+          contact_result?: string | null
+          contacted_at?: string | null
+          conversion_status?: string | null
+          created_at?: string | null
+          credits_spent?: number
+          id?: string
+          lead_data?: Json
+          lead_id?: string
+          notes?: string | null
+          purchase_price_idr?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_lead_purchases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "b2b_lead_purchases_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      b2b_leads: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_sold: boolean | null
+          is_verified: boolean | null
+          lead_budget: number | null
+          lead_email: string | null
+          lead_intent: string | null
+          lead_name: string | null
+          lead_phone: string | null
+          lead_score: number | null
+          lead_source: string
+          lead_timeline: string | null
+          metadata: Json | null
+          price_range_max: number | null
+          price_range_min: number | null
+          property_id: string | null
+          property_location: string | null
+          property_type: string | null
+          sold_at: string | null
+          sold_price: number | null
+          sold_to: string | null
+          source_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_sold?: boolean | null
+          is_verified?: boolean | null
+          lead_budget?: number | null
+          lead_email?: string | null
+          lead_intent?: string | null
+          lead_name?: string | null
+          lead_phone?: string | null
+          lead_score?: number | null
+          lead_source: string
+          lead_timeline?: string | null
+          metadata?: Json | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          property_id?: string | null
+          property_location?: string | null
+          property_type?: string | null
+          sold_at?: string | null
+          sold_price?: number | null
+          sold_to?: string | null
+          source_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_sold?: boolean | null
+          is_verified?: boolean | null
+          lead_budget?: number | null
+          lead_email?: string | null
+          lead_intent?: string | null
+          lead_name?: string | null
+          lead_phone?: string | null
+          lead_score?: number | null
+          lead_source?: string
+          lead_timeline?: string | null
+          metadata?: Json | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          property_id?: string | null
+          property_location?: string | null
+          property_type?: string | null
+          sold_at?: string | null
+          sold_price?: number | null
+          sold_to?: string | null
+          source_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_leads_sold_to_fkey"
+            columns: ["sold_to"]
+            isOneToOne: false
+            referencedRelation: "b2b_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      b2b_market_insights: {
+        Row: {
+          city: string | null
+          created_at: string | null
+          credit_cost: number
+          data_period_end: string | null
+          data_period_start: string | null
+          district: string | null
+          id: string
+          insight_data: Json
+          insight_type: string
+          is_public: boolean | null
+          property_type: string | null
+          region: string
+          updated_at: string | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string | null
+          credit_cost: number
+          data_period_end?: string | null
+          data_period_start?: string | null
+          district?: string | null
+          id?: string
+          insight_data: Json
+          insight_type: string
+          is_public?: boolean | null
+          property_type?: string | null
+          region: string
+          updated_at?: string | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string | null
+          credit_cost?: number
+          data_period_end?: string | null
+          data_period_start?: string | null
+          district?: string | null
+          id?: string
+          insight_data?: Json
+          insight_type?: string
+          is_public?: boolean | null
+          property_type?: string | null
+          region?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      b2b_white_label_configs: {
+        Row: {
+          client_id: string
+          company_name: string | null
+          created_at: string | null
+          custom_css: string | null
+          custom_domain: string | null
+          email_templates: Json | null
+          favicon_url: string | null
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          primary_color: string | null
+          report_branding: Json | null
+          secondary_color: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          client_id: string
+          company_name?: string | null
+          created_at?: string | null
+          custom_css?: string | null
+          custom_domain?: string | null
+          email_templates?: Json | null
+          favicon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          primary_color?: string | null
+          report_branding?: Json | null
+          secondary_color?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          client_id?: string
+          company_name?: string | null
+          created_at?: string | null
+          custom_css?: string | null
+          custom_domain?: string | null
+          email_templates?: Json | null
+          favicon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          primary_color?: string | null
+          report_branding?: Json | null
+          secondary_color?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_white_label_configs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "b2b_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       badge_definitions: {
         Row: {
           badge_key: string
@@ -16473,6 +17158,8 @@ export type Database = {
         | "order_tracking"
         | "ai_bot_management"
       affiliate_status: "pending" | "active" | "suspended" | "inactive"
+      b2b_client_type: "agency" | "investor" | "developer" | "bank" | "other"
+      b2b_tier: "starter" | "professional" | "enterprise"
       badge_tier: "bronze" | "silver" | "gold" | "platinum" | "diamond"
       feedback_type:
         | "bug_report"
@@ -16693,6 +17380,8 @@ export const Constants = {
         "ai_bot_management",
       ],
       affiliate_status: ["pending", "active", "suspended", "inactive"],
+      b2b_client_type: ["agency", "investor", "developer", "bank", "other"],
+      b2b_tier: ["starter", "professional", "enterprise"],
       badge_tier: ["bronze", "silver", "gold", "platinum", "diamond"],
       feedback_type: [
         "bug_report",
