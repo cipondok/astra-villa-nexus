@@ -1,16 +1,15 @@
-import React, { useRef, useEffect, useState, useCallback, Suspense } from 'react';
+import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Sphere, Html } from '@react-three/drei';
+import { Sphere, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { cn } from '@/lib/utils';
-import { RotateCw, Info, Navigation, ChevronRight } from 'lucide-react';
+import { RotateCw } from 'lucide-react';
 import type { VRHotspot } from './VRPropertyTourManager';
 import { ThreeCanvasBoundary } from './ThreeCanvasBoundary';
 
 interface PanoramaSphereProps {
   imageUrl: string;
-  hotspots: VRHotspot[];
-  onHotspotClick: (hotspot: VRHotspot) => void;
+  rotationRef: React.MutableRefObject<{ yaw: number; pitch: number }>;
   autoRotate: boolean;
   rotateSpeed: number;
   isDayMode: boolean;
@@ -18,8 +17,7 @@ interface PanoramaSphereProps {
 
 const PanoramaSphere: React.FC<PanoramaSphereProps> = ({
   imageUrl,
-  hotspots,
-  onHotspotClick,
+  rotationRef,
   autoRotate,
   rotateSpeed,
   isDayMode
@@ -51,28 +49,13 @@ const PanoramaSphere: React.FC<PanoramaSphereProps> = ({
     if (autoRotate && meshRef.current) {
       meshRef.current.rotation.y += delta * rotateSpeed * 0.05;
     }
-  });
-
-  const pitchYawToPosition = (pitch: number, yaw: number, radius: number = 4.5) => {
-    const pitchRad = THREE.MathUtils.degToRad(pitch);
-    const yawRad = THREE.MathUtils.degToRad(yaw);
-    return new THREE.Vector3(
-      radius * Math.cos(pitchRad) * Math.sin(yawRad),
-      radius * Math.sin(pitchRad),
-      radius * Math.cos(pitchRad) * Math.cos(yawRad)
-    );
-  };
-
-  const getHotspotIcon = (type: string) => {
-    switch (type) {
-      case 'navigation':
-        return <ChevronRight className="h-4 w-4" />;
-      case 'info':
-        return <Info className="h-4 w-4" />;
-      default:
-        return <Navigation className="h-4 w-4" />;
+    if (meshRef.current) {
+      meshRef.current.rotation.y += rotationRef.current.yaw;
+      meshRef.current.rotation.x = rotationRef.current.pitch;
+      // reset yaw delta each frame (we accumulate deltas from dragging)
+      rotationRef.current.yaw = 0;
     }
-  };
+  });
 
   if (isLoading) {
     return (
@@ -99,29 +82,6 @@ const PanoramaSphere: React.FC<PanoramaSphereProps> = ({
       <Sphere ref={meshRef} args={[5, 64, 64]} scale={[-1, 1, 1]}>
         <meshBasicMaterial map={texture} side={THREE.BackSide} {...materialProps} />
       </Sphere>
-
-      {hotspots.map((hotspot) => {
-        const position = pitchYawToPosition(hotspot.position.pitch, hotspot.position.yaw);
-        return (
-          <Html key={hotspot.id} position={position} center distanceFactor={10} occlude={false}>
-            <button
-              onClick={() => onHotspotClick(hotspot)}
-              className={cn(
-                "group relative flex items-center justify-center rounded-full p-2.5 transition-all duration-200",
-                "bg-primary/90 hover:bg-primary text-primary-foreground shadow-lg",
-                "hover:scale-110 cursor-pointer animate-pulse-slow"
-              )}
-            >
-              {getHotspotIcon(hotspot.type)}
-              <div className="absolute left-full ml-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="bg-background/95 backdrop-blur-sm rounded-md px-2 py-1 text-xs text-foreground shadow-lg border border-border">
-                  {hotspot.title}
-                </div>
-              </div>
-            </button>
-          </Html>
-        );
-      })}
     </group>
   );
 };
@@ -129,14 +89,12 @@ const PanoramaSphere: React.FC<PanoramaSphereProps> = ({
 // Scene content component
 function SceneContent({
   imageUrl,
-  hotspots,
-  onHotspotClick,
+  rotationRef,
   autoRotate,
   isDayMode
 }: {
   imageUrl: string;
-  hotspots: VRHotspot[];
-  onHotspotClick: (hotspot: VRHotspot) => void;
+  rotationRef: React.MutableRefObject<{ yaw: number; pitch: number }>;
   autoRotate: boolean;
   isDayMode: boolean;
 }) {
@@ -155,19 +113,9 @@ function SceneContent({
           <pointLight position={[0, 2, 0]} intensity={0.5} color="#fbbf24" distance={5} />
         </>
       )}
-
-      <OrbitControls
-        enableZoom={false}
-        enablePan={false}
-        enableDamping
-        dampingFactor={0.08}
-        rotateSpeed={-0.35}
-      />
-
       <PanoramaSphere
         imageUrl={imageUrl}
-        hotspots={hotspots}
-        onHotspotClick={onHotspotClick}
+        rotationRef={rotationRef}
         autoRotate={autoRotate}
         rotateSpeed={0.5}
         isDayMode={isDayMode}
@@ -187,16 +135,23 @@ interface VRPanoramaViewerProps {
 
 const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
   imageUrl,
-  hotspots,
-  onHotspotClick,
+  hotspots: _hotspots,
+  onHotspotClick: _onHotspotClick,
   autoRotate = true,
   isDayMode = true,
   className
 }) => {
+  const rotationRef = useRef<{ yaw: number; pitch: number }>({ yaw: 0, pitch: 0 });
+  const dragRef = useRef<{ dragging: boolean; lastX: number; lastY: number }>({
+    dragging: false,
+    lastX: 0,
+    lastY: 0,
+  });
+
   return (
     <div className={cn("relative w-full h-full bg-black", className)}>
       <ThreeCanvasBoundary
-        fallback={({ reset }) => (
+        fallback={({ reset, error }) => (
           <div className="absolute inset-0">
             <img
               src={imageUrl}
@@ -210,6 +165,9 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
                 <p className="text-sm font-medium text-foreground">3D viewer failed to load</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Your browser/WebGL context rejected a Three.js prop. You can still use AI staging & tools while we fix the viewer.
+                </p>
+                <p className="mt-2 rounded-md bg-muted/60 px-2 py-1 text-[11px] text-muted-foreground break-words">
+                  {error.message}
                 </p>
                 <button
                   onClick={reset}
@@ -228,12 +186,37 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
           onCreated={({ gl }) => {
             gl.setClearColor('#000000');
           }}
+          onPointerDown={(e) => {
+            dragRef.current.dragging = true;
+            dragRef.current.lastX = e.clientX;
+            dragRef.current.lastY = e.clientY;
+          }}
+          onPointerUp={() => {
+            dragRef.current.dragging = false;
+          }}
+          onPointerLeave={() => {
+            dragRef.current.dragging = false;
+          }}
+          onPointerMove={(e) => {
+            if (!dragRef.current.dragging) return;
+            const dx = e.clientX - dragRef.current.lastX;
+            const dy = e.clientY - dragRef.current.lastY;
+            dragRef.current.lastX = e.clientX;
+            dragRef.current.lastY = e.clientY;
+
+            // Sensitivity tuned for touch + mouse.
+            rotationRef.current.yaw += dx * 0.003;
+            rotationRef.current.pitch = THREE.MathUtils.clamp(
+              rotationRef.current.pitch + dy * 0.003,
+              -Math.PI / 2 + 0.1,
+              Math.PI / 2 - 0.1
+            );
+          }}
         >
           <Suspense fallback={null}>
             <SceneContent
               imageUrl={imageUrl}
-              hotspots={hotspots}
-              onHotspotClick={onHotspotClick}
+              rotationRef={rotationRef}
               autoRotate={autoRotate}
               isDayMode={isDayMode}
             />

@@ -276,12 +276,15 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
         isFullscreen ? "h-[600px]" : "h-[400px]"
       )}>
         <ThreeCanvasBoundary
-          fallback={({ reset }) => (
+          fallback={({ reset, error }) => (
             <div className="absolute inset-0 flex items-center justify-center p-4">
               <div className="max-w-md rounded-xl border border-border bg-background/80 backdrop-blur-sm p-4 text-center">
                 <p className="text-sm font-medium text-foreground">Neighborhood 3D view failed to load</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   The list on the right still works. We’ll re-enable 3D once the WebGL props are stable.
+                </p>
+                <p className="mt-2 rounded-md bg-muted/60 px-2 py-1 text-[11px] text-muted-foreground break-words">
+                  {error.message}
                 </p>
                 <Button size="sm" className="mt-3" onClick={reset}>
                   Retry 3D
