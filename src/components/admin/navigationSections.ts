@@ -147,6 +147,13 @@ export const navigationSections = {
       icon: Link2,
       description: "Manage smart contracts, escrow, property tokens, digital deeds, and blockchain transactions",
       badge: "New"
+    },
+    {
+      key: "b2b-marketplace",
+      label: "B2B Data Marketplace",
+      icon: Building2,
+      description: "Manage B2B clients, leads, API access, custom reports, and white-label configurations",
+      badge: "New"
     }
   ],
 
