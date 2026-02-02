@@ -80,6 +80,7 @@ const VideoVerificationReviewDashboard = lazy(() => import("./video-verification
 const WebsiteDesignControl = lazy(() => import("./WebsiteDesignControl"));
 const RateLimitingDashboard = lazy(() => import("./RateLimitingDashboard"));
 const VideoTourManager = lazy(() => import("./VideoTourManager"));
+const VRTourSettings = lazy(() => import("./VRTourSettings"));
 const MortgageManagement = lazy(() => import("./MortgageManagement"));
 const LiveMonitoringDashboard = lazy(() => import("./LiveMonitoringDashboard"));
 
@@ -144,6 +145,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "booking-payment-settings": { label: "Booking Payments", category: "System" },
   "booking-management": { label: "Booking Management", category: "Core Management" },
   "video-tours": { label: "Video Tours (360°)", category: "Core Management" },
+  "vr-tour-settings": { label: "VR Tour Settings", category: "Core Management" },
   "bpjs-api-settings": { label: "BPJS API", category: "System" },
   "admin-kyc-review": { label: "KYC Review", category: "Verification" },
   "video-verification-review": { label: "Video Verification Review", category: "Verification" },
@@ -351,6 +353,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <BookingManagement />;
       case "video-tours":
         return <VideoTourManager />;
+      case "vr-tour-settings":
+        return <VRTourSettings />;
       case "bpjs-api-settings":
         return <BPJSAPISettings />;
       case "admin-kyc-review":

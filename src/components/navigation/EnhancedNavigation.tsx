@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, Shield, Headphones } from "lucide-react";
+import { Menu, X, LogOut, Shield, Headphones, Glasses } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useQuery } from "@tanstack/react-query";
@@ -116,6 +116,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
 
   const navItems = [
     { name: currentText.home, path: "/" },
+    { name: language === 'en' ? 'VR Tour' : 'Tur VR', path: "/vr-tour", icon: Glasses },
     { name: currentText.about, path: "/about" },
   ];
 

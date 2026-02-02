@@ -182,6 +182,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "vr-tour-settings",
+      label: "VR Tour Settings",
+      icon: Video,
+      description: "Configure VR tour page, panorama images, and feature toggles",
+      badge: "New"
+    },
+    {
       key: "property-survey-management",
       label: "Property Survey Booking",
       icon: Calendar,

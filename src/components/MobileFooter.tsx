@@ -11,7 +11,8 @@ import {
   MessageCircle,
   Building2,
   Users,
-  Info
+  Info,
+  Glasses
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -84,11 +85,11 @@ const MobileFooter = () => {
           <span>Map</span>
         </button>
         <button
-          onClick={() => navigate('/community')}
+          onClick={() => navigate('/vr-tour')}
           className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
         >
-          <Users className="h-3.5 w-3.5" />
-          <span>Community</span>
+          <Glasses className="h-3.5 w-3.5" />
+          <span>VR</span>
         </button>
       </nav>
 
