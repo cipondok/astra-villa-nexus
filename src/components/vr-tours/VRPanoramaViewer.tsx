@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Sphere, Html, Environment } from '@react-three/drei';
+import React, { useRef, useEffect, useState, useCallback, Suspense } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Sphere, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { cn } from '@/lib/utils';
 import { RotateCw, Info, Navigation, ChevronRight } from 'lucide-react';
@@ -125,6 +125,60 @@ const PanoramaSphere: React.FC<PanoramaSphereProps> = ({
   );
 };
 
+// Scene content component
+function SceneContent({
+  imageUrl,
+  hotspots,
+  onHotspotClick,
+  autoRotate,
+  isDayMode
+}: {
+  imageUrl: string;
+  hotspots: VRHotspot[];
+  onHotspotClick: (hotspot: VRHotspot) => void;
+  autoRotate: boolean;
+  isDayMode: boolean;
+}) {
+  return (
+    <>
+      {/* Environment lighting based on day/night */}
+      {isDayMode ? (
+        <>
+          <ambientLight intensity={0.8} />
+          <directionalLight position={[10, 10, 5]} intensity={1} />
+        </>
+      ) : (
+        <>
+          <ambientLight intensity={0.3} color="#4a5568" />
+          <directionalLight position={[-5, 5, -5]} intensity={0.3} color="#a0aec0" />
+          <pointLight position={[0, 2, 0]} intensity={0.5} color="#fbbf24" distance={5} />
+        </>
+      )}
+
+      <OrbitControls
+        enableZoom={true}
+        enablePan={false}
+        minDistance={0.1}
+        maxDistance={0.1}
+        rotateSpeed={-0.5}
+        zoomSpeed={0.5}
+        minPolarAngle={Math.PI * 0.1}
+        maxPolarAngle={Math.PI * 0.9}
+        makeDefault
+      />
+
+      <PanoramaSphere
+        imageUrl={imageUrl}
+        hotspots={hotspots}
+        onHotspotClick={onHotspotClick}
+        autoRotate={autoRotate}
+        rotateSpeed={0.5}
+        isDayMode={isDayMode}
+      />
+    </>
+  );
+}
+
 interface VRPanoramaViewerProps {
   imageUrl: string;
   hotspots: VRHotspot[];
@@ -147,40 +201,19 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
       <Canvas
         camera={{ fov: 75, position: [0, 0, 0.1] }}
         gl={{ antialias: true, alpha: false }}
+        onCreated={({ gl }) => {
+          gl.setClearColor('#000000');
+        }}
       >
-        {/* Environment lighting based on day/night */}
-        {isDayMode ? (
-          <>
-            <ambientLight intensity={0.8} />
-            <directionalLight position={[10, 10, 5]} intensity={1} />
-          </>
-        ) : (
-          <>
-            <ambientLight intensity={0.3} color="#4a5568" />
-            <directionalLight position={[-5, 5, -5]} intensity={0.3} color="#a0aec0" />
-            <pointLight position={[0, 2, 0]} intensity={0.5} color="#fbbf24" distance={5} />
-          </>
-        )}
-
-        <OrbitControls
-          enableZoom={true}
-          enablePan={false}
-          minDistance={0.1}
-          maxDistance={0.1}
-          rotateSpeed={-0.5}
-          zoomSpeed={0.5}
-          minPolarAngle={Math.PI * 0.1}
-          maxPolarAngle={Math.PI * 0.9}
-        />
-
-        <PanoramaSphere
-          imageUrl={imageUrl}
-          hotspots={hotspots}
-          onHotspotClick={onHotspotClick}
-          autoRotate={autoRotate}
-          rotateSpeed={0.5}
-          isDayMode={isDayMode}
-        />
+        <Suspense fallback={null}>
+          <SceneContent
+            imageUrl={imageUrl}
+            hotspots={hotspots}
+            onHotspotClick={onHotspotClick}
+            autoRotate={autoRotate}
+            isDayMode={isDayMode}
+          />
+        </Suspense>
       </Canvas>
     </div>
   );

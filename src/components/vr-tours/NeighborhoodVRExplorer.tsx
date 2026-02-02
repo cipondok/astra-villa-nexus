@@ -274,7 +274,12 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
         "relative rounded-xl overflow-hidden bg-gradient-to-b from-sky-200 to-emerald-100 lg:col-span-3",
         isFullscreen ? "h-[600px]" : "h-[400px]"
       )}>
-        <Canvas camera={{ position: [30, 25, 30], fov: 50 }}>
+        <Canvas 
+          camera={{ position: [30, 25, 30], fov: 50 }}
+          onCreated={({ gl }) => {
+            gl.setClearColor('#87ceeb');
+          }}
+        >
           <Suspense fallback={null}>
             <OrbitControls
               enablePan={true}
@@ -285,6 +290,7 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
               minDistance={15}
               maxDistance={80}
               maxPolarAngle={Math.PI / 2.2}
+              makeDefault
             />
             <NeighborhoodScene
               pois={filteredPOIs}
