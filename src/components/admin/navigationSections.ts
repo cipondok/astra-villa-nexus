@@ -56,7 +56,8 @@ import {
   Sparkles,
   Palette,
   Video,
-  Calculator
+  Calculator,
+  Link2
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -138,6 +139,13 @@ export const navigationSections = {
       label: "Mortgage (KPR) Management",
       icon: Calculator,
       description: "Manage partner banks, interest rates, and KPR customer inquiries",
+      badge: "New"
+    },
+    {
+      key: "blockchain-management",
+      label: "Blockchain Management",
+      icon: Link2,
+      description: "Manage smart contracts, escrow, property tokens, digital deeds, and blockchain transactions",
       badge: "New"
     }
   ],
