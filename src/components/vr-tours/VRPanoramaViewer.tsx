@@ -1,92 +1,8 @@
-import React, { useRef, useEffect, useState, Suspense } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { RotateCw } from 'lucide-react';
+import { RotateCw, Info, ChevronRight, Navigation, Maximize2, Minimize2 } from 'lucide-react';
 import type { VRHotspot } from './VRPropertyTourManager';
-import { ThreeCanvasBoundary } from './ThreeCanvasBoundary';
-
-interface PanoramaSphereProps {
-  texture: THREE.Texture;
-  rotationRef: React.MutableRefObject<{ yaw: number; pitch: number }>;
-  autoRotate: boolean;
-  rotateSpeed: number;
-  isDayMode: boolean;
-}
-
-const PanoramaSphere: React.FC<PanoramaSphereProps> = ({
-  texture,
-  rotationRef,
-  autoRotate,
-  rotateSpeed,
-  isDayMode
-}) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state, delta) => {
-    if (autoRotate && meshRef.current) {
-      meshRef.current.rotation.y += delta * rotateSpeed * 0.05;
-    }
-    if (meshRef.current) {
-      meshRef.current.rotation.y += rotationRef.current.yaw;
-      meshRef.current.rotation.x = rotationRef.current.pitch;
-      // reset yaw delta each frame (we accumulate deltas from dragging)
-      rotationRef.current.yaw = 0;
-    }
-  });
-
-  // Apply day/night filter through material properties
-  const materialProps = isDayMode
-    ? { color: new THREE.Color(1, 1, 1) }
-    : { color: new THREE.Color(0.4, 0.45, 0.6) }; // Blue-ish night tint
-
-  return (
-    <group>
-      <mesh ref={meshRef} scale={[-1, 1, 1]}>
-        <sphereGeometry args={[5, 64, 64]} />
-        <meshBasicMaterial map={texture} side={THREE.BackSide} {...materialProps} />
-      </mesh>
-    </group>
-  );
-};
-
-// Scene content component
-function SceneContent({
-  texture,
-  rotationRef,
-  autoRotate,
-  isDayMode
-}: {
-  texture: THREE.Texture;
-  rotationRef: React.MutableRefObject<{ yaw: number; pitch: number }>;
-  autoRotate: boolean;
-  isDayMode: boolean;
-}) {
-  return (
-    <>
-      {/* Environment lighting based on day/night */}
-      {isDayMode ? (
-        <>
-          <ambientLight intensity={0.8} />
-          <directionalLight position={[10, 10, 5]} intensity={1} />
-        </>
-      ) : (
-        <>
-          <ambientLight intensity={0.3} color="#4a5568" />
-          <directionalLight position={[-5, 5, -5]} intensity={0.3} color="#a0aec0" />
-          <pointLight position={[0, 2, 0]} intensity={0.5} color="#fbbf24" distance={5} />
-        </>
-      )}
-      <PanoramaSphere
-        texture={texture}
-        rotationRef={rotationRef}
-        autoRotate={autoRotate}
-        rotateSpeed={0.5}
-        isDayMode={isDayMode}
-      />
-    </>
-  );
-}
+import { Button } from '@/components/ui/button';
 
 interface VRPanoramaViewerProps {
   imageUrl: string;
@@ -97,130 +13,257 @@ interface VRPanoramaViewerProps {
   className?: string;
 }
 
+/**
+ * Simple CSS-based 360° panorama viewer
+ * Uses CSS transforms for drag-to-look functionality
+ * More reliable than Three.js/R3F for basic panorama viewing
+ */
 const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
   imageUrl,
-  hotspots: _hotspots,
-  onHotspotClick: _onHotspotClick,
+  hotspots,
+  onHotspotClick,
   autoRotate = true,
   isDayMode = true,
   className
 }) => {
-  const rotationRef = useRef<{ yaw: number; pitch: number }>({ yaw: 0, pitch: 0 });
-  const dragRef = useRef<{ dragging: boolean; lastX: number; lastY: number }>({
-    dragging: false,
-    lastX: 0,
-    lastY: 0,
-  });
-
-  const [texture, setTexture] = useState<THREE.Texture | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
 
+  // Auto-rotate effect
+  useEffect(() => {
+    if (!autoRotate || isDragging) return;
+    
+    const interval = setInterval(() => {
+      setRotation(prev => ({
+        ...prev,
+        y: prev.y + 0.15
+      }));
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [autoRotate, isDragging]);
+
+  // Preload image
   useEffect(() => {
     setIsLoading(true);
-    setTexture(null);
-
-    const loader = new THREE.TextureLoader();
-    loader.load(
-      imageUrl,
-      (loaded) => {
-        loaded.mapping = THREE.EquirectangularReflectionMapping;
-        loaded.colorSpace = THREE.SRGBColorSpace;
-        setTexture(loaded);
-        setIsLoading(false);
-      },
-      undefined,
-      (err) => {
-        console.error('Error loading panorama texture:', err);
-        setIsLoading(false);
-      }
-    );
+    setLoadError(false);
+    
+    const img = new Image();
+    img.onload = () => setIsLoading(false);
+    img.onerror = () => {
+      setIsLoading(false);
+      setLoadError(true);
+    };
+    img.src = imageUrl;
   }, [imageUrl]);
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setLastPos({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    
+    const deltaX = e.clientX - lastPos.x;
+    const deltaY = e.clientY - lastPos.y;
+    
+    setRotation(prev => ({
+      x: Math.max(-60, Math.min(60, prev.x - deltaY * 0.3)),
+      y: prev.y + deltaX * 0.3
+    }));
+    
+    setLastPos({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      setIsDragging(true);
+      setLastPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging || e.touches.length !== 1) return;
+    
+    const deltaX = e.touches[0].clientX - lastPos.x;
+    const deltaY = e.touches[0].clientY - lastPos.y;
+    
+    setRotation(prev => ({
+      x: Math.max(-60, Math.min(60, prev.x - deltaY * 0.3)),
+      y: prev.y + deltaX * 0.3
+    }));
+    
+    setLastPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+  };
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    setZoom(prev => Math.max(1, Math.min(2.5, prev - e.deltaY * 0.001)));
+  };
+
+  const getHotspotIcon = (type: string) => {
+    switch (type) {
+      case 'navigation':
+        return <ChevronRight className="h-4 w-4" />;
+      case 'info':
+        return <Info className="h-4 w-4" />;
+      default:
+        return <Navigation className="h-4 w-4" />;
+    }
+  };
+
+  // Convert hotspot pitch/yaw to screen position (simplified)
+  const getHotspotStyle = (hotspot: VRHotspot): React.CSSProperties => {
+    const yawOffset = hotspot.position.yaw - rotation.y;
+    const pitchOffset = hotspot.position.pitch - rotation.x;
+    
+    // Normalize yaw to -180 to 180
+    let normalizedYaw = ((yawOffset % 360) + 540) % 360 - 180;
+    
+    // Only show if in front hemisphere
+    if (Math.abs(normalizedYaw) > 80) return { display: 'none' };
+    
+    const x = 50 + (normalizedYaw / 80) * 40;
+    const y = 50 - (pitchOffset / 60) * 40;
+    
+    return {
+      left: `${x}%`,
+      top: `${y}%`,
+      transform: 'translate(-50%, -50%)',
+      position: 'absolute',
+      zIndex: 10
+    };
+  };
+
+  if (loadError) {
+    return (
+      <div className={cn("relative w-full h-full bg-muted flex items-center justify-center", className)}>
+        <div className="text-center p-4">
+          <p className="text-sm text-muted-foreground">Failed to load panorama image</p>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="mt-2"
+            onClick={() => {
+              setLoadError(false);
+              setIsLoading(true);
+            }}
+          >
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={cn("relative w-full h-full bg-black", className)}>
+    <div 
+      ref={containerRef}
+      className={cn(
+        "relative w-full h-full overflow-hidden cursor-grab select-none",
+        isDragging && "cursor-grabbing",
+        className
+      )}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={() => setIsDragging(false)}
+      onWheel={handleWheel}
+    >
+      {/* Loading indicator */}
       {isLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center">
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black">
           <div className="flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 text-white">
             <RotateCw className="h-5 w-5 animate-spin" />
             <span>Loading panorama...</span>
           </div>
         </div>
       )}
-      <ThreeCanvasBoundary
-        fallback={({ reset, error }) => (
-          <div className="absolute inset-0">
-            <img
-              src={imageUrl}
-              alt="VR panorama preview"
-              className="h-full w-full object-cover opacity-90"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-black/40" />
-            <div className="absolute inset-0 flex items-center justify-center p-4">
-              <div className="max-w-md rounded-xl border border-border bg-background/80 backdrop-blur-sm p-4 text-center">
-                <p className="text-sm font-medium text-foreground">3D viewer failed to load</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Your browser/WebGL context rejected a Three.js prop. You can still use AI staging & tools while we fix the viewer.
-                </p>
-                <p className="mt-2 rounded-md bg-muted/60 px-2 py-1 text-[11px] text-muted-foreground break-words">
-                  {error.message}
-                </p>
-                <button
-                  onClick={reset}
-                  className="mt-3 inline-flex items-center justify-center rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground"
-                >
-                  Retry 3D Viewer
-                </button>
-              </div>
+
+      {/* Panorama image with CSS transform */}
+      <div 
+        className="absolute inset-0 transition-transform duration-75"
+        style={{
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: `${200 * zoom}% auto`,
+          backgroundPosition: `${50 + rotation.y * 0.5}% ${50 + rotation.x * 0.5}%`,
+          backgroundRepeat: 'repeat-x',
+          filter: isDayMode ? 'none' : 'brightness(0.6) saturate(0.8) hue-rotate(10deg)',
+          transition: isDragging ? 'none' : 'background-position 0.1s ease-out'
+        }}
+      />
+
+      {/* Dark overlay for night mode */}
+      {!isDayMode && (
+        <div className="absolute inset-0 bg-blue-900/30 pointer-events-none" />
+      )}
+
+      {/* Hotspots */}
+      {hotspots.map((hotspot) => (
+        <button
+          key={hotspot.id}
+          style={getHotspotStyle(hotspot)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onHotspotClick(hotspot);
+          }}
+          className={cn(
+            "group flex items-center justify-center rounded-full p-2.5 transition-all duration-200",
+            "bg-primary/90 hover:bg-primary text-primary-foreground shadow-lg",
+            "hover:scale-110 cursor-pointer animate-pulse"
+          )}
+        >
+          {getHotspotIcon(hotspot.type)}
+          <div className="absolute left-full ml-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            <div className="bg-background/95 backdrop-blur-sm rounded-md px-2 py-1 text-xs text-foreground shadow-lg border border-border">
+              {hotspot.title}
+              {hotspot.description && (
+                <p className="text-muted-foreground mt-0.5">{hotspot.description}</p>
+              )}
             </div>
           </div>
-        )}
-      >
-        <Canvas
-          camera={{ fov: 75, position: [0, 0, 1] }}
-          gl={{ antialias: true, alpha: false }}
-          onCreated={({ gl }) => {
-            gl.setClearColor('#000000');
-          }}
-          onPointerDown={(e) => {
-            dragRef.current.dragging = true;
-            dragRef.current.lastX = e.clientX;
-            dragRef.current.lastY = e.clientY;
-          }}
-          onPointerUp={() => {
-            dragRef.current.dragging = false;
-          }}
-          onPointerLeave={() => {
-            dragRef.current.dragging = false;
-          }}
-          onPointerMove={(e) => {
-            if (!dragRef.current.dragging) return;
-            const dx = e.clientX - dragRef.current.lastX;
-            const dy = e.clientY - dragRef.current.lastY;
-            dragRef.current.lastX = e.clientX;
-            dragRef.current.lastY = e.clientY;
+        </button>
+      ))}
 
-            // Sensitivity tuned for touch + mouse.
-            rotationRef.current.yaw += dx * 0.003;
-            rotationRef.current.pitch = THREE.MathUtils.clamp(
-              rotationRef.current.pitch + dy * 0.003,
-              -Math.PI / 2 + 0.1,
-              Math.PI / 2 - 0.1
-            );
-          }}
+      {/* Controls hint */}
+      <div className="absolute bottom-4 left-4 z-10">
+        <div className="bg-background/60 backdrop-blur-sm rounded-lg px-3 py-1.5 text-xs text-muted-foreground">
+          Drag to look around • Scroll to zoom
+        </div>
+      </div>
+
+      {/* Zoom controls */}
+      <div className="absolute bottom-4 right-4 z-10 flex gap-1">
+        <Button
+          variant="secondary"
+          size="icon"
+          className="h-8 w-8 bg-background/60 backdrop-blur-sm"
+          onClick={() => setZoom(prev => Math.min(2.5, prev + 0.25))}
         >
-          <Suspense fallback={null}>
-            {texture ? (
-              <SceneContent
-                texture={texture}
-                rotationRef={rotationRef}
-                autoRotate={autoRotate}
-                isDayMode={isDayMode}
-              />
-            ) : null}
-          </Suspense>
-        </Canvas>
-      </ThreeCanvasBoundary>
+          <Maximize2 className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="secondary"
+          size="icon"
+          className="h-8 w-8 bg-background/60 backdrop-blur-sm"
+          onClick={() => setZoom(prev => Math.max(1, prev - 0.25))}
+        >
+          <Minimize2 className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 };
