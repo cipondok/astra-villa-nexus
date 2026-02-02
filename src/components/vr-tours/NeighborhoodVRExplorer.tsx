@@ -290,7 +290,6 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
               minDistance={15}
               maxDistance={80}
               maxPolarAngle={Math.PI / 2.2}
-              makeDefault
             />
             <NeighborhoodScene
               pois={filteredPOIs}
