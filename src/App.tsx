@@ -105,6 +105,7 @@ const CommunityHub = lazy(() => import('@/pages/CommunityHub'));
 const AIContentGenerator = lazy(() => import('@/pages/AIContentGenerator'));
 const ViralCampaigns = lazy(() => import('@/pages/ViralCampaigns'));
 const PlatformHub = lazy(() => import('@/pages/PlatformHub'));
+const VRTourShowcase = lazy(() => import('@/pages/VRTourShowcase'));
 
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
@@ -149,6 +150,7 @@ const AppContent = () => {
             <Route path="/new-projects" element={<NewProjects />} />
             <Route path="/properties" element={<Properties />} />
             <Route path="/3d-showcase" element={<ThreeDShowcase />} />
+            <Route path="/vr-tour" element={<VRTourShowcase />} />
             <Route path="/properties/:id" element={<PropertyDetail />} />
             <Route path="/add-property" element={<AddProperty />} />
             <Route path="/admin" element={<AdminDashboard />} />
