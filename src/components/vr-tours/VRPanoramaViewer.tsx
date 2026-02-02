@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { cn } from '@/lib/utils';
 import { RotateCw, Info, Navigation, ChevronRight } from 'lucide-react';
 import type { VRHotspot } from './VRPropertyTourManager';
+import { ThreeCanvasBoundary } from './ThreeCanvasBoundary';
 
 interface PanoramaSphereProps {
   imageUrl: string;
@@ -194,23 +195,51 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
 }) => {
   return (
     <div className={cn("relative w-full h-full bg-black", className)}>
-      <Canvas
-        camera={{ fov: 75, position: [0, 0, 1] }}
-        gl={{ antialias: true, alpha: false }}
-        onCreated={({ gl }) => {
-          gl.setClearColor('#000000');
-        }}
+      <ThreeCanvasBoundary
+        fallback={({ reset }) => (
+          <div className="absolute inset-0">
+            <img
+              src={imageUrl}
+              alt="VR panorama preview"
+              className="h-full w-full object-cover opacity-90"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 flex items-center justify-center p-4">
+              <div className="max-w-md rounded-xl border border-border bg-background/80 backdrop-blur-sm p-4 text-center">
+                <p className="text-sm font-medium text-foreground">3D viewer failed to load</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Your browser/WebGL context rejected a Three.js prop. You can still use AI staging & tools while we fix the viewer.
+                </p>
+                <button
+                  onClick={reset}
+                  className="mt-3 inline-flex items-center justify-center rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground"
+                >
+                  Retry 3D Viewer
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       >
-        <Suspense fallback={null}>
-          <SceneContent
-            imageUrl={imageUrl}
-            hotspots={hotspots}
-            onHotspotClick={onHotspotClick}
-            autoRotate={autoRotate}
-            isDayMode={isDayMode}
-          />
-        </Suspense>
-      </Canvas>
+        <Canvas
+          camera={{ fov: 75, position: [0, 0, 1] }}
+          gl={{ antialias: true, alpha: false }}
+          onCreated={({ gl }) => {
+            gl.setClearColor('#000000');
+          }}
+        >
+          <Suspense fallback={null}>
+            <SceneContent
+              imageUrl={imageUrl}
+              hotspots={hotspots}
+              onHotspotClick={onHotspotClick}
+              autoRotate={autoRotate}
+              isDayMode={isDayMode}
+            />
+          </Suspense>
+        </Canvas>
+      </ThreeCanvasBoundary>
     </div>
   );
 };
