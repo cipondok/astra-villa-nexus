@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BaseProperty } from '@/types/property';
+import { ThreeCanvasBoundary } from './ThreeCanvasBoundary';
 
 interface POI {
   id: string;
@@ -274,30 +275,46 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
         "relative rounded-xl overflow-hidden bg-gradient-to-b from-sky-200 to-emerald-100 lg:col-span-3",
         isFullscreen ? "h-[600px]" : "h-[400px]"
       )}>
-        <Canvas 
-          camera={{ position: [30, 25, 30], fov: 50 }}
-          onCreated={({ gl }) => {
-            gl.setClearColor('#87ceeb');
-          }}
+        <ThreeCanvasBoundary
+          fallback={({ reset }) => (
+            <div className="absolute inset-0 flex items-center justify-center p-4">
+              <div className="max-w-md rounded-xl border border-border bg-background/80 backdrop-blur-sm p-4 text-center">
+                <p className="text-sm font-medium text-foreground">Neighborhood 3D view failed to load</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  The list on the right still works. We’ll re-enable 3D once the WebGL props are stable.
+                </p>
+                <Button size="sm" className="mt-3" onClick={reset}>
+                  Retry 3D
+                </Button>
+              </div>
+            </div>
+          )}
         >
-          <Suspense fallback={null}>
-            <OrbitControls
-              enablePan={true}
-              enableZoom={true}
-              enableRotate={true}
-              autoRotate={isAutoRotate}
-              autoRotateSpeed={0.5}
-              minDistance={15}
-              maxDistance={80}
-              maxPolarAngle={Math.PI / 2.2}
-            />
-            <NeighborhoodScene
-              pois={filteredPOIs}
-              isDayMode={isDayMode}
-              onPOIClick={setSelectedPOI}
-            />
-          </Suspense>
-        </Canvas>
+          <Canvas 
+            camera={{ position: [30, 25, 30], fov: 50 }}
+            onCreated={({ gl }) => {
+              gl.setClearColor('#87ceeb');
+            }}
+          >
+            <Suspense fallback={null}>
+              <OrbitControls
+                enablePan={true}
+                enableZoom={true}
+                enableRotate={true}
+                autoRotate={isAutoRotate}
+                autoRotateSpeed={0.5}
+                minDistance={15}
+                maxDistance={80}
+                maxPolarAngle={Math.PI / 2.2}
+              />
+              <NeighborhoodScene
+                pois={filteredPOIs}
+                isDayMode={isDayMode}
+                onPOIClick={setSelectedPOI}
+              />
+            </Suspense>
+          </Canvas>
+        </ThreeCanvasBoundary>
 
         {/* Controls */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
