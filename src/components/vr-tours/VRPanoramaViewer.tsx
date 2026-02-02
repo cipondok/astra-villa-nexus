@@ -156,15 +156,11 @@ function SceneContent({
       )}
 
       <OrbitControls
-        enableZoom={true}
+        enableZoom={false}
         enablePan={false}
-        minDistance={0.1}
-        maxDistance={0.1}
-        rotateSpeed={-0.5}
-        zoomSpeed={0.5}
-        minPolarAngle={Math.PI * 0.1}
-        maxPolarAngle={Math.PI * 0.9}
-        makeDefault
+        enableDamping
+        dampingFactor={0.08}
+        rotateSpeed={-0.35}
       />
 
       <PanoramaSphere
@@ -199,7 +195,7 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
   return (
     <div className={cn("relative w-full h-full bg-black", className)}>
       <Canvas
-        camera={{ fov: 75, position: [0, 0, 0.1] }}
+        camera={{ fov: 75, position: [0, 0, 1] }}
         gl={{ antialias: true, alpha: false }}
         onCreated={({ gl }) => {
           gl.setClearColor('#000000');
