@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, X, SlidersHorizontal, MapPin } from 'lucide-react';
+import { Search, X, SlidersHorizontal, MapPin, Glasses } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -117,6 +117,15 @@ export function StickyHeaderSearch({
                   >
                     <Search className="h-3.5 w-3.5" />
                   </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.location.href = '/vr-tour'}
+                    className="h-8 w-8 p-0 shrink-0 border-border/40 rounded-lg"
+                  >
+                    <Glasses className="h-3.5 w-3.5" />
+                  </Button>
                   {onOpenFilters && (
                     <Button
                       type="button"
@@ -161,6 +170,16 @@ export function StickyHeaderSearch({
                 >
                   <Search className="h-4 w-4 mr-1.5" />
                   {t.search}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.location.href = '/vr-tour'}
+                  className="h-9 px-2.5 rounded-lg border-border/40 text-xs"
+                >
+                  <Glasses className="h-3.5 w-3.5 mr-1" />
+                  VR
                 </Button>
                 <Button
                   type="button"

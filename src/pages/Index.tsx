@@ -28,8 +28,6 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { NetworkStatusIndicator } from "@/components/NetworkStatusIndicator";
 import { UserProfileHeader } from "@/components/user/UserProfileHeader";
 import { StickyHeaderSearch } from "@/components/search/StickyHeaderSearch";
-import EnhancedNavigation from "@/components/navigation/EnhancedNavigation";
-import MobileFooter from "@/components/MobileFooter";
 
 // Lazy load heavy components for better performance
 const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
@@ -484,15 +482,6 @@ const Index = () => {
   // Mobile-first responsive layout wrapper
   const content = (
     <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-background">
-      {/* Main Navigation Header */}
-      <EnhancedNavigation
-        language={language}
-        onLanguageToggle={() => {}}
-        onLoginClick={() => {
-          navigate('/?auth=true');
-        }}
-      />
-
       {/* Network Status Indicator */}
       <NetworkStatusIndicator onStatusChange={setIsOnline} />
 
@@ -969,9 +958,6 @@ const Index = () => {
             />
           </Suspense>
         )}
-
-        {/* Mobile Footer */}
-        <MobileFooter />
       </div>
     </div>
   );
