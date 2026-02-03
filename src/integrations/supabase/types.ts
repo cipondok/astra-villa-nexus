@@ -4569,6 +4569,404 @@ export type Database = {
         }
         Relationships: []
       }
+      concierge_packages: {
+        Row: {
+          add_on_services: Json | null
+          commission_percentage: number
+          created_at: string
+          description: string | null
+          display_order: number | null
+          estimated_hours: number | null
+          featured: boolean | null
+          id: string
+          included_services: Json
+          is_active: boolean | null
+          max_property_value: number | null
+          min_property_value: number | null
+          package_name: string
+          package_tier: string
+          terms_conditions: string | null
+          updated_at: string
+        }
+        Insert: {
+          add_on_services?: Json | null
+          commission_percentage?: number
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          estimated_hours?: number | null
+          featured?: boolean | null
+          id?: string
+          included_services: Json
+          is_active?: boolean | null
+          max_property_value?: number | null
+          min_property_value?: number | null
+          package_name: string
+          package_tier: string
+          terms_conditions?: string | null
+          updated_at?: string
+        }
+        Update: {
+          add_on_services?: Json | null
+          commission_percentage?: number
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          estimated_hours?: number | null
+          featured?: boolean | null
+          id?: string
+          included_services?: Json
+          is_active?: boolean | null
+          max_property_value?: number | null
+          min_property_value?: number | null
+          package_name?: string
+          package_tier?: string
+          terms_conditions?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      concierge_requests: {
+        Row: {
+          assigned_concierge: string | null
+          budget_flexibility: string | null
+          commission_amount: number | null
+          completed_at: string | null
+          confirmed_at: string | null
+          consultation_date: string | null
+          consultation_notes: string | null
+          created_at: string
+          feedback: string | null
+          id: string
+          package_id: string | null
+          preferred_contact_method: string | null
+          preferred_contact_time: string | null
+          property_id: string | null
+          property_value: number | null
+          proposal_sent_at: string | null
+          referral_source: string | null
+          request_type: string
+          satisfaction_rating: number | null
+          services_requested: Json | null
+          special_requirements: string | null
+          status: string | null
+          timeline: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          assigned_concierge?: string | null
+          budget_flexibility?: string | null
+          commission_amount?: number | null
+          completed_at?: string | null
+          confirmed_at?: string | null
+          consultation_date?: string | null
+          consultation_notes?: string | null
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          package_id?: string | null
+          preferred_contact_method?: string | null
+          preferred_contact_time?: string | null
+          property_id?: string | null
+          property_value?: number | null
+          proposal_sent_at?: string | null
+          referral_source?: string | null
+          request_type: string
+          satisfaction_rating?: number | null
+          services_requested?: Json | null
+          special_requirements?: string | null
+          status?: string | null
+          timeline?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          assigned_concierge?: string | null
+          budget_flexibility?: string | null
+          commission_amount?: number | null
+          completed_at?: string | null
+          confirmed_at?: string | null
+          consultation_date?: string | null
+          consultation_notes?: string | null
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          package_id?: string | null
+          preferred_contact_method?: string | null
+          preferred_contact_time?: string | null
+          property_id?: string | null
+          property_value?: number | null
+          proposal_sent_at?: string | null
+          referral_source?: string | null
+          request_type?: string
+          satisfaction_rating?: number | null
+          services_requested?: Json | null
+          special_requirements?: string | null
+          status?: string | null
+          timeline?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concierge_requests_assigned_concierge_fkey"
+            columns: ["assigned_concierge"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concierge_requests_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "concierge_packages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concierge_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concierge_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concierge_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      concierge_tasks: {
+        Row: {
+          actual_cost: number | null
+          assigned_to: string | null
+          attachments: Json | null
+          client_visible: boolean | null
+          completed_date: string | null
+          created_at: string
+          estimated_cost: number | null
+          id: string
+          notes: string | null
+          priority: string | null
+          request_id: string | null
+          scheduled_date: string | null
+          service_type: string
+          status: string | null
+          task_description: string | null
+          task_name: string
+          updated_at: string
+          vendor_id: string | null
+        }
+        Insert: {
+          actual_cost?: number | null
+          assigned_to?: string | null
+          attachments?: Json | null
+          client_visible?: boolean | null
+          completed_date?: string | null
+          created_at?: string
+          estimated_cost?: number | null
+          id?: string
+          notes?: string | null
+          priority?: string | null
+          request_id?: string | null
+          scheduled_date?: string | null
+          service_type: string
+          status?: string | null
+          task_description?: string | null
+          task_name: string
+          updated_at?: string
+          vendor_id?: string | null
+        }
+        Update: {
+          actual_cost?: number | null
+          assigned_to?: string | null
+          attachments?: Json | null
+          client_visible?: boolean | null
+          completed_date?: string | null
+          created_at?: string
+          estimated_cost?: number | null
+          id?: string
+          notes?: string | null
+          priority?: string | null
+          request_id?: string | null
+          scheduled_date?: string | null
+          service_type?: string
+          status?: string | null
+          task_description?: string | null
+          task_name?: string
+          updated_at?: string
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concierge_tasks_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concierge_tasks_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "concierge_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      concierge_team: {
+        Row: {
+          avatar_url: string | null
+          avg_satisfaction_rating: number | null
+          bio: string | null
+          created_at: string
+          current_active_clients: number | null
+          email: string
+          full_name: string
+          id: string
+          is_available: boolean | null
+          languages: string[] | null
+          max_active_clients: number | null
+          phone: string | null
+          role: string
+          specializations: string[] | null
+          total_clients_served: number | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          avg_satisfaction_rating?: number | null
+          bio?: string | null
+          created_at?: string
+          current_active_clients?: number | null
+          email: string
+          full_name: string
+          id?: string
+          is_available?: boolean | null
+          languages?: string[] | null
+          max_active_clients?: number | null
+          phone?: string | null
+          role: string
+          specializations?: string[] | null
+          total_clients_served?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          avg_satisfaction_rating?: number | null
+          bio?: string | null
+          created_at?: string
+          current_active_clients?: number | null
+          email?: string
+          full_name?: string
+          id?: string
+          is_available?: boolean | null
+          languages?: string[] | null
+          max_active_clients?: number | null
+          phone?: string | null
+          role?: string
+          specializations?: string[] | null
+          total_clients_served?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concierge_team_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      concierge_vendors: {
+        Row: {
+          avg_rating: number | null
+          background_check: boolean | null
+          base_rate: number | null
+          certifications: string[] | null
+          commission_rate: number | null
+          company_name: string | null
+          created_at: string
+          email: string | null
+          id: string
+          insurance_verified: boolean | null
+          is_active: boolean | null
+          is_preferred: boolean | null
+          notes: string | null
+          phone: string | null
+          portfolio_url: string | null
+          pricing_model: string | null
+          service_areas: string[] | null
+          total_jobs: number | null
+          updated_at: string
+          vendor_name: string
+          vendor_type: string
+          website_url: string | null
+        }
+        Insert: {
+          avg_rating?: number | null
+          background_check?: boolean | null
+          base_rate?: number | null
+          certifications?: string[] | null
+          commission_rate?: number | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          insurance_verified?: boolean | null
+          is_active?: boolean | null
+          is_preferred?: boolean | null
+          notes?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          pricing_model?: string | null
+          service_areas?: string[] | null
+          total_jobs?: number | null
+          updated_at?: string
+          vendor_name: string
+          vendor_type: string
+          website_url?: string | null
+        }
+        Update: {
+          avg_rating?: number | null
+          background_check?: boolean | null
+          base_rate?: number | null
+          certifications?: string[] | null
+          commission_rate?: number | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          insurance_verified?: boolean | null
+          is_active?: boolean | null
+          is_preferred?: boolean | null
+          notes?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          pricing_model?: string | null
+          service_areas?: string[] | null
+          total_jobs?: number | null
+          updated_at?: string
+          vendor_name?: string
+          vendor_type?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       content_categories: {
         Row: {
           created_at: string | null
@@ -9388,6 +9786,63 @@ export type Database = {
         }
         Relationships: []
       }
+      media_targets: {
+        Row: {
+          best_pitch_time: string | null
+          created_at: string
+          domain_authority: number | null
+          id: string
+          key_contacts: Json | null
+          monthly_visitors: number | null
+          notes: string | null
+          past_coverage_count: number | null
+          pitch_angle: string | null
+          priority_score: number | null
+          publication_name: string
+          publication_type: string
+          status: string | null
+          target_topics: string[] | null
+          tier: string | null
+          updated_at: string
+        }
+        Insert: {
+          best_pitch_time?: string | null
+          created_at?: string
+          domain_authority?: number | null
+          id?: string
+          key_contacts?: Json | null
+          monthly_visitors?: number | null
+          notes?: string | null
+          past_coverage_count?: number | null
+          pitch_angle?: string | null
+          priority_score?: number | null
+          publication_name: string
+          publication_type: string
+          status?: string | null
+          target_topics?: string[] | null
+          tier?: string | null
+          updated_at?: string
+        }
+        Update: {
+          best_pitch_time?: string | null
+          created_at?: string
+          domain_authority?: number | null
+          id?: string
+          key_contacts?: Json | null
+          monthly_visitors?: number | null
+          notes?: string | null
+          past_coverage_count?: number | null
+          pitch_angle?: string | null
+          priority_score?: number | null
+          publication_name?: string
+          publication_type?: string
+          status?: string | null
+          target_topics?: string[] | null
+          tier?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       media_videos: {
         Row: {
           comments_count: number | null
@@ -12680,6 +13135,323 @@ export type Database = {
           max_commission?: number | null
           min_commission?: number | null
           transaction_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      podcast_appearances: {
+        Row: {
+          air_date: string | null
+          call_to_action: string | null
+          created_at: string
+          downloads: number | null
+          duration_minutes: number | null
+          episode_title: string | null
+          episode_url: string | null
+          host_email: string | null
+          host_name: string | null
+          id: string
+          key_talking_points: string[] | null
+          landing_page_url: string | null
+          leads_generated: number | null
+          listener_estimate: number | null
+          notes: string | null
+          podcast_name: string
+          podcast_url: string | null
+          promo_code: string | null
+          rating: number | null
+          recording_date: string | null
+          status: string | null
+          topics_discussed: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          air_date?: string | null
+          call_to_action?: string | null
+          created_at?: string
+          downloads?: number | null
+          duration_minutes?: number | null
+          episode_title?: string | null
+          episode_url?: string | null
+          host_email?: string | null
+          host_name?: string | null
+          id?: string
+          key_talking_points?: string[] | null
+          landing_page_url?: string | null
+          leads_generated?: number | null
+          listener_estimate?: number | null
+          notes?: string | null
+          podcast_name: string
+          podcast_url?: string | null
+          promo_code?: string | null
+          rating?: number | null
+          recording_date?: string | null
+          status?: string | null
+          topics_discussed?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          air_date?: string | null
+          call_to_action?: string | null
+          created_at?: string
+          downloads?: number | null
+          duration_minutes?: number | null
+          episode_title?: string | null
+          episode_url?: string | null
+          host_email?: string | null
+          host_name?: string | null
+          id?: string
+          key_talking_points?: string[] | null
+          landing_page_url?: string | null
+          leads_generated?: number | null
+          listener_estimate?: number | null
+          notes?: string | null
+          podcast_name?: string
+          podcast_url?: string | null
+          promo_code?: string | null
+          rating?: number | null
+          recording_date?: string | null
+          status?: string | null
+          topics_discussed?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pr_agencies: {
+        Row: {
+          agency_name: string
+          agency_type: string | null
+          contract_end_date: string | null
+          contract_start_date: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          kpis: Json | null
+          monthly_retainer: number | null
+          notes: string | null
+          performance_rating: number | null
+          primary_contact_email: string | null
+          primary_contact_name: string | null
+          primary_contact_phone: string | null
+          services_included: string[] | null
+          total_impressions: number | null
+          total_placements: number | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          agency_name: string
+          agency_type?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          kpis?: Json | null
+          monthly_retainer?: number | null
+          notes?: string | null
+          performance_rating?: number | null
+          primary_contact_email?: string | null
+          primary_contact_name?: string | null
+          primary_contact_phone?: string | null
+          services_included?: string[] | null
+          total_impressions?: number | null
+          total_placements?: number | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          agency_name?: string
+          agency_type?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          kpis?: Json | null
+          monthly_retainer?: number | null
+          notes?: string | null
+          performance_rating?: number | null
+          primary_contact_email?: string | null
+          primary_contact_name?: string | null
+          primary_contact_phone?: string | null
+          services_included?: string[] | null
+          total_impressions?: number | null
+          total_placements?: number | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      pr_outreach: {
+        Row: {
+          assigned_to: string | null
+          attachments: Json | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          contact_title: string | null
+          coverage_id: string | null
+          created_at: string
+          deadline: string | null
+          follow_up_count: number | null
+          id: string
+          last_follow_up: string | null
+          next_follow_up: string | null
+          notes: string | null
+          outlet_name: string
+          outlet_type: string | null
+          pitch_content: string | null
+          pitch_date: string
+          pitch_subject: string
+          priority: string | null
+          response_date: string | null
+          source: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          attachments?: Json | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contact_title?: string | null
+          coverage_id?: string | null
+          created_at?: string
+          deadline?: string | null
+          follow_up_count?: number | null
+          id?: string
+          last_follow_up?: string | null
+          next_follow_up?: string | null
+          notes?: string | null
+          outlet_name: string
+          outlet_type?: string | null
+          pitch_content?: string | null
+          pitch_date?: string
+          pitch_subject: string
+          priority?: string | null
+          response_date?: string | null
+          source: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          attachments?: Json | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contact_title?: string | null
+          coverage_id?: string | null
+          created_at?: string
+          deadline?: string | null
+          follow_up_count?: number | null
+          id?: string
+          last_follow_up?: string | null
+          next_follow_up?: string | null
+          notes?: string | null
+          outlet_name?: string
+          outlet_type?: string | null
+          pitch_content?: string | null
+          pitch_date?: string
+          pitch_subject?: string
+          priority?: string | null
+          response_date?: string | null
+          source?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pr_outreach_coverage_id_fkey"
+            columns: ["coverage_id"]
+            isOneToOne: false
+            referencedRelation: "press_coverage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      press_coverage: {
+        Row: {
+          article_title: string
+          article_url: string | null
+          coverage_type: string | null
+          created_at: string
+          featured: boolean | null
+          id: string
+          journalist_email: string | null
+          journalist_linkedin: string | null
+          journalist_name: string | null
+          key_quotes: string[] | null
+          lead_conversions: number | null
+          media_value_estimate: number | null
+          notes: string | null
+          pdf_url: string | null
+          publication_date: string | null
+          publication_name: string
+          publication_type: string
+          reach_estimate: number | null
+          referral_traffic: number | null
+          screenshot_url: string | null
+          sentiment: string | null
+          social_shares: number | null
+          status: string | null
+          topics: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          article_title: string
+          article_url?: string | null
+          coverage_type?: string | null
+          created_at?: string
+          featured?: boolean | null
+          id?: string
+          journalist_email?: string | null
+          journalist_linkedin?: string | null
+          journalist_name?: string | null
+          key_quotes?: string[] | null
+          lead_conversions?: number | null
+          media_value_estimate?: number | null
+          notes?: string | null
+          pdf_url?: string | null
+          publication_date?: string | null
+          publication_name: string
+          publication_type: string
+          reach_estimate?: number | null
+          referral_traffic?: number | null
+          screenshot_url?: string | null
+          sentiment?: string | null
+          social_shares?: number | null
+          status?: string | null
+          topics?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          article_title?: string
+          article_url?: string | null
+          coverage_type?: string | null
+          created_at?: string
+          featured?: boolean | null
+          id?: string
+          journalist_email?: string | null
+          journalist_linkedin?: string | null
+          journalist_name?: string | null
+          key_quotes?: string[] | null
+          lead_conversions?: number | null
+          media_value_estimate?: number | null
+          notes?: string | null
+          pdf_url?: string | null
+          publication_date?: string | null
+          publication_name?: string
+          publication_type?: string
+          reach_estimate?: number | null
+          referral_traffic?: number | null
+          screenshot_url?: string | null
+          sentiment?: string | null
+          social_shares?: number | null
+          status?: string | null
+          topics?: string[] | null
           updated_at?: string
         }
         Relationships: []

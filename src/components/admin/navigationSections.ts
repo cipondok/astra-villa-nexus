@@ -61,7 +61,8 @@ import {
   Smartphone,
   FlaskConical,
   Zap,
-  Rocket
+  Rocket,
+  Newspaper
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -617,6 +618,20 @@ export const navigationSections = {
       icon: Rocket,
       description: "Quick wins: Referral 3x, Listing Competitions, Photo Contests, Agent Leaderboard, $50 Bonus",
       badge: "🔥 Hot"
+    },
+    {
+      key: "media-coverage-pr",
+      label: "Media Coverage & PR",
+      icon: Newspaper,
+      description: "Press coverage, HARO outreach, podcast appearances, and PR agency management",
+      badge: "New"
+    },
+    {
+      key: "concierge-service",
+      label: "Concierge Service",
+      icon: Crown,
+      description: "White-glove property service at 2% vs traditional 5-6% - photography, legal, moving, setup",
+      badge: "Premium"
     }
   ],
 
