@@ -57,7 +57,7 @@ const PropertyOwnerDashboard = lazy(() => import('@/pages/PropertyOwnerDashboard
 const VendorKYCDashboard = lazy(() => import('@/pages/VendorKYCDashboard'));
 const CustomerServiceDashboardPage = lazy(() => import('@/pages/CustomerServiceDashboard'));
 const UserDashboardPage = lazy(() => import('@/pages/UserDashboardPage'));
-const ThreeDShowcase = lazy(() => import('@/pages/ThreeDShowcase'));
+// ThreeDShowcase removed - consolidated into VR Tour
 const AddProperty = lazy(() => import('@/pages/AddProperty'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
@@ -154,7 +154,7 @@ const AppContent = () => {
             <Route path="/pre-launching" element={<PreLaunching />} />
             <Route path="/new-projects" element={<NewProjects />} />
             <Route path="/properties" element={<Properties />} />
-            <Route path="/3d-showcase" element={<ThreeDShowcase />} />
+            <Route path="/3d-showcase" element={<Navigate to="/vr-tour" replace />} />
             <Route path="/vr-tour" element={<VRTourShowcase />} />
             <Route path="/blockchain-verification" element={<BlockchainVerification />} />
             <Route path="/properties/:id" element={<PropertyDetail />} />

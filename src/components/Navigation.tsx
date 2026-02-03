@@ -143,8 +143,8 @@ const Navigation = () => {
     },
     { 
       icon: Box, 
-      label: '3D Showcase', 
-      path: '/3d-showcase',
+      label: 'VR Tours', 
+      path: '/vr-tour',
       color: 'text-indigo-600 dark:text-indigo-400'
     }
   ];
