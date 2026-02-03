@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Award, MapPin, Home, CheckCircle, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Award, MapPin, Home, CheckCircle, Star, ChevronLeft, ChevronRight, Crown, Gem, Medal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -19,7 +19,90 @@ interface TopAgent {
   total_rented: number;
   awards: number;
   rating: number;
+  level_name: string | null;
 }
+
+// Sample agent data for display
+const sampleAgents: TopAgent[] = [
+  {
+    id: 'sample-1',
+    full_name: 'Dewi Sartika',
+    avatar_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
+    location: 'Jakarta Selatan',
+    is_verified: true,
+    total_listings: 87,
+    total_sold: 42,
+    total_rented: 15,
+    awards: 3,
+    rating: 4.9,
+    level_name: 'Platinum VIP'
+  },
+  {
+    id: 'sample-2',
+    full_name: 'Budi Santoso',
+    avatar_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200',
+    location: 'Bandung',
+    is_verified: true,
+    total_listings: 65,
+    total_sold: 35,
+    total_rented: 12,
+    awards: 2,
+    rating: 4.8,
+    level_name: 'Gold VIP'
+  },
+  {
+    id: 'sample-3',
+    full_name: 'Siti Rahayu',
+    avatar_url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200',
+    location: 'Surabaya',
+    is_verified: true,
+    total_listings: 54,
+    total_sold: 28,
+    total_rented: 8,
+    awards: 2,
+    rating: 4.7,
+    level_name: 'Gold VIP'
+  },
+  {
+    id: 'sample-4',
+    full_name: 'Ahmad Wijaya',
+    avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
+    location: 'Bali',
+    is_verified: true,
+    total_listings: 92,
+    total_sold: 48,
+    total_rented: 22,
+    awards: 3,
+    rating: 4.9,
+    level_name: 'Platinum VIP'
+  },
+  {
+    id: 'sample-5',
+    full_name: 'Maya Putri',
+    avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200',
+    location: 'Yogyakarta',
+    is_verified: true,
+    total_listings: 45,
+    total_sold: 22,
+    total_rented: 10,
+    awards: 1,
+    rating: 4.6,
+    level_name: 'Silver VIP'
+  }
+];
+
+const getLevelBadgeStyle = (levelName: string | null) => {
+  if (!levelName) return { bg: 'bg-gray-100', text: 'text-gray-700', icon: null };
+  
+  const name = levelName.toLowerCase();
+  if (name.includes('platinum')) return { bg: 'bg-gradient-to-r from-slate-200 to-slate-300', text: 'text-slate-800', icon: Gem };
+  if (name.includes('gold')) return { bg: 'bg-gradient-to-r from-amber-200 to-yellow-300', text: 'text-amber-800', icon: Crown };
+  if (name.includes('silver')) return { bg: 'bg-gradient-to-r from-gray-200 to-slate-300', text: 'text-gray-700', icon: Medal };
+  if (name.includes('bronze')) return { bg: 'bg-gradient-to-r from-orange-200 to-amber-200', text: 'text-orange-800', icon: Medal };
+  if (name.includes('vip')) return { bg: 'bg-purple-100', text: 'text-purple-700', icon: Crown };
+  if (name.includes('premium')) return { bg: 'bg-blue-100', text: 'text-blue-700', icon: Star };
+  return { bg: 'bg-gray-100', text: 'text-gray-700', icon: null };
+};
 
 const TopAgentsCarousel = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -37,15 +120,22 @@ const TopAgentsCarousel = () => {
         .eq('is_active', true)
         .limit(20);
 
-      if (!agentRoles?.length) return [];
+      if (!agentRoles?.length) return sampleAgents;
 
       const userIds = agentRoles.map(r => r.user_id);
 
-      // Get profiles - use business_address instead of city
+      // Get profiles with user_level
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, full_name, avatar_url, business_address, verification_status')
+        .select('id, full_name, avatar_url, business_address, verification_status, user_level_id')
         .in('id', userIds);
+
+      // Get user levels
+      const { data: userLevels } = await supabase
+        .from('user_levels')
+        .select('id, name');
+
+      const levelMap = new Map(userLevels?.map(l => [l.id, l.name]) || []);
 
       // Get leaderboard stats
       const { data: leaderboardData } = await supabase
@@ -58,19 +148,37 @@ const TopAgentsCarousel = () => {
       // Combine data
       const agents: TopAgent[] = (profiles || []).slice(0, 10).map(profile => {
         const stats = leaderboardData?.find(l => l.agent_id === profile.id);
+        let locationStr = null;
+        if (profile.business_address) {
+          try {
+            const addr = typeof profile.business_address === 'string' 
+              ? JSON.parse(profile.business_address) 
+              : profile.business_address;
+            locationStr = addr.city_name || addr.province_name || null;
+          } catch {
+            locationStr = profile.business_address as string;
+          }
+        }
+        
         return {
           id: profile.id,
           full_name: profile.full_name || 'Agent',
           avatar_url: profile.avatar_url,
-          location: profile.business_address,
-          is_verified: profile.verification_status === 'verified',
+          location: locationStr,
+          is_verified: profile.verification_status === 'verified' || profile.verification_status === 'approved',
           total_listings: stats?.total_listings || Math.floor(Math.random() * 100) + 10,
           total_sold: stats?.total_sales || Math.floor(Math.random() * 50) + 5,
           total_rented: Math.floor(Math.random() * 20) + 2,
           awards: Math.floor(Math.random() * 3) + 1,
-          rating: stats?.avg_rating || 4.5 + Math.random() * 0.5
+          rating: stats?.avg_rating || 4.5 + Math.random() * 0.5,
+          level_name: profile.user_level_id ? levelMap.get(profile.user_level_id) || null : null
         };
       });
+
+      // Combine with sample agents if not enough real ones
+      if (agents.length < 5) {
+        return [...agents, ...sampleAgents.slice(0, 5 - agents.length)];
+      }
 
       return agents;
     },
@@ -149,78 +257,91 @@ const TopAgentsCarousel = () => {
         </div>
 
         {/* Agent Cards */}
-        {topAgents?.map((agent) => (
-          <Link key={agent.id} to={`/profile/${agent.id}`} className="flex-shrink-0 w-64 sm:w-72">
-            <Card className="h-full bg-background/95 backdrop-blur-sm border-border hover:shadow-lg transition-shadow">
-              <CardContent className="p-4">
-                {/* Agent Header */}
-                <div className="flex flex-col items-center text-center mb-4">
-                  <div className="relative mb-3">
-                    <Avatar className="w-20 h-20 border-4 border-primary/20">
-                      <AvatarImage src={agent.avatar_url || undefined} />
-                      <AvatarFallback className="text-xl bg-primary/10 text-primary">
-                        {agent.full_name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
+        {topAgents?.map((agent) => {
+          const levelStyle = getLevelBadgeStyle(agent.level_name);
+          const LevelIcon = levelStyle.icon;
+          
+          return (
+            <Link key={agent.id} to={agent.id.startsWith('sample') ? '#' : `/profile/${agent.id}`} className="flex-shrink-0 w-64 sm:w-72">
+              <Card className="h-full bg-background/95 backdrop-blur-sm border-border hover:shadow-lg transition-shadow">
+                <CardContent className="p-4">
+                  {/* Agent Header */}
+                  <div className="flex flex-col items-center text-center mb-4">
+                    <div className="relative mb-3">
+                      <Avatar className="w-20 h-20 border-4 border-primary/20">
+                        <AvatarImage src={agent.avatar_url || undefined} />
+                        <AvatarFallback className="text-xl bg-primary/10 text-primary">
+                          {agent.full_name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      {agent.is_verified && (
+                        <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1">
+                          <CheckCircle className="h-4 w-4 text-white" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Level Badge */}
+                    {agent.level_name && (
+                      <Badge className={`${levelStyle.bg} ${levelStyle.text} mb-2 text-xs font-medium`}>
+                        {LevelIcon && <LevelIcon className="h-3 w-3 mr-1" />}
+                        {agent.level_name}
+                      </Badge>
+                    )}
+                    
                     {agent.is_verified && (
-                      <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1">
-                        <CheckCircle className="h-4 w-4 text-white" />
-                      </div>
+                      <Badge className="bg-green-100 text-green-700 mb-2">
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        VERIFIED
+                      </Badge>
                     )}
+                    
+                    <h3 className="font-semibold text-foreground">{agent.full_name}</h3>
+                    
+                    <div className="flex items-center gap-1 text-muted-foreground text-sm mt-1">
+                      <MapPin className="h-3 w-3" />
+                      <span>{agent.location || 'Indonesia'}</span>
+                      {agent.awards > 0 && (
+                        <>
+                          <span className="mx-1">•</span>
+                          <Award className="h-3 w-3 text-amber-500" />
+                          <span>{agent.awards} Award</span>
+                        </>
+                      )}
+                    </div>
                   </div>
-                  
-                  {agent.is_verified && (
-                    <Badge className="bg-green-100 text-green-700 mb-2">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      VERIFIED
-                    </Badge>
+
+                  {/* Awards Badges */}
+                  {agent.awards > 0 && (
+                    <div className="flex justify-center gap-2 mb-4">
+                      {[...Array(Math.min(agent.awards, 3))].map((_, i) => (
+                        <div key={i} className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                          <Award className="h-5 w-5 text-amber-600" />
+                        </div>
+                      ))}
+                    </div>
                   )}
-                  
-                  <h3 className="font-semibold text-foreground">{agent.full_name}</h3>
-                  
-                  <div className="flex items-center gap-1 text-muted-foreground text-sm mt-1">
-                    <MapPin className="h-3 w-3" />
-                    <span>{agent.location || 'Indonesia'}</span>
-                    {agent.awards > 0 && (
-                      <>
-                        <span className="mx-1">•</span>
-                        <Award className="h-3 w-3 text-amber-500" />
-                        <span>{agent.awards} Award</span>
-                      </>
-                    )}
-                  </div>
-                </div>
 
-                {/* Awards Badges */}
-                {agent.awards > 0 && (
-                  <div className="flex justify-center gap-2 mb-4">
-                    {[...Array(Math.min(agent.awards, 3))].map((_, i) => (
-                      <div key={i} className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                        <Award className="h-5 w-5 text-amber-600" />
-                      </div>
-                    ))}
+                  {/* Stats */}
+                  <div className="grid grid-cols-3 gap-2 text-center bg-muted/50 rounded-lg p-3">
+                    <div>
+                      <div className="text-lg font-bold text-foreground">{agent.total_listings}</div>
+                      <div className="text-xs text-muted-foreground">Iklan</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-foreground">{agent.total_sold}</div>
+                      <div className="text-xs text-muted-foreground">Terjual</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-foreground">{agent.total_rented}</div>
+                      <div className="text-xs text-muted-foreground">Tersewa</div>
+                    </div>
                   </div>
-                )}
-
-                {/* Stats */}
-                <div className="grid grid-cols-3 gap-2 text-center bg-muted/50 rounded-lg p-3">
-                  <div>
-                    <div className="text-lg font-bold text-foreground">{agent.total_listings}</div>
-                    <div className="text-xs text-muted-foreground">Iklan</div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold text-foreground">{agent.total_sold}</div>
-                    <div className="text-xs text-muted-foreground">Terjual</div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold text-foreground">{agent.total_rented}</div>
-                    <div className="text-xs text-muted-foreground">Tersewa</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
