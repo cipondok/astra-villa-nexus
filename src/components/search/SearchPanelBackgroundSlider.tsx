@@ -56,16 +56,17 @@ export const SearchPanelBackgroundSlider: React.FC<SearchPanelBackgroundSliderPr
           <img
             src={image}
             alt={`Property ${index + 1}`}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover brightness-110 saturate-110"
             loading={index === 0 ? "eager" : "lazy"}
           />
         </div>
       ))}
       
-      {/* Light gradient overlays for professional look */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/60 dark:from-black/40 dark:via-black/20 dark:to-black/60" />
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
-      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+      {/* Light, airy gradient overlays - bright & professional */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/5 to-white/40 dark:from-black/30 dark:via-transparent dark:to-black/50" />
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-blue-500/5" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/20 to-transparent" />
+      <div className="absolute inset-0 bg-white/10 dark:bg-transparent" />
       
       {/* Slide indicators */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
