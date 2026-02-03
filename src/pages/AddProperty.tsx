@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import MultiStepPropertyForm from "@/components/property/MultiStepPropertyForm";
+import PropertyImporter from "@/components/property/PropertyImporter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool } from "lucide-react";
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
 import { useVIPLimits } from "@/hooks/useVIPLimits";
 import VIPLimitAlert from "@/components/property/VIPLimitAlert";
@@ -13,6 +16,7 @@ const AddProperty = () => {
   const { isAuthenticated, profile } = useAuth();
   const { language } = useLanguage();
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
+  const [activeTab, setActiveTab] = useState<string>("manual");
   const { data: userRoles = [] } = useUserRoles();
   const navigate = useNavigate();
   const { 
@@ -210,11 +214,37 @@ const AddProperty = () => {
           />
         )}
         
-        <Card className="border-border/50 shadow-sm">
-          <CardContent className="p-2 sm:p-4">
-            <MultiStepPropertyForm />
-          </CardContent>
-        </Card>
+        {/* Tabs for Manual or Import */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 h-9">
+            <TabsTrigger value="manual" className="text-xs gap-1.5">
+              <PenTool className="h-3.5 w-3.5" />
+              {language === "en" ? "Create Manually" : "Buat Manual"}
+            </TabsTrigger>
+            <TabsTrigger value="import" className="text-xs gap-1.5">
+              <Link2 className="h-3.5 w-3.5" />
+              {language === "en" ? "Import from URL" : "Impor dari URL"}
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="manual" className="mt-2">
+            <Card className="border-border/50 shadow-sm">
+              <CardContent className="p-2 sm:p-4">
+                <MultiStepPropertyForm />
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="import" className="mt-2">
+            <PropertyImporter 
+              onImport={(data) => {
+                console.log("Imported property data:", data);
+                // Switch to manual tab and pre-fill form (future enhancement)
+                setActiveTab("manual");
+              }} 
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
