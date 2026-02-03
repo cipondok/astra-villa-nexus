@@ -29,17 +29,17 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
       )}
       aria-label="Jakarta Property Hero"
     >
-      {/* Dark Jakarta Skyline Background */}
+      {/* Light Jakarta Skyline Background */}
       <div className="absolute inset-0 z-0">
         <img 
           src={jakartaSkylineDark} 
           alt="Jakarta Premium Skyline - Luxury Real Estate" 
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover brightness-110 saturate-105"
         />
-        {/* Dark gradient overlays for luxury feel */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-background pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-transparent to-background/20 pointer-events-none" />
+        {/* Light gradient overlays for clean professional look */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-background/90 pointer-events-none dark:from-black/40 dark:to-background/90" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
       </div>
 
       {/* Content Overlay - Centered vertically */}
