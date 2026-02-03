@@ -3397,6 +3397,72 @@ export type Database = {
           },
         ]
       }
+      buyer_demand_data: {
+        Row: {
+          available_listings: number | null
+          avg_search_budget_max: number | null
+          avg_search_budget_min: number | null
+          avg_time_to_decision_days: number | null
+          buyer_demographics: Json | null
+          created_at: string
+          demand_supply_ratio: number | null
+          id: string
+          inquiry_count: number | null
+          location_area: string | null
+          location_city: string
+          median_offer_price: number | null
+          offer_count: number | null
+          popular_features: string[] | null
+          price_trend_percentage: number | null
+          property_type: string
+          search_volume: number | null
+          time_period: string
+          viewing_requests: number | null
+        }
+        Insert: {
+          available_listings?: number | null
+          avg_search_budget_max?: number | null
+          avg_search_budget_min?: number | null
+          avg_time_to_decision_days?: number | null
+          buyer_demographics?: Json | null
+          created_at?: string
+          demand_supply_ratio?: number | null
+          id?: string
+          inquiry_count?: number | null
+          location_area?: string | null
+          location_city: string
+          median_offer_price?: number | null
+          offer_count?: number | null
+          popular_features?: string[] | null
+          price_trend_percentage?: number | null
+          property_type: string
+          search_volume?: number | null
+          time_period: string
+          viewing_requests?: number | null
+        }
+        Update: {
+          available_listings?: number | null
+          avg_search_budget_max?: number | null
+          avg_search_budget_min?: number | null
+          avg_time_to_decision_days?: number | null
+          buyer_demographics?: Json | null
+          created_at?: string
+          demand_supply_ratio?: number | null
+          id?: string
+          inquiry_count?: number | null
+          location_area?: string | null
+          location_city?: string
+          median_offer_price?: number | null
+          offer_count?: number | null
+          popular_features?: string[] | null
+          price_trend_percentage?: number | null
+          property_type?: string
+          search_volume?: number | null
+          time_period?: string
+          viewing_requests?: number | null
+        }
+        Relationships: []
+      }
       carousel_settings: {
         Row: {
           auto_scroll: boolean | null
@@ -4530,6 +4596,160 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      data_exchange_api_logs: {
+        Row: {
+          client_id: string | null
+          created_at: string
+          credits_used: number | null
+          endpoint: string
+          id: string
+          ip_address: unknown
+          method: string
+          request_params: Json | null
+          response_status: number | null
+          response_time_ms: number | null
+          subscription_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          created_at?: string
+          credits_used?: number | null
+          endpoint: string
+          id?: string
+          ip_address?: unknown
+          method: string
+          request_params?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          subscription_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          created_at?: string
+          credits_used?: number | null
+          endpoint?: string
+          id?: string
+          ip_address?: unknown
+          method?: string
+          request_params?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          subscription_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_exchange_api_logs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "data_exchange_api_logs_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "research_data_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      data_licensing_agreements: {
+        Row: {
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          data_categories: string[]
+          end_date: string | null
+          id: string
+          license_fee: number
+          license_type: string
+          licensee_id: string | null
+          organization_country: string | null
+          organization_name: string
+          payment_frequency: string | null
+          restrictions: Json | null
+          revenue_share_percentage: number | null
+          signed_at: string | null
+          signed_document_url: string | null
+          start_date: string | null
+          status: string | null
+          territory: string[] | null
+          updated_at: string
+          usage_rights: Json | null
+        }
+        Insert: {
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_categories: string[]
+          end_date?: string | null
+          id?: string
+          license_fee: number
+          license_type: string
+          licensee_id?: string | null
+          organization_country?: string | null
+          organization_name: string
+          payment_frequency?: string | null
+          restrictions?: Json | null
+          revenue_share_percentage?: number | null
+          signed_at?: string | null
+          signed_document_url?: string | null
+          start_date?: string | null
+          status?: string | null
+          territory?: string[] | null
+          updated_at?: string
+          usage_rights?: Json | null
+        }
+        Update: {
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_categories?: string[]
+          end_date?: string | null
+          id?: string
+          license_fee?: number
+          license_type?: string
+          licensee_id?: string | null
+          organization_country?: string | null
+          organization_name?: string
+          payment_frequency?: string | null
+          restrictions?: Json | null
+          revenue_share_percentage?: number | null
+          signed_at?: string | null
+          signed_document_url?: string | null
+          start_date?: string | null
+          status?: string | null
+          territory?: string[] | null
+          updated_at?: string
+          usage_rights?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_licensing_agreements_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "data_licensing_agreements_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "data_licensing_agreements_licensee_id_fkey"
+            columns: ["licensee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       database_error_tracking: {
         Row: {
@@ -6665,6 +6885,66 @@ export type Database = {
           },
         ]
       }
+      investor_deal_access: {
+        Row: {
+          access_type: string | null
+          created_at: string
+          deal_id: string | null
+          expressed_interest: boolean | null
+          id: string
+          interest_amount: number | null
+          investor_id: string | null
+          nda_document_url: string | null
+          nda_signed_at: string | null
+          notes: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_type?: string | null
+          created_at?: string
+          deal_id?: string | null
+          expressed_interest?: boolean | null
+          id?: string
+          interest_amount?: number | null
+          investor_id?: string | null
+          nda_document_url?: string | null
+          nda_signed_at?: string | null
+          notes?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_type?: string | null
+          created_at?: string
+          deal_id?: string | null
+          expressed_interest?: boolean | null
+          id?: string
+          interest_amount?: number | null
+          investor_id?: string | null
+          nda_document_url?: string | null
+          nda_signed_at?: string | null
+          notes?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_deal_access_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "off_market_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "investor_deal_access_investor_id_fkey"
+            columns: ["investor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       investor_profiles: {
         Row: {
           country_of_residence: string | null
@@ -6952,6 +7232,66 @@ export type Database = {
           sample_count?: number | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      listing_syndication_networks: {
+        Row: {
+          api_endpoint: string | null
+          api_key_encrypted: string | null
+          commission_rate: number | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          last_sync_at: string | null
+          listing_fee: number | null
+          logo_url: string | null
+          network_name: string
+          network_type: string
+          supported_property_types: string[] | null
+          supported_regions: string[] | null
+          sync_frequency_hours: number | null
+          total_leads_received: number | null
+          total_listings_shared: number | null
+          updated_at: string
+        }
+        Insert: {
+          api_endpoint?: string | null
+          api_key_encrypted?: string | null
+          commission_rate?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          listing_fee?: number | null
+          logo_url?: string | null
+          network_name: string
+          network_type: string
+          supported_property_types?: string[] | null
+          supported_regions?: string[] | null
+          sync_frequency_hours?: number | null
+          total_leads_received?: number | null
+          total_listings_shared?: number | null
+          updated_at?: string
+        }
+        Update: {
+          api_endpoint?: string | null
+          api_key_encrypted?: string | null
+          commission_rate?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          listing_fee?: number | null
+          logo_url?: string | null
+          network_name?: string
+          network_type?: string
+          supported_property_types?: string[] | null
+          supported_regions?: string[] | null
+          sync_frequency_hours?: number | null
+          total_leads_received?: number | null
+          total_listings_shared?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -9544,6 +9884,106 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      off_market_deals: {
+        Row: {
+          asking_price: number | null
+          bathrooms: number | null
+          bedrooms: number | null
+          created_at: string
+          deal_type: string
+          discount_percentage: number | null
+          estimated_value: number | null
+          exclusivity_days: number | null
+          expires_at: string | null
+          express_interest_count: number | null
+          id: string
+          location_area: string | null
+          location_city: string
+          minimum_investor_tier: string | null
+          nda_required: boolean | null
+          property_id: string | null
+          property_type: string
+          seller_id: string | null
+          size_sqm: number | null
+          status: string | null
+          updated_at: string
+          urgency_level: string | null
+          views_count: number | null
+        }
+        Insert: {
+          asking_price?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string
+          deal_type: string
+          discount_percentage?: number | null
+          estimated_value?: number | null
+          exclusivity_days?: number | null
+          expires_at?: string | null
+          express_interest_count?: number | null
+          id?: string
+          location_area?: string | null
+          location_city: string
+          minimum_investor_tier?: string | null
+          nda_required?: boolean | null
+          property_id?: string | null
+          property_type: string
+          seller_id?: string | null
+          size_sqm?: number | null
+          status?: string | null
+          updated_at?: string
+          urgency_level?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          asking_price?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string
+          deal_type?: string
+          discount_percentage?: number | null
+          estimated_value?: number | null
+          exclusivity_days?: number | null
+          expires_at?: string | null
+          express_interest_count?: number | null
+          id?: string
+          location_area?: string | null
+          location_city?: string
+          minimum_investor_tier?: string | null
+          nda_required?: boolean | null
+          property_id?: string | null
+          property_type?: string
+          seller_id?: string | null
+          size_sqm?: number | null
+          status?: string | null
+          updated_at?: string
+          urgency_level?: string | null
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "off_market_deals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "off_market_deals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "off_market_deals_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       office_locations: {
         Row: {
@@ -12822,6 +13262,166 @@ export type Database = {
           },
         ]
       }
+      research_data_packages: {
+        Row: {
+          allowed_use_cases: string[] | null
+          anonymization_level: string | null
+          api_credits_included: number | null
+          created_at: string
+          data_scope: Json | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          license_type: string | null
+          package_name: string
+          package_type: string
+          price_monthly: number | null
+          price_one_time: number | null
+          price_yearly: number | null
+          records_count: number | null
+          requires_approval: boolean | null
+          restricted_use_cases: string[] | null
+          sample_data: Json | null
+          update_frequency: string | null
+          updated_at: string
+        }
+        Insert: {
+          allowed_use_cases?: string[] | null
+          anonymization_level?: string | null
+          api_credits_included?: number | null
+          created_at?: string
+          data_scope?: Json | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          license_type?: string | null
+          package_name: string
+          package_type: string
+          price_monthly?: number | null
+          price_one_time?: number | null
+          price_yearly?: number | null
+          records_count?: number | null
+          requires_approval?: boolean | null
+          restricted_use_cases?: string[] | null
+          sample_data?: Json | null
+          update_frequency?: string | null
+          updated_at?: string
+        }
+        Update: {
+          allowed_use_cases?: string[] | null
+          anonymization_level?: string | null
+          api_credits_included?: number | null
+          created_at?: string
+          data_scope?: Json | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          license_type?: string | null
+          package_name?: string
+          package_type?: string
+          price_monthly?: number | null
+          price_one_time?: number | null
+          price_yearly?: number | null
+          records_count?: number | null
+          requires_approval?: boolean | null
+          restricted_use_cases?: string[] | null
+          sample_data?: Json | null
+          update_frequency?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      research_data_subscriptions: {
+        Row: {
+          api_credits_limit: number | null
+          api_credits_used: number | null
+          approved_at: string | null
+          approved_by: string | null
+          auto_renew: boolean | null
+          created_at: string
+          end_date: string | null
+          id: string
+          last_download_at: string | null
+          organization_name: string | null
+          organization_type: string | null
+          package_id: string | null
+          rejection_reason: string | null
+          start_date: string | null
+          status: string | null
+          subscriber_id: string | null
+          subscription_type: string | null
+          total_downloads: number | null
+          updated_at: string
+          use_case_description: string | null
+        }
+        Insert: {
+          api_credits_limit?: number | null
+          api_credits_used?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
+          auto_renew?: boolean | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          last_download_at?: string | null
+          organization_name?: string | null
+          organization_type?: string | null
+          package_id?: string | null
+          rejection_reason?: string | null
+          start_date?: string | null
+          status?: string | null
+          subscriber_id?: string | null
+          subscription_type?: string | null
+          total_downloads?: number | null
+          updated_at?: string
+          use_case_description?: string | null
+        }
+        Update: {
+          api_credits_limit?: number | null
+          api_credits_used?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
+          auto_renew?: boolean | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          last_download_at?: string | null
+          organization_name?: string | null
+          organization_type?: string | null
+          package_id?: string | null
+          rejection_reason?: string | null
+          start_date?: string | null
+          status?: string | null
+          subscriber_id?: string | null
+          subscription_type?: string | null
+          total_downloads?: number | null
+          updated_at?: string
+          use_case_description?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_data_subscriptions_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_data_subscriptions_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "research_data_packages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_data_subscriptions_subscriber_id_fkey"
+            columns: ["subscriber_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       resident_connections: {
         Row: {
           avg_response_time_hours: number | null
@@ -13894,6 +14494,92 @@ export type Database = {
             columns: ["related_order_id"]
             isOneToOne: false
             referencedRelation: "user_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      syndicated_listings: {
+        Row: {
+          agent_id: string | null
+          clicks: number | null
+          created_at: string
+          expires_at: string | null
+          external_listing_id: string | null
+          external_url: string | null
+          id: string
+          impressions: number | null
+          inquiries: number | null
+          network_id: string | null
+          property_id: string | null
+          published_at: string | null
+          rejection_reason: string | null
+          status: string | null
+          syndication_type: string | null
+          updated_at: string
+        }
+        Insert: {
+          agent_id?: string | null
+          clicks?: number | null
+          created_at?: string
+          expires_at?: string | null
+          external_listing_id?: string | null
+          external_url?: string | null
+          id?: string
+          impressions?: number | null
+          inquiries?: number | null
+          network_id?: string | null
+          property_id?: string | null
+          published_at?: string | null
+          rejection_reason?: string | null
+          status?: string | null
+          syndication_type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string | null
+          clicks?: number | null
+          created_at?: string
+          expires_at?: string | null
+          external_listing_id?: string | null
+          external_url?: string | null
+          id?: string
+          impressions?: number | null
+          inquiries?: number | null
+          network_id?: string | null
+          property_id?: string | null
+          published_at?: string | null
+          rejection_reason?: string | null
+          status?: string | null
+          syndication_type?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "syndicated_listings_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "syndicated_listings_network_id_fkey"
+            columns: ["network_id"]
+            isOneToOne: false
+            referencedRelation: "listing_syndication_networks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "syndicated_listings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "syndicated_listings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
