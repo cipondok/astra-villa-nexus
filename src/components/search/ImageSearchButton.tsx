@@ -184,7 +184,7 @@ export const ImageSearchButton = ({
       )}
       
       {!hasImage && !previewUrl ? (
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
               <button
@@ -201,7 +201,12 @@ export const ImageSearchButton = ({
                 )}
               </button>
             </TooltipTrigger>
-            <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+            <TooltipContent
+              side="top"
+              sideOffset={8}
+              avoidCollisions={false}
+              className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md"
+            >
               <p className="text-[10px] font-medium">Image Search</p>
             </TooltipContent>
           </Tooltip>
@@ -218,7 +223,7 @@ export const ImageSearchButton = ({
             </div>
           )}
           
-          <TooltipProvider>
+          <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -234,13 +239,18 @@ export const ImageSearchButton = ({
                   )}
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+              <TooltipContent
+                side="top"
+                sideOffset={8}
+                avoidCollisions={false}
+                className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md"
+              >
                 <p className="text-[10px] font-medium">{isSearching ? "Searching..." : "Change Image"}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
           
-          <TooltipProvider>
+          <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -252,7 +262,12 @@ export const ImageSearchButton = ({
                   <X className="h-3.5 w-3.5" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+              <TooltipContent
+                side="top"
+                sideOffset={8}
+                avoidCollisions={false}
+                className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md"
+              >
                 <p className="text-[10px] font-medium">Clear</p>
               </TooltipContent>
             </Tooltip>

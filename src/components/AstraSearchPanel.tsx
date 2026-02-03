@@ -2771,7 +2771,7 @@ const AstraSearchPanel = ({
                       </button>
                     </PopoverTrigger>
                   </TooltipTrigger>
-                  <TooltipContent side="top" sideOffset={8}>
+                  <TooltipContent side="top" sideOffset={8} avoidCollisions={false}>
                     <p className="text-xs font-medium">Property Type</p>
                   </TooltipContent>
                 </Tooltip>
@@ -2863,7 +2863,7 @@ const AstraSearchPanel = ({
                         </button>
                       </PopoverTrigger>
                     </TooltipTrigger>
-                    <TooltipContent side="top" sideOffset={8}>
+                    <TooltipContent side="top" sideOffset={8} avoidCollisions={false}>
                       <p className="text-xs font-medium">Location</p>
                     </TooltipContent>
                   </Tooltip>
@@ -3182,7 +3182,7 @@ const AstraSearchPanel = ({
                     )}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="top" sideOffset={8}>
+                <TooltipContent side="top" sideOffset={8} avoidCollisions={false}>
                   <p className="text-xs font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}</p>
                 </TooltipContent>
               </Tooltip>
