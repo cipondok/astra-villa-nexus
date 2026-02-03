@@ -132,10 +132,12 @@ const TeamManagement = () => {
 
   const cities = [...new Set(localExperts.map((e: any) => e.city))];
 
-  const filteredExperts = localExperts.filter(expert => {
-    const matchesSearch = expert.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         expert.city.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCity = selectedCity === 'all' || expert.city === selectedCity;
+  const filteredExperts = localExperts.filter((expert: any) => {
+    const name = expert.full_name || '';
+    const city = expert.city || '';
+    const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         city.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCity = selectedCity === 'all' || city === selectedCity;
     return matchesSearch && matchesCity;
   });
 
