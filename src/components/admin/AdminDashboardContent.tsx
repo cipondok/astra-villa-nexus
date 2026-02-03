@@ -96,6 +96,8 @@ const DataExchangeManagement = lazy(() => import("./DataExchangeManagement"));
 const AutomationPlatformManagement = lazy(() => import("./AutomationPlatformManagement"));
 const TeamManagement = lazy(() => import("./TeamManagement"));
 const ViralGrowthCampaigns = lazy(() => import("./ViralGrowthCampaigns"));
+const MediaCoveragePR = lazy(() => import("./MediaCoveragePR"));
+const ConciergeServiceManagement = lazy(() => import("./ConciergeServiceManagement"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -199,6 +201,8 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "automation-platform": { label: "Automation Platform", category: "Features" },
   "team-management": { label: "Team Management", category: "Features" },
   "viral-growth-campaigns": { label: "Viral Growth Campaigns", category: "Features" },
+  "media-coverage-pr": { label: "Media Coverage & PR", category: "Features" },
+  "concierge-service": { label: "Concierge Service", category: "Features" },
 };
 
 // Loading fallback component
@@ -466,6 +470,10 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <TeamManagement />;
       case "viral-growth-campaigns":
         return <ViralGrowthCampaigns />;
+      case "media-coverage-pr":
+        return <MediaCoveragePR />;
+      case "concierge-service":
+        return <ConciergeServiceManagement />;
       default:
         return <AdminOverview />;
     }
