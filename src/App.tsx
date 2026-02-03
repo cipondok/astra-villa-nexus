@@ -109,6 +109,8 @@ const PlatformHub = lazy(() => import('@/pages/PlatformHub'));
 const VRTourShowcase = lazy(() => import('@/pages/VRTourShowcase'));
 const BlockchainVerification = lazy(() => import('@/pages/BlockchainVerification'));
 const MediaHub = lazy(() => import('@/pages/MediaHub'));
+const AgentDirectory = lazy(() => import('@/pages/AgentDirectory'));
+const AgentRegistration = lazy(() => import('@/pages/AgentRegistration'));
 
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
@@ -225,6 +227,10 @@ const AppContent = () => {
             <Route path="/media" element={<MediaHub />} />
             <Route path="/platform" element={<PlatformHub />} />
             <Route path="/infrastructure" element={<PlatformHub />} />
+            <Route path="/agents" element={<AgentDirectory />} />
+            <Route path="/cari-agen" element={<AgentDirectory />} />
+            <Route path="/agent-registration" element={<AgentRegistration />} />
+            <Route path="/daftar-agen" element={<AgentRegistration />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Suspense>
