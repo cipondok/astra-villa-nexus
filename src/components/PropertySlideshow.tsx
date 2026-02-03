@@ -1,17 +1,15 @@
-
 import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
-import { ChevronLeft, ChevronRight, Bed, Bath, Maximize, Key, Tag, Building, Eye } from "lucide-react";
+import { ChevronLeft, ChevronRight, Bed, Bath, Maximize, Key, Tag, Building, Eye, MapPin, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-// Helper to capitalize first letter
-const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface Property {
-  id: number;
+  id: number | string;
   title: string;
   location: string;
   price: number;
@@ -24,20 +22,12 @@ interface Property {
   thumbnail_url?: string;
   city: string;
   state: string;
-  owner_type?: string;
-  owner_verified?: boolean;
-  agent_verified?: boolean;
-  agency_verified?: boolean;
+  area?: string;
 }
 
-// Get listing type label
-const getListingLabel = (type: string | null) => {
-  switch (type) {
-    case 'rent': return 'Sewa';
-    case 'sale': return 'Jual';
-    case 'lease': return 'Sewa';
-    default: return 'Jual';
-  }
+const getListingLabel = (type: string | null, isRent: boolean) => {
+  if (isRent) return 'Disewa';
+  return 'Dijual';
 };
 
 const PropertySlideshow = () => {
@@ -49,13 +39,12 @@ const PropertySlideshow = () => {
     navigate(`/properties/${propertyId}`);
   };
 
-  // Fetch featured properties for slideshow
   const { data: properties = [] } = useQuery({
     queryKey: ['slideshow-properties'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('properties')
-        .select('id, title, location, price, property_type, listing_type, bedrooms, bathrooms, area_sqm, images, thumbnail_url, city, state')
+        .select('id, title, location, price, property_type, listing_type, bedrooms, bathrooms, area_sqm, images, thumbnail_url, city, state, area')
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .not('title', 'is', null)
@@ -73,7 +62,6 @@ const PropertySlideshow = () => {
     refetchOnWindowFocus: false,
   });
 
-  // Use auto-scroll hook with seamless loop mode for wide screens
   useAutoHorizontalScroll(containerRef, {
     speed: 0.8,
     intervalMs: 16,
@@ -84,38 +72,53 @@ const PropertySlideshow = () => {
 
   const scrollLeft = () => {
     if (containerRef.current) {
-      containerRef.current.scrollBy({ left: -220, behavior: 'smooth' });
+      containerRef.current.scrollBy({ left: -260, behavior: 'smooth' });
     }
   };
 
   const scrollRight = () => {
     if (containerRef.current) {
-      containerRef.current.scrollBy({ left: 220, behavior: 'smooth' });
+      containerRef.current.scrollBy({ left: 260, behavior: 'smooth' });
     }
   };
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
       const value = (price / 1000000000).toFixed(1);
-      return <><span className="text-[0.65em] font-medium opacity-80">Rp</span>{value}<span className="text-[0.65em] font-medium opacity-80">M</span></>;
+      return { main: `Rp ${value}`, suffix: 'Miliar' };
     } else if (price >= 1000000) {
       const value = (price / 1000000).toFixed(0);
-      return <><span className="text-[0.65em] font-medium opacity-80">Rp</span>{value}<span className="text-[0.65em] font-medium opacity-80">Jt</span></>;
+      return { main: `Rp ${value}`, suffix: 'Juta' };
     } else {
-      return <><span className="text-[0.65em] font-medium opacity-80">Rp</span>{price.toLocaleString()}</>;
+      return { main: `Rp ${price.toLocaleString('id-ID')}`, suffix: '' };
     }
+  };
+
+  const formatMonthly = (price: number) => {
+    const monthly = price * 0.006;
+    if (monthly >= 1000000) {
+      return `Rp ${(monthly / 1000000).toFixed(0)} Jutaan/bulan`;
+    }
+    return `Rp ${(monthly / 1000).toFixed(0)} Ribuan/bulan`;
+  };
+
+  const getLocation = (property: Property) => {
+    if (property.area && property.city) return `${property.area}, ${property.city}`;
+    if (property.city && property.state) return `${property.city}, ${property.state}`;
+    return property.location || 'Indonesia';
   };
 
   if (properties.length === 0) {
     return (
       <div className="w-full overflow-hidden my-4">
-        <div className="flex gap-2 px-2">
-          {[...Array(8)].map((_, index) => (
-            <div key={index} className="flex-shrink-0 w-[180px] md:w-[200px] animate-pulse">
-              <div className="h-28 md:h-32 bg-muted rounded-lg mb-1.5"></div>
-              <div className="space-y-1">
-                <div className="h-3 bg-muted rounded w-3/4"></div>
-                <div className="h-2 bg-muted rounded w-1/2"></div>
+        <div className="flex gap-3 px-2">
+          {[...Array(6)].map((_, index) => (
+            <div key={index} className="flex-shrink-0 w-[220px] md:w-[240px] animate-pulse">
+              <div className="h-36 md:h-40 bg-muted rounded-lg mb-2"></div>
+              <div className="space-y-1.5 px-1">
+                <div className="h-4 bg-muted rounded w-2/3"></div>
+                <div className="h-3 bg-muted rounded w-full"></div>
+                <div className="h-3 bg-muted rounded w-1/2"></div>
               </div>
             </div>
           ))}
@@ -124,7 +127,6 @@ const PropertySlideshow = () => {
     );
   }
 
-  // Triple items for seamless infinite loop on wide screens
   const displayProperties = [...properties, ...properties, ...properties];
 
   return (
@@ -133,12 +135,15 @@ const PropertySlideshow = () => {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      {/* Compact Navigation Arrows */}
+      {/* Navigation Arrows */}
       <Button
         variant="outline"
         size="icon"
         onClick={scrollLeft}
-        className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-background/90 hover:bg-background backdrop-blur-md shadow-lg border border-border/50 transition-all duration-300 ${isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
+        className={cn(
+          "absolute left-2 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-card/95 hover:bg-card backdrop-blur-md shadow-lg border border-border/50 transition-all duration-300",
+          isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+        )}
       >
         <ChevronLeft className="h-4 w-4 text-foreground" />
       </Button>
@@ -147,7 +152,10 @@ const PropertySlideshow = () => {
         variant="outline"
         size="icon"
         onClick={scrollRight}
-        className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-background/90 hover:bg-background backdrop-blur-md shadow-lg border border-border/50 transition-all duration-300 ${isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
+        className={cn(
+          "absolute right-2 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-card/95 hover:bg-card backdrop-blur-md shadow-lg border border-border/50 transition-all duration-300",
+          isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+        )}
       >
         <ChevronRight className="h-4 w-4 text-foreground" />
       </Button>
@@ -157,78 +165,116 @@ const PropertySlideshow = () => {
         className="flex gap-3 overflow-x-auto scrollbar-hide px-2 py-1"
         style={{ scrollBehavior: 'auto' }}
       >
-        {displayProperties.map((property, idx) => (
-          <div 
-            key={`${property.id}-${idx}`}
-            onClick={() => handlePropertyClick(property.id)}
-            className="flex-shrink-0 w-[140px] md:w-[160px] lg:w-[180px] xl:w-[200px] group/card cursor-pointer transition-transform duration-300 hover:scale-[1.02]"
-          >
-            {/* Slim Card - All info on image */}
-            <div className="relative overflow-hidden rounded-lg shadow-md">
-              <img
-                src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
-                alt={property.title}
-                className="w-full h-28 md:h-32 lg:h-36 object-cover transition-transform duration-500 group-hover/card:scale-110"
-                loading="lazy"
-              />
-              
-              {/* Top Row - Listing Type & Property Type */}
-              <div className="absolute top-1 left-1 right-1 flex items-center justify-between">
-                <span className={`flex items-center gap-0.5 px-1.5 py-0.5 text-white text-[7px] font-semibold rounded backdrop-blur-sm shadow ${
-                  property.listing_type === 'rent' ? 'bg-blue-500/90' : 'bg-emerald-500/90'
-                }`}>
-                  {property.listing_type === 'rent' ? <Key className="h-2 w-2" /> : <Tag className="h-2 w-2" />}
-                  {getListingLabel(property.listing_type)}
-                </span>
-                <span className="flex items-center gap-0.5 px-1.5 py-0.5 bg-black/60 backdrop-blur-sm text-white text-[7px] font-medium rounded shadow">
-                  <Building className="h-2 w-2" />
-                  {capitalizeFirst(property.property_type)}
-                </span>
-              </div>
+        {displayProperties.map((property, idx) => {
+          const priceInfo = formatPrice(property.price);
+          const isRent = property.listing_type === 'rent';
+          const imageCount = property.images?.length || 1;
+          const ListingIcon = isRent ? Key : Tag;
 
-              {/* Bottom Gradient Overlay with all info */}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-6 pb-1.5 px-1.5">
-                {/* Price */}
-                <div className="text-[10px] md:text-[11px] font-bold text-white mb-0.5">
-                  {formatPrice(property.price)}
-                </div>
-                
-                {/* Title */}
-                <h3 className="text-[9px] md:text-[10px] font-medium text-white/95 line-clamp-1 mb-0.5">
-                  {property.title}
-                </h3>
-                
-                {/* Location */}
-                <div className="text-[8px] text-white/70 line-clamp-1 mb-1">
-                  {property.city}, {property.state}
-                </div>
-                
-                {/* Stats Row */}
-                <div className="flex items-center gap-1.5 text-[8px] text-white/80">
-                  <div className="flex items-center gap-0.5">
-                    <Bed className="h-2 w-2" />
-                    <span>{property.bedrooms}</span>
+          return (
+            <div 
+              key={`${property.id}-${idx}`}
+              onClick={() => handlePropertyClick(property.id)}
+              className="flex-shrink-0 w-[200px] md:w-[220px] lg:w-[240px] group/card cursor-pointer"
+            >
+              {/* Rumah123-Style Card */}
+              <div className="bg-card rounded-lg border border-border/50 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 overflow-hidden">
+                {/* Image */}
+                <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                  <img
+                    src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
+                    alt={property.title}
+                    className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  
+                  {/* Top Badges */}
+                  <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
+                    <Badge className={cn(
+                      "flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md shadow-sm",
+                      isRent ? "bg-primary text-primary-foreground" : "bg-accent text-accent-foreground"
+                    )}>
+                      <ListingIcon className="h-2.5 w-2.5" />
+                      {getListingLabel(property.listing_type, isRent)}
+                    </Badge>
+                    
+                    <Badge className="flex items-center gap-0.5 bg-card/90 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded-md shadow-sm border border-border/50">
+                      <Building className="h-2.5 w-2.5" />
+                      {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
+                    </Badge>
                   </div>
-                  <div className="flex items-center gap-0.5">
-                    <Bath className="h-2 w-2" />
-                    <span>{property.bathrooms}</span>
-                  </div>
-                  <div className="flex items-center gap-0.5">
-                    <Maximize className="h-2 w-2" />
-                    <span>{property.area_sqm}m²</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Hover View Icon */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
-                <div className="h-6 w-6 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
-                  <Eye className="h-3 w-3 text-primary" />
+                  {/* Image Count */}
+                  {imageCount > 1 && (
+                    <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded">
+                      <Camera className="h-2.5 w-2.5" />
+                      <span>{imageCount}</span>
+                    </div>
+                  )}
+
+                  {/* Hover Eye */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 bg-black/10">
+                    <div className="h-8 w-8 rounded-full bg-card/95 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                      <Eye className="h-4 w-4 text-primary" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content - Rumah123 Style */}
+                <div className="p-2.5 space-y-1.5">
+                  {/* Price */}
+                  <div className="space-y-0">
+                    <div className="flex items-baseline gap-0.5">
+                      <span className="text-sm font-bold text-primary">{priceInfo.main}</span>
+                      {priceInfo.suffix && (
+                        <span className="text-xs font-medium text-primary/80">{priceInfo.suffix}</span>
+                      )}
+                    </div>
+                    {!isRent && (
+                      <p className="text-[9px] text-muted-foreground">{formatMonthly(property.price)}</p>
+                    )}
+                    {isRent && (
+                      <p className="text-[9px] text-muted-foreground">per bulan</p>
+                    )}
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-[11px] font-medium text-foreground line-clamp-2 leading-snug group-hover/card:text-primary transition-colors">
+                    {property.title}
+                  </h3>
+
+                  {/* Location */}
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-primary/70" />
+                    <span className="text-[10px] line-clamp-1">{getLocation(property)}</span>
+                  </div>
+
+                  {/* Specs - Rumah123 Style */}
+                  <div className="flex items-center gap-2 pt-1 border-t border-border/50">
+                    {property.bedrooms > 0 && (
+                      <div className="flex items-center gap-0.5">
+                        <Bed className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-[10px] text-foreground font-medium">{property.bedrooms}</span>
+                      </div>
+                    )}
+                    {property.bathrooms > 0 && (
+                      <div className="flex items-center gap-0.5">
+                        <Bath className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-[10px] text-foreground font-medium">{property.bathrooms}</span>
+                      </div>
+                    )}
+                    {property.area_sqm > 0 && (
+                      <div className="flex items-center gap-0.5">
+                        <Maximize className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-[10px] text-foreground font-medium">{property.area_sqm}m²</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

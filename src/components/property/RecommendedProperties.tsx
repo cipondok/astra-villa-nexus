@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, TrendingUp, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import CompactPropertyCard from "@/components/property/CompactPropertyCard";
+import Rumah123PropertyCard from "@/components/property/Rumah123PropertyCard";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { motion } from "framer-motion";
 
@@ -247,13 +247,12 @@ const RecommendedProperties = ({
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
-                <CompactPropertyCard
+                <Rumah123PropertyCard
                   property={property}
                   language="en"
                   isSaved={false}
                   onSave={() => {}}
                   onView={() => window.open(`/property/${property.id}`, '_blank')}
-                  onView3D={() => {}}
                 />
               </motion.div>
             ))}
