@@ -690,19 +690,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Global Investment Platform - Main Page Area */}
-        <div className="px-2 sm:px-3 md:px-4 pt-2 sm:pt-3">
-          <div className="w-full max-w-7xl mx-auto">
-            <Suspense fallback={
-              <div className="flex gap-3 justify-center py-4">
-                <div className="animate-pulse h-20 w-40 bg-muted/50 rounded-lg" />
-                <div className="animate-pulse h-20 w-40 bg-muted/50 rounded-lg" />
-              </div>
-            }>
-              <InvestorPathSelector />
-            </Suspense>
-          </div>
-        </div>
 
         {/* Property Display Section - Glass Effect Background */}
         <div className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 md:py-4 space-y-2 sm:space-y-3 md:space-y-4">
