@@ -2618,8 +2618,8 @@ const AstraSearchPanel = ({
                   </div>}
               </div>
               
-              {/* Smart Suggestions Dropdown - Always fixed to avoid layout shift */}
-              {showSuggestions && hasSuggestions && (
+              {/* Smart Suggestions Dropdown - Fixed positioning to prevent layout shift */}
+              {showSuggestions && hasSuggestions && suggestionsRect.width > 0 && (
                 <div
                   ref={suggestionsRef}
                   className="fixed bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
