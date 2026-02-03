@@ -2027,14 +2027,20 @@ const AstraSearchPanel = ({
               role="tab"
               aria-selected={activeTab === "all"}
               className={cn(
-                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-1.5",
+                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 group",
                 activeTab === "all" 
                   ? "text-primary-foreground" 
-                  : "text-foreground/70 hover:text-foreground"
+                  : "text-foreground/60 hover:text-primary"
               )}
             >
-              <Layers className="h-3.5 w-3.5" />
-              <span>All</span>
+              <Layers className={cn(
+                "h-3.5 w-3.5 transition-all duration-200",
+                activeTab === "all" ? "" : "group-hover:text-violet-500 group-hover:scale-110"
+              )} />
+              <span className={cn(
+                "transition-colors duration-200",
+                activeTab === "all" ? "" : "group-hover:text-violet-600 dark:group-hover:text-violet-400"
+              )}>All</span>
             </button>
             
             <button
@@ -2042,14 +2048,20 @@ const AstraSearchPanel = ({
               role="tab"
               aria-selected={activeTab === "sale"}
               className={cn(
-                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-1.5",
+                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 group",
                 activeTab === "sale" 
                   ? "text-primary-foreground" 
-                  : "text-foreground/70 hover:text-foreground"
+                  : "text-foreground/60 hover:text-primary"
               )}
             >
-              <ShoppingBag className="h-3.5 w-3.5" />
-              <span>Buy</span>
+              <ShoppingBag className={cn(
+                "h-3.5 w-3.5 transition-all duration-200",
+                activeTab === "sale" ? "" : "group-hover:text-emerald-500 group-hover:scale-110"
+              )} />
+              <span className={cn(
+                "transition-colors duration-200",
+                activeTab === "sale" ? "" : "group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
+              )}>Buy</span>
             </button>
             
             <button
@@ -2057,14 +2069,20 @@ const AstraSearchPanel = ({
               role="tab"
               aria-selected={activeTab === "rent"}
               className={cn(
-                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-1.5",
+                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 group",
                 activeTab === "rent" 
                   ? "text-primary-foreground" 
-                  : "text-foreground/70 hover:text-foreground"
+                  : "text-foreground/60 hover:text-primary"
               )}
             >
-              <Key className="h-3.5 w-3.5" />
-              <span>Rent</span>
+              <Key className={cn(
+                "h-3.5 w-3.5 transition-all duration-200",
+                activeTab === "rent" ? "" : "group-hover:text-blue-500 group-hover:scale-110"
+              )} />
+              <span className={cn(
+                "transition-colors duration-200",
+                activeTab === "rent" ? "" : "group-hover:text-blue-600 dark:group-hover:text-blue-400"
+              )}>Rent</span>
             </button>
             
             <button
@@ -2072,14 +2090,20 @@ const AstraSearchPanel = ({
               role="tab"
               aria-selected={activeTab === "new_project"}
               className={cn(
-                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-1.5",
+                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 group",
                 activeTab === "new_project" 
                   ? "text-primary-foreground" 
-                  : "text-foreground/70 hover:text-foreground"
+                  : "text-foreground/60 hover:text-primary"
               )}
             >
-              <Rocket className="h-3.5 w-3.5" />
-              <span>New</span>
+              <Rocket className={cn(
+                "h-3.5 w-3.5 transition-all duration-200",
+                activeTab === "new_project" ? "" : "group-hover:text-orange-500 group-hover:scale-110"
+              )} />
+              <span className={cn(
+                "transition-colors duration-200",
+                activeTab === "new_project" ? "" : "group-hover:text-orange-600 dark:group-hover:text-orange-400"
+              )}>New</span>
             </button>
           </div>
         </div>
@@ -2418,7 +2442,7 @@ const AstraSearchPanel = ({
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-t-2xl" />
         <div className={cn("relative space-y-2 overflow-visible", isMobile ? "p-2" : "p-3 lg:p-4")}>
           
-          {/* Listing Type Tabs - Soft Sliding Animation */}
+          {/* Listing Type Tabs - Soft Sliding Animation with Color Hover */}
           <div className="flex justify-center">
             <div className="relative inline-flex bg-muted/60 p-1 rounded-xl border border-border/50 shadow-sm">
               {/* Sliding Background Indicator */}
@@ -2436,53 +2460,81 @@ const AstraSearchPanel = ({
               <button
                 onClick={() => setActiveTab("all")}
                 className={cn(
-                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-colors duration-200",
+                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 group",
                   activeTab === "all" 
                     ? "text-primary-foreground" 
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Layers className="h-3.5 w-3.5" />
-                <span className={cn(isMobile && "hidden")}>{currentText.all}</span>
+                <Layers className={cn(
+                  "h-3.5 w-3.5 transition-all duration-200",
+                  activeTab === "all" ? "" : "group-hover:text-violet-500 group-hover:scale-110"
+                )} />
+                <span className={cn(
+                  isMobile && "hidden",
+                  "transition-colors duration-200",
+                  activeTab === "all" ? "" : "group-hover:text-violet-600 dark:group-hover:text-violet-400"
+                )}>{currentText.all}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("sale")}
                 className={cn(
-                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-colors duration-200",
+                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 group",
                   activeTab === "sale" 
                     ? "text-primary-foreground" 
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <ShoppingBag className="h-3.5 w-3.5" />
-                <span className={cn(isMobile && "hidden")}>{currentText.forSale}</span>
+                <ShoppingBag className={cn(
+                  "h-3.5 w-3.5 transition-all duration-200",
+                  activeTab === "sale" ? "" : "group-hover:text-emerald-500 group-hover:scale-110"
+                )} />
+                <span className={cn(
+                  isMobile && "hidden",
+                  "transition-colors duration-200",
+                  activeTab === "sale" ? "" : "group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
+                )}>{currentText.forSale}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("rent")}
                 className={cn(
-                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-colors duration-200",
+                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 group",
                   activeTab === "rent" 
                     ? "text-primary-foreground" 
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Key className="h-3.5 w-3.5" />
-                <span className={cn(isMobile && "hidden")}>{currentText.forRent}</span>
+                <Key className={cn(
+                  "h-3.5 w-3.5 transition-all duration-200",
+                  activeTab === "rent" ? "" : "group-hover:text-blue-500 group-hover:scale-110"
+                )} />
+                <span className={cn(
+                  isMobile && "hidden",
+                  "transition-colors duration-200",
+                  activeTab === "rent" ? "" : "group-hover:text-blue-600 dark:group-hover:text-blue-400"
+                )}>{currentText.forRent}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("new_project")}
                 className={cn(
-                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-colors duration-200",
+                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 group",
                   activeTab === "new_project" 
                     ? "text-primary-foreground" 
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Rocket className="h-3.5 w-3.5" />
-                <span className={cn(isMobile && "hidden")}>{currentText.newProject}</span>
+                <Rocket className={cn(
+                  "h-3.5 w-3.5 transition-all duration-200",
+                  activeTab === "new_project" ? "" : "group-hover:text-orange-500 group-hover:scale-110"
+                )} />
+                <span className={cn(
+                  isMobile && "hidden",
+                  "transition-colors duration-200",
+                  activeTab === "new_project" ? "" : "group-hover:text-orange-600 dark:group-hover:text-orange-400"
+                )}>{currentText.newProject}</span>
               </button>
             </div>
           </div>
