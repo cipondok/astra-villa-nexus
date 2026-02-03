@@ -494,70 +494,57 @@ const Index = () => {
       {/* Content Layer - full width edge-to-edge */}
       <div className="relative z-10 min-h-screen pb-20 md:pb-4">
         
-        {/* Hero Search Section - 100% width, no margins, flush to header */}
-        <section className="relative w-full min-h-[420px] sm:min-h-[480px] md:min-h-[520px] lg:h-screen lg:min-h-[600px]" id="hero-section">
-          {/* Dark Jakarta Skyline Background */}
+        {/* Hero Search Section - Modern Clean Design */}
+        <section className="relative w-full min-h-[380px] sm:min-h-[440px] md:min-h-[500px] lg:h-screen lg:min-h-[580px]" id="hero-section">
+          {/* Jakarta Skyline Background with Modern Overlay */}
           <div className="absolute inset-0 z-0">
             <img 
               src={jakartaSkylineDark} 
-              alt="Jakarta Skyline at Night" 
+              alt="Jakarta Skyline" 
               className="w-full h-full object-cover"
+              loading="eager"
             />
-            {/* Dark gradient overlays for luxury feel */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-background pointer-events-none" />
+            {/* Clean gradient overlays */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-background" />
           </div>
           
-          {/* Content overlay */}
+          {/* Content */}
           <div className={cn(
             "relative z-10 w-full h-full flex flex-col items-center",
-            "pt-16 sm:pt-24 md:pt-32 lg:pt-40 xl:pt-48",
-            "px-3 pb-6 sm:px-4 sm:pb-8 md:px-6 md:pb-10 lg:px-8"
+            "pt-12 sm:pt-20 md:pt-28 lg:pt-36",
+            "px-3 pb-4 sm:px-4 sm:pb-6 md:px-6 md:pb-8"
           )}>
-            {/* Enhanced Header */}
-            <div className="mb-2 sm:mb-3 md:mb-5 lg:mb-8 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
-              {/* AI Badge */}
+            {/* Simplified Header */}
+            <div className="mb-3 sm:mb-4 md:mb-6 text-center animate-in fade-in-50 duration-500">
+              {/* AI Badge - Using Design Tokens */}
               <div className={cn(
-                "inline-flex items-center gap-1 sm:gap-1.5 mb-1 sm:mb-1.5 md:mb-2 lg:mb-4",
-                "px-2 py-0.5 sm:px-2.5 sm:py-0.5 md:px-4 md:py-1.5 lg:px-5 lg:py-2",
-                "bg-gradient-to-r from-violet-600/80 via-fuchsia-500/80 to-cyan-400/80 backdrop-blur-md",
-                "rounded-full border border-white/40",
-                "shadow-lg shadow-fuchsia-500/30",
-                "animate-pulse"
+                "inline-flex items-center gap-1.5 mb-2 sm:mb-3",
+                "px-3 py-1 sm:px-4 sm:py-1.5",
+                "bg-primary/90 backdrop-blur-md",
+                "rounded-full border border-primary-foreground/20",
+                "shadow-lg shadow-primary/30"
               )}>
-                <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 lg:h-5 lg:w-5 text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]" />
-                <span className="text-[8px] sm:text-[10px] md:text-xs lg:text-sm font-bold text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-primary-foreground" />
+                <span className="text-[10px] sm:text-xs font-semibold text-primary-foreground">
                   AI-Powered Search
                 </span>
               </div>
               
-              {/* Title */}
-              <h1 className="relative text-lg sm:text-xl md:text-3xl lg:text-5xl xl:text-6xl font-bold leading-tight drop-shadow-lg mb-0.5 sm:mb-1 md:mb-2 lg:mb-4">
-                <span className="relative inline-block">
-                  {/* Star decorations */}
-                  <Sparkles className="absolute -top-2 -left-3 sm:-top-3 sm:-left-4 md:-top-4 md:-left-6 h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 lg:h-6 lg:w-6 text-yellow-300 animate-pulse drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
-                  <Star className="absolute -top-1 -right-2 sm:-top-2 sm:-right-3 md:-top-3 md:-right-4 h-2 w-2 sm:h-3 sm:w-3 md:h-4 md:w-4 lg:h-5 lg:w-5 text-yellow-400 animate-pulse fill-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,0.8)]" style={{ animationDelay: '0.3s' }} />
-                  <Sparkles className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 md:-bottom-2 md:-right-3 h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 lg:h-5 lg:w-5 text-amber-300 animate-pulse drop-shadow-[0_0_6px_rgba(252,211,77,0.8)]" style={{ animationDelay: '0.6s' }} />
-                  <Star className="absolute top-1/2 -left-4 sm:-left-5 md:-left-8 h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 text-yellow-200 animate-pulse fill-yellow-200 drop-shadow-[0_0_4px_rgba(254,240,138,0.8)]" style={{ animationDelay: '0.9s' }} />
-                  {/* Glowing gold gradient text */}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-white to-yellow-200 drop-shadow-[0_0_20px_rgba(253,224,71,0.5)]">
-                    {t.findYour}
-                  </span>
+              {/* Title - Cleaner Typography */}
+              <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-tight mb-1 sm:mb-2">
+                <span className="text-white drop-shadow-lg">
+                  {t.findYour}
                 </span>
               </h1>
-              <p className="flex text-[9px] sm:text-[11px] md:text-sm lg:text-lg text-white/90 items-center justify-center gap-1 sm:gap-1.5 lg:gap-2 drop-shadow-md">
-                <Search className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 lg:h-5 lg:w-5" />
+              <p className="flex text-xs sm:text-sm md:text-base text-white/80 items-center justify-center gap-1.5">
+                <Search className="h-3 w-3 sm:h-4 sm:w-4" />
                 {t.searchPowered}
               </p>
             </div>
             
-            {/* Search Panel Container - pushed down */}
-            <div className="mt-4 md:mt-8 lg:mt-12" />
-            <div
-              className={cn(
-                "relative mx-auto w-full max-w-5xl xl:max-w-6xl"
-              )}
-            >
+            {/* Search Panel */}
+            <div className="w-full max-w-5xl mx-auto">
               <Suspense fallback={<SearchPanelSkeleton />}>
                 <SearchErrorBoundary>
                   <AstraSearchPanel
@@ -574,31 +561,28 @@ const Index = () => {
               
               {/* Retry Indicator */}
               {isRetrying && (
-                <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 bg-primary/90 text-primary-foreground px-2 py-1 sm:px-4 sm:py-2 rounded-lg shadow-lg flex items-center gap-1.5 sm:gap-2 animate-in slide-in-from-bottom-2 duration-300">
-                  <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
-                  <span className="text-xs sm:text-sm font-medium">
-                    Retrying... ({retryCount}/3)
-                  </span>
+                <div className="absolute bottom-2 right-2 bg-primary text-primary-foreground px-3 py-1.5 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-bottom-2">
+                  <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                  <span className="text-xs font-medium">Retrying... ({retryCount}/3)</span>
                 </div>
               )}
             </div>
 
-            {/* Featured Properties - Inside Hero, Below Search Panel */}
-            <div className="w-full max-w-[2400px] mx-auto mt-6 md:mt-10 lg:mt-12">
+            {/* Featured Properties Slideshow */}
+            <div className="w-full max-w-[2400px] mx-auto mt-4 md:mt-8">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-400 fill-yellow-400/50" />
-                <h2 className="text-xs md:text-sm font-semibold text-white/90 drop-shadow-md">
+                <Star className="h-3 w-3 md:h-4 md:w-4 text-accent fill-accent/50" />
+                <h2 className="text-xs md:text-sm font-semibold text-white/90">
                   {t.featuredProperties}
                 </h2>
-                <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-400 fill-yellow-400/50" />
+                <Star className="h-3 w-3 md:h-4 md:w-4 text-accent fill-accent/50" />
               </div>
               <Suspense fallback={
-                <div className="flex gap-3 px-3 overflow-hidden justify-center">
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className="flex-shrink-0 w-[140px] md:w-[180px] animate-pulse">
-                      <div className="h-20 md:h-28 bg-white/10 rounded-lg mb-1.5" />
-                      <div className="h-2 bg-white/10 rounded w-3/4 mb-1" />
-                      <div className="h-2 bg-white/10 rounded w-1/2" />
+                <div className="flex gap-2 px-3 overflow-hidden justify-center">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="flex-shrink-0 w-[130px] md:w-[160px] animate-pulse">
+                      <div className="h-16 md:h-24 bg-white/10 rounded-lg mb-1" />
+                      <div className="h-2 bg-white/10 rounded w-3/4" />
                     </div>
                   ))}
                 </div>
@@ -606,81 +590,68 @@ const Index = () => {
                 <PropertySlideshow />
               </Suspense>
             </div>
-
           </div>
 
           {/* Scroll indicator - desktop only */}
-          <div className="hidden lg:flex absolute bottom-3 left-1/2 -translate-x-1/2 z-20 animate-bounce">
-            <div className="w-5 h-8 rounded-full border-2 border-white/40 flex items-start justify-center p-1">
-              <div className="w-1 h-2 bg-white/60 rounded-full animate-pulse" />
+          <div className="hidden lg:flex absolute bottom-4 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+            <div className="w-5 h-8 rounded-full border-2 border-white/30 flex items-start justify-center p-1">
+              <div className="w-1 h-2 bg-white/50 rounded-full" />
             </div>
           </div>
         </section>
 
-        {/* Error Message - Compact */}
+        {/* Error Message - Using Design Tokens */}
         {(searchError || lastError) && (
-          <section className={cn(isMobile ? "py-0.5" : "py-2")}>
-            <div className={cn(
-              isMobile ? "max-w-sm px-2" : "max-w-[1800px] px-4",
-              "mx-auto"
-            )}>
-              <div className={cn(
-                "apple-glass border border-destructive/40 text-destructive text-center rounded-xl shadow-md",
-                isMobile ? "p-2 max-w-xs mx-auto" : "p-3 max-w-xl mx-auto"
-              )}>
-                <p className={cn(
-                  "font-medium",
-                  isMobile ? "text-xs" : "text-sm"
-                )}>
+          <section className="py-2 sm:py-3">
+            <div className="max-w-2xl mx-auto px-3 sm:px-4">
+              <div className="bg-destructive/10 border border-destructive/30 text-destructive text-center rounded-xl p-3 shadow-sm">
+                <p className="text-xs sm:text-sm font-medium">
                   ⚠️ {searchError || lastError?.message}
                 </p>
                 {retryCount > 0 && (
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
                     Attempted {retryCount} {retryCount === 1 ? 'retry' : 'retries'}
                   </p>
                 )}
                 <div className="flex gap-2 justify-center mt-2">
-                  <button 
+                  <Button 
                     onClick={() => {
                       setSearchError(null);
                       handleQuickSearch();
                     }}
-                    className={cn(
-                      "bg-primary hover:bg-primary/90 text-primary-foreground rounded-md transition-colors flex items-center gap-1",
-                      isMobile ? "px-2 py-0.5 text-xs" : "px-4 py-1 text-sm"
-                    )}
+                    size="sm"
+                    className="h-7 px-3 text-xs bg-primary hover:bg-primary/90"
                   >
-                    <RefreshCw className="h-3 w-3" />
+                    <RefreshCw className="h-3 w-3 mr-1" />
                     Retry
-                  </button>
-                  <button 
+                  </Button>
+                  <Button 
                     onClick={() => {
                       setSearchError(null);
                       setSearchResults([]);
                       setHasSearched(false);
                     }}
-                    className={cn(
-                      "bg-muted hover:bg-muted/80 text-foreground rounded-md transition-colors",
-                      isMobile ? "px-2 py-0.5 text-xs" : "px-4 py-1 text-sm"
-                    )}
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-3 text-xs"
                   >
                     {t.clearError}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
           </section>
         )}
 
-        {/* AI Tools & Features - Main Page Area */}
-        <div className="px-2 sm:px-3 md:px-4 pt-3 sm:pt-4 md:pt-6">
+        {/* AI Tools & Features */}
+        <div className="px-3 sm:px-4 pt-4 sm:pt-6">
           <div className="w-full max-w-7xl mx-auto">
             <Suspense fallback={
-              <div className="flex gap-2 justify-center overflow-hidden py-4">
-                {[...Array(8)].map((_, i) => (
-                  <div key={i} className="flex-shrink-0 w-16 md:w-20 animate-pulse">
-                    <div className="h-12 md:h-16 bg-muted/50 rounded-lg mb-1" />
-                    <div className="h-2 bg-muted/50 rounded w-full" />
+              <div className="flex gap-2 justify-center py-3">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="flex-shrink-0 w-14 md:w-18 animate-pulse">
+                    <div className="h-10 md:h-14 bg-muted rounded-lg mb-1" />
+                    <div className="h-2 bg-muted rounded w-full" />
                   </div>
                 ))}
               </div>
@@ -690,13 +661,14 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Global Investment Platform - No Background */}
-        <div className="px-2 sm:px-3 md:px-4 pt-2 sm:pt-3">
+        {/* Global Investment Platform */}
+        <div className="px-3 sm:px-4 pt-3 sm:pt-4">
           <div className="w-full max-w-7xl mx-auto">
             <Suspense fallback={
-              <div className="flex gap-3 justify-center py-4">
-                <div className="animate-pulse h-20 w-40 bg-muted/50 rounded-lg" />
-                <div className="animate-pulse h-20 w-40 bg-muted/50 rounded-lg" />
+              <div className="flex gap-3 justify-center py-3">
+                <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />
+                <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />
+                <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />
               </div>
             }>
               <InvestorPathSelector />
@@ -704,12 +676,12 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Property Display Section - Glass Effect Background */}
-        <div className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 md:py-4 space-y-2 sm:space-y-3 md:space-y-4">
-          <div className="w-full max-w-7xl mx-auto space-y-2 sm:space-y-3 md:space-y-4">
+        {/* Property Display Section */}
+        <div className="px-3 sm:px-4 py-4 sm:py-6 space-y-4">
+          <div className="w-full max-w-7xl mx-auto space-y-4">
             {hasSearched ? (
-              <section className="bg-background/60 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg border border-border/40 hover:border-primary/30 transition-all duration-300">
-                <div className="p-2 sm:p-3 md:p-4 lg:p-6">
+              <section className="bg-card/80 backdrop-blur-sm rounded-xl shadow-md border border-border">
+                <div className="p-3 sm:p-4 md:p-6">
                   {/* Active Filter Pills */}
                   <Suspense fallback={null}>
                     <ActiveFilterPills
@@ -817,24 +789,23 @@ const Index = () => {
               </section>
             ) : (
               <>
-
-                {/* AI Recommended Properties - Lazy Loaded */}
-                <div className="section-compact mb-3 md:mb-6">
+                {/* AI Recommended Properties */}
+                <div className="mb-4">
                   <Suspense fallback={
-                    <div className="bg-background/50 backdrop-blur-sm rounded-2xl shadow-lg border border-border/40 hover:border-primary/30 transition-all duration-300 p-3 md:p-6">
-                      <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
-                        <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-primary to-primary/80 rounded-lg animate-pulse" />
+                    <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-primary/20 rounded-lg animate-pulse" />
                         <div className="flex-1">
-                          <div className="h-5 md:h-6 bg-muted/50 rounded w-32 md:w-48 mb-1.5 md:mb-2 animate-pulse" />
-                          <div className="h-3 md:h-4 bg-muted/50 rounded w-48 md:w-64 animate-pulse" />
+                          <div className="h-5 bg-muted rounded w-40 mb-2 animate-pulse" />
+                          <div className="h-3 bg-muted rounded w-56 animate-pulse" />
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {[...Array(3)].map((_, i) => (
                           <div key={i} className="animate-pulse">
-                            <div className="bg-muted/50 h-40 md:h-48 rounded-lg mb-2 border border-border/40" />
-                            <div className="bg-muted/50 h-3 md:h-4 rounded w-3/4 mb-1.5 md:mb-2" />
-                            <div className="bg-muted/50 h-3 md:h-4 rounded w-1/2" />
+                            <div className="bg-muted h-44 rounded-lg mb-2" />
+                            <div className="bg-muted h-4 rounded w-3/4 mb-1.5" />
+                            <div className="bg-muted h-3 rounded w-1/2" />
                           </div>
                         ))}
                       </div>
@@ -844,9 +815,9 @@ const Index = () => {
                   </Suspense>
                 </div>
 
-                {/* Trending Searches Widget */}
-                <div className="section-compact mb-3 md:mb-6">
-                  <Suspense fallback={<div className="animate-pulse h-48 md:h-64 bg-muted/50 rounded-lg border border-border/40" />}>
+                {/* Trending Searches */}
+                <div className="mb-4">
+                  <Suspense fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
                     <TrendingSearchesWidget 
                       onSearchClick={(trendFilters) => {
                         setFilters(prev => ({ ...prev, ...trendFilters }));
@@ -855,29 +826,27 @@ const Index = () => {
                     />
                   </Suspense>
                 </div>
-                {/* Featured Properties - Modern Auto-Scrolling Carousel */}
 
-                {/* Properties for Sale Section - Compact */}
-                <div id="sale-section" className="section-compact">
-                  <Suspense fallback={<div className="animate-pulse h-64 bg-muted/50 rounded-lg border border-border/40" />}>
+                {/* Properties for Sale */}
+                <div id="sale-section" className="mb-4">
+                  <Suspense fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
                   </Suspense>
                 </div>
 
-                {/* Properties for Rent Section - Compact */}
-                <div id="rent-section" className="section-compact">
-                  <Suspense fallback={<div className="animate-pulse h-64 bg-muted/50 rounded-lg border border-border/40" />}>
+                {/* Properties for Rent */}
+                <div id="rent-section" className="mb-4">
+                  <Suspense fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
                   </Suspense>
                 </div>
 
-                {/* Marketplace Services Section */}
-                <div id="marketplace-services-section" className="section-compact mt-8">
-                  <Suspense fallback={<div className="animate-pulse h-64 bg-muted/50 rounded-lg border border-border/40" />}>
+                {/* Marketplace Services */}
+                <div id="marketplace-services-section" className="mt-6">
+                  <Suspense fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <MarketplaceServices />
                   </Suspense>
                 </div>
-
               </>
             )}
           </div>
