@@ -1,11 +1,11 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { User, Building2 } from "lucide-react";
+import { User, Building2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ModernPropertyCard from "@/components/property/ModernPropertyCard";
+import { motion } from "framer-motion";
 
 interface AgentPropertyCarouselProps {
   currentPropertyId: string;
@@ -33,7 +33,6 @@ const AgentPropertyCarousel = ({
   const fetchRelatedProperties = async () => {
     setIsLoading(true);
     try {
-      // Fetch properties by the same owner
       const { data: ownerProps } = await supabase
         .from('properties')
         .select('*')
@@ -44,7 +43,6 @@ const AgentPropertyCarousel = ({
 
       setOwnerProperties(ownerProps || []);
 
-      // Fetch properties by the same agent (if agent exists)
       if (agentId) {
         const { data: agentProps } = await supabase
           .from('properties')
@@ -67,10 +65,10 @@ const AgentPropertyCarousel = ({
     return (
       <div className="space-y-4 sm:space-y-6">
         <div className="animate-pulse">
-          <div className="h-5 sm:h-6 bg-muted/50 rounded w-1/3 mb-3 sm:mb-4"></div>
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+          <div className="h-5 sm:h-6 bg-muted rounded w-1/3 mb-3 sm:mb-4"></div>
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-36 sm:h-48 md:h-64 bg-muted/50 rounded-lg"></div>
+              <div key={i} className="h-36 sm:h-48 md:h-64 bg-muted rounded-lg"></div>
             ))}
           </div>
         </div>
@@ -92,36 +90,33 @@ const AgentPropertyCarousel = ({
     if (properties.length === 0) return null;
 
     return (
-      <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
-        <CardHeader className="p-3 sm:p-4 md:p-6 pb-2 sm:pb-3 bg-gradient-to-r from-primary/5 to-accent/5">
-          <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base md:text-lg">
-            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/15 flex items-center justify-center">
-              <Icon className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
-            </div>
-            <span className="truncate flex-1">{title}</span>
-            <Badge variant="outline" className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 flex-shrink-0">{properties.length} properties</Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-2 sm:p-3 md:p-6">
-          {properties.length <= 3 ? (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
-              {properties.map((property) => (
-                <ModernPropertyCard
-                  key={property.id}
-                  property={property}
-                  language="en"
-                  isSaved={false}
-                  onSave={() => {}}
-                  onView={() => window.open(`/property/${property.id}`, '_blank')}
-                  onView3D={() => {}}
-                />
-              ))}
-            </div>
-          ) : (
-            <Carousel className="w-full">
-              <CarouselContent className="-ml-1.5 sm:-ml-2">
-                {properties.map((property) => (
-                  <CarouselItem key={property.id} className="pl-1.5 sm:pl-2 basis-1/2 sm:basis-1/3 lg:basis-1/4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <Card className="border border-border/50 bg-card/80 backdrop-blur-xl shadow-lg rounded-xl overflow-hidden">
+          <CardHeader className="p-3 sm:p-4 md:p-5 pb-2 sm:pb-3 bg-gradient-to-r from-primary/5 via-transparent to-accent/5">
+            <CardTitle className="flex items-center gap-2 text-sm sm:text-base md:text-lg">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+              </div>
+              <span className="truncate flex-1 font-semibold text-foreground">{title}</span>
+              <Badge variant="secondary" className="text-[10px] sm:text-xs px-2 py-0.5 bg-primary/10 text-primary border-0">
+                {properties.length} listings
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-2 sm:p-3 md:p-5">
+            {properties.length <= 3 ? (
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
+                {properties.map((property, index) => (
+                  <motion.div
+                    key={property.id}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
                     <ModernPropertyCard
                       property={property}
                       language="en"
@@ -130,21 +125,43 @@ const AgentPropertyCarousel = ({
                       onView={() => window.open(`/property/${property.id}`, '_blank')}
                       onView3D={() => {}}
                     />
-                  </CarouselItem>
+                  </motion.div>
                 ))}
-              </CarouselContent>
-              <CarouselPrevious className="hidden sm:flex" />
-              <CarouselNext className="hidden sm:flex" />
-            </Carousel>
-          )}
-        </CardContent>
-      </Card>
+              </div>
+            ) : (
+              <Carousel className="w-full">
+                <CarouselContent className="-ml-2">
+                  {properties.map((property, index) => (
+                    <CarouselItem key={property.id} className="pl-2 basis-1/2 sm:basis-1/3 lg:basis-1/4">
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                      >
+                        <ModernPropertyCard
+                          property={property}
+                          language="en"
+                          isSaved={false}
+                          onSave={() => {}}
+                          onView={() => window.open(`/property/${property.id}`, '_blank')}
+                          onView3D={() => {}}
+                        />
+                      </motion.div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="hidden sm:flex -left-3 bg-card/90 backdrop-blur border-border/50 hover:bg-card" />
+                <CarouselNext className="hidden sm:flex -right-3 bg-card/90 backdrop-blur border-border/50 hover:bg-card" />
+              </Carousel>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
     );
   };
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Agent Properties Section */}
       {agentId && (
         <PropertyCarouselSection
           properties={agentProperties}
@@ -154,7 +171,6 @@ const AgentPropertyCarousel = ({
         />
       )}
 
-      {/* Owner Properties Section */}
       <PropertyCarouselSection
         properties={ownerProperties}
         title={`More from ${ownerType === 'company' ? 'Company' : 'Owner'}`}
