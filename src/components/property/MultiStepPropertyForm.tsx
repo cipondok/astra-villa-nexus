@@ -108,46 +108,57 @@ const MultiStepPropertyForm = () => {
     return draftDate < expiryDate;
   };
 
-  // Load draft on component mount
-  useEffect(() => {
+  const loadDraft = useCallback((opts?: { silent?: boolean }) => {
     if (!user) return;
 
     const draftKey = `property_draft_${user.id}`;
     const savedDraft = localStorage.getItem(draftKey);
-    
-    if (savedDraft) {
-      try {
-        const { formData: savedForm, features: savedFeatures, currentTab: savedTab, timestamp } = JSON.parse(savedDraft);
-        
-        // Check if draft is expired
-        if (isDraftExpired(timestamp)) {
-          localStorage.removeItem(draftKey);
-          return;
-        }
 
-        // Check if draft has meaningful data
-        const hasData = savedForm.title || savedForm.description || savedForm.property_type;
-        
-        if (hasData) {
-          setHasDraft(true);
-          setFormData(savedForm);
-          setFeatures(savedFeatures);
-          setCurrentTab(savedTab);
-          setLastSaved(new Date(timestamp));
-          
-          // Show notification that draft was restored
-          const draftAge = Math.floor((new Date().getTime() - new Date(timestamp).getTime()) / 1000 / 60);
-          showSuccess(
-            'Draft Restored', 
-            `Your previous work from ${draftAge < 60 ? draftAge + ' minutes' : Math.floor(draftAge / 60) + ' hours'} ago has been restored`
-          );
-        }
-      } catch (error) {
-        console.error('Error loading draft:', error);
+    if (!savedDraft) return;
+
+    try {
+      const { formData: savedForm, features: savedFeatures, currentTab: savedTab, timestamp } = JSON.parse(savedDraft);
+
+      // Check if draft is expired
+      if (isDraftExpired(timestamp)) {
         localStorage.removeItem(draftKey);
+        return;
       }
+
+      // Check if draft has meaningful data
+      const hasData = savedForm?.title || savedForm?.description || savedForm?.property_type;
+      if (!hasData) return;
+
+      setHasDraft(true);
+      setFormData(savedForm);
+      setFeatures(savedFeatures);
+      setCurrentTab(savedTab);
+      setLastSaved(new Date(timestamp));
+
+      if (!opts?.silent) {
+        const draftAge = Math.floor((new Date().getTime() - new Date(timestamp).getTime()) / 1000 / 60);
+        showSuccess(
+          'Draft Restored',
+          `Your previous work from ${draftAge < 60 ? draftAge + ' minutes' : Math.floor(draftAge / 60) + ' hours'} ago has been restored`
+        );
+      }
+    } catch (error) {
+      console.error('Error loading draft:', error);
+      localStorage.removeItem(draftKey);
     }
-  }, [user]);
+  }, [user, showSuccess]);
+
+  // Load draft on component mount
+  useEffect(() => {
+    loadDraft();
+  }, [loadDraft]);
+
+  // Allow external import to refresh the form immediately
+  useEffect(() => {
+    const handler = () => loadDraft({ silent: true });
+    window.addEventListener('astra:property-imported', handler);
+    return () => window.removeEventListener('astra:property-imported', handler);
+  }, [loadDraft]);
 
   // Keyboard shortcuts
   useEffect(() => {

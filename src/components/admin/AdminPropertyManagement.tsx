@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter, Globe, Link2 } from "lucide-react";
 import SimplePropertyManagement from "./SimplePropertyManagement";
 import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
@@ -34,20 +35,35 @@ const AdminPropertyManagement = () => {
     <div className="space-y-3 p-1 md:p-0">
       {/* Professional Header - Slim Style */}
       <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 dark:from-primary/10 dark:via-primary/20 dark:to-primary/10 rounded-lg border border-border/50 p-3">
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-lg">
-            <List className="h-4 w-4 text-primary-foreground" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-sm font-bold text-foreground">Property Management Hub</h2>
-              <Badge className="bg-primary/10 text-primary border-primary/30 text-[9px] px-1.5 py-0 h-4">
-                <Activity className="h-2.5 w-2.5 mr-0.5" />
-                Active
-              </Badge>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-lg">
+              <List className="h-4 w-4 text-primary-foreground" />
             </div>
-            <p className="text-[10px] text-muted-foreground">Comprehensive property management with advanced display and 3D view controls</p>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-bold text-foreground">Property Management Hub</h2>
+                <Badge className="bg-primary/10 text-primary border-primary/30 text-[9px] px-1.5 py-0 h-4">
+                  <Activity className="h-2.5 w-2.5 mr-0.5" />
+                  Active
+                </Badge>
+              </div>
+              <p className="text-[10px] text-muted-foreground">Comprehensive property management with advanced display and 3D view controls</p>
+            </div>
           </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-7 text-[10px] gap-1.5"
+            onClick={() => {
+              window.location.href = "/add-property";
+            }}
+          >
+            <Link2 className="h-3 w-3" />
+            Open /add-property
+          </Button>
         </div>
       </div>
 
