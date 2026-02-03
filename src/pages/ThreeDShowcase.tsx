@@ -9,8 +9,9 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Sun, Moon, Home, Info, RotateCcw, Box as BoxIcon, Eye, MousePointer, Maximize,
   Camera, Ruler, Maximize2, RotateCw, ZoomIn, ZoomOut, Move3D, Grid3X3,
-  Download, Fullscreen, MapPin, Building, AlertTriangle, RefreshCw
+  Download, Fullscreen, MapPin, Building, AlertTriangle, RefreshCw, ArrowLeft, Box
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import * as THREE from 'three';
 
 // Enhanced window data with more details
@@ -347,7 +348,7 @@ const EnhancedInfoPanel = ({ windowData, position }) => {
 
   return (
     <div 
-      className="absolute bg-white/95 backdrop-blur-sm border-2 border-primary/20 rounded-xl p-4 shadow-xl z-20 min-w-[280px] max-w-[320px]"
+      className="absolute bg-card border border-border rounded-xl p-4 shadow-xl z-20 min-w-[280px] max-w-[320px]"
       style={{
         left: Math.min(position.x + 10, window.innerWidth - 340),
         top: Math.max(position.y - 10, 10),
@@ -361,29 +362,29 @@ const EnhancedInfoPanel = ({ windowData, position }) => {
       
       <div className="grid grid-cols-2 gap-3 text-sm">
         <div>
-          <p className="font-medium text-gray-600">Location</p>
-          <p className="text-gray-800">{windowData.wall} Wall</p>
+          <p className="font-medium text-muted-foreground">Location</p>
+          <p className="text-foreground">{windowData.wall} Wall</p>
         </div>
         <div>
-          <p className="font-medium text-gray-600">Floor</p>
-          <p className="text-gray-800">Floor {windowData.floor}</p>
+          <p className="font-medium text-muted-foreground">Floor</p>
+          <p className="text-foreground">Floor {windowData.floor}</p>
         </div>
         <div>
-          <p className="font-medium text-gray-600">Dimensions</p>
-          <p className="text-gray-800">{windowData.size[0]}m × {windowData.size[1]}m</p>
+          <p className="font-medium text-muted-foreground">Dimensions</p>
+          <p className="text-foreground">{windowData.size[0]}m × {windowData.size[1]}m</p>
         </div>
         <div>
-          <p className="font-medium text-gray-600">Type</p>
-          <p className="text-gray-800">{windowData.type}</p>
+          <p className="font-medium text-muted-foreground">Type</p>
+          <p className="text-foreground">{windowData.type}</p>
         </div>
         <div className="col-span-2">
-          <p className="font-medium text-gray-600">Glazing</p>
-          <p className="text-gray-800">{windowData.material}</p>
+          <p className="font-medium text-muted-foreground">Glazing</p>
+          <p className="text-foreground">{windowData.material}</p>
         </div>
       </div>
       
       {windowData.isTerraceEntry && (
-        <Badge variant="secondary" className="mt-3 bg-green-100 text-green-800">
+        <Badge className="mt-3 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
           <MapPin className="h-3 w-3 mr-1" />
           Terrace Access
         </Badge>
@@ -417,11 +418,11 @@ const ToolsPanel = ({
   ];
 
   return (
-    <div className="absolute top-20 left-4 z-50">
+    <div className="absolute top-4 left-4 z-50">
       {/* Tools Toggle Button */}
       <Button
         onClick={() => setIsOpen(!isOpen)}
-        className="mb-2 bg-white/95 hover:bg-white/100 text-gray-800 border border-gray-200 shadow-lg backdrop-blur-sm"
+        className="mb-2 bg-card hover:bg-secondary text-foreground border border-border shadow-lg"
         size="sm"
       >
         <Move3D className="h-4 w-4 mr-2" />
@@ -431,16 +432,16 @@ const ToolsPanel = ({
 
       {/* Collapsible Tools Panel */}
       {isOpen && (
-        <div className="bg-white/98 backdrop-blur-sm rounded-lg shadow-2xl border border-gray-200 p-4 w-72 max-h-[70vh] overflow-y-auto z-50">
+        <div className="bg-card rounded-xl shadow-xl border border-border p-4 w-72 max-h-[60vh] overflow-y-auto">
           {/* Quick Actions */}
           <div className="mb-4">
-            <p className="font-semibold text-sm mb-2 text-gray-700">Quick Actions</p>
+            <p className="font-semibold text-sm mb-2 text-foreground">Quick Actions</p>
             <div className="grid grid-cols-2 gap-2">
               <Button
                 size="sm"
                 variant={wireframeMode ? "default" : "outline"}
                 onClick={onToggleWireframe}
-                className="text-xs h-8"
+                className="text-xs h-9"
               >
                 <Grid3X3 className="h-3 w-3 mr-1" />
                 Wire
@@ -449,7 +450,7 @@ const ToolsPanel = ({
                 size="sm"
                 variant={gridMode ? "default" : "outline"}
                 onClick={onToggleGrid}
-                className="text-xs h-8"
+                className="text-xs h-9"
               >
                 <Grid3X3 className="h-3 w-3 mr-1" />
                 Grid
@@ -458,7 +459,7 @@ const ToolsPanel = ({
                 size="sm"
                 variant={measureMode ? "default" : "outline"}
                 onClick={onMeasureMode}
-                className="text-xs h-8"
+                className="text-xs h-9"
               >
                 <Ruler className="h-3 w-3 mr-1" />
                 Measure
@@ -467,7 +468,7 @@ const ToolsPanel = ({
                 size="sm"
                 variant="outline"
                 onClick={onResetView}
-                className="text-xs h-8"
+                className="text-xs h-9"
               >
                 <RotateCcw className="h-3 w-3 mr-1" />
                 Reset
@@ -479,7 +480,7 @@ const ToolsPanel = ({
 
           {/* Camera Views */}
           <div className="mb-4">
-            <p className="font-semibold text-sm mb-2 text-gray-700">Camera Views</p>
+            <p className="font-semibold text-sm mb-2 text-foreground">Camera Views</p>
             <div className="grid grid-cols-2 gap-1">
               {cameraPresets.map((preset) => (
                 <Button
@@ -487,7 +488,7 @@ const ToolsPanel = ({
                   size="sm"
                   variant="outline"
                   onClick={() => onCameraPreset(preset.value)}
-                  className="text-xs h-8 justify-start"
+                  className="text-xs h-9 justify-start"
                 >
                   <preset.icon className="h-3 w-3 mr-1" />
                   {preset.name}
@@ -500,13 +501,13 @@ const ToolsPanel = ({
 
           {/* Export Tools */}
           <div>
-            <p className="font-semibold text-sm mb-2 text-gray-700">Export & View</p>
+            <p className="font-semibold text-sm mb-2 text-foreground">Export & View</p>
             <div className="space-y-2">
               <Button
                 size="sm"
                 variant="outline"
                 onClick={onScreenshot}
-                className="w-full text-xs h-8 justify-start"
+                className="w-full text-xs h-9 justify-start"
               >
                 <Download className="h-3 w-3 mr-2" />
                 Download Screenshot
@@ -515,7 +516,7 @@ const ToolsPanel = ({
                 size="sm"
                 variant="outline"
                 onClick={onFullscreen}
-                className="w-full text-xs h-8 justify-start"
+                className="w-full text-xs h-9 justify-start"
               >
                 <Fullscreen className="h-3 w-3 mr-2" />
                 Enter Fullscreen
@@ -837,28 +838,40 @@ const ThreeDShowcase = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background relative">
-      {/* Header */}
-      <div className="relative z-20 bg-background/90 backdrop-blur-sm border-b">
-        <div className="container mx-auto px-4 py-4">
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
+        <div className="container mx-auto px-3 sm:px-4 py-3">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold flex items-center gap-2">
-                <Home className="h-6 w-6" />
-                Realistic 3D House Model
-              </h1>
-              <p className="text-muted-foreground">Professional virtual house tour with advanced tools</p>
+            <div className="flex items-center gap-3">
+              <Link to="/">
+                <Button variant="ghost" size="sm" className="h-9 px-2 sm:px-3">
+                  <ArrowLeft className="h-4 w-4 sm:mr-1" />
+                  <span className="hidden sm:inline">Back</span>
+                </Button>
+              </Link>
+              <div>
+                <h1 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-foreground">
+                  <Box className="h-5 w-5 text-primary" />
+                  <span className="hidden sm:inline">3D Property</span> Showcase
+                </h1>
+                <p className="text-xs text-muted-foreground hidden sm:block">Interactive 3D house model with professional tools</p>
+              </div>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="hidden sm:flex border-primary/30 text-primary">
+                <Eye className="h-3 w-3 mr-1" />
+                Interactive
+              </Badge>
               <Button
-                variant="outline"
+                variant={isDayTime ? "outline" : "default"}
                 size="sm"
                 onClick={() => setIsDayTime(!isDayTime)}
-                className="flex items-center gap-2"
+                className="h-9"
               >
-                {isDayTime ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-                {isDayTime ? 'Night Mode' : 'Day Mode'}
+                {isDayTime ? <Moon className="h-4 w-4 sm:mr-1" /> : <Sun className="h-4 w-4 sm:mr-1" />}
+                <span className="hidden sm:inline">{isDayTime ? 'Night' : 'Day'}</span>
               </Button>
             </div>
           </div>
@@ -928,45 +941,55 @@ const ThreeDShowcase = () => {
         {/* Enhanced Information Panel */}
         <EnhancedInfoPanel windowData={hoveredWindow} position={mousePosition} />
 
-        {/* Features Panel */}
-        <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-xl">
-          <h3 className="font-bold mb-3 flex items-center gap-2">
+        {/* Features Panel - Bottom Left */}
+        <div className="absolute bottom-4 left-4 bg-card border border-border rounded-xl p-3 sm:p-4 max-w-[160px] sm:max-w-xs shadow-lg">
+          <h3 className="font-bold text-sm mb-2 flex items-center gap-2 text-foreground">
             <Info className="h-4 w-4 text-primary" />
-            Model Features
+            <span className="hidden sm:inline">Model</span> Features
           </h3>
-          <ul className="text-sm space-y-2">
+          <ul className="text-xs sm:text-sm space-y-1.5">
             <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Realistic materials & textures
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full shrink-0"></span>
+              <span className="text-foreground">Realistic materials</span>
             </li>
             <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-              Enhanced lighting & shadows
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full shrink-0"></span>
+              <span className="text-foreground">Dynamic lighting</span>
             </li>
             <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
-              Professional 3D tools
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-500 rounded-full shrink-0"></span>
+              <span className="text-foreground">Pro 3D tools</span>
             </li>
             <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-              Interactive window details
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-              Multiple camera angles
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-orange-500 rounded-full shrink-0"></span>
+              <span className="text-foreground">Window info</span>
             </li>
           </ul>
         </div>
 
-        {/* Controls Info */}
-        <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-xl">
-          <h3 className="font-bold mb-3">Navigation Controls</h3>
-          <ul className="text-sm space-y-2">
-            <li><strong>Left Click + Drag:</strong> Rotate view</li>
-            <li><strong>Right Click + Drag:</strong> Pan camera</li>
-            <li><strong>Mouse Wheel:</strong> Zoom in/out</li>
-            <li><strong>Hover Windows:</strong> View details</li>
-            <li><strong>Tools Panel:</strong> Advanced options</li>
+        {/* Controls Panel - Bottom Right */}
+        <div className="absolute bottom-4 right-4 bg-card border border-border rounded-xl p-3 sm:p-4 max-w-[160px] sm:max-w-xs shadow-lg">
+          <h3 className="font-bold text-sm mb-2 flex items-center gap-2 text-foreground">
+            <MousePointer className="h-4 w-4 text-primary" />
+            Controls
+          </h3>
+          <ul className="text-xs sm:text-sm space-y-1.5">
+            <li className="flex items-center gap-2">
+              <span className="text-primary">🖱️</span>
+              <span className="text-foreground">Drag: Rotate</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-primary">⚙️</span>
+              <span className="text-foreground">R-click: Pan</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-primary">🔍</span>
+              <span className="text-foreground">Scroll: Zoom</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-primary">👆</span>
+              <span className="text-foreground">Hover: Details</span>
+            </li>
           </ul>
         </div>
       </div>
