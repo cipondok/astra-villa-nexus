@@ -7,16 +7,16 @@ interface SearchPanelBackgroundSliderProps {
   images?: string[];
 }
 
-// Stunning luxury property images
+// Bright daylight luxury property images
 const defaultImages = [
-  'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&q=80', // Modern glass mansion
-  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80', // White villa with pool
-  'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1920&q=80', // Luxury apartment high-rise
-  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80', // Modern interior pool
-  'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1920&q=80', // Contemporary architecture
-  'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1920&q=80', // Bright open living
-  'https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=1920&q=80', // Beachfront villa
-  'https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=1920&q=80', // Luxury kitchen
+  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80', // Sunny villa exterior
+  'https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=1920&q=80', // Daylight modern home
+  'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1920&q=80', // Bright white interior
+  'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=1920&q=80', // Sunny living room
+  'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1920&q=80', // Daylight pool house
+  'https://images.unsplash.com/photo-1600563438938-a9a27215b4b8?w=1920&q=80', // Bright modern kitchen
+  'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1920&q=80', // Sunny home exterior
+  'https://images.unsplash.com/photo-1600573472591-ee6c8e695481?w=1920&q=80', // Bright luxury patio
 ];
 
 export const SearchPanelBackgroundSlider: React.FC<SearchPanelBackgroundSliderProps> = ({
