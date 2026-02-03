@@ -91,6 +91,7 @@ const MediaNetworkManagement = lazy(() => import("./MediaNetworkManagement"));
 const UserAcquisitionManagement = lazy(() => import("./UserAcquisitionManagement"));
 const InnovationLabManagement = lazy(() => import("./InnovationLabManagement"));
 const MobileEnhancementsManagement = lazy(() => import("./MobileEnhancementsManagement"));
+const SocialCommerceManagement = lazy(() => import("./SocialCommerceManagement"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -446,6 +447,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <InnovationLabManagement />;
       case "mobile-enhancements":
         return <MobileEnhancementsManagement />;
+      case "social-commerce":
+        return <SocialCommerceManagement />;
       default:
         return <AdminOverview />;
     }

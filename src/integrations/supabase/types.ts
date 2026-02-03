@@ -9049,6 +9049,129 @@ export type Database = {
           },
         ]
       }
+      mortgage_preapproval_requests: {
+        Row: {
+          bank_partner_id: string | null
+          created_at: string
+          date_of_birth: string | null
+          down_payment_amount: number | null
+          email: string
+          employer_name: string | null
+          employment_duration_months: number | null
+          employment_status: string | null
+          existing_debts: number | null
+          full_name: string
+          id: string
+          monthly_income: number | null
+          notes: string | null
+          phone: string | null
+          preapproval_amount: number | null
+          preapproval_rate: number | null
+          preapproval_valid_until: string | null
+          preferred_term_years: number | null
+          property_id: string | null
+          requested_loan_amount: number | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          source_platform: string | null
+          status: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          bank_partner_id?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          down_payment_amount?: number | null
+          email: string
+          employer_name?: string | null
+          employment_duration_months?: number | null
+          employment_status?: string | null
+          existing_debts?: number | null
+          full_name: string
+          id?: string
+          monthly_income?: number | null
+          notes?: string | null
+          phone?: string | null
+          preapproval_amount?: number | null
+          preapproval_rate?: number | null
+          preapproval_valid_until?: string | null
+          preferred_term_years?: number | null
+          property_id?: string | null
+          requested_loan_amount?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_platform?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          bank_partner_id?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          down_payment_amount?: number | null
+          email?: string
+          employer_name?: string | null
+          employment_duration_months?: number | null
+          employment_status?: string | null
+          existing_debts?: number | null
+          full_name?: string
+          id?: string
+          monthly_income?: number | null
+          notes?: string | null
+          phone?: string | null
+          preapproval_amount?: number | null
+          preapproval_rate?: number | null
+          preapproval_valid_until?: string | null
+          preferred_term_years?: number | null
+          property_id?: string | null
+          requested_loan_amount?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_platform?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mortgage_preapproval_requests_bank_partner_id_fkey"
+            columns: ["bank_partner_id"]
+            isOneToOne: false
+            referencedRelation: "acquisition_bank_partnerships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_preapproval_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_preapproval_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_preapproval_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_preapproval_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mortgage_rates: {
         Row: {
           bank_id: string
@@ -13352,6 +13475,217 @@ export type Database = {
           owner_id?: string
           search_id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      social_commerce_campaigns: {
+        Row: {
+          budget: number | null
+          campaign_name: string
+          campaign_type: string
+          created_at: string
+          created_by: string | null
+          end_date: string | null
+          id: string
+          performance_metrics: Json | null
+          platform_id: string | null
+          properties: string[] | null
+          spent: number | null
+          start_date: string | null
+          status: string | null
+          target_audience: Json | null
+          updated_at: string
+        }
+        Insert: {
+          budget?: number | null
+          campaign_name: string
+          campaign_type: string
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          performance_metrics?: Json | null
+          platform_id?: string | null
+          properties?: string[] | null
+          spent?: number | null
+          start_date?: string | null
+          status?: string | null
+          target_audience?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          budget?: number | null
+          campaign_name?: string
+          campaign_type?: string
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          performance_metrics?: Json | null
+          platform_id?: string | null
+          properties?: string[] | null
+          spent?: number | null
+          start_date?: string | null
+          status?: string | null
+          target_audience?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_commerce_campaigns_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_commerce_campaigns_platform_id_fkey"
+            columns: ["platform_id"]
+            isOneToOne: false
+            referencedRelation: "social_commerce_platforms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_commerce_listings: {
+        Row: {
+          call_to_action: string | null
+          caption: string | null
+          clicks: number | null
+          created_at: string
+          expires_at: string | null
+          external_listing_id: string | null
+          featured_media: Json | null
+          hashtags: string[] | null
+          id: string
+          impressions: number | null
+          inquiries: number | null
+          listing_url: string | null
+          platform_id: string | null
+          property_id: string | null
+          published_at: string | null
+          saves: number | null
+          shares: number | null
+          shop_now_enabled: boolean | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          call_to_action?: string | null
+          caption?: string | null
+          clicks?: number | null
+          created_at?: string
+          expires_at?: string | null
+          external_listing_id?: string | null
+          featured_media?: Json | null
+          hashtags?: string[] | null
+          id?: string
+          impressions?: number | null
+          inquiries?: number | null
+          listing_url?: string | null
+          platform_id?: string | null
+          property_id?: string | null
+          published_at?: string | null
+          saves?: number | null
+          shares?: number | null
+          shop_now_enabled?: boolean | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          call_to_action?: string | null
+          caption?: string | null
+          clicks?: number | null
+          created_at?: string
+          expires_at?: string | null
+          external_listing_id?: string | null
+          featured_media?: Json | null
+          hashtags?: string[] | null
+          id?: string
+          impressions?: number | null
+          inquiries?: number | null
+          listing_url?: string | null
+          platform_id?: string | null
+          property_id?: string | null
+          published_at?: string | null
+          saves?: number | null
+          shares?: number | null
+          shop_now_enabled?: boolean | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_commerce_listings_platform_id_fkey"
+            columns: ["platform_id"]
+            isOneToOne: false
+            referencedRelation: "social_commerce_platforms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_commerce_listings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_commerce_listings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_commerce_platforms: {
+        Row: {
+          api_credentials: Json | null
+          created_at: string
+          display_name: string
+          id: string
+          is_enabled: boolean | null
+          last_sync_at: string | null
+          platform_name: string
+          settings: Json | null
+          sync_status: string | null
+          total_clicks: number | null
+          total_conversions: number | null
+          total_impressions: number | null
+          updated_at: string
+          webhook_url: string | null
+        }
+        Insert: {
+          api_credentials?: Json | null
+          created_at?: string
+          display_name: string
+          id?: string
+          is_enabled?: boolean | null
+          last_sync_at?: string | null
+          platform_name: string
+          settings?: Json | null
+          sync_status?: string | null
+          total_clicks?: number | null
+          total_conversions?: number | null
+          total_impressions?: number | null
+          updated_at?: string
+          webhook_url?: string | null
+        }
+        Update: {
+          api_credentials?: Json | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_enabled?: boolean | null
+          last_sync_at?: string | null
+          platform_name?: string
+          settings?: Json | null
+          sync_status?: string | null
+          total_clicks?: number | null
+          total_conversions?: number | null
+          total_impressions?: number | null
+          updated_at?: string
+          webhook_url?: string | null
         }
         Relationships: []
       }
@@ -19178,6 +19512,116 @@ export type Database = {
         }
         Relationships: []
       }
+      virtual_tour_bookings: {
+        Row: {
+          agent_notes: string | null
+          assigned_agent_id: string | null
+          booking_type: string | null
+          confirmation_sent: boolean | null
+          created_at: string
+          duration_minutes: number | null
+          follow_up_sent: boolean | null
+          guest_email: string
+          guest_feedback: string | null
+          guest_name: string
+          guest_phone: string | null
+          guest_rating: number | null
+          id: string
+          meeting_link: string | null
+          meeting_provider: string | null
+          property_id: string | null
+          reminder_sent: boolean | null
+          scheduled_date: string
+          scheduled_time: string
+          source_platform: string | null
+          status: string | null
+          timezone: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          agent_notes?: string | null
+          assigned_agent_id?: string | null
+          booking_type?: string | null
+          confirmation_sent?: boolean | null
+          created_at?: string
+          duration_minutes?: number | null
+          follow_up_sent?: boolean | null
+          guest_email: string
+          guest_feedback?: string | null
+          guest_name: string
+          guest_phone?: string | null
+          guest_rating?: number | null
+          id?: string
+          meeting_link?: string | null
+          meeting_provider?: string | null
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          scheduled_date: string
+          scheduled_time: string
+          source_platform?: string | null
+          status?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          agent_notes?: string | null
+          assigned_agent_id?: string | null
+          booking_type?: string | null
+          confirmation_sent?: boolean | null
+          created_at?: string
+          duration_minutes?: number | null
+          follow_up_sent?: boolean | null
+          guest_email?: string
+          guest_feedback?: string | null
+          guest_name?: string
+          guest_phone?: string | null
+          guest_rating?: number | null
+          id?: string
+          meeting_link?: string | null
+          meeting_provider?: string | null
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          scheduled_date?: string
+          scheduled_time?: string
+          source_platform?: string | null
+          status?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "virtual_tour_bookings_assigned_agent_id_fkey"
+            columns: ["assigned_agent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "virtual_tour_bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "virtual_tour_bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "virtual_tour_bookings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       web_analytics: {
         Row: {
           browser: string | null
@@ -19235,6 +19679,51 @@ export type Database = {
           user_id?: string | null
           visit_duration?: number | null
           visitor_id?: string
+        }
+        Relationships: []
+      }
+      whatsapp_automation_flows: {
+        Row: {
+          created_at: string
+          flow_name: string
+          id: string
+          is_active: boolean | null
+          message_templates: Json
+          response_delay_seconds: number | null
+          total_completed: number | null
+          total_triggered: number | null
+          trigger_keywords: string[] | null
+          trigger_type: string
+          updated_at: string
+          working_hours: Json | null
+        }
+        Insert: {
+          created_at?: string
+          flow_name: string
+          id?: string
+          is_active?: boolean | null
+          message_templates?: Json
+          response_delay_seconds?: number | null
+          total_completed?: number | null
+          total_triggered?: number | null
+          trigger_keywords?: string[] | null
+          trigger_type: string
+          updated_at?: string
+          working_hours?: Json | null
+        }
+        Update: {
+          created_at?: string
+          flow_name?: string
+          id?: string
+          is_active?: boolean | null
+          message_templates?: Json
+          response_delay_seconds?: number | null
+          total_completed?: number | null
+          total_triggered?: number | null
+          trigger_keywords?: string[] | null
+          trigger_type?: string
+          updated_at?: string
+          working_hours?: Json | null
         }
         Relationships: []
       }
