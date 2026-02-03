@@ -2398,20 +2398,20 @@ const AstraSearchPanel = ({
       </div>
     );
   }
-  return <div className="w-full max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1800px] 3xl:max-w-[2000px] mx-auto transition-all duration-500">
-    <div className={cn("sticky z-[999] transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-[48px] w-full px-2 lg:px-4 xl:px-6")}>
-      {/* Premium Frosted Glass Container */}
-      <div className="relative bg-white/10 dark:bg-white/5 backdrop-blur-2xl backdrop-saturate-150 overflow-visible rounded-xl border border-white/40 dark:border-white/20 shadow-xl shadow-black/5 ring-1 ring-white/20">
-        {/* Subtle top shine line */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/20 pointer-events-none" />
-        <div className={cn("relative space-y-1.5 overflow-visible", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
+  return <div className="w-full max-w-6xl mx-auto transition-all duration-300">
+    <div className={cn("sticky z-[999] transition-all duration-300", isMobile ? "top-[60px] px-2 py-2" : "top-[48px] w-full px-3 lg:px-4")}>
+      {/* Clean Glassmorphic Container with Design Tokens */}
+      <div className="relative bg-card/80 dark:bg-card/60 backdrop-blur-xl rounded-2xl border border-border/50 shadow-xl">
+        {/* Subtle top highlight */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-t-2xl" />
+        <div className={cn("relative space-y-2 overflow-visible", isMobile ? "p-2" : "p-3 lg:p-4")}>
           
-          {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
+          {/* Listing Type Tabs - Clean Professional Style */}
           <div className="flex justify-center">
-            <div className="search-tab-container grid grid-cols-4">
-              {/* Animated sliding background indicator */}
+            <div className="inline-flex bg-muted/50 p-1 rounded-xl border border-border/50">
+              {/* Sliding indicator */}
               <div
-                className="search-tab-slider inset-y-1"
+                className="absolute h-[calc(100%-8px)] bg-primary rounded-lg shadow-md transition-all duration-300 ease-out"
                 style={{
                   width: "calc(25% - 4px)",
                   left:
@@ -2428,61 +2428,64 @@ const AstraSearchPanel = ({
               <button
                 onClick={() => setActiveTab("all")}
                 className={cn(
-                  "search-tab-btn flex-1",
-                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
-                  activeTab === "all" && "active"
+                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200",
+                  activeTab === "all" 
+                    ? "text-primary-foreground" 
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Layers className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
-                <span>{isMobile ? "" : currentText.all}</span>
+                <Layers className="h-3.5 w-3.5" />
+                <span className={cn(isMobile && "hidden")}>{currentText.all}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("sale")}
                 className={cn(
-                  "search-tab-btn flex-1",
-                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
-                  activeTab === "sale" && "active"
+                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200",
+                  activeTab === "sale" 
+                    ? "text-primary-foreground" 
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <ShoppingBag className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
-                <span>{isMobile ? "" : currentText.forSale}</span>
+                <ShoppingBag className="h-3.5 w-3.5" />
+                <span className={cn(isMobile && "hidden")}>{currentText.forSale}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("rent")}
                 className={cn(
-                  "search-tab-btn flex-1",
-                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
-                  activeTab === "rent" && "active"
+                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200",
+                  activeTab === "rent" 
+                    ? "text-primary-foreground" 
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Key className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
-                <span>{isMobile ? "" : currentText.forRent}</span>
+                <Key className="h-3.5 w-3.5" />
+                <span className={cn(isMobile && "hidden")}>{currentText.forRent}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("new_project")}
                 className={cn(
-                  "search-tab-btn flex-1",
-                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
-                  activeTab === "new_project" && "active"
+                  "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200",
+                  activeTab === "new_project" 
+                    ? "text-primary-foreground" 
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Rocket className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
-                <span>{isMobile ? "" : currentText.newProject}</span>
+                <Rocket className="h-3.5 w-3.5" />
+                <span className={cn(isMobile && "hidden")}>{currentText.newProject}</span>
               </button>
             </div>
           </div>
           
           
-          {/* Compact Search Row with Location Options */}
-          <div className={cn("flex overflow-visible", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
+          {/* Search Row */}
+          <div className={cn("flex overflow-visible", isMobile ? "gap-2" : "gap-3")}>
             <div ref={anchorRef} className="flex-1 relative z-[100001]">
               <Search className={cn(
-                "absolute left-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none transition-all duration-500", 
-                isMobile ? "h-3 w-3 left-2" : "h-4 w-4",
-                searchQuery && "animate-pulse"
+                "absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none transition-colors", 
+                isMobile ? "h-4 w-4 left-2.5" : "h-4 w-4"
               )} />
               <Input 
                 type="search"
@@ -2491,14 +2494,12 @@ const AstraSearchPanel = ({
                 onChange={e => handleSearchChange(e.target.value)} 
                 onFocus={() => {
                   setShowSuggestions(true);
-                  // Ensure dropdown position is computed immediately on focus (desktop + mobile)
                   requestAnimationFrame(() => updateSuggestionsPosition());
                 }} 
                 className={cn(
-                  "border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/30 rounded-xl transition-all duration-500 shadow-md font-medium hover:border-primary/60 hover:shadow-primary/20",
-                  "text-gray-900 dark:text-white placeholder:text-gray-600 dark:placeholder:text-gray-400",
-                  // Fully transparent input background
-                  isMobile ? "pl-8 pr-16 h-8 text-xs bg-transparent" : "pl-10 pr-28 h-9 text-sm bg-transparent"
+                  "bg-background border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all shadow-sm",
+                  "text-foreground placeholder:text-muted-foreground",
+                  isMobile ? "pl-9 pr-20 h-10 text-sm" : "pl-10 pr-28 h-11 text-sm"
                 )} 
               />
               
@@ -3114,30 +3115,18 @@ const AstraSearchPanel = ({
               </Tooltip>
             </TooltipProvider>
             
-            {/* Search Button - Original Style with Gradient Border Effect */}
-            <div className="relative group p-[1.5px] rounded-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-gradient-x transition-all duration-500 hover:shadow-lg hover:shadow-primary/30">
-              <button
-                onClick={handleSearch}
-                aria-label={currentText.search}
-                className={cn(
-                  "group inline-flex items-center justify-center rounded-full font-semibold transition-all duration-300 ease-out",
-                  "bg-gradient-to-r from-violet-600 via-fuchsia-500 to-cyan-400",
-                  "hover:from-violet-500 hover:via-fuchsia-400 hover:to-cyan-300",
-                  "hover:scale-105 hover:-translate-y-0.5",
-                  "text-white shadow-lg shadow-fuchsia-500/40 hover:shadow-xl hover:shadow-fuchsia-400/50",
-                  "active:scale-95 active:shadow-md",
-                  "relative overflow-hidden",
-                  isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-10 px-6 text-sm gap-2"
-                )}
-              >
-                {/* Animated shimmer overlay */}
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none rounded-full" />
-                {/* Glossy shine overlay */}
-                <span className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent pointer-events-none rounded-full" />
-                <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "relative z-10 transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]")} />
-                <span className="font-medium relative z-10 drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]">{currentText.search}</span>
-              </button>
-            </div>
+            {/* Search Button - Clean Primary Style */}
+            <Button
+              onClick={handleSearch}
+              aria-label={currentText.search}
+              className={cn(
+                "bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow-md hover:shadow-lg transition-all",
+                isMobile ? "h-10 px-4 text-xs gap-1.5" : "h-11 px-6 text-sm gap-2"
+              )}
+            >
+              <Search className={cn(isMobile ? "h-4 w-4" : "h-4 w-4")} />
+              <span>{currentText.search}</span>
+            </Button>
           </div>
           
           {/* Recent Image Searches - Desktop */}
