@@ -6593,6 +6593,47 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_activity_logs: {
+        Row: {
+          activity_type: string
+          created_at: string
+          description: string
+          id: string
+          metadata: Json | null
+          partner_id: string
+          reference_id: string | null
+          reference_type: string | null
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          description: string
+          id?: string
+          metadata?: Json | null
+          partner_id: string
+          reference_id?: string | null
+          reference_type?: string | null
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          description?: string
+          id?: string
+          metadata?: Json | null
+          partner_id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_activity_logs_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       partner_api_keys: {
         Row: {
           allowed_endpoints: string[] | null
@@ -6780,6 +6821,333 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      partner_packages: {
+        Row: {
+          created_at: string
+          current_redemptions: number | null
+          description: string | null
+          discount_percentage: number | null
+          discounted_price: number
+          id: string
+          included_services: Json | null
+          is_active: boolean | null
+          max_redemptions: number | null
+          metadata: Json | null
+          original_price: number
+          package_name: string
+          partner_id: string
+          terms_conditions: string | null
+          updated_at: string
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_redemptions?: number | null
+          description?: string | null
+          discount_percentage?: number | null
+          discounted_price: number
+          id?: string
+          included_services?: Json | null
+          is_active?: boolean | null
+          max_redemptions?: number | null
+          metadata?: Json | null
+          original_price: number
+          package_name: string
+          partner_id: string
+          terms_conditions?: string | null
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_redemptions?: number | null
+          description?: string | null
+          discount_percentage?: number | null
+          discounted_price?: number
+          id?: string
+          included_services?: Json | null
+          is_active?: boolean | null
+          max_redemptions?: number | null
+          metadata?: Json | null
+          original_price?: number
+          package_name?: string
+          partner_id?: string
+          terms_conditions?: string | null
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_packages_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_payouts: {
+        Row: {
+          account_name: string | null
+          account_number: string | null
+          amount: number
+          bank_name: string | null
+          created_at: string
+          currency: string | null
+          id: string
+          metadata: Json | null
+          notes: string | null
+          partner_id: string
+          payment_method: string | null
+          payment_reference: string | null
+          period_end: string | null
+          period_start: string | null
+          processed_at: string | null
+          processed_by: string | null
+          referrals_count: number | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          account_name?: string | null
+          account_number?: string | null
+          amount: number
+          bank_name?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          partner_id: string
+          payment_method?: string | null
+          payment_reference?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          referrals_count?: number | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account_name?: string | null
+          account_number?: string | null
+          amount?: number
+          bank_name?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          partner_id?: string
+          payment_method?: string | null
+          payment_reference?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          referrals_count?: number | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_payouts_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_referrals: {
+        Row: {
+          commission_amount: number | null
+          commission_paid: boolean | null
+          converted_at: string | null
+          created_at: string
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string | null
+          id: string
+          ip_address: unknown
+          metadata: Json | null
+          notes: string | null
+          paid_at: string | null
+          partner_id: string
+          property_id: string | null
+          qualified_at: string | null
+          referral_code: string
+          service_type: string | null
+          source_url: string | null
+          status: string | null
+          transaction_value: number | null
+          updated_at: string
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          commission_amount?: number | null
+          commission_paid?: boolean | null
+          converted_at?: string | null
+          created_at?: string
+          customer_email?: string | null
+          customer_name: string
+          customer_phone?: string | null
+          id?: string
+          ip_address?: unknown
+          metadata?: Json | null
+          notes?: string | null
+          paid_at?: string | null
+          partner_id: string
+          property_id?: string | null
+          qualified_at?: string | null
+          referral_code?: string
+          service_type?: string | null
+          source_url?: string | null
+          status?: string | null
+          transaction_value?: number | null
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          commission_amount?: number | null
+          commission_paid?: boolean | null
+          converted_at?: string | null
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string | null
+          id?: string
+          ip_address?: unknown
+          metadata?: Json | null
+          notes?: string | null
+          paid_at?: string | null
+          partner_id?: string
+          property_id?: string | null
+          qualified_at?: string | null
+          referral_code?: string
+          service_type?: string | null
+          source_url?: string | null
+          status?: string | null
+          transaction_value?: number | null
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_referrals_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partners: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          bank_account_name: string | null
+          bank_account_number: string | null
+          bank_name: string | null
+          commission_rate: number | null
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          contract_signed_at: string | null
+          created_at: string
+          description: string | null
+          id: string
+          lifetime_paid: number | null
+          logo_url: string | null
+          metadata: Json | null
+          notes: string | null
+          partner_type: Database["public"]["Enums"]["partner_type"]
+          pending_payout: number | null
+          referral_fee: number | null
+          revenue_share_rate: number | null
+          status: Database["public"]["Enums"]["partner_status"] | null
+          successful_conversions: number | null
+          total_earnings: number | null
+          total_referrals: number | null
+          updated_at: string
+          user_id: string | null
+          website_url: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_name?: string | null
+          commission_rate?: number | null
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          contract_signed_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          lifetime_paid?: number | null
+          logo_url?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          partner_type: Database["public"]["Enums"]["partner_type"]
+          pending_payout?: number | null
+          referral_fee?: number | null
+          revenue_share_rate?: number | null
+          status?: Database["public"]["Enums"]["partner_status"] | null
+          successful_conversions?: number | null
+          total_earnings?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_name?: string | null
+          commission_rate?: number | null
+          company_name?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          contract_signed_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          lifetime_paid?: number | null
+          logo_url?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          partner_type?: Database["public"]["Enums"]["partner_type"]
+          pending_payout?: number | null
+          referral_fee?: number | null
+          revenue_share_rate?: number | null
+          status?: Database["public"]["Enums"]["partner_status"] | null
+          successful_conversions?: number | null
+          total_earnings?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
       }
       payment_disputes: {
         Row: {
@@ -17191,6 +17559,14 @@ export type Database = {
         | "property_investment"
         | "consultation_request"
         | "service_booking"
+      partner_status: "pending" | "active" | "suspended" | "terminated"
+      partner_type:
+        | "mortgage_broker"
+        | "home_inspector"
+        | "moving_company"
+        | "insurance_provider"
+        | "interior_designer"
+        | "smart_home_installer"
       pricing_model:
         | "hourly"
         | "sqm"
@@ -17416,6 +17792,15 @@ export const Constants = {
         "property_investment",
         "consultation_request",
         "service_booking",
+      ],
+      partner_status: ["pending", "active", "suspended", "terminated"],
+      partner_type: [
+        "mortgage_broker",
+        "home_inspector",
+        "moving_company",
+        "insurance_provider",
+        "interior_designer",
+        "smart_home_installer",
       ],
       pricing_model: ["hourly", "sqm", "project", "per_item", "daily", "fixed"],
       ticket_category: [
