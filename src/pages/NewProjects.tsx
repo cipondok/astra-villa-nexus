@@ -211,55 +211,49 @@ const NewProjects = () => {
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-11 md:pt-12 transition-colors duration-300">
-      {/* Luxury Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-accent/15 to-transparent rounded-full blur-3xl" />
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Clean Header */}
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <BackToHomeLink sectionId="new-projects-section" className="mb-0" alwaysShow />
+              <div>
+                <h1 className="text-base sm:text-lg md:text-xl font-bold text-foreground">New Projects</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  {properties?.length || 0} projects available
+                </p>
+              </div>
+            </div>
+            <Button
+              variant={showAdvanced ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className="h-9 px-4 text-sm font-medium rounded-md"
+            >
+              <SlidersHorizontal className="h-4 w-4 mr-2" />
+              Filter
+            </Button>
+          </div>
+        </div>
       </div>
 
-      <div className="container mx-auto px-3 md:px-4 pt-1 pb-4 relative">
-        {/* Back Link - Always Show */}
-        <BackToHomeLink sectionId="new-projects-section" alwaysShow />
-
-        {/* AI Tools Tab Bar */}
-        <AIToolsTabBar className="mb-3" />
-
-        {/* Centered Header */}
-        <div className="text-center mb-2">
-          <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-            New Projects
-          </h1>
-          <p className="text-[10px] md:text-xs text-muted-foreground">
-            Discover exciting new real estate developments
-          </p>
-        </div>
-
-        {/* Slim Search Panel */}
-        <div className="glass-card p-2 rounded-lg mb-3 border border-primary/20">
-          <div className="flex gap-2 items-center">
+      {/* Search Bar */}
+      <div className="bg-secondary/50 border-b border-border">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex gap-2 sm:gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search projects..."
                 value={filters.projectTitle}
                 onChange={(e) => setFilters(prev => ({ ...prev, projectTitle: e.target.value }))}
-                className="pl-8 h-9 text-sm bg-input border-primary/20 focus:border-primary"
+                className="h-10 sm:h-11 pl-10 text-sm bg-background border-border rounded-md focus:ring-2 focus:ring-primary/20"
               />
             </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              className={`h-9 px-3 border-primary/30 ${showAdvanced ? 'bg-primary/10 text-primary' : ''}`}
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-            </Button>
-
-            <Button size="sm" className="h-9 px-4 bg-gradient-to-r from-primary to-accent text-primary-foreground">
-              <Search className="h-4 w-4" />
+            <Button className="h-10 sm:h-11 px-6 text-sm font-medium">
+              <Search className="h-4 w-4 mr-2" />
+              Search
             </Button>
           </div>
 
@@ -273,22 +267,22 @@ const NewProjects = () => {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="pt-2 mt-2 border-t border-primary/10 grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div className="pt-3 mt-3 border-t border-border grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
                   <Select value={filters.city} onValueChange={(v) => setFilters(prev => ({ ...prev, city: v }))}>
-                    <SelectTrigger className="h-8 text-xs bg-popover border-border">
-                      <SelectValue placeholder="City" />
+                    <SelectTrigger className="h-10 text-sm bg-background border-border">
+                      <SelectValue placeholder="All Cities" />
                     </SelectTrigger>
-                    <SelectContent className="bg-popover border-border z-50">
+                    <SelectContent>
                       <SelectItem value="all">All Cities</SelectItem>
                       {cities?.map(city => <SelectItem key={city} value={city}>{city}</SelectItem>)}
                     </SelectContent>
                   </Select>
 
                   <Select value={filters.propertyType} onValueChange={(v) => setFilters(prev => ({ ...prev, propertyType: v }))}>
-                    <SelectTrigger className="h-8 text-xs bg-popover border-border">
-                      <SelectValue placeholder="Type" />
+                    <SelectTrigger className="h-10 text-sm bg-background border-border">
+                      <SelectValue placeholder="All Types" />
                     </SelectTrigger>
-                    <SelectContent className="bg-popover border-border z-50">
+                    <SelectContent>
                       <SelectItem value="all">All Types</SelectItem>
                       <SelectItem value="apartment">Apartment</SelectItem>
                       <SelectItem value="house">House</SelectItem>
@@ -302,36 +296,38 @@ const NewProjects = () => {
                     placeholder="Min Price"
                     value={filters.minPrice}
                     onChange={(e) => setFilters(prev => ({ ...prev, minPrice: e.target.value }))}
-                    className="h-8 text-xs bg-input border-border"
+                    className="h-10 text-sm bg-background border-border"
                   />
                   <Input
                     type="number"
                     placeholder="Max Price"
                     value={filters.maxPrice}
                     onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: e.target.value }))}
-                    className="h-8 text-xs bg-input border-border"
+                    className="h-10 text-sm bg-background border-border"
                   />
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
+      </div>
 
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {/* Category Carousel */}
-        <div className="mb-3">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-medium text-muted-foreground">Browse by Category</span>
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-sm font-medium text-foreground">Browse by Category</span>
             <div className="flex gap-1">
-              <Button variant="ghost" size="icon" onClick={scrollPrev} className="h-6 w-6">
-                <ChevronLeft className="h-3 w-3" />
+              <Button variant="outline" size="icon" onClick={scrollPrev} className="h-8 w-8 rounded-full">
+                <ChevronLeft className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={scrollNext} className="h-6 w-6">
-                <ChevronRight className="h-3 w-3" />
+              <Button variant="outline" size="icon" onClick={scrollNext} className="h-8 w-8 rounded-full">
+                <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
           <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex gap-1.5 md:gap-2">
+            <div className="flex gap-2 sm:gap-3">
               {categories.map((cat) => {
                 const IconComponent = cat.icon;
                 const isActive = filters.propertyType === cat.type;
@@ -339,17 +335,17 @@ const NewProjects = () => {
                   <button
                     key={cat.type}
                     onClick={() => setFilters(prev => ({ ...prev, propertyType: cat.type }))}
-                    className={`flex-[0_0_80px] sm:flex-[0_0_90px] p-2 sm:p-2.5 md:p-3 rounded-xl md:rounded-2xl border transition-all duration-300 flex flex-col items-center text-center ${
+                    className={`flex-[0_0_100px] sm:flex-[0_0_120px] p-3 sm:p-4 rounded-md border transition-all duration-300 flex flex-col items-center text-center ${
                       isActive
-                        ? 'bg-primary/10 border-primary/40 shadow-sm'
-                        : 'bg-transparent dark:bg-white/5 border-border/20 dark:border-white/10 hover:border-primary/30'
+                        ? 'bg-primary/10 border-primary shadow-sm'
+                        : 'bg-card border-border hover:border-primary/30'
                     }`}
                   >
-                    <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl ${isActive ? 'bg-primary/20' : cat.iconBg} shadow-sm mb-1.5`}>
-                      <IconComponent className={`w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 ${isActive ? 'text-primary' : cat.color}`} strokeWidth={1.5} />
+                    <div className={`w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full ${isActive ? 'bg-primary/20' : cat.iconBg} mb-2`}>
+                      <IconComponent className={`w-6 h-6 sm:w-7 sm:h-7 ${isActive ? 'text-primary' : cat.color}`} strokeWidth={1.5} />
                     </div>
-                    <p className={`text-[8px] sm:text-[9px] md:text-[11px] font-semibold leading-tight line-clamp-2 ${isActive ? 'text-primary' : 'text-foreground'}`}>{cat.name}</p>
-                    <p className="text-[7px] sm:text-[8px] text-muted-foreground">{cat.count}</p>
+                    <p className={`text-xs sm:text-sm font-medium leading-tight ${isActive ? 'text-primary' : 'text-foreground'}`}>{cat.name}</p>
+                    <p className="text-xs text-muted-foreground">{cat.count}</p>
                   </button>
                 );
               })}
@@ -358,26 +354,44 @@ const NewProjects = () => {
         </div>
 
         {/* Results */}
-        <div className="flex items-center justify-between mb-2 text-xs text-muted-foreground">
-          <span>{properties?.length || 0} projects found</span>
-        </div>
-
         {isLoading ? (
-          <div className="text-center py-8">
-            <div className="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            <p className="mt-2 text-xs text-muted-foreground">Loading...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="animate-pulse rounded-md overflow-hidden bg-muted h-64 sm:h-72"></div>
+            ))}
           </div>
         ) : properties && properties.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {properties.map((property) => (
               <PropertyCard key={property.id} {...property} />
             ))}
           </div>
         ) : (
-          <Card className="glass-card p-8 text-center border border-primary/20">
-            <Building2 className="w-12 h-12 mx-auto mb-3 text-primary/50" />
-            <h3 className="text-base font-semibold text-foreground mb-1">No Projects Found</h3>
-            <p className="text-xs text-muted-foreground">Try adjusting your filters</p>
+          <Card className="p-8 sm:p-12 border-border">
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                <Building2 className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">No Projects Found</h3>
+              <p className="text-sm text-muted-foreground mb-4">Try adjusting your filters</p>
+              <Button 
+                variant="outline" 
+                className="h-10 px-6"
+                onClick={() => setFilters({
+                  city: 'all',
+                  propertyType: 'all',
+                  minPrice: '',
+                  maxPrice: '',
+                  minArea: '',
+                  maxArea: '',
+                  projectTitle: '',
+                  developer: '',
+                  marketedBy: 'all'
+                })}
+              >
+                Reset Filters
+              </Button>
+            </div>
           </Card>
         )}
       </div>
