@@ -2576,24 +2576,24 @@ const AstraSearchPanel = ({
                 <TooltipProvider delayDuration={100}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className="p-1.5 flex items-center justify-center transition-all duration-200 group hover:bg-accent rounded-lg">
-                        <MapPin className="h-5 w-5 text-muted-foreground group-hover:text-orange-500 group-hover:scale-110 transition-all duration-200" />
+                      <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className="p-1.5 flex items-center justify-center transition-all duration-200 group hover:bg-amber-400/10 rounded-lg">
+                        <MapPin className="h-5 w-5 text-foreground/60 group-hover:text-amber-600 dark:group-hover:text-amber-400 group-hover:scale-110 transition-all duration-200" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-card/95 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                      <p className="text-[10px] font-medium">Map View</p>
+                    <TooltipContent side="bottom" sideOffset={4} className="z-[100000] bg-card border border-border shadow-lg px-2 py-1 rounded-md">
+                      <p className="text-[10px] font-medium text-foreground">Map View</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
                 <TooltipProvider delayDuration={100}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1.5 flex items-center justify-center transition-all duration-200 group hover:bg-accent rounded-lg" disabled={isGettingLocation}>
+                      <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1.5 flex items-center justify-center transition-all duration-200 group hover:bg-amber-400/10 rounded-lg" disabled={isGettingLocation}>
                         {isGettingLocation ? <div className="flex flex-col items-center justify-center">
                             <div className="animate-spin h-4 w-4 border-2 border-primary rounded-full border-t-transparent" />
                           </div> : <svg className={cn(
                             "h-5 w-5 transition-all duration-200",
-                            useNearbyLocation ? "text-cyan-500" : "text-muted-foreground group-hover:text-cyan-500 group-hover:scale-110"
+                            useNearbyLocation ? "text-cyan-600 dark:text-cyan-400" : "text-foreground/60 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 group-hover:scale-110"
                           )} viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="12" cy="12" r="3" />
                             <path d="M12 2v3" />
@@ -2603,8 +2603,8 @@ const AstraSearchPanel = ({
                           </svg>}
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-card/95 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                      <p className="text-[10px] font-medium">{isGettingLocation ? "Getting Location..." : "Near Me"}</p>
+                    <TooltipContent side="bottom" sideOffset={4} className="z-[100000] bg-card border border-border shadow-lg px-2 py-1 rounded-md">
+                      <p className="text-[10px] font-medium text-foreground">{isGettingLocation ? "Getting Location..." : "Near Me"}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -2760,9 +2760,9 @@ const AstraSearchPanel = ({
                           setIsPropertyTypeOpen(!isPropertyTypeOpen);
                           requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                         }}
-                        className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-accent rounded-lg"
+                        className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-amber-400/10 rounded-lg"
                       >
-                        <Building className="h-5 w-5 text-muted-foreground group-hover:text-blue-500 group-hover:scale-110 transition-all duration-200" />
+                        <Building className="h-5 w-5 text-foreground/60 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:scale-110 transition-all duration-200" />
                         {filters.propertyType && filters.propertyType !== 'all' && (
                           <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
                             1
@@ -2771,8 +2771,8 @@ const AstraSearchPanel = ({
                       </button>
                     </PopoverTrigger>
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="z-[100000] bg-card/95 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                    <p className="text-[10px] font-medium">Property Type</p>
+                  <TooltipContent side="bottom" sideOffset={4} className="z-[100000] bg-card border border-border shadow-lg px-2 py-1 rounded-md">
+                    <p className="text-[10px] font-medium text-foreground">Property Type</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -2852,9 +2852,9 @@ const AstraSearchPanel = ({
                             requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
-                          className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-accent rounded-lg"
+                          className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-amber-400/10 rounded-lg"
                         >
-                          <MapPin className="h-5 w-5 text-muted-foreground group-hover:text-purple-500 group-hover:scale-110 transition-all duration-200" />
+                          <MapPin className="h-5 w-5 text-foreground/60 group-hover:text-purple-600 dark:group-hover:text-purple-400 group-hover:scale-110 transition-all duration-200" />
                           {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
                             <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
                               {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
@@ -2863,8 +2863,8 @@ const AstraSearchPanel = ({
                         </button>
                       </PopoverTrigger>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-card/95 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                      <p className="text-[10px] font-medium">Manual Location</p>
+                    <TooltipContent side="bottom" sideOffset={4} className="z-[100000] bg-card border border-border shadow-lg px-2 py-1 rounded-md">
+                      <p className="text-[10px] font-medium text-foreground">Manual Location</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -3172,9 +3172,9 @@ const AstraSearchPanel = ({
                     onClick={() => {
                       setShowAdvancedFilters(true);
                     }} 
-                    className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-accent rounded-lg"
+                    className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-amber-400/10 rounded-lg"
                   >
-                    <SlidersHorizontal className="h-5 w-5 text-muted-foreground group-hover:text-emerald-500 group-hover:scale-110 transition-all duration-200" />
+                    <SlidersHorizontal className="h-5 w-5 text-foreground/60 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:scale-110 transition-all duration-200" />
                     {getActiveFiltersCount() > 0 && (
                       <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
                         {getActiveFiltersCount()}
@@ -3182,8 +3182,8 @@ const AstraSearchPanel = ({
                     )}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                  <p className="text-[10px] font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}</p>
+                <TooltipContent side="bottom" sideOffset={4} className="z-[100000] bg-card border border-border shadow-lg px-2 py-1 rounded-md">
+                  <p className="text-[10px] font-medium text-foreground">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
