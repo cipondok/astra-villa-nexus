@@ -602,6 +602,13 @@ export const navigationSections = {
       icon: TrendingUp,
       description: "Referral 2.0, Bank Partnerships, SEO Factory, Influencers, Corporate & University Programs",
       badge: "New"
+    },
+    {
+      key: "team-management",
+      label: "Team Management",
+      icon: Users,
+      description: "Remote-first team: Core Team, Moderators, Local Experts, AI Specialists, Partnership Managers",
+      badge: "New"
     }
   ],
 

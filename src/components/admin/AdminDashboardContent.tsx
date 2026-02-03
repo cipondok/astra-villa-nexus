@@ -94,6 +94,7 @@ const MobileEnhancementsManagement = lazy(() => import("./MobileEnhancementsMana
 const SocialCommerceManagement = lazy(() => import("./SocialCommerceManagement"));
 const DataExchangeManagement = lazy(() => import("./DataExchangeManagement"));
 const AutomationPlatformManagement = lazy(() => import("./AutomationPlatformManagement"));
+const TeamManagement = lazy(() => import("./TeamManagement"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -192,6 +193,10 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "expansion-planning": { label: "City Expansion Planning", category: "Technical" },
   "innovation-lab": { label: "Innovation Lab", category: "Features" },
   "mobile-enhancements": { label: "Mobile Enhancements", category: "Features" },
+  "social-commerce": { label: "Social Commerce", category: "Features" },
+  "data-exchange": { label: "Data Exchange Platform", category: "Transactions" },
+  "automation-platform": { label: "Automation Platform", category: "Features" },
+  "team-management": { label: "Team Management", category: "Features" },
 };
 
 // Loading fallback component
@@ -455,6 +460,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <DataExchangeManagement />;
       case "automation-platform":
         return <AutomationPlatformManagement />;
+      case "team-management":
+        return <TeamManagement />;
       default:
         return <AdminOverview />;
     }

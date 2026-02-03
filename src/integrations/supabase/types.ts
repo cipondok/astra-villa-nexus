@@ -1653,6 +1653,125 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_training_specialists: {
+        Row: {
+          accuracy_score: number | null
+          active_projects: string[] | null
+          certification_scores: Json | null
+          city: string | null
+          completed_projects: number | null
+          consistency_score: number | null
+          contract_type: Database["public"]["Enums"]["employment_type"] | null
+          country: string | null
+          created_at: string | null
+          current_week_hours: number | null
+          email: string
+          full_name: string
+          hourly_rate: number | null
+          id: string
+          is_available: boolean | null
+          last_quality_review_at: string | null
+          per_task_rate: number | null
+          phone: string | null
+          preferred_task_types: string[] | null
+          quality_review_notes: string | null
+          specialist_level: string | null
+          specializations: string[] | null
+          speed_score: number | null
+          status: Database["public"]["Enums"]["team_member_status"] | null
+          timezone: string | null
+          tools_proficiency: string[] | null
+          total_earnings: number | null
+          total_hours_worked: number | null
+          total_labels_created: number | null
+          total_tasks_completed: number | null
+          training_modules_completed: string[] | null
+          updated_at: string | null
+          user_id: string | null
+          weekly_availability_hours: number | null
+        }
+        Insert: {
+          accuracy_score?: number | null
+          active_projects?: string[] | null
+          certification_scores?: Json | null
+          city?: string | null
+          completed_projects?: number | null
+          consistency_score?: number | null
+          contract_type?: Database["public"]["Enums"]["employment_type"] | null
+          country?: string | null
+          created_at?: string | null
+          current_week_hours?: number | null
+          email: string
+          full_name: string
+          hourly_rate?: number | null
+          id?: string
+          is_available?: boolean | null
+          last_quality_review_at?: string | null
+          per_task_rate?: number | null
+          phone?: string | null
+          preferred_task_types?: string[] | null
+          quality_review_notes?: string | null
+          specialist_level?: string | null
+          specializations?: string[] | null
+          speed_score?: number | null
+          status?: Database["public"]["Enums"]["team_member_status"] | null
+          timezone?: string | null
+          tools_proficiency?: string[] | null
+          total_earnings?: number | null
+          total_hours_worked?: number | null
+          total_labels_created?: number | null
+          total_tasks_completed?: number | null
+          training_modules_completed?: string[] | null
+          updated_at?: string | null
+          user_id?: string | null
+          weekly_availability_hours?: number | null
+        }
+        Update: {
+          accuracy_score?: number | null
+          active_projects?: string[] | null
+          certification_scores?: Json | null
+          city?: string | null
+          completed_projects?: number | null
+          consistency_score?: number | null
+          contract_type?: Database["public"]["Enums"]["employment_type"] | null
+          country?: string | null
+          created_at?: string | null
+          current_week_hours?: number | null
+          email?: string
+          full_name?: string
+          hourly_rate?: number | null
+          id?: string
+          is_available?: boolean | null
+          last_quality_review_at?: string | null
+          per_task_rate?: number | null
+          phone?: string | null
+          preferred_task_types?: string[] | null
+          quality_review_notes?: string | null
+          specialist_level?: string | null
+          specializations?: string[] | null
+          speed_score?: number | null
+          status?: Database["public"]["Enums"]["team_member_status"] | null
+          timezone?: string | null
+          tools_proficiency?: string[] | null
+          total_earnings?: number | null
+          total_hours_worked?: number | null
+          total_labels_created?: number | null
+          total_tasks_completed?: number | null
+          training_modules_completed?: string[] | null
+          updated_at?: string | null
+          user_id?: string | null
+          weekly_availability_hours?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_training_specialists_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_vendor_suggestions: {
         Row: {
           ai_suggestion: Json
@@ -4448,6 +4567,127 @@ export type Database = {
           status?: string | null
         }
         Relationships: []
+      }
+      core_team_members: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          certifications: string[] | null
+          city: string | null
+          country: string | null
+          created_at: string | null
+          department: Database["public"]["Enums"]["team_department"]
+          email: string
+          emergency_contact: Json | null
+          employment_type: Database["public"]["Enums"]["employment_type"] | null
+          equipment_assigned: Json | null
+          equity_percentage: number | null
+          full_name: string
+          github_username: string | null
+          hire_date: string
+          id: string
+          is_team_lead: boolean | null
+          job_title: string
+          languages: string[] | null
+          linkedin_url: string | null
+          performance_score: number | null
+          phone: string | null
+          reports_to: string | null
+          salary_range: string | null
+          skills: string[] | null
+          slack_id: string | null
+          status: Database["public"]["Enums"]["team_member_status"] | null
+          timezone: string | null
+          updated_at: string | null
+          user_id: string | null
+          working_hours: Json | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          certifications?: string[] | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          department: Database["public"]["Enums"]["team_department"]
+          email: string
+          emergency_contact?: Json | null
+          employment_type?:
+            | Database["public"]["Enums"]["employment_type"]
+            | null
+          equipment_assigned?: Json | null
+          equity_percentage?: number | null
+          full_name: string
+          github_username?: string | null
+          hire_date?: string
+          id?: string
+          is_team_lead?: boolean | null
+          job_title: string
+          languages?: string[] | null
+          linkedin_url?: string | null
+          performance_score?: number | null
+          phone?: string | null
+          reports_to?: string | null
+          salary_range?: string | null
+          skills?: string[] | null
+          slack_id?: string | null
+          status?: Database["public"]["Enums"]["team_member_status"] | null
+          timezone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          working_hours?: Json | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          certifications?: string[] | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          department?: Database["public"]["Enums"]["team_department"]
+          email?: string
+          emergency_contact?: Json | null
+          employment_type?:
+            | Database["public"]["Enums"]["employment_type"]
+            | null
+          equipment_assigned?: Json | null
+          equity_percentage?: number | null
+          full_name?: string
+          github_username?: string | null
+          hire_date?: string
+          id?: string
+          is_team_lead?: boolean | null
+          job_title?: string
+          languages?: string[] | null
+          linkedin_url?: string | null
+          performance_score?: number | null
+          phone?: string | null
+          reports_to?: string | null
+          salary_range?: string | null
+          skills?: string[] | null
+          slack_id?: string | null
+          status?: Database["public"]["Enums"]["team_member_status"] | null
+          timezone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          working_hours?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "core_team_members_reports_to_fkey"
+            columns: ["reports_to"]
+            isOneToOne: false
+            referencedRelation: "core_team_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "core_team_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       country_blocks: {
         Row: {
@@ -7857,6 +8097,125 @@ export type Database = {
           total_requests?: number
         }
         Relationships: []
+      }
+      local_experts: {
+        Row: {
+          avatar_url: string | null
+          avg_deal_value: number | null
+          bio: string | null
+          certifications: string[] | null
+          city: string
+          commission_rate: number | null
+          commission_tier: string | null
+          conversion_rate: number | null
+          created_at: string | null
+          districts: string[] | null
+          email: string
+          expert_type: string | null
+          expertise_areas: string[] | null
+          full_name: string
+          id: string
+          languages: string[] | null
+          leads_converted: number | null
+          leads_generated: number | null
+          paid_commission: number | null
+          pending_commission: number | null
+          phone: string | null
+          properties_toured: number | null
+          rating: number | null
+          response_time_hours: number | null
+          review_count: number | null
+          specializations: string[] | null
+          status: Database["public"]["Enums"]["team_member_status"] | null
+          total_commission_earned: number | null
+          total_deals_closed: number | null
+          updated_at: string | null
+          user_id: string | null
+          verification_documents: Json | null
+          verified_at: string | null
+          years_experience: number | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          avg_deal_value?: number | null
+          bio?: string | null
+          certifications?: string[] | null
+          city: string
+          commission_rate?: number | null
+          commission_tier?: string | null
+          conversion_rate?: number | null
+          created_at?: string | null
+          districts?: string[] | null
+          email: string
+          expert_type?: string | null
+          expertise_areas?: string[] | null
+          full_name: string
+          id?: string
+          languages?: string[] | null
+          leads_converted?: number | null
+          leads_generated?: number | null
+          paid_commission?: number | null
+          pending_commission?: number | null
+          phone?: string | null
+          properties_toured?: number | null
+          rating?: number | null
+          response_time_hours?: number | null
+          review_count?: number | null
+          specializations?: string[] | null
+          status?: Database["public"]["Enums"]["team_member_status"] | null
+          total_commission_earned?: number | null
+          total_deals_closed?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          verification_documents?: Json | null
+          verified_at?: string | null
+          years_experience?: number | null
+        }
+        Update: {
+          avatar_url?: string | null
+          avg_deal_value?: number | null
+          bio?: string | null
+          certifications?: string[] | null
+          city?: string
+          commission_rate?: number | null
+          commission_tier?: string | null
+          conversion_rate?: number | null
+          created_at?: string | null
+          districts?: string[] | null
+          email?: string
+          expert_type?: string | null
+          expertise_areas?: string[] | null
+          full_name?: string
+          id?: string
+          languages?: string[] | null
+          leads_converted?: number | null
+          leads_generated?: number | null
+          paid_commission?: number | null
+          pending_commission?: number | null
+          phone?: string | null
+          properties_toured?: number | null
+          rating?: number | null
+          response_time_hours?: number | null
+          review_count?: number | null
+          specializations?: string[] | null
+          status?: Database["public"]["Enums"]["team_member_status"] | null
+          total_commission_earned?: number | null
+          total_deals_closed?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          verification_documents?: Json | null
+          verified_at?: string | null
+          years_experience?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "local_experts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       local_service_providers: {
         Row: {
@@ -11335,6 +11694,135 @@ export type Database = {
           website_url?: string | null
         }
         Relationships: []
+      }
+      partnership_managers: {
+        Row: {
+          active_partnerships: number | null
+          avatar_url: string | null
+          avg_deal_size: number | null
+          base_salary: number | null
+          bio: string | null
+          bonus_eligible: boolean | null
+          certifications: string[] | null
+          commission_rate: number | null
+          created_at: string | null
+          department: string | null
+          email: string
+          employment_type: Database["public"]["Enums"]["employment_type"] | null
+          full_name: string
+          id: string
+          industries_covered: string[] | null
+          languages: string[] | null
+          linkedin_url: string | null
+          manager_level: string | null
+          meetings_this_month: number | null
+          nps_score: number | null
+          partner_retention_rate: number | null
+          partnerships_closed_this_quarter: number | null
+          phone: string | null
+          pipeline_value: number | null
+          proposals_accepted: number | null
+          proposals_sent: number | null
+          regions_covered: string[] | null
+          response_time_hours: number | null
+          revenue_generated: number | null
+          status: Database["public"]["Enums"]["team_member_status"] | null
+          target_revenue: number | null
+          timezone: string | null
+          total_commission_earned: number | null
+          total_partnerships_managed: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          active_partnerships?: number | null
+          avatar_url?: string | null
+          avg_deal_size?: number | null
+          base_salary?: number | null
+          bio?: string | null
+          bonus_eligible?: boolean | null
+          certifications?: string[] | null
+          commission_rate?: number | null
+          created_at?: string | null
+          department?: string | null
+          email: string
+          employment_type?:
+            | Database["public"]["Enums"]["employment_type"]
+            | null
+          full_name: string
+          id?: string
+          industries_covered?: string[] | null
+          languages?: string[] | null
+          linkedin_url?: string | null
+          manager_level?: string | null
+          meetings_this_month?: number | null
+          nps_score?: number | null
+          partner_retention_rate?: number | null
+          partnerships_closed_this_quarter?: number | null
+          phone?: string | null
+          pipeline_value?: number | null
+          proposals_accepted?: number | null
+          proposals_sent?: number | null
+          regions_covered?: string[] | null
+          response_time_hours?: number | null
+          revenue_generated?: number | null
+          status?: Database["public"]["Enums"]["team_member_status"] | null
+          target_revenue?: number | null
+          timezone?: string | null
+          total_commission_earned?: number | null
+          total_partnerships_managed?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          active_partnerships?: number | null
+          avatar_url?: string | null
+          avg_deal_size?: number | null
+          base_salary?: number | null
+          bio?: string | null
+          bonus_eligible?: boolean | null
+          certifications?: string[] | null
+          commission_rate?: number | null
+          created_at?: string | null
+          department?: string | null
+          email?: string
+          employment_type?:
+            | Database["public"]["Enums"]["employment_type"]
+            | null
+          full_name?: string
+          id?: string
+          industries_covered?: string[] | null
+          languages?: string[] | null
+          linkedin_url?: string | null
+          manager_level?: string | null
+          meetings_this_month?: number | null
+          nps_score?: number | null
+          partner_retention_rate?: number | null
+          partnerships_closed_this_quarter?: number | null
+          phone?: string | null
+          pipeline_value?: number | null
+          proposals_accepted?: number | null
+          proposals_sent?: number | null
+          regions_covered?: string[] | null
+          response_time_hours?: number | null
+          revenue_generated?: number | null
+          status?: Database["public"]["Enums"]["team_member_status"] | null
+          target_revenue?: number | null
+          timezone?: string | null
+          total_commission_earned?: number | null
+          total_partnerships_managed?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partnership_managers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payment_disputes: {
         Row: {
@@ -15512,6 +16000,230 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      team_commission_payouts: {
+        Row: {
+          created_at: string | null
+          deals_count: number | null
+          deals_details: Json | null
+          deductions: number | null
+          gross_commission: number
+          id: string
+          member_id: string
+          net_commission: number
+          notes: string | null
+          paid_at: string | null
+          payment_method: string | null
+          payment_reference: string | null
+          payout_period_end: string
+          payout_period_start: string
+          processed_by: string | null
+          status: string | null
+          team_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          deals_count?: number | null
+          deals_details?: Json | null
+          deductions?: number | null
+          gross_commission: number
+          id?: string
+          member_id: string
+          net_commission: number
+          notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          payout_period_end: string
+          payout_period_start: string
+          processed_by?: string | null
+          status?: string | null
+          team_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          deals_count?: number | null
+          deals_details?: Json | null
+          deductions?: number | null
+          gross_commission?: number
+          id?: string
+          member_id?: string
+          net_commission?: number
+          notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          payout_period_end?: string
+          payout_period_start?: string
+          processed_by?: string | null
+          status?: string | null
+          team_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_commission_payouts_processed_by_fkey"
+            columns: ["processed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_hiring_pipeline: {
+        Row: {
+          applicants_count: number | null
+          closes_at: string | null
+          commission_structure: string | null
+          created_at: string | null
+          department: Database["public"]["Enums"]["team_department"] | null
+          employment_type: Database["public"]["Enums"]["employment_type"] | null
+          hiring_manager_id: string | null
+          id: string
+          interviews_scheduled: number | null
+          job_description: string | null
+          job_title: string
+          location: string | null
+          nice_to_have: string[] | null
+          offers_sent: number | null
+          position_type: string
+          positions_filled: number | null
+          posted_at: string | null
+          requirements: string[] | null
+          salary_range: string | null
+          status: string | null
+          total_positions: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          applicants_count?: number | null
+          closes_at?: string | null
+          commission_structure?: string | null
+          created_at?: string | null
+          department?: Database["public"]["Enums"]["team_department"] | null
+          employment_type?:
+            | Database["public"]["Enums"]["employment_type"]
+            | null
+          hiring_manager_id?: string | null
+          id?: string
+          interviews_scheduled?: number | null
+          job_description?: string | null
+          job_title: string
+          location?: string | null
+          nice_to_have?: string[] | null
+          offers_sent?: number | null
+          position_type: string
+          positions_filled?: number | null
+          posted_at?: string | null
+          requirements?: string[] | null
+          salary_range?: string | null
+          status?: string | null
+          total_positions?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          applicants_count?: number | null
+          closes_at?: string | null
+          commission_structure?: string | null
+          created_at?: string | null
+          department?: Database["public"]["Enums"]["team_department"] | null
+          employment_type?:
+            | Database["public"]["Enums"]["employment_type"]
+            | null
+          hiring_manager_id?: string | null
+          id?: string
+          interviews_scheduled?: number | null
+          job_description?: string | null
+          job_title?: string
+          location?: string | null
+          nice_to_have?: string[] | null
+          offers_sent?: number | null
+          position_type?: string
+          positions_filled?: number | null
+          posted_at?: string | null
+          requirements?: string[] | null
+          salary_range?: string | null
+          status?: string | null
+          total_positions?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      team_performance_reviews: {
+        Row: {
+          action_items: Json | null
+          areas_for_improvement: string[] | null
+          created_at: string | null
+          goals_achieved: string[] | null
+          goals_missed: string[] | null
+          id: string
+          member_comments: string | null
+          member_id: string
+          next_period_goals: string[] | null
+          overall_score: number
+          review_period_end: string
+          review_period_start: string
+          reviewer_comments: string | null
+          reviewer_id: string | null
+          scores_breakdown: Json | null
+          status: string | null
+          strengths: string[] | null
+          team_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          action_items?: Json | null
+          areas_for_improvement?: string[] | null
+          created_at?: string | null
+          goals_achieved?: string[] | null
+          goals_missed?: string[] | null
+          id?: string
+          member_comments?: string | null
+          member_id: string
+          next_period_goals?: string[] | null
+          overall_score: number
+          review_period_end: string
+          review_period_start: string
+          reviewer_comments?: string | null
+          reviewer_id?: string | null
+          scores_breakdown?: Json | null
+          status?: string | null
+          strengths?: string[] | null
+          team_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          action_items?: Json | null
+          areas_for_improvement?: string[] | null
+          created_at?: string | null
+          goals_achieved?: string[] | null
+          goals_missed?: string[] | null
+          id?: string
+          member_comments?: string | null
+          member_id?: string
+          next_period_goals?: string[] | null
+          overall_score?: number
+          review_period_end?: string
+          review_period_start?: string
+          reviewer_comments?: string | null
+          reviewer_id?: string | null
+          scores_breakdown?: Json | null
+          status?: string | null
+          strengths?: string[] | null
+          team_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_performance_reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ticket_activities: {
         Row: {
@@ -22447,6 +23159,12 @@ export type Database = {
       b2b_client_type: "agency" | "investor" | "developer" | "bank" | "other"
       b2b_tier: "starter" | "professional" | "enterprise"
       badge_tier: "bronze" | "silver" | "gold" | "platinum" | "diamond"
+      employment_type:
+        | "full_time"
+        | "part_time"
+        | "contractor"
+        | "commission_based"
+        | "intern"
       feedback_type:
         | "bug_report"
         | "feature_request"
@@ -22492,6 +23210,18 @@ export type Database = {
         | "per_item"
         | "daily"
         | "fixed"
+      team_department:
+        | "technology"
+        | "product"
+        | "marketing"
+        | "operations"
+        | "customer_success"
+      team_member_status:
+        | "active"
+        | "inactive"
+        | "onboarding"
+        | "offboarding"
+        | "on_leave"
       ticket_category:
         | "general_inquiry"
         | "order_issue"
@@ -22677,6 +23407,13 @@ export const Constants = {
       b2b_client_type: ["agency", "investor", "developer", "bank", "other"],
       b2b_tier: ["starter", "professional", "enterprise"],
       badge_tier: ["bronze", "silver", "gold", "platinum", "diamond"],
+      employment_type: [
+        "full_time",
+        "part_time",
+        "contractor",
+        "commission_based",
+        "intern",
+      ],
       feedback_type: [
         "bug_report",
         "feature_request",
@@ -22721,6 +23458,20 @@ export const Constants = {
         "smart_home_installer",
       ],
       pricing_model: ["hourly", "sqm", "project", "per_item", "daily", "fixed"],
+      team_department: [
+        "technology",
+        "product",
+        "marketing",
+        "operations",
+        "customer_success",
+      ],
+      team_member_status: [
+        "active",
+        "inactive",
+        "onboarding",
+        "offboarding",
+        "on_leave",
+      ],
       ticket_category: [
         "general_inquiry",
         "order_issue",
