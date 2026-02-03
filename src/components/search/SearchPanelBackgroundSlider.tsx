@@ -7,16 +7,16 @@ interface SearchPanelBackgroundSliderProps {
   images?: string[];
 }
 
-// Bright, luxurious property images for light theme
+// Fresh luxury property images - bright & modern
 const defaultImages = [
-  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80', // Modern white villa
-  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80', // Luxury pool house
-  'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&q=80', // Contemporary mansion
-  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&q=80', // Tropical villa
-  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80', // Pool deck
-  'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1920&q=80', // Modern architecture
-  'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1920&q=80', // Bright interior
-  'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=1920&q=80', // Beach house
+  'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1920&q=80', // White modern villa with pool
+  'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1920&q=80', // Luxury penthouse terrace
+  'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1920&q=80', // Modern home exterior
+  'https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?w=1920&q=80', // Tropical luxury resort
+  'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1920&q=80', // Bright living room
+  'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1920&q=80', // Contemporary kitchen
+  'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1920&q=80', // Pool villa sunset
+  'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1920&q=80', // Modern apartment balcony
 ];
 
 export const SearchPanelBackgroundSlider: React.FC<SearchPanelBackgroundSliderProps> = ({
