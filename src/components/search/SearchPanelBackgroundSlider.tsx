@@ -7,16 +7,16 @@ interface SearchPanelBackgroundSliderProps {
   images?: string[];
 }
 
-// Premium property images - vibrant & luxurious
+// Stunning luxury property images
 const defaultImages = [
-  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&q=80', // Sunny modern mansion
-  'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=1920&q=80', // White luxury home
-  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80', // Elegant villa exterior
-  'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1920&q=80', // Modern living space
-  'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?w=1920&q=80', // Infinity pool view
-  'https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1920&q=80', // Bright minimalist home
-  'https://images.unsplash.com/photo-1615529328331-f8917597711f?w=1920&q=80', // Coastal property
-  'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=1920&q=80', // Garden villa
+  'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&q=80', // Modern glass mansion
+  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80', // White villa with pool
+  'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1920&q=80', // Luxury apartment high-rise
+  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80', // Modern interior pool
+  'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1920&q=80', // Contemporary architecture
+  'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1920&q=80', // Bright open living
+  'https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=1920&q=80', // Beachfront villa
+  'https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=1920&q=80', // Luxury kitchen
 ];
 
 export const SearchPanelBackgroundSlider: React.FC<SearchPanelBackgroundSliderProps> = ({
