@@ -182,8 +182,8 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
             </div>
 
             {/* Panel Content - Minimal */}
-            <ScrollArea className="max-h-64">
-              <div className="p-1">
+            <ScrollArea className="max-h-80">
+              <div className="p-1 pb-2">
                 {openSections.map((section) => {
                   const Icon = section.icon;
                   const isActive = section.key === activeSection;
