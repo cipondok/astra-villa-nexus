@@ -550,6 +550,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "social-commerce",
+      label: "Social Commerce",
+      icon: ShoppingBag,
+      description: "Instagram, TikTok, Pinterest, Facebook storefronts with WhatsApp automation",
+      badge: "New"
+    },
+    {
       key: "property-comparison",
       label: "Property Comparison",
       icon: ArrowLeftRight,
