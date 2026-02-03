@@ -522,6 +522,13 @@ export const navigationSections = {
       icon: TestTube2,
       description: "Unit tests, E2E tests, cross-browser testing, mobile testing, and load testing",
       badge: "New"
+    },
+    {
+      key: "expansion-planning",
+      label: "City Expansion Planning",
+      icon: Globe,
+      description: "Manage city-by-city expansion strategy with phases, competitors, and marketing budgets",
+      badge: "New"
     }
   ],
 

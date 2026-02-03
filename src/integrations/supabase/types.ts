@@ -3833,6 +3833,321 @@ export type Database = {
           },
         ]
       }
+      expansion_cities: {
+        Row: {
+          city_name: string
+          competitors: Json | null
+          created_at: string
+          current_agents: number | null
+          current_listings: number | null
+          current_monthly_transactions: number | null
+          id: string
+          launch_date: string | null
+          localization_status: Json | null
+          marketing_budget: number | null
+          marketing_spent: number | null
+          notes: string | null
+          phase_id: string
+          population: number | null
+          property_market_size: number | null
+          province: string
+          status: string | null
+          target_agents: number | null
+          target_listings: number | null
+          target_monthly_transactions: number | null
+          updated_at: string
+        }
+        Insert: {
+          city_name: string
+          competitors?: Json | null
+          created_at?: string
+          current_agents?: number | null
+          current_listings?: number | null
+          current_monthly_transactions?: number | null
+          id?: string
+          launch_date?: string | null
+          localization_status?: Json | null
+          marketing_budget?: number | null
+          marketing_spent?: number | null
+          notes?: string | null
+          phase_id: string
+          population?: number | null
+          property_market_size?: number | null
+          province: string
+          status?: string | null
+          target_agents?: number | null
+          target_listings?: number | null
+          target_monthly_transactions?: number | null
+          updated_at?: string
+        }
+        Update: {
+          city_name?: string
+          competitors?: Json | null
+          created_at?: string
+          current_agents?: number | null
+          current_listings?: number | null
+          current_monthly_transactions?: number | null
+          id?: string
+          launch_date?: string | null
+          localization_status?: Json | null
+          marketing_budget?: number | null
+          marketing_spent?: number | null
+          notes?: string | null
+          phase_id?: string
+          population?: number | null
+          property_market_size?: number | null
+          province?: string
+          status?: string | null
+          target_agents?: number | null
+          target_listings?: number | null
+          target_monthly_transactions?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expansion_cities_phase_id_fkey"
+            columns: ["phase_id"]
+            isOneToOne: false
+            referencedRelation: "expansion_phases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expansion_competitors: {
+        Row: {
+          city_id: string
+          competitor_name: string
+          created_at: string
+          estimated_listings: number | null
+          id: string
+          market_share: number | null
+          notes: string | null
+          pricing_model: string | null
+          strengths: Json | null
+          threat_level: string | null
+          updated_at: string
+          weaknesses: Json | null
+          website_url: string | null
+        }
+        Insert: {
+          city_id: string
+          competitor_name: string
+          created_at?: string
+          estimated_listings?: number | null
+          id?: string
+          market_share?: number | null
+          notes?: string | null
+          pricing_model?: string | null
+          strengths?: Json | null
+          threat_level?: string | null
+          updated_at?: string
+          weaknesses?: Json | null
+          website_url?: string | null
+        }
+        Update: {
+          city_id?: string
+          competitor_name?: string
+          created_at?: string
+          estimated_listings?: number | null
+          id?: string
+          market_share?: number | null
+          notes?: string | null
+          pricing_model?: string | null
+          strengths?: Json | null
+          threat_level?: string | null
+          updated_at?: string
+          weaknesses?: Json | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expansion_competitors_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "expansion_cities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expansion_marketing_campaigns: {
+        Row: {
+          actual_leads: number | null
+          actual_reach: number | null
+          budget: number
+          campaign_name: string
+          campaign_type: string | null
+          channel: string | null
+          city_id: string
+          created_at: string
+          end_date: string | null
+          id: string
+          notes: string | null
+          roi_percentage: number | null
+          spent: number | null
+          start_date: string | null
+          status: string | null
+          target_leads: number | null
+          target_reach: number | null
+          updated_at: string
+        }
+        Insert: {
+          actual_leads?: number | null
+          actual_reach?: number | null
+          budget: number
+          campaign_name: string
+          campaign_type?: string | null
+          channel?: string | null
+          city_id: string
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          roi_percentage?: number | null
+          spent?: number | null
+          start_date?: string | null
+          status?: string | null
+          target_leads?: number | null
+          target_reach?: number | null
+          updated_at?: string
+        }
+        Update: {
+          actual_leads?: number | null
+          actual_reach?: number | null
+          budget?: number
+          campaign_name?: string
+          campaign_type?: string | null
+          channel?: string | null
+          city_id?: string
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          roi_percentage?: number | null
+          spent?: number | null
+          start_date?: string | null
+          status?: string | null
+          target_leads?: number | null
+          target_reach?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expansion_marketing_campaigns_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "expansion_cities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expansion_milestones: {
+        Row: {
+          assigned_to: string | null
+          city_id: string | null
+          completed_date: string | null
+          created_at: string
+          description: string | null
+          id: string
+          milestone_name: string
+          phase_id: string | null
+          priority: string | null
+          status: string | null
+          target_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          city_id?: string | null
+          completed_date?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          milestone_name: string
+          phase_id?: string | null
+          priority?: string | null
+          status?: string | null
+          target_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          city_id?: string | null
+          completed_date?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          milestone_name?: string
+          phase_id?: string | null
+          priority?: string | null
+          status?: string | null
+          target_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expansion_milestones_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "expansion_cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expansion_milestones_phase_id_fkey"
+            columns: ["phase_id"]
+            isOneToOne: false
+            referencedRelation: "expansion_phases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expansion_phases: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          kpis: Json | null
+          phase_name: string
+          phase_number: number
+          spent_budget: number | null
+          start_date: string | null
+          status: string | null
+          target_market_share: number | null
+          total_budget: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          kpis?: Json | null
+          phase_name: string
+          phase_number: number
+          spent_budget?: number | null
+          start_date?: string | null
+          status?: string | null
+          target_market_share?: number | null
+          total_budget?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          kpis?: Json | null
+          phase_name?: string
+          phase_number?: number
+          spent_budget?: number | null
+          start_date?: string | null
+          status?: string | null
+          target_market_share?: number | null
+          total_budget?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string

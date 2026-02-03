@@ -86,6 +86,7 @@ const LiveMonitoringDashboard = lazy(() => import("./LiveMonitoringDashboard"));
 const AdminBlockchainManagement = lazy(() => import("./AdminBlockchainManagement"));
 const B2BMarketplaceManagement = lazy(() => import("./B2BMarketplaceManagement"));
 const PartnerProgramManagement = lazy(() => import("./PartnerProgramManagement"));
+const ExpansionPlanningManagement = lazy(() => import("./ExpansionPlanningManagement"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -181,6 +182,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "wni-mortgage-settings": { label: "WNI Mortgage Settings", category: "Investor Management" },
   "investor-analytics": { label: "Investor Analytics", category: "Investor Management" },
   "live-monitoring": { label: "Live Monitoring", category: "System" },
+  "expansion-planning": { label: "City Expansion Planning", category: "Technical" },
 };
 
 // Loading fallback component
@@ -428,6 +430,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <WebsiteDesignControl />;
       case "live-monitoring":
         return <LiveMonitoringDashboard />;
+      case "expansion-planning":
+        return <ExpansionPlanningManagement />;
       default:
         return <AdminOverview />;
     }
