@@ -4,10 +4,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Building2, FileText, Shield, DollarSign, Home, Key, AlertCircle, CheckCircle2, XCircle, Globe, Briefcase, Headphones, MessageSquare, BookOpen, ListChecks } from "lucide-react";
+import { Building2, FileText, Shield, DollarSign, Home, Key, AlertCircle, CheckCircle2, XCircle, Globe, Briefcase, Headphones, MessageSquare, BookOpen, ListChecks, ArrowLeft, Users } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ForeignInvestmentContactDialog } from "@/components/ForeignInvestmentContactDialog";
 import { EligibilityChecker } from "@/components/EligibilityChecker";
 import { ForeignInvestmentSteps } from "@/components/ForeignInvestmentSteps";
@@ -20,6 +20,87 @@ const ForeignInvestment = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
+
+  const text = {
+    en: {
+      title: "Foreign Investment Guide",
+      subtitle: "Your complete guide to investing in Indonesian property",
+      badge: "Your Journey Starts Here",
+      signIn: "Sign In to Get Started",
+      noticeTitle: "We're Here to Help!",
+      noticeDesc: "This guide provides general information to get you started. For personalized advice, we recommend consulting with our qualified legal advisors who specialize in foreign property investment.",
+      overview: "Overview",
+      steps: "Steps",
+      eligibility: "Eligibility",
+      askAi: "Ask AI",
+      faq: "FAQ",
+      ownership: "Ownership",
+      documents: "Documents",
+      rules: "Rules",
+      contact: "Contact",
+      investOpp: "Investment Opportunities",
+      investOppDesc: "Discover what you can invest in and the exciting opportunities waiting for you",
+      canInvest: "You CAN Invest In",
+      restrictions: "Investment Restrictions",
+      startingPoints: "Investment Starting Points",
+      houses: "Houses",
+      apartments: "Apartments",
+      touristAreas: "Tourist Areas",
+      minInvestment: "Minimum investment required",
+      mostPopular: "Most Popular",
+      regionalRules: "Regional Rules",
+      needHelp: "Need Specialized Assistance?",
+      needHelpDesc: "Our foreign investment specialists are ready to assist you with fluent English and in-depth knowledge of regulations",
+      englishConsult: "English Consultation",
+      englishConsultDesc: "Fluent English communication for foreign investors",
+      regExperts: "Regulation Experts",
+      regExpertsDesc: "In-depth knowledge of Indonesian laws and regulations",
+      fullSupport: "Full Support",
+      fullSupportDesc: "Support from start to finish of your investment process",
+      contactSpecialist: "Contact Our Specialists",
+      serviceAvailable: "Foreign investment service available 24/7"
+    },
+    id: {
+      title: "Panduan Investasi Asing",
+      subtitle: "Panduan lengkap untuk berinvestasi di properti Indonesia",
+      badge: "Perjalanan Anda Dimulai di Sini",
+      signIn: "Masuk untuk Memulai",
+      noticeTitle: "Kami Siap Membantu!",
+      noticeDesc: "Panduan ini memberikan informasi umum untuk memulai. Untuk saran yang dipersonalisasi, kami merekomendasikan konsultasi dengan penasihat hukum kami yang khusus menangani investasi properti asing.",
+      overview: "Ringkasan",
+      steps: "Langkah",
+      eligibility: "Kelayakan",
+      askAi: "Tanya AI",
+      faq: "FAQ",
+      ownership: "Kepemilikan",
+      documents: "Dokumen",
+      rules: "Aturan",
+      contact: "Kontak",
+      investOpp: "Peluang Investasi",
+      investOppDesc: "Temukan apa yang dapat Anda investasikan dan peluang menarik yang menanti",
+      canInvest: "Anda DAPAT Berinvestasi Di",
+      restrictions: "Pembatasan Investasi",
+      startingPoints: "Titik Awal Investasi",
+      houses: "Rumah",
+      apartments: "Apartemen",
+      touristAreas: "Area Wisata",
+      minInvestment: "Investasi minimum yang diperlukan",
+      mostPopular: "Paling Populer",
+      regionalRules: "Aturan Regional",
+      needHelp: "Butuh Bantuan Khusus?",
+      needHelpDesc: "Tim spesialis investasi asing kami siap membantu Anda dengan bahasa Inggris yang lancar dan pemahaman mendalam tentang regulasi",
+      englishConsult: "Konsultasi Bahasa Inggris",
+      englishConsultDesc: "Komunikasi lancar dalam bahasa Inggris untuk investor asing",
+      regExperts: "Ahli Regulasi",
+      regExpertsDesc: "Pemahaman mendalam tentang hukum dan regulasi Indonesia",
+      fullSupport: "Dukungan Penuh",
+      fullSupportDesc: "Pendampingan dari awal hingga selesai proses investasi",
+      contactSpecialist: "Hubungi Spesialis Kami",
+      serviceAvailable: "Layanan khusus investasi asing tersedia 24/7"
+    }
+  };
+
+  const t = text[language];
   
   // If user is logged in, show the dashboard
   if (user) {
@@ -28,195 +109,247 @@ const ForeignInvestment = () => {
   
   // If not logged in, show the public information page
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-amber-950/20">
-      <div className="max-w-7xl mx-auto px-4 py-12 space-y-8">
-        {/* Luxury Hero Header */}
-        <div className="text-center space-y-6 animate-fade-in">
-          <div className="inline-flex justify-center items-center gap-4">
-            <Badge className="mb-4 px-4 py-2 text-sm font-medium bg-amber-500/10 text-amber-400 border-amber-500/30">
-              <Globe className="h-4 w-4 inline mr-2" />
-              Your Journey Starts Here
-            </Badge>
-            <Button 
-              onClick={() => navigate('/auth')}
-              className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-background shadow-lg shadow-amber-500/25"
-            >
-              Sign In to Get Started
-            </Button>
+    <div className="min-h-screen bg-background">
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
+        <div className="container mx-auto px-3 sm:px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link to="/">
+              <Button variant="ghost" size="sm" className="h-8 px-2 sm:px-3">
+                <ArrowLeft className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline">Back</span>
+              </Button>
+            </Link>
+            <h1 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-foreground">
+              <Globe className="h-5 w-5 text-primary" />
+              <span className="hidden sm:inline">{t.title}</span>
+              <span className="sm:hidden">Investment</span>
+            </h1>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-transparent leading-tight">
-            Welcome to Indonesian Property Investment
-          </h1>
-          <p className="text-muted-foreground text-xl max-w-3xl mx-auto leading-relaxed">
-            We're here to guide you through every step of investing in Indonesian property. 
-            Let's make your investment journey smooth and successful! 🏡
+          <Button 
+            onClick={() => navigate('/auth')}
+            size="sm"
+            className="h-8 sm:h-9 px-3 sm:px-4 text-xs sm:text-sm bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            {t.signIn}
+          </Button>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-3 sm:px-4 py-4 md:py-8 space-y-6">
+        {/* Hero Section */}
+        <div className="text-center space-y-4">
+          <Badge className="px-3 py-1.5 text-xs sm:text-sm font-medium bg-primary/10 text-primary border-primary/20">
+            <Globe className="h-3.5 w-3.5 inline mr-1.5" />
+            {t.badge}
+          </Badge>
+          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+            {t.subtitle}
           </p>
         </div>
 
-        {/* Luxury Notice */}
-        <Alert className="border-amber-500/30 bg-gradient-to-r from-amber-500/5 to-amber-600/10 backdrop-blur-sm shadow-lg">
-          <AlertCircle className="h-5 w-5 text-amber-500" />
-          <AlertTitle className="text-lg font-semibold text-amber-400">We're Here to Help!</AlertTitle>
-          <AlertDescription className="text-base text-muted-foreground">
-            This guide provides general information to get you started. For personalized advice, 
-            we recommend consulting with our qualified legal advisors who specialize in foreign property investment.
+        {/* Notice Alert */}
+        <Alert className="border-primary/20 bg-primary/5">
+          <AlertCircle className="h-4 w-4 text-primary" />
+          <AlertTitle className="text-sm sm:text-base font-semibold text-foreground">{t.noticeTitle}</AlertTitle>
+          <AlertDescription className="text-xs sm:text-sm text-muted-foreground">
+            {t.noticeDesc}
           </AlertDescription>
         </Alert>
 
-        <Tabs defaultValue="overview" className="w-full space-y-8">
-          <TabsList className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-2 bg-background/60 backdrop-blur-xl p-2 rounded-2xl border border-amber-500/20 shadow-lg h-auto">
-            <TabsTrigger value="overview" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-amber-500 data-[state=active]:text-background data-[state=active]:shadow-lg data-[state=active]:shadow-amber-500/30 transition-all duration-300">
-              <Globe className="h-5 w-5" />
-              <span className="text-xs sm:text-sm font-medium">Overview</span>
+        {/* Main Tabs */}
+        <Tabs defaultValue="overview" className="w-full space-y-6">
+          <TabsList className="w-full grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-1 bg-muted/50 p-1.5 rounded-xl border border-border h-auto">
+            <TabsTrigger value="overview" className="flex-col sm:flex-row gap-1 py-2 px-2 rounded-lg text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Globe className="h-4 w-4" />
+              <span>{t.overview}</span>
             </TabsTrigger>
-            <TabsTrigger value="steps" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-amber-500 data-[state=active]:text-background data-[state=active]:shadow-lg data-[state=active]:shadow-amber-500/30 transition-all duration-300">
-              <ListChecks className="h-5 w-5" />
-              <span className="text-xs sm:text-sm font-medium">Steps</span>
+            <TabsTrigger value="steps" className="flex-col sm:flex-row gap-1 py-2 px-2 rounded-lg text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <ListChecks className="h-4 w-4" />
+              <span>{t.steps}</span>
             </TabsTrigger>
-            <TabsTrigger value="eligibility" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-amber-500 data-[state=active]:text-background data-[state=active]:shadow-lg data-[state=active]:shadow-amber-500/30 transition-all duration-300">
-              <CheckCircle2 className="h-5 w-5" />
-              <span className="text-xs sm:text-sm font-medium">Eligibility</span>
+            <TabsTrigger value="eligibility" className="flex-col sm:flex-row gap-1 py-2 px-2 rounded-lg text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>{t.eligibility}</span>
             </TabsTrigger>
-            <TabsTrigger value="chat" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-amber-500 data-[state=active]:text-background data-[state=active]:shadow-lg data-[state=active]:shadow-amber-500/30 transition-all duration-300">
-              <MessageSquare className="h-5 w-5" />
-              <span className="text-xs sm:text-sm font-medium">Ask AI</span>
+            <TabsTrigger value="chat" className="flex-col sm:flex-row gap-1 py-2 px-2 rounded-lg text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <MessageSquare className="h-4 w-4" />
+              <span>{t.askAi}</span>
             </TabsTrigger>
-            <TabsTrigger value="faq" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-amber-500 data-[state=active]:text-background data-[state=active]:shadow-lg data-[state=active]:shadow-amber-500/30 transition-all duration-300">
-              <BookOpen className="h-5 w-5" />
-              <span className="text-xs sm:text-sm font-medium">FAQ</span>
+            <TabsTrigger value="faq" className="flex-col sm:flex-row gap-1 py-2 px-2 rounded-lg text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <BookOpen className="h-4 w-4" />
+              <span>{t.faq}</span>
             </TabsTrigger>
-            <TabsTrigger value="ownership" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-amber-500 data-[state=active]:text-background data-[state=active]:shadow-lg data-[state=active]:shadow-amber-500/30 transition-all duration-300">
-              <Key className="h-5 w-5" />
-              <span className="text-xs sm:text-sm font-medium">Ownership</span>
+            <TabsTrigger value="ownership" className="flex-col sm:flex-row gap-1 py-2 px-2 rounded-lg text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hidden lg:flex">
+              <Key className="h-4 w-4" />
+              <span>{t.ownership}</span>
             </TabsTrigger>
-            <TabsTrigger value="requirements" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-amber-500 data-[state=active]:text-background data-[state=active]:shadow-lg data-[state=active]:shadow-amber-500/30 transition-all duration-300">
-              <FileText className="h-5 w-5" />
-              <span className="text-xs sm:text-sm font-medium">Documents</span>
+            <TabsTrigger value="requirements" className="flex-col sm:flex-row gap-1 py-2 px-2 rounded-lg text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hidden lg:flex">
+              <FileText className="h-4 w-4" />
+              <span>{t.documents}</span>
             </TabsTrigger>
-            <TabsTrigger value="restrictions" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-amber-500 data-[state=active]:text-background data-[state=active]:shadow-lg data-[state=active]:shadow-amber-500/30 transition-all duration-300">
-              <Shield className="h-5 w-5" />
-              <span className="text-xs sm:text-sm font-medium">Rules</span>
+            <TabsTrigger value="restrictions" className="flex-col sm:flex-row gap-1 py-2 px-2 rounded-lg text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hidden lg:flex">
+              <Shield className="h-4 w-4" />
+              <span>{t.rules}</span>
             </TabsTrigger>
-            <TabsTrigger value="contact" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-amber-500 data-[state=active]:text-background data-[state=active]:shadow-lg data-[state=active]:shadow-amber-500/30 transition-all duration-300">
-              <Headphones className="h-5 w-5" />
-              <span className="text-xs sm:text-sm font-medium">Contact</span>
+            <TabsTrigger value="contact" className="flex-col sm:flex-row gap-1 py-2 px-2 rounded-lg text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hidden lg:flex">
+              <Headphones className="h-4 w-4" />
+              <span>{t.contact}</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6 animate-fade-in">
-            <Card className="border-amber-500/20 shadow-xl bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-amber-500/10 to-amber-600/5 rounded-full blur-3xl -z-10" />
-              <CardHeader className="space-y-3">
-                <CardTitle className="flex items-center gap-3 text-2xl">
-                  <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600">
-                    <Building2 className="h-6 w-6 text-background" />
+          <TabsContent value="overview" className="space-y-6">
+            <Card className="border-border bg-card">
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="flex items-center gap-3 text-lg sm:text-xl text-foreground">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Building2 className="h-5 w-5 text-primary" />
                   </div>
-                  Investment Opportunities
+                  {t.investOpp}
                 </CardTitle>
-                <CardDescription className="text-base">Discover what you can invest in and the exciting opportunities waiting for you</CardDescription>
+                <CardDescription className="text-xs sm:text-sm">{t.investOppDesc}</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <Card className="border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-emerald-600/10 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300">
-                    <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2 text-emerald-400">
-                        <CheckCircle2 className="h-6 w-6" />
-                        ✅ You CAN Invest In
+              <CardContent className="p-4 sm:p-6 pt-0 space-y-6">
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Can Invest */}
+                  <Card className="border-emerald-500/30 bg-emerald-500/5">
+                    <CardHeader className="p-4">
+                      <CardTitle className="text-sm sm:text-base flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <CheckCircle2 className="h-5 w-5" />
+                        ✅ {t.canInvest}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-3">
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <Home className="h-5 w-5 text-emerald-400 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm"><strong>Apartments & Condos</strong> - Modern living with Strata Title (SHMRS)</span>
+                    <CardContent className="p-4 pt-0">
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2 p-2.5 rounded-lg bg-background/50 text-xs sm:text-sm">
+                          <Home className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                          <span><strong>Apartments & Condos</strong> - Strata Title (SHMRS)</span>
                         </li>
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <Key className="h-5 w-5 text-emerald-400 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm"><strong>Houses</strong> - With Hak Pakai (Right to Use) - 30 years, renewable</span>
+                        <li className="flex items-start gap-2 p-2.5 rounded-lg bg-background/50 text-xs sm:text-sm">
+                          <Key className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                          <span><strong>Houses</strong> - Hak Pakai (30 years, renewable)</span>
                         </li>
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <Building2 className="h-5 w-5 text-emerald-400 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm"><strong>Villas</strong> - Perfect for tourist destinations like Bali</span>
+                        <li className="flex items-start gap-2 p-2.5 rounded-lg bg-background/50 text-xs sm:text-sm">
+                          <Building2 className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                          <span><strong>Villas</strong> - Tourist destinations like Bali</span>
                         </li>
                       </ul>
                     </CardContent>
                   </Card>
 
-                  <Card className="border-rose-500/30 bg-gradient-to-br from-rose-500/5 to-rose-600/10 hover:shadow-lg hover:shadow-rose-500/10 transition-all duration-300">
-                    <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2 text-rose-400">
-                        <XCircle className="h-6 w-6" />
-                        ❌ Investment Restrictions
+                  {/* Restrictions */}
+                  <Card className="border-destructive/30 bg-destructive/5">
+                    <CardHeader className="p-4">
+                      <CardTitle className="text-sm sm:text-base flex items-center gap-2 text-destructive">
+                        <XCircle className="h-5 w-5" />
+                        ❌ {t.restrictions}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-3">
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
-                          <Shield className="h-5 w-5 text-rose-400 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm"><strong>Freehold Land</strong> - Hak Milik title not available directly</span>
+                    <CardContent className="p-4 pt-0">
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2 p-2.5 rounded-lg bg-background/50 text-xs sm:text-sm">
+                          <Shield className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                          <span><strong>Freehold Land</strong> - Hak Milik not available directly</span>
                         </li>
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
-                          <AlertCircle className="h-5 w-5 text-rose-400 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm"><strong>Agricultural Land</strong> - Reserved for local farmers</span>
+                        <li className="flex items-start gap-2 p-2.5 rounded-lg bg-background/50 text-xs sm:text-sm">
+                          <AlertCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                          <span><strong>Agricultural Land</strong> - Reserved for locals</span>
                         </li>
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
-                          <FileText className="h-5 w-5 text-rose-400 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm"><strong>Government Property</strong> - State-owned land not for sale</span>
+                        <li className="flex items-start gap-2 p-2.5 rounded-lg bg-background/50 text-xs sm:text-sm">
+                          <FileText className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                          <span><strong>Government Property</strong> - Not for sale</span>
                         </li>
                       </ul>
                     </CardContent>
                   </Card>
                 </div>
 
-                <div className="pt-6 space-y-4">
-                  <h3 className="font-semibold text-xl mb-4 flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/10">
-                      <DollarSign className="h-5 w-5 text-amber-400" />
-                    </div>
-                    Investment Starting Points
+                {/* Investment Starting Points */}
+                <div className="pt-4">
+                  <h3 className="font-semibold text-base sm:text-lg mb-4 flex items-center gap-2 text-foreground">
+                    <DollarSign className="h-5 w-5 text-primary" />
+                    {t.startingPoints}
                   </h3>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <Card className="border-amber-500/30 hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-300 hover:scale-105 bg-gradient-to-br from-amber-500/5 to-transparent">
-                      <CardHeader>
-                        <Home className="h-8 w-8 text-amber-400 mb-2" />
-                        <CardTitle className="text-base">Houses</CardTitle>
+                  <div className="grid sm:grid-cols-3 gap-3">
+                    <Card className="border-border bg-card hover:shadow-md transition-shadow">
+                      <CardHeader className="p-4">
+                        <Home className="h-7 w-7 text-primary mb-2" />
+                        <CardTitle className="text-sm">{t.houses}</CardTitle>
                         <CardDescription className="text-xs">Hak Pakai Title</CardDescription>
                       </CardHeader>
-                      <CardContent className="space-y-2">
-                        <p className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">IDR 5B</p>
-                        <p className="text-xs text-muted-foreground">Minimum investment required</p>
-                        <Badge className="mt-2 bg-amber-500/20 text-amber-400 border-amber-500/30">30 Years Renewable</Badge>
+                      <CardContent className="p-4 pt-0 space-y-2">
+                        <p className="text-xl sm:text-2xl font-bold text-primary">IDR 5B</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">{t.minInvestment}</p>
+                        <Badge variant="secondary" className="text-[10px] bg-primary/10 text-primary">30 Years Renewable</Badge>
                       </CardContent>
                     </Card>
-                    <Card className="border-amber-500/30 hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-300 hover:scale-105 bg-gradient-to-br from-amber-500/5 to-transparent">
-                      <CardHeader>
-                        <Building2 className="h-8 w-8 text-amber-400 mb-2" />
-                        <CardTitle className="text-base">Apartments</CardTitle>
+                    <Card className="border-border bg-card hover:shadow-md transition-shadow">
+                      <CardHeader className="p-4">
+                        <Building2 className="h-7 w-7 text-primary mb-2" />
+                        <CardTitle className="text-sm">{t.apartments}</CardTitle>
                         <CardDescription className="text-xs">Strata Title (SHMRS)</CardDescription>
                       </CardHeader>
-                      <CardContent className="space-y-2">
-                        <p className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">IDR 3B</p>
-                        <p className="text-xs text-muted-foreground">Minimum investment required</p>
-                        <Badge className="mt-2 bg-amber-500/20 text-amber-400 border-amber-500/30">Most Popular</Badge>
+                      <CardContent className="p-4 pt-0 space-y-2">
+                        <p className="text-xl sm:text-2xl font-bold text-primary">IDR 3B</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">{t.minInvestment}</p>
+                        <Badge variant="secondary" className="text-[10px] bg-primary/10 text-primary">{t.mostPopular}</Badge>
                       </CardContent>
                     </Card>
-                    <Card className="border-amber-500/30 hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-300 hover:scale-105 bg-gradient-to-br from-amber-500/5 to-transparent">
-                      <CardHeader>
-                        <Globe className="h-8 w-8 text-amber-400 mb-2" />
-                        <CardTitle className="text-base">Tourist Areas</CardTitle>
+                    <Card className="border-border bg-card hover:shadow-md transition-shadow">
+                      <CardHeader className="p-4">
+                        <Globe className="h-7 w-7 text-primary mb-2" />
+                        <CardTitle className="text-sm">{t.touristAreas}</CardTitle>
                         <CardDescription className="text-xs">Special Zones</CardDescription>
                       </CardHeader>
-                      <CardContent className="space-y-2">
-                        <p className="text-3xl font-bold text-amber-400">Varies</p>
-                        <p className="text-xs text-muted-foreground">Check local regulations</p>
-                        <Badge className="mt-2 bg-amber-500/20 text-amber-400 border-amber-500/30">Regional Rules</Badge>
+                      <CardContent className="p-4 pt-0 space-y-2">
+                        <p className="text-xl sm:text-2xl font-bold text-primary">Varies</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">Check local regulations</p>
+                        <Badge variant="secondary" className="text-[10px] bg-primary/10 text-primary">{t.regionalRules}</Badge>
                       </CardContent>
                     </Card>
                   </div>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Quick Links to WNI/WNA */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Card 
+                className="border-border bg-card cursor-pointer hover:shadow-lg hover:border-primary/30 transition-all group"
+                onClick={() => navigate('/investor/wni')}
+              >
+                <CardContent className="p-5 flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                    <Users className="h-6 w-6 text-emerald-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                      WNI Investment
+                    </h3>
+                    <p className="text-xs text-muted-foreground">Indonesian Citizen Property Guide</p>
+                  </div>
+                  <ArrowLeft className="h-5 w-5 text-muted-foreground rotate-180 group-hover:translate-x-1 transition-transform" />
+                </CardContent>
+              </Card>
+              <Card 
+                className="border-border bg-card cursor-pointer hover:shadow-lg hover:border-primary/30 transition-all group"
+                onClick={() => navigate('/investor/wna')}
+              >
+                <CardContent className="p-5 flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                    <Globe className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                      WNA Investment
+                    </h3>
+                    <p className="text-xs text-muted-foreground">Foreign National Property Guide</p>
+                  </div>
+                  <ArrowLeft className="h-5 w-5 text-muted-foreground rotate-180 group-hover:translate-x-1 transition-transform" />
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Process Steps Tab */}
@@ -240,127 +373,129 @@ const ForeignInvestment = () => {
           </TabsContent>
 
           {/* Ownership Types Tab */}
-          <TabsContent value="ownership" className="space-y-6 animate-fade-in">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="border-amber-500/30 shadow-xl hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 bg-gradient-to-br from-amber-500/5 to-transparent backdrop-blur-sm">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-500/20 to-transparent rounded-full blur-2xl" />
-                <CardHeader className="space-y-3">
+          <TabsContent value="ownership" className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-4">
+              {/* Hak Pakai */}
+              <Card className="border-border bg-card">
+                <CardHeader className="p-4 sm:p-5">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600">
-                      <Key className="h-6 w-6 text-background" />
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Key className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl">Hak Pakai 🏡</CardTitle>
-                      <CardDescription className="text-sm">Perfect for foreign individuals</CardDescription>
+                      <CardTitle className="text-base sm:text-lg">Hak Pakai 🏡</CardTitle>
+                      <CardDescription className="text-xs">Perfect for foreign individuals</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="p-3 rounded-lg bg-background/50">
-                    <p className="font-semibold text-sm mb-2">⏱️ Duration:</p>
-                    <p className="text-sm text-muted-foreground">30 years → 20 years → 30 years (up to 80 years total!)</p>
+                <CardContent className="p-4 sm:p-5 pt-0 space-y-3">
+                  <div className="p-3 rounded-lg bg-muted/50 text-xs sm:text-sm">
+                    <p className="font-semibold mb-1">⏱️ Duration:</p>
+                    <p className="text-muted-foreground">30 years → 20 years → 30 years (up to 80 years total!)</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-background/50">
-                    <p className="font-semibold text-sm mb-2">📋 What You'll Need:</p>
-                    <ul className="text-sm text-muted-foreground space-y-2">
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> Valid passport</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> KITAS/KITAP permit</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> NPWP tax ID</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> Meet minimum value</li>
+                  <div className="p-3 rounded-lg bg-muted/50 text-xs sm:text-sm">
+                    <p className="font-semibold mb-2">📋 Requirements:</p>
+                    <ul className="space-y-1.5 text-muted-foreground">
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Valid passport</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> KITAS/KITAP permit</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> NPWP tax ID</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Meet minimum value</li>
                     </ul>
                   </div>
-                  <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-background">⭐ Most Popular Choice</Badge>
+                  <Badge className="bg-primary text-primary-foreground text-xs">⭐ Most Popular Choice</Badge>
                 </CardContent>
               </Card>
 
-              <Card className="border-amber-500/30 shadow-xl hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 bg-gradient-to-br from-amber-500/5 to-transparent backdrop-blur-sm">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-500/20 to-transparent rounded-full blur-2xl" />
-                <CardHeader className="space-y-3">
+              {/* Strata Title */}
+              <Card className="border-border bg-card">
+                <CardHeader className="p-4 sm:p-5">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600">
-                      <Building2 className="h-6 w-6 text-background" />
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Building2 className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl">SHMRS/Strata 🏢</CardTitle>
-                      <CardDescription className="text-sm">For apartments & condos</CardDescription>
+                      <CardTitle className="text-base sm:text-lg">SHMRS/Strata 🏢</CardTitle>
+                      <CardDescription className="text-xs">For apartments & condos</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="p-3 rounded-lg bg-background/50">
-                    <p className="font-semibold text-sm mb-2">⏱️ Duration:</p>
-                    <p className="text-sm text-muted-foreground">Perpetual ownership (as long as building stands)</p>
+                <CardContent className="p-4 sm:p-5 pt-0 space-y-3">
+                  <div className="p-3 rounded-lg bg-muted/50 text-xs sm:text-sm">
+                    <p className="font-semibold mb-1">⏱️ Duration:</p>
+                    <p className="text-muted-foreground">Perpetual ownership (as long as building stands)</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-background/50">
-                    <p className="font-semibold text-sm mb-2">📋 Requirements:</p>
-                    <ul className="text-sm text-muted-foreground space-y-2">
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> Valid passport</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> KITAS/KITAP</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> NPWP</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> Min. IDR 3 billion</li>
+                  <div className="p-3 rounded-lg bg-muted/50 text-xs sm:text-sm">
+                    <p className="font-semibold mb-2">📋 Requirements:</p>
+                    <ul className="space-y-1.5 text-muted-foreground">
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Valid passport</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> KITAS/KITAP</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> NPWP</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Min. IDR 3 billion</li>
                     </ul>
                   </div>
-                  <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-background">🏙️ Urban Living</Badge>
+                  <Badge className="bg-primary text-primary-foreground text-xs">🏙️ Urban Living</Badge>
                 </CardContent>
               </Card>
 
-              <Card className="border-amber-500/30 shadow-xl hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 bg-gradient-to-br from-amber-500/5 to-transparent backdrop-blur-sm">
-                <CardHeader className="space-y-3">
+              {/* PT PMA */}
+              <Card className="border-border bg-card">
+                <CardHeader className="p-4 sm:p-5">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600">
-                      <Briefcase className="h-6 w-6 text-background" />
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Briefcase className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl">PT PMA 🏢</CardTitle>
-                      <CardDescription className="text-sm">Company ownership</CardDescription>
+                      <CardTitle className="text-base sm:text-lg">PT PMA 🏢</CardTitle>
+                      <CardDescription className="text-xs">Company ownership</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="p-3 rounded-lg bg-background/50">
-                    <p className="font-semibold text-sm mb-2">⏱️ Duration:</p>
-                    <p className="text-sm text-muted-foreground">Hak Guna Bangunan - 30 years renewable</p>
+                <CardContent className="p-4 sm:p-5 pt-0 space-y-3">
+                  <div className="p-3 rounded-lg bg-muted/50 text-xs sm:text-sm">
+                    <p className="font-semibold mb-1">⏱️ Duration:</p>
+                    <p className="text-muted-foreground">Hak Guna Bangunan - 30 years renewable</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-background/50">
-                    <p className="font-semibold text-sm mb-2">📋 What's Needed:</p>
-                    <ul className="text-sm text-muted-foreground space-y-2">
-                      <li className="flex items-center gap-2"><Briefcase className="h-4 w-4 text-amber-400" /> PT PMA company</li>
-                      <li className="flex items-center gap-2"><DollarSign className="h-4 w-4 text-amber-400" /> Capital requirements</li>
-                      <li className="flex items-center gap-2"><FileText className="h-4 w-4 text-amber-400" /> Business license</li>
-                      <li className="flex items-center gap-2"><Building2 className="h-4 w-4 text-amber-400" /> Commercial use</li>
+                  <div className="p-3 rounded-lg bg-muted/50 text-xs sm:text-sm">
+                    <p className="font-semibold mb-2">📋 Requirements:</p>
+                    <ul className="space-y-1.5 text-muted-foreground">
+                      <li className="flex items-center gap-2"><Briefcase className="h-3.5 w-3.5 text-primary" /> PT PMA company</li>
+                      <li className="flex items-center gap-2"><DollarSign className="h-3.5 w-3.5 text-primary" /> Capital requirements</li>
+                      <li className="flex items-center gap-2"><FileText className="h-3.5 w-3.5 text-primary" /> Business license</li>
+                      <li className="flex items-center gap-2"><Building2 className="h-3.5 w-3.5 text-primary" /> Commercial use</li>
                     </ul>
                   </div>
-                  <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-background">💼 Business Investors</Badge>
+                  <Badge className="bg-primary text-primary-foreground text-xs">💼 Business Investors</Badge>
                 </CardContent>
               </Card>
 
-              <Card className="border-rose-500/40 shadow-xl bg-gradient-to-br from-rose-500/10 to-rose-600/5 backdrop-blur-sm">
-                <CardHeader className="space-y-3">
+              {/* Nominee Warning */}
+              <Card className="border-destructive/30 bg-destructive/5">
+                <CardHeader className="p-4 sm:p-5">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-rose-500/20">
-                      <Shield className="h-6 w-6 text-rose-400" />
+                    <div className="p-2 rounded-lg bg-destructive/10">
+                      <Shield className="h-5 w-5 text-destructive" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl text-rose-400">Nominee ⚠️</CardTitle>
-                      <CardDescription className="text-sm">Not recommended!</CardDescription>
+                      <CardTitle className="text-base sm:text-lg text-destructive">Nominee ⚠️</CardTitle>
+                      <CardDescription className="text-xs">Not recommended!</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <Alert variant="destructive" className="border-rose-500/50 bg-rose-500/10">
-                    <AlertCircle className="h-5 w-5" />
-                    <AlertTitle className="font-bold">⛔ High Risk Warning</AlertTitle>
-                    <AlertDescription className="text-sm">
+                <CardContent className="p-4 sm:p-5 pt-0 space-y-3">
+                  <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle className="text-sm font-bold">⛔ High Risk Warning</AlertTitle>
+                    <AlertDescription className="text-xs">
                       Legally questionable with serious risks. Our experts strongly advise against this approach.
                     </AlertDescription>
                   </Alert>
-                  <div className="p-3 rounded-lg bg-rose-500/10">
-                    <p className="font-semibold text-sm mb-2 text-rose-400">⚠️ Major Risks:</p>
-                    <ul className="text-sm space-y-2">
-                      <li className="flex items-center gap-2"><XCircle className="h-4 w-4 text-rose-400" /> No legal protection</li>
-                      <li className="flex items-center gap-2"><XCircle className="h-4 w-4 text-rose-400" /> Property seizure risk</li>
-                      <li className="flex items-center gap-2"><XCircle className="h-4 w-4 text-rose-400" /> Nominee disputes</li>
-                      <li className="flex items-center gap-2"><XCircle className="h-4 w-4 text-rose-400" /> Illegal complications</li>
+                  <div className="p-3 rounded-lg bg-destructive/10 text-xs sm:text-sm">
+                    <p className="font-semibold mb-2 text-destructive">⚠️ Major Risks:</p>
+                    <ul className="space-y-1.5">
+                      <li className="flex items-center gap-2"><XCircle className="h-3.5 w-3.5 text-destructive" /> No legal protection</li>
+                      <li className="flex items-center gap-2"><XCircle className="h-3.5 w-3.5 text-destructive" /> Property seizure risk</li>
+                      <li className="flex items-center gap-2"><XCircle className="h-3.5 w-3.5 text-destructive" /> Nominee disputes</li>
+                      <li className="flex items-center gap-2"><XCircle className="h-3.5 w-3.5 text-destructive" /> Illegal complications</li>
                     </ul>
                   </div>
                 </CardContent>
@@ -369,451 +504,136 @@ const ForeignInvestment = () => {
           </TabsContent>
 
           {/* Requirements Tab */}
-          <TabsContent value="requirements" className="space-y-6 animate-fade-in">
-            <Card className="border-amber-500/20 shadow-xl bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-amber-500/10 to-amber-600/5 rounded-full blur-3xl -z-10" />
-              <CardHeader className="space-y-3">
+          <TabsContent value="requirements" className="space-y-6">
+            <Card className="border-border bg-card">
+              <CardHeader className="p-4 sm:p-6">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600">
-                    <FileText className="h-6 w-6 text-background" />
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <FileText className="h-5 w-5 text-primary" />
                   </div>
-                  <CardTitle className="text-2xl">Documents Checklist 📋</CardTitle>
+                  <CardTitle className="text-lg sm:text-xl">Documents Checklist 📋</CardTitle>
                 </div>
-                <CardDescription className="text-base">Everything you need to prepare for a smooth investment process</CardDescription>
+                <CardDescription className="text-xs sm:text-sm">Everything you need to prepare for a smooth investment process</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <Card className="border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-transparent">
-                    <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <Globe className="h-5 w-5 text-amber-400" />
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Personal Documents */}
+                  <Card className="border-border bg-muted/30">
+                    <CardHeader className="p-4">
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <Globe className="h-4 w-4 text-primary" />
                         👤 Personal Documents
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-3">
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">Valid Passport 🛂</p>
-                            <p className="text-muted-foreground text-sm">Original and certified copy</p>
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">KITAS or KITAP 🏠</p>
-                            <p className="text-muted-foreground text-sm">Valid Indonesian residence permit</p>
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">NPWP 📊</p>
-                            <p className="text-muted-foreground text-sm">Indonesian tax identification number</p>
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">Proof of Address 📍</p>
-                            <p className="text-muted-foreground text-sm">Rental agreement or utility bills</p>
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">Marriage Certificate 💑</p>
-                            <p className="text-muted-foreground text-sm">If applicable, translated</p>
-                          </div>
-                        </li>
+                    <CardContent className="p-4 pt-0">
+                      <ul className="space-y-2">
+                        {["Valid Passport 🛂", "KITAS or KITAP 🏠", "NPWP 📊", "Proof of Address 📍", "Marriage Certificate 💑"].map((doc, i) => (
+                          <li key={i} className="flex items-start gap-2 p-2 rounded-lg bg-background/50 text-xs sm:text-sm">
+                            <CheckCircle2 className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                            <span>{doc}</span>
+                          </li>
+                        ))}
                       </ul>
                     </CardContent>
                   </Card>
 
-                  <Card className="border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-transparent">
-                    <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <DollarSign className="h-5 w-5 text-amber-400" />
+                  {/* Financial Documents */}
+                  <Card className="border-border bg-muted/30">
+                    <CardHeader className="p-4">
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <DollarSign className="h-4 w-4 text-primary" />
                         💰 Financial Documents
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-3">
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <CheckCircle2 className="h-5 w-5 text-amber-400 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">Proof of Funds 💵</p>
-                            <p className="text-muted-foreground text-sm">Bank statements (3-6 months)</p>
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <CheckCircle2 className="h-5 w-5 text-amber-400 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">Source of Funds 📝</p>
-                            <p className="text-muted-foreground text-sm">Declaration letter required</p>
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <CheckCircle2 className="h-5 w-5 text-amber-400 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">Employment Letter 💼</p>
-                            <p className="text-muted-foreground text-sm">Or business registration</p>
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/70 transition-colors">
-                          <CheckCircle2 className="h-5 w-5 text-amber-400 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">Tax Returns 📑</p>
-                            <p className="text-muted-foreground text-sm">Recent tax filings</p>
-                          </div>
-                        </li>
+                    <CardContent className="p-4 pt-0">
+                      <ul className="space-y-2">
+                        {["Proof of Funds 💵", "Source of Funds 📝", "Employment Letter 💼", "Tax Returns 📑"].map((doc, i) => (
+                          <li key={i} className="flex items-start gap-2 p-2 rounded-lg bg-background/50 text-xs sm:text-sm">
+                            <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                            <span>{doc}</span>
+                          </li>
+                        ))}
                       </ul>
                     </CardContent>
                   </Card>
                 </div>
-
-                <Card className="mt-6 border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-amber-600/5">
-                  <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <DollarSign className="h-5 w-5 text-amber-400" />
-                      🏦 Mortgage Options (KPR)
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Alert className="border-amber-500/30 bg-amber-500/5">
-                      <AlertCircle className="h-5 w-5 text-amber-400" />
-                      <AlertTitle className="text-base font-bold text-amber-400">💡 Important to Know</AlertTitle>
-                      <AlertDescription className="space-y-3 mt-2">
-                        <p className="text-sm">Most Indonesian banks don't offer mortgages to foreigners. Cash payment is usually needed.</p>
-                        <div className="p-3 rounded-lg bg-background/50">
-                          <p className="text-sm font-semibold mb-2">Some international banks may offer:</p>
-                          <ul className="text-sm space-y-2">
-                            <li className="flex items-center gap-2">
-                              <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-400 border-amber-500/30">40-50%</Badge>
-                              <span>Minimum down payment</span>
-                            </li>
-                            <li className="flex items-center gap-2">
-                              <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-400 border-amber-500/30">10-15y</Badge>
-                              <span>Maximum loan period</span>
-                            </li>
-                            <li className="flex items-center gap-2">
-                              <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-400 border-amber-500/30">Higher</Badge>
-                              <span>Interest rates</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </AlertDescription>
-                    </Alert>
-                  </CardContent>
-                </Card>
               </CardContent>
             </Card>
           </TabsContent>
 
           {/* Restrictions Tab */}
-          <TabsContent value="restrictions" className="space-y-6 animate-fade-in">
-            <Card className="border-amber-500/20 shadow-xl bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-rose-500/10 to-amber-500/10 rounded-full blur-3xl -z-10" />
-              <CardHeader className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-gradient-to-br from-rose-500/20 to-amber-500/20">
-                    <Shield className="h-6 w-6 text-rose-400" />
-                  </div>
-                  <CardTitle className="text-2xl">📜 Investment Rules & Restrictions</CardTitle>
-                </div>
-                <CardDescription className="text-base">Understanding the boundaries helps you invest with confidence</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <AlertCircle className="h-5 w-5 text-amber-500" />
-                    Geographic Restrictions
-                  </h3>
-                  <div className="bg-background/50 p-4 rounded-lg space-y-2 border border-amber-500/20">
-                    <p className="text-sm"><strong>Prohibited Areas:</strong></p>
-                    <ul className="text-sm text-muted-foreground space-y-1 ml-4">
-                      <li>• Within 50km of national borders</li>
-                      <li>• Military installations and strategic areas</li>
-                      <li>• Cultural heritage sites without special permits</li>
-                      <li>• Agricultural land zones</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <DollarSign className="h-5 w-5 text-amber-500" />
-                    Price Thresholds by Region (2024)
-                  </h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="bg-background/50 p-4 rounded-lg space-y-2 border border-amber-500/20">
-                      <p className="font-semibold text-sm">Jakarta & Surrounding Areas</p>
-                      <p className="text-2xl font-bold text-amber-400">IDR 10 Billion+</p>
-                      <p className="text-xs text-muted-foreground">For houses with Hak Pakai</p>
-                    </div>
-                    <div className="bg-background/50 p-4 rounded-lg space-y-2 border border-amber-500/20">
-                      <p className="font-semibold text-sm">Bali (Tourist Areas)</p>
-                      <p className="text-2xl font-bold text-amber-400">IDR 5 Billion+</p>
-                      <p className="text-xs text-muted-foreground">For houses with Hak Pakai</p>
-                    </div>
-                    <div className="bg-background/50 p-4 rounded-lg space-y-2 border border-amber-500/20">
-                      <p className="font-semibold text-sm">Other Major Cities</p>
-                      <p className="text-2xl font-bold text-amber-400">IDR 5-7 Billion</p>
-                      <p className="text-xs text-muted-foreground">Varies by city regulations</p>
-                    </div>
-                    <div className="bg-background/50 p-4 rounded-lg space-y-2 border border-amber-500/20">
-                      <p className="font-semibold text-sm">Apartments (All Areas)</p>
-                      <p className="text-2xl font-bold text-amber-400">IDR 3 Billion+</p>
-                      <p className="text-xs text-muted-foreground">Minimum value requirement</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-amber-500" />
-                    Ownership Limitations
-                  </h3>
-                  <div className="bg-background/50 p-4 rounded-lg space-y-3 border border-amber-500/20">
-                    <div>
-                      <p className="font-medium text-sm">Hak Pakai Duration:</p>
-                      <p className="text-sm text-muted-foreground">Initial 30 years → renewable 20 years → renewable 30 years (max 80 years total)</p>
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">Transfer Restrictions:</p>
-                      <p className="text-sm text-muted-foreground">Can only transfer to other foreigners or upgrade to PT PMA structure</p>
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">Usage Requirements:</p>
-                      <p className="text-sm text-muted-foreground">Must be used and maintained; cannot remain vacant long-term</p>
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">Annual Reporting:</p>
-                      <p className="text-sm text-muted-foreground">Required to report property ownership to immigration authorities</p>
-                    </div>
-                  </div>
-                </div>
-
-                <Alert variant="destructive" className="border-rose-500/40 bg-rose-500/10">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Important: Regulatory Changes</AlertTitle>
-                  <AlertDescription>
-                    Indonesian property laws are subject to change. The government periodically reviews and updates minimum investment thresholds, permitted areas, and ownership structures. Always verify current regulations with a qualified legal advisor before proceeding.
-                  </AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Process Tab */}
-          <TabsContent value="process" className="space-y-6">
-            <Card className="border-amber-500/20 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl">
-              <CardHeader>
-                <CardTitle>Step-by-Step Purchase Process</CardTitle>
-                <CardDescription>Timeline and procedures for foreign property acquisition</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {[
-                    {
-                      step: 1,
-                      title: "Initial Research & Consultation",
-                      duration: "1-2 weeks",
-                      tasks: [
-                        "Engage qualified property lawyer and tax advisor",
-                        "Verify property ownership type (Hak Pakai, SHMRS, etc.)",
-                        "Check zoning and foreign ownership eligibility",
-                        "Review regional minimum investment requirements"
-                      ]
-                    },
-                    {
-                      step: 2,
-                      title: "Document Preparation",
-                      duration: "2-4 weeks",
-                      tasks: [
-                        "Obtain NPWP (tax ID) if not already held",
-                        "Gather all required personal documents",
-                        "Prepare proof of funds and source of funds declaration",
-                        "Get documents translated and notarized"
-                      ]
-                    },
-                    {
-                      step: 3,
-                      title: "Property Due Diligence",
-                      duration: "2-3 weeks",
-                      tasks: [
-                        "Verify land certificate authenticity at BPN (Land Office)",
-                        "Check for encumbrances, liens, or legal disputes",
-                        "Conduct building inspection and valuation",
-                        "Review IMB (building permit) and compliance"
-                      ]
-                    },
-                    {
-                      step: 4,
-                      title: "Purchase Agreement",
-                      duration: "1-2 weeks",
-                      tasks: [
-                        "Negotiate terms with seller",
-                        "Sign preliminary purchase agreement (PPJB)",
-                        "Pay deposit (typically 10-30%)",
-                        "Set timeline for final sale completion"
-                      ]
-                    },
-                    {
-                      step: 5,
-                      title: "Title Transfer Process",
-                      duration: "4-8 weeks",
-                      tasks: [
-                        "Prepare Akta Jual Beli (Sale and Purchase Deed) with PPAT notary",
-                        "Pay BPHTB (land and building transfer tax) - 5% of transaction value",
-                        "Submit documents to BPN for title conversion",
-                        "Complete final payment to seller"
-                      ]
-                    },
-                    {
-                      step: 6,
-                      title: "Post-Purchase Registration",
-                      duration: "2-4 weeks",
-                      tasks: [
-                        "Register new title certificate with BPN",
-                        "Update PBB (annual property tax) records",
-                        "Report to immigration if required",
-                        "Arrange property insurance and utilities"
-                      ]
-                    }
-                  ].map((phase) => (
-                    <div key={phase.step} className="relative pl-8 pb-6 border-l-2 border-amber-500/30 last:border-transparent">
-                      <div className="absolute -left-3 top-0 w-6 h-6 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 text-background flex items-center justify-center text-xs font-bold">
-                        {phase.step}
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex items-start justify-between flex-wrap gap-2">
-                          <h3 className="font-semibold">{phase.title}</h3>
-                          <Badge variant="outline" className="border-amber-500/30 text-amber-400">{phase.duration}</Badge>
-                        </div>
-                        <ul className="space-y-1 text-sm text-muted-foreground">
-                          {phase.tasks.map((task, idx) => (
-                            <li key={idx} className="flex items-start gap-2">
-                              <CheckCircle2 className="h-4 w-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                              <span>{task}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-6 pt-6 border-t border-amber-500/20 space-y-4">
-                  <h3 className="font-semibold">Associated Costs</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="bg-background/50 p-4 rounded-lg space-y-2 border border-amber-500/20">
-                      <p className="font-medium text-sm">Transfer Taxes & Fees</p>
-                      <ul className="text-sm text-muted-foreground space-y-1">
-                        <li>• BPHTB (Transfer Tax): 5% of property value</li>
-                        <li>• Notary fees: 0.5-1% of property value</li>
-                        <li>• Title transfer fees: ~0.1% of property value</li>
-                        <li>• Stamp duty: IDR 10,000 per document</li>
-                      </ul>
-                    </div>
-                    <div className="bg-background/50 p-4 rounded-lg space-y-2 border border-amber-500/20">
-                      <p className="font-medium text-sm">Annual Ongoing Costs</p>
-                      <ul className="text-sm text-muted-foreground space-y-1">
-                        <li>• PBB (Property Tax): 0.1-0.3% annually</li>
-                        <li>• Management fees (apartments): varies</li>
-                        <li>• Insurance: 0.1-0.3% annually</li>
-                        <li>• Maintenance and utilities</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Alert className="border-amber-500/30 bg-amber-500/5">
-              <AlertCircle className="h-4 w-4 text-amber-400" />
-              <AlertTitle className="text-amber-400">Professional Assistance Recommended</AlertTitle>
-              <AlertDescription>
-                Due to the complexity of Indonesian property law and potential language barriers, it is strongly recommended to engage:
-                <ul className="mt-2 space-y-1 text-sm">
-                  <li>• Licensed property lawyer specializing in foreign ownership</li>
-                  <li>• Registered PPAT notary for deed preparation</li>
-                  <li>• Tax advisor familiar with cross-border taxation</li>
-                  <li>• Real estate agent with foreign client experience</li>
-                </ul>
+          <TabsContent value="restrictions" className="space-y-6">
+            <Alert className="border-primary/20 bg-primary/5">
+              <AlertCircle className="h-4 w-4 text-primary" />
+              <AlertTitle className="text-primary text-sm">Professional Assistance Recommended</AlertTitle>
+              <AlertDescription className="text-xs sm:text-sm text-muted-foreground">
+                Due to the complexity of Indonesian property law and potential language barriers, it is strongly recommended to engage licensed professionals.
               </AlertDescription>
             </Alert>
           </TabsContent>
+
+          {/* Contact Tab */}
+          <TabsContent value="contact" className="space-y-6">
+            <Card className="border-border bg-card p-6 text-center">
+              <Headphones className="h-12 w-12 mx-auto mb-4 text-primary" />
+              <h3 className="text-lg font-semibold mb-2">{t.needHelp}</h3>
+              <p className="text-sm text-muted-foreground mb-4">{t.needHelpDesc}</p>
+              <Button 
+                onClick={() => setContactDialogOpen(true)}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                <Headphones className="h-4 w-4 mr-2" />
+                {t.contactSpecialist}
+              </Button>
+            </Card>
+          </TabsContent>
         </Tabs>
-      </div>
 
-      {/* Luxury Contact Specialist Section */}
-      <div className="bg-gradient-to-br from-amber-950/40 via-background to-amber-900/20 rounded-2xl p-8 border border-amber-500/30 backdrop-blur-xl">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-transparent">
-            {language === "id" ? "Butuh Bantuan Khusus?" : "Need Specialized Assistance?"}
-          </h2>
-          <p className="text-muted-foreground">
-            {language === "id" 
-              ? "Tim spesialis investasi asing kami siap membantu Anda dengan bahasa Inggris yang lancar dan pemahaman mendalam tentang regulasi"
-              : "Our foreign investment specialists are ready to assist you with fluent English and in-depth knowledge of regulations"}
-          </p>
-        </div>
+        {/* Contact Specialist Section */}
+        <Card className="border-border bg-gradient-to-br from-primary/5 via-background to-accent/5">
+          <CardContent className="p-6 sm:p-8">
+            <div className="text-center mb-6">
+              <h2 className="text-lg sm:text-xl font-bold text-foreground mb-2">
+                {t.needHelp}
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                {t.needHelpDesc}
+              </p>
+            </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-background/60 backdrop-blur-xl rounded-xl p-6 text-center border border-amber-500/20 hover:border-amber-500/40 transition-all duration-300">
-            <Globe className="h-12 w-12 mx-auto mb-4 text-amber-400" />
-            <h3 className="font-semibold mb-2">
-              {language === "id" ? "Konsultasi Bahasa Inggris" : "English Consultation"}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {language === "id" 
-                ? "Komunikasi lancar dalam bahasa Inglris untuk investor asing"
-                : "Fluent English communication for foreign investors"}
-            </p>
-          </div>
+            <div className="grid sm:grid-cols-3 gap-4 mb-6">
+              <div className="text-center p-4 rounded-xl bg-card border border-border">
+                <Globe className="h-8 w-8 mx-auto mb-3 text-primary" />
+                <h3 className="font-semibold text-sm mb-1">{t.englishConsult}</h3>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{t.englishConsultDesc}</p>
+              </div>
+              <div className="text-center p-4 rounded-xl bg-card border border-border">
+                <FileText className="h-8 w-8 mx-auto mb-3 text-primary" />
+                <h3 className="font-semibold text-sm mb-1">{t.regExperts}</h3>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{t.regExpertsDesc}</p>
+              </div>
+              <div className="text-center p-4 rounded-xl bg-card border border-border">
+                <Briefcase className="h-8 w-8 mx-auto mb-3 text-primary" />
+                <h3 className="font-semibold text-sm mb-1">{t.fullSupport}</h3>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{t.fullSupportDesc}</p>
+              </div>
+            </div>
 
-          <div className="bg-background/60 backdrop-blur-xl rounded-xl p-6 text-center border border-amber-500/20 hover:border-amber-500/40 transition-all duration-300">
-            <FileText className="h-12 w-12 mx-auto mb-4 text-amber-400" />
-            <h3 className="font-semibold mb-2">
-              {language === "id" ? "Ahli Regulasi" : "Regulation Experts"}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {language === "id" 
-                ? "Pemahaman mendalam tentang hukum dan regulasi Indonesia"
-                : "In-depth knowledge of Indonesian laws and regulations"}
-            </p>
-          </div>
-
-          <div className="bg-background/60 backdrop-blur-xl rounded-xl p-6 text-center border border-amber-500/20 hover:border-amber-500/40 transition-all duration-300">
-            <Briefcase className="h-12 w-12 mx-auto mb-4 text-amber-400" />
-            <h3 className="font-semibold mb-2">
-              {language === "id" ? "Dukungan Penuh" : "Full Support"}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {language === "id" 
-                ? "Pendampingan dari awal hingga selesai proses investasi"
-                : "Support from start to finish of your investment process"}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-8 text-center">
-          <Button 
-            size="lg" 
-            className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-background shadow-lg shadow-amber-500/25"
-            onClick={() => setContactDialogOpen(true)}
-          >
-            <Headphones className="h-5 w-5 mr-2" />
-            {language === "id" ? "Hubungi Spesialis Kami" : "Contact Our Specialists"}
-          </Button>
-          <p className="mt-4 text-sm text-muted-foreground">
-            {language === "id" 
-              ? "Layanan khusus investasi asing tersedia 24/7"
-              : "Foreign investment service available 24/7"}
-          </p>
-        </div>
+            <div className="text-center">
+              <Button 
+                size="lg" 
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                onClick={() => setContactDialogOpen(true)}
+              >
+                <Headphones className="h-5 w-5 mr-2" />
+                {t.contactSpecialist}
+              </Button>
+              <p className="mt-3 text-xs text-muted-foreground">
+                {t.serviceAvailable}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <ForeignInvestmentContactDialog 
