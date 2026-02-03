@@ -239,19 +239,17 @@ const Navigation = () => {
                 </div>
               </div>
 
-              {/* Add Property Button - Same Style as Search Button */}
-              <div className="relative group p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-gradient-x transition-all duration-500 hover:shadow-lg hover:shadow-primary/30">
-                <button 
+              {/* Add Property Button - Matching Nav Style with Gradient Border */}
+              <div className="relative group p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-gradient-x transition-all duration-500">
+                <Button 
+                  variant="ghost"
+                  size="sm"
                   onClick={() => navigate('/add-property')}
-                  className="group relative inline-flex items-center justify-center rounded-[10px] font-semibold transition-all duration-300 ease-out bg-gradient-to-r from-violet-600 via-fuchsia-500 to-cyan-400 hover:from-violet-500 hover:via-fuchsia-400 hover:to-cyan-300 hover:scale-105 text-white shadow-lg shadow-fuchsia-500/40 hover:shadow-xl hover:shadow-fuchsia-400/50 active:scale-95 overflow-hidden h-10 px-4 text-xs gap-1.5"
+                  className="h-10 px-3 text-sm font-medium bg-background hover:bg-background text-foreground hover:text-foreground rounded-[10px] transition-all duration-500 border-0 hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
                 >
-                  {/* Animated shimmer overlay */}
-                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none rounded-[10px]" />
-                  {/* Glossy shine overlay */}
-                  <span className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent pointer-events-none rounded-[10px]" />
-                  <Plus className="h-3.5 w-3.5 relative z-10 transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
-                  <span className="font-medium relative z-10 drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]">Add Property</span>
-                </button>
+                  <Plus className="h-3.5 w-3.5 mr-1.5 transition-all duration-500" />
+                  <span className="text-xs">Add Property</span>
+                </Button>
               </div>
 
               {/* Investment Dropdown */}
