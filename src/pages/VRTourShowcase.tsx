@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Glasses, Sparkles, Info } from 'lucide-react';
+import { ArrowLeft, Glasses, Sparkles, Info, Eye, Box } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { VRPropertyTourManager, VRTourScene } from '@/components/vr-tours';
 import { BaseProperty } from '@/types/property';
@@ -89,33 +89,44 @@ const VRTourShowcase: React.FC = () => {
     console.log('Saved staged image for scene:', sceneId);
   };
 
+  const formatPrice = (price: number) => {
+    if (price >= 1_000_000_000) {
+      return `Rp ${(price / 1_000_000_000).toFixed(1)} M`;
+    }
+    return `Rp ${(price / 1_000_000).toFixed(0)} Jt`;
+  };
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border">
-        <div className="container mx-auto px-4 py-3">
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
+        <div className="container mx-auto px-3 sm:px-4 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Link to="/">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back
+                <Button variant="ghost" size="sm" className="h-9 px-2 sm:px-3">
+                  <ArrowLeft className="h-4 w-4 sm:mr-1" />
+                  <span className="hidden sm:inline">Back</span>
                 </Button>
               </Link>
               <div>
-                <h1 className="text-xl font-bold flex items-center gap-2">
+                <h1 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-foreground">
                   <Glasses className="h-5 w-5 text-primary" />
-                  VR Property Tours
+                  <span className="hidden sm:inline">VR Property</span> Tours
                 </h1>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground hidden sm:block">
                   Immersive 360° virtual property experience
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="border-primary/30">
-                <Sparkles className="h-3 w-3 mr-1 text-primary" />
+              <Badge variant="outline" className="hidden sm:flex border-primary/30 text-primary">
+                <Sparkles className="h-3 w-3 mr-1" />
                 AI-Powered
+              </Badge>
+              <Badge className="bg-primary text-primary-foreground">
+                <Eye className="h-3 w-3 mr-1" />
+                <span className="hidden sm:inline">Interactive</span>
               </Badge>
             </div>
           </div>
@@ -123,40 +134,41 @@ const VRTourShowcase: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6 space-y-6">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
         {/* Feature highlights */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-3"
+          className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3"
         >
           {[
             { icon: '🔄', title: '360° Tours', desc: 'Immersive walkthroughs' },
-            { icon: '🛋️', title: 'AI Staging', desc: 'Virtual furniture placement' },
-            { icon: '📏', title: 'Measure', desc: 'Distance measurement tools' },
-            { icon: '🌙', title: 'Day/Night', desc: 'Lighting mode toggle' },
+            { icon: '🛋️', title: 'AI Staging', desc: 'Virtual furniture' },
+            { icon: '📏', title: 'Measure', desc: 'Distance tools' },
+            { icon: '🌙', title: 'Day/Night', desc: 'Lighting toggle' },
           ].map((feature, i) => (
             <div
               key={i}
-              className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-3 text-center"
+              className="bg-card border border-border rounded-xl p-3 text-center hover:border-primary/30 transition-colors"
             >
-              <span className="text-2xl">{feature.icon}</span>
-              <h3 className="text-sm font-medium mt-1">{feature.title}</h3>
-              <p className="text-xs text-muted-foreground">{feature.desc}</p>
+              <span className="text-xl sm:text-2xl">{feature.icon}</span>
+              <h3 className="text-xs sm:text-sm font-medium mt-1 text-foreground">{feature.title}</h3>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">{feature.desc}</p>
             </div>
           ))}
         </motion.div>
 
-        <div className="flex items-center justify-between bg-muted/30 rounded-xl p-4">
+        {/* Property Info Card */}
+        <div className="flex items-center justify-between bg-secondary/50 border border-border rounded-xl p-3 sm:p-4">
           <div>
-            <h2 className="text-lg font-semibold">{demoProperty.title}</h2>
-            <p className="text-sm text-muted-foreground">{demoProperty.city}</p>
+            <h2 className="text-base sm:text-lg font-semibold text-foreground">{demoProperty.title}</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">{demoProperty.city}</p>
           </div>
           <div className="text-right">
-            <p className="text-lg font-bold text-primary">
-              Rp {(demoProperty.price / 1_000_000_000).toFixed(1)}B
+            <p className="text-base sm:text-lg font-bold text-primary">
+              {formatPrice(demoProperty.price)}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
               {demoProperty.bedrooms} BR • {demoProperty.bathrooms} BA • {demoProperty.area_sqm}m²
             </p>
           </div>
@@ -170,17 +182,17 @@ const VRTourShowcase: React.FC = () => {
         />
 
         {/* Info section */}
-        <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
+        <div className="bg-primary/5 border border-primary/20 rounded-xl p-3 sm:p-4">
           <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-primary mt-0.5" />
+            <Info className="h-5 w-5 text-primary mt-0.5 shrink-0" />
             <div>
-              <h3 className="font-medium text-sm">How to use VR Tours</h3>
+              <h3 className="font-medium text-sm text-foreground">How to use VR Tours</h3>
               <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-                <li>• <strong>360° Tour:</strong> Click and drag to look around, use navigation hotspots to move between rooms</li>
-                <li>• <strong>AI Staging:</strong> Select a room type and style, then click "Stage This Room" to add virtual furniture</li>
-                <li>• <strong>Measure:</strong> Click two points to measure distances, calibrate with known dimensions for accuracy</li>
-                <li>• <strong>Neighborhood:</strong> Explore nearby amenities in 3D, click markers for details</li>
-                <li>• <strong>Day/Night:</strong> Toggle the sun/moon button to preview lighting conditions</li>
+                <li>• <strong className="text-foreground">360° Tour:</strong> Click and drag to look around, use hotspots to navigate</li>
+                <li>• <strong className="text-foreground">AI Staging:</strong> Select room type and style, click "Stage This Room"</li>
+                <li>• <strong className="text-foreground">Measure:</strong> Click two points to measure distances</li>
+                <li>• <strong className="text-foreground">Neighborhood:</strong> Explore nearby amenities on the map</li>
+                <li>• <strong className="text-foreground">Day/Night:</strong> Toggle lighting conditions with sun/moon button</li>
               </ul>
             </div>
           </div>

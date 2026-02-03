@@ -153,7 +153,7 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
           <Button 
             variant="outline" 
             size="sm" 
-            className="mt-2"
+            className="mt-2 border-border"
             onClick={() => {
               setLoadError(false);
               setIsLoading(true);
@@ -185,10 +185,10 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
     >
       {/* Loading indicator */}
       {isLoading && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black">
-          <div className="flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 text-white">
-            <RotateCw className="h-5 w-5 animate-spin" />
-            <span>Loading panorama...</span>
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-muted">
+          <div className="flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-foreground shadow-lg">
+            <RotateCw className="h-5 w-5 animate-spin text-primary" />
+            <span className="text-sm">Loading panorama...</span>
           </div>
         </div>
       )}
@@ -240,7 +240,7 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
 
       {/* Controls hint */}
       <div className="absolute bottom-4 left-4 z-10">
-        <div className="bg-background/60 backdrop-blur-sm rounded-lg px-3 py-1.5 text-xs text-muted-foreground">
+        <div className="bg-card/90 border border-border rounded-lg px-3 py-1.5 text-xs text-muted-foreground shadow-lg">
           Drag to look around • Scroll to zoom
         </div>
       </div>
@@ -250,7 +250,7 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
         <Button
           variant="secondary"
           size="icon"
-          className="h-8 w-8 bg-background/60 backdrop-blur-sm"
+          className="h-8 w-8 bg-card/90 border border-border shadow-lg"
           onClick={() => setZoom(prev => Math.min(2.5, prev + 0.25))}
         >
           <Maximize2 className="h-4 w-4" />
@@ -258,7 +258,7 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
         <Button
           variant="secondary"
           size="icon"
-          className="h-8 w-8 bg-background/60 backdrop-blur-sm"
+          className="h-8 w-8 bg-card/90 border border-border shadow-lg"
           onClick={() => setZoom(prev => Math.max(1, prev - 0.25))}
         >
           <Minimize2 className="h-4 w-4" />
