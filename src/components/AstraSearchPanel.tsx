@@ -2573,19 +2573,19 @@ const AstraSearchPanel = ({
                   enablePaste={true}
                   className="shrink-0"
                 />
-                <TooltipProvider delayDuration={100}>
+                <TooltipProvider delayDuration={0}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className="p-1.5 flex items-center justify-center transition-all duration-200 group hover:bg-amber-300/10 rounded-lg">
                         <MapPin className="h-5 w-5 text-muted-foreground group-hover:text-amber-700 dark:group-hover:text-amber-400 group-hover:scale-110 transition-all duration-200" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" sideOffset={4} className="z-[100000] bg-card border border-border shadow-lg px-2 py-1 rounded-md">
-                      <p className="text-[10px] font-medium text-foreground">Map View</p>
+                    <TooltipContent side="top" sideOffset={8}>
+                      <p className="text-xs font-medium">Map View</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <TooltipProvider delayDuration={100}>
+                <TooltipProvider delayDuration={0}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1.5 flex items-center justify-center transition-all duration-200 group hover:bg-amber-300/10 rounded-lg" disabled={isGettingLocation}>
@@ -2603,8 +2603,8 @@ const AstraSearchPanel = ({
                           </svg>}
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" sideOffset={4} className="z-[100000] bg-card border border-border shadow-lg px-2 py-1 rounded-md">
-                      <p className="text-[10px] font-medium text-foreground">{isGettingLocation ? "Getting Location..." : "Near Me"}</p>
+                    <TooltipContent side="top" sideOffset={8}>
+                      <p className="text-xs font-medium">{isGettingLocation ? "Getting Location..." : "Near Me"}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -2749,7 +2749,7 @@ const AstraSearchPanel = ({
 
             {/* Property Type Button */}
             <Popover open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen}>
-              <TooltipProvider delayDuration={100}>
+              <TooltipProvider delayDuration={0}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <PopoverTrigger asChild>
@@ -2771,8 +2771,8 @@ const AstraSearchPanel = ({
                       </button>
                     </PopoverTrigger>
                   </TooltipTrigger>
-                  <TooltipContent side="top" sideOffset={4} className="z-[100000] bg-card border border-border shadow-lg px-2 py-1 rounded-md">
-                    <p className="text-[10px] font-medium text-foreground">Property Type</p>
+                  <TooltipContent side="top" sideOffset={8}>
+                    <p className="text-xs font-medium">Property Type</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -2840,7 +2840,7 @@ const AstraSearchPanel = ({
                   }
                 }
               }}>
-                <TooltipProvider delayDuration={100}>
+                <TooltipProvider delayDuration={0}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
@@ -2863,8 +2863,8 @@ const AstraSearchPanel = ({
                         </button>
                       </PopoverTrigger>
                     </TooltipTrigger>
-                    <TooltipContent side="top" sideOffset={4} className="z-[100000] bg-card border border-border shadow-lg px-2 py-1 rounded-md">
-                      <p className="text-[10px] font-medium text-foreground">Manual Location</p>
+                    <TooltipContent side="top" sideOffset={8}>
+                      <p className="text-xs font-medium">Location</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -3165,7 +3165,7 @@ const AstraSearchPanel = ({
               </Popover>}
 
             {/* All Filters Button - Icon only with tooltip */}
-            <TooltipProvider delayDuration={100}>
+            <TooltipProvider delayDuration={0}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
@@ -3182,8 +3182,8 @@ const AstraSearchPanel = ({
                     )}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="top" sideOffset={4} className="z-[100000] bg-card border border-border shadow-lg px-2 py-1 rounded-md">
-                  <p className="text-[10px] font-medium text-foreground">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}</p>
+                <TooltipContent side="top" sideOffset={8}>
+                  <p className="text-xs font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
