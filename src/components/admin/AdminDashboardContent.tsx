@@ -93,6 +93,7 @@ const InnovationLabManagement = lazy(() => import("./InnovationLabManagement"));
 const MobileEnhancementsManagement = lazy(() => import("./MobileEnhancementsManagement"));
 const SocialCommerceManagement = lazy(() => import("./SocialCommerceManagement"));
 const DataExchangeManagement = lazy(() => import("./DataExchangeManagement"));
+const AutomationPlatformManagement = lazy(() => import("./AutomationPlatformManagement"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -452,6 +453,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <SocialCommerceManagement />;
       case "data-exchange":
         return <DataExchangeManagement />;
+      case "automation-platform":
+        return <AutomationPlatformManagement />;
       default:
         return <AdminOverview />;
     }
