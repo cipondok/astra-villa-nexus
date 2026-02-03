@@ -364,29 +364,24 @@ const Index = () => {
         initialQuery={quickSearch}
       />
 
-      {/* ===== HERO SECTION - Rumah123 Style ===== */}
-      <section className="relative w-full bg-primary">
-        {/* Hero Background - Blue gradient like Rumah123 */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-blue-700" />
+      {/* ===== HERO SECTION - Neutral White (Rumah123 Style) ===== */}
+      <section className="relative w-full bg-background">
+        {/* Subtle pattern on light background */}
+        <div className="absolute inset-0 bg-muted/30" />
         
-        {/* Optional decorative pattern */}
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
-
         <div className="relative z-10 w-full max-w-5xl mx-auto px-3 sm:px-4 pt-8 sm:pt-12 md:pt-16 pb-6 sm:pb-8">
           {/* Hero Title */}
           <div className="text-center mb-4 sm:mb-6">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1 sm:mb-2">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-1 sm:mb-2">
               {t.heroTitle}
             </h1>
-            <p className="text-sm sm:text-base text-white/80">
+            <p className="text-sm sm:text-base text-muted-foreground">
               {t.heroSubtitle}
             </p>
           </div>
 
-          {/* Search Panel - Glassmorphic Card */}
-          <div className="bg-card/95 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-2xl border border-border/30 p-3 sm:p-4 md:p-5">
+          {/* Search Panel - Clean Card */}
+          <div className="relative bg-card rounded-xl sm:rounded-2xl shadow-lg border border-border p-3 sm:p-4 md:p-5">
             <Suspense fallback={<SearchPanelSkeleton />}>
               <SearchErrorBoundary>
                 <AstraSearchPanel
