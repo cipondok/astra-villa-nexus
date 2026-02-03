@@ -316,80 +316,75 @@ const Dijual = () => {
   const areas = [...new Set(properties.map(p => p.area).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-10 sm:pt-11 md:pt-12">
-      {/* Luxury Background Effects */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
-        <div className="absolute top-0 right-0 w-[250px] sm:w-[300px] md:w-[400px] h-[250px] sm:h-[300px] md:h-[400px] bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-40 sm:w-52 md:w-64 h-40 sm:h-52 md:h-64 bg-gradient-to-tr from-accent/15 to-transparent rounded-full blur-3xl" />
-      </div>
-
-      {/* Compact Header */}
-      <div className="sticky top-0 z-40 glass-card border-b border-primary/20">
-        <div className="px-1.5 sm:px-2 py-1.5 sm:py-2 flex items-center justify-between">
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {cameFromHome ? (
-              <BackToHomeLink sectionId="sale-section" className="mb-0" />
-            ) : (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 w-6 sm:h-7 sm:w-7 p-0 hover:bg-primary/10"
-                onClick={() => navigate(-1)}
-              >
-                <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-              </Button>
-            )}
-            <div>
-              <h1 className="text-[10px] sm:text-xs md:text-sm font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Properti Dijual</h1>
-              <p className="text-[7px] sm:text-[8px] md:text-[9px] text-muted-foreground">
-                {filteredProperties.length} dari {properties.length} listing
-              </p>
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Clean Header with Primary Blue */}
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
+        <div className="px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {cameFromHome ? (
+                <BackToHomeLink sectionId="sale-section" className="mb-0" />
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 hover:bg-primary/10 rounded-full"
+                  onClick={() => navigate(-1)}
+                >
+                  <ArrowLeft className="h-4 w-4 text-foreground" />
+                </Button>
+              )}
+              <div>
+                <h1 className="text-base sm:text-lg md:text-xl font-bold text-foreground">Properti Dijual</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  {filteredProperties.length} properti tersedia
+                </p>
+              </div>
             </div>
+            <Button 
+              size="sm"
+              variant={isFilterOpen ? "default" : "outline"}
+              className="h-9 px-4 text-sm font-medium rounded-md"
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+            >
+              <SlidersHorizontal className="h-4 w-4 mr-2" />
+              Filter
+            </Button>
           </div>
-          <Button 
-            size="sm"
-            variant="outline"
-            className="h-6 sm:h-7 px-1.5 sm:px-2 text-[8px] sm:text-[9px] md:text-[10px] border-primary/30 hover:bg-primary/10"
-            onClick={() => setIsFilterOpen(!isFilterOpen)}
-          >
-            <SlidersHorizontal className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
-            Filter
-          </Button>
         </div>
       </div>
 
-      {/* Compact Search */}
-      <div className="p-1.5 sm:p-2 bg-background border-b border-border/50">
-        <div className="flex gap-1 sm:gap-1.5">
+      {/* Search Bar */}
+      <div className="p-3 sm:p-4 bg-secondary/50 border-b border-border">
+        <div className="flex gap-2 sm:gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-1.5 sm:left-2 top-1/2 transform -translate-y-1/2 h-2.5 w-2.5 sm:h-3 sm:w-3 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Cari lokasi, tipe..."
+              placeholder="Cari lokasi, nama properti..."
               value={filters.searchTerm}
               onChange={(e) => updateFilter('searchTerm', e.target.value)}
-              className="h-6 sm:h-7 md:h-8 pl-5 sm:pl-6 md:pl-7 text-[9px] sm:text-[10px] md:text-xs"
+              className="h-10 sm:h-11 pl-10 text-sm bg-background border-border rounded-md focus:ring-2 focus:ring-primary/20"
             />
           </div>
           <Select value={filters.propertyType} onValueChange={(value) => updateFilter('propertyType', value)}>
-            <SelectTrigger className="h-6 sm:h-7 md:h-8 w-16 sm:w-20 md:w-24 text-[8px] sm:text-[9px] md:text-[10px]">
+            <SelectTrigger className="h-10 sm:h-11 w-28 sm:w-32 text-sm bg-background border-border rounded-md">
               <SelectValue placeholder="Tipe" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all" className="text-[9px] sm:text-[10px] md:text-xs">Semua</SelectItem>
+              <SelectItem value="all">Semua Tipe</SelectItem>
               {propertyTypes.map((type) => (
-                <SelectItem key={type} value={type} className="text-[9px] sm:text-[10px] md:text-xs">{type}</SelectItem>
+                <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
               ))}
             </SelectContent>
           </Select>
           <Select value={filters.city} onValueChange={(value) => updateFilter('city', value)}>
-            <SelectTrigger className="h-6 sm:h-7 md:h-8 w-16 sm:w-20 md:w-24 text-[8px] sm:text-[9px] md:text-[10px]">
+            <SelectTrigger className="h-10 sm:h-11 w-28 sm:w-36 text-sm bg-background border-border rounded-md hidden sm:flex">
               <SelectValue placeholder="Kota" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all" className="text-[9px] sm:text-[10px] md:text-xs">Semua</SelectItem>
+              <SelectItem value="all">Semua Kota</SelectItem>
               {cities.map((city) => (
-                <SelectItem key={city} value={city} className="text-[9px] sm:text-[10px] md:text-xs">{city}</SelectItem>
+                <SelectItem key={city} value={city}>{city}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -409,25 +404,26 @@ const Dijual = () => {
       />
 
       {/* Properties Grid */}
-      <div className="p-1.5 sm:p-2 md:p-3">
+      <div className="p-3 sm:p-4 md:p-6">
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="animate-pulse rounded-lg sm:rounded-xl overflow-hidden bg-muted h-28 sm:h-32 md:h-44"></div>
+              <div key={i} className="animate-pulse rounded-md overflow-hidden bg-muted h-64 sm:h-72"></div>
             ))}
           </div>
         ) : filteredProperties.length === 0 ? (
-          <Card className="p-3 sm:p-4">
-            <div className="text-center py-4 sm:py-6">
-              <Home className="h-8 w-8 sm:h-10 sm:w-10 mx-auto mb-1.5 sm:mb-2 text-muted-foreground/50" />
-              <p className="text-[10px] sm:text-xs font-medium mb-0.5 sm:mb-1">Tidak ada properti ditemukan</p>
-              <p className="text-[8px] sm:text-[9px] text-muted-foreground mb-2 sm:mb-3">
-                Coba sesuaikan filter pencarian
+          <Card className="p-8 sm:p-12 border-border">
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                <Home className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Tidak ada properti ditemukan</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Coba sesuaikan filter pencarian Anda
               </p>
               <Button 
-                size="sm"
                 variant="outline"
-                className="h-6 sm:h-7 text-[8px] sm:text-[9px] md:text-[10px]"
+                className="h-10 px-6"
                 onClick={() => setFilters({
                   ...filters,
                   searchTerm: '',
@@ -445,119 +441,115 @@ const Dijual = () => {
             </div>
           </Card>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {filteredProperties.map((property) => (
-              <div
+              <Card
                 key={property.id}
                 onClick={() => navigate(`/properties/${property.id}`)}
-                className="group cursor-pointer relative rounded-lg sm:rounded-xl overflow-hidden h-28 sm:h-32 md:h-44 hover:scale-[1.02] transition-all duration-200 ring-1 ring-green-200/50 dark:ring-green-800/30 shadow-md"
+                className="group cursor-pointer overflow-hidden border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300"
               >
-                {/* Full Image Background */}
-                <img
-                  src={property.image_urls?.[0] || property.images?.[0] || "/placeholder.svg"}
-                  alt={property.title}
-                  loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                
-                {/* Gradient Overlay - Green tint for sale */}
-                <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/90 via-black/40 to-transparent" />
-                
-                {/* Save Button */}
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 h-5 w-5 sm:h-6 sm:w-6 p-0 bg-white/80 hover:bg-white rounded-full z-20"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSaveProperty(property.id);
-                  }}
-                >
-                  <Heart 
-                    className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${savedProperties.has(property.id) ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`}
+                {/* Image Container */}
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img
+                    src={property.image_urls?.[0] || property.images?.[0] || "/placeholder.svg"}
+                    alt={property.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                </Button>
-                
-                {/* View Icon - Center on hover */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                  <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-full bg-white/90 dark:bg-black/80 flex items-center justify-center shadow-xl">
-                    <Eye className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-green-600 dark:text-green-400" />
+                  
+                  {/* Save Button */}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="absolute top-2 right-2 h-8 w-8 p-0 bg-background/90 hover:bg-background rounded-full shadow-md"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSaveProperty(property.id);
+                    }}
+                  >
+                    <Heart 
+                      className={`h-4 w-4 ${savedProperties.has(property.id) ? 'fill-accent text-accent' : 'text-muted-foreground'}`}
+                    />
+                  </Button>
+                  
+                  {/* Badges */}
+                  <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
+                    <Badge className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded">
+                      Dijual
+                    </Badge>
+                    <Badge variant="secondary" className="bg-background/90 text-foreground text-xs font-medium px-2 py-0.5 rounded capitalize">
+                      {property.property_type || 'Properti'}
+                    </Badge>
                   </div>
                 </div>
                 
-                {/* Top Labels */}
-                <div className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 md:top-2 md:left-2 flex items-start gap-1">
-                  {/* Sale Badge */}
-                  <span className="text-[6px] sm:text-[7px] md:text-[9px] font-bold px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-2 md:py-1 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg">
-                    Jual
-                  </span>
-                  {/* Property Type */}
-                  <span className="text-[5px] sm:text-[6px] md:text-[8px] font-semibold px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-2 md:py-1 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[60px] sm:max-w-[80px] capitalize">
-                    {property.property_type || 'Property'}
-                  </span>
-                </div>
-                
-                {/* Price Label - Positioned prominently */}
-                <div className="absolute top-1/2 left-1 sm:left-1.5 md:left-2 -translate-y-1/2">
-                  <span className="text-[7px] sm:text-[9px] md:text-xs font-bold px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-2 md:py-1 rounded-md bg-gradient-to-r from-green-600 to-emerald-700 text-white shadow-xl">
+                {/* Content */}
+                <CardContent className="p-3 sm:p-4">
+                  {/* Price */}
+                  <p className="text-base sm:text-lg font-bold text-primary mb-1">
                     {formatPrice(property.price || 0)}
-                  </span>
-                </div>
-                
-                {/* Bottom Content - All info on image */}
-                <div className="absolute bottom-0 left-0 right-0 p-1 sm:p-1.5 md:p-2">
+                  </p>
+                  
                   {/* Title */}
-                  <h3 className="text-[7px] sm:text-[9px] md:text-sm font-bold text-white line-clamp-1 drop-shadow-lg">
+                  <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 mb-1">
                     {property.title}
                   </h3>
+                  
                   {/* Location */}
-                  <p className="text-[6px] sm:text-[7px] md:text-xs text-white/95 truncate drop-shadow-md">
-                    📍 {property.city || property.location}
-                  </p>
+                  <div className="flex items-center gap-1 text-muted-foreground mb-3">
+                    <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm truncate">{property.city || property.location}</span>
+                  </div>
+                  
                   {/* Property Details */}
-                  <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 mt-0.5 text-[6px] sm:text-[7px] md:text-[10px] text-white/90 font-medium">
+                  <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground border-t border-border pt-3">
                     {property.bedrooms > 0 && (
-                      <span className="flex items-center gap-0.5">
-                        🛏️ {property.bedrooms}
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <Bed className="h-3.5 w-3.5" />
+                        <span>{property.bedrooms}</span>
+                      </div>
                     )}
                     {property.bathrooms > 0 && (
-                      <span className="flex items-center gap-0.5">
-                        🚿 {property.bathrooms}
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <Bath className="h-3.5 w-3.5" />
+                        <span>{property.bathrooms}</span>
+                      </div>
                     )}
                     {property.area_sqm > 0 && (
-                      <span className="flex items-center gap-0.5">
-                        📐 {property.area_sqm}m²
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <Square className="h-3.5 w-3.5" />
+                        <span>{property.area_sqm}m²</span>
+                      </div>
                     )}
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
 
-        {/* Quick Stats */}
+        {/* Stats Summary */}
         {!loading && filteredProperties.length > 0 && (
-          <Card className="p-1.5 sm:p-2 mt-2 sm:mt-3">
-            <div className="flex items-center justify-between text-[7px] sm:text-[8px] md:text-[9px]">
-              <div className="text-center">
-                <p className="font-bold text-primary">{properties.length}</p>
-                <p className="text-muted-foreground">Total</p>
+          <Card className="mt-6 p-4 border-border">
+            <div className="flex items-center justify-around text-center">
+              <div>
+                <p className="text-xl sm:text-2xl font-bold text-primary">{properties.length}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Total Properti</p>
               </div>
-              <div className="text-center">
-                <p className="font-bold text-green-600">
+              <div className="w-px h-10 bg-border" />
+              <div>
+                <p className="text-xl sm:text-2xl font-bold text-foreground">
                   {properties.length > 0 
                     ? formatPrice(properties.reduce((sum, p) => sum + (p.price || 0), 0) / properties.length)
                     : 'Rp 0'
                   }
                 </p>
-                <p className="text-muted-foreground">Rata-rata</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Harga Rata-rata</p>
               </div>
-              <div className="text-center">
-                <p className="font-bold text-blue-600">{cities.length}</p>
-                <p className="text-muted-foreground">Kota</p>
+              <div className="w-px h-10 bg-border" />
+              <div>
+                <p className="text-xl sm:text-2xl font-bold text-primary">{cities.length}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Kota</p>
               </div>
             </div>
           </Card>
