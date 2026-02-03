@@ -205,48 +205,48 @@ html {
 
 @layer base {
   :root {
-    /* Light Mode - Rumah123 Style: Pure White with Bold Blue */
-    /* Background: Pure White | Primary: Bold Blue #2563EB | Accent: Red #DC2626 */
+    /* Light Mode - Rumah123 Exact Style */
+    /* Background: Pure White | Primary: Rumah123 Blue #1E4DB7 | Accent: Red #E02020 */
     --background: 0 0% 100%; /* Pure White #FFFFFF */
-    --foreground: 222 47% 11%; /* Dark Navy Text #1E293B */
+    --foreground: 220 13% 18%; /* Dark Text #2D3748 */
     --card: 0 0% 100%; /* Pure White */
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 220 13% 18%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 217 91% 60%; /* Bold Blue #2563EB */
+    --popover-foreground: 220 13% 18%;
+    --primary: 222 72% 42%; /* Rumah123 Blue #1E4DB7 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%; /* Light Blue-Gray #F1F5F9 */
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%; /* Light Gray */
-    --muted-foreground: 215 16% 47%; /* Gray Text #64748B */
-    --accent: 0 72% 51%; /* Red Accent #DC2626 */
+    --secondary: 220 14% 96%; /* Light Gray #F7F8FA */
+    --secondary-foreground: 220 13% 18%;
+    --muted: 220 14% 96%; /* Light Gray */
+    --muted-foreground: 220 9% 46%; /* Gray Text #6B7280 */
+    --accent: 0 79% 50%; /* Rumah123 Red #E02020 */
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 72% 51%;
+    --destructive: 0 79% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214 32% 91%; /* Light Border #E2E8F0 */
-    --input: 214 32% 91%;
-    --ring: 217 91% 60%;
-    --radius: 8px;
+    --border: 220 13% 91%; /* Light Border #E5E7EB */
+    --input: 220 13% 91%;
+    --ring: 222 72% 42%;
+    --radius: 6px;
     
-    /* ASTRA Villa Brand Colors - Rumah123 Style */
-    --gold-primary: 0 72% 51%; /* Red #DC2626 */
-    --gold-secondary: 0 65% 45%;
-    --navy-primary: 217 91% 60%; /* Bold Blue */
-    --navy-secondary: 217 80% 50%;
-    --dark-bg: 210 40% 98%;
+    /* Rumah123 Brand Colors */
+    --gold-primary: 0 79% 50%; /* Red #E02020 */
+    --gold-secondary: 0 70% 45%;
+    --navy-primary: 222 72% 42%; /* Rumah123 Blue */
+    --navy-secondary: 222 65% 35%;
+    --dark-bg: 220 14% 96%;
     --dark-card: 0 0% 100%;
     --text-light: 0 0% 100%;
-    --text-muted: 215 16% 47%;
+    --text-muted: 220 9% 46%;
     
     /* Glassy effect colors - Clean White */
     --glass-bg: 0 0% 100%;
-    --glass-border: 214 32% 91%;
-    --glass-shadow: 217 91% 60%;
+    --glass-border: 220 13% 91%;
+    --glass-shadow: 222 72% 42%;
     
-    /* Clean White Theme Colors */
-    --titanium-light: 210 40% 98%;
+    /* Theme Colors */
+    --titanium-light: 220 14% 96%;
     --titanium-white: 0 0% 100%;
-    --samsung-blue-primary: 217 91% 60%;
+    --samsung-blue-primary: 222 72% 42%;
   }
 
   .dark {
@@ -311,17 +311,17 @@ html {
 }
 
 @layer components {
-  /* Glassmorphism Effects - Rumah123 Clean Style */
+  /* Glassmorphism Effects - Rumah123 Style with Glass */
   .glass-effect {
     background: linear-gradient(135deg, 
-      hsl(0 0% 100% / 0.95) 0%, 
-      hsl(210 40% 98% / 0.9) 100%);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid hsl(214 32% 91% / 0.5);
+      hsl(0 0% 100% / 0.92) 0%, 
+      hsl(220 14% 96% / 0.88) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid hsl(220 13% 91% / 0.6);
     box-shadow: 
-      0 8px 32px hsl(217 91% 60% / 0.08),
-      inset 0 1px 0 hsl(0 0% 100% / 0.5);
+      0 4px 20px hsl(222 72% 42% / 0.06),
+      inset 0 1px 0 hsl(0 0% 100% / 0.6);
   }
 
   .dark .glass-effect {
@@ -336,13 +336,13 @@ html {
 
   .glass-card {
     background: hsl(0 0% 100%);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid hsl(214 32% 91%);
-    border-radius: 12px;
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid hsl(220 13% 91%);
+    border-radius: 8px;
     box-shadow: 
-      0 4px 24px hsl(217 91% 60% / 0.08),
-      0 1px 3px hsl(222 47% 11% / 0.05);
+      0 2px 12px hsl(220 13% 18% / 0.06),
+      0 1px 2px hsl(220 13% 18% / 0.04);
   }
 
   .dark .glass-card {
@@ -362,10 +362,10 @@ html {
 
   /* Modal Overlay - Clean backdrop */
   .modal-overlay {
-    --modal-overlay-opacity: 0.5;
-    background: hsl(222 47% 11% / var(--modal-overlay-opacity));
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    --modal-overlay-opacity: 0.4;
+    background: hsl(220 13% 18% / var(--modal-overlay-opacity));
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 
   .dark .modal-overlay {
@@ -381,13 +381,13 @@ html {
   /* Modal Surface - Main popup/dialog panel */
   .modal-surface {
     background: hsl(0 0% 100%);
-    border: 1px solid hsl(214 32% 91%);
-    border-radius: 12px;
-    backdrop-filter: blur(32px) saturate(200%);
-    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid hsl(220 13% 91%);
+    border-radius: 8px;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     box-shadow: 
-      0 25px 60px hsl(222 47% 11% / 0.15),
-      0 10px 25px hsl(217 91% 60% / 0.08);
+      0 20px 50px hsl(220 13% 18% / 0.12),
+      0 8px 20px hsl(220 13% 18% / 0.08);
   }
 
   .dark .modal-surface {
@@ -410,13 +410,13 @@ html {
   /* Glass Popup - For smaller dropdowns and tooltips */
   .glass-popup {
     background: hsl(0 0% 100%);
-    border: 1px solid hsl(214 32% 91%);
-    border-radius: 8px;
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid hsl(220 13% 91%);
+    border-radius: 6px;
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
     box-shadow: 
-      0 15px 40px hsl(222 47% 11% / 0.1),
-      0 5px 15px hsl(217 91% 60% / 0.05);
+      0 10px 30px hsl(220 13% 18% / 0.1),
+      0 4px 12px hsl(220 13% 18% / 0.06);
   }
 
   .dark .glass-popup {
