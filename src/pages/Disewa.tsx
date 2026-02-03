@@ -204,30 +204,27 @@ const Disewa = () => {
   const cities = [...new Set(properties.map(p => p.city).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-10 sm:pt-11 md:pt-12 transition-colors duration-300">
-      {/* Luxury Background Effects */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
-        <div className="absolute top-0 right-0 w-[250px] sm:w-[350px] h-[250px] sm:h-[350px] bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-40 sm:w-56 h-40 sm:h-56 bg-gradient-to-tr from-accent/15 to-transparent rounded-full blur-3xl" />
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Clean Header */}
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <BackToHomeLink sectionId="rent-section" className="mb-0" />
+              <div>
+                <h1 className="text-base sm:text-lg md:text-xl font-bold text-foreground">Properti Disewa</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  {filteredProperties.length} properti tersedia
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="container mx-auto px-2 sm:px-3 md:px-4 pt-1 pb-4 relative">
-        {/* Back Link */}
-        <BackToHomeLink sectionId="rent-section" />
-
-        {/* Centered Header */}
-        <div className="text-center mb-1.5 sm:mb-2">
-          <h1 className="text-sm sm:text-lg md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-            Properti Disewa
-          </h1>
-          <p className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground">
-            Temukan properti sewa terbaik dengan ASTRA Villa
-          </p>
-        </div>
-
-        {/* Slim Search Panel */}
-        <div className="glass-card p-1.5 sm:p-2 rounded-md sm:rounded-lg mb-2 sm:mb-3 border border-primary/20">
+      {/* Search Panel */}
+      <div className="bg-secondary/50 border-b border-border">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <AdvancedRentalSearch
             filters={filters} 
             onFiltersChange={setFilters} 
@@ -237,148 +234,179 @@ const Disewa = () => {
             loading={loading} 
           />
         </div>
+      </div>
 
-        {/* Compact Results Info */}
-        <div className="flex items-center justify-between mb-1.5 sm:mb-2 text-[9px] sm:text-xs text-muted-foreground">
-          <span>{filteredProperties.length} properti ditemukan</span>
-        </div>
-
-        {/* Properties Grid - Same style as Dijual */}
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        {/* Properties Grid */}
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="aspect-[4/5] bg-muted animate-pulse rounded-lg" />
+              <div key={i} className="animate-pulse rounded-md overflow-hidden bg-muted h-64 sm:h-72"></div>
             ))}
           </div>
         ) : filteredProperties.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground text-sm">
-            Tidak ada properti sewa ditemukan
-          </div>
+          <Card className="p-8 sm:p-12 border-border">
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                <Home className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Tidak ada properti ditemukan</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Coba sesuaikan filter pencarian Anda
+              </p>
+              <Button 
+                variant="outline"
+                className="h-10 px-6"
+                onClick={() => setFilters({
+                  ...filters,
+                  searchTerm: '',
+                  propertyType: 'all',
+                  province: 'all',
+                  city: 'all',
+                  priceRange: 'all',
+                  rentalPeriod: [],
+                  onlineBookingOnly: false
+                })}
+              >
+                Reset Filter
+              </Button>
+            </div>
+          </Card>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {filteredProperties.map((property) => {
               const imageUrl = property.image_urls?.[0] || property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800';
 
               return (
-                <div
+                <Card
                   key={property.id}
                   onClick={() => navigate(`/properties/${property.id}`)}
-                  className="group relative aspect-[4/5] rounded-lg overflow-hidden cursor-pointer border border-primary/10 hover:border-primary/30 transition-all duration-300"
+                  className="group cursor-pointer overflow-hidden border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300"
                 >
-                  {/* Background Image */}
-                  <div
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                    style={{ backgroundImage: `url(${imageUrl})` }}
-                  />
-                  
-                  {/* Green Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/90 via-emerald-800/40 to-transparent" />
-
-                  {/* Top Actions */}
-                  <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5 right-1 sm:right-1.5 flex justify-between items-start z-10">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="px-1 sm:px-1.5 py-0.5 bg-blue-600/90 text-white text-[6px] sm:text-[7px] font-medium rounded">
-                        Sewa
-                      </span>
-                      {property.online_booking_enabled && property.booking_type !== 'owner_only' && (
-                        <span className="px-1 sm:px-1.5 py-0.5 bg-green-500/90 text-white text-[5px] sm:text-[6px] font-medium rounded flex items-center gap-0.5">
-                          <Zap className="h-1.5 w-1.5 sm:h-2 sm:w-2" />
-                          Online
-                        </span>
-                      )}
-                    </div>
-                    <button 
+                  {/* Image Container */}
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img
+                      src={imageUrl}
+                      alt={property.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    
+                    {/* Save Button */}
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="absolute top-2 right-2 h-8 w-8 p-0 bg-background/90 hover:bg-background rounded-full shadow-md"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleSaveProperty(property.id);
                       }}
-                      className="p-0.5 sm:p-1 bg-black/30 hover:bg-black/50 rounded-full transition-colors"
                     >
-                      <Heart className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${savedProperties.has(property.id) ? 'fill-red-500 text-red-500' : 'text-white'}`} />
-                    </button>
-                  </div>
-
-                  {/* Center Eye Icon on Hover */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                    <div className="p-2 sm:p-3 bg-white/20 backdrop-blur-sm rounded-full">
-                      <Eye className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
+                      <Heart 
+                        className={`h-4 w-4 ${savedProperties.has(property.id) ? 'fill-accent text-accent' : 'text-muted-foreground'}`}
+                      />
+                    </Button>
+                    
+                    {/* Badges */}
+                    <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
+                      <Badge className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded">
+                        Disewa
+                      </Badge>
+                      {property.online_booking_enabled && property.booking_type !== 'owner_only' && (
+                        <Badge className="bg-green-500 text-white text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1">
+                          <Zap className="h-3 w-3" />
+                          Online
+                        </Badge>
+                      )}
                     </div>
                   </div>
-
-                  {/* Price Tag */}
-                  <div className="absolute top-1/2 left-1 sm:left-1.5 -translate-y-1/2 z-10">
-                    <span className="px-1 sm:px-1.5 py-0.5 bg-primary/90 text-primary-foreground text-[7px] sm:text-[8px] font-bold rounded shadow-lg">
+                  
+                  {/* Content */}
+                  <CardContent className="p-3 sm:p-4">
+                    {/* Price */}
+                    <p className="text-base sm:text-lg font-bold text-primary mb-1">
                       {formatPrice(property.price)}
-                      <span className="text-[5px] sm:text-[6px] font-normal opacity-80">
+                      <span className="text-xs font-normal text-muted-foreground ml-1">
                         /{getRentalPeriodLabel(property.rental_periods || ['monthly']).split(',')[0].toLowerCase()}
                       </span>
-                    </span>
-                  </div>
-
-                  {/* Bottom Content */}
-                  <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-2 z-10">
-                    <h3 className="text-white font-semibold text-[8px] sm:text-[9px] md:text-[10px] leading-tight line-clamp-1 mb-0.5">
-                      {property.title}
-                    </h3>
-                    <p className="text-white/80 text-[6px] sm:text-[7px] flex items-center gap-0.5 mb-1">
-                      <MapPin className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" />
-                      <span className="truncate">{property.location || property.city}</span>
                     </p>
                     
+                    {/* Title */}
+                    <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 mb-1">
+                      {property.title}
+                    </h3>
+                    
+                    {/* Location */}
+                    <div className="flex items-center gap-1 text-muted-foreground mb-3">
+                      <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm truncate">{property.city || property.location}</span>
+                    </div>
+                    
                     {/* Property Details */}
-                    <div className="flex items-center gap-1.5 sm:gap-2 text-white/90 text-[6px] sm:text-[7px]">
+                    <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground border-t border-border pt-3">
                       {property.bedrooms > 0 && (
-                        <span className="flex items-center gap-0.5">
-                          <Bed className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
-                          {property.bedrooms}
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <Bed className="h-3.5 w-3.5" />
+                          <span>{property.bedrooms}</span>
+                        </div>
                       )}
                       {property.bathrooms > 0 && (
-                        <span className="flex items-center gap-0.5">
-                          <Bath className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
-                          {property.bathrooms}
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <Bath className="h-3.5 w-3.5" />
+                          <span>{property.bathrooms}</span>
+                        </div>
                       )}
                       {property.area_sqm > 0 && (
-                        <span className="flex items-center gap-0.5">
-                          <Square className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
-                          {property.area_sqm}m²
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <Square className="h-3.5 w-3.5" />
+                          <span>{property.area_sqm}m²</span>
+                        </div>
                       )}
                     </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
         )}
 
-        {/* Rental Tips with Luxury Styling */}
-        <div className="mt-4 sm:mt-6 md:mt-8 glass-card rounded-lg p-2 sm:p-3 md:p-4 border border-primary/20">
-          <h2 className="text-xs sm:text-sm md:text-base font-semibold mb-2 sm:mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Tips Menyewa Properti via ASTRA Villa
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-2 md:gap-3">
-            <div className="p-2 sm:p-3 bg-primary/10 rounded-md sm:rounded-lg border border-primary/20">
-              <h3 className="font-semibold text-primary mb-1 text-[9px] sm:text-xs md:text-sm">Online Booking</h3>
-              <p className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground">
-                Properti dengan badge "Online" dapat langsung dibooking melalui sistem ASTRA Villa.
-              </p>
+        {/* Rental Tips */}
+        {!loading && filteredProperties.length > 0 && (
+          <Card className="mt-6 p-4 sm:p-6 border-border">
+            <h2 className="text-base sm:text-lg font-semibold text-foreground mb-4">
+              Tips Menyewa Properti
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              <div className="p-4 bg-primary/5 rounded-md border border-primary/10">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                  <Zap className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="font-semibold text-foreground mb-1 text-sm">Online Booking</h3>
+                <p className="text-xs text-muted-foreground">
+                  Properti dengan badge "Online" dapat langsung dibooking melalui sistem.
+                </p>
+              </div>
+              <div className="p-4 bg-green-500/5 rounded-md border border-green-500/10">
+                <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center mb-3">
+                  <Calendar className="h-5 w-5 text-green-600" />
+                </div>
+                <h3 className="font-semibold text-foreground mb-1 text-sm">Periode Fleksibel</h3>
+                <p className="text-xs text-muted-foreground">
+                  Pilih periode sewa: harian, mingguan, bulanan, atau tahunan.
+                </p>
+              </div>
+              <div className="p-4 bg-accent/5 rounded-md border border-accent/10">
+                <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center mb-3">
+                  <User className="h-5 w-5 text-accent" />
+                </div>
+                <h3 className="font-semibold text-foreground mb-1 text-sm">Owner Only</h3>
+                <p className="text-xs text-muted-foreground">
+                  Beberapa properti hanya bisa dibooking langsung dengan pemilik.
+                </p>
+              </div>
             </div>
-            <div className="p-2 sm:p-3 bg-green-500/10 rounded-md sm:rounded-lg border border-green-500/20">
-              <h3 className="font-semibold text-green-600 dark:text-green-400 mb-1 text-[9px] sm:text-xs md:text-sm">Periode Fleksibel</h3>
-              <p className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground">
-                Pilih periode sewa sesuai kebutuhan: harian, mingguan, bulanan, atau tahunan.
-              </p>
-            </div>
-            <div className="p-2 sm:p-3 bg-accent/10 rounded-md sm:rounded-lg border border-accent/20">
-              <h3 className="font-semibold text-accent mb-1 text-[9px] sm:text-xs md:text-sm">Owner Only</h3>
-              <p className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground">
-                Properti "Owner Only" hanya bisa dibooking langsung dengan pemilik.
-              </p>
-            </div>
-          </div>
-        </div>
+          </Card>
+        )}
       </div>
     </div>
   );
