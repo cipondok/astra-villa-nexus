@@ -141,13 +141,13 @@ const DistanceMeasurementTool: React.FC<DistanceMeasurementToolProps> = ({
 
   return (
     <div className={cn(
-      "grid gap-4 p-4",
+      "grid gap-3 sm:gap-4 p-3 sm:p-4",
       isFullscreen ? "lg:grid-cols-3 h-screen overflow-auto" : "lg:grid-cols-3"
     )}>
       {/* Measurement Canvas */}
       <div className={cn(
-        "relative rounded-xl overflow-hidden bg-muted lg:col-span-2",
-        isFullscreen ? "h-[600px]" : "h-[400px]"
+        "relative rounded-xl overflow-hidden bg-muted border border-border lg:col-span-2",
+        isFullscreen ? "h-[600px]" : "h-[300px] sm:h-[400px]"
       )}>
         <div
           ref={containerRef}
@@ -249,10 +249,10 @@ const DistanceMeasurementTool: React.FC<DistanceMeasurementToolProps> = ({
           {/* Instructions */}
           {!isDrawing && !calibrationMode && measurements.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="bg-black/60 text-white rounded-xl p-6 text-center max-w-xs">
-                <MousePointer2 className="h-8 w-8 mx-auto mb-3 opacity-80" />
-                <p className="text-sm">Click to start measuring</p>
-                <p className="text-xs text-white/60 mt-1">Set start and end points</p>
+              <div className="bg-card/95 border border-border rounded-xl p-4 sm:p-6 text-center max-w-xs shadow-lg">
+                <MousePointer2 className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 sm:mb-3 text-primary" />
+                <p className="text-xs sm:text-sm text-foreground">Click to start measuring</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">Set start and end points</p>
               </div>
             </div>
           )}
@@ -260,17 +260,17 @@ const DistanceMeasurementTool: React.FC<DistanceMeasurementToolProps> = ({
       </div>
 
       {/* Controls Panel */}
-      <Card>
+      <Card className="h-fit border-border">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
+          <CardTitle className="flex items-center gap-2 text-sm sm:text-base text-foreground">
             <Ruler className="h-4 w-4 text-primary" />
             Measurements
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4">
           {/* Calibration */}
-          <div className="space-y-2 p-3 bg-muted rounded-lg">
-            <Label className="text-xs font-medium flex items-center gap-1">
+          <div className="space-y-2 p-2 sm:p-3 bg-muted rounded-lg">
+            <Label className="text-[10px] sm:text-xs font-medium flex items-center gap-1 text-foreground">
               <Info className="h-3 w-3" />
               Calibration
             </Label>
@@ -279,15 +279,15 @@ const DistanceMeasurementTool: React.FC<DistanceMeasurementToolProps> = ({
                 type="number"
                 value={calibrationDistance}
                 onChange={(e) => setCalibrationDistance(e.target.value)}
-                className="w-20 h-8 text-sm"
+                className="w-16 sm:w-20 h-7 sm:h-8 text-xs sm:text-sm border-border"
                 placeholder="1"
               />
-              <span className="text-sm text-muted-foreground self-center">meters</span>
+              <span className="text-xs sm:text-sm text-muted-foreground self-center">meters</span>
             </div>
             <Button
               variant={calibrationMode ? 'destructive' : 'outline'}
               size="sm"
-              className="w-full"
+              className="w-full h-8 text-xs border-border"
               onClick={() => {
                 setCalibrationMode(!calibrationMode);
                 setCurrentPoints([]);

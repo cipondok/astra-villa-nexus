@@ -123,13 +123,13 @@ const VirtualStagingPanel: React.FC<VirtualStagingPanelProps> = ({
 
   return (
     <div className={cn(
-      "grid gap-4 p-4",
+      "grid gap-3 sm:gap-4 p-3 sm:p-4",
       isFullscreen ? "lg:grid-cols-3 h-screen overflow-auto" : "lg:grid-cols-2"
     )}>
       {/* Preview Panel */}
       <div className={cn(
-        "relative rounded-xl overflow-hidden bg-muted",
-        isFullscreen ? "lg:col-span-2 h-[500px]" : "h-[400px]"
+        "relative rounded-xl overflow-hidden bg-muted border border-border",
+        isFullscreen ? "lg:col-span-2 h-[500px]" : "h-[300px] sm:h-[400px]"
       )}>
         <AnimatePresence mode="wait">
           {stagedImageUrl && showComparison ? (
@@ -164,8 +164,8 @@ const VirtualStagingPanel: React.FC<VirtualStagingPanelProps> = ({
               </div>
 
               {/* Labels */}
-              <Badge className="absolute top-4 left-4 bg-background/80">Original</Badge>
-              <Badge className="absolute top-4 right-4 bg-primary">Staged</Badge>
+              <Badge className="absolute top-4 left-4 bg-card border border-border text-foreground">Original</Badge>
+              <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground">Staged</Badge>
             </div>
           ) : (
             <motion.img
@@ -183,52 +183,52 @@ const VirtualStagingPanel: React.FC<VirtualStagingPanelProps> = ({
         {isLoading && (
           <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-4">
             <div className="relative">
-              <Loader2 className="h-12 w-12 text-white animate-spin" />
-              <Sparkles className="h-6 w-6 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
+              <Loader2 className="h-10 w-10 sm:h-12 sm:w-12 text-white animate-spin" />
+              <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
             </div>
             <div className="text-center">
-              <p className="text-white font-medium">AI Staging in Progress</p>
-              <p className="text-white/70 text-sm">Adding {style} furniture...</p>
+              <p className="text-white font-medium text-sm sm:text-base">AI Staging in Progress</p>
+              <p className="text-white/70 text-xs sm:text-sm">Adding {style} furniture...</p>
             </div>
           </div>
         )}
 
         {/* Action buttons when staged */}
         {stagedImageUrl && !isLoading && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 sm:gap-2 flex-wrap justify-center">
             <Button
               variant={showComparison ? "default" : "secondary"}
               size="sm"
               onClick={() => setShowComparison(!showComparison)}
-              className="bg-background/80 backdrop-blur-sm"
+              className="bg-card/90 border border-border text-xs h-8"
             >
-              <ArrowLeftRight className="h-4 w-4 mr-1" />
-              Compare
+              <ArrowLeftRight className="h-3 w-3 sm:mr-1" />
+              <span className="hidden sm:inline">Compare</span>
             </Button>
             <Button
               variant="secondary"
               size="sm"
               onClick={handleDownload}
-              className="bg-background/80 backdrop-blur-sm"
+              className="bg-card/90 border border-border text-xs h-8"
             >
-              <Download className="h-4 w-4 mr-1" />
-              Download
+              <Download className="h-3 w-3 sm:mr-1" />
+              <span className="hidden sm:inline">Download</span>
             </Button>
             <Button
               size="sm"
               onClick={handleSave}
-              className="bg-primary"
+              className="bg-primary text-primary-foreground text-xs h-8"
             >
-              <Save className="h-4 w-4 mr-1" />
-              Save to Tour
+              <Save className="h-3 w-3 sm:mr-1" />
+              <span className="hidden sm:inline">Save to Tour</span>
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleReset}
-              className="bg-background/80 backdrop-blur-sm"
+              className="bg-card/90 border border-border h-8 w-8 p-0"
             >
-              <RotateCcw className="h-4 w-4" />
+              <RotateCcw className="h-3 w-3" />
             </Button>
           </div>
         )}
@@ -248,31 +248,31 @@ const VirtualStagingPanel: React.FC<VirtualStagingPanelProps> = ({
       </div>
 
       {/* Controls Panel */}
-      <Card className="h-fit">
+      <Card className="h-fit border-border">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
+          <CardTitle className="flex items-center gap-2 text-sm sm:text-base text-foreground">
             <Wand2 className="h-4 w-4 text-primary" />
             AI Virtual Staging
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-5">
+        <CardContent className="space-y-4 sm:space-y-5">
           {/* Room Type Selection */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Room Type</Label>
-            <div className="grid grid-cols-4 gap-2">
+            <Label className="text-xs sm:text-sm font-medium text-foreground">Room Type</Label>
+            <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
               {(Object.keys(roomTypeIcons) as RoomType[]).map((type) => (
                 <button
                   key={type}
                   onClick={() => setRoomType(type)}
                   className={cn(
-                    "flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-all",
+                    "flex flex-col items-center gap-0.5 sm:gap-1 p-1.5 sm:p-2 rounded-lg border-2 transition-all",
                     roomType === type
                       ? "border-primary bg-primary/10"
                       : "border-border hover:border-primary/50"
                   )}
                 >
                   {roomTypeIcons[type]}
-                  <span className="text-[10px] capitalize">
+                  <span className="text-[8px] sm:text-[10px] capitalize text-foreground">
                     {type.replace('_', ' ')}
                   </span>
                 </button>
@@ -282,19 +282,19 @@ const VirtualStagingPanel: React.FC<VirtualStagingPanelProps> = ({
 
           {/* Style Selection */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium flex items-center gap-2">
+            <Label className="text-xs sm:text-sm font-medium flex items-center gap-2 text-foreground">
               <Palette className="h-4 w-4" />
               Interior Style
             </Label>
             <Select value={style} onValueChange={(v) => setStyle(v as StyleType)}>
-              <SelectTrigger>
+              <SelectTrigger className="border-border">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {(Object.keys(styleDescriptions) as StyleType[]).map((s) => (
                   <SelectItem key={s} value={s}>
                     <div className="flex flex-col">
-                      <span className="capitalize font-medium">{s}</span>
+                      <span className="capitalize font-medium text-foreground">{s}</span>
                       <span className="text-xs text-muted-foreground">
                         {styleDescriptions[s]}
                       </span>
@@ -308,8 +308,8 @@ const VirtualStagingPanel: React.FC<VirtualStagingPanelProps> = ({
           {/* Options */}
           <div className="flex items-center justify-between py-2">
             <div className="space-y-0.5">
-              <Label className="text-sm font-medium">Remove Existing Furniture</Label>
-              <p className="text-xs text-muted-foreground">
+              <Label className="text-xs sm:text-sm font-medium text-foreground">Remove Existing Furniture</Label>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
                 Replace current furniture with new staging
               </p>
             </div>

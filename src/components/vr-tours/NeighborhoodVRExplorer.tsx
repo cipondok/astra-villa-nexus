@@ -89,16 +89,16 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
 
   return (
     <div className={cn(
-      "grid gap-4 p-4",
+      "grid gap-3 sm:gap-4 p-3 sm:p-4",
       isFullscreen ? "lg:grid-cols-4 h-screen overflow-auto" : "lg:grid-cols-4"
     )}>
       {/* 2D Neighborhood Map View */}
       <div className={cn(
-        "relative rounded-xl overflow-hidden lg:col-span-3",
+        "relative rounded-xl overflow-hidden lg:col-span-3 border border-border",
         isDayMode 
-          ? "bg-gradient-to-b from-sky-200 to-emerald-100" 
+          ? "bg-gradient-to-b from-sky-100 to-emerald-50" 
           : "bg-gradient-to-b from-slate-800 to-slate-900",
-        isFullscreen ? "h-[600px]" : "h-[400px]"
+        isFullscreen ? "h-[600px]" : "h-[300px] sm:h-[400px]"
       )}>
         {/* Grid lines for visual effect */}
         <div className="absolute inset-0 opacity-20">
@@ -126,10 +126,10 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
         >
           <div className="relative">
-            <div className="w-16 h-16 rounded-xl bg-primary shadow-lg flex items-center justify-center animate-pulse">
-              <Building2 className="h-8 w-8 text-primary-foreground" />
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-primary shadow-lg flex items-center justify-center animate-pulse border-2 border-primary-foreground/20">
+              <Building2 className="h-6 w-6 sm:h-8 sm:w-8 text-primary-foreground" />
             </div>
-            <Badge className="absolute -top-2 -right-2 bg-primary whitespace-nowrap text-[10px]">
+            <Badge className="absolute -top-2 -right-2 bg-primary text-primary-foreground whitespace-nowrap text-[8px] sm:text-[10px]">
               Your Property
             </Badge>
           </div>
@@ -166,8 +166,8 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap"
               >
-                <div className="bg-background/95 backdrop-blur-sm rounded-lg p-2 shadow-lg border border-border text-xs">
-                  <p className="font-medium">{poi.name}</p>
+                <div className="bg-card border border-border rounded-lg p-2 shadow-lg text-xs">
+                  <p className="font-medium text-foreground">{poi.name}</p>
                   <p className="text-muted-foreground">{poi.distance}</p>
                 </div>
               </motion.div>
@@ -177,17 +177,17 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
 
         {/* Category filters */}
         <div className="absolute top-4 left-4 z-20">
-          <div className="flex flex-wrap gap-1 bg-background/80 backdrop-blur-sm rounded-lg p-1">
+          <div className="flex flex-wrap gap-1 bg-card/90 border border-border rounded-lg p-1 shadow-lg">
             {categories.map((cat) => (
               <Button
                 key={cat.id}
                 variant={activeCategory === cat.id ? 'default' : 'ghost'}
                 size="sm"
-                className="h-7 text-xs"
+                className="h-6 sm:h-7 text-[10px] sm:text-xs px-2"
                 onClick={() => setActiveCategory(cat.id)}
               >
-                <cat.icon className="h-3 w-3 mr-1" />
-                {cat.label}
+                <cat.icon className="h-3 w-3 mr-0.5 sm:mr-1" />
+                <span className="hidden sm:inline">{cat.label}</span>
               </Button>
             ))}
           </div>
@@ -195,7 +195,7 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
 
         {/* Legend */}
         <div className="absolute bottom-4 right-4 z-20">
-          <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm">
+          <Badge className="bg-card/90 border border-border text-foreground shadow-lg">
             <Building2 className="h-3 w-3 mr-1" />
             {filteredPOIs.length} Places Nearby
           </Badge>
@@ -203,9 +203,9 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
       </div>
 
       {/* POI Details Panel */}
-      <Card className="h-fit">
+      <Card className="h-fit border-border">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
+          <CardTitle className="flex items-center gap-2 text-sm sm:text-base text-foreground">
             <Navigation className="h-4 w-4 text-primary" />
             Nearby Places
           </CardTitle>
@@ -215,31 +215,31 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-3 bg-primary/10 rounded-lg"
+              className="p-2 sm:p-3 bg-primary/10 rounded-lg border border-primary/20"
             >
-              <div className="flex items-start gap-3">
-                <div className="text-3xl">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="text-2xl sm:text-3xl">
                   {getIcon(selectedPOI.type)}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-sm">{selectedPOI.name}</h3>
-                  <p className="text-xs text-muted-foreground capitalize">{selectedPOI.type}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge variant="outline" className="text-xs">
-                      <MapPin className="h-3 w-3 mr-1" />
+                  <h3 className="font-semibold text-xs sm:text-sm text-foreground">{selectedPOI.name}</h3>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground capitalize">{selectedPOI.type}</p>
+                  <div className="flex items-center gap-1 sm:gap-2 mt-1.5 sm:mt-2">
+                    <Badge variant="outline" className="text-[10px] sm:text-xs border-border">
+                      <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
                       {selectedPOI.distance}
                     </Badge>
                     {selectedPOI.rating && (
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge variant="secondary" className="text-[10px] sm:text-xs">
                         ⭐ {selectedPOI.rating}
                       </Badge>
                     )}
                   </div>
                 </div>
               </div>
-              <Button size="sm" className="w-full mt-3">
+              <Button size="sm" className="w-full mt-2 sm:mt-3 h-8 text-xs">
                 Get Directions
-                <ChevronRight className="h-4 w-4 ml-1" />
+                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
               </Button>
             </motion.div>
           ) : (
