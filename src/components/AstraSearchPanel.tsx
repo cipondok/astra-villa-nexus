@@ -2618,24 +2618,16 @@ const AstraSearchPanel = ({
                   </div>}
               </div>
               
-              {/* Smart Suggestions Dropdown */}
+              {/* Smart Suggestions Dropdown - Always fixed to avoid layout shift */}
               {showSuggestions && hasSuggestions && (
                 <div
                   ref={suggestionsRef}
-                  className={cn(
-                    isMobile
-                      ? "absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
-                      : "fixed bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
-                  )}
-                  style={
-                    isMobile
-                      ? undefined
-                      : {
-                          top: suggestionsRect.top,
-                          left: suggestionsRect.left,
-                          width: suggestionsRect.width,
-                        }
-                  }
+                  className="fixed bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
+                  style={{
+                    top: suggestionsRect.top,
+                    left: suggestionsRect.left,
+                    width: suggestionsRect.width,
+                  }}
                 >
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
