@@ -154,6 +154,13 @@ export const navigationSections = {
       icon: Building2,
       description: "Manage B2B clients, leads, API access, custom reports, and white-label configurations",
       badge: "New"
+    },
+    {
+      key: "partnership-programs",
+      label: "Partnership Programs",
+      icon: Users,
+      description: "Manage mortgage brokers, home inspectors, moving companies, and other partners with referral tracking and payouts",
+      badge: "New"
     }
   ],
 
