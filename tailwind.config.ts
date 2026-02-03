@@ -350,14 +350,6 @@ const config: Config = {
             opacity: "0.15",
             transform: "translateX(-50%) scale(0.85)"
           }
-        },
-        "gradient-x": {
-          "0%, 100%": {
-            backgroundPosition: "0% 50%"
-          },
-          "50%": {
-            backgroundPosition: "100% 50%"
-          }
         }
       },
       animation: {
@@ -388,7 +380,6 @@ const config: Config = {
         "pulse-glow": "pulse-glow 2.5s ease-in-out infinite",
         "logo-3d-float": "logo-3d-float 4s ease-in-out infinite",
         "logo-shadow": "logo-shadow 4s ease-in-out infinite",
-        "gradient-x": "gradient-x 3s ease infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',

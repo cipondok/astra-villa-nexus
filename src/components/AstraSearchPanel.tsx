@@ -7,7 +7,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CollapsibleSearchPanelMobile } from "@/components/CollapsibleSearchPanelMobile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -2004,43 +2004,25 @@ const AstraSearchPanel = ({
   if (isMobile) {
     return (
       <div className="w-full px-0 py-3 space-y-3">
-        {/* Compact Tabs for Sale/Rent/All - Soft Sliding Animation */}
+        {/* Compact Tabs for Sale/Rent/All */}
         <div className="flex justify-center">
           <div 
-            className="relative inline-flex bg-background/60 backdrop-blur-md p-1 rounded-xl border border-border/50 shadow-md"
+            className="grid grid-cols-4 gap-1 p-1"
             role="tablist"
           >
-            {/* Sliding Background Indicator */}
-            <div
-              className="absolute top-1 bottom-1 bg-primary rounded-lg shadow-lg transition-all duration-300 ease-out"
-              style={{
-                width: 'calc(25% - 2px)',
-                left: activeTab === 'all' ? '4px' 
-                    : activeTab === 'sale' ? 'calc(25% + 2px)'
-                    : activeTab === 'rent' ? 'calc(50%)'
-                    : 'calc(75% - 2px)',
-              }}
-            />
-            
             <button
               onClick={() => setActiveTab("all")}
               role="tab"
               aria-selected={activeTab === "all"}
               className={cn(
-                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 group",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "all" 
-                  ? "text-primary-foreground" 
-                  : "text-foreground/60 hover:text-primary"
+                  ? "bg-white text-primary shadow-md" 
+                  : "text-white/90 hover:text-white hover:bg-white/20"
               )}
             >
-              <Layers className={cn(
-                "h-3.5 w-3.5 transition-all duration-200",
-                activeTab === "all" ? "" : "group-hover:text-violet-500 group-hover:scale-110"
-              )} />
-              <span className={cn(
-                "transition-colors duration-200",
-                activeTab === "all" ? "" : "group-hover:text-violet-600 dark:group-hover:text-violet-400"
-              )}>All</span>
+              <Layers className="h-3.5 w-3.5" />
+              <span>All</span>
             </button>
             
             <button
@@ -2048,20 +2030,14 @@ const AstraSearchPanel = ({
               role="tab"
               aria-selected={activeTab === "sale"}
               className={cn(
-                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 group",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "sale" 
-                  ? "text-primary-foreground" 
-                  : "text-foreground/60 hover:text-primary"
+                  ? "bg-white text-primary shadow-md" 
+                  : "text-white/90 hover:text-white hover:bg-white/20"
               )}
             >
-              <ShoppingBag className={cn(
-                "h-3.5 w-3.5 transition-all duration-200",
-                activeTab === "sale" ? "" : "group-hover:text-emerald-500 group-hover:scale-110"
-              )} />
-              <span className={cn(
-                "transition-colors duration-200",
-                activeTab === "sale" ? "" : "group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
-              )}>Buy</span>
+              <ShoppingBag className="h-3.5 w-3.5" />
+              <span>Buy</span>
             </button>
             
             <button
@@ -2069,20 +2045,14 @@ const AstraSearchPanel = ({
               role="tab"
               aria-selected={activeTab === "rent"}
               className={cn(
-                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 group",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "rent" 
-                  ? "text-primary-foreground" 
-                  : "text-foreground/60 hover:text-primary"
+                  ? "bg-white text-primary shadow-md" 
+                  : "text-white/90 hover:text-white hover:bg-white/20"
               )}
             >
-              <Key className={cn(
-                "h-3.5 w-3.5 transition-all duration-200",
-                activeTab === "rent" ? "" : "group-hover:text-blue-500 group-hover:scale-110"
-              )} />
-              <span className={cn(
-                "transition-colors duration-200",
-                activeTab === "rent" ? "" : "group-hover:text-blue-600 dark:group-hover:text-blue-400"
-              )}>Rent</span>
+              <Key className="h-3.5 w-3.5" />
+              <span>Rent</span>
             </button>
             
             <button
@@ -2090,20 +2060,14 @@ const AstraSearchPanel = ({
               role="tab"
               aria-selected={activeTab === "new_project"}
               className={cn(
-                "relative z-10 px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 group",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "new_project" 
-                  ? "text-primary-foreground" 
-                  : "text-foreground/60 hover:text-primary"
+                  ? "bg-white text-primary shadow-md" 
+                  : "text-white/90 hover:text-white hover:bg-white/20"
               )}
             >
-              <Rocket className={cn(
-                "h-3.5 w-3.5 transition-all duration-200",
-                activeTab === "new_project" ? "" : "group-hover:text-orange-500 group-hover:scale-110"
-              )} />
-              <span className={cn(
-                "transition-colors duration-200",
-                activeTab === "new_project" ? "" : "group-hover:text-orange-600 dark:group-hover:text-orange-400"
-              )}>New</span>
+              <Rocket className="h-3.5 w-3.5" />
+              <span>New</span>
             </button>
           </div>
         </div>
@@ -2434,118 +2398,91 @@ const AstraSearchPanel = ({
       </div>
     );
   }
-  return <div className="w-full max-w-6xl mx-auto transition-all duration-300">
-    <div className={cn("sticky z-[999] transition-all duration-300", isMobile ? "top-[60px] px-2 py-2" : "top-[48px] w-full px-3 lg:px-4")}>
-      {/* Clean Glassmorphic Container with Design Tokens */}
-      <div className="relative bg-card/80 dark:bg-card/60 backdrop-blur-xl rounded-2xl border border-border/50 shadow-xl">
-        {/* Subtle top highlight */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-t-2xl" />
-        <div className={cn("relative space-y-2 overflow-visible", isMobile ? "p-2" : "p-3 lg:p-4")}>
+  return <div className="w-full max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1800px] 3xl:max-w-[2000px] mx-auto transition-all duration-500">
+    <div className={cn("sticky z-[999] transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-[48px] w-full px-2 lg:px-4 xl:px-6")}>
+      {/* Premium Frosted Glass Container */}
+      <div className="relative bg-white/10 dark:bg-white/5 backdrop-blur-2xl backdrop-saturate-150 overflow-visible rounded-xl border border-white/40 dark:border-white/20 shadow-xl shadow-black/5 ring-1 ring-white/20">
+        {/* Subtle top shine line */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/20 pointer-events-none" />
+        <div className={cn("relative space-y-1.5 overflow-visible", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
           
-          {/* Listing Type Tabs - Soft Sliding Animation with Color Hover */}
+          {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
           <div className="flex justify-center">
-            <div className="relative inline-flex bg-muted/60 p-1 rounded-xl border border-border/50 shadow-sm">
-              {/* Sliding Background Indicator */}
+            <div className="search-tab-container grid grid-cols-4">
+              {/* Animated sliding background indicator */}
               <div
-                className="absolute top-1 bottom-1 bg-primary rounded-lg shadow-lg transition-all duration-300 ease-out"
+                className="search-tab-slider inset-y-1"
                 style={{
-                  width: 'calc(25% - 2px)',
-                  left: activeTab === 'all' ? '4px' 
-                      : activeTab === 'sale' ? 'calc(25% + 2px)'
-                      : activeTab === 'rent' ? 'calc(50%)'
-                      : 'calc(75% - 2px)',
+                  width: "calc(25% - 4px)",
+                  left:
+                    activeTab === "all"
+                      ? "4px"
+                      : activeTab === "sale"
+                        ? "calc(25% + 2px)"
+                        : activeTab === "rent"
+                          ? "calc(50%)"
+                          : "calc(75% - 2px)",
                 }}
               />
-              
+
               <button
                 onClick={() => setActiveTab("all")}
                 className={cn(
-                  "relative z-10 flex items-center justify-center gap-1.5 min-w-[70px] px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 group",
-                  activeTab === "all" 
-                    ? "text-primary-foreground" 
-                    : "text-muted-foreground hover:bg-amber-300/10"
+                  "search-tab-btn flex-1",
+                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
+                  activeTab === "all" && "active"
                 )}
               >
-                <Layers className={cn(
-                  "h-3.5 w-3.5 transition-all duration-200",
-                  activeTab === "all" ? "" : "group-hover:text-violet-700 dark:group-hover:text-violet-400 group-hover:scale-110"
-                )} />
-                <span className={cn(
-                  isMobile && "hidden",
-                  "transition-colors duration-200",
-                  activeTab === "all" ? "" : "group-hover:text-violet-700 dark:group-hover:text-violet-400"
-                )}>{currentText.all}</span>
+                <Layers className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
+                <span>{isMobile ? "" : currentText.all}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("sale")}
                 className={cn(
-                  "relative z-10 flex items-center justify-center gap-1.5 min-w-[70px] px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 group",
-                  activeTab === "sale" 
-                    ? "text-primary-foreground" 
-                    : "text-muted-foreground hover:bg-amber-300/10"
+                  "search-tab-btn flex-1",
+                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
+                  activeTab === "sale" && "active"
                 )}
               >
-                <ShoppingBag className={cn(
-                  "h-3.5 w-3.5 transition-all duration-200",
-                  activeTab === "sale" ? "" : "group-hover:text-emerald-700 dark:group-hover:text-emerald-400 group-hover:scale-110"
-                )} />
-                <span className={cn(
-                  isMobile && "hidden",
-                  "transition-colors duration-200",
-                  activeTab === "sale" ? "" : "group-hover:text-emerald-700 dark:group-hover:text-emerald-400"
-                )}>{currentText.forSale}</span>
+                <ShoppingBag className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
+                <span>{isMobile ? "" : currentText.forSale}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("rent")}
                 className={cn(
-                  "relative z-10 flex items-center justify-center gap-1.5 min-w-[70px] px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 group",
-                  activeTab === "rent" 
-                    ? "text-primary-foreground" 
-                    : "text-muted-foreground hover:bg-amber-300/10"
+                  "search-tab-btn flex-1",
+                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
+                  activeTab === "rent" && "active"
                 )}
               >
-                <Key className={cn(
-                  "h-3.5 w-3.5 transition-all duration-200",
-                  activeTab === "rent" ? "" : "group-hover:text-blue-700 dark:group-hover:text-blue-400 group-hover:scale-110"
-                )} />
-                <span className={cn(
-                  isMobile && "hidden",
-                  "transition-colors duration-200",
-                  activeTab === "rent" ? "" : "group-hover:text-blue-700 dark:group-hover:text-blue-400"
-                )}>{currentText.forRent}</span>
+                <Key className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
+                <span>{isMobile ? "" : currentText.forRent}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("new_project")}
                 className={cn(
-                  "relative z-10 flex items-center justify-center gap-1.5 min-w-[70px] px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 group",
-                  activeTab === "new_project" 
-                    ? "text-primary-foreground" 
-                    : "text-muted-foreground hover:bg-amber-300/10"
+                  "search-tab-btn flex-1",
+                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
+                  activeTab === "new_project" && "active"
                 )}
               >
-                <Rocket className={cn(
-                  "h-3.5 w-3.5 transition-all duration-200",
-                  activeTab === "new_project" ? "" : "group-hover:text-orange-700 dark:group-hover:text-orange-400 group-hover:scale-110"
-                )} />
-                <span className={cn(
-                  isMobile && "hidden",
-                  "transition-colors duration-200",
-                  activeTab === "new_project" ? "" : "group-hover:text-orange-700 dark:group-hover:text-orange-400"
-                )}>{currentText.newProject}</span>
+                <Rocket className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
+                <span>{isMobile ? "" : currentText.newProject}</span>
               </button>
             </div>
           </div>
           
           
-          {/* Search Row */}
-          <div className={cn("flex overflow-visible", isMobile ? "gap-2" : "gap-3")}>
+          {/* Compact Search Row with Location Options */}
+          <div className={cn("flex overflow-visible", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
             <div ref={anchorRef} className="flex-1 relative z-[100001]">
               <Search className={cn(
-                "absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none transition-colors", 
-                isMobile ? "h-4 w-4 left-2.5" : "h-4 w-4"
+                "absolute left-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none transition-all duration-500", 
+                isMobile ? "h-3 w-3 left-2" : "h-4 w-4",
+                searchQuery && "animate-pulse"
               )} />
               <Input 
                 type="search"
@@ -2554,12 +2491,14 @@ const AstraSearchPanel = ({
                 onChange={e => handleSearchChange(e.target.value)} 
                 onFocus={() => {
                   setShowSuggestions(true);
+                  // Ensure dropdown position is computed immediately on focus (desktop + mobile)
                   requestAnimationFrame(() => updateSuggestionsPosition());
                 }} 
                 className={cn(
-                  "bg-background border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all shadow-sm",
-                  "text-foreground placeholder:text-muted-foreground",
-                  isMobile ? "pl-9 pr-20 h-10 text-sm" : "pl-10 pr-28 h-11 text-sm"
+                  "border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/30 rounded-xl transition-all duration-500 shadow-md font-medium hover:border-primary/60 hover:shadow-primary/20",
+                  "text-gray-900 dark:text-white placeholder:text-gray-600 dark:placeholder:text-gray-400",
+                  // Fully transparent input background
+                  isMobile ? "pl-8 pr-16 h-8 text-xs bg-transparent" : "pl-10 pr-28 h-9 text-sm bg-transparent"
                 )} 
               />
               
@@ -2573,28 +2512,25 @@ const AstraSearchPanel = ({
                   enablePaste={true}
                   className="shrink-0"
                 />
-                <TooltipProvider delayDuration={0}>
+                <TooltipProvider delayDuration={100}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className="p-1.5 flex items-center justify-center transition-all duration-200 group hover:bg-amber-300/10 rounded-lg">
-                        <MapPin className="h-5 w-5 text-muted-foreground group-hover:text-amber-700 dark:group-hover:text-amber-400 group-hover:scale-110 transition-all duration-200" />
+                      <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className="p-1 flex items-center justify-center transition-colors">
+                        <MapPin className="h-5 w-5 text-orange-700 dark:text-orange-400" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" sideOffset={8}>
-                      <p className="text-xs font-medium">Map View</p>
+                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+                      <p className="text-[10px] font-medium">Map View</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <TooltipProvider delayDuration={0}>
+                <TooltipProvider delayDuration={100}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1.5 flex items-center justify-center transition-all duration-200 group hover:bg-amber-300/10 rounded-lg" disabled={isGettingLocation}>
+                      <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1 flex items-center justify-center transition-colors" disabled={isGettingLocation}>
                         {isGettingLocation ? <div className="flex flex-col items-center justify-center">
-                            <div className="animate-spin h-4 w-4 border-2 border-primary rounded-full border-t-transparent" />
-                          </div> : <svg className={cn(
-                            "h-5 w-5 transition-all duration-200",
-                            useNearbyLocation ? "text-cyan-600 dark:text-cyan-400" : "text-muted-foreground group-hover:text-cyan-700 dark:group-hover:text-cyan-400 group-hover:scale-110"
-                          )} viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <div className="animate-spin h-4 w-4 border-2 border-cyan-700 rounded-full border-t-transparent" />
+                          </div> : <svg className="h-5 w-5 text-cyan-700 dark:text-cyan-400" viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="12" cy="12" r="3" />
                             <path d="M12 2v3" />
                             <path d="M12 19v3" />
@@ -2603,8 +2539,8 @@ const AstraSearchPanel = ({
                           </svg>}
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" sideOffset={8}>
-                      <p className="text-xs font-medium">{isGettingLocation ? "Getting Location..." : "Near Me"}</p>
+                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+                      <p className="text-[10px] font-medium">{isGettingLocation ? "Getting Location..." : "Near Me"}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -2618,16 +2554,24 @@ const AstraSearchPanel = ({
                   </div>}
               </div>
               
-              {/* Smart Suggestions Dropdown - Fixed positioning to prevent layout shift */}
-              {showSuggestions && hasSuggestions && suggestionsRect.width > 0 && (
+              {/* Smart Suggestions Dropdown */}
+              {showSuggestions && hasSuggestions && (
                 <div
                   ref={suggestionsRef}
-                  className="fixed bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
-                  style={{
-                    top: suggestionsRect.top,
-                    left: suggestionsRect.left,
-                    width: suggestionsRect.width,
-                  }}
+                  className={cn(
+                    isMobile
+                      ? "absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
+                      : "fixed bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
+                  )}
+                  style={
+                    isMobile
+                      ? undefined
+                      : {
+                          top: suggestionsRect.top,
+                          left: suggestionsRect.left,
+                          width: suggestionsRect.width,
+                        }
+                  }
                 >
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
@@ -2659,10 +2603,10 @@ const AstraSearchPanel = ({
                               setShowSuggestions(false);
                               handleSearch();
                             }} 
-                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-accent rounded-lg transition-all duration-200 flex items-center gap-2 group"
+                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-all duration-500 flex items-center gap-2 hover:scale-105"
                           >
-                            <Clock className="h-2.5 w-2.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                            <span className="group-hover:text-primary transition-colors">{term}</span>
+                            <Clock className="h-2.5 w-2.5 text-muted-foreground" />
+                            {term}
                             {getDisplayCount(term) > 0 && (
                               <span className="ml-auto text-[8px] text-muted-foreground">
                                 {getDisplayCount(term)}x
@@ -2691,10 +2635,10 @@ const AstraSearchPanel = ({
                               setShowSuggestions(false);
                               handleSearch();
                             }} 
-                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-accent rounded-lg transition-all duration-200 flex items-center gap-2 group"
+                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-purple-500/10 rounded-lg transition-colors flex items-center gap-2"
                           >
-                            <MapPin className="h-2.5 w-2.5 text-muted-foreground group-hover:text-purple-500 transition-colors" />
-                            <span className="group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{location}</span>
+                            <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
+                            {location}
                             {getDisplayCount(location) > 0 && (
                               <span className="ml-auto text-[8px] text-muted-foreground">
                                 {getDisplayCount(location)}x
@@ -2712,39 +2656,32 @@ const AstraSearchPanel = ({
                         Trending
                       </div>
                       <div className="space-y-0.5">
-                        {filteredSuggestions.trending.map((trend, i) => (
-                          <button 
-                            key={i} 
-                            type="button" 
-                            onClick={e => {
-                              e.stopPropagation();
-                              trackSuggestionClick(trend);
-                              setSearchQuery(trend);
-                              setShowSuggestions(false);
-                              handleSearch();
-                            }} 
-                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-accent rounded-lg transition-all duration-200 flex items-center justify-between group"
-                          >
-                            <span className="group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{trend}</span>
+                        {filteredSuggestions.trending.map((trend, i) => <button key={i} type="button" onClick={e => {
+                    e.stopPropagation();
+                    trackSuggestionClick(trend);
+                    setSearchQuery(trend);
+                    setShowSuggestions(false);
+                    handleSearch();
+                  }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-between">
+                            <span>{trend}</span>
                             {getDisplayCount(trend) > 0 && (
                               <span className="text-[8px] text-muted-foreground">
                                 {getDisplayCount(trend)}x
                               </span>
                             )}
-                          </button>
-                        ))}
+                          </button>)}
                       </div>
                     </div>}
                 </div>
               )}
             </div>
 
-            {/* Property Type Button - Tooltip separated from Popover (anchored to same button) */}
+            {/* Property Type Button */}
             <Popover open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen}>
-              <TooltipProvider delayDuration={0}>
+              <TooltipProvider delayDuration={100}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <PopoverAnchor asChild>
+                    <PopoverTrigger asChild>
                       <button 
                         onClick={(e) => {
                           e.preventDefault();
@@ -2752,25 +2689,25 @@ const AstraSearchPanel = ({
                           setIsPropertyTypeOpen(!isPropertyTypeOpen);
                           requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                         }}
-                        className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-amber-300/10 rounded-lg"
+                        className="p-1 flex items-center justify-center transition-colors relative"
                       >
-                        <Building className="h-5 w-5 text-muted-foreground group-hover:text-blue-800 dark:group-hover:text-blue-400 group-hover:scale-110 transition-all duration-200" />
+                        <Building className="h-5 w-5 text-blue-700 dark:text-blue-400" />
                         {filters.propertyType && filters.propertyType !== 'all' && (
-                          <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
+                          <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-blue-500 text-white min-w-[14px] text-center">
                             1
                           </span>
                         )}
                       </button>
-                    </PopoverAnchor>
+                    </PopoverTrigger>
                   </TooltipTrigger>
-                  <TooltipContent side="top" sideOffset={8} avoidCollisions={false} className="z-[100000]">
-                    <p className="text-xs font-medium">Property Type</p>
+                  <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+                    <p className="text-[10px] font-medium">Property Type</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-
+              
               <PopoverContent 
-                className="w-56 bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl z-[99999] p-3" 
+                className="w-56 bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150 border border-white/30 dark:border-white/20 rounded-2xl shadow-2xl z-[99999] p-3 ring-1 ring-white/20" 
                 align="start"
                 sideOffset={8}
               >
@@ -2779,26 +2716,23 @@ const AstraSearchPanel = ({
                   <div className="grid grid-cols-2 gap-1.5">
                     {propertyTypeOptions.slice(0, 8).map((type) => {
                       const IconComponent = type.icon || Building;
-                      const isSelected = filters.propertyType === type.value;
                       return (
                         <button
                           key={type.value}
                           onClick={() => {
-                            handleFilterChange('propertyType', isSelected ? 'all' : type.value);
+                            handleFilterChange('propertyType', filters.propertyType === type.value ? 'all' : type.value);
                             setIsPropertyTypeOpen(false);
                           }}
                           className={cn(
-                            "flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-all duration-200 group",
-                            isSelected 
-                              ? "bg-primary text-primary-foreground shadow-md" 
-                              : "bg-muted/50 text-foreground hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400"
+                            "flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-all",
+                            "hover:bg-primary/10",
+                            filters.propertyType === type.value 
+                              ? "bg-primary text-primary-foreground" 
+                              : "bg-muted/50 text-foreground"
                           )}
                         >
-                          <IconComponent className={cn(
-                            "h-3 w-3 transition-all duration-200",
-                            !isSelected && "group-hover:text-blue-500 group-hover:scale-110"
-                          )} />
-                          <span>{type.label}</span>
+                          <IconComponent className="h-3 w-3" />
+                          {type.label}
                         </button>
                       );
                     })}
@@ -2809,7 +2743,7 @@ const AstraSearchPanel = ({
                         handleFilterChange('propertyType', 'all');
                         setIsPropertyTypeOpen(false);
                       }}
-                      className="w-full mt-2 px-2 py-1.5 text-[10px] text-muted-foreground hover:text-destructive transition-colors"
+                      className="w-full mt-2 px-2 py-1.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
                     >
                       Clear Selection
                     </button>
@@ -2818,51 +2752,51 @@ const AstraSearchPanel = ({
               </PopoverContent>
             </Popover>
 
-            {/* Location Button - Tooltip separated from Popover (anchored to same button) */}
-            {!useNearbyLocation && (
-              <Popover open={isLocationOpen} onOpenChange={setIsLocationOpen}>
-                <TooltipProvider delayDuration={0}>
+            {/* Location Button */}
+            {!useNearbyLocation && <Popover open={isLocationOpen} onOpenChange={(open) => {
+                setIsLocationOpen(open);
+                // Reset to appropriate tab based on current selection
+                if (open) {
+                  if (!filters.state || filters.state === 'all') {
+                    setLocationActiveTab('province');
+                  } else if (!filters.city || filters.city === 'all') {
+                    setLocationActiveTab('city');
+                  } else {
+                    setLocationActiveTab('area');
+                  }
+                }
+              }}>
+                <TooltipProvider delayDuration={100}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <PopoverAnchor asChild>
+                      <PopoverTrigger asChild>
                         <button 
                           onClick={(e) => {
                             e.preventDefault();
                             const currentScroll = window.scrollY;
-                            const newOpen = !isLocationOpen;
-                            setIsLocationOpen(newOpen);
-                            // Reset to appropriate tab based on current selection
-                            if (newOpen) {
-                              if (!filters.state || filters.state === 'all') {
-                                setLocationActiveTab('province');
-                              } else if (!filters.city || filters.city === 'all') {
-                                setLocationActiveTab('city');
-                              } else {
-                                setLocationActiveTab('area');
-                              }
-                            }
+                            setIsLocationOpen(!isLocationOpen);
                             requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
-                          className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-amber-300/10 rounded-lg"
+                          className="p-1 flex items-center justify-center transition-colors relative"
                         >
-                          <MapPin className="h-5 w-5 text-muted-foreground group-hover:text-purple-800 dark:group-hover:text-purple-400 group-hover:scale-110 transition-all duration-200" />
+                          <MapPin className="h-5 w-5 text-purple-700 dark:text-purple-400" />
                           {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
-                            <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
+                            <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-purple-500 text-white min-w-[14px] text-center">
                               {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
                             </span>
                           )}
                         </button>
-                      </PopoverAnchor>
+                      </PopoverTrigger>
                     </TooltipTrigger>
-                    <TooltipContent side="top" sideOffset={8} avoidCollisions={false} className="z-[100000]">
-                      <p className="text-xs font-medium">Location</p>
+                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+                      <p className="text-[10px] font-medium">Manual Location</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
                 
                 <PopoverContent 
-                  className="w-64 bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
+                  className="w-64 bg-transparent border-2 border-border/50 rounded-2xl shadow-2xl z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
                   align="start"
                   sideOffset={8} 
                   avoidCollisions={true} 
@@ -2877,10 +2811,10 @@ const AstraSearchPanel = ({
                   }}
                 >
                   <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full overscroll-contain">
-                    <TabsList className="w-full grid grid-cols-3 h-9 rounded-xl bg-muted/60 p-1 border border-border/30">
+                    <TabsList className="w-full grid grid-cols-3 h-9 rounded-xl bg-black/30 dark:bg-black/40 p-1 backdrop-blur-xl border border-white/15">
                       <TabsTrigger
                         value="province"
-                        className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md"
+                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30"
                         onClick={(e) => {
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
@@ -2893,7 +2827,7 @@ const AstraSearchPanel = ({
                       <TabsTrigger
                         value="city"
                         disabled={!filters.state || filters.state === "all"}
-                        className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md disabled:opacity-40"
+                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30 disabled:opacity-40"
                         onClick={(e) => {
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
@@ -2906,7 +2840,7 @@ const AstraSearchPanel = ({
                       <TabsTrigger
                         value="area"
                         disabled={!filters.city || filters.city === "all"}
-                        className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md disabled:opacity-40"
+                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30 disabled:opacity-40"
                         onClick={(e) => {
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
@@ -2950,7 +2884,7 @@ const AstraSearchPanel = ({
                         </div>
                       )}
                       <ScrollArea 
-                        className="h-48 border border-border/30 rounded-lg bg-background/50 overscroll-contain" 
+                        className="h-48 border border-border/30 rounded-lg bg-transparent overscroll-contain" 
                         onTouchStart={(e) => e.stopPropagation()}
                         onTouchMove={(e) => e.stopPropagation()}
                         onWheel={(e) => e.stopPropagation()}
@@ -3029,7 +2963,7 @@ const AstraSearchPanel = ({
                         </div>
                       )}
                       <ScrollArea 
-                        className="h-48 border border-border/30 rounded-lg bg-background/50 overscroll-contain"
+                        className="h-48 border border-border/30 rounded-lg bg-muted/5 overscroll-contain"
                         onTouchStart={(e) => e.stopPropagation()}
                         onTouchMove={(e) => e.stopPropagation()}
                         onWheel={(e) => e.stopPropagation()}
@@ -3153,46 +3087,57 @@ const AstraSearchPanel = ({
                       </ScrollArea>
                     </TabsContent>
                   </Tabs>
-                 </PopoverContent>
-              </Popover>
-            )}
+                </PopoverContent>
+              </Popover>}
 
             {/* All Filters Button - Icon only with tooltip */}
-            <TooltipProvider delayDuration={0}>
+            <TooltipProvider delayDuration={100}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => {
                       setShowAdvancedFilters(true);
                     }} 
-                    className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-amber-300/10 rounded-lg"
+                    className="p-1 flex items-center justify-center transition-colors relative"
                   >
-                    <SlidersHorizontal className="h-5 w-5 text-muted-foreground group-hover:text-emerald-800 dark:group-hover:text-emerald-400 group-hover:scale-110 transition-all duration-200" />
+                    <SlidersHorizontal className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                     {getActiveFiltersCount() > 0 && (
-                      <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
+                      <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-emerald-500 text-white min-w-[14px] text-center">
                         {getActiveFiltersCount()}
                       </span>
                     )}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="top" sideOffset={8} avoidCollisions={false} className="z-[100000]">
-                  <p className="text-xs font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}</p>
+                <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+                  <p className="text-[10px] font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
             
-            {/* Search Button - Clean Primary Style */}
-            <Button
-              onClick={handleSearch}
-              aria-label={currentText.search}
-              className={cn(
-                "bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow-md hover:shadow-lg transition-all",
-                isMobile ? "h-10 px-4 text-xs gap-1.5" : "h-11 px-6 text-sm gap-2"
-              )}
-            >
-              <Search className={cn(isMobile ? "h-4 w-4" : "h-4 w-4")} />
-              <span>{currentText.search}</span>
-            </Button>
+            {/* Search Button - Original Style with Gradient Border Effect */}
+            <div className="relative group p-[1.5px] rounded-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-gradient-x transition-all duration-500 hover:shadow-lg hover:shadow-primary/30">
+              <button
+                onClick={handleSearch}
+                aria-label={currentText.search}
+                className={cn(
+                  "group inline-flex items-center justify-center rounded-full font-semibold transition-all duration-300 ease-out",
+                  "bg-gradient-to-r from-violet-600 via-fuchsia-500 to-cyan-400",
+                  "hover:from-violet-500 hover:via-fuchsia-400 hover:to-cyan-300",
+                  "hover:scale-105 hover:-translate-y-0.5",
+                  "text-white shadow-lg shadow-fuchsia-500/40 hover:shadow-xl hover:shadow-fuchsia-400/50",
+                  "active:scale-95 active:shadow-md",
+                  "relative overflow-hidden",
+                  isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-10 px-6 text-sm gap-2"
+                )}
+              >
+                {/* Animated shimmer overlay */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none rounded-full" />
+                {/* Glossy shine overlay */}
+                <span className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent pointer-events-none rounded-full" />
+                <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "relative z-10 transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]")} />
+                <span className="font-medium relative z-10 drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]">{currentText.search}</span>
+              </button>
+            </div>
           </div>
           
           {/* Recent Image Searches - Desktop */}

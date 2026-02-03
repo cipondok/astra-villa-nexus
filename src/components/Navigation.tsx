@@ -239,22 +239,17 @@ const Navigation = () => {
                 </div>
               </div>
 
-              {/* Add Property Button - Premium Gradient Border with Pulse Glow */}
-              <div className="relative group">
-                {/* Animated Pulse Glow Effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-primary rounded-xl opacity-60 blur-sm group-hover:opacity-100 transition-all duration-500 animate-pulse-glow" />
-                {/* Gradient Border Wrapper */}
-                <div className="relative p-[2px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-gradient-x">
-                  <Button 
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate('/add-property')}
-                    className="relative h-10 px-4 text-sm font-semibold bg-background hover:bg-background/95 text-foreground rounded-[10px] transition-all duration-300 border-0 group-hover:shadow-lg group-hover:shadow-primary/30"
-                  >
-                    <Plus className="h-4 w-4 mr-1.5 transition-transform duration-300 group-hover:rotate-90" />
-                    <span className="text-xs font-bold">Add Property</span>
-                  </Button>
-                </div>
+              {/* Add Property Button - Matching Nav Style with Gradient Border */}
+              <div className="relative group p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-gradient-x transition-all duration-500">
+                <Button 
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/add-property')}
+                  className="h-10 px-3 text-sm font-medium bg-background hover:bg-background text-foreground hover:text-foreground rounded-[10px] transition-all duration-500 border-0 hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
+                >
+                  <Plus className="h-3.5 w-3.5 mr-1.5 transition-all duration-500" />
+                  <span className="text-xs">Add Property</span>
+                </Button>
               </div>
 
               {/* Investment Dropdown */}

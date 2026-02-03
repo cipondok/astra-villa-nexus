@@ -12,18 +12,13 @@ import { WHATSAPP_BUSINESS_NUMBER } from "@/utils/whatsappUtils";
 interface WhatsAppInquiryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  property: BaseProperty | null;
+  property: BaseProperty;
 }
 
 const WhatsAppInquiryDialog = ({ open, onOpenChange, property }: WhatsAppInquiryDialogProps) => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
-
-  // Don't render if no property is selected
-  if (!property) {
-    return null;
-  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
