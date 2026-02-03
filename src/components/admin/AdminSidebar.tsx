@@ -130,52 +130,57 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
       
       <div ref={sidebarRef} className="relative h-full flex z-40">
         {/* Icon-only Sidebar - Compact */}
-        <div className="w-12 h-full bg-slate-900/95 backdrop-blur-sm border-r border-slate-700/30 flex flex-col py-2 px-1.5 gap-0.5 shadow-lg">
-          {categories.map((category) => {
-            const sections = navigationSections[category as keyof typeof navigationSections];
-            if (!sections || sections.length === 0) return null;
+         <div className="w-12 h-full bg-slate-900/95 backdrop-blur-sm border-r border-slate-700/30 flex flex-col py-2 px-1.5 shadow-lg">
+           {/* IMPORTANT: category list must be scrollable or bottom categories (like Features) become unreachable */}
+           <ScrollArea className="flex-1">
+             <div className="flex flex-col gap-0.5">
+               {categories.map((category) => {
+                 const sections = navigationSections[category as keyof typeof navigationSections];
+                 if (!sections || sections.length === 0) return null;
 
-            const CategoryIcon = categoryIcons[category] || LayoutDashboard;
-            const isActive = activeCategory === category;
-            const isOpen = openCategory === category;
-            const isHovered = hoveredCategory === category;
+                 const CategoryIcon = categoryIcons[category] || LayoutDashboard;
+                 const isActive = activeCategory === category;
+                 const isOpen = openCategory === category;
+                 const isHovered = hoveredCategory === category;
 
-            return (
-              <div key={category} className="relative">
-                {/* Icon Button - Smaller */}
-                <button
-                  onClick={() => handleCategoryClick(category)}
-                  onMouseEnter={() => setHoveredCategory(category)}
-                  onMouseLeave={() => setHoveredCategory(null)}
-                  className={cn(
-                    "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 group relative",
-                    isOpen 
-                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/20" 
-                      : isActive
-                        ? "bg-primary/15 text-primary"
-                        : "hover:bg-slate-700/50 text-slate-400 hover:text-slate-200"
-                  )}
-                >
-                  <CategoryIcon className="h-4 w-4" />
-                  
-                  {/* Active indicator dot */}
-                  {isActive && !isOpen && (
-                    <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-1 bg-primary rounded-full" />
-                  )}
-                </button>
+                 return (
+                   <div key={category} className="relative">
+                     {/* Icon Button - Smaller */}
+                     <button
+                       onClick={() => handleCategoryClick(category)}
+                       onMouseEnter={() => setHoveredCategory(category)}
+                       onMouseLeave={() => setHoveredCategory(null)}
+                       className={cn(
+                         "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 group relative",
+                         isOpen
+                           ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                           : isActive
+                             ? "bg-primary/15 text-primary"
+                             : "hover:bg-slate-700/50 text-slate-400 hover:text-slate-200"
+                       )}
+                     >
+                       <CategoryIcon className="h-4 w-4" />
 
-                {/* Hover Tooltip */}
-                {isHovered && !openCategory && (
-                  <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 animate-in fade-in-0 slide-in-from-left-1 duration-150">
-                    <div className="px-2 py-1 bg-slate-800/95 backdrop-blur-sm text-white text-xs font-medium rounded-md shadow-lg border border-slate-700/50 whitespace-nowrap">
-                      {sectionTitles[category as keyof typeof sectionTitles]}
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                       {/* Active indicator dot */}
+                       {isActive && !isOpen && (
+                         <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-1 bg-primary rounded-full" />
+                       )}
+                     </button>
+
+                     {/* Hover Tooltip */}
+                     {isHovered && !openCategory && (
+                       <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 animate-in fade-in-0 slide-in-from-left-1 duration-150">
+                         <div className="px-2 py-1 bg-slate-800/95 backdrop-blur-sm text-white text-xs font-medium rounded-md shadow-lg border border-slate-700/50 whitespace-nowrap">
+                           {sectionTitles[category as keyof typeof sectionTitles]}
+                         </div>
+                       </div>
+                     )}
+                   </div>
+                 );
+               })}
+             </div>
+           </ScrollArea>
+         </div>
 
         {/* Flyout Panel - Small floating window */}
         {openCategory && openSections && (
