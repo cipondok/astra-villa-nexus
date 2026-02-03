@@ -1,20 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import PropertyGridView from "@/components/search/PropertyGridView";
 import { BaseProperty } from "@/types/property";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
-import { shareProperty } from "@/utils/shareUtils";
 import { useState } from "react";
 import WhatsAppInquiryDialog from "./WhatsAppInquiryDialog";
-import { toast } from "sonner";
-import { Eye, Key, Building, Clock, Bed, Bath, Maximize, Plus } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { Eye, Key, Building, Bed, Bath, Maximize, Plus, MapPin, Camera } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
-
-// Helper to capitalize first letter
-const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
+import { Badge } from "@/components/ui/badge";
 
 interface PropertiesForRentSectionProps {
   language: "en" | "id";
@@ -22,72 +14,69 @@ interface PropertiesForRentSectionProps {
 }
 
 const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRentSectionProps) => {
-  const { isMobile } = useIsMobile();
   const navigate = useNavigate();
   const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
   const { getPropertyImage } = useDefaultPropertyImage();
+
   const { data: rentProperties = [], isLoading } = useQuery({
     queryKey: ['properties-for-rent'],
     queryFn: async () => {
-      console.log('Fetching properties for rent...');
-      
-      try {
-        const { data, error } = await supabase
-          .from('properties')
-          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status, description, three_d_model_url, virtual_tour_url, created_at')
-          .eq('status', 'active')
-          .eq('approval_status', 'approved')
-          .eq('listing_type', 'rent')
-          .in('development_status', ['completed', 'ready'])
-          .not('title', 'is', null)
-          .not('title', 'eq', '')
-          .gt('price', 0)
-          .order('created_at', { ascending: false })
-          .limit(12);
+      const { data, error } = await supabase
+        .from('properties')
+        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, area, development_status, description, three_d_model_url, virtual_tour_url, created_at')
+        .eq('status', 'active')
+        .eq('approval_status', 'approved')
+        .eq('listing_type', 'rent')
+        .in('development_status', ['completed', 'ready'])
+        .not('title', 'is', null)
+        .not('title', 'eq', '')
+        .gt('price', 0)
+        .order('created_at', { ascending: false })
+        .limit(12);
 
-        if (error) {
-          console.error('Properties for rent query error:', error);
-          return [];
-        }
-
-        console.log('Properties for rent loaded:', data?.length || 0);
-        // Transform data to match BaseProperty interface
-        const transformedData = data?.map(property => ({
-          ...property,
-          listing_type: property.listing_type as "sale" | "rent" | "lease",
-          image_urls: property.images || []
-        })) || [];
-        return transformedData;
-        
-      } catch (err) {
-        console.error('Properties for rent fetch error:', err);
-        return [];
-      }
+      if (error) return [];
+      return data?.map(property => ({
+        ...property,
+        listing_type: property.listing_type as "sale" | "rent" | "lease",
+        image_urls: property.images || []
+      })) || [];
     },
     retry: 1,
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
-  // Calculate empty slots to fill grid
+  const formatPrice = (price: number) => {
+    if (price >= 1000000000) {
+      return { main: `Rp ${(price / 1000000000).toFixed(1)}`, suffix: 'Miliar' };
+    }
+    if (price >= 1000000) {
+      return { main: `Rp ${(price / 1000000).toFixed(0)}`, suffix: 'Juta' };
+    }
+    return { main: `Rp ${price.toLocaleString('id-ID')}`, suffix: '' };
+  };
+
+  const getLocation = (property: any) => {
+    if (property.area && property.city) return `${property.area}, ${property.city}`;
+    if (property.city && property.state) return `${property.city}, ${property.state}`;
+    return property.location || 'Indonesia';
+  };
+
   const maxItems = 12;
-  const currentCount = rentProperties.length;
-  const emptySlots = Math.max(0, maxItems - currentCount);
+  const emptySlots = Math.max(0, maxItems - rentProperties.length);
 
   if (isLoading) {
     return (
-      <section className="rounded-lg sm:rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3">
-        <div className="mb-1 sm:mb-1.5 md:mb-2 flex items-center justify-center gap-0.5 sm:gap-1 md:gap-1.5">
-          <Key className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 text-blue-600 dark:text-blue-400" />
-          <h2 className="text-[8px] sm:text-[9px] md:text-xs font-semibold text-foreground">
-            Properti Disewa
-          </h2>
+      <section className="rounded-xl p-3">
+        <div className="mb-3 flex items-center justify-center gap-2">
+          <Key className="h-4 w-4 text-primary" />
+          <h2 className="text-sm font-semibold text-foreground">Properti Disewa</h2>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-1.5 sm:gap-2 md:gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3">
           {[...Array(12)].map((_, i) => (
-            <div key={i} className="animate-pulse rounded-md sm:rounded-lg overflow-hidden bg-muted/50 h-36 sm:h-40 md:h-52"></div>
+            <div key={i} className="animate-pulse rounded-lg overflow-hidden bg-muted h-52 sm:h-60"></div>
           ))}
         </div>
       </section>
@@ -95,118 +84,121 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
   }
 
   return (
-    <section className="rounded-lg sm:rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3">
-      <div className="mb-1 sm:mb-1.5 md:mb-2 flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2">
-        <Key className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 text-blue-600 dark:text-blue-400" />
-        <h2 className="text-[8px] sm:text-[9px] md:text-xs font-semibold text-foreground">
-          Properti Disewa
-        </h2>
+    <section className="rounded-xl p-3">
+      <div className="mb-3 flex items-center justify-center gap-2">
+        <Key className="h-4 w-4 text-primary" />
+        <h2 className="text-sm font-semibold text-foreground">Properti Disewa</h2>
       </div>
       
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-1.5 sm:gap-2 md:gap-3">
-        {rentProperties.slice(0, maxItems).map((property) => (
-          <div
-            key={property.id}
-            onClick={() => onPropertyClick(property)}
-            className="group cursor-pointer relative rounded-lg sm:rounded-xl overflow-hidden h-36 sm:h-40 md:h-52 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ring-1 ring-blue-200/50 dark:ring-blue-800/30"
-          >
-            {/* Full Image Background */}
-            <img
-              src={getPropertyImage(property.images, property.thumbnail_url)}
-              alt={property.title}
-              loading="lazy"
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-            />
-            
-            {/* Gradient Overlay - Blue tint for rent */}
-            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-black/40 to-transparent" />
-            
-            {/* View Icon - Center on hover */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-              <div className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-white/80 dark:bg-black/70 backdrop-blur-md flex items-center justify-center shadow-lg border border-blue-200/40 dark:border-blue-500/30">
-                <Eye className="h-4 w-4 md:h-5 md:w-5 text-blue-600 dark:text-blue-400" />
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3">
+        {rentProperties.slice(0, maxItems).map((property) => {
+          const priceInfo = formatPrice(property.price);
+          const imageCount = property.images?.length || 1;
+
+          return (
+            <div
+              key={property.id}
+              onClick={() => onPropertyClick(property)}
+              className="group cursor-pointer bg-card rounded-lg border border-border/50 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 overflow-hidden"
+            >
+              {/* Image */}
+              <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                <img
+                  src={getPropertyImage(property.images, property.thumbnail_url)}
+                  alt={property.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                
+                {/* Top Badges */}
+                <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
+                  <Badge className="flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md shadow-sm bg-primary text-primary-foreground">
+                    <Key className="h-2.5 w-2.5" />
+                    Disewa
+                  </Badge>
+                  <Badge className="flex items-center gap-0.5 bg-card/90 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded-md shadow-sm border border-border/50">
+                    <Building className="h-2.5 w-2.5" />
+                    {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
+                  </Badge>
+                </div>
+
+                {/* Image Count */}
+                {imageCount > 1 && (
+                  <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded">
+                    <Camera className="h-2.5 w-2.5" />
+                    <span>{imageCount}</span>
+                  </div>
+                )}
+
+                {/* View Icon */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/10">
+                  <div className="h-10 w-10 rounded-full bg-card/95 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                    <Eye className="h-5 w-5 text-primary" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Content - Rumah123 Style */}
+              <div className="p-2.5 space-y-1.5">
+                {/* Price */}
+                <div className="space-y-0">
+                  <div className="flex items-baseline gap-0.5">
+                    <span className="text-sm font-bold text-primary">{priceInfo.main}</span>
+                    {priceInfo.suffix && (
+                      <span className="text-xs font-medium text-primary/80">{priceInfo.suffix}</span>
+                    )}
+                    <span className="text-[10px] text-muted-foreground">/bln</span>
+                  </div>
+                </div>
+
+                {/* Title */}
+                <h3 className="text-[11px] font-medium text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                  {property.title}
+                </h3>
+
+                {/* Location */}
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-primary/70" />
+                  <span className="text-[10px] line-clamp-1">{getLocation(property)}</span>
+                </div>
+
+                {/* Specs */}
+                <div className="flex items-center gap-2 pt-1 border-t border-border/50">
+                  {property.bedrooms && property.bedrooms > 0 && (
+                    <div className="flex items-center gap-0.5">
+                      <Bed className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-[10px] text-foreground font-medium">{property.bedrooms}</span>
+                    </div>
+                  )}
+                  {property.bathrooms && property.bathrooms > 0 && (
+                    <div className="flex items-center gap-0.5">
+                      <Bath className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-[10px] text-foreground font-medium">{property.bathrooms}</span>
+                    </div>
+                  )}
+                  {property.area_sqm && (
+                    <div className="flex items-center gap-0.5">
+                      <Maximize className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-[10px] text-foreground font-medium">{property.area_sqm}m²</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            
-            {/* Top Labels */}
-            <div className="absolute top-1.5 left-1.5 right-1.5 sm:top-2 sm:left-2 sm:right-2 flex items-start justify-between">
-              {/* Rent Badge with icon */}
-              <span className="flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-bold px-2 py-1 rounded-full bg-blue-600 border border-blue-400/50 text-white shadow-md">
-                <Key className="h-3 w-3" />
-                Sewa
-              </span>
-              {/* Property Type */}
-              <span className="flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-1 rounded-full bg-white/80 dark:bg-black/70 backdrop-blur-md text-foreground shadow-lg border border-white/40 dark:border-white/20 truncate max-w-[55%]">
-                <Building className="h-3 w-3" />
-                {capitalizeFirst(property.property_type)}
-              </span>
-            </div>
-            
-            {/* Bottom Content */}
-            <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3">
-              {/* Price Badge */}
-              <div className="mb-1.5">
-                <span className="inline-flex items-baseline text-[10px] sm:text-xs md:text-sm font-bold px-2 py-0.5 rounded-lg bg-gradient-to-r from-blue-600 to-sky-700 text-white shadow-lg">
-                  <span className="text-[0.7em] font-medium opacity-90">Rp</span>
-                  {property.price >= 1000000000 
-                    ? <>{(property.price / 1000000000).toFixed(1)}<span className="text-[0.7em] font-medium opacity-90">M</span></> 
-                    : <>{(property.price / 1000000).toFixed(0)}<span className="text-[0.7em] font-medium opacity-90">Jt</span></>}
-                  <span className="text-[0.6em] font-normal opacity-80">/bln</span>
-                </span>
-              </div>
-              
-              {/* Title */}
-              <h3 className="text-xs sm:text-sm md:text-base font-bold text-white line-clamp-1 drop-shadow-lg">
-                {property.title}
-              </h3>
-              
-              {/* Location & Time */}
-              <div className="flex items-center gap-2 text-[10px] sm:text-xs text-white/90 mt-0.5 mb-1">
-                <span className="truncate drop-shadow-md">📍 {property.city || property.location}</span>
-                {(property as any).created_at && (
-                  <span className="flex items-center gap-0.5 text-white/70">
-                    <Clock className="h-2.5 w-2.5" />
-                    {formatDistanceToNow(new Date((property as any).created_at), { addSuffix: true })}
-                  </span>
-                )}
-              </div>
-              
-              {/* Property Stats */}
-              <div className="flex items-center gap-2 sm:gap-3 bg-black/40 rounded-lg px-2 py-1 backdrop-blur-sm">
-                {property.bedrooms && (
-                  <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
-                    <Bed className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                    {property.bedrooms}
-                  </span>
-                )}
-                {property.bathrooms && (
-                  <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
-                    <Bath className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                    {property.bathrooms}
-                  </span>
-                )}
-                {property.area_sqm && (
-                  <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
-                    <Maximize className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                    {property.area_sqm}m²
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
         
-        {/* Empty placeholder slots with "Add" action */}
+        {/* Empty Slots */}
         {emptySlots > 0 && [...Array(emptySlots)].map((_, i) => (
           <div
             key={`empty-${i}`}
             onClick={() => navigate('/add-property')}
-            className="group cursor-pointer relative rounded-lg sm:rounded-xl overflow-hidden h-36 sm:h-40 md:h-52 border-2 border-dashed border-muted-foreground/20 hover:border-primary/50 bg-muted/20 hover:bg-primary/5 transition-all duration-200 flex flex-col items-center justify-center gap-2 active:scale-[0.98]"
+            className="group cursor-pointer rounded-lg overflow-hidden border-2 border-dashed border-muted-foreground/20 hover:border-primary/50 bg-muted/20 hover:bg-primary/5 transition-all duration-200 flex flex-col items-center justify-center gap-2 min-h-[200px]"
           >
-            <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-muted/50 group-hover:bg-primary/10 flex items-center justify-center transition-colors">
-              <Plus className="h-5 w-5 md:h-6 md:w-6 text-muted-foreground/50 group-hover:text-primary transition-colors" />
+            <div className="h-10 w-10 rounded-full bg-muted/50 group-hover:bg-primary/10 flex items-center justify-center transition-colors">
+              <Plus className="h-5 w-5 text-muted-foreground/50 group-hover:text-primary transition-colors" />
             </div>
-            <span className="text-[10px] sm:text-xs text-muted-foreground/50 group-hover:text-primary transition-colors font-medium">
+            <span className="text-[10px] text-muted-foreground/50 group-hover:text-primary transition-colors font-medium">
               Tambah Properti
             </span>
           </div>

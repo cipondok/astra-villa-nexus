@@ -199,109 +199,124 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{price.toLocaleString('id-ID')}</>;
   };
 
-  const PropertyCard = ({ property }: { property: BaseProperty }) => (
-    <div
-      onClick={() => onPropertyClick(property)}
-      className="flex-shrink-0 w-[140px] sm:w-[160px] md:w-[200px] lg:w-[220px] xl:w-[240px] 2xl:w-[260px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-40 sm:h-44 md:h-52 lg:h-56 xl:h-60 hover:scale-[1.02] transition-all duration-200 ring-1 ring-purple-200/50 dark:ring-purple-800/30"
-    >
-      {/* Full Image Background */}
-      <img
-        src={getPropertyImage(property.images, property.thumbnail_url)}
-        alt={property.title}
-        loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
-      />
+  const PropertyCard = ({ property }: { property: BaseProperty }) => {
+    const priceInfo = (() => {
+      const price = property.price || 0;
+      if (price >= 1000000000) {
+        return { main: `Rp ${(price / 1000000000).toFixed(1)}`, suffix: 'Miliar' };
+      }
+      if (price >= 1000000) {
+        return { main: `Rp ${(price / 1000000).toFixed(0)}`, suffix: 'Juta' };
+      }
+      return { main: `Rp ${price.toLocaleString('id-ID')}`, suffix: '' };
+    })();
+    const isRent = property.listing_type === 'rent';
+    const ListingIcon = isRent ? Key : Tag;
+    const imageCount = property.images?.length || 1;
 
-      {/* Gradient Overlay - Purple tint for AI */}
-      <div className="absolute inset-0 bg-gradient-to-t from-purple-900/95 via-black/50 to-transparent" />
+    return (
+      <div
+        onClick={() => onPropertyClick(property)}
+        className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px] cursor-pointer group/card bg-card rounded-lg border border-border/50 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 overflow-hidden"
+      >
+        {/* Image */}
+        <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+          <img
+            src={getPropertyImage(property.images, property.thumbnail_url)}
+            alt={property.title}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500"
+          />
 
-      {/* View Icon - Center on hover */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
-        <div className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-white/80 dark:bg-black/70 backdrop-blur-md flex items-center justify-center shadow-lg border border-purple-200/40 dark:border-purple-500/30">
-          <Eye className="h-4 w-4 md:h-5 md:w-5 text-purple-600 dark:text-purple-400" />
+          {/* Top Badges */}
+          <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
+            <span className={cn(
+              "flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md shadow-sm text-white",
+              isRent ? "bg-primary" : "bg-accent"
+            )}>
+              <ListingIcon className="h-2.5 w-2.5" />
+              {isRent ? 'Disewa' : 'Dijual'}
+            </span>
+            <span className="flex items-center gap-0.5 bg-card/90 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded-md shadow-sm border border-border/50">
+              <Building className="h-2.5 w-2.5" />
+              {capitalizeFirst(property.property_type)}
+            </span>
+          </div>
+
+          {/* AI Badge */}
+          <div className="absolute top-10 left-2">
+            <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-medium rounded bg-purple-500/90 text-white shadow-sm">
+              <Sparkles className="h-2 w-2" />
+              AI
+            </span>
+          </div>
+
+          {/* View Icon */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 bg-black/10">
+            <div className="h-9 w-9 rounded-full bg-card/95 backdrop-blur-sm flex items-center justify-center shadow-lg">
+              <Eye className="h-4 w-4 text-primary" />
+            </div>
+          </div>
+        </div>
+
+        {/* Content - Rumah123 Style */}
+        <div className="p-2 space-y-1">
+          {/* Price */}
+          <div className="flex items-baseline gap-0.5">
+            <span className="text-xs sm:text-sm font-bold text-primary">{priceInfo.main}</span>
+            {priceInfo.suffix && (
+              <span className="text-[10px] font-medium text-primary/80">{priceInfo.suffix}</span>
+            )}
+            {isRent && <span className="text-[9px] text-muted-foreground">/bln</span>}
+          </div>
+
+          {/* Title */}
+          <h3 className="text-[10px] sm:text-[11px] font-medium text-foreground line-clamp-2 leading-snug group-hover/card:text-primary transition-colors">
+            {property.title}
+          </h3>
+
+          {/* Location */}
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-primary/70" />
+            <span className="text-[9px] line-clamp-1">{property.city || property.location || 'Indonesia'}</span>
+          </div>
+
+          {/* Specs */}
+          <div className="flex items-center gap-2 pt-1 border-t border-border/50">
+            {property.bedrooms && (
+              <div className="flex items-center gap-0.5">
+                <Bed className="h-2.5 w-2.5 text-muted-foreground" />
+                <span className="text-[9px] text-foreground font-medium">{property.bedrooms}</span>
+              </div>
+            )}
+            {property.bathrooms && (
+              <div className="flex items-center gap-0.5">
+                <Bath className="h-2.5 w-2.5 text-muted-foreground" />
+                <span className="text-[9px] text-foreground font-medium">{property.bathrooms}</span>
+              </div>
+            )}
+            {property.area_sqm && (
+              <div className="flex items-center gap-0.5">
+                <Maximize className="h-2.5 w-2.5 text-muted-foreground" />
+                <span className="text-[9px] text-foreground font-medium">{property.area_sqm}m²</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Top Labels */}
-      <div className="absolute top-1.5 left-1.5 right-1.5 sm:top-2 sm:left-2 sm:right-2 flex items-start justify-between gap-1">
-        {/* Listing Type Badge with icon */}
-        <span
-          className={cn(
-            "flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-bold px-2 py-1 rounded-full text-white shadow-md border",
-            property.listing_type === 'sale'
-              ? 'bg-emerald-600 border-emerald-400/50'
-              : 'bg-blue-600 border-blue-400/50'
-          )}
-        >
-          {property.listing_type === 'sale' ? <Tag className="h-3 w-3" /> : <Key className="h-3 w-3" />}
-          {property.listing_type === 'sale' ? 'Jual' : 'Sewa'}
-        </span>
-        {/* Property Type */}
-        <span className="flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-1 rounded-full bg-white/80 dark:bg-black/70 backdrop-blur-md text-foreground shadow-lg border border-white/40 dark:border-white/20 truncate max-w-[55%]">
-          <Building className="h-3 w-3" />
-          {capitalizeFirst(property.property_type)}
-        </span>
-      </div>
-
-      {/* Bottom Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3">
-        {/* Price Badge */}
-        <div className="mb-1">
-          <span className="inline-flex items-baseline text-[10px] sm:text-xs md:text-sm font-bold px-2 py-0.5 rounded-lg bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-lg">
-            {formatPrice(property.price || 0)}
-          </span>
-        </div>
-        {/* Title */}
-        <h3 className="text-xs sm:text-sm md:text-base font-bold text-white line-clamp-1 drop-shadow-lg">
-          {property.title}
-        </h3>
-        {/* Location & Time */}
-        <div className="flex items-center gap-2 text-[10px] sm:text-xs text-white/90 mt-0.5 mb-1">
-          <span className="truncate drop-shadow-md">📍 {property.city || property.location || 'Indonesia'}</span>
-          {(property as any).created_at && (
-            <span className="flex items-center gap-0.5 text-white/70">
-              <Clock className="h-2.5 w-2.5" />
-              {formatDistanceToNow(new Date((property as any).created_at), { addSuffix: true })}
-            </span>
-          )}
-        </div>
-        {/* Property Stats */}
-        <div className="flex items-center gap-2 sm:gap-3 bg-black/40 rounded-lg px-2 py-1 backdrop-blur-sm">
-          {property.bedrooms ? (
-            <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
-              <Bed className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-              {property.bedrooms}
-            </span>
-          ) : null}
-          {property.bathrooms ? (
-            <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
-              <Bath className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-              {property.bathrooms}
-            </span>
-          ) : null}
-          {property.area_sqm ? (
-            <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
-              <Maximize className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-              {property.area_sqm}m²
-            </span>
-          ) : null}
-        </div>
-      </div>
-    </div>
-  );
+    );
+  };
 
   const ViewAllCard = () => (
     <div
       onClick={() => navigate('/search')}
-      className="flex-shrink-0 w-[110px] sm:w-[130px] md:w-[180px] lg:w-[200px] xl:w-[220px] 2xl:w-[240px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-28 sm:h-32 md:h-40 lg:h-44 xl:h-48 hover:scale-[1.02] transition-all duration-200 bg-gradient-to-br from-purple-500 via-violet-600 to-purple-700 ring-1 ring-purple-300/50 dark:ring-purple-700/50"
+      className="flex-shrink-0 w-[120px] sm:w-[140px] md:w-[160px] lg:w-[180px] cursor-pointer group/card bg-gradient-to-br from-primary via-primary/90 to-accent rounded-lg border border-primary/30 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col items-center justify-center min-h-[180px] sm:min-h-[200px]"
     >
-      <div className="absolute inset-0 flex flex-col items-center justify-center p-2 sm:p-3 text-center">
-        <div className="h-10 w-10 sm:h-11 sm:w-11 md:h-14 md:w-14 rounded-full bg-white/20 flex items-center justify-center mb-1.5 sm:mb-2 group-hover/card:scale-110 transition-transform duration-300">
-          <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-white" />
-        </div>
-        <h3 className="text-[10px] sm:text-xs md:text-sm font-bold text-white drop-shadow-lg">View All</h3>
-        <p className="text-[8px] sm:text-[9px] md:text-[10px] text-white/90 mt-0.5">Explore more</p>
+      <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/20 flex items-center justify-center mb-2 group-hover/card:scale-110 transition-transform duration-300">
+        <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
       </div>
+      <h3 className="text-xs sm:text-sm font-bold text-white">View All</h3>
+      <p className="text-[9px] sm:text-[10px] text-white/80 mt-0.5">Explore more</p>
     </div>
   );
 
