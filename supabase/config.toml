@@ -135,3 +135,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.b2b-api]
     verify_jwt = false
+
+  [functions.automation-processor]
+    verify_jwt = false

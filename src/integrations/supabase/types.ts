@@ -2380,6 +2380,289 @@ export type Database = {
           },
         ]
       }
+      automation_bots: {
+        Row: {
+          ai_model: string | null
+          allowed_actions: string[] | null
+          avg_response_time_ms: number | null
+          bot_name: string
+          bot_type: string
+          capabilities: string[] | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          max_tokens: number | null
+          rate_limit_per_hour: number | null
+          rate_limit_per_minute: number | null
+          restricted_actions: string[] | null
+          successful_interactions: number | null
+          system_prompt: string | null
+          temperature: number | null
+          total_interactions: number | null
+          updated_at: string
+          user_satisfaction_avg: number | null
+        }
+        Insert: {
+          ai_model?: string | null
+          allowed_actions?: string[] | null
+          avg_response_time_ms?: number | null
+          bot_name: string
+          bot_type: string
+          capabilities?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_tokens?: number | null
+          rate_limit_per_hour?: number | null
+          rate_limit_per_minute?: number | null
+          restricted_actions?: string[] | null
+          successful_interactions?: number | null
+          system_prompt?: string | null
+          temperature?: number | null
+          total_interactions?: number | null
+          updated_at?: string
+          user_satisfaction_avg?: number | null
+        }
+        Update: {
+          ai_model?: string | null
+          allowed_actions?: string[] | null
+          avg_response_time_ms?: number | null
+          bot_name?: string
+          bot_type?: string
+          capabilities?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_tokens?: number | null
+          rate_limit_per_hour?: number | null
+          rate_limit_per_minute?: number | null
+          restricted_actions?: string[] | null
+          successful_interactions?: number | null
+          system_prompt?: string | null
+          temperature?: number | null
+          total_interactions?: number | null
+          updated_at?: string
+          user_satisfaction_avg?: number | null
+        }
+        Relationships: []
+      }
+      automation_metrics: {
+        Row: {
+          ai_errors: number | null
+          avg_listing_process_time_seconds: number | null
+          avg_message_response_time_seconds: number | null
+          avg_onboarding_time_minutes: number | null
+          avg_report_generation_time_seconds: number | null
+          created_at: string
+          failed_tasks: number | null
+          id: string
+          listing_approval_rate: number | null
+          listings_processed: number | null
+          message_resolution_rate: number | null
+          messages_handled: number | null
+          metric_date: string
+          metric_hour: number | null
+          onboarding_completion_rate: number | null
+          partner_actions: number | null
+          partner_satisfaction_rate: number | null
+          reports_generated: number | null
+          users_onboarded: number | null
+          zapier_errors: number | null
+        }
+        Insert: {
+          ai_errors?: number | null
+          avg_listing_process_time_seconds?: number | null
+          avg_message_response_time_seconds?: number | null
+          avg_onboarding_time_minutes?: number | null
+          avg_report_generation_time_seconds?: number | null
+          created_at?: string
+          failed_tasks?: number | null
+          id?: string
+          listing_approval_rate?: number | null
+          listings_processed?: number | null
+          message_resolution_rate?: number | null
+          messages_handled?: number | null
+          metric_date: string
+          metric_hour?: number | null
+          onboarding_completion_rate?: number | null
+          partner_actions?: number | null
+          partner_satisfaction_rate?: number | null
+          reports_generated?: number | null
+          users_onboarded?: number | null
+          zapier_errors?: number | null
+        }
+        Update: {
+          ai_errors?: number | null
+          avg_listing_process_time_seconds?: number | null
+          avg_message_response_time_seconds?: number | null
+          avg_onboarding_time_minutes?: number | null
+          avg_report_generation_time_seconds?: number | null
+          created_at?: string
+          failed_tasks?: number | null
+          id?: string
+          listing_approval_rate?: number | null
+          listings_processed?: number | null
+          message_resolution_rate?: number | null
+          messages_handled?: number | null
+          metric_date?: string
+          metric_hour?: number | null
+          onboarding_completion_rate?: number | null
+          partner_actions?: number | null
+          partner_satisfaction_rate?: number | null
+          reports_generated?: number | null
+          users_onboarded?: number | null
+          zapier_errors?: number | null
+        }
+        Relationships: []
+      }
+      automation_task_queue: {
+        Row: {
+          attempts: number | null
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          execution_time_ms: number | null
+          id: string
+          max_attempts: number | null
+          payload: Json
+          priority: number | null
+          result: Json | null
+          scheduled_at: string | null
+          started_at: string | null
+          status: string | null
+          task_type: string
+          workflow_id: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          max_attempts?: number | null
+          payload?: Json
+          priority?: number | null
+          result?: Json | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string | null
+          task_type: string
+          workflow_id?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          max_attempts?: number | null
+          payload?: Json
+          priority?: number | null
+          result?: Json | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string | null
+          task_type?: string
+          workflow_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_task_queue_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "automation_workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_workflows: {
+        Row: {
+          ai_moderation_enabled: boolean | null
+          avg_execution_time_ms: number | null
+          created_at: string
+          created_by: string | null
+          custom_bot_id: string | null
+          description: string | null
+          failed_executions: number | null
+          id: string
+          is_active: boolean | null
+          last_executed_at: string | null
+          max_concurrent: number | null
+          priority: number | null
+          retry_attempts: number | null
+          successful_executions: number | null
+          timeout_seconds: number | null
+          total_executions: number | null
+          trigger_config: Json | null
+          trigger_type: string
+          updated_at: string
+          workflow_name: string
+          workflow_type: string
+          zapier_webhook_url: string | null
+        }
+        Insert: {
+          ai_moderation_enabled?: boolean | null
+          avg_execution_time_ms?: number | null
+          created_at?: string
+          created_by?: string | null
+          custom_bot_id?: string | null
+          description?: string | null
+          failed_executions?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_executed_at?: string | null
+          max_concurrent?: number | null
+          priority?: number | null
+          retry_attempts?: number | null
+          successful_executions?: number | null
+          timeout_seconds?: number | null
+          total_executions?: number | null
+          trigger_config?: Json | null
+          trigger_type: string
+          updated_at?: string
+          workflow_name: string
+          workflow_type: string
+          zapier_webhook_url?: string | null
+        }
+        Update: {
+          ai_moderation_enabled?: boolean | null
+          avg_execution_time_ms?: number | null
+          created_at?: string
+          created_by?: string | null
+          custom_bot_id?: string | null
+          description?: string | null
+          failed_executions?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_executed_at?: string | null
+          max_concurrent?: number | null
+          priority?: number | null
+          retry_attempts?: number | null
+          successful_executions?: number | null
+          timeout_seconds?: number | null
+          total_executions?: number | null
+          trigger_config?: Json | null
+          trigger_type?: string
+          updated_at?: string
+          workflow_name?: string
+          workflow_type?: string
+          zapier_webhook_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_workflows_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       b2b_api_keys: {
         Row: {
           allowed_endpoints: string[] | null
@@ -7235,6 +7518,78 @@ export type Database = {
         }
         Relationships: []
       }
+      listing_automation_config: {
+        Row: {
+          ai_description_enhancement: boolean | null
+          ai_duplicate_detection: boolean | null
+          ai_photo_scoring: boolean | null
+          ai_price_suggestion: boolean | null
+          auto_approve_threshold: number | null
+          auto_approved: number | null
+          auto_syndicate: boolean | null
+          auto_validate: boolean | null
+          created_at: string
+          id: string
+          manual_review: number | null
+          manual_review_threshold: number | null
+          property_type: string
+          rejected: number | null
+          required_fields: string[] | null
+          required_images: number | null
+          syndication_delay_hours: number | null
+          syndication_networks: string[] | null
+          total_processed: number | null
+          updated_at: string
+          validation_rules: Json | null
+        }
+        Insert: {
+          ai_description_enhancement?: boolean | null
+          ai_duplicate_detection?: boolean | null
+          ai_photo_scoring?: boolean | null
+          ai_price_suggestion?: boolean | null
+          auto_approve_threshold?: number | null
+          auto_approved?: number | null
+          auto_syndicate?: boolean | null
+          auto_validate?: boolean | null
+          created_at?: string
+          id?: string
+          manual_review?: number | null
+          manual_review_threshold?: number | null
+          property_type: string
+          rejected?: number | null
+          required_fields?: string[] | null
+          required_images?: number | null
+          syndication_delay_hours?: number | null
+          syndication_networks?: string[] | null
+          total_processed?: number | null
+          updated_at?: string
+          validation_rules?: Json | null
+        }
+        Update: {
+          ai_description_enhancement?: boolean | null
+          ai_duplicate_detection?: boolean | null
+          ai_photo_scoring?: boolean | null
+          ai_price_suggestion?: boolean | null
+          auto_approve_threshold?: number | null
+          auto_approved?: number | null
+          auto_syndicate?: boolean | null
+          auto_validate?: boolean | null
+          created_at?: string
+          id?: string
+          manual_review?: number | null
+          manual_review_threshold?: number | null
+          property_type?: string
+          rejected?: number | null
+          required_fields?: string[] | null
+          required_images?: number | null
+          syndication_delay_hours?: number | null
+          syndication_networks?: string[] | null
+          total_processed?: number | null
+          updated_at?: string
+          validation_rules?: Json | null
+        }
+        Relationships: []
+      }
       listing_syndication_networks: {
         Row: {
           api_endpoint: string | null
@@ -8494,6 +8849,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      message_automation_config: {
+        Row: {
+          ai_auto_translation: boolean | null
+          ai_escalation_enabled: boolean | null
+          ai_intent_detection: boolean | null
+          ai_language_detection: boolean | null
+          ai_sentiment_analysis: boolean | null
+          ai_spam_detection: boolean | null
+          auto_responded: number | null
+          auto_response_delay_seconds: number | null
+          auto_response_enabled: boolean | null
+          avg_response_time_seconds: number | null
+          channel_type: string
+          created_at: string
+          escalated: number | null
+          escalation_keywords: string[] | null
+          id: string
+          priority_keywords: string[] | null
+          response_templates: Json | null
+          routing_rules: Json | null
+          spam_blocked: number | null
+          total_messages: number | null
+          updated_at: string
+        }
+        Insert: {
+          ai_auto_translation?: boolean | null
+          ai_escalation_enabled?: boolean | null
+          ai_intent_detection?: boolean | null
+          ai_language_detection?: boolean | null
+          ai_sentiment_analysis?: boolean | null
+          ai_spam_detection?: boolean | null
+          auto_responded?: number | null
+          auto_response_delay_seconds?: number | null
+          auto_response_enabled?: boolean | null
+          avg_response_time_seconds?: number | null
+          channel_type: string
+          created_at?: string
+          escalated?: number | null
+          escalation_keywords?: string[] | null
+          id?: string
+          priority_keywords?: string[] | null
+          response_templates?: Json | null
+          routing_rules?: Json | null
+          spam_blocked?: number | null
+          total_messages?: number | null
+          updated_at?: string
+        }
+        Update: {
+          ai_auto_translation?: boolean | null
+          ai_escalation_enabled?: boolean | null
+          ai_intent_detection?: boolean | null
+          ai_language_detection?: boolean | null
+          ai_sentiment_analysis?: boolean | null
+          ai_spam_detection?: boolean | null
+          auto_responded?: number | null
+          auto_response_delay_seconds?: number | null
+          auto_response_enabled?: boolean | null
+          avg_response_time_seconds?: number | null
+          channel_type?: string
+          created_at?: string
+          escalated?: number | null
+          escalation_keywords?: string[] | null
+          id?: string
+          priority_keywords?: string[] | null
+          response_templates?: Json | null
+          routing_rules?: Json | null
+          spam_blocked?: number | null
+          total_messages?: number | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       mfa_settings: {
         Row: {
@@ -10036,6 +10463,69 @@ export type Database = {
         }
         Relationships: []
       }
+      onboarding_automation_config: {
+        Row: {
+          ai_personalization_enabled: boolean | null
+          ai_recommendation_model: string | null
+          auto_assign_rewards: boolean | null
+          avg_time_to_complete_hours: number | null
+          completion_rate: number | null
+          created_at: string
+          follow_up_sequence: Json | null
+          id: string
+          onboarding_steps: Json | null
+          persona_type: string
+          reminder_intervals: number[] | null
+          required_verifications: string[] | null
+          reward_tokens: number | null
+          total_onboarded: number | null
+          updated_at: string
+          welcome_email_template_id: string | null
+          welcome_sms_template_id: string | null
+          welcome_whatsapp_template_id: string | null
+        }
+        Insert: {
+          ai_personalization_enabled?: boolean | null
+          ai_recommendation_model?: string | null
+          auto_assign_rewards?: boolean | null
+          avg_time_to_complete_hours?: number | null
+          completion_rate?: number | null
+          created_at?: string
+          follow_up_sequence?: Json | null
+          id?: string
+          onboarding_steps?: Json | null
+          persona_type: string
+          reminder_intervals?: number[] | null
+          required_verifications?: string[] | null
+          reward_tokens?: number | null
+          total_onboarded?: number | null
+          updated_at?: string
+          welcome_email_template_id?: string | null
+          welcome_sms_template_id?: string | null
+          welcome_whatsapp_template_id?: string | null
+        }
+        Update: {
+          ai_personalization_enabled?: boolean | null
+          ai_recommendation_model?: string | null
+          auto_assign_rewards?: boolean | null
+          avg_time_to_complete_hours?: number | null
+          completion_rate?: number | null
+          created_at?: string
+          follow_up_sequence?: Json | null
+          id?: string
+          onboarding_steps?: Json | null
+          persona_type?: string
+          reminder_intervals?: number[] | null
+          required_verifications?: string[] | null
+          reward_tokens?: number | null
+          total_onboarded?: number | null
+          updated_at?: string
+          welcome_email_template_id?: string | null
+          welcome_sms_template_id?: string | null
+          welcome_whatsapp_template_id?: string | null
+        }
+        Relationships: []
+      }
       order_activity_logs: {
         Row: {
           action: string
@@ -10313,6 +10803,75 @@ export type Database = {
           rate_limit_multiplier?: number
           total_requests?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      partner_automation_config: {
+        Row: {
+          active_partners: number | null
+          auto_commission_calculation: boolean | null
+          auto_payout_enabled: boolean | null
+          auto_performance_reports: boolean | null
+          auto_renewal_reminder: boolean | null
+          auto_welcome: boolean | null
+          created_at: string
+          id: string
+          kpi_thresholds: Json | null
+          minimum_payout_amount: number | null
+          partner_type: string
+          payout_schedule: string | null
+          performance_report_frequency: string | null
+          regular_update_frequency: string | null
+          renewal_reminder_days: number[] | null
+          total_commissions_paid: number | null
+          total_partners: number | null
+          update_template_id: string | null
+          updated_at: string
+          welcome_template_id: string | null
+        }
+        Insert: {
+          active_partners?: number | null
+          auto_commission_calculation?: boolean | null
+          auto_payout_enabled?: boolean | null
+          auto_performance_reports?: boolean | null
+          auto_renewal_reminder?: boolean | null
+          auto_welcome?: boolean | null
+          created_at?: string
+          id?: string
+          kpi_thresholds?: Json | null
+          minimum_payout_amount?: number | null
+          partner_type: string
+          payout_schedule?: string | null
+          performance_report_frequency?: string | null
+          regular_update_frequency?: string | null
+          renewal_reminder_days?: number[] | null
+          total_commissions_paid?: number | null
+          total_partners?: number | null
+          update_template_id?: string | null
+          updated_at?: string
+          welcome_template_id?: string | null
+        }
+        Update: {
+          active_partners?: number | null
+          auto_commission_calculation?: boolean | null
+          auto_payout_enabled?: boolean | null
+          auto_performance_reports?: boolean | null
+          auto_renewal_reminder?: boolean | null
+          auto_welcome?: boolean | null
+          created_at?: string
+          id?: string
+          kpi_thresholds?: Json | null
+          minimum_payout_amount?: number | null
+          partner_type?: string
+          payout_schedule?: string | null
+          performance_report_frequency?: string | null
+          regular_update_frequency?: string | null
+          renewal_reminder_days?: number[] | null
+          total_commissions_paid?: number | null
+          total_partners?: number | null
+          update_template_id?: string | null
+          updated_at?: string
+          welcome_template_id?: string | null
         }
         Relationships: []
       }
@@ -13261,6 +13820,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      report_automation_config: {
+        Row: {
+          ai_insights_enabled: boolean | null
+          ai_predictions_enabled: boolean | null
+          ai_recommendations_enabled: boolean | null
+          auto_distribute: boolean | null
+          available_property_types: string[] | null
+          available_regions: string[] | null
+          avg_generation_time_seconds: number | null
+          created_at: string
+          default_parameters: Json | null
+          description: string | null
+          distribution_channels: string[] | null
+          id: string
+          is_scheduled: boolean | null
+          report_name: string
+          report_type: string
+          schedule_cron: string | null
+          subscriber_tiers: string[] | null
+          timezone: string | null
+          total_downloads: number | null
+          total_generated: number | null
+          updated_at: string
+        }
+        Insert: {
+          ai_insights_enabled?: boolean | null
+          ai_predictions_enabled?: boolean | null
+          ai_recommendations_enabled?: boolean | null
+          auto_distribute?: boolean | null
+          available_property_types?: string[] | null
+          available_regions?: string[] | null
+          avg_generation_time_seconds?: number | null
+          created_at?: string
+          default_parameters?: Json | null
+          description?: string | null
+          distribution_channels?: string[] | null
+          id?: string
+          is_scheduled?: boolean | null
+          report_name: string
+          report_type: string
+          schedule_cron?: string | null
+          subscriber_tiers?: string[] | null
+          timezone?: string | null
+          total_downloads?: number | null
+          total_generated?: number | null
+          updated_at?: string
+        }
+        Update: {
+          ai_insights_enabled?: boolean | null
+          ai_predictions_enabled?: boolean | null
+          ai_recommendations_enabled?: boolean | null
+          auto_distribute?: boolean | null
+          available_property_types?: string[] | null
+          available_regions?: string[] | null
+          avg_generation_time_seconds?: number | null
+          created_at?: string
+          default_parameters?: Json | null
+          description?: string | null
+          distribution_channels?: string[] | null
+          id?: string
+          is_scheduled?: boolean | null
+          report_name?: string
+          report_type?: string
+          schedule_cron?: string | null
+          subscriber_tiers?: string[] | null
+          timezone?: string | null
+          total_downloads?: number | null
+          total_generated?: number | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       research_data_packages: {
         Row: {
@@ -20469,6 +21100,53 @@ export type Database = {
           xp_amount?: number
         }
         Relationships: []
+      }
+      zapier_webhook_logs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          execution_time_ms: number | null
+          id: string
+          is_success: boolean | null
+          request_payload: Json
+          response_body: string | null
+          response_status: number | null
+          webhook_url: string
+          workflow_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          is_success?: boolean | null
+          request_payload: Json
+          response_body?: string | null
+          response_status?: number | null
+          webhook_url: string
+          workflow_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          is_success?: boolean | null
+          request_payload?: Json
+          response_body?: string | null
+          response_status?: number | null
+          webhook_url?: string
+          workflow_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zapier_webhook_logs_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "automation_workflows"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

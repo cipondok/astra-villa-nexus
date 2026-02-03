@@ -59,7 +59,8 @@ import {
   Calculator,
   Link2,
   Smartphone,
-  FlaskConical
+  FlaskConical,
+  Zap
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -561,6 +562,13 @@ export const navigationSections = {
       label: "Social Commerce",
       icon: ShoppingBag,
       description: "Instagram, TikTok, Pinterest, Facebook storefronts with WhatsApp automation",
+      badge: "New"
+    },
+    {
+      key: "automation-platform",
+      label: "Automation Platform",
+      icon: Zap,
+      description: "High-volume automation for onboarding, listings, messaging, reports & partners",
       badge: "New"
     },
     {
