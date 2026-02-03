@@ -2576,11 +2576,11 @@ const AstraSearchPanel = ({
                 <TooltipProvider delayDuration={100}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className="p-1 flex items-center justify-center transition-colors">
-                        <MapPin className="h-5 w-5 text-orange-700 dark:text-orange-400" />
+                      <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className="p-1.5 flex items-center justify-center transition-all duration-200 group hover:bg-accent rounded-lg">
+                        <MapPin className="h-5 w-5 text-muted-foreground group-hover:text-orange-500 group-hover:scale-110 transition-all duration-200" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+                    <TooltipContent side="top" className="z-[100000] bg-card/95 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
                       <p className="text-[10px] font-medium">Map View</p>
                     </TooltipContent>
                   </Tooltip>
@@ -2588,10 +2588,13 @@ const AstraSearchPanel = ({
                 <TooltipProvider delayDuration={100}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1 flex items-center justify-center transition-colors" disabled={isGettingLocation}>
+                      <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1.5 flex items-center justify-center transition-all duration-200 group hover:bg-accent rounded-lg" disabled={isGettingLocation}>
                         {isGettingLocation ? <div className="flex flex-col items-center justify-center">
-                            <div className="animate-spin h-4 w-4 border-2 border-cyan-700 rounded-full border-t-transparent" />
-                          </div> : <svg className="h-5 w-5 text-cyan-700 dark:text-cyan-400" viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <div className="animate-spin h-4 w-4 border-2 border-primary rounded-full border-t-transparent" />
+                          </div> : <svg className={cn(
+                            "h-5 w-5 transition-all duration-200",
+                            useNearbyLocation ? "text-cyan-500" : "text-muted-foreground group-hover:text-cyan-500 group-hover:scale-110"
+                          )} viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="12" cy="12" r="3" />
                             <path d="M12 2v3" />
                             <path d="M12 19v3" />
@@ -2600,7 +2603,7 @@ const AstraSearchPanel = ({
                           </svg>}
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+                    <TooltipContent side="top" className="z-[100000] bg-card/95 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
                       <p className="text-[10px] font-medium">{isGettingLocation ? "Getting Location..." : "Near Me"}</p>
                     </TooltipContent>
                   </Tooltip>
@@ -2664,10 +2667,10 @@ const AstraSearchPanel = ({
                               setShowSuggestions(false);
                               handleSearch();
                             }} 
-                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-all duration-500 flex items-center gap-2 hover:scale-105"
+                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-accent rounded-lg transition-all duration-200 flex items-center gap-2 group"
                           >
-                            <Clock className="h-2.5 w-2.5 text-muted-foreground" />
-                            {term}
+                            <Clock className="h-2.5 w-2.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <span className="group-hover:text-primary transition-colors">{term}</span>
                             {getDisplayCount(term) > 0 && (
                               <span className="ml-auto text-[8px] text-muted-foreground">
                                 {getDisplayCount(term)}x
@@ -2696,10 +2699,10 @@ const AstraSearchPanel = ({
                               setShowSuggestions(false);
                               handleSearch();
                             }} 
-                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-purple-500/10 rounded-lg transition-colors flex items-center gap-2"
+                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-accent rounded-lg transition-all duration-200 flex items-center gap-2 group"
                           >
-                            <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
-                            {location}
+                            <MapPin className="h-2.5 w-2.5 text-muted-foreground group-hover:text-purple-500 transition-colors" />
+                            <span className="group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{location}</span>
                             {getDisplayCount(location) > 0 && (
                               <span className="ml-auto text-[8px] text-muted-foreground">
                                 {getDisplayCount(location)}x
@@ -2717,20 +2720,27 @@ const AstraSearchPanel = ({
                         Trending
                       </div>
                       <div className="space-y-0.5">
-                        {filteredSuggestions.trending.map((trend, i) => <button key={i} type="button" onClick={e => {
-                    e.stopPropagation();
-                    trackSuggestionClick(trend);
-                    setSearchQuery(trend);
-                    setShowSuggestions(false);
-                    handleSearch();
-                  }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-between">
-                            <span>{trend}</span>
+                        {filteredSuggestions.trending.map((trend, i) => (
+                          <button 
+                            key={i} 
+                            type="button" 
+                            onClick={e => {
+                              e.stopPropagation();
+                              trackSuggestionClick(trend);
+                              setSearchQuery(trend);
+                              setShowSuggestions(false);
+                              handleSearch();
+                            }} 
+                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-accent rounded-lg transition-all duration-200 flex items-center justify-between group"
+                          >
+                            <span className="group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{trend}</span>
                             {getDisplayCount(trend) > 0 && (
                               <span className="text-[8px] text-muted-foreground">
                                 {getDisplayCount(trend)}x
                               </span>
                             )}
-                          </button>)}
+                          </button>
+                        ))}
                       </div>
                     </div>}
                 </div>
@@ -2750,25 +2760,25 @@ const AstraSearchPanel = ({
                           setIsPropertyTypeOpen(!isPropertyTypeOpen);
                           requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                         }}
-                        className="p-1 flex items-center justify-center transition-colors relative"
+                        className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-accent rounded-lg"
                       >
-                        <Building className="h-5 w-5 text-blue-700 dark:text-blue-400" />
+                        <Building className="h-5 w-5 text-muted-foreground group-hover:text-blue-500 group-hover:scale-110 transition-all duration-200" />
                         {filters.propertyType && filters.propertyType !== 'all' && (
-                          <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-blue-500 text-white min-w-[14px] text-center">
+                          <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
                             1
                           </span>
                         )}
                       </button>
                     </PopoverTrigger>
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+                  <TooltipContent side="top" className="z-[100000] bg-card/95 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
                     <p className="text-[10px] font-medium">Property Type</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
               
               <PopoverContent 
-                className="w-56 bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150 border border-white/30 dark:border-white/20 rounded-2xl shadow-2xl z-[99999] p-3 ring-1 ring-white/20" 
+                className="w-56 bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl z-[99999] p-3" 
                 align="start"
                 sideOffset={8}
               >
@@ -2777,23 +2787,26 @@ const AstraSearchPanel = ({
                   <div className="grid grid-cols-2 gap-1.5">
                     {propertyTypeOptions.slice(0, 8).map((type) => {
                       const IconComponent = type.icon || Building;
+                      const isSelected = filters.propertyType === type.value;
                       return (
                         <button
                           key={type.value}
                           onClick={() => {
-                            handleFilterChange('propertyType', filters.propertyType === type.value ? 'all' : type.value);
+                            handleFilterChange('propertyType', isSelected ? 'all' : type.value);
                             setIsPropertyTypeOpen(false);
                           }}
                           className={cn(
-                            "flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-all",
-                            "hover:bg-primary/10",
-                            filters.propertyType === type.value 
-                              ? "bg-primary text-primary-foreground" 
-                              : "bg-muted/50 text-foreground"
+                            "flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-all duration-200 group",
+                            isSelected 
+                              ? "bg-primary text-primary-foreground shadow-md" 
+                              : "bg-muted/50 text-foreground hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400"
                           )}
                         >
-                          <IconComponent className="h-3 w-3" />
-                          {type.label}
+                          <IconComponent className={cn(
+                            "h-3 w-3 transition-all duration-200",
+                            !isSelected && "group-hover:text-blue-500 group-hover:scale-110"
+                          )} />
+                          <span>{type.label}</span>
                         </button>
                       );
                     })}
@@ -2804,7 +2817,7 @@ const AstraSearchPanel = ({
                         handleFilterChange('propertyType', 'all');
                         setIsPropertyTypeOpen(false);
                       }}
-                      className="w-full mt-2 px-2 py-1.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+                      className="w-full mt-2 px-2 py-1.5 text-[10px] text-muted-foreground hover:text-destructive transition-colors"
                     >
                       Clear Selection
                     </button>
@@ -2839,25 +2852,25 @@ const AstraSearchPanel = ({
                             requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
-                          className="p-1 flex items-center justify-center transition-colors relative"
+                          className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-accent rounded-lg"
                         >
-                          <MapPin className="h-5 w-5 text-purple-700 dark:text-purple-400" />
+                          <MapPin className="h-5 w-5 text-muted-foreground group-hover:text-purple-500 group-hover:scale-110 transition-all duration-200" />
                           {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
-                            <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-purple-500 text-white min-w-[14px] text-center">
+                            <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
                               {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
                             </span>
                           )}
                         </button>
                       </PopoverTrigger>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
+                    <TooltipContent side="top" className="z-[100000] bg-card/95 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
                       <p className="text-[10px] font-medium">Manual Location</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
                 
                 <PopoverContent 
-                  className="w-64 bg-transparent border-2 border-border/50 rounded-2xl shadow-2xl z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
+                  className="w-64 bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
                   align="start"
                   sideOffset={8} 
                   avoidCollisions={true} 
@@ -2872,10 +2885,10 @@ const AstraSearchPanel = ({
                   }}
                 >
                   <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full overscroll-contain">
-                    <TabsList className="w-full grid grid-cols-3 h-9 rounded-xl bg-black/30 dark:bg-black/40 p-1 backdrop-blur-xl border border-white/15">
+                    <TabsList className="w-full grid grid-cols-3 h-9 rounded-xl bg-muted/60 p-1 border border-border/30">
                       <TabsTrigger
                         value="province"
-                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30"
+                        className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md"
                         onClick={(e) => {
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
@@ -2888,7 +2901,7 @@ const AstraSearchPanel = ({
                       <TabsTrigger
                         value="city"
                         disabled={!filters.state || filters.state === "all"}
-                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30 disabled:opacity-40"
+                        className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md disabled:opacity-40"
                         onClick={(e) => {
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
@@ -2901,7 +2914,7 @@ const AstraSearchPanel = ({
                       <TabsTrigger
                         value="area"
                         disabled={!filters.city || filters.city === "all"}
-                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30 disabled:opacity-40"
+                        className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md disabled:opacity-40"
                         onClick={(e) => {
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
@@ -2945,7 +2958,7 @@ const AstraSearchPanel = ({
                         </div>
                       )}
                       <ScrollArea 
-                        className="h-48 border border-border/30 rounded-lg bg-transparent overscroll-contain" 
+                        className="h-48 border border-border/30 rounded-lg bg-background/50 overscroll-contain" 
                         onTouchStart={(e) => e.stopPropagation()}
                         onTouchMove={(e) => e.stopPropagation()}
                         onWheel={(e) => e.stopPropagation()}
@@ -3024,7 +3037,7 @@ const AstraSearchPanel = ({
                         </div>
                       )}
                       <ScrollArea 
-                        className="h-48 border border-border/30 rounded-lg bg-muted/5 overscroll-contain"
+                        className="h-48 border border-border/30 rounded-lg bg-background/50 overscroll-contain"
                         onTouchStart={(e) => e.stopPropagation()}
                         onTouchMove={(e) => e.stopPropagation()}
                         onWheel={(e) => e.stopPropagation()}
@@ -3159,11 +3172,11 @@ const AstraSearchPanel = ({
                     onClick={() => {
                       setShowAdvancedFilters(true);
                     }} 
-                    className="p-1 flex items-center justify-center transition-colors relative"
+                    className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-accent rounded-lg"
                   >
-                    <SlidersHorizontal className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+                    <SlidersHorizontal className="h-5 w-5 text-muted-foreground group-hover:text-emerald-500 group-hover:scale-110 transition-all duration-200" />
                     {getActiveFiltersCount() > 0 && (
-                      <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-emerald-500 text-white min-w-[14px] text-center">
+                      <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
                         {getActiveFiltersCount()}
                       </span>
                     )}
