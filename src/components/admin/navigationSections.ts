@@ -550,6 +550,20 @@ export const navigationSections = {
       label: "User Experience Tips",
       icon: HelpCircle,
       description: "Performance tips and user engagement guidelines"
+    },
+    {
+      key: "media-network",
+      label: "Media Network",
+      icon: Video,
+      description: "Manage YouTube, Podcast, Newsletter, Research Reports, and Events",
+      badge: "New"
+    },
+    {
+      key: "user-acquisition",
+      label: "User Acquisition",
+      icon: TrendingUp,
+      description: "Referral 2.0, Bank Partnerships, SEO Factory, Influencers, Corporate & University Programs",
+      badge: "New"
     }
   ],
 

@@ -87,6 +87,8 @@ const AdminBlockchainManagement = lazy(() => import("./AdminBlockchainManagement
 const B2BMarketplaceManagement = lazy(() => import("./B2BMarketplaceManagement"));
 const PartnerProgramManagement = lazy(() => import("./PartnerProgramManagement"));
 const ExpansionPlanningManagement = lazy(() => import("./ExpansionPlanningManagement"));
+const MediaNetworkManagement = lazy(() => import("./MediaNetworkManagement"));
+const UserAcquisitionManagement = lazy(() => import("./UserAcquisitionManagement"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -432,6 +434,10 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <LiveMonitoringDashboard />;
       case "expansion-planning":
         return <ExpansionPlanningManagement />;
+      case "media-network":
+        return <MediaNetworkManagement />;
+      case "user-acquisition":
+        return <UserAcquisitionManagement />;
       default:
         return <AdminOverview />;
     }
