@@ -25,6 +25,13 @@ const Auth = lazy(() => import('@/pages/Auth'));
 const Notifications = lazy(() => import('@/pages/Notifications'));
 const AddProperty = lazy(() => import('@/pages/AddProperty'));
 
+// Mobile feature pages - lazy loaded
+const ARPreviewPage = lazy(() => import('@/pages/mobile/ARPreviewPage'));
+const AuctionsPage = lazy(() => import('@/pages/mobile/AuctionsPage'));
+const CommunityPage = lazy(() => import('@/pages/mobile/CommunityPage'));
+const JourneyPage = lazy(() => import('@/pages/mobile/JourneyPage'));
+const FeaturesPage = lazy(() => import('@/pages/mobile/FeaturesPage'));
+
 const MobileLoader = () => (
   <div className="flex items-center justify-center min-h-[60vh]">
     <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -48,6 +55,16 @@ const MobileApp: React.FC = () => {
           <Route path="/profile" element={user ? <Profile /> : <Navigate to="/auth" />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/add-property" element={user ? <AddProperty /> : <Navigate to="/auth" />} />
+          
+          {/* Mobile feature pages */}
+          <Route path="/mobile/features" element={<FeaturesPage />} />
+          <Route path="/mobile/ar-preview" element={<ARPreviewPage />} />
+          <Route path="/mobile/ar-preview/:propertyId" element={<ARPreviewPage />} />
+          <Route path="/mobile/auctions" element={<AuctionsPage />} />
+          <Route path="/mobile/auctions/:auctionId" element={<AuctionsPage />} />
+          <Route path="/mobile/community" element={<CommunityPage />} />
+          <Route path="/mobile/community/:neighborhoodId" element={<CommunityPage />} />
+          <Route path="/mobile/journey" element={<JourneyPage />} />
           
           {/* Redirect common paths */}
           <Route path="/dijual" element={<Navigate to="/search?type=sale" />} />
