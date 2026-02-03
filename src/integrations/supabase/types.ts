@@ -1459,6 +1459,93 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_leaderboard_rewards: {
+        Row: {
+          agent_id: string | null
+          avg_rating: number | null
+          badge_earned: string | null
+          campaign_id: string | null
+          created_at: string
+          id: string
+          month_year: string
+          rank: number | null
+          response_rate: number | null
+          review_count: number | null
+          reward_amount: number | null
+          reward_claimed: boolean | null
+          reward_claimed_at: string | null
+          reward_tier: string | null
+          reward_type: string | null
+          total_inquiries: number | null
+          total_listings: number | null
+          total_points: number | null
+          total_revenue: number | null
+          total_sales: number | null
+          updated_at: string
+        }
+        Insert: {
+          agent_id?: string | null
+          avg_rating?: number | null
+          badge_earned?: string | null
+          campaign_id?: string | null
+          created_at?: string
+          id?: string
+          month_year: string
+          rank?: number | null
+          response_rate?: number | null
+          review_count?: number | null
+          reward_amount?: number | null
+          reward_claimed?: boolean | null
+          reward_claimed_at?: string | null
+          reward_tier?: string | null
+          reward_type?: string | null
+          total_inquiries?: number | null
+          total_listings?: number | null
+          total_points?: number | null
+          total_revenue?: number | null
+          total_sales?: number | null
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string | null
+          avg_rating?: number | null
+          badge_earned?: string | null
+          campaign_id?: string | null
+          created_at?: string
+          id?: string
+          month_year?: string
+          rank?: number | null
+          response_rate?: number | null
+          review_count?: number | null
+          reward_amount?: number | null
+          reward_claimed?: boolean | null
+          reward_claimed_at?: string | null
+          reward_tier?: string | null
+          reward_type?: string | null
+          total_inquiries?: number | null
+          total_listings?: number | null
+          total_points?: number | null
+          total_revenue?: number | null
+          total_sales?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_leaderboard_rewards_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_leaderboard_rewards_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "viral_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_registration_requests: {
         Row: {
           business_type: string
@@ -6176,6 +6263,78 @@ export type Database = {
         }
         Relationships: []
       }
+      first_time_user_bonuses: {
+        Row: {
+          bonus_amount: number
+          bonus_code: string | null
+          bonus_type: string | null
+          campaign_id: string | null
+          claimed: boolean | null
+          claimed_at: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          signup_campaign: string | null
+          signup_source: string | null
+          transaction_id: string | null
+          used: boolean | null
+          used_at: string | null
+          used_for: string | null
+          user_id: string | null
+        }
+        Insert: {
+          bonus_amount?: number
+          bonus_code?: string | null
+          bonus_type?: string | null
+          campaign_id?: string | null
+          claimed?: boolean | null
+          claimed_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          signup_campaign?: string | null
+          signup_source?: string | null
+          transaction_id?: string | null
+          used?: boolean | null
+          used_at?: string | null
+          used_for?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          bonus_amount?: number
+          bonus_code?: string | null
+          bonus_type?: string | null
+          campaign_id?: string | null
+          claimed?: boolean | null
+          claimed_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          signup_campaign?: string | null
+          signup_source?: string | null
+          transaction_id?: string | null
+          used?: boolean | null
+          used_at?: string | null
+          used_for?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "first_time_user_bonuses_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "viral_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "first_time_user_bonuses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       foreign_investment_inquiries: {
         Row: {
           admin_response: string | null
@@ -7829,6 +7988,104 @@ export type Database = {
           validation_rules?: Json | null
         }
         Relationships: []
+      }
+      listing_competition_entries: {
+        Row: {
+          admin_notes: string | null
+          campaign_id: string | null
+          created_at: string
+          description_score: number | null
+          disqualified: boolean | null
+          disqualified_reason: string | null
+          engagement_score: number | null
+          id: string
+          listing_quality_score: number | null
+          photo_count: number | null
+          prize_amount: number | null
+          prize_claimed: boolean | null
+          prize_claimed_at: string | null
+          property_id: string | null
+          rank: number | null
+          total_inquiries: number | null
+          total_score: number | null
+          total_views: number | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          campaign_id?: string | null
+          created_at?: string
+          description_score?: number | null
+          disqualified?: boolean | null
+          disqualified_reason?: string | null
+          engagement_score?: number | null
+          id?: string
+          listing_quality_score?: number | null
+          photo_count?: number | null
+          prize_amount?: number | null
+          prize_claimed?: boolean | null
+          prize_claimed_at?: string | null
+          property_id?: string | null
+          rank?: number | null
+          total_inquiries?: number | null
+          total_score?: number | null
+          total_views?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          campaign_id?: string | null
+          created_at?: string
+          description_score?: number | null
+          disqualified?: boolean | null
+          disqualified_reason?: string | null
+          engagement_score?: number | null
+          id?: string
+          listing_quality_score?: number | null
+          photo_count?: number | null
+          prize_amount?: number | null
+          prize_claimed?: boolean | null
+          prize_claimed_at?: string | null
+          property_id?: string | null
+          rank?: number | null
+          total_inquiries?: number | null
+          total_score?: number | null
+          total_views?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_competition_entries_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "viral_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_competition_entries_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_competition_entries_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_competition_entries_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       listing_syndication_networks: {
         Row: {
@@ -12239,6 +12496,161 @@ export type Database = {
           },
         ]
       }
+      photo_contest_entries: {
+        Row: {
+          admin_score: number | null
+          approved: boolean | null
+          campaign_id: string | null
+          category: string | null
+          created_at: string
+          featured: boolean | null
+          id: string
+          is_winner: boolean | null
+          photo_description: string | null
+          photo_title: string | null
+          photo_url: string
+          prize_amount: number | null
+          prize_claimed: boolean | null
+          prize_claimed_at: string | null
+          property_id: string | null
+          rank: number | null
+          rejected: boolean | null
+          rejection_reason: string | null
+          share_count: number | null
+          total_score: number | null
+          updated_at: string
+          user_id: string | null
+          view_count: number | null
+          vote_count: number | null
+          winner_position: number | null
+        }
+        Insert: {
+          admin_score?: number | null
+          approved?: boolean | null
+          campaign_id?: string | null
+          category?: string | null
+          created_at?: string
+          featured?: boolean | null
+          id?: string
+          is_winner?: boolean | null
+          photo_description?: string | null
+          photo_title?: string | null
+          photo_url: string
+          prize_amount?: number | null
+          prize_claimed?: boolean | null
+          prize_claimed_at?: string | null
+          property_id?: string | null
+          rank?: number | null
+          rejected?: boolean | null
+          rejection_reason?: string | null
+          share_count?: number | null
+          total_score?: number | null
+          updated_at?: string
+          user_id?: string | null
+          view_count?: number | null
+          vote_count?: number | null
+          winner_position?: number | null
+        }
+        Update: {
+          admin_score?: number | null
+          approved?: boolean | null
+          campaign_id?: string | null
+          category?: string | null
+          created_at?: string
+          featured?: boolean | null
+          id?: string
+          is_winner?: boolean | null
+          photo_description?: string | null
+          photo_title?: string | null
+          photo_url?: string
+          prize_amount?: number | null
+          prize_claimed?: boolean | null
+          prize_claimed_at?: string | null
+          property_id?: string | null
+          rank?: number | null
+          rejected?: boolean | null
+          rejection_reason?: string | null
+          share_count?: number | null
+          total_score?: number | null
+          updated_at?: string
+          user_id?: string | null
+          view_count?: number | null
+          vote_count?: number | null
+          winner_position?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photo_contest_entries_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "viral_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "photo_contest_entries_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "photo_contest_entries_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "photo_contest_entries_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      photo_contest_votes: {
+        Row: {
+          created_at: string
+          entry_id: string | null
+          id: string
+          ip_address: unknown
+          user_id: string | null
+          vote_type: string | null
+        }
+        Insert: {
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          ip_address?: unknown
+          user_id?: string | null
+          vote_type?: string | null
+        }
+        Update: {
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          ip_address?: unknown
+          user_id?: string | null
+          vote_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photo_contest_votes_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "photo_contest_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "photo_contest_votes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_commission_settings: {
         Row: {
           commission_rate: number
@@ -14056,6 +14468,69 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      referral_milestone_campaigns: {
+        Row: {
+          campaign_id: string | null
+          created_at: string
+          id: string
+          milestone_reached_at: string | null
+          referral_codes: string[] | null
+          referrals_completed: number | null
+          referrals_required: number
+          reward_claimed: boolean | null
+          reward_claimed_at: string | null
+          reward_months_free: number | null
+          subscription_extended_until: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          created_at?: string
+          id?: string
+          milestone_reached_at?: string | null
+          referral_codes?: string[] | null
+          referrals_completed?: number | null
+          referrals_required?: number
+          reward_claimed?: boolean | null
+          reward_claimed_at?: string | null
+          reward_months_free?: number | null
+          subscription_extended_until?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          campaign_id?: string | null
+          created_at?: string
+          id?: string
+          milestone_reached_at?: string | null
+          referral_codes?: string[] | null
+          referrals_completed?: number | null
+          referrals_required?: number
+          reward_claimed?: boolean | null
+          reward_claimed_at?: string | null
+          reward_months_free?: number | null
+          subscription_extended_until?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_milestone_campaigns_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "viral_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_milestone_campaigns_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       referral_tracking: {
         Row: {
@@ -21538,6 +22013,149 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           verification_type?: string
+        }
+        Relationships: []
+      }
+      viral_campaign_analytics: {
+        Row: {
+          campaign_id: string | null
+          clicks: number | null
+          conversions: number | null
+          cost_per_acquisition: number | null
+          created_at: string
+          date: string
+          id: string
+          impressions: number | null
+          metadata: Json | null
+          new_participants: number | null
+          referrals_generated: number | null
+          revenue_generated: number | null
+          rewards_distributed: number | null
+          roi: number | null
+          shares: number | null
+          total_participants: number | null
+          viral_coefficient: number | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          clicks?: number | null
+          conversions?: number | null
+          cost_per_acquisition?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          impressions?: number | null
+          metadata?: Json | null
+          new_participants?: number | null
+          referrals_generated?: number | null
+          revenue_generated?: number | null
+          rewards_distributed?: number | null
+          roi?: number | null
+          shares?: number | null
+          total_participants?: number | null
+          viral_coefficient?: number | null
+        }
+        Update: {
+          campaign_id?: string | null
+          clicks?: number | null
+          conversions?: number | null
+          cost_per_acquisition?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          impressions?: number | null
+          metadata?: Json | null
+          new_participants?: number | null
+          referrals_generated?: number | null
+          revenue_generated?: number | null
+          rewards_distributed?: number | null
+          roi?: number | null
+          shares?: number | null
+          total_participants?: number | null
+          viral_coefficient?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "viral_campaign_analytics_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "viral_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      viral_campaigns: {
+        Row: {
+          budget: number | null
+          campaign_name: string
+          campaign_type: string
+          created_at: string
+          current_progress: number | null
+          description: string | null
+          eligibility_criteria: Json | null
+          end_date: string | null
+          featured_image_url: string | null
+          goal_target: number | null
+          id: string
+          is_active: boolean | null
+          reward_description: string | null
+          reward_type: string | null
+          reward_value: number | null
+          rules: Json | null
+          spent_budget: number | null
+          start_date: string
+          terms_and_conditions: string | null
+          total_participants: number | null
+          total_rewards_distributed: number | null
+          updated_at: string
+        }
+        Insert: {
+          budget?: number | null
+          campaign_name: string
+          campaign_type: string
+          created_at?: string
+          current_progress?: number | null
+          description?: string | null
+          eligibility_criteria?: Json | null
+          end_date?: string | null
+          featured_image_url?: string | null
+          goal_target?: number | null
+          id?: string
+          is_active?: boolean | null
+          reward_description?: string | null
+          reward_type?: string | null
+          reward_value?: number | null
+          rules?: Json | null
+          spent_budget?: number | null
+          start_date?: string
+          terms_and_conditions?: string | null
+          total_participants?: number | null
+          total_rewards_distributed?: number | null
+          updated_at?: string
+        }
+        Update: {
+          budget?: number | null
+          campaign_name?: string
+          campaign_type?: string
+          created_at?: string
+          current_progress?: number | null
+          description?: string | null
+          eligibility_criteria?: Json | null
+          end_date?: string | null
+          featured_image_url?: string | null
+          goal_target?: number | null
+          id?: string
+          is_active?: boolean | null
+          reward_description?: string | null
+          reward_type?: string | null
+          reward_value?: number | null
+          rules?: Json | null
+          spent_budget?: number | null
+          start_date?: string
+          terms_and_conditions?: string | null
+          total_participants?: number | null
+          total_rewards_distributed?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
