@@ -11,12 +11,14 @@ import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
 import { useVIPLimits } from "@/hooks/useVIPLimits";
 import VIPLimitAlert from "@/components/property/VIPLimitAlert";
+import { useToast } from "@/hooks/use-toast";
 
 const AddProperty = () => {
-  const { isAuthenticated, profile } = useAuth();
+  const { isAuthenticated, profile, user } = useAuth();
   const { language } = useLanguage();
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const [activeTab, setActiveTab] = useState<string>("manual");
+  const { toast } = useToast();
   const { data: userRoles = [] } = useUserRoles();
   const navigate = useNavigate();
   const { 
@@ -238,8 +240,88 @@ const AddProperty = () => {
           <TabsContent value="import" className="mt-2">
             <PropertyImporter 
               onImport={(data) => {
-                console.log("Imported property data:", data);
-                // Switch to manual tab and pre-fill form (future enhancement)
+                if (!user) {
+                  toast({
+                    title: "Error",
+                    description: language === "en" ? "Please log in first." : "Silakan login dulu.",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+
+                // Write an auto-fill draft to the SAME draft key that MultiStepPropertyForm already restores.
+                // This makes the import instantly pre-fill the form without changing the form component API.
+                const draftKey = `property_draft_${user.id}`;
+
+                const importedFormData: any = {
+                  title: data.title || "",
+                  description: data.description || "",
+                  property_type: data.property_type || "",
+                  listing_type: data.listing_type || "",
+                  price: data.price || "",
+                  bedrooms: data.specifications?.bedrooms != null ? String(data.specifications.bedrooms) : "",
+                  bathrooms: data.specifications?.bathrooms != null ? String(data.specifications.bathrooms) : "",
+                  area_sqm: data.specifications?.building_size_m2 != null ? String(data.specifications.building_size_m2) : "",
+                  location: data.location?.full_address || "",
+                  city: data.location?.city || "",
+                  state: data.location?.province || "",
+                  area: "",
+                  district: "",
+                  subdistrict: "",
+                  development_status: "completed",
+                  owner_type: "individual",
+                  status: isAdmin ? "active" : "pending_approval",
+                  rental_periods: ["monthly"],
+                  minimum_rental_days: "30",
+                  images: Array.isArray(data.images) ? data.images : [],
+                  virtual_tour_url: "",
+                  three_d_model_url: "",
+                };
+
+                // Map features array into the boolean features object used by the form.
+                // We ONLY set known feature keys; everything else stays false.
+                const importedFeatures: any = {
+                  parking: false,
+                  swimming_pool: false,
+                  garden: false,
+                  balcony: false,
+                  furnished: false,
+                  air_conditioning: false,
+                  security: false,
+                  elevator: false,
+                };
+
+                const featureText = (data.features || []).join(" ").toLowerCase();
+                if (featureText.includes("park")) importedFeatures.parking = true;
+                if (featureText.includes("pool") || featureText.includes("kolam")) importedFeatures.swimming_pool = true;
+                if (featureText.includes("garden") || featureText.includes("taman")) importedFeatures.garden = true;
+                if (featureText.includes("balcony") || featureText.includes("balkon")) importedFeatures.balcony = true;
+                if (featureText.includes("furnish") || featureText.includes("furnished") || featureText.includes("fully furnished")) importedFeatures.furnished = true;
+                if (featureText.includes("ac") || featureText.includes("air conditioning") || featureText.includes("air-conditioning") || featureText.includes("pendingin")) importedFeatures.air_conditioning = true;
+                if (featureText.includes("security") || featureText.includes("keamanan") || featureText.includes("satpam")) importedFeatures.security = true;
+                if (featureText.includes("elevator") || featureText.includes("lift")) importedFeatures.elevator = true;
+
+                const draftData = {
+                  formData: importedFormData,
+                  features: importedFeatures,
+                  currentTab: "basic",
+                  timestamp: new Date().toISOString(),
+                  userId: user.id,
+                  source: {
+                    url: data.source?.url || "",
+                    website: data.source?.website || "",
+                  },
+                };
+
+                localStorage.setItem(draftKey, JSON.stringify(draftData));
+                // Notify the form (already mounted) to reload draft immediately.
+                window.dispatchEvent(new Event("astra:property-imported"));
+
+                toast({
+                  title: language === "en" ? "Imported" : "Berhasil diimpor",
+                  description: language === "en" ? "Form auto-filled. Please review and submit." : "Form terisi otomatis. Silakan cek lalu submit.",
+                });
+
                 setActiveTab("manual");
               }} 
             />
