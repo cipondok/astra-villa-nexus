@@ -2007,7 +2007,7 @@ const AstraSearchPanel = ({
         {/* Compact Tabs for Sale/Rent/All */}
         <div className="flex justify-center">
           <div 
-            className="grid grid-cols-4 gap-1 p-1"
+            className="inline-flex bg-background/60 backdrop-blur-md p-1 rounded-xl border border-border/50 shadow-md"
             role="tablist"
           >
             <button
@@ -2015,10 +2015,10 @@ const AstraSearchPanel = ({
               role="tab"
               aria-selected={activeTab === "all"}
               className={cn(
-                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5",
                 activeTab === "all" 
-                  ? "bg-white text-primary shadow-md" 
-                  : "text-white/90 hover:text-white hover:bg-white/20"
+                  ? "bg-primary text-primary-foreground shadow-md" 
+                  : "text-foreground/80 hover:text-foreground hover:bg-accent/80"
               )}
             >
               <Layers className="h-3.5 w-3.5" />
@@ -2030,10 +2030,10 @@ const AstraSearchPanel = ({
               role="tab"
               aria-selected={activeTab === "sale"}
               className={cn(
-                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5",
                 activeTab === "sale" 
-                  ? "bg-white text-primary shadow-md" 
-                  : "text-white/90 hover:text-white hover:bg-white/20"
+                  ? "bg-primary text-primary-foreground shadow-md" 
+                  : "text-foreground/80 hover:text-foreground hover:bg-accent/80"
               )}
             >
               <ShoppingBag className="h-3.5 w-3.5" />
@@ -2045,10 +2045,10 @@ const AstraSearchPanel = ({
               role="tab"
               aria-selected={activeTab === "rent"}
               className={cn(
-                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5",
                 activeTab === "rent" 
-                  ? "bg-white text-primary shadow-md" 
-                  : "text-white/90 hover:text-white hover:bg-white/20"
+                  ? "bg-primary text-primary-foreground shadow-md" 
+                  : "text-foreground/80 hover:text-foreground hover:bg-accent/80"
               )}
             >
               <Key className="h-3.5 w-3.5" />
@@ -2060,10 +2060,10 @@ const AstraSearchPanel = ({
               role="tab"
               aria-selected={activeTab === "new_project"}
               className={cn(
-                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5",
                 activeTab === "new_project" 
-                  ? "bg-white text-primary shadow-md" 
-                  : "text-white/90 hover:text-white hover:bg-white/20"
+                  ? "bg-primary text-primary-foreground shadow-md" 
+                  : "text-foreground/80 hover:text-foreground hover:bg-accent/80"
               )}
             >
               <Rocket className="h-3.5 w-3.5" />
@@ -2408,30 +2408,14 @@ const AstraSearchPanel = ({
           
           {/* Listing Type Tabs - Clean Professional Style */}
           <div className="flex justify-center">
-            <div className="inline-flex bg-muted/50 p-1 rounded-xl border border-border/50">
-              {/* Sliding indicator */}
-              <div
-                className="absolute h-[calc(100%-8px)] bg-primary rounded-lg shadow-md transition-all duration-300 ease-out"
-                style={{
-                  width: "calc(25% - 4px)",
-                  left:
-                    activeTab === "all"
-                      ? "4px"
-                      : activeTab === "sale"
-                        ? "calc(25% + 2px)"
-                        : activeTab === "rent"
-                          ? "calc(50%)"
-                          : "calc(75% - 2px)",
-                }}
-              />
-
+            <div className="inline-flex bg-muted/60 p-1 rounded-xl border border-border/50 shadow-sm">
               <button
                 onClick={() => setActiveTab("all")}
                 className={cn(
                   "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200",
                   activeTab === "all" 
-                    ? "text-primary-foreground" 
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-primary text-primary-foreground shadow-md" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/80"
                 )}
               >
                 <Layers className="h-3.5 w-3.5" />
@@ -2443,8 +2427,8 @@ const AstraSearchPanel = ({
                 className={cn(
                   "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200",
                   activeTab === "sale" 
-                    ? "text-primary-foreground" 
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-primary text-primary-foreground shadow-md" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/80"
                 )}
               >
                 <ShoppingBag className="h-3.5 w-3.5" />
@@ -2456,8 +2440,8 @@ const AstraSearchPanel = ({
                 className={cn(
                   "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200",
                   activeTab === "rent" 
-                    ? "text-primary-foreground" 
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-primary text-primary-foreground shadow-md" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/80"
                 )}
               >
                 <Key className="h-3.5 w-3.5" />
@@ -2469,8 +2453,8 @@ const AstraSearchPanel = ({
                 className={cn(
                   "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200",
                   activeTab === "new_project" 
-                    ? "text-primary-foreground" 
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-primary text-primary-foreground shadow-md" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/80"
                 )}
               >
                 <Rocket className="h-3.5 w-3.5" />
