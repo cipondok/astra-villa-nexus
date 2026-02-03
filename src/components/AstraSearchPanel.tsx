@@ -2747,36 +2747,37 @@ const AstraSearchPanel = ({
               )}
             </div>
 
-            {/* Property Type Button */}
+            {/* Property Type Button - Tooltip separated from Popover */}
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const currentScroll = window.scrollY;
+                      setIsPropertyTypeOpen(!isPropertyTypeOpen);
+                      requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                    }}
+                    className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-amber-300/10 rounded-lg"
+                  >
+                    <Building className="h-5 w-5 text-muted-foreground group-hover:text-blue-800 dark:group-hover:text-blue-400 group-hover:scale-110 transition-all duration-200" />
+                    {filters.propertyType && filters.propertyType !== 'all' && (
+                      <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
+                        1
+                      </span>
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" sideOffset={8} avoidCollisions={false} className="z-[100000]">
+                  <p className="text-xs font-medium">Property Type</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
             <Popover open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen}>
-              <TooltipProvider delayDuration={0}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <button 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          const currentScroll = window.scrollY;
-                          setIsPropertyTypeOpen(!isPropertyTypeOpen);
-                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
-                        }}
-                        className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-amber-300/10 rounded-lg"
-                      >
-                        <Building className="h-5 w-5 text-muted-foreground group-hover:text-blue-700 dark:group-hover:text-blue-400 group-hover:scale-110 transition-all duration-200" />
-                        {filters.propertyType && filters.propertyType !== 'all' && (
-                          <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
-                            1
-                          </span>
-                        )}
-                      </button>
-                    </PopoverTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" sideOffset={8} avoidCollisions={false}>
-                    <p className="text-xs font-medium">Property Type</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              
+              <PopoverTrigger asChild>
+                <span className="hidden" />
+              </PopoverTrigger>
               <PopoverContent 
                 className="w-56 bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl z-[99999] p-3" 
                 align="start"
@@ -2826,48 +2827,50 @@ const AstraSearchPanel = ({
               </PopoverContent>
             </Popover>
 
-            {/* Location Button */}
-            {!useNearbyLocation && <Popover open={isLocationOpen} onOpenChange={(open) => {
-                setIsLocationOpen(open);
-                // Reset to appropriate tab based on current selection
-                if (open) {
-                  if (!filters.state || filters.state === 'all') {
-                    setLocationActiveTab('province');
-                  } else if (!filters.city || filters.city === 'all') {
-                    setLocationActiveTab('city');
-                  } else {
-                    setLocationActiveTab('area');
-                  }
-                }
-              }}>
-                <TooltipProvider delayDuration={0}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <button 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            const currentScroll = window.scrollY;
-                            setIsLocationOpen(!isLocationOpen);
-                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
-                          }}
-                          onTouchStart={(e) => e.stopPropagation()}
-                          className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-amber-300/10 rounded-lg"
-                        >
-                          <MapPin className="h-5 w-5 text-muted-foreground group-hover:text-purple-700 dark:group-hover:text-purple-400 group-hover:scale-110 transition-all duration-200" />
-                          {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
-                            <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
-                              {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
-                            </span>
-                          )}
-                        </button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" sideOffset={8} avoidCollisions={false}>
-                      <p className="text-xs font-medium">Location</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+            {/* Location Button - Tooltip separated from Popover */}
+            {!useNearbyLocation && <>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const currentScroll = window.scrollY;
+                        const newOpen = !isLocationOpen;
+                        setIsLocationOpen(newOpen);
+                        // Reset to appropriate tab based on current selection
+                        if (newOpen) {
+                          if (!filters.state || filters.state === 'all') {
+                            setLocationActiveTab('province');
+                          } else if (!filters.city || filters.city === 'all') {
+                            setLocationActiveTab('city');
+                          } else {
+                            setLocationActiveTab('area');
+                          }
+                        }
+                        requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                      }}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-amber-300/10 rounded-lg"
+                    >
+                      <MapPin className="h-5 w-5 text-muted-foreground group-hover:text-purple-800 dark:group-hover:text-purple-400 group-hover:scale-110 transition-all duration-200" />
+                      {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
+                        <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
+                          {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
+                        </span>
+                      )}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" sideOffset={8} avoidCollisions={false} className="z-[100000]">
+                    <p className="text-xs font-medium">Location</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              
+              <Popover open={isLocationOpen} onOpenChange={setIsLocationOpen}>
+                <PopoverTrigger asChild>
+                  <span className="hidden" />
+                </PopoverTrigger>
                 
                 <PopoverContent 
                   className="w-64 bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
@@ -3162,7 +3165,8 @@ const AstraSearchPanel = ({
                     </TabsContent>
                   </Tabs>
                 </PopoverContent>
-              </Popover>}
+              </Popover>
+            </>}
 
             {/* All Filters Button - Icon only with tooltip */}
             <TooltipProvider delayDuration={0}>
@@ -3174,7 +3178,7 @@ const AstraSearchPanel = ({
                     }} 
                     className="p-1.5 flex items-center justify-center transition-all duration-200 relative group hover:bg-amber-300/10 rounded-lg"
                   >
-                    <SlidersHorizontal className="h-5 w-5 text-muted-foreground group-hover:text-emerald-700 dark:group-hover:text-emerald-400 group-hover:scale-110 transition-all duration-200" />
+                    <SlidersHorizontal className="h-5 w-5 text-muted-foreground group-hover:text-emerald-800 dark:group-hover:text-emerald-400 group-hover:scale-110 transition-all duration-200" />
                     {getActiveFiltersCount() > 0 && (
                       <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
                         {getActiveFiltersCount()}
@@ -3182,7 +3186,7 @@ const AstraSearchPanel = ({
                     )}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="top" sideOffset={8} avoidCollisions={false}>
+                <TooltipContent side="top" sideOffset={8} avoidCollisions={false} className="z-[100000]">
                   <p className="text-xs font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}</p>
                 </TooltipContent>
               </Tooltip>
