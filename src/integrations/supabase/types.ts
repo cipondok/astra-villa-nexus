@@ -6221,6 +6221,378 @@ export type Database = {
         }
         Relationships: []
       }
+      innovation_experiment_events: {
+        Row: {
+          created_at: string | null
+          event_type: string
+          event_value: number | null
+          experiment_id: string | null
+          id: string
+          metadata: Json | null
+          user_id: string | null
+          variant_name: string
+        }
+        Insert: {
+          created_at?: string | null
+          event_type: string
+          event_value?: number | null
+          experiment_id?: string | null
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+          variant_name: string
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string
+          event_value?: number | null
+          experiment_id?: string | null
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+          variant_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "innovation_experiment_events_experiment_id_fkey"
+            columns: ["experiment_id"]
+            isOneToOne: false
+            referencedRelation: "innovation_experiments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "innovation_experiment_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      innovation_experiments: {
+        Row: {
+          confidence_level: number | null
+          control_variant: Json
+          created_at: string | null
+          created_by: string | null
+          current_sample_size: number | null
+          description: string | null
+          end_date: string | null
+          feature_flag_id: string | null
+          hypothesis: string | null
+          id: string
+          name: string
+          primary_metric: string
+          results: Json | null
+          secondary_metrics: string[] | null
+          start_date: string | null
+          statistical_significance: number | null
+          status: string
+          target_sample_size: number | null
+          test_variants: Json
+          updated_at: string | null
+          winner_variant: string | null
+        }
+        Insert: {
+          confidence_level?: number | null
+          control_variant?: Json
+          created_at?: string | null
+          created_by?: string | null
+          current_sample_size?: number | null
+          description?: string | null
+          end_date?: string | null
+          feature_flag_id?: string | null
+          hypothesis?: string | null
+          id?: string
+          name: string
+          primary_metric: string
+          results?: Json | null
+          secondary_metrics?: string[] | null
+          start_date?: string | null
+          statistical_significance?: number | null
+          status?: string
+          target_sample_size?: number | null
+          test_variants?: Json
+          updated_at?: string | null
+          winner_variant?: string | null
+        }
+        Update: {
+          confidence_level?: number | null
+          control_variant?: Json
+          created_at?: string | null
+          created_by?: string | null
+          current_sample_size?: number | null
+          description?: string | null
+          end_date?: string | null
+          feature_flag_id?: string | null
+          hypothesis?: string | null
+          id?: string
+          name?: string
+          primary_metric?: string
+          results?: Json | null
+          secondary_metrics?: string[] | null
+          start_date?: string | null
+          statistical_significance?: number | null
+          status?: string
+          target_sample_size?: number | null
+          test_variants?: Json
+          updated_at?: string | null
+          winner_variant?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "innovation_experiments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "innovation_experiments_feature_flag_id_fkey"
+            columns: ["feature_flag_id"]
+            isOneToOne: false
+            referencedRelation: "innovation_feature_flags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      innovation_feature_flags: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          flag_key: string
+          flag_type: string
+          id: string
+          is_enabled: boolean | null
+          name: string
+          percentage_rollout: number | null
+          targeting_rules: Json | null
+          updated_at: string | null
+          variants: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          flag_key: string
+          flag_type?: string
+          id?: string
+          is_enabled?: boolean | null
+          name: string
+          percentage_rollout?: number | null
+          targeting_rules?: Json | null
+          updated_at?: string | null
+          variants?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          flag_key?: string
+          flag_type?: string
+          id?: string
+          is_enabled?: boolean | null
+          name?: string
+          percentage_rollout?: number | null
+          targeting_rules?: Json | null
+          updated_at?: string | null
+          variants?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "innovation_feature_flags_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      innovation_feature_metrics: {
+        Row: {
+          active_users: number | null
+          adoption_rate: number | null
+          avg_session_duration: number | null
+          conversion_rate: number | null
+          date: string
+          feature_flag_id: string | null
+          id: string
+          retention_day1: number | null
+          retention_day30: number | null
+          retention_day7: number | null
+          revenue_impact: number | null
+          total_users: number | null
+        }
+        Insert: {
+          active_users?: number | null
+          adoption_rate?: number | null
+          avg_session_duration?: number | null
+          conversion_rate?: number | null
+          date?: string
+          feature_flag_id?: string | null
+          id?: string
+          retention_day1?: number | null
+          retention_day30?: number | null
+          retention_day7?: number | null
+          revenue_impact?: number | null
+          total_users?: number | null
+        }
+        Update: {
+          active_users?: number | null
+          adoption_rate?: number | null
+          avg_session_duration?: number | null
+          conversion_rate?: number | null
+          date?: string
+          feature_flag_id?: string | null
+          id?: string
+          retention_day1?: number | null
+          retention_day30?: number | null
+          retention_day7?: number | null
+          revenue_impact?: number | null
+          total_users?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "innovation_feature_metrics_feature_flag_id_fkey"
+            columns: ["feature_flag_id"]
+            isOneToOne: false
+            referencedRelation: "innovation_feature_flags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      innovation_user_assignments: {
+        Row: {
+          assigned_at: string | null
+          device_id: string | null
+          experiment_id: string | null
+          id: string
+          session_id: string | null
+          user_id: string | null
+          variant_name: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          device_id?: string | null
+          experiment_id?: string | null
+          id?: string
+          session_id?: string | null
+          user_id?: string | null
+          variant_name: string
+        }
+        Update: {
+          assigned_at?: string | null
+          device_id?: string | null
+          experiment_id?: string | null
+          id?: string
+          session_id?: string | null
+          user_id?: string | null
+          variant_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "innovation_user_assignments_experiment_id_fkey"
+            columns: ["experiment_id"]
+            isOneToOne: false
+            referencedRelation: "innovation_experiments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "innovation_user_assignments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      innovation_user_feedback: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          experiment_id: string | null
+          feature_flag_id: string | null
+          feedback_type: string
+          id: string
+          priority: string | null
+          rating: number | null
+          responded_at: string | null
+          responded_by: string | null
+          response: string | null
+          screenshot_urls: string[] | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          experiment_id?: string | null
+          feature_flag_id?: string | null
+          feedback_type: string
+          id?: string
+          priority?: string | null
+          rating?: number | null
+          responded_at?: string | null
+          responded_by?: string | null
+          response?: string | null
+          screenshot_urls?: string[] | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          experiment_id?: string | null
+          feature_flag_id?: string | null
+          feedback_type?: string
+          id?: string
+          priority?: string | null
+          rating?: number | null
+          responded_at?: string | null
+          responded_by?: string | null
+          response?: string | null
+          screenshot_urls?: string[] | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "innovation_user_feedback_experiment_id_fkey"
+            columns: ["experiment_id"]
+            isOneToOne: false
+            referencedRelation: "innovation_experiments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "innovation_user_feedback_feature_flag_id_fkey"
+            columns: ["feature_flag_id"]
+            isOneToOne: false
+            referencedRelation: "innovation_feature_flags"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "innovation_user_feedback_responded_by_fkey"
+            columns: ["responded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "innovation_user_feedback_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inquiries: {
         Row: {
           admin_response: string | null
@@ -7815,6 +8187,700 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      mobile_ar_sessions: {
+        Row: {
+          ar_framework: string | null
+          created_at: string | null
+          device_model: string | null
+          furniture_items_placed: number | null
+          id: string
+          property_id: string | null
+          screenshots_taken: number | null
+          session_duration: number | null
+          shared_to_social: boolean | null
+          user_id: string | null
+        }
+        Insert: {
+          ar_framework?: string | null
+          created_at?: string | null
+          device_model?: string | null
+          furniture_items_placed?: number | null
+          id?: string
+          property_id?: string | null
+          screenshots_taken?: number | null
+          session_duration?: number | null
+          shared_to_social?: boolean | null
+          user_id?: string | null
+        }
+        Update: {
+          ar_framework?: string | null
+          created_at?: string | null
+          device_model?: string | null
+          furniture_items_placed?: number | null
+          id?: string
+          property_id?: string | null
+          screenshots_taken?: number | null
+          session_duration?: number | null
+          shared_to_social?: boolean | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobile_ar_sessions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_ar_sessions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_ar_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mobile_auction_bids: {
+        Row: {
+          auction_id: string | null
+          bid_amount: number
+          bid_status: string | null
+          bidder_id: string | null
+          created_at: string | null
+          device_info: Json | null
+          id: string
+          ip_address: unknown
+          is_auto_bid: boolean | null
+          max_auto_bid: number | null
+        }
+        Insert: {
+          auction_id?: string | null
+          bid_amount: number
+          bid_status?: string | null
+          bidder_id?: string | null
+          created_at?: string | null
+          device_info?: Json | null
+          id?: string
+          ip_address?: unknown
+          is_auto_bid?: boolean | null
+          max_auto_bid?: number | null
+        }
+        Update: {
+          auction_id?: string | null
+          bid_amount?: number
+          bid_status?: string | null
+          bidder_id?: string | null
+          created_at?: string | null
+          device_info?: Json | null
+          id?: string
+          ip_address?: unknown
+          is_auto_bid?: boolean | null
+          max_auto_bid?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobile_auction_bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "mobile_live_auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_auction_bids_bidder_id_fkey"
+            columns: ["bidder_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mobile_auction_watchers: {
+        Row: {
+          auction_id: string | null
+          created_at: string | null
+          id: string
+          notify_ending: boolean | null
+          notify_outbid: boolean | null
+          notify_start: boolean | null
+          user_id: string | null
+        }
+        Insert: {
+          auction_id?: string | null
+          created_at?: string | null
+          id?: string
+          notify_ending?: boolean | null
+          notify_outbid?: boolean | null
+          notify_start?: boolean | null
+          user_id?: string | null
+        }
+        Update: {
+          auction_id?: string | null
+          created_at?: string | null
+          id?: string
+          notify_ending?: boolean | null
+          notify_outbid?: boolean | null
+          notify_start?: boolean | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobile_auction_watchers_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "mobile_live_auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_auction_watchers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mobile_chat_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          edited_at: string | null
+          id: string
+          is_deleted: boolean | null
+          is_pinned: boolean | null
+          media_urls: string[] | null
+          message_type: string | null
+          neighborhood_id: string | null
+          property_id: string | null
+          reactions: Json | null
+          read_by: string[] | null
+          reply_to_id: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          edited_at?: string | null
+          id?: string
+          is_deleted?: boolean | null
+          is_pinned?: boolean | null
+          media_urls?: string[] | null
+          message_type?: string | null
+          neighborhood_id?: string | null
+          property_id?: string | null
+          reactions?: Json | null
+          read_by?: string[] | null
+          reply_to_id?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          edited_at?: string | null
+          id?: string
+          is_deleted?: boolean | null
+          is_pinned?: boolean | null
+          media_urls?: string[] | null
+          message_type?: string | null
+          neighborhood_id?: string | null
+          property_id?: string | null
+          reactions?: Json | null
+          read_by?: string[] | null
+          reply_to_id?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobile_chat_messages_neighborhood_id_fkey"
+            columns: ["neighborhood_id"]
+            isOneToOne: false
+            referencedRelation: "mobile_neighborhoods"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_chat_messages_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_chat_messages_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_chat_messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "mobile_chat_messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_chat_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mobile_iap_products: {
+        Row: {
+          app_store_id: string | null
+          created_at: string | null
+          description: string | null
+          features: Json | null
+          id: string
+          is_active: boolean | null
+          name: string
+          play_store_id: string | null
+          price_idr: number
+          price_tier: string
+          product_id: string
+          product_type: string
+        }
+        Insert: {
+          app_store_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          play_store_id?: string | null
+          price_idr: number
+          price_tier: string
+          product_id: string
+          product_type: string
+        }
+        Update: {
+          app_store_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          play_store_id?: string | null
+          price_idr?: number
+          price_tier?: string
+          product_id?: string
+          product_type?: string
+        }
+        Relationships: []
+      }
+      mobile_iap_transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          currency: string | null
+          expires_at: string | null
+          id: string
+          product_id: string | null
+          receipt_data: string | null
+          status: string | null
+          store: string
+          transaction_id: string | null
+          user_id: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          currency?: string | null
+          expires_at?: string | null
+          id?: string
+          product_id?: string | null
+          receipt_data?: string | null
+          status?: string | null
+          store: string
+          transaction_id?: string | null
+          user_id?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          currency?: string | null
+          expires_at?: string | null
+          id?: string
+          product_id?: string | null
+          receipt_data?: string | null
+          status?: string | null
+          store?: string
+          transaction_id?: string | null
+          user_id?: string | null
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobile_iap_transactions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "mobile_iap_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_iap_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mobile_journey_milestones: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          journey_id: string | null
+          metadata: Json | null
+          milestone_date: string | null
+          milestone_type: string
+          property_id: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          journey_id?: string | null
+          metadata?: Json | null
+          milestone_date?: string | null
+          milestone_type: string
+          property_id?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          journey_id?: string | null
+          metadata?: Json | null
+          milestone_date?: string | null
+          milestone_type?: string
+          property_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobile_journey_milestones_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "mobile_property_journeys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_journey_milestones_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_journey_milestones_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mobile_live_auctions: {
+        Row: {
+          auction_type: string | null
+          created_at: string | null
+          created_by: string | null
+          current_bid: number | null
+          description: string | null
+          end_time: string
+          extension_time: number | null
+          id: string
+          minimum_increment: number | null
+          property_id: string | null
+          reserve_price: number | null
+          start_time: string
+          starting_price: number
+          status: string | null
+          title: string
+          total_bids: number | null
+          unique_bidders: number | null
+          updated_at: string | null
+          winning_bid_id: string | null
+        }
+        Insert: {
+          auction_type?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          current_bid?: number | null
+          description?: string | null
+          end_time: string
+          extension_time?: number | null
+          id?: string
+          minimum_increment?: number | null
+          property_id?: string | null
+          reserve_price?: number | null
+          start_time: string
+          starting_price: number
+          status?: string | null
+          title: string
+          total_bids?: number | null
+          unique_bidders?: number | null
+          updated_at?: string | null
+          winning_bid_id?: string | null
+        }
+        Update: {
+          auction_type?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          current_bid?: number | null
+          description?: string | null
+          end_time?: string
+          extension_time?: number | null
+          id?: string
+          minimum_increment?: number | null
+          property_id?: string | null
+          reserve_price?: number | null
+          start_time?: string
+          starting_price?: number
+          status?: string | null
+          title?: string
+          total_bids?: number | null
+          unique_bidders?: number | null
+          updated_at?: string | null
+          winning_bid_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobile_live_auctions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_live_auctions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_live_auctions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mobile_neighborhood_members: {
+        Row: {
+          id: string
+          joined_at: string | null
+          last_active_at: string | null
+          muted_until: string | null
+          neighborhood_id: string | null
+          role: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          last_active_at?: string | null
+          muted_until?: string | null
+          neighborhood_id?: string | null
+          role?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          last_active_at?: string | null
+          muted_until?: string | null
+          neighborhood_id?: string | null
+          role?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobile_neighborhood_members_neighborhood_id_fkey"
+            columns: ["neighborhood_id"]
+            isOneToOne: false
+            referencedRelation: "mobile_neighborhoods"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_neighborhood_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mobile_neighborhoods: {
+        Row: {
+          bounds: Json | null
+          city: string
+          cover_image_url: string | null
+          created_at: string | null
+          description: string | null
+          district: string | null
+          id: string
+          is_active: boolean | null
+          member_count: number | null
+          name: string
+          slug: string
+        }
+        Insert: {
+          bounds?: Json | null
+          city: string
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          district?: string | null
+          id?: string
+          is_active?: boolean | null
+          member_count?: number | null
+          name: string
+          slug: string
+        }
+        Update: {
+          bounds?: Json | null
+          city?: string
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          district?: string | null
+          id?: string
+          is_active?: boolean | null
+          member_count?: number | null
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      mobile_offline_sync_queue: {
+        Row: {
+          action_type: string
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          error_message: string | null
+          id: string
+          max_retries: number | null
+          payload: Json
+          priority: number | null
+          processed_at: string | null
+          retry_count: number | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          error_message?: string | null
+          id?: string
+          max_retries?: number | null
+          payload: Json
+          priority?: number | null
+          processed_at?: string | null
+          retry_count?: number | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          error_message?: string | null
+          id?: string
+          max_retries?: number | null
+          payload?: Json
+          priority?: number | null
+          processed_at?: string | null
+          retry_count?: number | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobile_offline_sync_queue_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mobile_property_journeys: {
+        Row: {
+          budget_max: number | null
+          budget_min: number | null
+          created_at: string | null
+          id: string
+          name: string | null
+          notes: string | null
+          preferred_locations: string[] | null
+          property_types: string[] | null
+          status: string | null
+          target_purchase_date: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string | null
+          id?: string
+          name?: string | null
+          notes?: string | null
+          preferred_locations?: string[] | null
+          property_types?: string[] | null
+          status?: string | null
+          target_purchase_date?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string | null
+          id?: string
+          name?: string | null
+          notes?: string | null
+          preferred_locations?: string[] | null
+          property_types?: string[] | null
+          status?: string | null
+          target_purchase_date?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobile_property_journeys_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mortgage_banks: {
         Row: {

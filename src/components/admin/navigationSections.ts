@@ -57,7 +57,9 @@ import {
   Palette,
   Video,
   Calculator,
-  Link2
+  Link2,
+  Smartphone,
+  FlaskConical
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -533,6 +535,20 @@ export const navigationSections = {
   ],
 
   features: [
+    {
+      key: "innovation-lab",
+      label: "Innovation Lab",
+      icon: TestTube2,
+      description: "A/B testing engine, feature flags, user feedback, and experimentation platform",
+      badge: "New"
+    },
+    {
+      key: "mobile-enhancements",
+      label: "Mobile Enhancements",
+      icon: Smartphone,
+      description: "AR Preview, Live Auctions, Community Chat, Property Journey, and Offline Mode",
+      badge: "New"
+    },
     {
       key: "property-comparison",
       label: "Property Comparison",

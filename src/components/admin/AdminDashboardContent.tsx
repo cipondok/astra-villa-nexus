@@ -89,6 +89,8 @@ const PartnerProgramManagement = lazy(() => import("./PartnerProgramManagement")
 const ExpansionPlanningManagement = lazy(() => import("./ExpansionPlanningManagement"));
 const MediaNetworkManagement = lazy(() => import("./MediaNetworkManagement"));
 const UserAcquisitionManagement = lazy(() => import("./UserAcquisitionManagement"));
+const InnovationLabManagement = lazy(() => import("./InnovationLabManagement"));
+const MobileEnhancementsManagement = lazy(() => import("./MobileEnhancementsManagement"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -185,6 +187,8 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "investor-analytics": { label: "Investor Analytics", category: "Investor Management" },
   "live-monitoring": { label: "Live Monitoring", category: "System" },
   "expansion-planning": { label: "City Expansion Planning", category: "Technical" },
+  "innovation-lab": { label: "Innovation Lab", category: "Features" },
+  "mobile-enhancements": { label: "Mobile Enhancements", category: "Features" },
 };
 
 // Loading fallback component
@@ -438,6 +442,10 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <MediaNetworkManagement />;
       case "user-acquisition":
         return <UserAcquisitionManagement />;
+      case "innovation-lab":
+        return <InnovationLabManagement />;
+      case "mobile-enhancements":
+        return <MobileEnhancementsManagement />;
       default:
         return <AdminOverview />;
     }
