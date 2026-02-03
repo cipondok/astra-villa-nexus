@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePopupQueue } from "@/hooks/usePopupQueue";
 
 interface OnboardingState {
   hasCompletedOnboarding: boolean;
@@ -17,6 +18,25 @@ export const useOnboarding = () => {
     completedAt: null
   });
   const [isWizardOpen, setIsWizardOpen] = useState(false);
+
+  // Popup queue integration - high priority (onboarding is important)
+  const popupQueue = usePopupQueue('onboarding-wizard', 'high', { delay: 2000 });
+
+  const showWizard = useCallback(() => setIsWizardOpen(true), []);
+  const hideWizard = useCallback(() => setIsWizardOpen(false), []);
+
+  // Register with popup queue
+  useEffect(() => {
+    popupQueue.register(showWizard, hideWizard);
+    return () => popupQueue.unregister();
+  }, [showWizard, hideWizard]);
+
+  // Notify queue when wizard closes
+  useEffect(() => {
+    if (!isWizardOpen && state.shouldShowOnboarding) {
+      popupQueue.notifyHidden();
+    }
+  }, [isWizardOpen, state.shouldShowOnboarding]);
 
   // Check onboarding status on mount
   useEffect(() => {
@@ -61,13 +81,13 @@ export const useOnboarding = () => {
     }
   }, [user?.id]);
 
-  // Auto-open wizard for new authenticated users
+  // Auto-open wizard for new authenticated users via queue
   useEffect(() => {
     if (isAuthenticated && state.shouldShowOnboarding && !state.hasCompletedOnboarding) {
-      // Delay to let the page load first
+      // Request to show via queue with stagger delay
       const timer = setTimeout(() => {
-        setIsWizardOpen(true);
-      }, 1500);
+        popupQueue.requestShow();
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [isAuthenticated, state.shouldShowOnboarding, state.hasCompletedOnboarding]);
@@ -78,6 +98,7 @@ export const useOnboarding = () => {
 
   const closeWizard = useCallback(() => {
     setIsWizardOpen(false);
+    popupQueue.notifyHidden();
   }, []);
 
   const resetOnboarding = useCallback(() => {

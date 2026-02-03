@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Sparkles, Flame, X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { useGamification } from '@/hooks/useGamification';
 import { useAuth } from '@/contexts/AuthContext';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { usePopupQueue } from '@/hooks/usePopupQueue';
 import confetti from 'canvas-confetti';
 
 interface DailyLoginRewardProps {
@@ -20,6 +21,26 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
   const [claimed, setClaimed] = useState(false);
   const [claimResult, setClaimResult] = useState<any>(null);
   const [alreadyClaimed, setAlreadyClaimed] = useState(false);
+  const [shouldShow, setShouldShow] = useState(false);
+
+  // Popup queue integration - medium priority with 4s stagger
+  const popupQueue = usePopupQueue('daily-login-reward', 'medium', { delay: 4000 });
+
+  const showPopup = useCallback(() => setIsOpen(true), []);
+  const hidePopup = useCallback(() => setIsOpen(false), []);
+
+  // Register with popup queue
+  useEffect(() => {
+    popupQueue.register(showPopup, hidePopup);
+    return () => popupQueue.unregister();
+  }, [showPopup, hidePopup]);
+
+  // Notify queue when popup closes
+  useEffect(() => {
+    if (!isOpen && shouldShow) {
+      popupQueue.notifyHidden();
+    }
+  }, [isOpen, shouldShow]);
 
   // Helper to check if last login was within 24 hours
   const hasClaimedWithin24Hours = (lastLoginDate: string | null) => {
@@ -56,10 +77,11 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
       return;
     }
 
-    // Not claimed in 24 hours, show popup after delay
+    // Not claimed in 24 hours - request to show via queue
+    setShouldShow(true);
     const timer = setTimeout(() => {
-      setIsOpen(true);
-    }, 2000);
+      popupQueue.requestShow();
+    }, 4000); // Stagger delay
     return () => clearTimeout(timer);
   }, [autoShow, user?.id, stats]);
 

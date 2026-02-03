@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { getEdgeFunctionUserMessage, throwIfEdgeFunctionReturnedError } from "@/lib/supabaseFunctionErrors";
 import { isAiTemporarilyDisabled, markAiTemporarilyDisabledFromError } from "@/lib/aiAvailability";
+import { usePopupQueue } from "@/hooks/usePopupQueue";
 import { 
   Bot, 
   Send, 
@@ -26,8 +27,38 @@ const AIFooterBot = () => {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<Array<{id: string, message: string, response: string, timestamp: Date}>>([]);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const [shouldShowWelcome, setShouldShowWelcome] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Popup queue integration - low priority (AI welcome is least important)
+  const popupQueue = usePopupQueue('ai-footer-welcome', 'low', { delay: 6000 });
+
+  const showWelcome = useCallback(() => {
+    setIsOpen(true);
+    setChatHistory([{
+      id: 'welcome',
+      message: 'Hi there!',
+      response: "👋 Welcome to Astra Villa! I'm your AI assistant powered by advanced AI.\n\nI can help you with:\n🏠 Property recommendations\n🛠️ Vendor services\n🎯 3D property tours\n💡 Real estate advice\n\nHow can I assist you today?",
+      timestamp: new Date()
+    }]);
+    localStorage.setItem('ai_welcome_shown', 'true');
+  }, []);
+
+  const hideWelcome = useCallback(() => setIsOpen(false), []);
+
+  // Register with popup queue
+  useEffect(() => {
+    popupQueue.register(showWelcome, hideWelcome);
+    return () => popupQueue.unregister();
+  }, [showWelcome, hideWelcome]);
+
+  // Notify queue when popup closes
+  useEffect(() => {
+    if (!isOpen && shouldShowWelcome) {
+      popupQueue.notifyHidden();
+    }
+  }, [isOpen, shouldShowWelcome]);
 
   // Fetch chatbot logo from system settings (branding category)
   const { data: chatbotLogoUrl } = useQuery({
@@ -90,19 +121,16 @@ const AIFooterBot = () => {
     aiChatMutation.mutate(message);
   };
 
+  // Check if should show welcome via queue
   useEffect(() => {
     const hasSeenWelcome = localStorage.getItem('ai_welcome_shown');
     if (!hasSeenWelcome) {
-      setTimeout(() => {
-        setIsOpen(true);
-        setChatHistory([{
-          id: 'welcome',
-          message: 'Hi there!',
-          response: "👋 Welcome to Astra Villa! I'm your AI assistant powered by advanced AI.\n\nI can help you with:\n🏠 Property recommendations\n🛠️ Vendor services\n🎯 3D property tours\n💡 Real estate advice\n\nHow can I assist you today?",
-          timestamp: new Date()
-        }]);
-        localStorage.setItem('ai_welcome_shown', 'true');
-      }, 3000);
+      setShouldShowWelcome(true);
+      // Request to show via queue with stagger delay
+      const timer = setTimeout(() => {
+        popupQueue.requestShow();
+      }, 6000); // Low priority - shows last
+      return () => clearTimeout(timer);
     }
   }, []);
 
