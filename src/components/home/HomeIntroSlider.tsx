@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import jakartaSkylineDark from "@/assets/jakarta-skyline-dark.jpg";
+import jakartaSkylineDay from "@/assets/jakarta-premium-skyline.jpg";
 
 interface HomeIntroSliderProps {
   className?: string;
@@ -29,12 +29,12 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
       )}
       aria-label="Jakarta Property Hero"
     >
-      {/* Light Jakarta Skyline Background */}
+      {/* Jakarta Skyline Background (Daylight) */}
       <div className="absolute inset-0 z-0">
         <img 
-          src={jakartaSkylineDark} 
-          alt="Jakarta Premium Skyline - Luxury Real Estate" 
-          className="w-full h-full object-cover brightness-110 saturate-105"
+          src={jakartaSkylineDay} 
+          alt="Jakarta skyline in daylight - Premium real estate" 
+          className="w-full h-full object-cover brightness-110 saturate-110"
         />
         {/* Light gradient overlays for clean professional look */}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
