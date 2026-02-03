@@ -5,7 +5,7 @@ import {
   Home, Search, Heart, User, Menu, 
   Building2, MessageCircle, Bell, Plus,
   MapPin, Calculator, Wallet, Settings,
-  X, ChevronUp
+  X, ChevronUp, Camera, Gavel
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -45,9 +45,9 @@ const MobileFirstNavigation: React.FC = () => {
   // Quick actions - 1 tap from FAB
   const quickActions = [
     { icon: Plus, label: 'List Property', path: '/add-property', color: 'bg-primary' },
-    { icon: Calculator, label: 'Calculator', path: '/calculators/loan', color: 'bg-accent' },
-    { icon: MapPin, label: 'Map View', path: '/location', color: 'bg-secondary' },
-    { icon: MessageCircle, label: 'Chat', path: '/contact', color: 'bg-muted' },
+    { icon: Camera, label: 'AR Preview', path: '/mobile/ar-preview', color: 'bg-violet-500' },
+    { icon: MessageCircle, label: 'Community', path: '/mobile/community', color: 'bg-emerald-500' },
+    { icon: Gavel, label: 'Auctions', path: '/mobile/auctions', color: 'bg-amber-500' },
   ];
 
   // Secondary navigation - accessible via menu expansion
