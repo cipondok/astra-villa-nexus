@@ -81,6 +81,7 @@ const PreLaunching = lazy(() => import('@/pages/PreLaunching'));
 const NewProjects = lazy(() => import('@/pages/NewProjects'));
 const AreaGuides = lazy(() => import('@/pages/AreaGuides'));
 const Properties = lazy(() => import('@/pages/Properties'));
+const MyProperties = lazy(() => import('@/pages/MyProperties'));
 const Notifications = lazy(() => import('@/pages/Notifications'));
 const Users = lazy(() => import('@/pages/Users'));
 const Analytics = lazy(() => import('@/pages/Analytics'));
@@ -176,6 +177,7 @@ const AppContent = () => {
             <Route element={<PropertyOwnerOnlyRoute />}>
               <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboard />} />
             </Route>
+            <Route path="/my-properties" element={<MyProperties />} />
             <Route path="/dashboard/customer-service" element={<CustomerServiceDashboardPage />} />
             <Route path="/dashboard/user" element={<UserDashboardPage />} />
             <Route path="/dashboard" element={<UserDashboardPage />} />

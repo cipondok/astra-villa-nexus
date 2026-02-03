@@ -23,10 +23,11 @@ const MyProperties = () => {
     queryFn: async () => {
       if (!user) return [];
       
+      // Query properties where user is either the agent OR the owner
       const { data, error } = await supabase
         .from('properties')
         .select('*')
-        .eq('agent_id', user.id)
+        .or(`agent_id.eq.${user.id},owner_id.eq.${user.id}`)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
