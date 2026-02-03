@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Input } from '@/components/ui/input';
 
 const categoryIcons: Record<string, LucideIcon> = {
   "overview": LayoutDashboard,
@@ -48,6 +49,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [flyoutQuery, setFlyoutQuery] = useState('');
 
   // Find which category contains the active section
   const getActiveCategory = () => {
@@ -72,6 +74,11 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
     onSectionChange(key);
     setOpenCategory(null);
   };
+
+  // Reset flyout search when category changes/closes
+  useEffect(() => {
+    setFlyoutQuery('');
+  }, [openCategory]);
 
   // Close flyout when clicking outside
   useEffect(() => {
@@ -99,6 +106,17 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
 
   const activeCategory = getActiveCategory();
   const openSections = openCategory ? navigationSections[openCategory as keyof typeof navigationSections] : null;
+  const filteredOpenSections = openSections
+    ? openSections.filter((section) => {
+        if (!flyoutQuery.trim()) return true;
+        const q = flyoutQuery.trim().toLowerCase();
+        return (
+          section.label.toLowerCase().includes(q) ||
+          section.key.toLowerCase().includes(q) ||
+          section.description.toLowerCase().includes(q)
+        );
+      })
+    : null;
 
   return (
     <>
@@ -181,10 +199,20 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
               </button>
             </div>
 
+            {/* Quick search within category */}
+            <div className="px-2.5 py-2 border-b border-border/40 bg-background/30">
+              <Input
+                value={flyoutQuery}
+                onChange={(e) => setFlyoutQuery(e.target.value)}
+                placeholder={`Search ${sectionTitles[openCategory as keyof typeof sectionTitles] ?? 'sections'}...`}
+                className="h-7 text-xs"
+              />
+            </div>
+
             {/* Panel Content - Minimal */}
             <ScrollArea className="max-h-80">
               <div className="p-1 pb-2">
-                {openSections.map((section) => {
+                {filteredOpenSections?.length ? filteredOpenSections.map((section) => {
                   const Icon = section.icon;
                   const isActive = section.key === activeSection;
 
@@ -221,7 +249,11 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                       )}
                     </button>
                   );
-                })}
+                }) : (
+                  <div className="px-2 py-6 text-center">
+                    <p className="text-[11px] text-muted-foreground">No matches.</p>
+                  </div>
+                )}
               </div>
             </ScrollArea>
           </div>
