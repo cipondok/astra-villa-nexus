@@ -60,7 +60,8 @@ import {
   Link2,
   Smartphone,
   FlaskConical,
-  Zap
+  Zap,
+  Rocket
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -609,6 +610,13 @@ export const navigationSections = {
       icon: Users,
       description: "Remote-first team: Core Team, Moderators, Local Experts, AI Specialists, Partnership Managers",
       badge: "New"
+    },
+    {
+      key: "viral-growth-campaigns",
+      label: "Viral Growth Campaigns",
+      icon: Rocket,
+      description: "Quick wins: Referral 3x, Listing Competitions, Photo Contests, Agent Leaderboard, $50 Bonus",
+      badge: "🔥 Hot"
     }
   ],
 
