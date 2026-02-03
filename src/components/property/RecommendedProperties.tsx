@@ -1,11 +1,11 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, TrendingUp } from "lucide-react";
+import { Sparkles, TrendingUp, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
+import { motion } from "framer-motion";
 
 interface RecommendedPropertiesProps {
   currentPropertyId?: string;
@@ -43,22 +43,18 @@ const RecommendedProperties = ({
         .eq('status', 'active')
         .limit(limit);
 
-      // Exclude current property if viewing a specific property
       if (currentPropertyId) {
         query = query.neq('id', currentPropertyId);
       }
 
-      // Filter by property type if specified
       if (propertyType) {
         query = query.eq('property_type', propertyType);
       }
 
-      // Filter by location if specified
       if (location) {
         query = query.or(`city.ilike.%${location}%,state.ilike.%${location}%,area.ilike.%${location}%`);
       }
 
-      // Filter by price range if specified
       if (priceRange && priceRange[0] && priceRange[1]) {
         query = query.gte('price', priceRange[0]).lte('price', priceRange[1]);
       }
@@ -67,12 +63,10 @@ const RecommendedProperties = ({
 
       if (error) {
         console.error('Error fetching recommendations:', error);
-        // Fallback to sample data
         setRecommendations(generateFallbackProperties());
       } else if (data && data.length > 0) {
         setRecommendations(data);
       } else {
-        // If no matches, get random properties
         const { data: fallbackData } = await supabase
           .from('properties')
           .select('*')
@@ -164,21 +158,28 @@ const RecommendedProperties = ({
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
-            {title}
-            {showAIBadge && <Badge className="bg-purple-100 text-purple-800">AI</Badge>}
+      <Card className="border border-border/50 bg-card/80 backdrop-blur-xl shadow-lg rounded-xl overflow-hidden">
+        <CardHeader className="p-3 sm:p-4 md:p-5 bg-gradient-to-r from-primary/5 via-transparent to-accent/5">
+          <CardTitle className="flex items-center gap-2 text-sm sm:text-base md:text-lg">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+            </div>
+            <span className="font-semibold text-foreground">{title}</span>
+            {showAIBadge && (
+              <Badge className="bg-primary/10 text-primary border-0 text-[10px] sm:text-xs px-2 py-0.5 flex items-center gap-1">
+                <Sparkles className="h-2.5 w-2.5" />
+                AI
+              </Badge>
+            )}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <CardContent className="p-2 sm:p-3 md:p-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-40 bg-gray-200 rounded-lg mb-3"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-28 sm:h-36 bg-muted rounded-lg mb-2"></div>
+                <div className="h-3 bg-muted rounded w-3/4 mb-1.5"></div>
+                <div className="h-2 bg-muted rounded w-1/2"></div>
               </div>
             ))}
           </div>
@@ -189,18 +190,27 @@ const RecommendedProperties = ({
 
   if (recommendations.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
-            {title}
-            {showAIBadge && <Badge className="bg-purple-100 text-purple-800">AI</Badge>}
+      <Card className="border border-border/50 bg-card/80 backdrop-blur-xl shadow-lg rounded-xl overflow-hidden">
+        <CardHeader className="p-3 sm:p-4 md:p-5 bg-gradient-to-r from-primary/5 via-transparent to-accent/5">
+          <CardTitle className="flex items-center gap-2 text-sm sm:text-base md:text-lg">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+            </div>
+            <span className="font-semibold text-foreground">{title}</span>
+            {showAIBadge && (
+              <Badge className="bg-primary/10 text-primary border-0 text-[10px] sm:text-xs px-2 py-0.5 flex items-center gap-1">
+                <Sparkles className="h-2.5 w-2.5" />
+                AI
+              </Badge>
+            )}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <Sparkles className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No recommendations available at the moment</p>
+        <CardContent className="p-4 sm:p-6">
+          <div className="text-center py-6">
+            <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-3">
+              <Search className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <p className="text-sm text-muted-foreground">No recommendations available at the moment</p>
           </div>
         </CardContent>
       </Card>
@@ -208,30 +218,49 @@ const RecommendedProperties = ({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5" />
-          {title}
-          {showAIBadge && <Badge className="bg-purple-100 text-purple-800">AI</Badge>}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {recommendations.map((property) => (
-            <CompactPropertyCard
-              key={property.id}
-              property={property}
-              language="en"
-              isSaved={false}
-              onSave={() => {}}
-              onView={() => window.open(`/property/${property.id}`, '_blank')}
-              onView3D={() => {}}
-            />
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <Card className="border border-border/50 bg-card/80 backdrop-blur-xl shadow-lg rounded-xl overflow-hidden">
+        <CardHeader className="p-3 sm:p-4 md:p-5 pb-2 sm:pb-3 bg-gradient-to-r from-primary/5 via-transparent to-accent/5">
+          <CardTitle className="flex items-center gap-2 text-sm sm:text-base md:text-lg">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+            </div>
+            <span className="font-semibold text-foreground">{title}</span>
+            {showAIBadge && (
+              <Badge className="bg-primary/10 text-primary border-0 text-[10px] sm:text-xs px-2 py-0.5 flex items-center gap-1">
+                <Sparkles className="h-2.5 w-2.5" />
+                AI Powered
+              </Badge>
+            )}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-2 sm:p-3 md:p-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+            {recommendations.map((property, index) => (
+              <motion.div
+                key={property.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <CompactPropertyCard
+                  property={property}
+                  language="en"
+                  isSaved={false}
+                  onSave={() => {}}
+                  onView={() => window.open(`/property/${property.id}`, '_blank')}
+                  onView3D={() => {}}
+                />
+              </motion.div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };
 
