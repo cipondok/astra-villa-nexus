@@ -50,6 +50,1007 @@ export type Database = {
         }
         Relationships: []
       }
+      acquisition_analytics: {
+        Row: {
+          campaign_id: string | null
+          channel: string
+          clicks: number | null
+          conversions: number | null
+          cpa: number | null
+          cpc: number | null
+          created_at: string
+          date: string
+          id: string
+          impressions: number | null
+          ltv: number | null
+          metadata: Json | null
+          qualified_leads: number | null
+          revenue: number | null
+          roi: number | null
+          signups: number | null
+          source: string | null
+          spend: number | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          channel: string
+          clicks?: number | null
+          conversions?: number | null
+          cpa?: number | null
+          cpc?: number | null
+          created_at?: string
+          date: string
+          id?: string
+          impressions?: number | null
+          ltv?: number | null
+          metadata?: Json | null
+          qualified_leads?: number | null
+          revenue?: number | null
+          roi?: number | null
+          signups?: number | null
+          source?: string | null
+          spend?: number | null
+        }
+        Update: {
+          campaign_id?: string | null
+          channel?: string
+          clicks?: number | null
+          conversions?: number | null
+          cpa?: number | null
+          cpc?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          impressions?: number | null
+          ltv?: number | null
+          metadata?: Json | null
+          qualified_leads?: number | null
+          revenue?: number | null
+          roi?: number | null
+          signups?: number | null
+          source?: string | null
+          spend?: number | null
+        }
+        Relationships: []
+      }
+      acquisition_bank_leads: {
+        Row: {
+          bank_reference_id: string | null
+          bank_response_at: string | null
+          commission_amount: number | null
+          commission_paid: boolean | null
+          created_at: string
+          down_payment_amount: number | null
+          employment_type: string | null
+          id: string
+          lead_email: string
+          lead_name: string
+          lead_phone: string | null
+          lead_status: string | null
+          loan_amount_requested: number | null
+          monthly_income: number | null
+          notes: string | null
+          partnership_id: string
+          property_id: string | null
+          property_value: number | null
+          sent_to_bank_at: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          bank_reference_id?: string | null
+          bank_response_at?: string | null
+          commission_amount?: number | null
+          commission_paid?: boolean | null
+          created_at?: string
+          down_payment_amount?: number | null
+          employment_type?: string | null
+          id?: string
+          lead_email: string
+          lead_name: string
+          lead_phone?: string | null
+          lead_status?: string | null
+          loan_amount_requested?: number | null
+          monthly_income?: number | null
+          notes?: string | null
+          partnership_id: string
+          property_id?: string | null
+          property_value?: number | null
+          sent_to_bank_at?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          bank_reference_id?: string | null
+          bank_response_at?: string | null
+          commission_amount?: number | null
+          commission_paid?: boolean | null
+          created_at?: string
+          down_payment_amount?: number | null
+          employment_type?: string | null
+          id?: string
+          lead_email?: string
+          lead_name?: string
+          lead_phone?: string | null
+          lead_status?: string | null
+          loan_amount_requested?: number | null
+          monthly_income?: number | null
+          notes?: string | null
+          partnership_id?: string
+          property_id?: string | null
+          property_value?: number | null
+          sent_to_bank_at?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acquisition_bank_leads_partnership_id_fkey"
+            columns: ["partnership_id"]
+            isOneToOne: false
+            referencedRelation: "acquisition_bank_partnerships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acquisition_bank_leads_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acquisition_bank_leads_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acquisition_bank_leads_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      acquisition_bank_partnerships: {
+        Row: {
+          api_endpoint: string | null
+          bank_logo_url: string | null
+          bank_name: string
+          commission_rate: number | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          contract_end_date: string | null
+          contract_start_date: string | null
+          created_at: string
+          id: string
+          integration_type: string | null
+          interest_rate_range: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          lead_handoff_process: string | null
+          max_loan_amount: number | null
+          min_loan_amount: number | null
+          partnership_tier: string | null
+          partnership_type: string
+          special_offers: Json | null
+          total_commission_earned: number | null
+          total_conversions: number | null
+          total_leads_sent: number | null
+          updated_at: string
+        }
+        Insert: {
+          api_endpoint?: string | null
+          bank_logo_url?: string | null
+          bank_name: string
+          commission_rate?: number | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          created_at?: string
+          id?: string
+          integration_type?: string | null
+          interest_rate_range?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          lead_handoff_process?: string | null
+          max_loan_amount?: number | null
+          min_loan_amount?: number | null
+          partnership_tier?: string | null
+          partnership_type?: string
+          special_offers?: Json | null
+          total_commission_earned?: number | null
+          total_conversions?: number | null
+          total_leads_sent?: number | null
+          updated_at?: string
+        }
+        Update: {
+          api_endpoint?: string | null
+          bank_logo_url?: string | null
+          bank_name?: string
+          commission_rate?: number | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          created_at?: string
+          id?: string
+          integration_type?: string | null
+          interest_rate_range?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          lead_handoff_process?: string | null
+          max_loan_amount?: number | null
+          min_loan_amount?: number | null
+          partnership_tier?: string | null
+          partnership_type?: string
+          special_offers?: Json | null
+          total_commission_earned?: number | null
+          total_conversions?: number | null
+          total_leads_sent?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      acquisition_corporate_employees: {
+        Row: {
+          created_at: string
+          department: string | null
+          employee_email: string
+          employee_id_at_company: string | null
+          employee_name: string | null
+          id: string
+          partnership_id: string
+          total_inquiries: number | null
+          total_transactions: number | null
+          total_viewings: number | null
+          updated_at: string
+          user_id: string | null
+          verification_status: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          employee_email: string
+          employee_id_at_company?: string | null
+          employee_name?: string | null
+          id?: string
+          partnership_id: string
+          total_inquiries?: number | null
+          total_transactions?: number | null
+          total_viewings?: number | null
+          updated_at?: string
+          user_id?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          employee_email?: string
+          employee_id_at_company?: string | null
+          employee_name?: string | null
+          id?: string
+          partnership_id?: string
+          total_inquiries?: number | null
+          total_transactions?: number | null
+          total_viewings?: number | null
+          updated_at?: string
+          user_id?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acquisition_corporate_employees_partnership_id_fkey"
+            columns: ["partnership_id"]
+            isOneToOne: false
+            referencedRelation: "acquisition_corporate_partnerships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acquisition_corporate_employees_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      acquisition_corporate_partnerships: {
+        Row: {
+          benefits_offered: Json | null
+          company_logo_url: string | null
+          company_name: string
+          contract_end_date: string | null
+          contract_start_date: string | null
+          created_at: string
+          employee_count: number | null
+          exclusive_listings: boolean | null
+          hr_contact_email: string | null
+          hr_contact_name: string | null
+          hr_contact_phone: string | null
+          id: string
+          industry: string | null
+          is_active: boolean | null
+          notes: string | null
+          partnership_type: string | null
+          total_employees_registered: number | null
+          total_inquiries: number | null
+          total_revenue: number | null
+          total_transactions: number | null
+          updated_at: string
+        }
+        Insert: {
+          benefits_offered?: Json | null
+          company_logo_url?: string | null
+          company_name: string
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          created_at?: string
+          employee_count?: number | null
+          exclusive_listings?: boolean | null
+          hr_contact_email?: string | null
+          hr_contact_name?: string | null
+          hr_contact_phone?: string | null
+          id?: string
+          industry?: string | null
+          is_active?: boolean | null
+          notes?: string | null
+          partnership_type?: string | null
+          total_employees_registered?: number | null
+          total_inquiries?: number | null
+          total_revenue?: number | null
+          total_transactions?: number | null
+          updated_at?: string
+        }
+        Update: {
+          benefits_offered?: Json | null
+          company_logo_url?: string | null
+          company_name?: string
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          created_at?: string
+          employee_count?: number | null
+          exclusive_listings?: boolean | null
+          hr_contact_email?: string | null
+          hr_contact_name?: string | null
+          hr_contact_phone?: string | null
+          id?: string
+          industry?: string | null
+          is_active?: boolean | null
+          notes?: string | null
+          partnership_type?: string | null
+          total_employees_registered?: number | null
+          total_inquiries?: number | null
+          total_revenue?: number | null
+          total_transactions?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      acquisition_influencer_campaigns: {
+        Row: {
+          actual_spend: number | null
+          brief: string | null
+          budget: number
+          campaign_name: string
+          campaign_type: string | null
+          clicks: number | null
+          content_urls: Json | null
+          conversions: number | null
+          cpa: number | null
+          cpc: number | null
+          created_at: string
+          deliverables: Json | null
+          end_date: string | null
+          engagement: number | null
+          hashtags: string[] | null
+          id: string
+          impressions: number | null
+          influencer_id: string
+          performance_notes: string | null
+          property_id: string | null
+          reach: number | null
+          roi: number | null
+          start_date: string | null
+          status: string | null
+          tracking_code: string | null
+          tracking_link: string | null
+          updated_at: string
+        }
+        Insert: {
+          actual_spend?: number | null
+          brief?: string | null
+          budget: number
+          campaign_name: string
+          campaign_type?: string | null
+          clicks?: number | null
+          content_urls?: Json | null
+          conversions?: number | null
+          cpa?: number | null
+          cpc?: number | null
+          created_at?: string
+          deliverables?: Json | null
+          end_date?: string | null
+          engagement?: number | null
+          hashtags?: string[] | null
+          id?: string
+          impressions?: number | null
+          influencer_id: string
+          performance_notes?: string | null
+          property_id?: string | null
+          reach?: number | null
+          roi?: number | null
+          start_date?: string | null
+          status?: string | null
+          tracking_code?: string | null
+          tracking_link?: string | null
+          updated_at?: string
+        }
+        Update: {
+          actual_spend?: number | null
+          brief?: string | null
+          budget?: number
+          campaign_name?: string
+          campaign_type?: string | null
+          clicks?: number | null
+          content_urls?: Json | null
+          conversions?: number | null
+          cpa?: number | null
+          cpc?: number | null
+          created_at?: string
+          deliverables?: Json | null
+          end_date?: string | null
+          engagement?: number | null
+          hashtags?: string[] | null
+          id?: string
+          impressions?: number | null
+          influencer_id?: string
+          performance_notes?: string | null
+          property_id?: string | null
+          reach?: number | null
+          roi?: number | null
+          start_date?: string | null
+          status?: string | null
+          tracking_code?: string | null
+          tracking_link?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acquisition_influencer_campaigns_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "acquisition_influencers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acquisition_influencer_campaigns_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acquisition_influencer_campaigns_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      acquisition_influencers: {
+        Row: {
+          agent_contact: string | null
+          agent_name: string | null
+          audience_demographics: Json | null
+          avg_cpc: number | null
+          contact_email: string | null
+          contact_phone: string | null
+          content_style: string | null
+          created_at: string
+          engagement_rate: number | null
+          followers_count: number | null
+          handle: string
+          id: string
+          influencer_name: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          location: string | null
+          niche: string | null
+          notes: string | null
+          partnership_tier: string | null
+          platform: string
+          profile_image_url: string | null
+          profile_url: string | null
+          rate_per_post: number | null
+          rate_per_story: number | null
+          rate_per_video: number | null
+          total_campaigns: number | null
+          total_conversions: number | null
+          total_engagement: number | null
+          total_reach: number | null
+          updated_at: string
+        }
+        Insert: {
+          agent_contact?: string | null
+          agent_name?: string | null
+          audience_demographics?: Json | null
+          avg_cpc?: number | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          content_style?: string | null
+          created_at?: string
+          engagement_rate?: number | null
+          followers_count?: number | null
+          handle: string
+          id?: string
+          influencer_name: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          location?: string | null
+          niche?: string | null
+          notes?: string | null
+          partnership_tier?: string | null
+          platform: string
+          profile_image_url?: string | null
+          profile_url?: string | null
+          rate_per_post?: number | null
+          rate_per_story?: number | null
+          rate_per_video?: number | null
+          total_campaigns?: number | null
+          total_conversions?: number | null
+          total_engagement?: number | null
+          total_reach?: number | null
+          updated_at?: string
+        }
+        Update: {
+          agent_contact?: string | null
+          agent_name?: string | null
+          audience_demographics?: Json | null
+          avg_cpc?: number | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          content_style?: string | null
+          created_at?: string
+          engagement_rate?: number | null
+          followers_count?: number | null
+          handle?: string
+          id?: string
+          influencer_name?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          location?: string | null
+          niche?: string | null
+          notes?: string | null
+          partnership_tier?: string | null
+          platform?: string
+          profile_image_url?: string | null
+          profile_url?: string | null
+          rate_per_post?: number | null
+          rate_per_story?: number | null
+          rate_per_video?: number | null
+          total_campaigns?: number | null
+          total_conversions?: number | null
+          total_engagement?: number | null
+          total_reach?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      acquisition_referrals: {
+        Row: {
+          converted_at: string | null
+          created_at: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          qualification_action: string | null
+          qualified_at: string | null
+          referee_email: string | null
+          referee_id: string | null
+          referee_reward_amount: number | null
+          referee_reward_paid: boolean | null
+          referee_reward_type: string | null
+          referral_code: string
+          referral_link: string | null
+          referrer_id: string
+          referrer_reward_amount: number | null
+          referrer_reward_paid: boolean | null
+          referrer_reward_type: string | null
+          rewarded_at: string | null
+          source_channel: string | null
+          status: string | null
+          updated_at: string
+          user_agent: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          qualification_action?: string | null
+          qualified_at?: string | null
+          referee_email?: string | null
+          referee_id?: string | null
+          referee_reward_amount?: number | null
+          referee_reward_paid?: boolean | null
+          referee_reward_type?: string | null
+          referral_code: string
+          referral_link?: string | null
+          referrer_id: string
+          referrer_reward_amount?: number | null
+          referrer_reward_paid?: boolean | null
+          referrer_reward_type?: string | null
+          rewarded_at?: string | null
+          source_channel?: string | null
+          status?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          qualification_action?: string | null
+          qualified_at?: string | null
+          referee_email?: string | null
+          referee_id?: string | null
+          referee_reward_amount?: number | null
+          referee_reward_paid?: boolean | null
+          referee_reward_type?: string | null
+          referral_code?: string
+          referral_link?: string | null
+          referrer_id?: string
+          referrer_reward_amount?: number | null
+          referrer_reward_paid?: boolean | null
+          referrer_reward_type?: string | null
+          rewarded_at?: string | null
+          source_channel?: string | null
+          status?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acquisition_referrals_referee_id_fkey"
+            columns: ["referee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acquisition_referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      acquisition_seo_content: {
+        Row: {
+          ai_generated: boolean | null
+          ai_model: string | null
+          author_id: string | null
+          avg_time_on_page: number | null
+          backlinks_count: number | null
+          bounce_rate: number | null
+          content: string | null
+          content_type: string
+          conversions: number | null
+          created_at: string
+          editor_id: string | null
+          external_links: Json | null
+          featured_image_url: string | null
+          id: string
+          internal_links: Json | null
+          meta_description: string | null
+          meta_title: string | null
+          organic_traffic: number | null
+          primary_keyword: string
+          published_at: string | null
+          readability_score: number | null
+          schema_markup: Json | null
+          secondary_keywords: string[] | null
+          seo_score: number | null
+          slug: string
+          status: string | null
+          target_location: string | null
+          target_property_type: string | null
+          title: string
+          updated_at: string
+          word_count: number | null
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          ai_model?: string | null
+          author_id?: string | null
+          avg_time_on_page?: number | null
+          backlinks_count?: number | null
+          bounce_rate?: number | null
+          content?: string | null
+          content_type?: string
+          conversions?: number | null
+          created_at?: string
+          editor_id?: string | null
+          external_links?: Json | null
+          featured_image_url?: string | null
+          id?: string
+          internal_links?: Json | null
+          meta_description?: string | null
+          meta_title?: string | null
+          organic_traffic?: number | null
+          primary_keyword: string
+          published_at?: string | null
+          readability_score?: number | null
+          schema_markup?: Json | null
+          secondary_keywords?: string[] | null
+          seo_score?: number | null
+          slug: string
+          status?: string | null
+          target_location?: string | null
+          target_property_type?: string | null
+          title: string
+          updated_at?: string
+          word_count?: number | null
+        }
+        Update: {
+          ai_generated?: boolean | null
+          ai_model?: string | null
+          author_id?: string | null
+          avg_time_on_page?: number | null
+          backlinks_count?: number | null
+          bounce_rate?: number | null
+          content?: string | null
+          content_type?: string
+          conversions?: number | null
+          created_at?: string
+          editor_id?: string | null
+          external_links?: Json | null
+          featured_image_url?: string | null
+          id?: string
+          internal_links?: Json | null
+          meta_description?: string | null
+          meta_title?: string | null
+          organic_traffic?: number | null
+          primary_keyword?: string
+          published_at?: string | null
+          readability_score?: number | null
+          schema_markup?: Json | null
+          secondary_keywords?: string[] | null
+          seo_score?: number | null
+          slug?: string
+          status?: string | null
+          target_location?: string | null
+          target_property_type?: string | null
+          title?: string
+          updated_at?: string
+          word_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acquisition_seo_content_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acquisition_seo_content_editor_id_fkey"
+            columns: ["editor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      acquisition_university_partnerships: {
+        Row: {
+          approved_properties: string[] | null
+          avg_lease_duration_months: number | null
+          benefits_offered: Json | null
+          campus_location: string | null
+          contract_end_date: string | null
+          contract_start_date: string | null
+          created_at: string
+          housing_office_contact: string | null
+          housing_office_email: string | null
+          housing_office_phone: string | null
+          id: string
+          international_office_contact: string | null
+          international_office_email: string | null
+          is_active: boolean | null
+          notes: string | null
+          partnership_type: string | null
+          property_requirements: Json | null
+          student_population: number | null
+          total_placements: number | null
+          total_students_registered: number | null
+          university_logo_url: string | null
+          university_name: string
+          updated_at: string
+        }
+        Insert: {
+          approved_properties?: string[] | null
+          avg_lease_duration_months?: number | null
+          benefits_offered?: Json | null
+          campus_location?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          created_at?: string
+          housing_office_contact?: string | null
+          housing_office_email?: string | null
+          housing_office_phone?: string | null
+          id?: string
+          international_office_contact?: string | null
+          international_office_email?: string | null
+          is_active?: boolean | null
+          notes?: string | null
+          partnership_type?: string | null
+          property_requirements?: Json | null
+          student_population?: number | null
+          total_placements?: number | null
+          total_students_registered?: number | null
+          university_logo_url?: string | null
+          university_name: string
+          updated_at?: string
+        }
+        Update: {
+          approved_properties?: string[] | null
+          avg_lease_duration_months?: number | null
+          benefits_offered?: Json | null
+          campus_location?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          created_at?: string
+          housing_office_contact?: string | null
+          housing_office_email?: string | null
+          housing_office_phone?: string | null
+          id?: string
+          international_office_contact?: string | null
+          international_office_email?: string | null
+          is_active?: boolean | null
+          notes?: string | null
+          partnership_type?: string | null
+          property_requirements?: Json | null
+          student_population?: number | null
+          total_placements?: number | null
+          total_students_registered?: number | null
+          university_logo_url?: string | null
+          university_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      acquisition_university_students: {
+        Row: {
+          budget_range_max: number | null
+          budget_range_min: number | null
+          country_of_origin: string | null
+          created_at: string
+          housing_preferences: Json | null
+          id: string
+          is_international: boolean | null
+          lease_duration_months: number | null
+          move_in_date: string | null
+          partnership_id: string
+          placed_at: string | null
+          placement_property_id: string | null
+          program: string | null
+          roommate_preferences: Json | null
+          student_email: string
+          student_id: string | null
+          student_name: string | null
+          total_inquiries: number | null
+          updated_at: string
+          user_id: string | null
+          verification_status: string | null
+          verified_at: string | null
+          year_of_study: number | null
+        }
+        Insert: {
+          budget_range_max?: number | null
+          budget_range_min?: number | null
+          country_of_origin?: string | null
+          created_at?: string
+          housing_preferences?: Json | null
+          id?: string
+          is_international?: boolean | null
+          lease_duration_months?: number | null
+          move_in_date?: string | null
+          partnership_id: string
+          placed_at?: string | null
+          placement_property_id?: string | null
+          program?: string | null
+          roommate_preferences?: Json | null
+          student_email: string
+          student_id?: string | null
+          student_name?: string | null
+          total_inquiries?: number | null
+          updated_at?: string
+          user_id?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          year_of_study?: number | null
+        }
+        Update: {
+          budget_range_max?: number | null
+          budget_range_min?: number | null
+          country_of_origin?: string | null
+          created_at?: string
+          housing_preferences?: Json | null
+          id?: string
+          is_international?: boolean | null
+          lease_duration_months?: number | null
+          move_in_date?: string | null
+          partnership_id?: string
+          placed_at?: string | null
+          placement_property_id?: string | null
+          program?: string | null
+          roommate_preferences?: Json | null
+          student_email?: string
+          student_id?: string | null
+          student_name?: string | null
+          total_inquiries?: number | null
+          updated_at?: string
+          user_id?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          year_of_study?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acquisition_university_students_partnership_id_fkey"
+            columns: ["partnership_id"]
+            isOneToOne: false
+            referencedRelation: "acquisition_university_partnerships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acquisition_university_students_placement_property_id_fkey"
+            columns: ["placement_property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acquisition_university_students_placement_property_id_fkey"
+            columns: ["placement_property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acquisition_university_students_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       activity_logs: {
         Row: {
           activity_description: string
@@ -6098,6 +7099,689 @@ export type Database = {
           value?: string
         }
         Relationships: []
+      }
+      media_analytics: {
+        Row: {
+          channel: string
+          created_at: string
+          date: string
+          id: string
+          metadata: Json | null
+          metric_type: string
+          metric_value: number
+        }
+        Insert: {
+          channel: string
+          created_at?: string
+          date: string
+          id?: string
+          metadata?: Json | null
+          metric_type: string
+          metric_value: number
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          date?: string
+          id?: string
+          metadata?: Json | null
+          metric_type?: string
+          metric_value?: number
+        }
+        Relationships: []
+      }
+      media_event_registrations: {
+        Row: {
+          check_in_status: string | null
+          checked_in_at: string | null
+          company: string | null
+          created_at: string
+          dietary_requirements: string | null
+          email: string
+          event_id: string
+          full_name: string
+          id: string
+          job_title: string | null
+          payment_reference: string | null
+          payment_status: string | null
+          phone: string | null
+          questions: Json | null
+          registration_source: string | null
+          ticket_price: number | null
+          ticket_tier: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          check_in_status?: string | null
+          checked_in_at?: string | null
+          company?: string | null
+          created_at?: string
+          dietary_requirements?: string | null
+          email: string
+          event_id: string
+          full_name: string
+          id?: string
+          job_title?: string | null
+          payment_reference?: string | null
+          payment_status?: string | null
+          phone?: string | null
+          questions?: Json | null
+          registration_source?: string | null
+          ticket_price?: number | null
+          ticket_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          check_in_status?: string | null
+          checked_in_at?: string | null
+          company?: string | null
+          created_at?: string
+          dietary_requirements?: string | null
+          email?: string
+          event_id?: string
+          full_name?: string
+          id?: string
+          job_title?: string | null
+          payment_reference?: string | null
+          payment_status?: string | null
+          phone?: string | null
+          questions?: Json | null
+          registration_source?: string | null
+          ticket_price?: number | null
+          ticket_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "media_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_event_registrations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_events: {
+        Row: {
+          agenda: Json | null
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          current_attendees: number | null
+          description: string | null
+          end_datetime: string
+          event_type: string
+          format: string | null
+          id: string
+          is_featured: boolean | null
+          is_published: boolean | null
+          max_attendees: number | null
+          registration_open: boolean | null
+          slug: string
+          speakers: Json | null
+          sponsors: Json | null
+          start_datetime: string
+          ticket_tiers: Json | null
+          timezone: string | null
+          title: string
+          updated_at: string
+          venue_address: string | null
+          venue_city: string | null
+          venue_name: string | null
+          virtual_link: string | null
+          virtual_platform: string | null
+        }
+        Insert: {
+          agenda?: Json | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          current_attendees?: number | null
+          description?: string | null
+          end_datetime: string
+          event_type?: string
+          format?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          max_attendees?: number | null
+          registration_open?: boolean | null
+          slug: string
+          speakers?: Json | null
+          sponsors?: Json | null
+          start_datetime: string
+          ticket_tiers?: Json | null
+          timezone?: string | null
+          title: string
+          updated_at?: string
+          venue_address?: string | null
+          venue_city?: string | null
+          venue_name?: string | null
+          virtual_link?: string | null
+          virtual_platform?: string | null
+        }
+        Update: {
+          agenda?: Json | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          current_attendees?: number | null
+          description?: string | null
+          end_datetime?: string
+          event_type?: string
+          format?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          max_attendees?: number | null
+          registration_open?: boolean | null
+          slug?: string
+          speakers?: Json | null
+          sponsors?: Json | null
+          start_datetime?: string
+          ticket_tiers?: Json | null
+          timezone?: string | null
+          title?: string
+          updated_at?: string
+          venue_address?: string | null
+          venue_city?: string | null
+          venue_name?: string | null
+          virtual_link?: string | null
+          virtual_platform?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_newsletter_campaigns: {
+        Row: {
+          campaign_type: string | null
+          content_html: string | null
+          content_json: Json | null
+          created_at: string
+          created_by: string | null
+          id: string
+          preview_text: string | null
+          scheduled_at: string | null
+          sent_at: string | null
+          status: string | null
+          subject: string
+          target_tier: string | null
+          total_bounced: number | null
+          total_clicked: number | null
+          total_delivered: number | null
+          total_opened: number | null
+          total_recipients: number | null
+          total_unsubscribed: number | null
+          updated_at: string
+        }
+        Insert: {
+          campaign_type?: string | null
+          content_html?: string | null
+          content_json?: Json | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          preview_text?: string | null
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: string | null
+          subject: string
+          target_tier?: string | null
+          total_bounced?: number | null
+          total_clicked?: number | null
+          total_delivered?: number | null
+          total_opened?: number | null
+          total_recipients?: number | null
+          total_unsubscribed?: number | null
+          updated_at?: string
+        }
+        Update: {
+          campaign_type?: string | null
+          content_html?: string | null
+          content_json?: Json | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          preview_text?: string | null
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: string | null
+          subject?: string
+          target_tier?: string | null
+          total_bounced?: number | null
+          total_clicked?: number | null
+          total_delivered?: number | null
+          total_opened?: number | null
+          total_recipients?: number | null
+          total_unsubscribed?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_newsletter_campaigns_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_newsletter_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          last_email_opened_at: string | null
+          last_email_sent_at: string | null
+          preferences: Json | null
+          referral_code: string | null
+          source: string | null
+          subscriber_tier: string | null
+          total_emails_opened: number | null
+          total_emails_sent: number | null
+          total_links_clicked: number | null
+          unsubscribed_at: string | null
+          updated_at: string
+          user_id: string | null
+          verification_token: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          last_email_opened_at?: string | null
+          last_email_sent_at?: string | null
+          preferences?: Json | null
+          referral_code?: string | null
+          source?: string | null
+          subscriber_tier?: string | null
+          total_emails_opened?: number | null
+          total_emails_sent?: number | null
+          total_links_clicked?: number | null
+          unsubscribed_at?: string | null
+          updated_at?: string
+          user_id?: string | null
+          verification_token?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          last_email_opened_at?: string | null
+          last_email_sent_at?: string | null
+          preferences?: Json | null
+          referral_code?: string | null
+          source?: string | null
+          subscriber_tier?: string | null
+          total_emails_opened?: number | null
+          total_emails_sent?: number | null
+          total_links_clicked?: number | null
+          unsubscribed_at?: string | null
+          updated_at?: string
+          user_id?: string | null
+          verification_token?: string | null
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_newsletter_subscribers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_podcast_episodes: {
+        Row: {
+          apple_podcasts_url: string | null
+          audio_url: string | null
+          created_at: string
+          description: string | null
+          downloads_count: number | null
+          duration_seconds: number | null
+          episode_number: number
+          guest_company: string | null
+          guest_name: string | null
+          guest_photo_url: string | null
+          guest_title: string | null
+          id: string
+          is_featured: boolean | null
+          is_published: boolean | null
+          listens_count: number | null
+          published_at: string | null
+          season: number | null
+          show_notes: string | null
+          spotify_url: string | null
+          title: string
+          topics: string[] | null
+          transcript: string | null
+          updated_at: string
+          youtube_url: string | null
+        }
+        Insert: {
+          apple_podcasts_url?: string | null
+          audio_url?: string | null
+          created_at?: string
+          description?: string | null
+          downloads_count?: number | null
+          duration_seconds?: number | null
+          episode_number: number
+          guest_company?: string | null
+          guest_name?: string | null
+          guest_photo_url?: string | null
+          guest_title?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          listens_count?: number | null
+          published_at?: string | null
+          season?: number | null
+          show_notes?: string | null
+          spotify_url?: string | null
+          title: string
+          topics?: string[] | null
+          transcript?: string | null
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Update: {
+          apple_podcasts_url?: string | null
+          audio_url?: string | null
+          created_at?: string
+          description?: string | null
+          downloads_count?: number | null
+          duration_seconds?: number | null
+          episode_number?: number
+          guest_company?: string | null
+          guest_name?: string | null
+          guest_photo_url?: string | null
+          guest_title?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          listens_count?: number | null
+          published_at?: string | null
+          season?: number | null
+          show_notes?: string | null
+          spotify_url?: string | null
+          title?: string
+          topics?: string[] | null
+          transcript?: string | null
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
+      media_research_reports: {
+        Row: {
+          access_tier: string | null
+          author_id: string | null
+          cover_image_url: string | null
+          created_at: string
+          data_visualization: Json | null
+          downloads_count: number | null
+          executive_summary: string | null
+          full_content: string | null
+          id: string
+          is_featured: boolean | null
+          is_published: boolean | null
+          key_findings: Json | null
+          locations: string[] | null
+          methodology: string | null
+          pdf_url: string | null
+          price_idr: number | null
+          property_types: string[] | null
+          published_at: string | null
+          report_type: string
+          slug: string
+          time_period: string | null
+          title: string
+          updated_at: string
+          views_count: number | null
+        }
+        Insert: {
+          access_tier?: string | null
+          author_id?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          data_visualization?: Json | null
+          downloads_count?: number | null
+          executive_summary?: string | null
+          full_content?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          key_findings?: Json | null
+          locations?: string[] | null
+          methodology?: string | null
+          pdf_url?: string | null
+          price_idr?: number | null
+          property_types?: string[] | null
+          published_at?: string | null
+          report_type?: string
+          slug: string
+          time_period?: string | null
+          title: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Update: {
+          access_tier?: string | null
+          author_id?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          data_visualization?: Json | null
+          downloads_count?: number | null
+          executive_summary?: string | null
+          full_content?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          key_findings?: Json | null
+          locations?: string[] | null
+          methodology?: string | null
+          pdf_url?: string | null
+          price_idr?: number | null
+          property_types?: string[] | null
+          published_at?: string | null
+          report_type?: string
+          slug?: string
+          time_period?: string | null
+          title?: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_research_reports_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_sponsorships: {
+        Row: {
+          amount_idr: number
+          amount_paid: number | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          contract_url: string | null
+          created_at: string
+          deliverables: Json | null
+          deliverables_completed: Json | null
+          end_date: string
+          id: string
+          is_active: boolean | null
+          notes: string | null
+          package_details: Json | null
+          payment_status: string | null
+          sponsor_logo_url: string | null
+          sponsor_name: string
+          sponsor_website: string | null
+          sponsorship_tier: string | null
+          sponsorship_type: string
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          amount_idr: number
+          amount_paid?: number | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contract_url?: string | null
+          created_at?: string
+          deliverables?: Json | null
+          deliverables_completed?: Json | null
+          end_date: string
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          package_details?: Json | null
+          payment_status?: string | null
+          sponsor_logo_url?: string | null
+          sponsor_name: string
+          sponsor_website?: string | null
+          sponsorship_tier?: string | null
+          sponsorship_type?: string
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          amount_idr?: number
+          amount_paid?: number | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contract_url?: string | null
+          created_at?: string
+          deliverables?: Json | null
+          deliverables_completed?: Json | null
+          end_date?: string
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          package_details?: Json | null
+          payment_status?: string | null
+          sponsor_logo_url?: string | null
+          sponsor_name?: string
+          sponsor_website?: string | null
+          sponsorship_tier?: string | null
+          sponsorship_type?: string
+          start_date?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      media_videos: {
+        Row: {
+          comments_count: number | null
+          created_at: string
+          description: string | null
+          duration_seconds: number | null
+          id: string
+          is_featured: boolean | null
+          is_published: boolean | null
+          likes_count: number | null
+          property_id: string | null
+          published_at: string | null
+          tags: string[] | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          video_type: string
+          views_count: number | null
+          youtube_id: string
+          youtube_url: string
+        }
+        Insert: {
+          comments_count?: number | null
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          likes_count?: number | null
+          property_id?: string | null
+          published_at?: string | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          video_type?: string
+          views_count?: number | null
+          youtube_id: string
+          youtube_url: string
+        }
+        Update: {
+          comments_count?: number | null
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          likes_count?: number | null
+          property_id?: string | null
+          published_at?: string | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          video_type?: string
+          views_count?: number | null
+          youtube_id?: string
+          youtube_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_videos_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_videos_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mfa_settings: {
         Row: {
