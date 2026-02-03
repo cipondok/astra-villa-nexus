@@ -239,15 +239,16 @@ const Navigation = () => {
                 </div>
               </div>
 
-              {/* Add Property Button with Multi-Color Gradient Border */}
-              <div className="relative group/add p-[1.5px] rounded-lg bg-gradient-to-r from-rose-500 via-violet-500 via-cyan-400 via-emerald-400 to-amber-500 bg-[length:300%_100%] animate-gradient-x hover:bg-[length:100%_100%] transition-all duration-500 shadow-md shadow-violet-500/30 hover:shadow-lg hover:shadow-cyan-400/50">
+              {/* Add Property Button - Matching Nav Style with Gradient Border */}
+              <div className="relative group p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-gradient-x transition-all duration-500">
                 <Button 
+                  variant="ghost"
                   size="sm"
                   onClick={() => navigate('/add-property')}
-                  className="relative h-8 px-3 text-[11px] font-medium bg-background hover:bg-background/90 text-foreground rounded-[6px] transition-all duration-500 ease-out backdrop-blur-sm w-full"
+                  className="h-10 px-3 text-sm font-medium bg-background hover:bg-primary/10 text-foreground/80 hover:text-primary rounded-[10px] transition-all duration-500 border-0 hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
                 >
-                  <Plus className="h-3.5 w-3.5 mr-1 transition-transform duration-500 ease-out group-hover/add:rotate-90 group-hover/add:scale-110 text-violet-500" />
-                  <span className="bg-gradient-to-r from-rose-500 via-violet-500 to-cyan-400 bg-clip-text text-transparent font-semibold transition-all duration-500 ease-out">Add Property</span>
+                  <Plus className="h-3.5 w-3.5 xl:mr-1.5 transition-all duration-500" />
+                  <span className="hidden xl:inline text-xs">Add Property</span>
                 </Button>
               </div>
 
