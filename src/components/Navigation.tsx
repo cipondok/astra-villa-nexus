@@ -245,7 +245,7 @@ const Navigation = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate('/add-property')}
-                  className="h-10 px-3 text-sm font-medium bg-background hover:bg-primary/10 text-foreground/80 hover:text-primary rounded-[10px] transition-all duration-500 border-0 hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
+                  className="h-10 px-3 text-sm font-medium bg-background hover:bg-background text-foreground hover:text-foreground rounded-[10px] transition-all duration-500 border-0 hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
                 >
                   <Plus className="h-3.5 w-3.5 mr-1.5 transition-all duration-500" />
                   <span className="text-xs">Add Property</span>
