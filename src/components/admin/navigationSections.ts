@@ -158,6 +158,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "data-exchange",
+      label: "Data Exchange Platform",
+      icon: Database,
+      description: "Listing syndication, buyer demand API, off-market deals, and research data licensing",
+      badge: "New"
+    },
+    {
       key: "partnership-programs",
       label: "Partnership Programs",
       icon: Users,
