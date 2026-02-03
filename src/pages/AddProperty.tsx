@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import MultiStepPropertyForm from "@/components/property/MultiStepPropertyForm";
 import PropertyImporter from "@/components/property/PropertyImporter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool } from "lucide-react";
+import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool, Plus } from "lucide-react";
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
 import { useVIPLimits } from "@/hooks/useVIPLimits";
 import VIPLimitAlert from "@/components/property/VIPLimitAlert";
@@ -29,50 +29,89 @@ const AddProperty = () => {
     isLoading: limitsLoading 
   } = useVIPLimits();
 
+  const text = {
+    en: {
+      loginRequired: "Login Required",
+      loginDesc: "Please login or register to add a property",
+      login: "Login",
+      register: "Register",
+      backHome: "Back to Home",
+      upgradeRequired: "Upgrade Required",
+      upgradeDesc: "Upgrade to Agent, Vendor, or Property Owner to add listings",
+      upgradeAccount: "Upgrade Account",
+      backDashboard: "Back to Dashboard",
+      limitReached: "Property Limit Reached",
+      limitDesc: (current: number, max: number, level: string) => 
+        `You've reached ${current}/${max} properties for your ${level} tier.`,
+      upgradeVIP: "Upgrade VIP Level",
+      addProperty: "Add Property",
+      createListing: "Create new listing",
+      createManually: "Create Manually",
+      importFromUrl: "Import from URL",
+      importError: "Please log in first.",
+      importSuccess: "Form auto-filled. Please review and submit."
+    },
+    id: {
+      loginRequired: "Login Diperlukan",
+      loginDesc: "Silakan login atau daftar untuk menambahkan properti",
+      login: "Masuk",
+      register: "Daftar",
+      backHome: "Kembali",
+      upgradeRequired: "Upgrade Diperlukan",
+      upgradeDesc: "Upgrade ke Agent, Vendor, atau Property Owner untuk listing",
+      upgradeAccount: "Upgrade Akun",
+      backDashboard: "Kembali",
+      limitReached: "Batas Properti Tercapai",
+      limitDesc: (current: number, max: number, level: string) => 
+        `Anda telah mencapai ${current}/${max} properti untuk level ${level}.`,
+      upgradeVIP: "Upgrade Level VIP",
+      addProperty: "Tambah Properti",
+      createListing: "Buat listing baru",
+      createManually: "Buat Manual",
+      importFromUrl: "Impor dari URL",
+      importError: "Silakan login dulu.",
+      importSuccess: "Form terisi otomatis. Silakan cek lalu submit."
+    }
+  };
+
+  const t = text[language];
+
   // Show login/register prompt for non-authenticated users
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-2 py-4">
-        <Card className="w-full max-w-sm shadow-lg border-border/50">
-          <CardHeader className="text-center p-3 pb-2">
-            <div className="mx-auto w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
-              <Lock className="h-5 w-5 text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
+        <Card className="w-full max-w-sm shadow-lg border-border bg-card">
+          <CardHeader className="text-center p-4 pb-3">
+            <div className="mx-auto w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-3">
+              <Lock className="h-6 w-6 text-primary" />
             </div>
-            <CardTitle className="text-base">
-              {language === "en" ? "Login Required" : "Login Diperlukan"}
-            </CardTitle>
-            <CardDescription className="text-xs">
-              {language === "en" 
-                ? "Please login or register to add a property" 
-                : "Silakan login atau daftar untuk menambahkan properti"
-              }
+            <CardTitle className="text-lg text-foreground">{t.loginRequired}</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">
+              {t.loginDesc}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2 p-3 pt-0">
+          <CardContent className="space-y-2.5 p-4 pt-0">
             <Button 
               onClick={() => navigate('/auth?redirect=/add-property')}
-              className="w-full h-9 text-xs"
-              size="sm"
+              className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              <LogIn className="h-3.5 w-3.5 mr-1.5" />
-              {language === "en" ? "Login" : "Masuk"}
+              <LogIn className="h-4 w-4 mr-2" />
+              {t.login}
             </Button>
             <Button 
               onClick={() => navigate('/auth?mode=signup&redirect=/add-property')}
               variant="outline"
-              className="w-full h-9 text-xs"
-              size="sm"
+              className="w-full h-10 border-border"
             >
-              <UserPlus className="h-3.5 w-3.5 mr-1.5" />
-              {language === "en" ? "Register" : "Daftar"}
+              <UserPlus className="h-4 w-4 mr-2" />
+              {t.register}
             </Button>
             <Button 
               onClick={() => navigate('/')}
               variant="ghost"
-              className="w-full h-7 text-[10px]"
-              size="sm"
+              className="w-full h-9 text-sm text-muted-foreground"
             >
-              {language === "en" ? "Back to Home" : "Kembali"}
+              {t.backHome}
             </Button>
           </CardContent>
         </Card>
@@ -89,37 +128,30 @@ const AddProperty = () => {
   // Show role upgrade prompt for users without permission
   if (!adminLoading && !hasRolePermission) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-2 py-4">
-        <Card className="w-full max-w-sm shadow-lg border-border/50">
-          <CardHeader className="text-center p-3 pb-2">
-            <div className="mx-auto w-10 h-10 bg-orange-500/10 rounded-lg flex items-center justify-center mb-2">
-              <Building className="h-5 w-5 text-orange-500" />
+      <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
+        <Card className="w-full max-w-sm shadow-lg border-border bg-card">
+          <CardHeader className="text-center p-4 pb-3">
+            <div className="mx-auto w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-3">
+              <Building className="h-6 w-6 text-amber-500" />
             </div>
-            <CardTitle className="text-base">
-              {language === "en" ? "Upgrade Required" : "Upgrade Diperlukan"}
-            </CardTitle>
-            <CardDescription className="text-xs">
-              {language === "en" 
-                ? "Upgrade to Agent, Vendor, or Property Owner to add listings" 
-                : "Upgrade ke Agent, Vendor, atau Property Owner untuk listing"
-              }
+            <CardTitle className="text-lg text-foreground">{t.upgradeRequired}</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">
+              {t.upgradeDesc}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2 p-3 pt-0">
+          <CardContent className="space-y-2.5 p-4 pt-0">
             <Button 
               onClick={() => navigate('/profile')}
-              className="w-full h-9 text-xs"
-              size="sm"
+              className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              {language === "en" ? "Upgrade Account" : "Upgrade Akun"}
+              {t.upgradeAccount}
             </Button>
             <Button 
               onClick={() => navigate('/dashboard')}
               variant="outline"
-              className="w-full h-8 text-[10px]"
-              size="sm"
+              className="w-full h-9 border-border"
             >
-              {language === "en" ? "Back to Dashboard" : "Kembali"}
+              {t.backDashboard}
             </Button>
           </CardContent>
         </Card>
@@ -130,38 +162,31 @@ const AddProperty = () => {
   // Show VIP limit reached message
   if (!adminLoading && !limitsLoading && !canAddProperty && !isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-2 py-4">
-        <Card className="w-full max-w-sm shadow-lg border-border/50">
-          <CardHeader className="text-center p-3 pb-2">
-            <div className="mx-auto w-10 h-10 bg-destructive/10 rounded-lg flex items-center justify-center mb-2">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
+      <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
+        <Card className="w-full max-w-sm shadow-lg border-border bg-card">
+          <CardHeader className="text-center p-4 pb-3">
+            <div className="mx-auto w-12 h-12 bg-destructive/10 rounded-xl flex items-center justify-center mb-3">
+              <AlertTriangle className="h-6 w-6 text-destructive" />
             </div>
-            <CardTitle className="text-base">
-              {language === "en" ? "Property Limit Reached" : "Batas Properti Tercapai"}
-            </CardTitle>
-            <CardDescription className="text-xs">
-              {language === "en" 
-                ? `You've reached ${currentProperties}/${maxProperties} properties for your ${membershipLevel} tier.`
-                : `Anda telah mencapai ${currentProperties}/${maxProperties} properti untuk level ${membershipLevel}.`
-              }
+            <CardTitle className="text-lg text-foreground">{t.limitReached}</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">
+              {t.limitDesc(currentProperties, maxProperties, membershipLevel)}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2 p-3 pt-0">
+          <CardContent className="space-y-2.5 p-4 pt-0">
             <Button 
               onClick={() => navigate('/membership')}
-              className="w-full h-9 text-xs"
-              size="sm"
+              className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              <Crown className="h-3.5 w-3.5 mr-1.5" />
-              {language === "en" ? "Upgrade VIP Level" : "Upgrade Level VIP"}
+              <Crown className="h-4 w-4 mr-2" />
+              {t.upgradeVIP}
             </Button>
             <Button 
               onClick={() => navigate('/dashboard')}
               variant="outline"
-              className="w-full h-8 text-[10px]"
-              size="sm"
+              className="w-full h-9 border-border"
             >
-              {language === "en" ? "Back to Dashboard" : "Kembali"}
+              {t.backDashboard}
             </Button>
           </CardContent>
         </Card>
@@ -171,41 +196,40 @@ const AddProperty = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Compact Header */}
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border/50">
-        <div className="px-2 py-1.5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 w-7 p-0"
-              onClick={() => navigate(-1)}
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="text-sm font-bold">
-                {language === "en" ? "Add Property" : "Tambah Properti"}
-              </h1>
-              <p className="text-[9px] text-muted-foreground">
-                {language === "en" ? "Create new listing" : "Buat listing baru"}
-              </p>
-            </div>
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
+        <div className="container mx-auto px-3 sm:px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link to="/">
+              <Button variant="ghost" size="sm" className="h-8 px-2 sm:px-3">
+                <ArrowLeft className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline">Back</span>
+              </Button>
+            </Link>
+            <h1 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-foreground">
+              <Plus className="h-5 w-5 text-primary" />
+              <span>{t.addProperty}</span>
+            </h1>
           </div>
+          
+          {/* User Role Badges */}
           {userRoles.length > 0 && (
-            <div className="flex gap-1">
+            <div className="flex gap-1.5">
               {userRoles.slice(0, 2).map(role => (
-                <span key={role} className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-medium bg-primary/10 text-primary">
+                <span 
+                  key={role} 
+                  className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-medium bg-primary/10 text-primary border border-primary/20"
+                >
                   {role.replace('_', ' ')}
                 </span>
               ))}
             </div>
           )}
         </div>
-      </div>
+      </header>
 
-      {/* Main Content - Compact */}
-      <div className="p-2 space-y-2">
+      {/* Main Content */}
+      <div className="container mx-auto px-3 sm:px-4 py-4 md:py-6 space-y-4">
         {/* VIP Limit Warning */}
         {!isAdmin && (
           <VIPLimitAlert
@@ -218,39 +242,44 @@ const AddProperty = () => {
         
         {/* Tabs for Manual or Import */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 h-9">
-            <TabsTrigger value="manual" className="text-xs gap-1.5">
-              <PenTool className="h-3.5 w-3.5" />
-              {language === "en" ? "Create Manually" : "Buat Manual"}
+          <TabsList className="grid w-full grid-cols-2 h-10 sm:h-11 bg-muted/50 border border-border rounded-xl p-1">
+            <TabsTrigger 
+              value="manual" 
+              className="text-xs sm:text-sm gap-1.5 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+            >
+              <PenTool className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              {t.createManually}
             </TabsTrigger>
-            <TabsTrigger value="import" className="text-xs gap-1.5">
-              <Link2 className="h-3.5 w-3.5" />
-              {language === "en" ? "Import from URL" : "Impor dari URL"}
+            <TabsTrigger 
+              value="import" 
+              className="text-xs sm:text-sm gap-1.5 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+            >
+              <Link2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              {t.importFromUrl}
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="manual" className="mt-2">
-            <Card className="border-border/50 shadow-sm">
-              <CardContent className="p-2 sm:p-4">
+          <TabsContent value="manual" className="mt-4">
+            <Card className="border-border bg-card shadow-sm">
+              <CardContent className="p-3 sm:p-5">
                 <MultiStepPropertyForm />
               </CardContent>
             </Card>
           </TabsContent>
           
-          <TabsContent value="import" className="mt-2">
+          <TabsContent value="import" className="mt-4">
             <PropertyImporter 
               onImport={(data) => {
                 if (!user) {
                   toast({
                     title: "Error",
-                    description: language === "en" ? "Please log in first." : "Silakan login dulu.",
+                    description: t.importError,
                     variant: "destructive",
                   });
                   return;
                 }
 
                 // Write an auto-fill draft to the SAME draft key that MultiStepPropertyForm already restores.
-                // This makes the import instantly pre-fill the form without changing the form component API.
                 const draftKey = `property_draft_${user.id}`;
 
                 const importedFormData: any = {
@@ -279,7 +308,6 @@ const AddProperty = () => {
                 };
 
                 // Map features array into the boolean features object used by the form.
-                // We ONLY set known feature keys; everything else stays false.
                 const importedFeatures: any = {
                   parking: false,
                   swimming_pool: false,
@@ -319,7 +347,7 @@ const AddProperty = () => {
 
                 toast({
                   title: language === "en" ? "Imported" : "Berhasil diimpor",
-                  description: language === "en" ? "Form auto-filled. Please review and submit." : "Form terisi otomatis. Silakan cek lalu submit.",
+                  description: t.importSuccess,
                 });
 
                 setActiveTab("manual");
