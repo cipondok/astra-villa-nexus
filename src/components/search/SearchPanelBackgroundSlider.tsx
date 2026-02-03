@@ -7,13 +7,16 @@ interface SearchPanelBackgroundSliderProps {
   images?: string[];
 }
 
-// Default property images - can be replaced with actual images
+// Bright, luxurious property images for light theme
 const defaultImages = [
-  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80',
-  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80',
-  'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&q=80',
-  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&q=80',
-  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80',
+  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80', // Modern white villa
+  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80', // Luxury pool house
+  'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&q=80', // Contemporary mansion
+  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&q=80', // Tropical villa
+  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80', // Pool deck
+  'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1920&q=80', // Modern architecture
+  'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1920&q=80', // Bright interior
+  'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=1920&q=80', // Beach house
 ];
 
 export const SearchPanelBackgroundSlider: React.FC<SearchPanelBackgroundSliderProps> = ({
@@ -59,9 +62,10 @@ export const SearchPanelBackgroundSlider: React.FC<SearchPanelBackgroundSliderPr
         </div>
       ))}
       
-      {/* Gradient overlays for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20" />
+      {/* Light gradient overlays for professional look */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/60 dark:from-black/40 dark:via-black/20 dark:to-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
       
       {/* Slide indicators */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
