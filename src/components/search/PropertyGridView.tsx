@@ -1,15 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Box, Scale, Tag, Percent, Key, Building } from "lucide-react";
-
-// Helper to capitalize first letter
-const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
+import { MapPin, Bed, Bath, Maximize, Heart, Share2, Eye, Phone, Box, Tag, Percent, Key, Building, Camera } from "lucide-react";
+import { cn } from "@/lib/utils";
 import PropertyComparisonButton from "@/components/property/PropertyComparisonButton";
 import SocialShareDialog from "@/components/property/SocialShareDialog";
 import { BaseProperty } from "@/types/property";
 import { useState } from "react";
-import UserStatusBadge from "@/components/ui/UserStatusBadge";
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 
 interface PropertyGridViewProps {
   properties: BaseProperty[];
@@ -31,32 +29,35 @@ const PropertyGridView = ({
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
-      const value = price / 1000000000;
-      const numStr = value % 1 === 0 ? value.toFixed(0) : value.toFixed(1);
-      return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{numStr}<span className="text-[0.7em] font-medium opacity-90">M</span></>;
+      const value = (price / 1000000000).toFixed(1);
+      return { main: `Rp ${value}`, suffix: 'Miliar' };
     }
     if (price >= 1000000) {
-      const value = price / 1000000;
-      const numStr = value % 1 === 0 ? value.toFixed(0) : value.toFixed(1);
-      return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{numStr}<span className="text-[0.7em] font-medium opacity-90">Jt</span></>;
+      const value = (price / 1000000).toFixed(0);
+      return { main: `Rp ${value}`, suffix: 'Juta' };
     }
-    return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{price.toLocaleString('id-ID')}</>;
+    return { main: `Rp ${price.toLocaleString('id-ID')}`, suffix: '' };
+  };
+
+  const formatMonthlyPayment = (price: number) => {
+    const monthlyEstimate = price * 0.006;
+    if (monthlyEstimate >= 1000000) {
+      return `Rp ${(monthlyEstimate / 1000000).toFixed(0)} Jutaan/bulan`;
+    }
+    return `Rp ${(monthlyEstimate / 1000).toFixed(0)} Ribuan/bulan`;
   };
 
   const getImageUrl = (property: BaseProperty) => {
-    if (property.images && property.images.length > 0) {
-      return property.images[0];
-    }
-    if (property.image_urls && property.image_urls.length > 0) {
-      return property.image_urls[0];
-    }
-    if (property.thumbnail_url) {
-      return property.thumbnail_url;
-    }
-    return "/placeholder.svg";
+    return getPropertyImage(property.images, property.thumbnail_url, property.image_urls);
+  };
+
+  const getLocation = (property: BaseProperty) => {
+    if (property.city && property.state) return `${property.city}, ${property.state}`;
+    return property.city || property.location || 'Indonesia';
   };
 
   const handleSave = (property: BaseProperty) => {
@@ -76,7 +77,6 @@ const PropertyGridView = ({
     onShare?.(property);
   };
 
-
   if (properties.length === 0) {
     return (
       <div className="text-center py-12">
@@ -87,215 +87,161 @@ const PropertyGridView = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 md:gap-6">
-      {properties.map((property) => (
-        <Card 
-          key={property.id} 
-          className="group cursor-pointer flex flex-col bg-transparent hover:shadow-lg transition-all duration-300 rounded-md md:rounded-xl overflow-hidden border-0"
-          onClick={() => onPropertyClick(property)}
-        >
-          {/* Image Section */}
-          <div className="relative aspect-[16/9] overflow-hidden flex-shrink-0">
-            <img
-              src={getImageUrl(property)}
-              alt={property.title}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            
-            {/* Top Left - Sewa/Jual Badge with icon */}
-            <div className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 md:top-3 md:left-3 z-10">
-              <Badge 
-                className={`flex items-center gap-0.5 ${
-                  property.listing_type === 'rent' 
-                    ? 'bg-blue-500 hover:bg-blue-600' 
-                    : 'bg-green-500 hover:bg-green-600'
-                } text-white text-[8px] sm:text-[9px] md:text-[10px] font-semibold rounded-md backdrop-blur-sm px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-2 md:py-0.5 shadow-lg`}
-              >
-                {property.listing_type === 'rent' ? <Key className="h-2.5 w-2.5 md:h-3 md:w-3" /> : <Tag className="h-2.5 w-2.5 md:h-3 md:w-3" />}
-                {property.listing_type === 'rent' ? 'Sewa' : 'Jual'}
-              </Badge>
-            </div>
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
+      {properties.map((property) => {
+        const priceInfo = formatPrice(property.price);
+        const isRent = property.listing_type === 'rent';
+        const imageCount = property.images?.length || property.image_urls?.length || 1;
+        const ListingIcon = isRent ? Key : Tag;
 
-            {/* Top Right Compare Icon */}
-            <div className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 md:top-3 md:right-3 z-10 flex flex-col gap-1 sm:gap-1.5 md:gap-2 items-end">
-              <PropertyComparisonButton 
-                property={property} 
-                variant="secondary"
-                size="sm"
+        return (
+          <Card 
+            key={property.id} 
+            className="group cursor-pointer bg-card rounded-lg border border-border/50 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 overflow-hidden"
+            onClick={() => onPropertyClick(property)}
+          >
+            {/* Image Section - Rumah123 Style */}
+            <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+              <img
+                src={getImageUrl(property)}
+                alt={property.title}
+                loading="lazy"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <Badge 
-                className="flex items-center gap-0.5 bg-white/60 dark:bg-black/60 backdrop-blur-sm text-foreground text-[8px] sm:text-[9px] md:text-xs font-semibold rounded-full px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-3 md:py-1"
-              >
-                <Building className="h-2.5 w-2.5 md:h-3 md:w-3" />
-                {capitalizeFirst(property.property_type) || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
-              </Badge>
-            </div>
+              
+              {/* Top Badges */}
+              <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
+                <Badge className={cn(
+                  "flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md shadow-sm",
+                  isRent ? "bg-primary text-primary-foreground" : "bg-accent text-accent-foreground"
+                )}>
+                  <ListingIcon className="h-2.5 w-2.5" />
+                  {isRent ? 'Disewa' : 'Dijual'}
+                </Badge>
+                
+                <Badge className="flex items-center gap-0.5 bg-card/90 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded-md shadow-sm border border-border/50">
+                  <Building className="h-2.5 w-2.5" />
+                  {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
+                </Badge>
+              </div>
 
-            {/* Center Action Icons - Only on Hover */}
-            <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+              {/* Heart & Compare Buttons */}
+              <div className="absolute top-10 right-2 flex flex-col gap-1">
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm shadow-xl"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPropertyClick(property);
-                }}
-                >
-                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-              </Button>
-              {(property.three_d_model_url || property.virtual_tour_url) && (
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm shadow-xl"
+                  className={cn(
+                    "h-7 w-7 rounded-full bg-card/90 backdrop-blur-sm hover:bg-card shadow-sm border border-border/50",
+                    savedProperties.has(property.id) && "bg-destructive/10 border-destructive/30"
+                  )}
                   onClick={(e) => {
                     e.stopPropagation();
-                    onView3D?.(property);
+                    handleSave(property);
                   }}
                 >
-                  <Box className="h-5 w-5 text-foreground" />
+                  <Heart className={cn(
+                    "h-3.5 w-3.5",
+                    savedProperties.has(property.id) ? 'fill-destructive text-destructive' : 'text-muted-foreground'
+                  )} />
                 </Button>
+                <PropertyComparisonButton property={property} variant="secondary" size="sm" />
+              </div>
+
+              {/* Image Count */}
+              {imageCount > 1 && (
+                <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded">
+                  <Camera className="h-2.5 w-2.5" />
+                  <span>{imageCount}</span>
+                </div>
               )}
+
+              {/* View Icon on Hover */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/10">
+                <div className="h-10 w-10 rounded-full bg-card/95 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                  <Eye className="h-5 w-5 text-primary" />
+                </div>
+              </div>
             </div>
 
-            {/* Bottom Left Price Overlay - Gradient Badge with Icon */}
-            <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 sm:p-2.5 md:p-3">
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <div className="inline-flex items-center gap-0.5 sm:gap-1 bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground px-1.5 sm:px-2 py-0.5 sm:py-1 rounded shadow-lg">
-                  <Tag className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                  <span className="font-bold text-[10px] sm:text-xs md:text-sm leading-tight">
-                    {formatPrice(property.price)}
-                  </span>
-                  {property.listing_type === 'rent' && (
-                    <span className="text-primary-foreground/80 text-[7px] sm:text-[8px] md:text-[10px] font-medium">/bln</span>
+            {/* Content Section - Rumah123 Style */}
+            <CardContent className="p-2.5 sm:p-3 space-y-1.5">
+              {/* Price */}
+              <div className="space-y-0">
+                <div className="flex items-baseline gap-0.5">
+                  <span className="text-sm sm:text-base font-bold text-primary">{priceInfo.main}</span>
+                  {priceInfo.suffix && (
+                    <span className="text-xs font-medium text-primary/80">{priceInfo.suffix}</span>
                   )}
+                  {isRent && <span className="text-[10px] text-muted-foreground">/bln</span>}
                 </div>
-                {/* Discount Badge */}
-                {(property as any).discount_percentage && (property as any).discount_percentage > 0 && (
-                  <div className="inline-flex items-center gap-0.5 sm:gap-1 bg-gradient-to-r from-red-500 to-orange-500 text-white px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full shadow-lg animate-pulse">
-                    <Percent className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                    <span className="font-bold text-[9px] sm:text-xs">{(property as any).discount_percentage}% OFF</span>
+                {!isRent && (
+                  <p className="text-[9px] sm:text-[10px] text-muted-foreground">{formatMonthlyPayment(property.price)}</p>
+                )}
+              </div>
+
+              {/* Title */}
+              <h3 className="text-[11px] sm:text-xs font-medium text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                {property.title}
+              </h3>
+
+              {/* Location */}
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-primary/70" />
+                <span className="text-[10px] line-clamp-1">{getLocation(property)}</span>
+              </div>
+
+              {/* Specs - Rumah123 Style */}
+              <div className="flex items-center gap-2 pt-1 border-t border-border/50">
+                {property.bedrooms && property.bedrooms > 0 && (
+                  <div className="flex items-center gap-0.5">
+                    <Bed className="h-3 w-3 text-muted-foreground" />
+                    <span className="text-[10px] text-foreground font-medium">{property.bedrooms}</span>
+                  </div>
+                )}
+                {property.bathrooms && property.bathrooms > 0 && (
+                  <div className="flex items-center gap-0.5">
+                    <Bath className="h-3 w-3 text-muted-foreground" />
+                    <span className="text-[10px] text-foreground font-medium">{property.bathrooms}</span>
+                  </div>
+                )}
+                {property.area_sqm && (
+                  <div className="flex items-center gap-0.5">
+                    <Maximize className="h-3 w-3 text-muted-foreground" />
+                    <span className="text-[10px] text-foreground font-medium">{property.area_sqm}m²</span>
                   </div>
                 )}
               </div>
-            </div>
 
-            {/* Bottom Right Quick Actions - Only on Hover */}
-            <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2 flex gap-0.5 md:gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-              <Button
-                size="sm"
-                variant="secondary"
-                className={`h-6 w-6 md:h-7 md:w-7 p-0 glass-ios rounded-full ${
-                  savedProperties.has(property.id) ? "ring-1 ring-destructive" : ""
-                }`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSave(property);
-                }}
-              >
-                <Heart 
-                  className={`h-2.5 w-2.5 md:h-3 md:w-3 ${
-                    savedProperties.has(property.id) ? 'fill-destructive text-destructive' : 'text-muted-foreground'
-                  }`} 
-                />
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                className="h-6 w-6 md:h-7 md:w-7 p-0 glass-ios rounded-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleShare(property);
-                }}
-              >
-                <Share2 className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Content Section */}
-          <CardContent className="p-2 sm:p-2.5 md:p-4 flex flex-col flex-1">
-            {/* Title - Now at top */}
-            <h3 className="font-semibold text-foreground line-clamp-2 text-[10px] sm:text-xs md:text-base mb-1 sm:mb-1.5 md:mb-2 group-hover:text-primary transition-colors">
-              {property.title}
-            </h3>
-
-            {/* Posted by + status */}
-            {property.posted_by?.name && (
-              <div className="flex items-center gap-1 mb-1 text-[9px] sm:text-[10px] md:text-sm text-muted-foreground">
-                <span className="truncate max-w-[70%]">{property.posted_by.name}</span>
-                <UserStatusBadge status={property.posted_by.verification_status} size="xs" />
+              {/* Action Buttons */}
+              <div className="flex gap-1.5 pt-1">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 w-7 p-0 flex-shrink-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleShare(property);
+                  }}
+                >
+                  <Share2 className="h-3 w-3" />
+                </Button>
+                <Button
+                  size="sm"
+                  className="flex-1 h-7 text-[10px] bg-green-600 hover:bg-green-700 text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onContact?.(property);
+                  }}
+                >
+                  <Phone className="h-3 w-3 mr-1" />
+                  WhatsApp
+                </Button>
               </div>
-            )}
-
-            {/* Location */}
-            <div className="flex items-center gap-0.5 sm:gap-1 text-muted-foreground mb-1 sm:mb-1.5 md:mb-3">
-              <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 flex-shrink-0" />
-              <span className="text-[9px] sm:text-[10px] md:text-sm truncate">{property.city || property.location}</span>
-            </div>
-
-            {/* Property Details */}
-            <div className="flex items-center gap-1 sm:gap-1.5 md:gap-3 text-[9px] sm:text-[10px] md:text-sm text-muted-foreground mb-1.5 sm:mb-2 md:mb-4">
-              {property.bedrooms && (
-                <div className="flex items-center gap-0.5 md:gap-1">
-                  <Bed className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
-                  <span>{property.bedrooms}</span>
-                </div>
-              )}
-              {property.bathrooms && (
-                <div className="flex items-center gap-0.5 md:gap-1">
-                  <Bath className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
-                  <span>{property.bathrooms}</span>
-                </div>
-              )}
-              {property.area_sqm && (
-                <>
-                  <div className="flex items-center gap-0.5 md:gap-1">
-                    <Scale className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
-                    <span className="hidden md:inline">LT: {property.area_sqm}</span>
-                    <span className="md:hidden">{property.area_sqm}m²</span>
-                  </div>
-                  <div className="flex items-center gap-1 hidden md:flex">
-                    <Square className="h-4 w-4" />
-                    <span>LB: {Math.round(property.area_sqm * 0.7)}</span>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-1 md:gap-2 mt-auto">
-              <Button
-                size="sm"
-                variant="outline"
-                className="flex-shrink-0 h-6 w-6 p-0 md:h-9 md:w-auto md:px-3"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleShare(property);
-                }}
-              >
-                <Share2 className="h-2.5 w-2.5 md:h-4 md:w-4" />
-              </Button>
-              <Button
-                size="sm"
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white h-6 text-[9px] md:h-9 md:text-sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onContact?.(property);
-                }}
-              >
-                <Phone className="h-2.5 w-2.5 md:h-4 md:w-4 md:mr-1" />
-                <span className="hidden md:inline">WhatsApp</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+            </CardContent>
+          </Card>
+        );
+      })}
       
-      {/* Social Share Dialog */}
       {selectedProperty && (
         <SocialShareDialog
           open={shareDialogOpen}
