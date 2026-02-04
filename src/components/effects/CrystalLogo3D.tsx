@@ -28,53 +28,53 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
         className
       )}
     >
-      {/* Siri-style animated bubble background */}
+      {/* Siri-style animated bubble background - Light Blue Water Theme */}
       <div className="absolute inset-0 flex items-center justify-center">
-        {/* Blob 1 - Primary */}
+        {/* Blob 1 - Light Sky Blue */}
         <div 
           className="absolute rounded-full"
           style={{
             width: '100%',
             height: '100%',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+            background: 'linear-gradient(135deg, #7dd3fc 0%, #38bdf8 50%, #0ea5e9 100%)',
             opacity: 0.7,
             filter: 'blur(2px)',
             animation: 'siri-blob-1 4s ease-in-out infinite',
           }}
         />
         
-        {/* Blob 2 - Secondary */}
+        {/* Blob 2 - Aqua/Cyan */}
         <div 
           className="absolute rounded-full"
           style={{
             width: '90%',
             height: '90%',
-            background: 'linear-gradient(225deg, #f093fb 0%, #667eea 50%, #00d4ff 100%)',
+            background: 'linear-gradient(225deg, #67e8f9 0%, #22d3ee 50%, #06b6d4 100%)',
             opacity: 0.6,
             filter: 'blur(1px)',
             animation: 'siri-blob-2 4s ease-in-out infinite 0.5s',
           }}
         />
         
-        {/* Blob 3 - Accent */}
+        {/* Blob 3 - Deep Water Blue */}
         <div 
           className="absolute rounded-full"
           style={{
             width: '95%',
             height: '95%',
-            background: 'linear-gradient(45deg, #00d4ff 0%, #764ba2 50%, #667eea 100%)',
+            background: 'linear-gradient(45deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%)',
             opacity: 0.5,
             animation: 'siri-blob-3 4s ease-in-out infinite 1s',
           }}
         />
 
-        {/* Inner glow core */}
+        {/* Inner glow core - Light aqua center */}
         <div 
           className="absolute rounded-full"
           style={{
             width: '75%',
             height: '75%',
-            background: 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 40%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(224,247,255,0.95) 0%, rgba(186,230,253,0.5) 40%, transparent 70%)',
             animation: 'siri-core 3s ease-in-out infinite',
           }}
         />
