@@ -9,15 +9,15 @@ interface CrystalLogo3DProps {
 
 const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DProps) => {
   const containerSizes = {
-    sm: 'h-8 w-8',
-    md: 'h-10 w-10',
-    lg: 'h-12 w-12',
+    sm: 'h-10 w-10',
+    md: 'h-12 w-12',
+    lg: 'h-14 w-14',
   };
 
   const logoSizes = {
-    sm: 'h-6 w-6',
-    md: 'h-8 w-8',
-    lg: 'h-10 w-10',
+    sm: 'h-7 w-7',
+    md: 'h-9 w-9',
+    lg: 'h-11 w-11',
   };
 
   return (
