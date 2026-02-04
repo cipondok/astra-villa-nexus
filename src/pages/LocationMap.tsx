@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useProvincePropertyCounts, useTotalPropertyCount } from '@/hooks/useProvincePropertyCounts';
+import ProvincePropertiesModal from '@/components/location/ProvincePropertiesModal';
 
 // Harmonized color palette for provinces - earthy & professional tones
 const provinceColors = [
@@ -82,6 +83,8 @@ const provinces = [
 
 const LocationMap = () => {
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
+  const [selectedProvinceName, setSelectedProvinceName] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   
@@ -112,12 +115,18 @@ const LocationMap = () => {
 
   const handleProvinceSelect = (province: Province) => {
     setSelectedProvince(province.id);
-    navigate(`/properties?location=${encodeURIComponent(province.name)}`);
+    setSelectedProvinceName(province.name);
+    setIsModalOpen(true);
   };
 
   const handleProvinceClick = (provinceId: string, provinceName: string) => {
     setSelectedProvince(provinceId);
-    navigate(`/properties?location=${encodeURIComponent(provinceName)}`);
+    setSelectedProvinceName(provinceName);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -340,6 +349,13 @@ const LocationMap = () => {
           </div>
         </div>
       </main>
+
+      {/* Province Properties Modal */}
+      <ProvincePropertiesModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        provinceName={selectedProvinceName}
+      />
     </div>
   );
 };
