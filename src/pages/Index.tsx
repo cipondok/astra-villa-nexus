@@ -15,7 +15,7 @@ import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, Star } from "lucide-react";
-import villaCommunityDaylight from "@/assets/villa-community-daylight.jpg";
+import modernVillaCommunityBlue from "@/assets/modern-villa-community-blue.jpg";
 import { cn } from "@/lib/utils";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
@@ -498,7 +498,7 @@ const Index = () => {
             {/* Villa Community Background with Modern Overlay */}
           <div className="absolute inset-0 z-0">
             <img 
-                src={villaCommunityDaylight} 
+                src={modernVillaCommunityBlue} 
                 alt="Luxury villa community in daylight" 
               className="w-full h-full object-cover"
               loading="eager"
