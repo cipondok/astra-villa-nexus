@@ -239,16 +239,18 @@ const Navigation = () => {
                 </div>
               </div>
 
-              {/* Add Property Button - Matching other header buttons */}
-              <Button 
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/add-property')}
-                className="h-10 px-3 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-primary/5 hover:scale-110 hover:shadow-lg hover:shadow-primary/20 rounded-xl transition-all duration-500 border border-border hover:border-primary/30"
-              >
-                <Plus className="h-4 w-4 xl:mr-1.5 transition-all duration-500" />
-                <span className="hidden xl:inline text-xs">Add Property</span>
-              </Button>
+              {/* Add Property Button - Gradient Border Effect */}
+              <div className="relative p-[2px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500 hover:shadow-lg hover:shadow-primary/20">
+                <Button 
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/add-property')}
+                  className="h-10 px-3 text-sm font-medium text-foreground/80 hover:text-primary bg-background rounded-[10px] transition-all duration-500"
+                >
+                  <Plus className="h-4 w-4 xl:mr-1.5 transition-all duration-500" />
+                  <span className="hidden xl:inline text-xs">Add Property</span>
+                </Button>
+              </div>
 
               {/* Investment Dropdown */}
               <DropdownMenu>
