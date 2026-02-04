@@ -15,12 +15,11 @@ import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, Star } from "lucide-react";
-import jakartaSkylineDark from "@/assets/jakarta-skyline-dark.jpg";
+import villaCommunityDaylight from "@/assets/villa-community-daylight.jpg";
 import { cn } from "@/lib/utils";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
 import { useRetrySearch } from "@/hooks/useRetrySearch";
-import HomeIntroSlider from "@/components/home/HomeIntroSlider";
 import { shareProperty } from "@/utils/shareUtils";
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
 import { CommandPalette } from "@/components/ui/CommandPalette";
@@ -494,13 +493,13 @@ const Index = () => {
       {/* Content Layer - full width edge-to-edge */}
       <div className="relative z-10 min-h-screen pb-20 md:pb-4">
         
-        {/* Hero Search Section - Modern Clean Design */}
+          {/* Hero Search Section - Modern Clean Design */}
         <section className="relative w-full min-h-[380px] sm:min-h-[440px] md:min-h-[500px] lg:h-screen lg:min-h-[580px]" id="hero-section">
-          {/* Jakarta Skyline Background with Modern Overlay */}
+            {/* Villa Community Background with Modern Overlay */}
           <div className="absolute inset-0 z-0">
             <img 
-              src={jakartaSkylineDark} 
-              alt="Jakarta Skyline" 
+                src={villaCommunityDaylight} 
+                alt="Luxury villa community in daylight" 
               className="w-full h-full object-cover"
               loading="eager"
             />
