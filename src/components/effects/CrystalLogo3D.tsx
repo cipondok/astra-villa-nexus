@@ -34,8 +34,8 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
         <div 
           className="absolute rounded-full"
           style={{
-            width: '100%',
-            height: '100%',
+            width: '70%',
+            height: '70%',
             background: 'linear-gradient(135deg, #7dd3fc 0%, #38bdf8 50%, #0ea5e9 100%)',
             opacity: 0.7,
             filter: 'blur(2px)',
@@ -47,8 +47,8 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
         <div 
           className="absolute rounded-full"
           style={{
-            width: '90%',
-            height: '90%',
+            width: '65%',
+            height: '65%',
             background: 'linear-gradient(225deg, #67e8f9 0%, #22d3ee 50%, #06b6d4 100%)',
             opacity: 0.6,
             filter: 'blur(1px)',
@@ -60,8 +60,8 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
         <div 
           className="absolute rounded-full"
           style={{
-            width: '95%',
-            height: '95%',
+            width: '68%',
+            height: '68%',
             background: 'linear-gradient(45deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%)',
             opacity: 0.5,
             animation: 'siri-blob-3 4s ease-in-out infinite 1s',
@@ -72,8 +72,8 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
         <div 
           className="absolute rounded-full"
           style={{
-            width: '75%',
-            height: '75%',
+            width: '55%',
+            height: '55%',
             background: 'radial-gradient(circle, rgba(224,247,255,0.95) 0%, rgba(186,230,253,0.5) 40%, transparent 70%)',
             animation: 'siri-core 3s ease-in-out infinite',
           }}
