@@ -196,31 +196,27 @@ const Navigation = () => {
 
             {/* Enhanced Desktop Navigation - Main Menu */}
             <div className="hidden lg:flex items-center gap-1 flex-1 justify-center max-w-5xl">
-              <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  className="h-10 px-3 text-sm font-medium text-foreground/80 bg-background rounded-[10px] transition-all duration-500"
-                  onClick={() => navigate('/')}
-                >
-                  <HomeIcon className="h-4 w-4 xl:mr-1.5 transition-all duration-500" />
-                  <span className="hidden xl:inline text-xs">{currentText.home}</span>
-                </Button>
-              </div>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="h-9 px-3 text-sm font-medium text-foreground/80 rounded-xl backdrop-blur-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500"
+                onClick={() => navigate('/')}
+              >
+                <HomeIcon className="h-4 w-4 xl:mr-1.5 text-primary transition-all duration-500" />
+                <span className="hidden xl:inline text-xs">{currentText.home}</span>
+              </Button>
 
               {/* Enhanced Property Navigation Items - Icon Only */}
               {propertyNavItems.map((item, index) => (
                 <div key={item.path} className="relative group">
-                  <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      className="h-10 w-10 p-0 bg-background rounded-[10px] transition-all duration-500 text-foreground/80"
-                      onClick={() => navigate(item.path)}
-                    >
-                      <item.icon className="h-4 w-4 transition-all duration-500" />
-                    </Button>
-                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="w-9 h-9 p-0 rounded-xl backdrop-blur-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500"
+                    onClick={() => navigate(item.path)}
+                  >
+                    <item.icon className="h-4 w-4 text-primary transition-all duration-500" />
+                  </Button>
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 glass-popup text-foreground text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap pointer-events-none z-[10001] shadow-2xl shadow-primary/30 border border-primary/30">
                     {item.label}
                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary/20 rotate-45 -mb-1"></div>
@@ -229,47 +225,41 @@ const Navigation = () => {
               ))}
 
               <div className="relative group">
-                <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    className="h-10 w-10 p-0 bg-background rounded-[10px] transition-all duration-500 text-foreground/80"
-                    onClick={() => navigate('/services')}
-                  >
-                    <Settings2 className="h-4 w-4 transition-all duration-500" />
-                  </Button>
-                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="w-9 h-9 p-0 rounded-xl backdrop-blur-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500"
+                  onClick={() => navigate('/services')}
+                >
+                  <Settings2 className="h-4 w-4 text-primary transition-all duration-500" />
+                </Button>
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 glass-popup text-foreground text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap pointer-events-none z-[10001] shadow-2xl shadow-primary/30 border border-primary/30">
                   {currentText.services}
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary/20 rotate-45 -mb-1"></div>
                 </div>
               </div>
 
-              <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
-                <Button 
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate('/add-property')}
-                  className="h-10 px-3 text-sm font-medium text-foreground/80 bg-background rounded-[10px] transition-all duration-500"
-                >
-                  <Plus className="h-4 w-4 xl:mr-1.5 transition-all duration-500" />
-                  <span className="hidden xl:inline text-xs">Add Property</span>
-                </Button>
-              </div>
+              <Button 
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/add-property')}
+                className="h-9 px-3 text-sm font-medium rounded-xl backdrop-blur-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500"
+              >
+                <Plus className="h-4 w-4 xl:mr-1.5 text-primary transition-all duration-500" />
+                <span className="hidden xl:inline text-xs text-foreground/80">Add Property</span>
+              </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      className="h-10 px-3 text-sm font-medium text-foreground/80 bg-background rounded-[10px] transition-all duration-500"
-                    >
-                      <TrendingUp className="h-4 w-4 xl:mr-1.5 transition-all duration-500" />
-                      <span className="hidden xl:inline text-xs">Investment</span>
-                      <ChevronDown className="h-3 w-3 ml-1 hidden xl:inline transition-transform duration-500" />
-                    </Button>
-                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="h-9 px-3 text-sm font-medium rounded-xl backdrop-blur-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500"
+                  >
+                    <TrendingUp className="h-4 w-4 xl:mr-1.5 text-primary transition-all duration-500" />
+                    <span className="hidden xl:inline text-xs text-foreground/80">Investment</span>
+                    <ChevronDown className="h-3 w-3 ml-1 hidden xl:inline text-foreground/60 transition-transform duration-500" />
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 glass-popup backdrop-blur-2xl border-primary/20 shadow-2xl shadow-primary/30 z-[10001]">
                   <DropdownMenuItem 
