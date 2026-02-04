@@ -285,68 +285,60 @@ const Navigation = () => {
 
                {/* Dashboard link - show role-appropriate dashboard */}
                {user && !isAdmin && !isAgent && (
-                 <div className="relative p-[1.5px] rounded-xl bg-primary dark:bg-gradient-to-r dark:from-primary dark:via-accent dark:to-primary hover:scale-110 transition-all duration-500">
-                   <Button 
-                     variant="ghost" 
-                     size="sm"
-                     className="h-10 px-3 text-sm font-medium text-foreground/80 bg-background rounded-[10px] transition-all duration-500"
-                     onClick={() => navigate('/dashboard/user')}
-                   >
-                     <BarChart3 className="h-4 w-4 xl:mr-1.5" />
-                     <span className="hidden xl:inline text-xs">Dashboard</span>
-                   </Button>
-                 </div>
+                 <Button 
+                   variant="ghost" 
+                   size="sm"
+                   className="h-10 px-2.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
+                   onClick={() => navigate('/dashboard/user')}
+                 >
+                   <BarChart3 className="h-4 w-4 xl:mr-1" />
+                   <span className="hidden xl:inline">Dashboard</span>
+                 </Button>
                )}
 
               {/* Agent Dashboard - only show for agent users */}
               {isAgent && (
-                <div className="relative p-[1.5px] rounded-xl bg-primary dark:bg-gradient-to-r dark:from-primary dark:via-accent dark:to-primary hover:scale-110 transition-all duration-500">
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    className="h-10 px-3 text-sm font-medium text-foreground/80 bg-background rounded-[10px] transition-all duration-500"
-                    onClick={() => navigate('/agent')}
-                  >
-                    <User className="h-4 w-4 xl:mr-1.5" />
-                    <span className="hidden xl:inline text-xs">Agent</span>
-                  </Button>
-                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-10 px-2.5 text-xs font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all"
+                  onClick={() => navigate('/agent')}
+                >
+                  <User className="h-4 w-4 xl:mr-1" />
+                  <span className="hidden xl:inline">Agent</span>
+                </Button>
               )}
 
               {/* Vendor Dashboard - only show for vendor users */}
               {profile?.role === 'vendor' && (
-                <div className="relative p-[1.5px] rounded-xl bg-primary dark:bg-gradient-to-r dark:from-primary dark:via-accent dark:to-primary hover:scale-110 transition-all duration-500">
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    className="h-10 px-3 text-sm font-medium text-foreground/80 bg-background rounded-[10px] transition-all duration-500"
-                    onClick={() => navigate('/vendor')}
-                  >
-                    <Settings className="h-4 w-4 xl:mr-1.5" />
-                    <span className="hidden xl:inline text-xs">Vendor</span>
-                  </Button>
-                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-10 px-2.5 text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-all"
+                  onClick={() => navigate('/vendor')}
+                >
+                  <Settings className="h-4 w-4 xl:mr-1" />
+                  <span className="hidden xl:inline">Vendor</span>
+                </Button>
               )}
 
             </div>
 
             {/* Enhanced Right Section - Compact Controls */}
             <div className="flex items-center gap-2 flex-shrink-0">
-              {/* Enhanced Dark Mode Toggle */}
-              <div className="relative p-[1.5px] rounded-xl bg-primary dark:bg-gradient-to-r dark:from-primary dark:via-accent dark:to-primary hover:scale-110 transition-all duration-500">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={toggleTheme}
-                  className="w-9 h-9 p-0 bg-background rounded-[10px] transition-all duration-500"
-                >
-                  {theme === "light" ? (
-                    <Moon className="h-4 w-4 text-foreground/80 transition-all duration-500" />
-                  ) : (
-                    <Sun className="h-4 w-4 text-foreground/80 transition-all duration-500" />
-                  )}
-                </Button>
-              </div>
+              {/* Enhanced Dark Mode Toggle - Binance Style */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleTheme}
+                className="w-9 h-9 p-0 rounded-xl backdrop-blur-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500 hover:rotate-12"
+              >
+                {theme === "light" ? (
+                  <Moon className="h-4 w-4 text-primary transition-all duration-500" />
+                ) : (
+                  <Sun className="h-4 w-4 text-primary transition-all duration-500" />
+                )}
+              </Button>
 
               {/* Enhanced Language Toggle - Hidden on mobile/tablet */}
               <div className="hidden xl:block">
@@ -361,16 +353,14 @@ const Navigation = () => {
                 <UserIconWithBadge onNavigate={(path) => navigate(path)} />
               ) : (
                 <div className="relative group">
-                  <div className="relative p-[1.5px] rounded-xl bg-primary dark:bg-gradient-to-r dark:from-primary dark:via-accent dark:to-primary hover:scale-110 transition-all duration-500">
-                    <Button
-                      onClick={() => setShowAuthModal(true)}
-                      variant="ghost"
-                      size="sm"
-                      className="w-9 h-9 p-0 bg-background rounded-[10px] transition-all duration-500 text-foreground/80"
-                    >
-                      <User className="h-4 w-4 transition-all duration-500" />
-                    </Button>
-                  </div>
+                  <Button
+                    onClick={() => setShowAuthModal(true)}
+                    variant="ghost"
+                    size="sm"
+                    className="w-9 h-9 p-0 rounded-xl bg-primary/5 hover:bg-primary/10 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500 border border-primary/20 hover:border-primary/40 text-foreground hover:text-primary"
+                  >
+                    <User className="h-4 w-4 transition-all duration-500" />
+                  </Button>
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 glass-popup text-foreground text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap pointer-events-none z-[10001] shadow-2xl shadow-primary/30 border border-primary/30">
                     {currentText.signIn}
                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary/20 rotate-45 -mb-1"></div>
@@ -380,16 +370,14 @@ const Navigation = () => {
 
               {/* Mobile/Tablet menu button - visible on screens smaller than lg (1024px) */}
               <div className="lg:hidden flex items-center">
-                <div className="relative p-[1.5px] rounded-xl bg-primary dark:bg-gradient-to-r dark:from-primary dark:via-accent dark:to-primary hover:scale-110 transition-all duration-500">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-8 h-8 p-0 bg-background rounded-[10px] transition-all duration-500 text-foreground/80"
-                    onClick={toggleMenu}
-                  >
-                    {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-                  </Button>
-                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-8 h-8 p-0 rounded-xl bg-primary/5 hover:bg-primary/10 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500 border border-primary/20 hover:border-primary/40 text-foreground hover:text-primary"
+                  onClick={toggleMenu}
+                >
+                  {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                </Button>
               </div>
             </div>
           </div>
