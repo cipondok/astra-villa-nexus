@@ -208,12 +208,8 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
   };
 
   const handleProvinceClick = (provinceName: string) => {
-    // Prevent click during drag
-    if (isDragging) return;
-    
     // Normalize the province name to standard Indonesian name
     const normalizedName = normalizeProvinceName(provinceName);
-    console.log('Province clicked:', provinceName, '-> normalized to:', normalizedName);
     
     const code = provinceCodeMap[provinceName] || provinceCodeMap[normalizedName] || 'ID';
     const province: Province = {
@@ -222,6 +218,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
       code: code
     };
     
+    // Always trigger the callback immediately on click
     if (onProvinceSelect) {
       onProvinceSelect(province);
     } else {
@@ -335,11 +332,8 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
         <ZoomableGroup
           zoom={position.zoom}
           center={position.coordinates}
-          onMoveStart={() => setIsDragging(true)}
           onMoveEnd={(pos) => {
             setPosition(pos);
-            // Small delay to allow click to be blocked during drag
-            setTimeout(() => setIsDragging(false), 100);
           }}
         >
           {provinceGeographies ? (
