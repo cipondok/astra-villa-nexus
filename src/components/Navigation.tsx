@@ -196,27 +196,31 @@ const Navigation = () => {
 
             {/* Enhanced Desktop Navigation - Main Menu */}
             <div className="hidden lg:flex items-center gap-1 flex-1 justify-center max-w-5xl">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                className="h-10 px-3 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-primary/5 hover:scale-110 hover:shadow-lg hover:shadow-primary/20 rounded-xl transition-all duration-500 border border-transparent hover:border-primary/20"
-                onClick={() => navigate('/')}
-              >
-                <HomeIcon className="h-3.5 w-3.5 xl:mr-1.5 transition-all duration-500" />
-                <span className="hidden xl:inline text-xs">{currentText.home}</span>
-              </Button>
+              <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-10 px-3 text-sm font-medium text-foreground/80 bg-background rounded-[10px] transition-all duration-500"
+                  onClick={() => navigate('/')}
+                >
+                  <HomeIcon className="h-4 w-4 xl:mr-1.5 transition-all duration-500" />
+                  <span className="hidden xl:inline text-xs">{currentText.home}</span>
+                </Button>
+              </div>
 
               {/* Enhanced Property Navigation Items - Icon Only */}
               {propertyNavItems.map((item, index) => (
                 <div key={item.path} className="relative group">
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    className="h-10 w-10 p-0 hover:bg-primary/10 hover:scale-110 hover:shadow-lg hover:shadow-primary/20 rounded-xl transition-all duration-500 text-foreground/80 hover:text-primary border border-transparent hover:border-primary/20"
-                    onClick={() => navigate(item.path)}
-                  >
-                    <item.icon className="h-3.5 w-3.5 transition-all duration-500" />
-                  </Button>
+                  <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="h-10 w-10 p-0 bg-background rounded-[10px] transition-all duration-500 text-foreground/80"
+                      onClick={() => navigate(item.path)}
+                    >
+                      <item.icon className="h-4 w-4 transition-all duration-500" />
+                    </Button>
+                  </div>
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 glass-popup text-foreground text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap pointer-events-none z-[10001] shadow-2xl shadow-primary/30 border border-primary/30">
                     {item.label}
                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary/20 rotate-45 -mb-1"></div>
@@ -225,45 +229,47 @@ const Navigation = () => {
               ))}
 
               <div className="relative group">
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  className="h-10 w-10 p-0 hover:bg-primary/10 hover:scale-110 hover:shadow-lg hover:shadow-primary/20 rounded-xl transition-all duration-500 text-foreground/80 hover:text-primary border border-transparent hover:border-primary/20"
-                  onClick={() => navigate('/services')}
-                >
-                  <Settings2 className="h-4 w-4 transition-all duration-500" />
-                </Button>
+                <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="h-10 w-10 p-0 bg-background rounded-[10px] transition-all duration-500 text-foreground/80"
+                    onClick={() => navigate('/services')}
+                  >
+                    <Settings2 className="h-4 w-4 transition-all duration-500" />
+                  </Button>
+                </div>
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 glass-popup text-foreground text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap pointer-events-none z-[10001] shadow-2xl shadow-primary/30 border border-primary/30">
                   {currentText.services}
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary/20 rotate-45 -mb-1"></div>
                 </div>
               </div>
 
-              {/* Add Property Button - Gradient Border Effect */}
-              <div className="relative p-[2px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500 hover:shadow-lg hover:shadow-primary/20">
+              <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
                 <Button 
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate('/add-property')}
-                  className="h-10 px-3 text-sm font-medium text-foreground/80 hover:text-primary bg-background rounded-[10px] transition-all duration-500"
+                  className="h-10 px-3 text-sm font-medium text-foreground/80 bg-background rounded-[10px] transition-all duration-500"
                 >
                   <Plus className="h-4 w-4 xl:mr-1.5 transition-all duration-500" />
                   <span className="hidden xl:inline text-xs">Add Property</span>
                 </Button>
               </div>
 
-              {/* Investment Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    className="h-10 px-3 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-primary/5 hover:scale-110 hover:shadow-lg hover:shadow-primary/20 rounded-xl transition-all duration-500 border border-transparent hover:border-primary/20"
-                  >
-                    <TrendingUp className="h-4 w-4 xl:mr-1.5 transition-all duration-500" />
-                    <span className="hidden xl:inline text-xs">Investment</span>
-                    <ChevronDown className="h-3 w-3 ml-1 hidden xl:inline transition-transform duration-500 group-hover:rotate-180" />
-                  </Button>
+                  <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="h-10 px-3 text-sm font-medium text-foreground/80 bg-background rounded-[10px] transition-all duration-500"
+                    >
+                      <TrendingUp className="h-4 w-4 xl:mr-1.5 transition-all duration-500" />
+                      <span className="hidden xl:inline text-xs">Investment</span>
+                      <ChevronDown className="h-3 w-3 ml-1 hidden xl:inline transition-transform duration-500" />
+                    </Button>
+                  </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 glass-popup backdrop-blur-2xl border-primary/20 shadow-2xl shadow-primary/30 z-[10001]">
                   <DropdownMenuItem 
