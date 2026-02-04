@@ -196,7 +196,7 @@ const Navigation = () => {
 
             {/* Enhanced Desktop Navigation - Main Menu */}
             <div className="hidden lg:flex items-center gap-1 flex-1 justify-center max-w-5xl">
-              <div className="relative p-[1.5px] rounded-xl bg-primary dark:bg-gradient-to-r dark:from-primary dark:via-accent dark:to-primary hover:scale-110 transition-all duration-500">
+              <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -211,7 +211,7 @@ const Navigation = () => {
               {/* Enhanced Property Navigation Items - Icon Only */}
               {propertyNavItems.map((item, index) => (
                 <div key={item.path} className="relative group">
-                  <div className="relative p-[1.5px] rounded-xl bg-primary dark:bg-gradient-to-r dark:from-primary dark:via-accent dark:to-primary hover:scale-110 transition-all duration-500">
+                  <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
                     <Button 
                       variant="ghost" 
                       size="sm"
@@ -229,7 +229,7 @@ const Navigation = () => {
               ))}
 
               <div className="relative group">
-                <div className="relative p-[1.5px] rounded-xl bg-primary dark:bg-gradient-to-r dark:from-primary dark:via-accent dark:to-primary hover:scale-110 transition-all duration-500">
+                <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
                   <Button 
                     variant="ghost" 
                     size="sm"
@@ -245,7 +245,7 @@ const Navigation = () => {
                 </div>
               </div>
 
-              <div className="relative p-[1.5px] rounded-xl bg-primary dark:bg-gradient-to-r dark:from-primary dark:via-accent dark:to-primary hover:scale-110 transition-all duration-500">
+              <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
                 <Button 
                   variant="ghost"
                   size="sm"
@@ -259,7 +259,7 @@ const Navigation = () => {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <div className="relative p-[1.5px] rounded-xl bg-primary dark:bg-gradient-to-r dark:from-primary dark:via-accent dark:to-primary hover:scale-110 transition-all duration-500">
+                  <div className="relative p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-accent to-primary hover:scale-110 transition-all duration-500">
                     <Button 
                       variant="ghost" 
                       size="sm"
