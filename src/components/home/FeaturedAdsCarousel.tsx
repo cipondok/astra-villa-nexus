@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 
 // Get icon for property type
 const getPropertyIcon = (type: string) => {
@@ -103,6 +104,7 @@ const getVerificationInfo = (property: FallbackProperty) => {
 export default function FeaturedAdsCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   // Fetch carousel settings from admin
   const { data: carouselSettings } = useQuery({
@@ -248,7 +250,7 @@ export default function FeaturedAdsCarousel() {
             >
               {/* Full Image Background */}
               <img
-                src={p.thumbnail_url || p.images?.[0] || '/placeholder.svg'}
+                src={getPropertyImage(p.images, p.thumbnail_url)}
                 alt={p.title}
                 loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"

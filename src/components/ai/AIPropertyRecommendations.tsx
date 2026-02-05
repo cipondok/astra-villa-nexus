@@ -41,6 +41,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 
 interface MatchReason {
   factor: string;
@@ -86,6 +87,7 @@ const AIPropertyRecommendations = ({
   const navigate = useNavigate();
   const [selectedProperty, setSelectedProperty] = useState<Recommendation | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ['ai-recommendations', user?.id, limit],
@@ -238,7 +240,7 @@ const AIPropertyRecommendations = ({
                 onClick={() => handlePropertyClick(property.id)}
               >
                 <img
-                  src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
+                  src={getPropertyImage(property.images, property.thumbnail_url)}
                   alt={property.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
@@ -350,7 +352,7 @@ const AIPropertyRecommendations = ({
               {/* Property Summary */}
               <div className="flex gap-3">
                 <img
-                  src={selectedProperty.thumbnail_url || selectedProperty.images?.[0] || '/placeholder.svg'}
+                  src={getPropertyImage(selectedProperty.images, selectedProperty.thumbnail_url)}
                   alt={selectedProperty.title}
                   className="w-20 h-20 object-cover rounded-lg"
                 />
