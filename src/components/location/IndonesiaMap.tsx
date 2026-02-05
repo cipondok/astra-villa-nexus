@@ -512,36 +512,39 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
             return (
               <Marker coordinates={coords}>
                 <g style={{ pointerEvents: 'none' }}>
-                  {/* Outer pulsing ring - always animating */}
+                  {/* Outer pulsing ring - high visibility red */}
                   <circle
-                    r={14}
+                    r={16}
                     fill="none"
-                    stroke="hsl(var(--accent))"
-                    strokeWidth={2.5}
+                    stroke="#E02020"
+                    strokeWidth={3}
                     className="animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]"
-                    style={{ opacity: 0.5 }}
                   />
                   {/* Second pulsing ring with offset */}
                   <circle
-                    r={10}
+                    r={12}
                     fill="none"
-                    stroke="hsl(var(--accent))"
-                    strokeWidth={2}
+                    stroke="#E02020"
+                    strokeWidth={2.5}
                     className="animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite_0.5s]"
-                    style={{ opacity: 0.4 }}
                   />
-                  {/* Middle static ring */}
+                  {/* Middle static ring - solid background */}
                   <circle
-                    r={8}
-                    fill="hsl(var(--accent))"
-                    fillOpacity={0.3}
-                    stroke="hsl(var(--accent))"
-                    strokeWidth={2}
+                    r={10}
+                    fill="#E02020"
+                    fillOpacity={0.4}
+                    stroke="#E02020"
+                    strokeWidth={2.5}
                   />
-                  {/* Inner solid dot */}
+                  {/* Inner solid dot - bright core */}
                   <circle
-                    r={4}
-                    fill="hsl(var(--accent))"
+                    r={5}
+                    fill="#E02020"
+                  />
+                  {/* White center dot for contrast */}
+                  <circle
+                    r={2}
+                    fill="#FFFFFF"
                   />
                 </g>
               </Marker>
