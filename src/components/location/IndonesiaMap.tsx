@@ -577,34 +577,27 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
         </p>
       </div>
 
-      {/* Hover info panel - Glassy style - Responsive with property count */}
+      {/* Hover info panel - Compact modern tooltip */}
       <AnimatePresence>
         {hoveredProvinceName && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            initial={{ opacity: 0, y: 4, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-14 sm:top-20 right-2 sm:right-4 z-30 bg-background/50 backdrop-blur-xl rounded-lg sm:rounded-xl p-2 sm:p-4 shadow-xl border border-border/50 min-w-[160px] sm:min-w-[220px]"
+            exit={{ opacity: 0, y: 4, scale: 0.96 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
+            className="absolute top-3 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
           >
-            <div className="flex items-start gap-2 sm:gap-3">
-              <div className="h-8 w-8 sm:h-11 sm:w-11 rounded-lg sm:rounded-xl bg-primary/80 backdrop-blur-sm flex items-center justify-center shrink-0">
-                <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
+            <div className="bg-background/95 backdrop-blur-md rounded-lg px-3 py-2 shadow-lg border border-border/60 flex items-center gap-2">
+              <div className="h-6 w-6 rounded-md bg-primary/90 flex items-center justify-center shrink-0">
+                <MapPin className="h-3 w-3 text-primary-foreground" />
               </div>
-              <div className="flex-1">
-                <p className="font-bold text-foreground text-xs sm:text-base">{hoveredProvinceName}</p>
-                <p className="text-[10px] sm:text-sm text-muted-foreground">
-                  {provinceCodeMap[hoveredProvinceName] || 'ID'}
-                </p>
-                {/* Property count display */}
-                <div className="flex items-center gap-1 mt-1 sm:mt-1.5 bg-orange-500/20 rounded px-1.5 py-0.5 w-fit">
-                  <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-orange-500" />
-                  <span className="text-[10px] sm:text-xs font-bold text-orange-600 dark:text-orange-400">
-                    {(provincePropertyCounts[hoveredProvinceName] || 0).toLocaleString()} properti
-                  </span>
-                </div>
-                <p className="text-[10px] sm:text-xs text-primary font-medium mt-1">Klik untuk lihat →</p>
+              <div className="flex flex-col">
+                <span className="font-semibold text-foreground text-[11px] leading-tight">{hoveredProvinceName}</span>
+                <span className="text-[9px] text-muted-foreground leading-tight">
+                  {(provincePropertyCounts[hoveredProvinceName] || 0).toLocaleString()} properti
+                </span>
               </div>
+              <span className="text-[9px] text-primary font-medium ml-1">Klik →</span>
             </div>
           </motion.div>
         )}
