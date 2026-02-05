@@ -231,22 +231,31 @@ async function spendTokens(supabase: any, userId: string, amount: number, descri
   );
 }
 
+async function getUserRole(supabase: any, userId: string): Promise<string> {
+  // Get user role from user_roles table (roles are stored separately for security)
+  const { data: userRole, error: roleError } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', userId)
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (roleError && roleError.code !== 'PGRST116') {
+    console.error('Error fetching user role:', roleError);
+  }
+
+  // Return role or default to 'general_user'
+  return userRole?.role || 'general_user';
+}
+
 async function processWelcomeBonus(supabase: any, userId: string) {
   console.log('Processing welcome bonus for user:', userId);
   
-  // Get user role
-  const { data: userProfile, error: profileError } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', userId)
-    .single();
-
-  if (profileError) {
-    console.error('Profile error:', profileError);
-    throw new Error(`Failed to get user profile: ${profileError.message}`);
-  }
-
-  console.log('User profile retrieved:', userProfile);
+  // Get user role from user_roles table
+  const userRole = await getUserRole(supabase, userId);
+  console.log('User role retrieved:', userRole);
 
   // Check if user already received welcome bonus
   const { data: existingClaim, error: claimError } = await supabase
@@ -272,12 +281,12 @@ async function processWelcomeBonus(supabase: any, userId: string) {
   }
 
   // Get welcome bonus amount for user role
-  console.log('Looking for reward config for role:', userProfile.role);
+  console.log('Looking for reward config for role:', userRole);
   const { data: rewardConfig, error: configError } = await supabase
     .from('astra_reward_config')
     .select('reward_amount')
     .eq('reward_type', 'welcome_bonus')
-    .eq('user_role', userProfile.role)
+    .eq('user_role', userRole)
     .eq('is_active', true)
     .single();
 
@@ -289,7 +298,7 @@ async function processWelcomeBonus(supabase: any, userId: string) {
     if (configError.code === 'PGRST116') {
       // No config found, use default welcome bonus
       const defaultAmount = 100; // Default welcome bonus
-      console.log(`No specific config for role ${userProfile.role}, using default: ${defaultAmount}`);
+      console.log(`No specific config for role ${userRole}, using default: ${defaultAmount}`);
       
       // Award default welcome bonus
       const awardResult = await awardTokens(
@@ -297,7 +306,7 @@ async function processWelcomeBonus(supabase: any, userId: string) {
         userId, 
         defaultAmount, 
         'welcome_bonus', 
-        `Welcome bonus for ${userProfile.role} (default)`,
+        `Welcome bonus for ${userRole} (default)`,
         'welcome_bonus',
         userId
       );
@@ -309,7 +318,7 @@ async function processWelcomeBonus(supabase: any, userId: string) {
           user_id: userId,
           claim_type: 'welcome_bonus',
           amount: defaultAmount,
-          metadata: { user_role: userProfile.role, default_bonus: true }
+          metadata: { user_role: userRole, default_bonus: true }
         });
 
       if (recordError) {
@@ -337,7 +346,7 @@ async function processWelcomeBonus(supabase: any, userId: string) {
     userId, 
     welcomeAmount, 
     'welcome_bonus', 
-    `Welcome bonus for ${userProfile.role}`,
+    `Welcome bonus for ${userRole}`,
     'welcome_bonus',
     userId
   );
@@ -349,7 +358,7 @@ async function processWelcomeBonus(supabase: any, userId: string) {
       user_id: userId,
       claim_type: 'welcome_bonus',
       amount: welcomeAmount,
-      metadata: { user_role: userProfile.role }
+      metadata: { user_role: userRole }
     });
 
   if (recordError) {
@@ -368,22 +377,15 @@ async function processWelcomeBonus(supabase: any, userId: string) {
 
 async function processTransactionReward(supabase: any, userId: string, transactionAmount: number, referenceType?: string, referenceId?: string) {
   // Get user role
-  const { data: userProfile, error: profileError } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', userId)
-    .single();
-
-  if (profileError) {
-    throw new Error(`Failed to get user profile: ${profileError.message}`);
-  }
+  // Get user role from user_roles table
+  const userRole = await getUserRole(supabase, userId);
 
   // Get transaction reward config for user role
   const { data: rewardConfig, error: configError } = await supabase
     .from('astra_reward_config')
     .select('*')
     .eq('reward_type', 'transaction_percentage')
-    .eq('user_role', userProfile.role)
+    .eq('user_role', userRole)
     .eq('is_active', true)
     .single();
 
@@ -430,34 +432,18 @@ async function processTransactionReward(supabase: any, userId: string, transacti
 }
 
 async function processReferralReward(supabase: any, referrerId: string, referredUserId: string) {
-  // Get referrer role
-  const { data: referrerProfile, error: referrerError } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', referrerId)
-    .single();
+  // Get referrer role from user_roles table
+  const referrerRole = await getUserRole(supabase, referrerId);
 
-  if (referrerError) {
-    throw new Error(`Failed to get referrer profile: ${referrerError.message}`);
-  }
-
-  // Get referred user role
-  const { data: referredProfile, error: referredError } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', referredUserId)
-    .single();
-
-  if (referredError) {
-    throw new Error(`Failed to get referred profile: ${referredError.message}`);
-  }
+  // Get referred user role from user_roles table
+  const referredRole = await getUserRole(supabase, referredUserId);
 
   // Get referral reward config
   const { data: referrerConfig, error: referrerConfigError } = await supabase
     .from('astra_reward_config')
     .select('*')
     .eq('reward_type', 'referral_bonus')
-    .eq('user_role', referrerProfile.role)
+    .eq('user_role', referrerRole)
     .eq('is_active', true)
     .single();
 
@@ -465,7 +451,7 @@ async function processReferralReward(supabase: any, referrerId: string, referred
     .from('astra_reward_config')
     .select('*')
     .eq('reward_type', 'referral_bonus')
-    .eq('user_role', referredProfile.role)
+    .eq('user_role', referredRole)
     .eq('is_active', true)
     .single();
 
@@ -533,16 +519,8 @@ async function processDailyCheckin(supabase: any, userId: string) {
     );
   }
 
-  // Get user role and streak
-  const { data: userProfile, error: profileError } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', userId)
-    .single();
-
-  if (profileError) {
-    throw new Error(`Failed to get user profile: ${profileError.message}`);
-  }
+  // Get user role from user_roles table
+  const userRole = await getUserRole(supabase, userId);
 
   // Get yesterday's checkin to calculate streak
   const yesterday = new Date();
@@ -559,16 +537,26 @@ async function processDailyCheckin(supabase: any, userId: string) {
   const streakCount = (prevError || !previousCheckin) ? 1 : previousCheckin.streak_count + 1;
 
   // Get daily checkin reward config
-  const { data: rewardConfig, error: configError } = await supabase
+  let rewardConfig;
+  const { data: configData, error: configError } = await supabase
     .from('astra_reward_config')
     .select('*')
     .eq('reward_type', 'daily_checkin')
-    .eq('user_role', userProfile.role)
+    .eq('user_role', userRole)
     .eq('is_active', true)
     .single();
 
-  if (configError) {
+  if (configError && configError.code === 'PGRST116') {
+    // No config found for this role, use default values
+    console.log(`No daily checkin config for role ${userRole}, using defaults`);
+    rewardConfig = {
+      reward_amount: 10,
+      conditions: { streak_bonus: { "7": 1.5, "30": 2.0 } }
+    };
+  } else if (configError) {
     throw new Error(`Failed to get daily checkin config: ${configError.message}`);
+  } else {
+    rewardConfig = configData;
   }
 
   // Calculate bonus multiplier based on streak
