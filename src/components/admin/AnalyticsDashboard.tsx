@@ -75,7 +75,7 @@ const AnalyticsDashboard = () => {
     },
     {
       title: "Revenue",
-      value: "$45,789",
+      value: "Rp 725jt",
       change: "+12.3% this week",
       icon: DollarSign,
       color: "text-blue-600 dark:text-blue-400",

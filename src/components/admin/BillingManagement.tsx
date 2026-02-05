@@ -12,16 +12,16 @@ const BillingManagement = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   const billingData = {
-    monthlyRevenue: '$45,678',
+    monthlyRevenue: 'Rp 725.000.000',
     totalUsers: 1247,
     activeSubscriptions: 892,
     pendingPayments: 23
   };
 
   const recentTransactions = [
-    { id: '1', user: 'John Doe', amount: '$299', status: 'completed', date: '2024-01-15' },
-    { id: '2', user: 'Jane Smith', amount: '$199', status: 'pending', date: '2024-01-14' },
-    { id: '3', user: 'Mike Johnson', amount: '$399', status: 'completed', date: '2024-01-13' },
+    { id: '1', user: 'John Doe', amount: 'Rp 4.500.000', status: 'completed', date: '2024-01-15' },
+    { id: '2', user: 'Jane Smith', amount: 'Rp 3.000.000', status: 'pending', date: '2024-01-14' },
+    { id: '3', user: 'Mike Johnson', amount: 'Rp 6.000.000', status: 'completed', date: '2024-01-13' },
   ];
 
   const stats = [
@@ -83,7 +83,7 @@ const BillingManagement = () => {
                     <div key={period} className="flex justify-between items-center py-1 border-b border-border/30 last:border-0">
                       <span className="text-[10px] text-foreground">{period}</span>
                       <span className="text-xs font-medium text-foreground">
-                        ${(45678 - idx * 5000).toLocaleString()}
+                        Rp {((725000000 - idx * 75000000) / 1000000).toLocaleString()}jt
                       </span>
                     </div>
                   ))}
@@ -146,9 +146,9 @@ const BillingManagement = () => {
 
               <div className="space-y-2">
                 {[
-                  { plan: 'Basic Plan', price: '$9.99/mo', subs: 247 },
-                  { plan: 'Premium Plan', price: '$19.99/mo', subs: 385 },
-                  { plan: 'Enterprise Plan', price: '$49.99/mo', subs: 260 }
+                  { plan: 'Basic Plan', price: 'Rp 150.000/bln', subs: 247 },
+                  { plan: 'Premium Plan', price: 'Rp 300.000/bln', subs: 385 },
+                  { plan: 'Enterprise Plan', price: 'Rp 750.000/bln', subs: 260 }
                 ].map((item) => (
                   <div key={item.plan} className="flex items-center justify-between p-2 border border-border/50 rounded-md bg-background/30">
                     <div>
