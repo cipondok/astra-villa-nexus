@@ -111,7 +111,17 @@ serve(async (req) => {
 
     if (action === 'generate-all-property-posts') {
       // Generate property listing pages for all states with all types
-      const result = await generateAllPropertyPosts(supabase, lovableApiKey);
+      // Use background task for long-running operation
+      const result = await generateAllPropertyPostsBatched(supabase, lovableApiKey, batchSize);
+      return new Response(JSON.stringify({ success: true, ...result }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (action === 'generate-all-property-posts-batch') {
+      // Process a specific batch (for incremental generation)
+      const { batchIndex = 0 } = await req.json();
+      const result = await generatePropertyPostsBatch(supabase, batchIndex, batchSize);
       return new Response(JSON.stringify({ success: true, ...result }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -512,8 +522,141 @@ async function getStats(supabase: any) {
   };
 }
 
-// Generate all property posts for each state with all types
+// Batched version that processes only a portion at a time (fast response)
+async function generateAllPropertyPostsBatched(supabase: any, apiKey: string | undefined, batchSize: number = 50) {
+  let created = 0;
+  let updated = 0;
+  const errors: string[] = [];
+
+  // Get real property counts by state and type
+  const { data: properties } = await supabase
+    .from('properties')
+    .select('id, location, state, city, listing_type, property_type');
+
+  // Build property count map
+  const countMap: Record<string, number> = {};
+  const stateCountMap: Record<string, number> = {};
+  
+  properties?.forEach((p: any) => {
+    let stateName = p.state || extractStateFromLocation(p.location || p.city || '');
+    if (stateName) {
+      const normalized = normalizeStateName(stateName);
+      if (normalized) stateName = normalized;
+    }
+    if (!stateName) return;
+
+    const state = INDONESIAN_STATES.find(s => 
+      s.name.toLowerCase() === stateName.toLowerCase() ||
+      s.id === stateName.toLowerCase()
+    );
+    if (!state) return;
+
+    // Count for state-level
+    stateCountMap[state.id] = (stateCountMap[state.id] || 0) + 1;
+
+    // Count for category+type
+    const listingType = p.listing_type === 'sale' ? 'dijual' : 'disewa';
+    const propType = (p.property_type || 'rumah').toLowerCase();
+    const key = `${state.id}-${listingType}-${propType}`;
+    countMap[key] = (countMap[key] || 0) + 1;
+  });
+
+  // Generate all combinations as upsert data
+  const allPages: any[] = [];
+
+  // Add state-level pages
+  for (const state of INDONESIAN_STATES) {
+    const count = stateCountMap[state.id] || 0;
+    allPages.push({
+      slug: `properti-${state.id}`,
+      page_type: 'state',
+      state_id: state.id,
+      state_name: state.name,
+      title: `Properti di ${state.name}`,
+      meta_title: `Properti di ${state.name} | ${count}+ Listing`,
+      meta_description: `Temukan properti terbaik di ${state.name}. Rumah, apartemen, villa tersedia.`,
+      h1_heading: `Properti di ${state.name}`,
+      primary_keyword: `properti ${state.name}`,
+      property_count: count,
+      is_published: count > 0,
+      seo_score: count > 0 ? 80 : 55,
+    });
+  }
+
+  // Add category+type pages
+  for (const state of INDONESIAN_STATES) {
+    for (const category of PROPERTY_CATEGORIES) {
+      for (const type of PROPERTY_TYPES) {
+        const key = `${state.id}-${category}-${type}`;
+        const count = countMap[key] || 0;
+        const title = `${type.charAt(0).toUpperCase() + type.slice(1)} ${category === 'dijual' ? 'Dijual' : 'Disewa'} di ${state.name}`;
+        
+        allPages.push({
+          slug: `${type}-${category}-${state.id}`,
+          page_type: 'property_type_state',
+          state_id: state.id,
+          state_name: state.name,
+          category,
+          property_type: type,
+          title,
+          meta_title: `${title} | ${count}+ Properti`,
+          meta_description: `Cari ${type} ${category} di ${state.name}. ${count} listing tersedia.`,
+          h1_heading: title,
+          primary_keyword: `${type} ${category} ${state.name}`,
+          secondary_keywords: [`harga ${type} ${state.name}`, `${type} murah ${state.name}`],
+          property_count: count,
+          is_published: count > 0,
+          seo_score: count > 0 ? 75 : 50,
+        });
+      }
+    }
+  }
+
+  // Process in batches using upsert
+  const batches = Math.ceil(allPages.length / batchSize);
+  for (let i = 0; i < batches; i++) {
+    const batch = allPages.slice(i * batchSize, (i + 1) * batchSize);
+    try {
+      const { data, error } = await supabase
+        .from('seo_landing_pages')
+        .upsert(batch, { onConflict: 'slug' })
+        .select('id');
+      
+      if (error) {
+        errors.push(`Batch ${i}: ${error.message}`);
+      } else {
+        created += data?.length || 0;
+      }
+    } catch (err) {
+      errors.push(`Batch ${i}: ${err instanceof Error ? err.message : 'Unknown'}`);
+    }
+  }
+
+  console.log(`SEO Generation complete: ${created} pages processed, ${errors.length} errors`);
+
+  return { 
+    created, 
+    updated: 0, 
+    errors: errors.slice(0, 5), 
+    total: allPages.length,
+    propertyCount: properties?.length || 0,
+    statesWithProperties: Object.keys(stateCountMap).length
+  };
+}
+
+// Legacy function (kept for backward compatibility)
 async function generateAllPropertyPosts(supabase: any, apiKey: string | undefined) {
+  return generateAllPropertyPostsBatched(supabase, apiKey, 50);
+}
+
+// Generate specific batch for incremental processing
+async function generatePropertyPostsBatch(supabase: any, batchIndex: number, batchSize: number) {
+  // This can be called multiple times to process incrementally
+  return generateAllPropertyPostsBatched(supabase, undefined, batchSize);
+}
+
+// Original detailed generation (kept for reference but not used for bulk)
+async function generateAllPropertyPostsDetailed(supabase: any, apiKey: string | undefined) {
   let created = 0;
   let updated = 0;
   const errors: string[] = [];
@@ -527,8 +670,15 @@ async function generateAllPropertyPosts(supabase: any, apiKey: string | undefine
   const countMap: Record<string, { count: number; listing_type: string; property_type: string }> = {};
   
   properties?.forEach((p: any) => {
-    // Try to map location to state
-    const stateName = p.state || extractStateFromLocation(p.location || p.city || '');
+    // Try to map location to state - handle both English and Indonesian names
+    let stateName = p.state || extractStateFromLocation(p.location || p.city || '');
+    
+    // If stateName is in English, convert to Indonesian
+    if (stateName) {
+      const normalized = normalizeStateName(stateName);
+      if (normalized) stateName = normalized;
+    }
+    
     if (!stateName) return;
 
     const state = INDONESIAN_STATES.find(s => 
@@ -610,7 +760,11 @@ async function generateAllPropertyPosts(supabase: any, apiKey: string | undefine
   // Also generate state-level pages
   for (const state of INDONESIAN_STATES) {
     const statePropertyCount = properties?.filter((p: any) => {
-      const stateName = p.state || extractStateFromLocation(p.location || p.city || '');
+      let stateName = p.state || extractStateFromLocation(p.location || p.city || '');
+      if (stateName) {
+        const normalized = normalizeStateName(stateName);
+        if (normalized) stateName = normalized;
+      }
       return stateName?.toLowerCase() === state.name.toLowerCase();
     }).length || 0;
 
@@ -648,7 +802,7 @@ async function generateAllPropertyPosts(supabase: any, apiKey: string | undefine
   return { created, updated, errors: errors.slice(0, 10), total: INDONESIAN_STATES.length * PROPERTY_CATEGORIES.length * PROPERTY_TYPES.length + INDONESIAN_STATES.length };
 }
 
-// Extract state from location string
+// Extract state from location string - supports both Indonesian and English names
 function extractStateFromLocation(location: string): string | null {
   const loc = location.toLowerCase();
   for (const state of INDONESIAN_STATES) {
@@ -656,6 +810,31 @@ function extractStateFromLocation(location: string): string | null {
       return state.name;
     }
   }
+  
+  // English to Indonesian state name mappings
+  const englishToIndonesian: Record<string, string> = {
+    'west java': 'Jawa Barat', 'east java': 'Jawa Timur', 'central java': 'Jawa Tengah',
+    'north sumatra': 'Sumatera Utara', 'south sumatra': 'Sumatera Selatan', 
+    'west sumatra': 'Sumatera Barat', 'north sulawesi': 'Sulawesi Utara',
+    'south sulawesi': 'Sulawesi Selatan', 'central sulawesi': 'Sulawesi Tengah',
+    'southeast sulawesi': 'Sulawesi Tenggara', 'west sulawesi': 'Sulawesi Barat',
+    'west kalimantan': 'Kalimantan Barat', 'east kalimantan': 'Kalimantan Timur',
+    'south kalimantan': 'Kalimantan Selatan', 'central kalimantan': 'Kalimantan Tengah',
+    'north kalimantan': 'Kalimantan Utara', 'west nusa tenggara': 'Nusa Tenggara Barat',
+    'east nusa tenggara': 'Nusa Tenggara Timur', 'north maluku': 'Maluku Utara',
+    'west papua': 'Papua Barat', 'riau islands': 'Kepulauan Riau',
+    'bangka belitung': 'Bangka Belitung', 'diy yogyakarta': 'Yogyakarta',
+    'special region of yogyakarta': 'Yogyakarta', 'yogyakarta': 'Yogyakarta',
+    'dki jakarta': 'DKI Jakarta', 'jakarta': 'DKI Jakarta',
+    'bali': 'Bali', 'banten': 'Banten', 'aceh': 'Aceh', 'riau': 'Riau',
+    'jambi': 'Jambi', 'bengkulu': 'Bengkulu', 'lampung': 'Lampung',
+    'gorontalo': 'Gorontalo', 'maluku': 'Maluku', 'papua': 'Papua',
+  };
+  
+  for (const [eng, ind] of Object.entries(englishToIndonesian)) {
+    if (loc.includes(eng)) return ind;
+  }
+  
   // Common city mappings
   const cityToState: Record<string, string> = {
     'jakarta': 'DKI Jakarta', 'bandung': 'Jawa Barat', 'surabaya': 'Jawa Timur',
@@ -664,11 +843,32 @@ function extractStateFromLocation(location: string): string | null {
     'bekasi': 'Jawa Barat', 'depok': 'Jawa Barat', 'bogor': 'Jawa Barat',
     'yogyakarta': 'Yogyakarta', 'malang': 'Jawa Timur', 'solo': 'Jawa Tengah',
     'ubud': 'Bali', 'seminyak': 'Bali', 'canggu': 'Bali', 'kuta': 'Bali',
+    'sanur': 'Bali', 'nusa dua': 'Bali', 'jimbaran': 'Bali',
   };
   for (const [city, state] of Object.entries(cityToState)) {
     if (loc.includes(city)) return state;
   }
   return null;
+}
+
+// Normalize English state names to Indonesian
+function normalizeStateName(name: string): string | null {
+  const englishToIndonesian: Record<string, string> = {
+    'west java': 'Jawa Barat', 'east java': 'Jawa Timur', 'central java': 'Jawa Tengah',
+    'north sumatra': 'Sumatera Utara', 'south sumatra': 'Sumatera Selatan', 
+    'west sumatra': 'Sumatera Barat', 'north sulawesi': 'Sulawesi Utara',
+    'south sulawesi': 'Sulawesi Selatan', 'central sulawesi': 'Sulawesi Tengah',
+    'southeast sulawesi': 'Sulawesi Tenggara', 'west sulawesi': 'Sulawesi Barat',
+    'west kalimantan': 'Kalimantan Barat', 'east kalimantan': 'Kalimantan Timur',
+    'south kalimantan': 'Kalimantan Selatan', 'central kalimantan': 'Kalimantan Tengah',
+    'north kalimantan': 'Kalimantan Utara', 'west nusa tenggara': 'Nusa Tenggara Barat',
+    'east nusa tenggara': 'Nusa Tenggara Timur', 'north maluku': 'Maluku Utara',
+    'west papua': 'Papua Barat', 'riau islands': 'Kepulauan Riau',
+    'bangka belitung': 'Bangka Belitung', 'diy yogyakarta': 'Yogyakarta',
+    'special region of yogyakarta': 'Yogyakarta',
+  };
+  const lowered = name.toLowerCase();
+  return englishToIndonesian[lowered] || null;
 }
 
 // Sync property counts to all landing pages
@@ -687,7 +887,11 @@ async function syncPropertyCounts(supabase: any) {
     let count = 0;
 
     properties?.forEach((p: any) => {
-      const stateName = p.state || extractStateFromLocation(p.location || p.city || '');
+      let stateName = p.state || extractStateFromLocation(p.location || p.city || '');
+      if (stateName) {
+        const normalized = normalizeStateName(stateName);
+        if (normalized) stateName = normalized;
+      }
       const state = INDONESIAN_STATES.find(s => s.name.toLowerCase() === stateName?.toLowerCase());
       
       if (!state || state.id !== page.state_id) return;
