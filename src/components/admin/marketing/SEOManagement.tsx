@@ -163,6 +163,43 @@ const SEOManagement = () => {
     },
   });
 
+  // Generate all property posts mutation (new one-click feature)
+  const generateAllPropertyPostsMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke('seo-content-generator', {
+        body: { action: 'generate-all-property-posts' },
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      toast.success(`Created ${data.created} pages, updated ${data.updated} pages (Total: ${data.total})`);
+      queryClient.invalidateQueries({ queryKey: ['seo-landing-pages'] });
+      queryClient.invalidateQueries({ queryKey: ['seo-queue-stats'] });
+    },
+    onError: (error) => {
+      toast.error('Failed to generate: ' + error.message);
+    },
+  });
+
+  // Sync property counts mutation
+  const syncPropertyCountsMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke('seo-content-generator', {
+        body: { action: 'sync-property-counts' },
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      toast.success(`Synced ${data.synced} pages with real property counts`);
+      queryClient.invalidateQueries({ queryKey: ['seo-landing-pages'] });
+    },
+    onError: (error) => {
+      toast.error('Failed to sync: ' + error.message);
+    },
+  });
+
   // Process queue mutation
   const processQueueMutation = useMutation({
     mutationFn: async () => {
@@ -235,7 +272,25 @@ const SEOManagement = () => {
           <h2 className="text-xl font-bold text-foreground">SEO Management</h2>
           <p className="text-sm text-muted-foreground">AI-powered SEO content generation & keyword tracking</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button 
+            size="sm"
+            onClick={() => generateAllPropertyPostsMutation.mutate()}
+            disabled={generateAllPropertyPostsMutation.isPending}
+            className="bg-primary"
+          >
+            {generateAllPropertyPostsMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Zap className="h-4 w-4 mr-2" />}
+            Generate All State+Type Posts
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => syncPropertyCountsMutation.mutate()}
+            disabled={syncPropertyCountsMutation.isPending}
+          >
+            {syncPropertyCountsMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+            Sync Counts
+          </Button>
           <Button 
             variant="outline" 
             size="sm"
@@ -243,24 +298,16 @@ const SEOManagement = () => {
             disabled={generateAllStatesMutation.isPending}
           >
             {generateAllStatesMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <MapPin className="h-4 w-4 mr-2" />}
-            Generate State Pages
+            State Pages
           </Button>
           <Button 
             variant="outline" 
             size="sm"
-            onClick={() => generateAllCombinationsMutation.mutate()}
-            disabled={generateAllCombinationsMutation.isPending}
-          >
-            {generateAllCombinationsMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Building2 className="h-4 w-4 mr-2" />}
-            Generate All Combinations
-          </Button>
-          <Button 
-            size="sm"
             onClick={() => processQueueMutation.mutate()}
             disabled={processQueueMutation.isPending || (queueStats?.pending || 0) === 0}
           >
-            {processQueueMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Zap className="h-4 w-4 mr-2" />}
-            Process Queue ({queueStats?.pending || 0})
+            {processQueueMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Clock className="h-4 w-4 mr-2" />}
+            Queue ({queueStats?.pending || 0})
           </Button>
         </div>
       </div>
