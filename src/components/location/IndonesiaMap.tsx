@@ -64,6 +64,52 @@ const normalizeProvinceName = (name: string): string => {
   return normalizations[name] || name;
 };
 
+// Canonical province IDs used across the app (must match sidebar + persisted localStorage IDs)
+const provinceNameToCanonicalId: Record<string, string> = {
+  'Aceh': 'aceh',
+  'Sumatera Utara': 'sumut',
+  'Sumatera Barat': 'sumbar',
+  'Riau': 'riau',
+  'Kepulauan Riau': 'kepri',
+  'Jambi': 'jambi',
+  'Sumatera Selatan': 'sumsel',
+  'Bengkulu': 'bengkulu',
+  'Bangka Belitung': 'babel',
+  'Lampung': 'lampung',
+  'Banten': 'banten',
+  'DKI Jakarta': 'jakarta',
+  'Jakarta': 'jakarta',
+  'Jawa Barat': 'jabar',
+  'Jawa Tengah': 'jateng',
+  'Yogyakarta': 'yogya',
+  'Jawa Timur': 'jatim',
+  'Kalimantan Barat': 'kalbar',
+  'Kalimantan Tengah': 'kalteng',
+  'Kalimantan Selatan': 'kalsel',
+  'Kalimantan Timur': 'kaltim',
+  'Kalimantan Utara': 'kaltara',
+  'Sulawesi Utara': 'sulut',
+  'Gorontalo': 'gorontalo',
+  'Sulawesi Tengah': 'sulteng',
+  'Sulawesi Barat': 'sulbar',
+  'Sulawesi Selatan': 'sulsel',
+  'Sulawesi Tenggara': 'sultra',
+  'Bali': 'bali',
+  'Nusa Tenggara Barat': 'ntb',
+  'Nusa Tenggara Timur': 'ntt',
+  'Maluku Utara': 'malut',
+  'Maluku': 'maluku',
+  'Papua Barat': 'papuabarat',
+  'Papua': 'papua',
+};
+
+const getCanonicalProvinceId = (normalizedProvinceName: string) => {
+  return (
+    provinceNameToCanonicalId[normalizedProvinceName] ||
+    normalizedProvinceName.toLowerCase().replace(/\s+/g, '-')
+  );
+};
+
 // Province coordinates for markers (longitude, latitude)
 const provinceCoordinates: Record<string, [number, number]> = {
   'Aceh': [96.5, 4.7], 'Sumatera Utara': [99.0, 2.5], 'Sumatera Barat': [100.5, -0.9],
@@ -211,10 +257,13 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
   const handleProvinceClick = (provinceName: string) => {
     // Normalize the province name to standard Indonesian name
     const normalizedName = normalizeProvinceName(provinceName);
+
+    // IMPORTANT: Keep IDs consistent with the rest of the app (sidebar + localStorage)
+    const canonicalId = getCanonicalProvinceId(normalizedName);
     
     const code = provinceCodeMap[provinceName] || provinceCodeMap[normalizedName] || 'ID';
     const province: Province = {
-      id: normalizedName.toLowerCase().replace(/\s+/g, '-'),
+      id: canonicalId,
       name: normalizedName,
       code: code
     };
@@ -342,7 +391,8 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
               {({ geographies }) =>
                 geographies.map((geo, index) => {
                   const provinceName = getProvinceName(geo.properties);
-                  const provinceId = provinceName.toLowerCase().replace(/\s+/g, '-');
+                  const normalizedName = normalizeProvinceName(provinceName);
+                  const provinceId = getCanonicalProvinceId(normalizedName);
                   const isSelected = selectedProvince === provinceId;
                   const isUserProvince = userProvince === provinceId;
                   const provinceColor = getProvinceColor(index, isDark);
@@ -357,8 +407,8 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
                     fillColor = mapColors.selected;
                   } else if (isUserProvince) {
                     // Highlight user's province with accent color
-                    fillColor = isDark ? 'hsl(0, 70%, 45%)' : 'hsl(0, 75%, 55%)';
-                    strokeColor = isDark ? 'hsl(0, 70%, 60%)' : 'hsl(0, 75%, 40%)';
+                     fillColor = 'hsl(var(--accent))';
+                     strokeColor = 'hsl(var(--accent))';
                     strokeW = 1.2;
                   }
 
