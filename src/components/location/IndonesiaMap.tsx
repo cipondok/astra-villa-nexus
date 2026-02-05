@@ -512,11 +512,11 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
             return (
               <Marker coordinates={coords}>
                 <g style={{ pointerEvents: 'none' }}>
-                  {/* Outer pulsing ring - high visibility red */}
+                  {/* Outer pulsing ring */}
                   <circle
                     r={16}
                     fill="none"
-                    stroke="#E02020"
+                    stroke="hsl(var(--destructive))"
                     strokeWidth={3}
                     className="animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]"
                   />
@@ -524,27 +524,27 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
                   <circle
                     r={12}
                     fill="none"
-                    stroke="#E02020"
+                    stroke="hsl(var(--destructive))"
                     strokeWidth={2.5}
                     className="animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite_0.5s]"
                   />
                   {/* Middle static ring - solid background */}
                   <circle
                     r={10}
-                    fill="#E02020"
+                    fill="hsl(var(--destructive))"
                     fillOpacity={0.4}
-                    stroke="#E02020"
+                    stroke="hsl(var(--destructive))"
                     strokeWidth={2.5}
                   />
                   {/* Inner solid dot - bright core */}
                   <circle
                     r={5}
-                    fill="#E02020"
+                    fill="hsl(var(--destructive))"
                   />
                   {/* White center dot for contrast */}
                   <circle
                     r={2}
-                    fill="#FFFFFF"
+                    fill="hsl(var(--background))"
                   />
                 </g>
               </Marker>
