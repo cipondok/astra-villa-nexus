@@ -501,49 +501,64 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
             );
           })}
 
-          {/* User Location Indicator - Always visible pulsing circle */}
+          {/* User Location Indicator - Blue + halo, responsive, animate when idle */}
           {userProvince && (() => {
-            // Find coordinates for user's province using reverse mapping
             const userProvinceName = canonicalIdToProvinceName[userProvince];
             const coords = userProvinceName ? provinceCoordinates[userProvinceName] : null;
-            
             if (!coords) return null;
-            
+
+            // Animate only when not dragging/zooming
+            const shouldAnimate = !isDragging;
+            const pulseClass = shouldAnimate
+              ? 'animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]'
+              : '';
+            const pulseClassDelayed = shouldAnimate
+              ? 'animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite_0.5s]'
+              : '';
+
             return (
               <Marker coordinates={coords}>
                 <g style={{ pointerEvents: 'none' }}>
-                  {/* Outer pulsing ring */}
+                  {/* Halo / glow for contrast on any province color */}
                   <circle
-                    r={16}
+                    r={18}
+                    fill="hsl(var(--background))"
+                    fillOpacity={0.6}
+                  />
+                  {/* Outer pulsing ring - subtle on desktop, bold on mobile */}
+                  <circle
+                    r={14}
                     fill="none"
-                    stroke="hsl(var(--destructive))"
-                    strokeWidth={3}
-                    className="animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                    className={pulseClass}
+                    style={{ opacity: 0.7 }}
                   />
                   {/* Second pulsing ring with offset */}
                   <circle
-                    r={12}
-                    fill="none"
-                    stroke="hsl(var(--destructive))"
-                    strokeWidth={2.5}
-                    className="animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite_0.5s]"
-                  />
-                  {/* Middle static ring - solid background */}
-                  <circle
                     r={10}
-                    fill="hsl(var(--destructive))"
-                    fillOpacity={0.4}
-                    stroke="hsl(var(--destructive))"
-                    strokeWidth={2.5}
+                    fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={1.5}
+                    className={pulseClassDelayed}
+                    style={{ opacity: 0.5 }}
                   />
-                  {/* Inner solid dot - bright core */}
+                  {/* Static middle ring */}
                   <circle
-                    r={5}
-                    fill="hsl(var(--destructive))"
+                    r={7}
+                    fill="hsl(var(--primary))"
+                    fillOpacity={0.25}
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
                   />
-                  {/* White center dot for contrast */}
+                  {/* Inner solid dot */}
                   <circle
-                    r={2}
+                    r={4}
+                    fill="hsl(var(--primary))"
+                  />
+                  {/* Center dot for contrast */}
+                  <circle
+                    r={1.5}
                     fill="hsl(var(--background))"
                   />
                 </g>
