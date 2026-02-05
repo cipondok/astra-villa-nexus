@@ -8,6 +8,7 @@ import { useGamification } from '@/hooks/useGamification';
 import { useAuth } from '@/contexts/AuthContext';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { usePopupQueue } from '@/hooks/usePopupQueue';
+import { supabase } from '@/integrations/supabase/client';
 import confetti from 'canvas-confetti';
 
 interface DailyLoginRewardProps {
@@ -22,6 +23,7 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
   const [claimResult, setClaimResult] = useState<any>(null);
   const [alreadyClaimed, setAlreadyClaimed] = useState(false);
   const [shouldShow, setShouldShow] = useState(false);
+  const [isCheckingStatus, setIsCheckingStatus] = useState(true);
 
   // Popup queue integration - medium priority with 4s stagger
   const popupQueue = usePopupQueue('daily-login-reward', 'medium', { delay: 4000 });
@@ -42,48 +44,67 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
     }
   }, [isOpen, shouldShow]);
 
-  // Helper to check if last login was within 24 hours
-  const hasClaimedWithin24Hours = (lastLoginDate: string | null) => {
-    if (!lastLoginDate) return false;
-    
-    // Parse the date and check if it's within the last 24 hours
-    const lastLogin = new Date(lastLoginDate);
-    const now = new Date();
-    const hoursSinceLastLogin = (now.getTime() - lastLogin.getTime()) / (1000 * 60 * 60);
-    
-    return hoursSinceLastLogin < 24;
-  };
-
-  // Check if should show on mount
+  // Check if already claimed TODAY using database (not 24 hours - calendar day based)
   useEffect(() => {
-    if (!autoShow || !user?.id || !stats) return;
-
-    // Check using localStorage for session persistence + 24hr check
-    const claimKey = `daily_login_claimed_${user.id}`;
-    const lastClaimTime = localStorage.getItem(claimKey);
-    
-    // Check if claimed within last 24 hours (using localStorage as backup)
-    if (lastClaimTime) {
-      const hoursSinceClaim = (Date.now() - parseInt(lastClaimTime)) / (1000 * 60 * 60);
-      if (hoursSinceClaim < 24) {
-        setAlreadyClaimed(true);
+    const checkClaimStatus = async () => {
+      if (!autoShow || !user?.id) {
+        setIsCheckingStatus(false);
         return;
       }
-    }
 
-    // Also check database last_login_date
-    if (hasClaimedWithin24Hours(stats.last_login_date)) {
-      setAlreadyClaimed(true);
-      return;
-    }
+      try {
+        // Get today's date in YYYY-MM-DD format (calendar day, not 24hr window)
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Check if user has a checkin record for TODAY in the database
+        const { data: todayCheckin, error } = await supabase
+          .from('astra_daily_checkins')
+          .select('id, checkin_date')
+          .eq('user_id', user.id)
+          .eq('checkin_date', today)
+          .maybeSingle();
 
-    // Not claimed in 24 hours - request to show via queue
-    setShouldShow(true);
-    const timer = setTimeout(() => {
-      popupQueue.requestShow();
-    }, 4000); // Stagger delay
-    return () => clearTimeout(timer);
-  }, [autoShow, user?.id, stats]);
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error checking daily claim status:', error);
+        }
+
+        if (todayCheckin) {
+          // Already claimed today - don't show popup
+          console.log('Daily reward already claimed today:', todayCheckin.checkin_date);
+          setAlreadyClaimed(true);
+          setIsCheckingStatus(false);
+          return;
+        }
+
+        // Also store in localStorage with TODAY's date for faster UI response
+        const claimKey = `daily_login_date_${user.id}`;
+        const lastClaimDate = localStorage.getItem(claimKey);
+        
+        if (lastClaimDate === today) {
+          // Already claimed today according to localStorage
+          setAlreadyClaimed(true);
+          setIsCheckingStatus(false);
+          return;
+        }
+
+        // Not claimed today - show the popup
+        console.log('Daily reward not claimed today, showing popup');
+        setShouldShow(true);
+        setIsCheckingStatus(false);
+        
+        // Request to show via queue after delay
+        setTimeout(() => {
+          popupQueue.requestShow();
+        }, 4000);
+        
+      } catch (error) {
+        console.error('Error in daily claim check:', error);
+        setIsCheckingStatus(false);
+      }
+    };
+
+    checkClaimStatus();
+  }, [autoShow, user?.id]);
 
   const handleClaim = async () => {
     if (!user?.id) return;
@@ -98,12 +119,14 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
         return;
       }
       
-      // Successfully claimed - store in localStorage with timestamp
-      const claimKey = `daily_login_claimed_${user.id}`;
-      localStorage.setItem(claimKey, Date.now().toString());
+      // Successfully claimed - store TODAY's DATE in localStorage (not timestamp)
+      const today = new Date().toISOString().split('T')[0];
+      const claimKey = `daily_login_date_${user.id}`;
+      localStorage.setItem(claimKey, today);
       
       setClaimResult(result);
       setClaimed(true);
+      setAlreadyClaimed(true); // Prevent re-showing
       
       // Confetti effect
       confetti({
