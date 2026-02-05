@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Building2, Home, TrendingUp, Search, Filter, ChevronRight, ArrowLeft, Loader2 } from 'lucide-react';
+import { MapPin, Building2, Home, TrendingUp, Search, Filter, ChevronRight, ArrowLeft, Loader2, Navigation2 } from 'lucide-react';
 import { IndonesiaMap, Province } from '@/components/location/IndonesiaMap';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useProvincePropertyCounts, useTotalPropertyCount } from '@/hooks/useProvincePropertyCounts';
 import ProvincePropertiesModal from '@/components/location/ProvincePropertiesModal';
+import { useLastSelectedProvince } from '@/hooks/useLastSelectedProvince';
 
 // Harmonized color palette for provinces - earthy & professional tones
 const provinceColors = [
@@ -88,6 +89,9 @@ const LocationMap = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   
+  // Last selected province tracking
+  const { lastProvince, saveLastProvince } = useLastSelectedProvince();
+  
   // Fetch real property counts from database
   const { data: provincePropertyCounts = {}, isLoading: isLoadingCounts } = useProvincePropertyCounts();
   const { data: totalProperties = 0, isLoading: isLoadingTotal } = useTotalPropertyCount();
@@ -116,12 +120,16 @@ const LocationMap = () => {
   const handleProvinceSelect = (province: Province) => {
     setSelectedProvince(province.id);
     setSelectedProvinceName(province.name);
+    // Save as last selected
+    saveLastProvince({ id: province.id, name: province.name, code: province.code || '' });
     setIsModalOpen(true);
   };
 
   const handleProvinceClick = (provinceId: string, provinceName: string) => {
     setSelectedProvince(provinceId);
     setSelectedProvinceName(provinceName);
+    // Save as last selected
+    saveLastProvince({ id: provinceId, name: provinceName, code: '' });
     setIsModalOpen(true);
   };
 
@@ -148,6 +156,25 @@ const LocationMap = () => {
           <p className="text-[10px] text-muted-foreground max-w-md mx-auto leading-tight">
             Temukan properti impian Anda di seluruh Indonesia. Klik pada peta untuk melihat properti.
           </p>
+          
+          {/* Last Selected Province Indicator */}
+          {lastProvince && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+              className="mt-2"
+            >
+              <button
+                onClick={() => handleProvinceClick(lastProvince.id, lastProvince.name)}
+                className="inline-flex items-center gap-1.5 bg-accent/10 hover:bg-accent/20 text-accent px-3 py-1.5 rounded-full border border-accent/30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Navigation2 className="h-3 w-3" />
+                <span className="text-[11px] font-medium">Lokasi Anda:</span>
+                <span className="text-[11px] font-bold">{lastProvince.name}</span>
+              </button>
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Main Content - Full Width Map First */}
@@ -160,6 +187,7 @@ const LocationMap = () => {
           <IndonesiaMap 
             onProvinceSelect={handleProvinceSelect}
             selectedProvince={selectedProvince}
+            userProvince={lastProvince?.id || null}
           />
         </motion.div>
 

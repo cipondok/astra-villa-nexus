@@ -156,9 +156,10 @@ interface Province {
 interface IndonesiaMapProps {
   onProvinceSelect?: (province: Province) => void;
   selectedProvince?: string | null;
+  userProvince?: string | null;
 }
 
-const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: IndonesiaMapProps) => {
+const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvince }: IndonesiaMapProps) => {
   const [hoveredProvinceName, setHoveredProvinceName] = useState<string | null>(null);
   const [position, setPosition] = useState({ coordinates: [118, -2] as [number, number], zoom: 1 });
   const [isDragging, setIsDragging] = useState(false);
@@ -341,9 +342,25 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
               {({ geographies }) =>
                 geographies.map((geo, index) => {
                   const provinceName = getProvinceName(geo.properties);
-                  const isSelected = selectedProvince === provinceName.toLowerCase().replace(/\s+/g, '-');
+                  const provinceId = provinceName.toLowerCase().replace(/\s+/g, '-');
+                  const isSelected = selectedProvince === provinceId;
+                  const isUserProvince = userProvince === provinceId;
                   const provinceColor = getProvinceColor(index, isDark);
                   const hoverColor = getHoverColor(index, isDark);
+                  
+                  // Determine fill color: selected > user province > default
+                  let fillColor = provinceColor;
+                  let strokeColor = mapColors.border;
+                  let strokeW = 0.5;
+                  
+                  if (isSelected) {
+                    fillColor = mapColors.selected;
+                  } else if (isUserProvince) {
+                    // Highlight user's province with accent color
+                    fillColor = isDark ? 'hsl(0, 70%, 45%)' : 'hsl(0, 75%, 55%)';
+                    strokeColor = isDark ? 'hsl(0, 70%, 60%)' : 'hsl(0, 75%, 40%)';
+                    strokeW = 1.2;
+                  }
 
                   return (
                     <Geography
@@ -358,22 +375,22 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
                       onClick={() => handleProvinceClick(provinceName)}
                       style={{
                         default: {
-                          fill: isSelected ? mapColors.selected : provinceColor,
-                          stroke: mapColors.border,
-                          strokeWidth: 0.5,
+                          fill: fillColor,
+                          stroke: strokeColor,
+                          strokeWidth: strokeW,
                           outline: 'none',
                           cursor: 'pointer',
                         },
                         hover: {
                           fill: isSelected ? mapColors.selected : hoverColor,
-                          stroke: mapColors.border,
+                          stroke: strokeColor,
                           strokeWidth: 0.8,
                           outline: 'none',
                           cursor: 'pointer',
                         },
                         pressed: {
                           fill: mapColors.selected,
-                          stroke: mapColors.border,
+                          stroke: strokeColor,
                           strokeWidth: 1,
                           outline: 'none',
                         },
