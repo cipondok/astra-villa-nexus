@@ -138,22 +138,22 @@ const LocationMap = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <main className="container mx-auto px-4 py-4">
-        {/* Header */}
+    <div className="min-h-screen bg-background">
+      <main className="container mx-auto px-4 py-6">
+        {/* Header - Rumah123 Style */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-4"
+          className="text-center mb-6"
         >
-          <div className="inline-flex items-center gap-1 bg-primary/10 backdrop-blur-sm text-primary px-2 py-1 rounded-full mb-2 border border-primary/20">
-            <MapPin className="h-2.5 w-2.5" />
-            <span className="text-[10px] font-medium">Jelajahi Lokasi</span>
+          <div className="inline-flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1 rounded-[6px] mb-3 shadow-sm">
+            <MapPin className="h-3 w-3" />
+            <span className="text-xs font-semibold">Jelajahi Lokasi</span>
           </div>
-          <h1 className="text-lg md:text-xl font-bold text-foreground mb-1">
+          <h1 className="text-xl md:text-2xl font-bold text-foreground mb-2">
             Peta Properti Indonesia
           </h1>
-          <p className="text-[10px] text-muted-foreground max-w-md mx-auto leading-tight">
+          <p className="text-sm text-muted-foreground max-w-lg mx-auto">
             Temukan properti impian Anda di seluruh Indonesia. Klik pada peta untuk melihat properti.
           </p>
           
@@ -163,23 +163,23 @@ const LocationMap = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.3 }}
-              className="mt-2"
+              className="mt-3"
             >
               <button
                 onClick={() => handleProvinceClick(lastProvince.id, lastProvince.name)}
-                className="inline-flex items-center gap-1.5 bg-accent/10 hover:bg-accent/20 text-accent px-3 py-1.5 rounded-full border border-accent/30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                className="inline-flex items-center gap-2 bg-destructive/10 hover:bg-destructive/20 text-destructive px-4 py-2 rounded-[6px] border border-destructive/30 transition-all duration-200 hover:shadow-md active:scale-[0.98]"
               >
-                <Navigation2 className="h-3 w-3" />
-                <span className="text-[11px] font-medium">Lokasi Anda:</span>
-                <span className="text-[11px] font-bold">{lastProvince.name}</span>
+                <Navigation2 className="h-4 w-4" />
+                <span className="text-sm font-medium">Lokasi Anda:</span>
+                <span className="text-sm font-bold">{lastProvince.name}</span>
               </button>
             </motion.div>
           )}
         </motion.div>
 
-        {/* Main Content - Full Width Map First */}
+        {/* Main Content - Full Width Map */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
           className="mb-6"
@@ -191,33 +191,33 @@ const LocationMap = () => {
           />
         </motion.div>
 
-        {/* Province List - Glassy Card */}
+        {/* Province List - Solid Card Rumah123 Style */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="mb-6"
         >
-          <Card className="glass-card border-border/30 shadow-lg">
-            <CardContent className="p-3 space-y-3">
+          <Card className="bg-card border border-border rounded-[6px] shadow-sm">
+            <CardContent className="p-4 space-y-4">
               {/* Row 1: Search Input */}
-              <div className="relative w-full md:w-64">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+              <div className="relative w-full md:w-72">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Cari provinsi..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-8 h-7 text-xs bg-background/50 backdrop-blur-sm border-border/40"
+                  className="pl-10 h-10 text-sm bg-background border-border rounded-[6px]"
                 />
               </div>
               
               {/* Row 2: Popular Provinces with Progress Bars */}
               <div>
-                <span className="text-xs font-semibold text-foreground flex items-center gap-1 mb-2">
-                  <TrendingUp className="h-3 w-3 text-primary" />
-                  Populer:
+                <span className="text-sm font-bold text-foreground flex items-center gap-2 mb-3">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  Populer
                 </span>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
                   {popularProvinces.map((province, index) => {
                     const maxCount = Math.max(...popularProvinces.map(p => p.properties), 1);
                     const percentage = (province.properties / maxCount) * 100;
@@ -227,31 +227,31 @@ const LocationMap = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleProvinceClick(province.id, province.name)}
-                        className={`p-2 rounded-lg cursor-pointer transition-all border backdrop-blur-sm ${
+                        className={`p-3 rounded-[6px] cursor-pointer transition-all border ${
                           selectedProvince === province.id
-                            ? 'bg-primary/15 border-primary shadow-md'
-                            : 'bg-background/40 border-border/40 hover:border-primary/50 hover:bg-background/60'
+                            ? 'bg-primary/10 border-primary shadow-md'
+                            : 'bg-background border-border hover:border-primary hover:shadow-sm'
                         }`}
                       >
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-[10px] sm:text-xs font-medium text-foreground truncate">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs sm:text-sm font-semibold text-foreground truncate">
                             {province.name}
                           </span>
-                          <province.icon className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary shrink-0" />
+                          <province.icon className="h-3.5 w-3.5 text-primary shrink-0" />
                         </div>
-                        <div className="w-full bg-muted rounded-full h-1.5 sm:h-2 overflow-hidden">
+                        <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${percentage}%` }}
                             transition={{ duration: 0.8, delay: index * 0.1 }}
-                            className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full"
+                            className="h-full bg-primary rounded-full"
                           />
                         </div>
-                        <div className="flex items-center justify-between mt-1">
-                          <span className="text-[8px] sm:text-[10px] text-muted-foreground">
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-[10px] sm:text-xs text-muted-foreground">
                             {province.properties.toLocaleString()}
                           </span>
-                          <span className="text-[8px] sm:text-[10px] font-medium text-primary">
+                          <span className="text-[10px] sm:text-xs font-bold text-primary">
                             {percentage.toFixed(0)}%
                           </span>
                         </div>
@@ -263,11 +263,11 @@ const LocationMap = () => {
 
               {/* All Provinces - Wrap */}
               <div>
-                <h3 className="text-[10px] sm:text-xs font-semibold text-foreground mb-1.5 sm:mb-2 flex items-center gap-1 sm:gap-1.5">
-                  <Filter className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary" />
+                <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-primary" />
                   Semua Provinsi
                 </h3>
-                <div className="flex flex-wrap gap-1 sm:gap-1.5">
+                <div className="flex flex-wrap gap-2">
                   {filteredProvinces.map((province) => {
                     const propertyCount = getPropertyCount(province.name);
                     return (
@@ -276,14 +276,14 @@ const LocationMap = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleProvinceClick(province.id, province.name)}
-                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] sm:text-xs font-medium transition-all border backdrop-blur-sm ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs sm:text-sm font-medium transition-all border ${
                           selectedProvince === province.id
                             ? 'bg-primary text-primary-foreground border-primary shadow-md'
-                            : 'bg-background/50 text-foreground border-border/40 hover:bg-primary/10 hover:border-primary/40 hover:text-primary dark:text-foreground'
+                            : 'bg-background text-foreground border-border hover:bg-primary/5 hover:border-primary hover:text-primary'
                         }`}
                       >
                         <span>{province.name}</span>
-                        <span className={`text-[8px] sm:text-[9px] ${
+                        <span className={`text-[10px] sm:text-xs ${
                           selectedProvince === province.id 
                             ? 'text-primary-foreground/80' 
                             : 'text-muted-foreground'
@@ -299,8 +299,8 @@ const LocationMap = () => {
           </Card>
         </motion.div>
 
-        {/* Quick Stats - Slim */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+        {/* Quick Stats - Rumah123 Style */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
           {[
             { label: 'Total Provinsi', value: '38', icon: MapPin },
             { label: 'Total Properti', value: totalProperties.toString(), icon: Building2 },
@@ -313,14 +313,14 @@ const LocationMap = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + index * 0.05 }}
             >
-              <Card className="border-border/50 hover:border-primary/30 transition-colors">
-                <CardContent className="p-2 sm:p-3 flex items-center gap-2">
-                  <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                    <stat.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+              <Card className="bg-card border border-border rounded-[6px] hover:border-primary hover:shadow-md transition-all">
+                <CardContent className="p-4 flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-[6px] bg-primary/10 flex items-center justify-center shrink-0">
+                    <stat.icon className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-base sm:text-lg font-bold text-foreground leading-tight">{stat.value}</p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</p>
+                    <p className="text-lg sm:text-xl font-bold text-primary leading-tight">{stat.value}</p>
+                    <p className="text-xs text-muted-foreground">{stat.label}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -328,17 +328,17 @@ const LocationMap = () => {
           ))}
         </div>
 
-        {/* Region Cards - Slim */}
-        <div className="mb-4">
-          <h2 className="text-sm sm:text-base font-bold text-foreground mb-2 flex items-center gap-1.5">
-            <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+        {/* Region Cards - Rumah123 Style */}
+        <div className="mb-6">
+          <h2 className="text-base sm:text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+            <Building2 className="h-5 w-5 text-primary" />
             Wilayah Populer
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {[
-              { region: 'Jawa', provinces: ['DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'Jawa Timur'], properties: 42500, color: 'from-blue-500/20 to-blue-600/20' },
-              { region: 'Sumatera', provinces: ['Sumatera Utara', 'Sumatera Barat', 'Riau'], properties: 18200, color: 'from-green-500/20 to-green-600/20' },
-              { region: 'Kalimantan', provinces: ['Kalimantan Timur', 'Kalimantan Selatan'], properties: 12800, color: 'from-orange-500/20 to-orange-600/20' },
+              { region: 'Jawa', provinces: ['DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'Jawa Timur'], properties: 42500, accent: 'bg-primary/5 border-primary/20' },
+              { region: 'Sumatera', provinces: ['Sumatera Utara', 'Sumatera Barat', 'Riau'], properties: 18200, accent: 'bg-emerald-500/5 border-emerald-500/20' },
+              { region: 'Kalimantan', provinces: ['Kalimantan Timur', 'Kalimantan Selatan'], properties: 12800, accent: 'bg-amber-500/5 border-amber-500/20' },
             ].map((item, index) => (
               <motion.div
                 key={item.region}
@@ -346,28 +346,28 @@ const LocationMap = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + index * 0.05 }}
               >
-                <Card className={`bg-gradient-to-br ${item.color} border-border/50 hover:border-primary/30 transition-all hover:shadow-md cursor-pointer`}>
-                  <CardContent className="p-2 sm:p-3">
-                    <h3 className="font-bold text-sm sm:text-base text-foreground mb-1">{item.region}</h3>
-                    <div className="flex flex-wrap gap-0.5 sm:gap-1 mb-1.5">
+                <Card className={`${item.accent} border rounded-[6px] hover:shadow-md transition-all cursor-pointer`}>
+                  <CardContent className="p-4">
+                    <h3 className="font-bold text-base sm:text-lg text-foreground mb-2">{item.region}</h3>
+                    <div className="flex flex-wrap gap-1.5 mb-3">
                       {item.provinces.slice(0, 3).map((p) => (
-                        <Badge key={p} variant="secondary" className="text-[10px] sm:text-xs px-1 py-0">
+                        <Badge key={p} variant="secondary" className="text-xs px-2 py-0.5 rounded-[4px]">
                           {p}
                         </Badge>
                       ))}
                       {item.provinces.length > 3 && (
-                        <Badge variant="outline" className="text-[10px] sm:text-xs px-1 py-0">
+                        <Badge variant="outline" className="text-xs px-2 py-0.5 rounded-[4px]">
                           +{item.provinces.length - 3}
                         </Badge>
                       )}
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] sm:text-xs text-muted-foreground">
+                      <span className="text-sm text-muted-foreground">
                         {item.properties.toLocaleString()} properti
                       </span>
-                      <Button size="sm" variant="ghost" className="h-6 px-2 text-xs">
+                      <Button size="sm" variant="ghost" className="h-8 px-3 text-sm text-primary hover:bg-primary/10">
                         Jelajahi
-                        <ChevronRight className="h-3 w-3 ml-0.5" />
+                        <ChevronRight className="h-4 w-4 ml-1" />
                       </Button>
                     </div>
                   </CardContent>

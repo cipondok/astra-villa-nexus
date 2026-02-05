@@ -333,45 +333,45 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
 
   return (
     <div 
-      className="relative w-full aspect-[4/3] sm:aspect-[2/1] rounded-xl sm:rounded-2xl overflow-hidden shadow-xl sm:shadow-2xl border border-border/50"
+      className="relative w-full aspect-[4/3] sm:aspect-[2/1] rounded-[6px] overflow-hidden shadow-md border border-border"
       style={{ backgroundColor: mapColors.background }}
     >
-      {/* Map controls - Glassy style - Responsive */}
-      <div className="absolute top-2 sm:top-4 right-2 sm:right-4 z-30 flex flex-col gap-1 sm:gap-2">
+      {/* Map controls - Solid Rumah123 style */}
+      <div className="absolute top-3 sm:top-4 right-3 sm:right-4 z-30 flex flex-col gap-2">
         <Button 
           size="icon" 
-          variant="ghost" 
-          className="h-7 w-7 sm:h-9 sm:w-9 bg-background/40 backdrop-blur-md border border-border/50 shadow-lg hover:bg-background/60"
+          variant="outline" 
+          className="h-8 w-8 sm:h-10 sm:w-10 bg-background border-border shadow-sm hover:bg-primary/5 hover:border-primary rounded-[6px]"
           onClick={handleZoomIn}
         >
-          <ZoomIn className="h-3 w-3 sm:h-4 sm:w-4" />
+          <ZoomIn className="h-4 w-4" />
         </Button>
         <Button 
           size="icon" 
-          variant="ghost" 
-          className="h-7 w-7 sm:h-9 sm:w-9 bg-background/40 backdrop-blur-md border border-border/50 shadow-lg hover:bg-background/60"
+          variant="outline" 
+          className="h-8 w-8 sm:h-10 sm:w-10 bg-background border-border shadow-sm hover:bg-primary/5 hover:border-primary rounded-[6px]"
           onClick={handleZoomOut}
         >
-          <ZoomOut className="h-3 w-3 sm:h-4 sm:w-4" />
+          <ZoomOut className="h-4 w-4" />
         </Button>
         <Button 
           size="icon" 
-          variant="ghost" 
-          className="h-7 w-7 sm:h-9 sm:w-9 bg-background/40 backdrop-blur-md border border-border/50 shadow-lg hover:bg-background/60"
+          variant="outline" 
+          className="h-8 w-8 sm:h-10 sm:w-10 bg-background border-border shadow-sm hover:bg-primary/5 hover:border-primary rounded-[6px]"
           onClick={handleReset}
         >
-          <Maximize2 className="h-3 w-3 sm:h-4 sm:w-4" />
+          <Maximize2 className="h-4 w-4" />
         </Button>
       </div>
 
-      {/* Map title - Glassy style - Responsive */}
-      <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-30 flex items-center gap-2 sm:gap-3 bg-background/40 backdrop-blur-md px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl shadow-lg border border-border/50">
-        <div className="h-6 w-6 sm:h-8 sm:w-8 rounded-md sm:rounded-lg bg-primary/30 backdrop-blur-sm flex items-center justify-center">
-          <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+      {/* Map title - Solid Rumah123 style */}
+      <div className="absolute top-3 sm:top-4 left-3 sm:left-4 z-30 flex items-center gap-2 sm:gap-3 bg-background px-3 sm:px-4 py-2 sm:py-3 rounded-[6px] shadow-md border border-border">
+        <div className="h-8 w-8 rounded-[6px] bg-primary flex items-center justify-center">
+          <MapPin className="h-4 w-4 text-primary-foreground" />
         </div>
         <div>
-          <span className="text-xs sm:text-sm font-bold text-foreground block">Peta Indonesia</span>
-          <span className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">34 Provinsi - Pilih untuk melihat properti</span>
+          <span className="text-sm font-bold text-foreground block">Peta Indonesia</span>
+          <span className="text-xs text-muted-foreground hidden sm:block">34 Provinsi - Pilih untuk melihat properti</span>
         </div>
       </div>
 
@@ -568,16 +568,16 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
         </ZoomableGroup>
       </ComposableMap>
 
-      {/* Province count badge - Glassy style - Responsive */}
-      <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 z-30 bg-background/40 backdrop-blur-md rounded-lg sm:rounded-xl px-2 sm:px-4 py-1.5 sm:py-2.5 shadow-lg border border-border/50">
-        <p className="text-[10px] sm:text-xs font-bold text-foreground flex items-center gap-1 sm:gap-2">
-          <Compass className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
+      {/* Province count badge - Solid Rumah123 style */}
+      <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 z-30 bg-background rounded-[6px] px-3 sm:px-4 py-2 shadow-md border border-border">
+        <p className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-2">
+          <Compass className="h-4 w-4 text-primary" />
           <span className="hidden sm:inline">34 Provinsi Indonesia</span>
           <span className="sm:hidden">34 Provinsi</span>
         </p>
       </div>
 
-      {/* Hover info panel - Compact modern tooltip */}
+      {/* Hover info panel - Solid modern tooltip */}
       <AnimatePresence>
         {hoveredProvinceName && (
           <motion.div
@@ -587,26 +587,26 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
             transition={{ duration: 0.15, ease: 'easeOut' }}
             className="absolute top-3 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
           >
-            <div className="bg-background/95 backdrop-blur-md rounded-lg px-3 py-2 shadow-lg border border-border/60 flex items-center gap-2">
-              <div className="h-6 w-6 rounded-md bg-primary/90 flex items-center justify-center shrink-0">
-                <MapPin className="h-3 w-3 text-primary-foreground" />
+            <div className="bg-background rounded-[6px] px-4 py-2.5 shadow-lg border border-border flex items-center gap-3">
+              <div className="h-8 w-8 rounded-[6px] bg-primary flex items-center justify-center shrink-0">
+                <MapPin className="h-4 w-4 text-primary-foreground" />
               </div>
               <div className="flex flex-col">
-                <span className="font-semibold text-foreground text-[11px] leading-tight">{hoveredProvinceName}</span>
-                <span className="text-[9px] text-muted-foreground leading-tight">
+                <span className="font-bold text-foreground text-sm leading-tight">{hoveredProvinceName}</span>
+                <span className="text-xs text-muted-foreground leading-tight">
                   {(provincePropertyCounts[hoveredProvinceName] || 0).toLocaleString()} properti
                 </span>
               </div>
-              <span className="text-[9px] text-primary font-medium ml-1">Klik →</span>
+              <span className="text-xs text-primary font-semibold ml-2">Klik →</span>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Compass rose - Glassy style - Responsive */}
-      <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-20">
-        <div className="bg-background/40 backdrop-blur-md rounded-full p-0.5 sm:p-1 border border-border/50 shadow-lg">
-          <svg width="28" height="28" viewBox="0 0 48 48" className="drop-shadow-sm sm:w-10 sm:h-10">
+      {/* Compass rose - Solid Rumah123 style */}
+      <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 z-20">
+        <div className="bg-background rounded-full p-1.5 border border-border shadow-md">
+          <svg width="32" height="32" viewBox="0 0 48 48" className="drop-shadow-sm sm:w-10 sm:h-10">
             <circle cx="24" cy="24" r="22" className="fill-transparent" />
             <polygon points="24,6 28,20 24,16 20,20" className="fill-primary" />
             <polygon points="24,42 28,28 24,32 20,28" className="fill-muted-foreground/60" />
