@@ -107,7 +107,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const currentText = text[language];
 
   return (
-    <footer className="bg-background border-t border-border">
+    <footer className="bg-slate-100 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700">
       <div className="container mx-auto px-4 md:px-6 py-8 md:py-10">
         {/* Main Footer Grid - 4 columns */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 mb-8">
