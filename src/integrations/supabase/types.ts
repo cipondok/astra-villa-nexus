@@ -16179,6 +16179,321 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_competitor_keywords: {
+        Row: {
+          competitor_domain: string
+          competitor_name: string | null
+          created_at: string
+          gap: number | null
+          id: string
+          is_opportunity: boolean | null
+          keyword: string
+          last_checked_at: string | null
+          notes: string | null
+          opportunity_score: number | null
+          our_position: number | null
+          search_volume: number | null
+          their_position: number | null
+          updated_at: string
+        }
+        Insert: {
+          competitor_domain: string
+          competitor_name?: string | null
+          created_at?: string
+          gap?: number | null
+          id?: string
+          is_opportunity?: boolean | null
+          keyword: string
+          last_checked_at?: string | null
+          notes?: string | null
+          opportunity_score?: number | null
+          our_position?: number | null
+          search_volume?: number | null
+          their_position?: number | null
+          updated_at?: string
+        }
+        Update: {
+          competitor_domain?: string
+          competitor_name?: string | null
+          created_at?: string
+          gap?: number | null
+          id?: string
+          is_opportunity?: boolean | null
+          keyword?: string
+          last_checked_at?: string | null
+          notes?: string | null
+          opportunity_score?: number | null
+          our_position?: number | null
+          search_volume?: number | null
+          their_position?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      seo_internal_searches: {
+        Row: {
+          clicked_result_id: string | null
+          clicked_result_type: string | null
+          created_at: string
+          id: string
+          ip_address: unknown
+          location_filter: string | null
+          property_type_filter: string | null
+          results_count: number | null
+          search_filters: Json | null
+          search_query: string
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          clicked_result_id?: string | null
+          clicked_result_type?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: unknown
+          location_filter?: string | null
+          property_type_filter?: string | null
+          results_count?: number | null
+          search_filters?: Json | null
+          search_query: string
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          clicked_result_id?: string | null
+          clicked_result_type?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: unknown
+          location_filter?: string | null
+          property_type_filter?: string | null
+          results_count?: number | null
+          search_filters?: Json | null
+          search_query?: string
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_internal_searches_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seo_keywords: {
+        Row: {
+          competitor_positions: Json | null
+          created_at: string
+          current_position: number | null
+          difficulty_score: number | null
+          id: string
+          is_tracked: boolean | null
+          keyword: string
+          landing_page_id: string | null
+          last_checked_at: string | null
+          monthly_trend: Json | null
+          position_change: number | null
+          previous_position: number | null
+          search_volume: number | null
+          target_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          competitor_positions?: Json | null
+          created_at?: string
+          current_position?: number | null
+          difficulty_score?: number | null
+          id?: string
+          is_tracked?: boolean | null
+          keyword: string
+          landing_page_id?: string | null
+          last_checked_at?: string | null
+          monthly_trend?: Json | null
+          position_change?: number | null
+          previous_position?: number | null
+          search_volume?: number | null
+          target_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          competitor_positions?: Json | null
+          created_at?: string
+          current_position?: number | null
+          difficulty_score?: number | null
+          id?: string
+          is_tracked?: boolean | null
+          keyword?: string
+          landing_page_id?: string | null
+          last_checked_at?: string | null
+          monthly_trend?: Json | null
+          position_change?: number | null
+          previous_position?: number | null
+          search_volume?: number | null
+          target_url?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_keywords_landing_page_id_fkey"
+            columns: ["landing_page_id"]
+            isOneToOne: false
+            referencedRelation: "seo_landing_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seo_landing_pages: {
+        Row: {
+          ai_model_used: string | null
+          avg_price: number | null
+          category: string | null
+          clicks_count: number | null
+          closing_content: string | null
+          conversions_count: number | null
+          created_at: string
+          h1_heading: string | null
+          id: string
+          internal_links: Json | null
+          intro_content: string | null
+          is_ai_generated: boolean | null
+          is_published: boolean | null
+          last_ai_update: string | null
+          main_content: string | null
+          meta_description: string | null
+          meta_title: string | null
+          page_type: string
+          price_range_max: number | null
+          price_range_min: number | null
+          primary_keyword: string | null
+          property_count: number | null
+          property_type: string | null
+          secondary_keywords: string[] | null
+          seo_score: number | null
+          slug: string
+          state_id: string | null
+          state_name: string
+          title: string
+          updated_at: string
+          views_count: number | null
+        }
+        Insert: {
+          ai_model_used?: string | null
+          avg_price?: number | null
+          category?: string | null
+          clicks_count?: number | null
+          closing_content?: string | null
+          conversions_count?: number | null
+          created_at?: string
+          h1_heading?: string | null
+          id?: string
+          internal_links?: Json | null
+          intro_content?: string | null
+          is_ai_generated?: boolean | null
+          is_published?: boolean | null
+          last_ai_update?: string | null
+          main_content?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          page_type: string
+          price_range_max?: number | null
+          price_range_min?: number | null
+          primary_keyword?: string | null
+          property_count?: number | null
+          property_type?: string | null
+          secondary_keywords?: string[] | null
+          seo_score?: number | null
+          slug: string
+          state_id?: string | null
+          state_name: string
+          title: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Update: {
+          ai_model_used?: string | null
+          avg_price?: number | null
+          category?: string | null
+          clicks_count?: number | null
+          closing_content?: string | null
+          conversions_count?: number | null
+          created_at?: string
+          h1_heading?: string | null
+          id?: string
+          internal_links?: Json | null
+          intro_content?: string | null
+          is_ai_generated?: boolean | null
+          is_published?: boolean | null
+          last_ai_update?: string | null
+          main_content?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          page_type?: string
+          price_range_max?: number | null
+          price_range_min?: number | null
+          primary_keyword?: string | null
+          property_count?: number | null
+          property_type?: string | null
+          secondary_keywords?: string[] | null
+          seo_score?: number | null
+          slug?: string
+          state_id?: string | null
+          state_name?: string
+          title?: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Relationships: []
+      }
+      seo_publish_queue: {
+        Row: {
+          action: string
+          created_at: string
+          error_message: string | null
+          id: string
+          landing_page_id: string | null
+          priority: number | null
+          processed_at: string | null
+          scheduled_for: string | null
+          status: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          landing_page_id?: string | null
+          priority?: number | null
+          processed_at?: string | null
+          scheduled_for?: string | null
+          status?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          landing_page_id?: string | null
+          priority?: number | null
+          processed_at?: string | null
+          scheduled_for?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_publish_queue_landing_page_id_fkey"
+            columns: ["landing_page_id"]
+            isOneToOne: false
+            referencedRelation: "seo_landing_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_area_mappings: {
         Row: {
           area_type: string

@@ -138,3 +138,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.automation-processor]
     verify_jwt = false
+
+  [functions.seo-content-generator]
+    verify_jwt = false

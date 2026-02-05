@@ -28,10 +28,12 @@ import {
   ExternalLink,
   CheckCircle,
   Clock,
-  Ban
+  Ban,
+  Globe
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import SEOManagement from "./marketing/SEOManagement";
 
 const UserAcquisitionManagement = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -563,74 +565,9 @@ const UserAcquisitionManagement = () => {
           </Card>
         </TabsContent>
 
-        {/* SEO Tab */}
+        {/* SEO Tab - Full Management */}
         <TabsContent value="seo" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>SEO Content Factory</CardTitle>
-                  <CardDescription>Goal: 1,000 property-related articles for organic traffic</CardDescription>
-                </div>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Article
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-4">
-                <Progress value={seoProgress} className="h-3" />
-                <p className="text-sm text-muted-foreground mt-1">{seoContent.length} of 1,000 articles ({seoProgress.toFixed(1)}%)</p>
-              </div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Keyword</TableHead>
-                    <TableHead>Traffic</TableHead>
-                    <TableHead>Conversions</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {seoContent.slice(0, 10).map((content) => (
-                    <TableRow key={content.id}>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium text-sm">{content.title}</p>
-                          <p className="text-xs text-muted-foreground">{content.slug}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{content.content_type}</Badge>
-                      </TableCell>
-                      <TableCell className="text-sm">{content.primary_keyword}</TableCell>
-                      <TableCell>{content.organic_traffic?.toLocaleString() || 0}</TableCell>
-                      <TableCell>{content.conversions || 0}</TableCell>
-                      <TableCell>
-                        <Badge variant={content.status === 'published' ? "default" : "secondary"}>
-                          {content.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Button size="icon" variant="ghost">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              {seoContent.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground">
-                  Start creating SEO-optimized content to drive organic traffic.
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <SEOManagement />
         </TabsContent>
 
         {/* Influencers Tab */}
