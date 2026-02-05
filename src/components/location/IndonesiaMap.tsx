@@ -501,7 +501,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
             );
           })}
 
-          {/* User Location Indicator - Pulsing circle for last selected province */}
+          {/* User Location Indicator - Always visible pulsing circle */}
           {userProvince && (() => {
             // Find coordinates for user's province using reverse mapping
             const userProvinceName = canonicalIdToProvinceName[userProvince];
@@ -512,34 +512,29 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
             return (
               <Marker coordinates={coords}>
                 <g style={{ pointerEvents: 'none' }}>
-                  {/* Outer pulsing ring */}
+                  {/* Outer pulsing ring - always animating */}
                   <circle
-                    r={12}
+                    r={14}
+                    fill="none"
+                    stroke="hsl(var(--accent))"
+                    strokeWidth={2.5}
+                    className="animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]"
+                    style={{ opacity: 0.5 }}
+                  />
+                  {/* Second pulsing ring with offset */}
+                  <circle
+                    r={10}
                     fill="none"
                     stroke="hsl(var(--accent))"
                     strokeWidth={2}
-                    opacity={0.4}
-                  >
-                    <animate
-                      attributeName="r"
-                      from="8"
-                      to="18"
-                      dur="1.5s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      from="0.6"
-                      to="0"
-                      dur="1.5s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  {/* Middle ring */}
+                    className="animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite_0.5s]"
+                    style={{ opacity: 0.4 }}
+                  />
+                  {/* Middle static ring */}
                   <circle
                     r={8}
                     fill="hsl(var(--accent))"
-                    fillOpacity={0.25}
+                    fillOpacity={0.3}
                     stroke="hsl(var(--accent))"
                     strokeWidth={2}
                   />
