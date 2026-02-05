@@ -165,194 +165,198 @@ const UserAcquisitionManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-1">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Target className="h-6 w-6 text-primary" />
-            User Acquisition System
-          </h2>
-          <p className="text-muted-foreground">
-            Referrals, Partnerships, SEO, Influencers, Corporate & University Programs
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-[6px] bg-primary/10 flex items-center justify-center shrink-0">
+            <Target className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground">User Acquisition System</h2>
+            <p className="text-sm text-muted-foreground">
+              Referrals, Partnerships, SEO, Influencers, Corporate & University Programs
+            </p>
+          </div>
         </div>
-        <div className="text-right">
-          <p className="text-sm text-muted-foreground">Target CPA</p>
-          <p className="text-xl font-bold text-green-600">&lt; {formatCurrency(targetCPA)}</p>
+        <div className="flex items-center gap-3 bg-green-50 dark:bg-green-500/10 px-4 py-2 rounded-[6px] border border-green-200 dark:border-green-500/20">
+          <span className="text-sm text-muted-foreground">Target CPA</span>
+          <span className="text-lg font-bold text-green-600">&lt; {formatCurrency(targetCPA)}</span>
         </div>
       </div>
 
-      {/* CPA & Stats Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-        <Card className="col-span-1">
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2">
+      {/* Stats Grid - Professional Rumah123 Style */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-emerald-500/10 flex items-center justify-center">
               <DollarSign className="h-5 w-5 text-emerald-500" />
-              <div>
-                <p className="text-xs text-muted-foreground">Current CPA</p>
-                <p className={`text-xl font-bold ${actualCPA <= targetCPA ? 'text-green-600' : 'text-red-600'}`}>
-                  {formatCurrency(actualCPA)}
-                </p>
-              </div>
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className={`text-xl font-bold ${actualCPA <= targetCPA ? 'text-green-600' : 'text-destructive'}`}>
+                {formatCurrency(actualCPA)}
+              </p>
+              <p className="text-xs text-muted-foreground">Current CPA</p>
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2">
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-pink-500/10 flex items-center justify-center">
               <Gift className="h-5 w-5 text-pink-500" />
-              <div>
-                <p className="text-xs text-muted-foreground">Referrals</p>
-                <p className="text-xl font-bold">{referrals.length}</p>
-              </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">{convertedReferrals} converted</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2">
-              <Landmark className="h-5 w-5 text-blue-500" />
-              <div>
-                <p className="text-xs text-muted-foreground">Bank Partners</p>
-                <p className="text-xl font-bold">{bankPartnerships.length}</p>
-              </div>
+            <div>
+              <p className="text-xl font-bold text-foreground">{referrals.length}</p>
+              <p className="text-xs text-muted-foreground">Referrals</p>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">{bankConversions} leads</p>
-          </CardContent>
-        </Card>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2 pt-2 border-t border-border">{convertedReferrals} converted</p>
+        </div>
 
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2">
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-primary/10 flex items-center justify-center">
+              <Landmark className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-xl font-bold text-foreground">{bankPartnerships.length}</p>
+              <p className="text-xs text-muted-foreground">Bank Partners</p>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2 pt-2 border-t border-border">{bankConversions} leads</p>
+        </div>
+
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-green-500/10 flex items-center justify-center">
               <FileText className="h-5 w-5 text-green-500" />
-              <div>
-                <p className="text-xs text-muted-foreground">SEO Articles</p>
-                <p className="text-xl font-bold">{seoContent.length}</p>
-              </div>
             </div>
-            <Progress value={seoProgress} className="h-1 mt-2" />
-            <p className="text-xs text-muted-foreground mt-1">{seoProgress.toFixed(1)}% of 1000</p>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-xl font-bold text-foreground">{seoContent.length}</p>
+              <p className="text-xs text-muted-foreground">SEO Articles</p>
+            </div>
+          </div>
+          <div className="mt-2 pt-2 border-t border-border">
+            <Progress value={seoProgress} className="h-1.5" />
+            <p className="text-xs text-muted-foreground mt-1">{seoProgress.toFixed(1)}% of 1,000</p>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2">
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-purple-500/10 flex items-center justify-center">
               <Instagram className="h-5 w-5 text-purple-500" />
-              <div>
-                <p className="text-xs text-muted-foreground">Influencers</p>
-                <p className="text-xl font-bold">{influencers.length}</p>
-              </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">{formatNumber(totalInfluencerReach)} reach</p>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-xl font-bold text-foreground">{influencers.length}</p>
+              <p className="text-xs text-muted-foreground">Influencers</p>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2 pt-2 border-t border-border">{formatNumber(totalInfluencerReach)} reach</p>
+        </div>
 
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2">
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-orange-500/10 flex items-center justify-center">
               <Building2 className="h-5 w-5 text-orange-500" />
-              <div>
-                <p className="text-xs text-muted-foreground">Corporate</p>
-                <p className="text-xl font-bold">{corporatePartnerships.length}</p>
-              </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">HR partnerships</p>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-xl font-bold text-foreground">{corporatePartnerships.length}</p>
+              <p className="text-xs text-muted-foreground">Corporate</p>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2 pt-2 border-t border-border">HR partnerships</p>
+        </div>
 
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2">
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-indigo-500/10 flex items-center justify-center">
               <GraduationCap className="h-5 w-5 text-indigo-500" />
-              <div>
-                <p className="text-xs text-muted-foreground">Universities</p>
-                <p className="text-xl font-bold">{universityPartnerships.length}</p>
-              </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Student housing</p>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-xl font-bold text-foreground">{universityPartnerships.length}</p>
+              <p className="text-xs text-muted-foreground">Universities</p>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2 pt-2 border-t border-border">Student housing</p>
+        </div>
       </div>
 
-      {/* Main Tabs */}
+      {/* Main Tabs - Professional Style */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-6 w-full">
-          <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
-          <TabsTrigger value="referrals" className="text-xs">Referral 2.0</TabsTrigger>
-          <TabsTrigger value="banks" className="text-xs">Banks</TabsTrigger>
-          <TabsTrigger value="seo" className="text-xs">SEO Factory</TabsTrigger>
-          <TabsTrigger value="influencers" className="text-xs">Influencers</TabsTrigger>
-          <TabsTrigger value="partnerships" className="text-xs">Corporate/Uni</TabsTrigger>
+        <TabsList className="w-full grid grid-cols-6 bg-muted/50 border border-border rounded-[6px] p-1">
+          <TabsTrigger value="overview" className="text-xs rounded-[4px] data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">Overview</TabsTrigger>
+          <TabsTrigger value="referrals" className="text-xs rounded-[4px] data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">Referral 2.0</TabsTrigger>
+          <TabsTrigger value="banks" className="text-xs rounded-[4px] data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">Banks</TabsTrigger>
+          <TabsTrigger value="seo" className="text-xs rounded-[4px] data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">SEO Factory</TabsTrigger>
+          <TabsTrigger value="influencers" className="text-xs rounded-[4px] data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">Influencers</TabsTrigger>
+          <TabsTrigger value="partnerships" className="text-xs rounded-[4px] data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">Corporate/Uni</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
-        <TabsContent value="overview" className="space-y-4">
+        <TabsContent value="overview" className="space-y-4 mt-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Referral Program Stats */}
-            <Card>
-              <CardHeader className="pb-2">
+            <Card className="bg-card border border-border rounded-[6px] shadow-sm">
+              <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center gap-2">
+                  <CardTitle className="text-base font-semibold flex items-center gap-2">
                     <Gift className="h-4 w-4 text-pink-500" />
                     Referral Program 2.0
                   </CardTitle>
-                  <Badge variant="outline">Give $100, Get $100</Badge>
+                  <Badge variant="outline" className="text-xs border-primary/30 text-primary">Give $100, Get $100</Badge>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-3 gap-4 text-center mb-4">
-                  <div>
-                    <p className="text-2xl font-bold">{referrals.length}</p>
+                  <div className="bg-muted/30 rounded-[6px] p-3">
+                    <p className="text-2xl font-bold text-foreground">{referrals.length}</p>
                     <p className="text-xs text-muted-foreground">Total Referrals</p>
                   </div>
-                  <div>
+                  <div className="bg-green-50 dark:bg-green-500/10 rounded-[6px] p-3">
                     <p className="text-2xl font-bold text-green-600">{convertedReferrals}</p>
                     <p className="text-xs text-muted-foreground">Converted</p>
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-yellow-600">{pendingReferrals}</p>
+                  <div className="bg-amber-50 dark:bg-amber-500/10 rounded-[6px] p-3">
+                    <p className="text-2xl font-bold text-amber-600">{pendingReferrals}</p>
                     <p className="text-xs text-muted-foreground">Pending</p>
                   </div>
                 </div>
-                <div className="pt-2 border-t">
-                  <p className="text-sm">Total Rewards Paid: <span className="font-bold">{formatCurrency(totalReferralRewards)}</span></p>
+                <div className="pt-3 border-t border-border">
+                  <p className="text-sm text-muted-foreground">Total Rewards Paid: <span className="font-bold text-foreground">{formatCurrency(totalReferralRewards)}</span></p>
                 </div>
               </CardContent>
             </Card>
 
             {/* SEO Content Factory */}
-            <Card>
-              <CardHeader className="pb-2">
+            <Card className="bg-card border border-border rounded-[6px] shadow-sm">
+              <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center gap-2">
+                  <CardTitle className="text-base font-semibold flex items-center gap-2">
                     <FileText className="h-4 w-4 text-green-500" />
                     SEO Content Factory
                   </CardTitle>
-                  <Badge variant="outline">{seoContent.length} / 1,000 articles</Badge>
+                  <Badge variant="outline" className="text-xs">{seoContent.length} / 1,000 articles</Badge>
                 </div>
               </CardHeader>
               <CardContent>
-                <Progress value={seoProgress} className="h-3 mb-4" />
+                <Progress value={seoProgress} className="h-2 mb-4" />
                 <div className="grid grid-cols-4 gap-2 text-center">
-                  <div>
-                    <p className="text-lg font-bold">{seoContent.filter(s => s.status === 'published').length}</p>
+                  <div className="bg-muted/30 rounded-[6px] p-2">
+                    <p className="text-lg font-bold text-foreground">{seoContent.filter(s => s.status === 'published').length}</p>
                     <p className="text-xs text-muted-foreground">Published</p>
                   </div>
-                  <div>
-                    <p className="text-lg font-bold">{seoContent.filter(s => s.status === 'draft').length}</p>
+                  <div className="bg-muted/30 rounded-[6px] p-2">
+                    <p className="text-lg font-bold text-foreground">{seoContent.filter(s => s.status === 'draft').length}</p>
                     <p className="text-xs text-muted-foreground">Drafts</p>
                   </div>
-                  <div>
-                    <p className="text-lg font-bold">{seoContent.filter(s => s.ai_generated).length}</p>
+                  <div className="bg-muted/30 rounded-[6px] p-2">
+                    <p className="text-lg font-bold text-foreground">{seoContent.filter(s => s.ai_generated).length}</p>
                     <p className="text-xs text-muted-foreground">AI Generated</p>
                   </div>
-                  <div>
-                    <p className="text-lg font-bold">{seoContent.reduce((sum, s) => sum + (s.organic_traffic || 0), 0)}</p>
+                  <div className="bg-muted/30 rounded-[6px] p-2">
+                    <p className="text-lg font-bold text-foreground">{seoContent.reduce((sum, s) => sum + (s.organic_traffic || 0), 0)}</p>
                     <p className="text-xs text-muted-foreground">Traffic</p>
                   </div>
                 </div>
@@ -360,31 +364,29 @@ const UserAcquisitionManagement = () => {
             </Card>
 
             {/* Influencer Network */}
-            <Card>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Instagram className="h-4 w-4 text-purple-500" />
-                    Influencer Network
-                  </CardTitle>
-                </div>
+            <Card className="bg-card border border-border rounded-[6px] shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base font-semibold flex items-center gap-2">
+                  <Instagram className="h-4 w-4 text-purple-500" />
+                  Influencer Network
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-4 gap-2 text-center mb-4">
-                  <div>
-                    <p className="text-lg font-bold">{influencers.filter(i => i.platform === 'tiktok').length}</p>
+                <div className="grid grid-cols-4 gap-2 text-center">
+                  <div className="bg-muted/30 rounded-[6px] p-3">
+                    <p className="text-lg font-bold text-foreground">{influencers.filter(i => i.platform === 'tiktok').length}</p>
                     <p className="text-xs text-muted-foreground">TikTok</p>
                   </div>
-                  <div>
-                    <p className="text-lg font-bold">{influencers.filter(i => i.platform === 'instagram').length}</p>
+                  <div className="bg-muted/30 rounded-[6px] p-3">
+                    <p className="text-lg font-bold text-foreground">{influencers.filter(i => i.platform === 'instagram').length}</p>
                     <p className="text-xs text-muted-foreground">Instagram</p>
                   </div>
-                  <div>
-                    <p className="text-lg font-bold">{influencers.filter(i => i.platform === 'youtube').length}</p>
+                  <div className="bg-muted/30 rounded-[6px] p-3">
+                    <p className="text-lg font-bold text-foreground">{influencers.filter(i => i.platform === 'youtube').length}</p>
                     <p className="text-xs text-muted-foreground">YouTube</p>
                   </div>
-                  <div>
-                    <p className="text-lg font-bold">{formatNumber(totalInfluencerReach)}</p>
+                  <div className="bg-primary/10 rounded-[6px] p-3">
+                    <p className="text-lg font-bold text-primary">{formatNumber(totalInfluencerReach)}</p>
                     <p className="text-xs text-muted-foreground">Total Reach</p>
                   </div>
                 </div>
@@ -392,35 +394,35 @@ const UserAcquisitionManagement = () => {
             </Card>
 
             {/* Partnership Summary */}
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base flex items-center gap-2">
+            <Card className="bg-card border border-border rounded-[6px] shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base font-semibold flex items-center gap-2">
                   <Building2 className="h-4 w-4 text-orange-500" />
                   Strategic Partnerships
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-3 bg-muted/30 rounded-[6px]">
                     <div className="flex items-center gap-2">
-                      <Landmark className="h-4 w-4 text-blue-500" />
-                      <span className="text-sm">Bank/Mortgage Partners</span>
+                      <Landmark className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium text-foreground">Bank/Mortgage Partners</span>
                     </div>
-                    <Badge>{bankPartnerships.length}</Badge>
+                    <Badge className="bg-primary/10 text-primary border-0">{bankPartnerships.length}</Badge>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-3 bg-muted/30 rounded-[6px]">
                     <div className="flex items-center gap-2">
                       <Building2 className="h-4 w-4 text-orange-500" />
-                      <span className="text-sm">Corporate HR Programs</span>
+                      <span className="text-sm font-medium text-foreground">Corporate HR Programs</span>
                     </div>
-                    <Badge>{corporatePartnerships.length}</Badge>
+                    <Badge className="bg-orange-500/10 text-orange-600 border-0">{corporatePartnerships.length}</Badge>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-3 bg-muted/30 rounded-[6px]">
                     <div className="flex items-center gap-2">
                       <GraduationCap className="h-4 w-4 text-indigo-500" />
-                      <span className="text-sm">University Housing</span>
+                      <span className="text-sm font-medium text-foreground">University Housing</span>
                     </div>
-                    <Badge>{universityPartnerships.length}</Badge>
+                    <Badge className="bg-indigo-500/10 text-indigo-600 border-0">{universityPartnerships.length}</Badge>
                   </div>
                 </div>
               </CardContent>
