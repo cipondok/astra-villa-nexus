@@ -7,13 +7,22 @@ import { useNavigate } from 'react-router-dom';
 const STORAGE_KEY = 'astra_new_arrivals_seen_date';
 const SESSION_KEY = 'astra_new_arrivals_seen_session';
 
+const getLocalDayKey = () => {
+  // Local calendar day (fixes UTC day rollover causing repeats)
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
 export const NewArrivalsPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Show at most once per session AND once per calendar day
-    const today = new Date().toISOString().split('T')[0];
+    // Show at most once per session AND once per local calendar day
+    const today = getLocalDayKey();
 
     const seenThisSession = sessionStorage.getItem(SESSION_KEY) === 'true';
     const seenDate = localStorage.getItem(STORAGE_KEY);
@@ -42,7 +51,7 @@ export const NewArrivalsPopup = () => {
 
   const handleClose = () => {
     setIsVisible(false);
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDayKey();
     localStorage.setItem(STORAGE_KEY, today);
     sessionStorage.setItem(SESSION_KEY, 'true');
   };
