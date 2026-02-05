@@ -385,35 +385,106 @@ const AstraTokenHub = () => {
                 </CardContent>
               </Card>
 
-              {/* Welcome Bonus */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Gift className="h-5 w-5" />
-                    Welcome Bonus
-                  </CardTitle>
-                  <CardDescription>
-                    Claim your one-time welcome bonus to get started!
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-center space-y-4">
-                    <div className="text-4xl">🎉</div>
-                    <div>
-                      <p className="text-lg font-semibold">Ready to claim your welcome bonus?</p>
-                      <p className="text-sm text-muted-foreground">Get started with free ASTRA tokens</p>
+              {/* Welcome Bonus or Upcoming Rewards */}
+              {transactions?.some(t => t.transaction_type === 'welcome_bonus') ? (
+                // Show Upcoming Rewards if welcome bonus already claimed
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="h-5 w-5 text-amber-500" />
+                      Upcoming Rewards
+                    </CardTitle>
+                    <CardDescription>
+                      Complete activities to earn more ASTRA tokens
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                            <Users className="h-4 w-4 text-purple-500" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">Refer a Friend</p>
+                            <p className="text-xs text-muted-foreground">Invite someone to join</p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="text-amber-500 border-amber-500/50">+100 ASTRA</Badge>
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                            <CheckCircle className="h-4 w-4 text-blue-500" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">Complete Profile</p>
+                            <p className="text-xs text-muted-foreground">Add all your details</p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="text-amber-500 border-amber-500/50">+50 ASTRA</Badge>
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                            <TrendingUp className="h-4 w-4 text-green-500" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">First Transaction</p>
+                            <p className="text-xs text-muted-foreground">Make your first purchase</p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="text-amber-500 border-amber-500/50">+25 ASTRA</Badge>
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full bg-orange-500/20 flex items-center justify-center">
+                            <Calendar className="h-4 w-4 text-orange-500" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">7-Day Streak</p>
+                            <p className="text-xs text-muted-foreground">Check in for 7 days</p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="text-amber-500 border-amber-500/50">1.5x Bonus</Badge>
+                      </div>
                     </div>
-                    <Button 
-                      onClick={() => welcomeBonusMutation.mutate()}
-                      disabled={welcomeBonusMutation.isPending}
-                      className="w-full"
-                      variant="default"
-                    >
-                      {welcomeBonusMutation.isPending ? 'Claiming...' : 'Claim Welcome Bonus'}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              ) : (
+                // Show Welcome Bonus if not yet claimed
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Gift className="h-5 w-5" />
+                      Welcome Bonus
+                    </CardTitle>
+                    <CardDescription>
+                      Claim your one-time welcome bonus to get started!
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="text-center space-y-4">
+                      <div className="text-4xl">🎉</div>
+                      <div>
+                        <p className="text-lg font-semibold">Ready to claim your welcome bonus?</p>
+                        <p className="text-sm text-muted-foreground">Get started with free ASTRA tokens</p>
+                      </div>
+                      <Button 
+                        onClick={() => welcomeBonusMutation.mutate()}
+                        disabled={welcomeBonusMutation.isPending}
+                        className="w-full"
+                        variant="default"
+                      >
+                        {welcomeBonusMutation.isPending ? 'Claiming...' : 'Claim Welcome Bonus'}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
 
