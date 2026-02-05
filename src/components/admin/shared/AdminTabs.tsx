@@ -30,9 +30,8 @@ export const AdminTabs = ({
   return (
     <Tabs value={value} onValueChange={onValueChange} className={className}>
       <TabsList className={cn(
-        "bg-muted/50 border border-border rounded-[6px] p-1",
-        fullWidth && "w-full",
-        fullWidth && `grid grid-cols-${tabs.length}`,
+        "bg-muted/50 border border-border rounded-[6px] p-1 h-auto",
+        fullWidth && "w-full flex flex-wrap gap-1",
         tabsListClassName
       )}>
         {tabs.map((tab) => (
