@@ -17,7 +17,7 @@ interface ThemeSettingsContextType {
 
 const defaultThemeSettings: ThemeSettings = {
   primaryColor: '#0066FF', // Samsung Blue Titanium
-  currency: 'USD',
+  currency: 'IDR',
   siteName: 'AstraVilla Realty',
   isDarkMode: true
 };

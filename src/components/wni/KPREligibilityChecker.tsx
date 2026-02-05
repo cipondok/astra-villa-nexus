@@ -48,7 +48,7 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
   
   // Form state
   const [monthlyIncome, setMonthlyIncome] = useState<number>(0);
-  const [currency, setCurrency] = useState<'USD' | 'SGD' | 'AED' | 'MYR' | 'IDR'>('USD');
+  const [currency, setCurrency] = useState<'USD' | 'SGD' | 'AED' | 'MYR' | 'IDR'>('IDR');
   const [monthsEmployed, setMonthsEmployed] = useState<number>(12);
   const [existingDebt, setExistingDebt] = useState<number>(0);
   const [propertyPrice, setPropertyPrice] = useState<number>(0);

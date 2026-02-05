@@ -121,10 +121,8 @@ const UnifiedPaymentSelector = ({
   };
 
   const formatAmount = () => {
-    if (currency === 'IDR') {
-      return formatIDR(amount);
-    }
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+    // Always format as IDR for Indonesian market
+    return formatIDR(amount);
   };
 
   const renderMethodGroup = (category: PaymentMethod['category'], title: string) => {
