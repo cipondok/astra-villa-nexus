@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Send, AlertCircle, DollarSign } from 'lucide-react';
+import { Send, AlertCircle, DollarSign, ShieldCheck } from 'lucide-react';
 import { useAlert } from '@/contexts/AlertContext';
 import { useAstraToken } from '@/hooks/useAstraToken';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface AstraTokenTransferProps {
   className?: string;
@@ -14,6 +15,7 @@ interface AstraTokenTransferProps {
 
 const AstraTokenTransfer: React.FC<AstraTokenTransferProps> = ({ className }) => {
   const { balance, transferTokens, formatTokenAmount } = useAstraToken();
+  const { profile } = useAuth();
   const { showError } = useAlert();
   
   const [recipientId, setRecipientId] = useState('');
@@ -21,8 +23,12 @@ const AstraTokenTransfer: React.FC<AstraTokenTransferProps> = ({ className }) =>
   const [message, setMessage] = useState('');
   const [isTransferring, setIsTransferring] = useState(false);
 
-  // Check if user is eligible for transfers (minimum 1000 tokens)
-  const isEligible = balance && balance.available_tokens >= 1000;
+  // Check verification status
+  const isVerified = profile?.verification_status === 'verified';
+  
+  // Check if user is eligible for transfers (verified + minimum 1000 tokens)
+  const hasMinimumTokens = balance && balance.available_tokens >= 1000;
+  const isEligible = isVerified && hasMinimumTokens;
   const availableTokens = balance?.available_tokens || 0;
 
   const handleTransfer = async () => {
@@ -77,15 +83,40 @@ const AstraTokenTransfer: React.FC<AstraTokenTransferProps> = ({ className }) =>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {!isEligible && (
+        {!isVerified && (
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
+            <div className="flex items-center gap-2 text-amber-600">
+              <ShieldCheck className="h-5 w-5" />
+              <span className="font-medium">Verification Required</span>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              You need to verify your account to transfer tokens. 
+              Go to your profile settings to start verification.
+            </p>
+          </div>
+        )}
+
+        {isVerified && !hasMinimumTokens && (
           <div className="bg-warning/10 border border-warning/20 rounded-lg p-4">
             <div className="flex items-center gap-2 text-warning">
               <AlertCircle className="h-5 w-5" />
-              <span className="font-medium">Transfer Requirements</span>
+              <span className="font-medium">Minimum Balance Required</span>
             </div>
             <p className="text-sm text-muted-foreground mt-1">
               You need at least 1,000 ASTRA tokens to make transfers. 
               Current balance: {formatTokenAmount(availableTokens)} tokens
+            </p>
+          </div>
+        )}
+
+        {isEligible && (
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4">
+            <div className="flex items-center gap-2 text-emerald-600">
+              <ShieldCheck className="h-5 w-5" />
+              <span className="font-medium">Transfers Enabled</span>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              Your account is verified and you can transfer tokens to other users.
             </p>
           </div>
         )}
@@ -170,6 +201,7 @@ const AstraTokenTransfer: React.FC<AstraTokenTransferProps> = ({ className }) =>
         </div>
 
         <div className="text-xs text-muted-foreground space-y-1">
+          <p>• Account verification required for transfers</p>
           <p>• Minimum 1,000 ASTRA tokens required to make transfers</p>
           <p>• Transfer fee: 1% of transfer amount (minimum 1 token)</p>
           <p>• Transfers are processed immediately and cannot be reversed</p>

@@ -8,8 +8,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CustomerServiceDashboard from '@/components/dashboard/CustomerServiceDashboard';
 import ProfileUpgradeCard from '@/components/ProfileUpgradeCard';
 import ApplicationStatusBar from '@/components/dashboard/ApplicationStatusBar';
+import AstraWalletCard from '@/components/dashboard/AstraWalletCard';
 import { useUserDashboardData } from '@/hooks/useUserDashboardData';
 import { useUserRoles } from '@/hooks/useUserRoles';
+import { useAstraToken } from '@/hooks/useAstraToken';
 import { formatDistanceToNow } from 'date-fns';
 import { motion } from 'framer-motion';
 import { 
@@ -35,6 +37,7 @@ const UserDashboardPage = () => {
   const navigate = useNavigate();
   const { stats, savedProperties, recentActivity, isLoading } = useUserDashboardData();
   const { data: userRoles = [], isLoading: rolesLoading } = useUserRoles();
+  const { balance } = useAstraToken();
 
   const primaryRole = userRoles.find(role => role !== 'general_user') || userRoles[0] || 'general_user';
   const hasUpgradedRole = userRoles.some(role => 
@@ -79,7 +82,7 @@ const UserDashboardPage = () => {
     { icon: Heart, value: stats.savedProperties, label: 'Saved', color: 'from-rose-500 to-pink-500', bgColor: 'bg-rose-500/10' },
     { icon: Calendar, value: stats.messages, label: 'Bookings', color: 'from-blue-500 to-cyan-500', bgColor: 'bg-blue-500/10' },
     { icon: Activity, value: recentActivity.length, label: 'Activities', color: 'from-emerald-500 to-green-500', bgColor: 'bg-emerald-500/10' },
-    { icon: Coins, value: 0, label: 'ASTRA', color: 'from-amber-500 to-yellow-500', bgColor: 'bg-amber-500/10' },
+    { icon: Coins, value: balance?.available_tokens || 0, label: 'ASTRA', color: 'from-amber-500 to-yellow-500', bgColor: 'bg-amber-500/10' },
   ];
 
   const quickActions = [
@@ -195,6 +198,9 @@ const UserDashboardPage = () => {
 
         {/* Upgrade Card */}
         {!hasUpgradedRole && <ProfileUpgradeCard />}
+
+        {/* ASTRA Wallet Card */}
+        <AstraWalletCard />
 
         {/* Dashboard Tabs - Glassmorphism */}
         <Tabs defaultValue="overview" className="space-y-3">

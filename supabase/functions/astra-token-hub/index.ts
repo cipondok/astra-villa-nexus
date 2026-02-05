@@ -683,6 +683,31 @@ async function processTokenTransfer(supabase: any, senderId: string, recipientId
     );
   }
 
+  // Check if sender is verified (required for transfers)
+  const { data: senderProfile, error: senderProfileError } = await supabase
+    .from('profiles')
+    .select('verification_status')
+    .eq('id', senderId)
+    .single();
+
+  if (senderProfileError || !senderProfile) {
+    return new Response(
+      JSON.stringify({ success: false, message: 'Failed to get sender profile' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Only verified users can make transfers
+  if (senderProfile.verification_status !== 'verified') {
+    return new Response(
+      JSON.stringify({ 
+        success: false, 
+        message: 'Only verified users can transfer tokens. Please verify your account first.'
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
   // Get sender's current balance
   const { data: senderBalance, error: senderError } = await supabase
     .from('astra_token_balances')
