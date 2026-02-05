@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MapPin, Building2, ExternalLink, Loader2, Home, X } from 'lucide-react';
@@ -8,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import Rumah123PropertyCard from '@/components/property/Rumah123PropertyCard';
 import { motion } from 'framer-motion';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface Property {
   id: string;
@@ -77,6 +77,9 @@ const ProvincePropertiesModal = ({ isOpen, onClose, provinceName }: ProvinceProp
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Prevent layout shift when modal opens/closes
+  useScrollLock(isOpen);
+
   useEffect(() => {
     if (isOpen && provinceName) {
       fetchProperties();
@@ -128,7 +131,11 @@ const ProvincePropertiesModal = ({ isOpen, onClose, provinceName }: ProvinceProp
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-[95vw] md:max-w-4xl lg:max-w-5xl max-h-[85vh] p-0 gap-0 overflow-hidden">
+      <DialogContent 
+        className="max-w-[95vw] md:max-w-4xl lg:max-w-5xl max-h-[85vh] p-0 gap-0 overflow-hidden"
+        autoClose={false}
+        showCountdown={false}
+      >
         <DialogHeader className="p-4 pb-3 border-b border-border/50 bg-gradient-to-r from-primary/5 via-transparent to-accent/5">
           <DialogTitle className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
