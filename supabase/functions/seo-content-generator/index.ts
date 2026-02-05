@@ -109,6 +109,22 @@ serve(async (req) => {
       });
     }
 
+    if (action === 'generate-all-property-posts') {
+      // Generate property listing pages for all states with all types
+      const result = await generateAllPropertyPosts(supabase, lovableApiKey);
+      return new Response(JSON.stringify({ success: true, ...result }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (action === 'sync-property-counts') {
+      // Sync real property counts to all landing pages
+      const synced = await syncPropertyCounts(supabase);
+      return new Response(JSON.stringify({ success: true, synced }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     return new Response(JSON.stringify({ error: 'Invalid action' }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -494,4 +510,210 @@ async function getStats(supabase: any) {
     recentSearches: recentSearches?.map((s: any) => s.search_query) || [],
     topKeywords: topKeywords || [],
   };
+}
+
+// Generate all property posts for each state with all types
+async function generateAllPropertyPosts(supabase: any, apiKey: string | undefined) {
+  let created = 0;
+  let updated = 0;
+  const errors: string[] = [];
+
+  // Get real property counts by state and type
+  const { data: properties } = await supabase
+    .from('properties')
+    .select('id, location, state, city, listing_type, property_type');
+
+  // Build property count map
+  const countMap: Record<string, { count: number; listing_type: string; property_type: string }> = {};
+  
+  properties?.forEach((p: any) => {
+    // Try to map location to state
+    const stateName = p.state || extractStateFromLocation(p.location || p.city || '');
+    if (!stateName) return;
+
+    const state = INDONESIAN_STATES.find(s => 
+      s.name.toLowerCase() === stateName.toLowerCase() ||
+      s.id === stateName.toLowerCase()
+    );
+    if (!state) return;
+
+    const listingType = p.listing_type === 'sale' ? 'dijual' : 'disewa';
+    const propType = (p.property_type || 'rumah').toLowerCase();
+    const key = `${state.id}-${listingType}-${propType}`;
+    
+    if (!countMap[key]) {
+      countMap[key] = { count: 0, listing_type: listingType, property_type: propType };
+    }
+    countMap[key].count++;
+  });
+
+  // Generate pages for all combinations
+  for (const state of INDONESIAN_STATES) {
+    for (const category of PROPERTY_CATEGORIES) {
+      for (const type of PROPERTY_TYPES) {
+        const key = `${state.id}-${category}-${type}`;
+        const stats = countMap[key] || { count: 0 };
+        const slug = `${type}-${category}-${state.id}`;
+        const title = `${type.charAt(0).toUpperCase() + type.slice(1)} ${category === 'dijual' ? 'Dijual' : 'Disewa'} di ${state.name}`;
+
+        try {
+          // Check if page exists
+          const { data: existing } = await supabase
+            .from('seo_landing_pages')
+            .select('id')
+            .eq('slug', slug)
+            .single();
+
+          const pageData = {
+            slug,
+            page_type: 'property_type_state',
+            state_id: state.id,
+            state_name: state.name,
+            category,
+            property_type: type,
+            title,
+            meta_title: `${title} | Temukan ${stats.count}+ Properti`,
+            meta_description: `Cari ${type} ${category} di ${state.name}. Tersedia ${stats.count} listing dengan harga terbaik. Update terbaru hari ini!`,
+            h1_heading: title,
+            primary_keyword: `${type} ${category} ${state.name}`,
+            secondary_keywords: [
+              `harga ${type} ${state.name}`,
+              `${type} murah ${state.name}`,
+              `jual ${type} ${state.name}`,
+              `sewa ${type} ${state.name}`,
+            ],
+            property_count: stats.count,
+            is_published: stats.count > 0, // Auto-publish if has properties
+            seo_score: stats.count > 0 ? 75 : 50,
+            updated_at: new Date().toISOString(),
+          };
+
+          if (existing) {
+            await supabase
+              .from('seo_landing_pages')
+              .update(pageData)
+              .eq('id', existing.id);
+            updated++;
+          } else {
+            await supabase
+              .from('seo_landing_pages')
+              .insert(pageData);
+            created++;
+          }
+        } catch (err) {
+          errors.push(`${slug}: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        }
+      }
+    }
+  }
+
+  // Also generate state-level pages
+  for (const state of INDONESIAN_STATES) {
+    const statePropertyCount = properties?.filter((p: any) => {
+      const stateName = p.state || extractStateFromLocation(p.location || p.city || '');
+      return stateName?.toLowerCase() === state.name.toLowerCase();
+    }).length || 0;
+
+    const slug = `properti-${state.id}`;
+    const { data: existing } = await supabase
+      .from('seo_landing_pages')
+      .select('id')
+      .eq('slug', slug)
+      .single();
+
+    const pageData = {
+      slug,
+      page_type: 'state',
+      state_id: state.id,
+      state_name: state.name,
+      title: `Properti di ${state.name}`,
+      meta_title: `Properti di ${state.name} | ${statePropertyCount}+ Listing Tersedia`,
+      meta_description: `Temukan properti terbaik di ${state.name}. Rumah, apartemen, villa, tanah, dan ruko tersedia untuk dijual dan disewa.`,
+      h1_heading: `Properti di ${state.name}`,
+      primary_keyword: `properti ${state.name}`,
+      property_count: statePropertyCount,
+      is_published: statePropertyCount > 0,
+      seo_score: statePropertyCount > 0 ? 80 : 55,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (existing) {
+      await supabase.from('seo_landing_pages').update(pageData).eq('id', existing.id);
+    } else {
+      await supabase.from('seo_landing_pages').insert(pageData);
+      created++;
+    }
+  }
+
+  return { created, updated, errors: errors.slice(0, 10), total: INDONESIAN_STATES.length * PROPERTY_CATEGORIES.length * PROPERTY_TYPES.length + INDONESIAN_STATES.length };
+}
+
+// Extract state from location string
+function extractStateFromLocation(location: string): string | null {
+  const loc = location.toLowerCase();
+  for (const state of INDONESIAN_STATES) {
+    if (loc.includes(state.name.toLowerCase()) || loc.includes(state.id)) {
+      return state.name;
+    }
+  }
+  // Common city mappings
+  const cityToState: Record<string, string> = {
+    'jakarta': 'DKI Jakarta', 'bandung': 'Jawa Barat', 'surabaya': 'Jawa Timur',
+    'semarang': 'Jawa Tengah', 'denpasar': 'Bali', 'medan': 'Sumatera Utara',
+    'makassar': 'Sulawesi Selatan', 'palembang': 'Sumatera Selatan', 'tangerang': 'Banten',
+    'bekasi': 'Jawa Barat', 'depok': 'Jawa Barat', 'bogor': 'Jawa Barat',
+    'yogyakarta': 'Yogyakarta', 'malang': 'Jawa Timur', 'solo': 'Jawa Tengah',
+    'ubud': 'Bali', 'seminyak': 'Bali', 'canggu': 'Bali', 'kuta': 'Bali',
+  };
+  for (const [city, state] of Object.entries(cityToState)) {
+    if (loc.includes(city)) return state;
+  }
+  return null;
+}
+
+// Sync property counts to all landing pages
+async function syncPropertyCounts(supabase: any) {
+  const { data: properties } = await supabase
+    .from('properties')
+    .select('id, location, state, city, listing_type, property_type');
+
+  const { data: pages } = await supabase
+    .from('seo_landing_pages')
+    .select('id, state_id, category, property_type, page_type');
+
+  let synced = 0;
+
+  for (const page of pages || []) {
+    let count = 0;
+
+    properties?.forEach((p: any) => {
+      const stateName = p.state || extractStateFromLocation(p.location || p.city || '');
+      const state = INDONESIAN_STATES.find(s => s.name.toLowerCase() === stateName?.toLowerCase());
+      
+      if (!state || state.id !== page.state_id) return;
+
+      if (page.page_type === 'state') {
+        count++;
+      } else {
+        const listingType = p.listing_type === 'sale' ? 'dijual' : 'disewa';
+        const propType = (p.property_type || '').toLowerCase();
+        
+        if (page.category && page.category !== listingType) return;
+        if (page.property_type && page.property_type !== propType) return;
+        count++;
+      }
+    });
+
+    await supabase
+      .from('seo_landing_pages')
+      .update({ 
+        property_count: count,
+        is_published: count > 0,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', page.id);
+    synced++;
+  }
+
+  return synced;
 }
