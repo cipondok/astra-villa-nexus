@@ -27,10 +27,10 @@ const AstraTokensPage = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-6">
-          <Link to="/">
+          <Link to="/user-dashboard">
             <Button variant="ghost" className="text-foreground hover:bg-primary/10 mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Home
+              Back to Dashboard
             </Button>
           </Link>
         </div>
