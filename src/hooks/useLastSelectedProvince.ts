@@ -14,20 +14,17 @@ export interface LastSelectedProvince {
  * Data is stored in localStorage for cross-session persistence.
  */
 export const useLastSelectedProvince = () => {
-  const [lastProvince, setLastProvince] = useState<LastSelectedProvince | null>(null);
-
-  // Load from localStorage on mount
-  useEffect(() => {
+  const [lastProvince, setLastProvince] = useState<LastSelectedProvince | null>(() => {
+    // Initialize synchronously so UI can render the marker immediately on first paint.
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored) as LastSelectedProvince;
-        setLastProvince(parsed);
-      }
+      if (typeof window === 'undefined') return null;
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      return stored ? (JSON.parse(stored) as LastSelectedProvince) : null;
     } catch (error) {
       console.error('Failed to load last selected province:', error);
+      return null;
     }
-  }, []);
+  });
 
   // Save a new selection
   const saveLastProvince = useCallback((province: Omit<LastSelectedProvince, 'selectedAt'>) => {
