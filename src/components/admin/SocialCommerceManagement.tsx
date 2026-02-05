@@ -231,11 +231,11 @@ const SocialCommerceManagement: React.FC = () => {
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="platforms">Platforms</TabsTrigger>
-          <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
-          <TabsTrigger value="listings">Listings</TabsTrigger>
-          <TabsTrigger value="automation">Automation</TabsTrigger>
+        <TabsList className="w-full grid grid-cols-4 bg-muted/50 border border-border rounded-[6px] p-1">
+          <TabsTrigger value="platforms" className="text-xs rounded-[4px] data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">Platforms</TabsTrigger>
+          <TabsTrigger value="campaigns" className="text-xs rounded-[4px] data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">Campaigns</TabsTrigger>
+          <TabsTrigger value="listings" className="text-xs rounded-[4px] data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">Listings</TabsTrigger>
+          <TabsTrigger value="automation" className="text-xs rounded-[4px] data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">Automation</TabsTrigger>
         </TabsList>
 
         <TabsContent value="platforms" className="space-y-4 mt-4">

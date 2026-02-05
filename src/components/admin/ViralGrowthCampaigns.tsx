@@ -177,126 +177,118 @@ const ViralGrowthCampaigns = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-orange-500/10 rounded-lg border border-purple-200/50 dark:border-purple-800/50">
-        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
-          <Rocket className="h-6 w-6 text-white" />
-        </div>
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-bold">Viral Growth Campaigns</h2>
-            <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-              <Target className="h-3 w-3 mr-1" />
-              Goal: 300% Growth
-            </Badge>
+    <div className="space-y-6 p-1">
+      {/* Header - Professional Rumah123 Style */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-[6px] bg-primary/10 flex items-center justify-center shrink-0">
+            <Rocket className="h-5 w-5 text-primary" />
           </div>
-          <p className="text-sm text-muted-foreground">Quick wins to drive 300% user growth in 30 days</p>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-bold text-foreground">Viral Growth Campaigns</h2>
+              <Badge variant="outline" className="text-xs border-green-500/30 text-green-600 bg-green-50 dark:bg-green-500/10">
+                <Target className="h-3 w-3 mr-1" />
+                Goal: 300% Growth
+              </Badge>
+            </div>
+            <p className="text-sm text-muted-foreground mt-0.5">Quick wins to drive 300% user growth in 30 days</p>
+          </div>
         </div>
-        <Button className="gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
-          <Sparkles className="h-4 w-4" />
+        <Button className="bg-primary hover:bg-primary/90 rounded-[6px]">
+          <Sparkles className="h-4 w-4 mr-2" />
           New Campaign
         </Button>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <Card className="border-green-200/50 dark:border-green-800/30">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                <Zap className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{activeCampaigns}</p>
-                <p className="text-xs text-muted-foreground">Active</p>
-              </div>
+      {/* Quick Stats - Professional Style */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-green-500/10 flex items-center justify-center">
+              <Zap className="h-5 w-5 text-green-500" />
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-2xl font-bold text-foreground">{activeCampaigns}</p>
+              <p className="text-xs text-muted-foreground">Active</p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="border-blue-200/50 dark:border-blue-800/30">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                <Users className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{totalParticipants.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Participants</p>
-              </div>
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-primary/10 flex items-center justify-center">
+              <Users className="h-5 w-5 text-primary" />
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-2xl font-bold text-foreground">{totalParticipants.toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground">Participants</p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="border-purple-200/50 dark:border-purple-800/30">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">${(totalBudget / 1000).toFixed(0)}k</p>
-                <p className="text-xs text-muted-foreground">Total Budget</p>
-              </div>
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-purple-500/10 flex items-center justify-center">
+              <DollarSign className="h-5 w-5 text-purple-500" />
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-2xl font-bold text-foreground">${(totalBudget / 1000).toFixed(0)}k</p>
+              <p className="text-xs text-muted-foreground">Total Budget</p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="border-orange-200/50 dark:border-orange-800/30">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                <TrendingUp className="h-5 w-5 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">${(totalSpent / 1000).toFixed(1)}k</p>
-                <p className="text-xs text-muted-foreground">Spent</p>
-              </div>
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-orange-500/10 flex items-center justify-center">
+              <TrendingUp className="h-5 w-5 text-orange-500" />
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-2xl font-bold text-foreground">${(totalSpent / 1000).toFixed(1)}k</p>
+              <p className="text-xs text-muted-foreground">Spent</p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="border-pink-200/50 dark:border-pink-800/30">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
-                <BarChart3 className="h-5 w-5 text-pink-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(0) : 0}%</p>
-                <p className="text-xs text-muted-foreground">Budget Used</p>
-              </div>
+        <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-[6px] bg-pink-500/10 flex items-center justify-center">
+              <BarChart3 className="h-5 w-5 text-pink-500" />
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-2xl font-bold text-foreground">{totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(0) : 0}%</p>
+              <p className="text-xs text-muted-foreground">Budget Used</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6 h-10">
-          <TabsTrigger value="overview" className="text-xs gap-1">
-            <Rocket className="h-3 w-3" />
+        <TabsList className="w-full grid grid-cols-6 bg-muted/50 border border-border rounded-[6px] p-1 h-auto">
+          <TabsTrigger value="overview" className="text-xs rounded-[4px] py-2 data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            <Rocket className="h-3 w-3 mr-1" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="referral" className="text-xs gap-1">
-            <Users className="h-3 w-3" />
+          <TabsTrigger value="referral" className="text-xs rounded-[4px] py-2 data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            <Users className="h-3 w-3 mr-1" />
             Referral 3x
           </TabsTrigger>
-          <TabsTrigger value="listing" className="text-xs gap-1">
-            <Trophy className="h-3 w-3" />
-            Listing Comp
+          <TabsTrigger value="listing" className="text-xs rounded-[4px] py-2 data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            <Trophy className="h-3 w-3 mr-1" />
+            Listing
           </TabsTrigger>
-          <TabsTrigger value="photo" className="text-xs gap-1">
-            <Camera className="h-3 w-3" />
-            Photo Contest
+          <TabsTrigger value="photo" className="text-xs rounded-[4px] py-2 data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            <Camera className="h-3 w-3 mr-1" />
+            Photos
           </TabsTrigger>
-          <TabsTrigger value="leaderboard" className="text-xs gap-1">
-            <Medal className="h-3 w-3" />
-            Leaderboard
+          <TabsTrigger value="leaderboard" className="text-xs rounded-[4px] py-2 data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            <Medal className="h-3 w-3 mr-1" />
+            Leaders
           </TabsTrigger>
-          <TabsTrigger value="bonus" className="text-xs gap-1">
-            <Gift className="h-3 w-3" />
-            $50 Bonus
+          <TabsTrigger value="bonus" className="text-xs rounded-[4px] py-2 data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            <Gift className="h-3 w-3 mr-1" />
+            Bonus
           </TabsTrigger>
         </TabsList>
 
