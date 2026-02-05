@@ -233,7 +233,7 @@ const ViralGrowthCampaigns = () => {
               <DollarSign className="h-5 w-5 text-purple-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">${(totalBudget / 1000).toFixed(0)}k</p>
+              <p className="text-2xl font-bold text-foreground">Rp {(totalBudget / 1000000).toFixed(0)}jt</p>
               <p className="text-xs text-muted-foreground">Total Budget</p>
             </div>
           </div>
@@ -245,7 +245,7 @@ const ViralGrowthCampaigns = () => {
               <TrendingUp className="h-5 w-5 text-orange-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">${(totalSpent / 1000).toFixed(1)}k</p>
+              <p className="text-2xl font-bold text-foreground">Rp {(totalSpent / 1000000).toFixed(1)}jt</p>
               <p className="text-xs text-muted-foreground">Spent</p>
             </div>
           </div>
@@ -329,7 +329,7 @@ const ViralGrowthCampaigns = () => {
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
                       <span>Budget Used</span>
-                      <span>${campaign.spent_budget?.toLocaleString() || 0} / ${campaign.budget?.toLocaleString() || 0}</span>
+                      <span>Rp {(campaign.spent_budget / 1000000)?.toLocaleString() || 0}jt / Rp {(campaign.budget / 1000000)?.toLocaleString() || 0}jt</span>
                     </div>
                     <Progress value={(campaign.spent_budget || 0) / (campaign.budget || 1) * 100} className="h-1.5" />
                   </div>
@@ -582,7 +582,7 @@ const ViralGrowthCampaigns = () => {
           </Card>
         </TabsContent>
 
-        {/* $50 Bonus Tab */}
+        {/* Rp 750K Bonus Tab */}
         <TabsContent value="bonus" className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
@@ -590,7 +590,7 @@ const ViralGrowthCampaigns = () => {
                 <div>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Gift className="h-5 w-5 text-green-500" />
-                    Welcome Bonus - $50 Credit
+                    Welcome Bonus - Rp 750.000 Credit
                   </CardTitle>
                   <CardDescription>Track first-time user bonus distribution</CardDescription>
                 </div>

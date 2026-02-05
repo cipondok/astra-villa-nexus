@@ -124,7 +124,7 @@ const UserAcquisitionManagement = () => {
   const seoArticleGoal = 1000;
   const seoProgress = (seoContent.length / seoArticleGoal) * 100;
   const totalInfluencerReach = influencers.reduce((sum, i) => sum + (i.followers_count || 0), 0);
-  const targetCPA = 300000; // ~$20 in IDR
+  const targetCPA = 300000; // Rp 300.000 target CPA
 
   // These would come from analytics in real implementation
   const referralRewardSpend = totalReferralRewards;
@@ -305,7 +305,7 @@ const UserAcquisitionManagement = () => {
                     <Gift className="h-4 w-4 text-pink-500" />
                     Referral Program 2.0
                   </CardTitle>
-                  <Badge variant="outline" className="text-xs border-primary/30 text-primary">Give $100, Get $100</Badge>
+                  <Badge variant="outline" className="text-xs border-primary/30 text-primary">Give Rp 1.5jt, Get Rp 1.5jt</Badge>
                 </div>
               </CardHeader>
               <CardContent>
@@ -440,7 +440,7 @@ const UserAcquisitionManagement = () => {
                     <Gift className="h-5 w-5 text-pink-500" />
                     Referral Program 2.0
                   </CardTitle>
-                  <CardDescription>Give Rp 1,500,000, Get Rp 1,500,000 (~$100 each)</CardDescription>
+                  <CardDescription>Give Rp 1,500,000, Get Rp 1,500,000</CardDescription>
                 </div>
               </div>
             </CardHeader>
