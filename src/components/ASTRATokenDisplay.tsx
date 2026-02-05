@@ -33,7 +33,7 @@ const ASTRATokenDisplay = () => {
     transactions: 0,
     lastTransaction: 'Never',
     apiStatus: 'checking',
-    tokenPrice: 0.0245, // Example price in USD
+    tokenPrice: 380, // Example price in IDR
     priceChange24h: 5.2 // Example 24h change percentage
   });
   const [loading, setLoading] = useState(false);
@@ -131,7 +131,7 @@ const ASTRATokenDisplay = () => {
         balance: 1250.75,
         transactions: 42,
         lastTransaction: new Date().toLocaleDateString(),
-        tokenPrice: 0.0245,
+        tokenPrice: 380,
         priceChange24h: 5.2
       }));
     } catch (error) {
@@ -181,10 +181,10 @@ const ASTRATokenDisplay = () => {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('id-ID', {
       style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 4
+      currency: 'IDR',
+      minimumFractionDigits: 0
     }).format(amount);
   };
 
