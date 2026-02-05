@@ -1,10 +1,10 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { AlertProvider } from "@/contexts/AlertContext";
 import AgentOverview from "@/components/agent/AgentOverview";
 import { useHasRole } from "@/hooks/useUserRoles";
+import AstraWalletCard from "@/components/dashboard/AstraWalletCard";
 
 const AgentDashboard = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -40,7 +40,10 @@ const AgentDashboard = () => {
     <AlertProvider>
       <div className="min-h-screen bg-background">
         <div className="pt-4 sm:pt-6 md:pt-8 px-2 sm:px-4 md:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto py-4 sm:py-6 md:py-8">
+          <div className="max-w-7xl mx-auto py-4 sm:py-6 md:py-8 space-y-4">
+            {/* ASTRA Wallet Card (Agent Dashboard) */}
+            <AstraWalletCard compact />
+
             <AgentOverview />
           </div>
         </div>
@@ -50,3 +53,4 @@ const AgentDashboard = () => {
 };
 
 export default AgentDashboard;
+
