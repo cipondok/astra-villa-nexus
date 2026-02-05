@@ -209,87 +209,86 @@ html {
 
 @layer base {
   :root {
-    /* Light Mode - Rumah123 Exact Style */
-    /* Background: Pure White | Primary: Rumah123 Blue #1E4DB7 | Accent: Red #E02020 */
-    --background: 0 0% 100%; /* Pure White #FFFFFF */
-    --foreground: 220 13% 18%; /* Dark Text #2D3748 */
-    --card: 0 0% 100%; /* Pure White */
-    --card-foreground: 220 13% 18%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 13% 18%;
-    --primary: 222 72% 42%; /* Rumah123 Blue #1E4DB7 */
+    /* ASTRA Token Hub Style - Dark Purple Gradient Theme */
+    /* Background: Deep Slate-Purple | Primary: Purple-Amber Gradient */
+    --background: 229 57% 11%; /* Deep Slate #0f172a */
+    --foreground: 216 12% 91%; /* Light Gray #E5E7EB */
+    --card: 270 45% 15%; /* Purple-tinted card */
+    --card-foreground: 216 12% 91%;
+    --popover: 270 50% 12%;
+    --popover-foreground: 216 12% 91%;
+    --primary: 280 60% 55%; /* Vibrant Purple */
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%; /* Light Gray #F7F8FA */
-    --secondary-foreground: 220 13% 18%;
-    --muted: 220 14% 96%; /* Light Gray */
-    --muted-foreground: 220 9% 46%; /* Gray Text #6B7280 */
-    --accent: 0 79% 50%; /* Rumah123 Red #E02020 */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 79% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 91%; /* Light Border #E5E7EB */
-    --input: 220 13% 91%;
-    --ring: 222 72% 42%;
-    --radius: 6px;
+    --secondary: 270 35% 20%;
+    --secondary-foreground: 216 12% 91%;
+    --muted: 270 30% 18%;
+    --muted-foreground: 218 11% 65%;
+    --accent: 38 92% 50%; /* ASTRA Gold/Amber */
+    --accent-foreground: 229 57% 11%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 270 35% 25%;
+    --input: 270 40% 18%;
+    --ring: 280 60% 55%;
+    --radius: 8px;
     
-    /* Rumah123 Brand Colors */
-    --gold-primary: 0 79% 50%; /* Red #E02020 */
-    --gold-secondary: 0 70% 45%;
-    --navy-primary: 222 72% 42%; /* Rumah123 Blue */
-    --navy-secondary: 222 65% 35%;
-    --dark-bg: 220 14% 96%;
-    --dark-card: 0 0% 100%;
+    /* ASTRA Token Hub Brand Colors */
+    --gold-primary: 38 92% 50%; /* Amber/Orange */
+    --gold-secondary: 32 95% 44%;
+    --navy-primary: 280 60% 55%; /* Purple */
+    --navy-secondary: 270 50% 45%;
+    --dark-bg: 229 57% 8%;
+    --dark-card: 270 45% 14%;
     --text-light: 0 0% 100%;
-    --text-muted: 220 9% 46%;
+    --text-muted: 218 11% 65%;
     
-    /* Glassy effect colors - Clean White */
-    --glass-bg: 0 0% 100%;
-    --glass-border: 220 13% 91%;
-    --glass-shadow: 222 72% 42%;
+    /* Glassy effect colors - Purple Tint */
+    --glass-bg: 270 50% 12%;
+    --glass-border: 280 60% 40%;
+    --glass-shadow: 229 60% 5%;
     
     /* Theme Colors */
-    --titanium-light: 220 14% 96%;
+    --titanium-light: 270 30% 18%;
     --titanium-white: 0 0% 100%;
-    --samsung-blue-primary: 222 72% 42%;
+    --samsung-blue-primary: 280 60% 55%;
   }
 
   .dark {
-    /* Dark Mode - ASTRA Villa Property Deep Navy Theme */
-    /* Background: Deep Navy #0F172A | Accent: Muted Gold #D6B67E */
-    --background: 222 47% 11%; /* Deep Navy #0F172A */
-    --foreground: 216 12% 91%; /* Light Gray #E5E7EB */
-    --card: 222 42% 15%;
+    /* Dark Mode - Same as light (always dark purple) */
+    --background: 229 57% 11%;
+    --foreground: 216 12% 91%;
+    --card: 270 45% 15%;
     --card-foreground: 216 12% 91%;
-    --popover: 222 45% 13%;
+    --popover: 270 50% 12%;
     --popover-foreground: 216 12% 91%;
-    --primary: 38 52% 67%; /* Muted Gold #D6B67E */
-    --primary-foreground: 222 47% 11%;
-    --secondary: 222 35% 20%;
-    --secondary-foreground: 41 52% 91%; /* Soft Cream #F3ECDC */
-    --muted: 222 30% 18%;
-    --muted-foreground: 218 11% 65%; /* Muted Gray #9CA3AF */
-    --accent: 38 52% 67%; /* Muted Gold */
-    --accent-foreground: 222 47% 11%;
+    --primary: 280 60% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 35% 20%;
+    --secondary-foreground: 216 12% 91%;
+    --muted: 270 30% 18%;
+    --muted-foreground: 218 11% 65%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 229 57% 11%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
-    --border: 222 35% 22%;
-    --input: 222 40% 16%;
-    --ring: 38 52% 67%;
+    --border: 270 35% 25%;
+    --input: 270 40% 18%;
+    --ring: 280 60% 55%;
     
-    /* ASTRA Villa Brand Colors - Dark Mode */
-    --gold-primary: 38 52% 67%;
-    --gold-secondary: 38 48% 62%;
-    --navy-primary: 222 40% 25%;
-    --navy-secondary: 222 35% 32%;
-    --dark-bg: 222 50% 8%;
-    --dark-card: 222 42% 14%;
-    --text-light: 41 52% 91%; /* Soft Cream #F3ECDC */
+    /* ASTRA Brand Colors - Dark Mode */
+    --gold-primary: 38 92% 50%;
+    --gold-secondary: 32 95% 44%;
+    --navy-primary: 280 60% 55%;
+    --navy-secondary: 270 50% 45%;
+    --dark-bg: 229 57% 6%;
+    --dark-card: 270 45% 12%;
+    --text-light: 0 0% 100%;
     --text-muted: 218 11% 65%;
     
     /* Glassy effect colors - Dark Mode */
-    --glass-bg: 222 45% 12%;
-    --glass-border: 38 52% 55%;
-    --glass-shadow: 222 50% 6%;
+    --glass-bg: 270 50% 10%;
+    --glass-border: 280 60% 35%;
+    --glass-shadow: 229 60% 3%;
   }
 
   * {
@@ -297,13 +296,21 @@ html {
   }
 
   html {
-    background: hsl(var(--background));
+    background: linear-gradient(135deg, 
+      hsl(229 57% 11%) 0%, 
+      hsl(280 50% 15%) 50%, 
+      hsl(229 57% 11%) 100%);
     color: hsl(var(--foreground));
     transition: background-color 0.2s ease, color 0.2s ease;
+    min-height: 100vh;
   }
 
   body {
-    background: hsl(var(--background));
+    background: linear-gradient(135deg, 
+      hsl(229 57% 11%) 0%, 
+      hsl(280 50% 15%) 50%, 
+      hsl(229 57% 11%) 100%);
+    background-attachment: fixed;
     color: hsl(var(--foreground));
     font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 14px;
@@ -311,160 +318,184 @@ html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.2s ease, color 0.2s ease;
+    min-height: 100vh;
   }
 }
 
 @layer components {
-  /* Glassmorphism Effects - Rumah123 Style with Glass */
+  /* Glassmorphism Effects - ASTRA Dark Purple Theme */
   .glass-effect {
     background: linear-gradient(135deg, 
-      hsl(0 0% 100% / 0.92) 0%, 
-      hsl(220 14% 96% / 0.88) 100%);
+      hsl(270 50% 15% / 0.85) 0%, 
+      hsl(280 45% 12% / 0.75) 100%);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid hsl(220 13% 91% / 0.6);
+    border: 1px solid hsl(280 60% 55% / 0.3);
     box-shadow: 
-      0 4px 20px hsl(222 72% 42% / 0.06),
-      inset 0 1px 0 hsl(0 0% 100% / 0.6);
+      0 8px 32px hsl(229 60% 5% / 0.4),
+      inset 0 1px 0 hsl(280 50% 60% / 0.1);
   }
 
   .dark .glass-effect {
     background: linear-gradient(135deg, 
-      hsl(222 50% 10% / 0.85) 0%, 
-      hsl(222 45% 8% / 0.75) 100%);
-    border: 1px solid hsl(45 93% 50% / 0.2);
+      hsl(270 50% 12% / 0.85) 0%, 
+      hsl(280 45% 8% / 0.75) 100%);
+    border: 1px solid hsl(280 60% 55% / 0.25);
     box-shadow: 
-      0 8px 32px hsl(222 60% 3% / 0.4),
-      inset 0 1px 0 hsl(45 50% 50% / 0.1);
+      0 8px 32px hsl(229 60% 3% / 0.5),
+      inset 0 1px 0 hsl(280 50% 60% / 0.1);
   }
 
   .glass-card {
-    background: hsl(0 0% 100%);
+    background: linear-gradient(145deg, 
+      hsl(270 45% 15% / 0.9) 0%, 
+      hsl(280 50% 10% / 0.85) 100%);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid hsl(220 13% 91%);
+    border: 1px solid hsl(280 60% 55% / 0.25);
     border-radius: 8px;
     box-shadow: 
-      0 2px 12px hsl(220 13% 18% / 0.06),
-      0 1px 2px hsl(220 13% 18% / 0.04);
+      0 4px 24px hsl(229 60% 5% / 0.5),
+      0 1px 3px hsl(280 60% 55% / 0.1),
+      inset 0 1px 0 hsl(280 50% 60% / 0.08);
   }
 
   .dark .glass-card {
     background: linear-gradient(145deg, 
-      hsl(222 45% 12% / 0.9) 0%, 
-      hsl(222 50% 8% / 0.85) 100%);
-    border: 1px solid hsl(45 93% 50% / 0.25);
+      hsl(270 45% 12% / 0.9) 0%, 
+      hsl(280 50% 8% / 0.85) 100%);
+    border: 1px solid hsl(280 60% 55% / 0.2);
     box-shadow: 
-      0 4px 24px hsl(222 60% 3% / 0.5),
-      0 1px 3px hsl(45 93% 50% / 0.1),
-      inset 0 1px 0 hsl(45 50% 50% / 0.08);
+      0 4px 24px hsl(229 60% 3% / 0.6),
+      0 1px 3px hsl(280 60% 55% / 0.1),
+      inset 0 1px 0 hsl(280 50% 60% / 0.06);
   }
 
   /* ========================================
-     CLEAN UI SYSTEM - Rumah123 Style
+     CLEAN UI SYSTEM - ASTRA Purple Style
      ======================================== */
 
-  /* Modal Overlay - Clean backdrop */
+  /* Modal Overlay - Purple backdrop */
   .modal-overlay {
-    --modal-overlay-opacity: 0.4;
-    background: hsl(220 13% 18% / var(--modal-overlay-opacity));
+    --modal-overlay-opacity: 0.75;
+    background: linear-gradient(
+      135deg,
+      hsl(229 60% 6% / 0.6) 0%,
+      hsl(280 55% 8% / var(--modal-overlay-opacity)) 50%,
+      hsl(38 80% 30% / 0.08) 100%
+    );
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
   }
 
   .dark .modal-overlay {
-    --modal-overlay-opacity: 0.75;
+    --modal-overlay-opacity: 0.8;
     background: linear-gradient(
       135deg,
-      hsl(222 60% 4% / 0.5) 0%,
-      hsl(222 55% 3% / var(--modal-overlay-opacity)) 50%,
-      hsl(45 80% 30% / 0.08) 100%
+      hsl(229 60% 4% / 0.7) 0%,
+      hsl(280 55% 5% / var(--modal-overlay-opacity)) 50%,
+      hsl(38 80% 25% / 0.06) 100%
     );
   }
 
   /* Modal Surface - Main popup/dialog panel */
   .modal-surface {
-    background: hsl(0 0% 100%);
-    border: 1px solid hsl(220 13% 91%);
-    border-radius: 8px;
+    background: linear-gradient(
+      155deg,
+      hsl(270 45% 16% / 0.95) 0%,
+      hsl(280 50% 12% / 0.9) 50%,
+      hsl(270 48% 14% / 0.92) 100%
+    );
+    border: 1px solid hsl(280 60% 55% / 0.3);
+    border-top: 1px solid hsl(280 50% 60% / 0.2);
+    border-left: 1px solid hsl(280 50% 60% / 0.15);
+    border-radius: 12px;
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     box-shadow: 
-      0 20px 50px hsl(220 13% 18% / 0.12),
-      0 8px 20px hsl(220 13% 18% / 0.08);
+      0 25px 60px hsl(229 60% 5% / 0.6),
+      0 10px 25px hsl(229 60% 5% / 0.4),
+      inset 0 1px 2px hsl(280 50% 60% / 0.1),
+      0 0 80px hsl(280 60% 55% / 0.05);
   }
 
   .dark .modal-surface {
     background: linear-gradient(
       155deg,
-      hsl(222 45% 14% / 0.95) 0%,
-      hsl(222 50% 10% / 0.9) 50%,
-      hsl(222 48% 12% / 0.92) 100%
+      hsl(270 45% 14% / 0.95) 0%,
+      hsl(280 50% 10% / 0.9) 50%,
+      hsl(270 48% 12% / 0.92) 100%
     );
-    border: 1px solid hsl(45 93% 50% / 0.25);
-    border-top: 1px solid hsl(45 50% 50% / 0.15);
-    border-left: 1px solid hsl(45 50% 50% / 0.1);
+    border: 1px solid hsl(280 60% 55% / 0.25);
+    border-top: 1px solid hsl(280 50% 60% / 0.15);
+    border-left: 1px solid hsl(280 50% 60% / 0.1);
     box-shadow: 
-      0 25px 60px hsl(222 60% 3% / 0.6),
-      0 10px 25px hsl(222 60% 3% / 0.4),
-      inset 0 1px 2px hsl(45 50% 50% / 0.1),
-      0 0 80px hsl(45 93% 50% / 0.05);
+      0 25px 60px hsl(229 60% 3% / 0.7),
+      0 10px 25px hsl(229 60% 3% / 0.5),
+      inset 0 1px 2px hsl(280 50% 60% / 0.08),
+      0 0 80px hsl(280 60% 55% / 0.04);
   }
 
   /* Glass Popup - For smaller dropdowns and tooltips */
   .glass-popup {
-    background: hsl(0 0% 100%);
-    border: 1px solid hsl(220 13% 91%);
-    border-radius: 6px;
+    background: linear-gradient(
+      150deg,
+      hsl(270 45% 16% / 0.95) 0%,
+      hsl(280 50% 12% / 0.9) 100%
+    );
+    border: 1px solid hsl(0 0% 100% / 0.15);
+    border-top: 1px solid hsl(0 0% 100% / 0.2);
+    border-radius: 10px;
     backdrop-filter: blur(16px) saturate(150%);
     -webkit-backdrop-filter: blur(16px) saturate(150%);
     box-shadow: 
-      0 10px 30px hsl(220 13% 18% / 0.1),
-      0 4px 12px hsl(220 13% 18% / 0.06);
+      0 15px 40px hsl(229 60% 5% / 0.4),
+      0 5px 15px hsl(229 60% 5% / 0.3),
+      inset 0 1px 1px hsl(0 0% 100% / 0.05);
   }
 
   .dark .glass-popup {
     background: linear-gradient(
       150deg,
-      hsl(222 45% 14% / 0.15) 0%,
-      hsl(222 50% 10% / 0.1) 100%
+      hsl(270 45% 14% / 0.95) 0%,
+      hsl(280 50% 10% / 0.9) 100%
     );
-    border: 1px solid hsl(0 0% 100% / 0.15);
-    border-top: 1px solid hsl(0 0% 100% / 0.2);
+    border: 1px solid hsl(0 0% 100% / 0.12);
+    border-top: 1px solid hsl(0 0% 100% / 0.18);
     box-shadow: 
-      0 15px 40px hsl(222 60% 3% / 0.3),
-      0 5px 15px hsl(222 60% 3% / 0.2),
-      inset 0 1px 1px hsl(0 0% 100% / 0.05);
+      0 15px 40px hsl(229 60% 3% / 0.5),
+      0 5px 15px hsl(229 60% 3% / 0.35),
+      inset 0 1px 1px hsl(0 0% 100% / 0.04);
   }
 
   /* Glass Menu - Navigation and context menus */
   .glass-menu {
     background: linear-gradient(
       160deg,
-      hsl(270 20% 99% / 0.97) 0%,
-      hsl(265 18% 97% / 0.92) 100%
+      hsl(270 45% 16% / 0.97) 0%,
+      hsl(280 50% 12% / 0.94) 100%
     );
-    border: 1px solid hsl(260 20% 85% / 0.3);
+    border: 1px solid hsl(280 60% 55% / 0.2);
     border-radius: 14px;
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     box-shadow: 
-      0 12px 35px hsl(223 45% 20% / 0.12),
-      0 4px 12px hsl(260 25% 30% / 0.06),
-      inset 0 1px 0 hsl(0 0% 100% / 0.5);
+      0 12px 35px hsl(229 60% 5% / 0.45),
+      0 4px 12px hsl(229 60% 5% / 0.25),
+      inset 0 1px 0 hsl(280 50% 60% / 0.08);
   }
 
   .dark .glass-menu {
     background: linear-gradient(
       160deg,
-      hsl(222 45% 13% / 0.97) 0%,
-      hsl(222 50% 9% / 0.94) 100%
+      hsl(270 45% 13% / 0.97) 0%,
+      hsl(280 50% 9% / 0.94) 100%
     );
-    border: 1px solid hsl(45 93% 50% / 0.18);
+    border: 1px solid hsl(280 60% 55% / 0.15);
     box-shadow: 
-      0 12px 35px hsl(222 60% 3% / 0.45),
-      0 4px 12px hsl(222 60% 3% / 0.25),
-      inset 0 1px 0 hsl(45 50% 50% / 0.06);
+      0 12px 35px hsl(229 60% 3% / 0.5),
+      0 4px 12px hsl(229 60% 3% / 0.3),
+      inset 0 1px 0 hsl(280 50% 60% / 0.06);
   }
 
   /* Glass Menu Item - Individual menu options */
@@ -476,8 +507,8 @@ html {
   .glass-menu-item:hover {
     background: linear-gradient(
       135deg,
-      hsl(45 70% 55% / 0.15) 0%,
-      hsl(45 60% 50% / 0.08) 100%
+      hsl(280 70% 55% / 0.15) 0%,
+      hsl(38 80% 50% / 0.1) 100%
     );
     color: hsl(var(--primary));
   }
@@ -485,8 +516,8 @@ html {
   .dark .glass-menu-item:hover {
     background: linear-gradient(
       135deg,
-      hsl(45 93% 50% / 0.12) 0%,
-      hsl(45 80% 45% / 0.06) 100%
+      hsl(280 60% 50% / 0.15) 0%,
+      hsl(38 80% 45% / 0.08) 100%
     );
   }
 
@@ -494,28 +525,28 @@ html {
   .glass-dropdown {
     background: linear-gradient(
       155deg,
-      hsl(220 25% 99% / 0.98) 0%,
-      hsl(220 20% 97% / 0.94) 100%
+      hsl(270 45% 16% / 0.98) 0%,
+      hsl(280 50% 12% / 0.95) 100%
     );
-    border: 1px solid hsl(45 60% 60% / 0.2);
+    border: 1px solid hsl(280 60% 55% / 0.2);
     border-radius: 12px;
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     box-shadow: 
-      0 10px 30px hsl(220 50% 10% / 0.1),
-      inset 0 1px 0 hsl(0 0% 100% / 0.5);
+      0 10px 30px hsl(229 60% 5% / 0.35),
+      inset 0 1px 0 hsl(280 50% 60% / 0.06);
   }
 
   .dark .glass-dropdown {
     background: linear-gradient(
       155deg,
-      hsl(220 45% 13% / 0.98) 0%,
-      hsl(220 50% 9% / 0.95) 100%
+      hsl(270 45% 13% / 0.98) 0%,
+      hsl(280 50% 9% / 0.95) 100%
     );
-    border: 1px solid hsl(45 93% 50% / 0.15);
+    border: 1px solid hsl(280 60% 55% / 0.15);
     box-shadow: 
-      0 10px 30px hsl(220 60% 3% / 0.4),
-      inset 0 1px 0 hsl(45 50% 50% / 0.05);
+      0 10px 30px hsl(229 60% 3% / 0.45),
+      inset 0 1px 0 hsl(280 50% 60% / 0.05);
   }
 
   /* Glass Tooltip */
