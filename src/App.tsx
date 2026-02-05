@@ -343,7 +343,8 @@ function App() {
                             <Sonner />
                             <CookieSystem />
                             <ResponsiveAIChatWidget />
-                            <NewArrivalsPopup />
+                            {/* NewArrivalsPopup disabled temporarily - uncomment to re-enable */}
+                            {/* <NewArrivalsPopup /> */}
                             <LoadingProgressPopup />
                             <SessionExpirationHandler />
                             <AuthNotificationHandler />
