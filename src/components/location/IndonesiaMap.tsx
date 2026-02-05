@@ -103,6 +103,11 @@ const provinceNameToCanonicalId: Record<string, string> = {
   'Papua': 'papua',
 };
 
+// Reverse mapping: canonical ID → province name (for coordinate lookup)
+const canonicalIdToProvinceName: Record<string, string> = Object.fromEntries(
+  Object.entries(provinceNameToCanonicalId).map(([name, id]) => [id, name])
+);
+
 const getCanonicalProvinceId = (normalizedProvinceName: string) => {
   return (
     provinceNameToCanonicalId[normalizedProvinceName] ||
@@ -498,10 +503,8 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
 
           {/* User Location Indicator - Pulsing circle for last selected province */}
           {userProvince && (() => {
-            // Find coordinates for user's province
-            const userProvinceName = Object.keys(provinceNameToCanonicalId).find(
-              (name) => provinceNameToCanonicalId[name] === userProvince
-            );
+            // Find coordinates for user's province using reverse mapping
+            const userProvinceName = canonicalIdToProvinceName[userProvince];
             const coords = userProvinceName ? provinceCoordinates[userProvinceName] : null;
             
             if (!coords) return null;
