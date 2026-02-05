@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePopupQueue } from "@/hooks/usePopupQueue";
+import { safeSessionStorage } from "@/lib/safeStorage";
 
 interface OnboardingState {
   hasCompletedOnboarding: boolean;
@@ -15,10 +16,10 @@ export const useOnboarding = () => {
     hasCompletedOnboarding: false,
     shouldShowOnboarding: false,
     userType: null,
-    completedAt: null
+    completedAt: null,
   });
   const [isWizardOpen, setIsWizardOpen] = useState(false);
-  
+
   // Prevent re-showing within same session
   const hasShownThisSessionRef = useRef(false);
 
@@ -48,40 +49,39 @@ export const useOnboarding = () => {
         hasCompletedOnboarding: false,
         shouldShowOnboarding: false,
         userType: null,
-        completedAt: null
+        completedAt: null,
       });
       return;
     }
 
     // Check session flag FIRST - don't show again in same session
     const sessionKey = `onboarding_shown_${user.id}`;
-    if (sessionStorage.getItem(sessionKey) === 'true' || hasShownThisSessionRef.current) {
-      setState({
-        hasCompletedOnboarding: true,
+    if (safeSessionStorage.getItem(sessionKey) === 'true' || hasShownThisSessionRef.current) {
+      // IMPORTANT: "shown" does not mean "completed".
+      setState((prev) => ({
+        ...prev,
         shouldShowOnboarding: false,
-        userType: null,
-        completedAt: null
-      });
+      }));
       return;
     }
 
     const savedData = localStorage.getItem(`onboarding_${user.id}`);
-    
+
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
         const isCompleted = !!parsed.completedAt;
-        
+
         // If already completed, mark session as shown
         if (isCompleted) {
-          sessionStorage.setItem(sessionKey, 'true');
+          safeSessionStorage.setItem(sessionKey, 'true');
         }
-        
+
         setState({
           hasCompletedOnboarding: isCompleted,
           shouldShowOnboarding: !isCompleted,
           userType: parsed.userType,
-          completedAt: parsed.completedAt
+          completedAt: parsed.completedAt,
         });
       } catch (e) {
         // If parse fails, show onboarding
@@ -89,7 +89,7 @@ export const useOnboarding = () => {
           hasCompletedOnboarding: false,
           shouldShowOnboarding: true,
           userType: null,
-          completedAt: null
+          completedAt: null,
         });
       }
     } else {
@@ -98,7 +98,7 @@ export const useOnboarding = () => {
         hasCompletedOnboarding: false,
         shouldShowOnboarding: true,
         userType: null,
-        completedAt: null
+        completedAt: null,
       });
     }
   }, [user?.id]);
@@ -106,16 +106,15 @@ export const useOnboarding = () => {
   // Auto-open wizard for new authenticated users via queue
   useEffect(() => {
     if (isAuthenticated && state.shouldShowOnboarding && !state.hasCompletedOnboarding) {
-      // Check session flag to prevent re-showing
       const sessionKey = `onboarding_shown_${user?.id}`;
-      if (sessionStorage.getItem(sessionKey) === 'true' || hasShownThisSessionRef.current) {
+      if (safeSessionStorage.getItem(sessionKey) === 'true' || hasShownThisSessionRef.current) {
         return;
       }
-      
+
       // Mark as shown for this session
       hasShownThisSessionRef.current = true;
-      sessionStorage.setItem(sessionKey, 'true');
-      
+      if (user?.id) safeSessionStorage.setItem(sessionKey, 'true');
+
       // Request to show via queue with stagger delay
       const timer = setTimeout(() => {
         popupQueue.requestShow();
@@ -131,23 +130,23 @@ export const useOnboarding = () => {
   const closeWizard = useCallback(() => {
     setIsWizardOpen(false);
     popupQueue.notifyHidden();
-    
+
     // Mark as shown in session when closed
     if (user?.id) {
-      sessionStorage.setItem(`onboarding_shown_${user.id}`, 'true');
+      safeSessionStorage.setItem(`onboarding_shown_${user.id}`, 'true');
     }
   }, [user?.id]);
 
   const resetOnboarding = useCallback(() => {
     if (user?.id) {
       localStorage.removeItem(`onboarding_${user.id}`);
-      sessionStorage.removeItem(`onboarding_shown_${user.id}`);
+      safeSessionStorage.removeItem(`onboarding_shown_${user.id}`);
       hasShownThisSessionRef.current = false;
       setState({
         hasCompletedOnboarding: false,
         shouldShowOnboarding: true,
         userType: null,
-        completedAt: null
+        completedAt: null,
       });
     }
   }, [user?.id]);
@@ -157,8 +156,9 @@ export const useOnboarding = () => {
     isWizardOpen,
     openWizard,
     closeWizard,
-    resetOnboarding
+    resetOnboarding,
   };
 };
 
 export default useOnboarding;
+

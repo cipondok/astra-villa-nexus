@@ -261,8 +261,10 @@ function App() {
   useEffect(() => {
     const checkWelcomeScreen = async () => {
       try {
+        const { safeSessionStorage } = await import('@/lib/safeStorage');
+
         // FIRST: Check if welcome screen was already shown this session
-        const hasLoaded = sessionStorage.getItem('astra_app_loaded');
+        const hasLoaded = safeSessionStorage.getItem('astra_app_loaded');
         if (hasLoaded === 'true') {
           // Already shown this session - skip immediately
           setIsLoading(false);
@@ -271,7 +273,7 @@ function App() {
 
         // Import supabase client
         const { supabase } = await import('@/integrations/supabase/client');
-        
+
         // Fetch welcome screen settings from the correct category
         const { data: settingsData } = await supabase
           .from('system_settings')
@@ -281,42 +283,51 @@ function App() {
 
         // Parse settings
         const settings: Record<string, any> = {};
-        settingsData?.forEach(row => {
+        settingsData?.forEach((row) => {
           settings[row.key] = row.value;
         });
 
         // Default to enabled if not set
-        const isEnabled = settings.welcomeScreenEnabled === undefined || 
-                          settings.welcomeScreenEnabled === null || 
-                          settings.welcomeScreenEnabled === true || 
-                          settings.welcomeScreenEnabled === 'true';
-        
-        const loadingDuration = typeof settings.welcomeLoadingDuration === 'number' 
-          ? settings.welcomeLoadingDuration 
-          : parseInt(settings.welcomeLoadingDuration) || 2000;
+        const isEnabled =
+          settings.welcomeScreenEnabled === undefined ||
+          settings.welcomeScreenEnabled === null ||
+          settings.welcomeScreenEnabled === true ||
+          settings.welcomeScreenEnabled === 'true';
+
+        const loadingDuration =
+          typeof settings.welcomeLoadingDuration === 'number'
+            ? settings.welcomeLoadingDuration
+            : parseInt(settings.welcomeLoadingDuration) || 2000;
 
         setWelcomeEnabled(isEnabled);
 
         if (!isEnabled) {
           setIsLoading(false);
-          sessionStorage.setItem('astra_app_loaded', 'true');
+          safeSessionStorage.setItem('astra_app_loaded', 'true');
           return;
         }
 
         // Show welcome screen for configured duration, then mark as loaded
         const timer = setTimeout(() => {
           setIsLoading(false);
-          sessionStorage.setItem('astra_app_loaded', 'true');
+          safeSessionStorage.setItem('astra_app_loaded', 'true');
         }, loadingDuration);
 
         return () => clearTimeout(timer);
       } catch (error) {
         console.error('Error checking welcome screen setting:', error);
+
         // On error, show welcome screen briefly then proceed
-        const timer = setTimeout(() => {
+        const timer = setTimeout(async () => {
           setIsLoading(false);
-          sessionStorage.setItem('astra_app_loaded', 'true');
+          try {
+            const { safeSessionStorage } = await import('@/lib/safeStorage');
+            safeSessionStorage.setItem('astra_app_loaded', 'true');
+          } catch {
+            // ignore
+          }
         }, 1500);
+
         return () => clearTimeout(timer);
       }
     };

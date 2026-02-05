@@ -10,6 +10,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { usePopupQueue } from '@/hooks/usePopupQueue';
 import { supabase } from '@/integrations/supabase/client';
 import confetti from 'canvas-confetti';
+import { getLocalDayKey, safeLocalStorage, safeSessionStorage } from '@/lib/safeStorage';
 
 interface DailyLoginRewardProps {
   autoShow?: boolean;
@@ -24,7 +25,7 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
   const [alreadyClaimed, setAlreadyClaimed] = useState(false);
   const [shouldShow, setShouldShow] = useState(false);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
-  
+
   // Prevent re-showing in this session even after close
   const hasShownThisSessionRef = useRef(false);
 
@@ -47,7 +48,7 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
     }
   }, [isOpen, shouldShow]);
 
-  // Check if already claimed TODAY using database (calendar day based)
+  // Check if already claimed TODAY using database (LOCAL calendar day based)
   useEffect(() => {
     const checkClaimStatus = async () => {
       if (!autoShow || !user?.id) {
@@ -55,19 +56,29 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
         return;
       }
 
-      // Check session flag FIRST - don't show popup again if already shown this session
+      const today = getLocalDayKey();
       const sessionKey = `daily_login_shown_${user.id}`;
-      if (sessionStorage.getItem(sessionKey) === 'true' || hasShownThisSessionRef.current) {
-        console.log('Daily reward popup already shown this session');
+      const dismissSessionKey = `daily_login_dismissed_${user.id}`;
+      const dismissDateKey = `daily_login_dismissed_date_${user.id}`;
+
+      const dismissedThisSession = safeSessionStorage.getItem(dismissSessionKey) === 'true';
+      const dismissedToday = safeLocalStorage.getItem(dismissDateKey) === today;
+
+      // If dismissed, never show again (session/day)
+      if (dismissedThisSession || dismissedToday) {
+        setAlreadyClaimed(true);
+        setIsCheckingStatus(false);
+        return;
+      }
+
+      // Check session flag FIRST - don't show popup again if already shown this session
+      if (safeSessionStorage.getItem(sessionKey) === 'true' || hasShownThisSessionRef.current) {
         setAlreadyClaimed(true);
         setIsCheckingStatus(false);
         return;
       }
 
       try {
-        // Get today's date in YYYY-MM-DD format (calendar day)
-        const today = new Date().toISOString().split('T')[0];
-        
         // Check if user has a checkin record for TODAY in the database
         const { data: todayCheckin, error } = await supabase
           .from('astra_daily_checkins')
@@ -82,8 +93,7 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
 
         if (todayCheckin) {
           // Already claimed today - mark session and don't show popup
-          console.log('Daily reward already claimed today:', todayCheckin.checkin_date);
-          sessionStorage.setItem(sessionKey, 'true');
+          safeSessionStorage.setItem(sessionKey, 'true');
           setAlreadyClaimed(true);
           setIsCheckingStatus(false);
           return;
@@ -91,28 +101,25 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
 
         // Also check localStorage with TODAY's date for faster UI response
         const claimKey = `daily_login_date_${user.id}`;
-        const lastClaimDate = localStorage.getItem(claimKey);
-        
+        const lastClaimDate = safeLocalStorage.getItem(claimKey);
+
         if (lastClaimDate === today) {
-          // Already claimed today according to localStorage
-          sessionStorage.setItem(sessionKey, 'true');
+          safeSessionStorage.setItem(sessionKey, 'true');
           setAlreadyClaimed(true);
           setIsCheckingStatus(false);
           return;
         }
 
         // Not claimed today - show the popup (only once per session)
-        console.log('Daily reward not claimed today, showing popup');
         hasShownThisSessionRef.current = true;
-        sessionStorage.setItem(sessionKey, 'true'); // Mark as shown for this session
+        safeSessionStorage.setItem(sessionKey, 'true');
         setShouldShow(true);
         setIsCheckingStatus(false);
-        
+
         // Request to show via queue after delay
         setTimeout(() => {
           popupQueue.requestShow();
         }, 4000);
-        
       } catch (error) {
         console.error('Error in daily claim check:', error);
         setIsCheckingStatus(false);
@@ -124,32 +131,32 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
 
   const handleClaim = async () => {
     if (!user?.id) return;
-    
+
     try {
       const result = await claimDailyLogin.mutateAsync();
-      
+
       // Check if already claimed (backend returned already_claimed)
       if (result?.already_claimed) {
         setAlreadyClaimed(true);
         setIsOpen(false);
         return;
       }
-      
-      // Successfully claimed - store TODAY's DATE in localStorage (not timestamp)
-      const today = new Date().toISOString().split('T')[0];
+
+      // Successfully claimed - store TODAY's DATE in localStorage (local calendar day)
+      const today = getLocalDayKey();
       const claimKey = `daily_login_date_${user.id}`;
-      localStorage.setItem(claimKey, today);
-      
+      safeLocalStorage.setItem(claimKey, today);
+
       setClaimResult(result);
       setClaimed(true);
       setAlreadyClaimed(true); // Prevent re-showing
-      
+
       // Confetti effect
       confetti({
         particleCount: 80,
         spread: 60,
         origin: { y: 0.6 },
-        colors: ['#FFD700', '#FFA500', '#FF6347', '#9370DB']
+        colors: ['#FFD700', '#FFA500', '#FF6347', '#9370DB'],
       });
     } catch (error) {
       console.error('Failed to claim daily login:', error);
@@ -157,6 +164,14 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
   };
 
   const handleClose = () => {
+    // If user closes without claiming, treat as dismissed for the rest of the session + day.
+    if (user?.id) {
+      const today = getLocalDayKey();
+      safeSessionStorage.setItem(`daily_login_dismissed_${user.id}`, 'true');
+      safeLocalStorage.setItem(`daily_login_dismissed_date_${user.id}`, today);
+      safeSessionStorage.setItem(`daily_login_shown_${user.id}`, 'true');
+    }
+
     setIsOpen(false);
     setClaimed(false);
     setClaimResult(null);
