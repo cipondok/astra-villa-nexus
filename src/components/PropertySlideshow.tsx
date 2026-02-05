@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, Bed, Bath, Maximize, Key, Tag, Building, Eye
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 
 interface Property {
   id: number | string;
@@ -34,6 +35,7 @@ const PropertySlideshow = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
   const navigate = useNavigate();
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   const handlePropertyClick = (propertyId: number | string) => {
     navigate(`/properties/${propertyId}`);
@@ -182,7 +184,7 @@ const PropertySlideshow = () => {
                 {/* Image */}
                 <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                   <img
-                    src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
+                    src={getPropertyImage(property.images, property.thumbnail_url)}
                     alt={property.title}
                     className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500"
                     loading="lazy"

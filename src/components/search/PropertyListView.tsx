@@ -7,7 +7,7 @@ import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Tag, Percent, Key
 const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
 import { BaseProperty } from "@/types/property";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
-
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 interface PropertyListViewProps {
   properties: BaseProperty[];
   onPropertyClick: (property: BaseProperty) => void;
@@ -25,6 +25,8 @@ const PropertyListView = ({
   onShare, 
   onContact 
 }: PropertyListViewProps) => {
+  const { getPropertyImage } = useDefaultPropertyImage();
+
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
       const value = price / 1000000000;
@@ -40,16 +42,7 @@ const PropertyListView = ({
   };
 
   const getImageUrl = (property: BaseProperty) => {
-    if (property.images && property.images.length > 0) {
-      return property.images[0];
-    }
-    if (property.image_urls && property.image_urls.length > 0) {
-      return property.image_urls[0];
-    }
-    if (property.thumbnail_url) {
-      return property.thumbnail_url;
-    }
-    return "/placeholder.svg";
+    return getPropertyImage(property.images, property.thumbnail_url, property.image_urls);
   };
 
   if (properties.length === 0) {
