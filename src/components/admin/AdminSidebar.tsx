@@ -17,6 +17,7 @@ import {
   DollarSign,
   Globe,
   Palette,
+  Sparkles,
   type LucideIcon 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -36,7 +37,7 @@ const categoryIcons: Record<string, LucideIcon> = {
   "content-settings": Palette,
   "system-settings": Settings,
   "technical": Cpu,
-  "features": Building2,
+  "features": Sparkles,
   "help": HelpCircle,
 };
 
