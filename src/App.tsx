@@ -182,6 +182,7 @@ const AppContent = () => {
             <Route path="/my-properties" element={<MyProperties />} />
             <Route path="/dashboard/customer-service" element={<CustomerServiceDashboardPage />} />
             <Route path="/dashboard/user" element={<UserDashboardPage />} />
+            <Route path="/user-dashboard" element={<UserDashboardPage />} />
             <Route path="/dashboard" element={<UserDashboardPage />} />
             <Route path="/profile/edit" element={<ProfileEditPage />} />
             <Route path="/booking/:propertyId" element={<BookingPage />} />
