@@ -495,6 +495,60 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
               </Marker>
             );
           })}
+
+          {/* User Location Indicator - Pulsing circle for last selected province */}
+          {userProvince && (() => {
+            // Find coordinates for user's province
+            const userProvinceName = Object.keys(provinceNameToCanonicalId).find(
+              (name) => provinceNameToCanonicalId[name] === userProvince
+            );
+            const coords = userProvinceName ? provinceCoordinates[userProvinceName] : null;
+            
+            if (!coords) return null;
+            
+            return (
+              <Marker coordinates={coords}>
+                <g style={{ pointerEvents: 'none' }}>
+                  {/* Outer pulsing ring */}
+                  <circle
+                    r={12}
+                    fill="none"
+                    stroke="hsl(var(--accent))"
+                    strokeWidth={2}
+                    opacity={0.4}
+                  >
+                    <animate
+                      attributeName="r"
+                      from="8"
+                      to="18"
+                      dur="1.5s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      from="0.6"
+                      to="0"
+                      dur="1.5s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                  {/* Middle ring */}
+                  <circle
+                    r={8}
+                    fill="hsl(var(--accent))"
+                    fillOpacity={0.25}
+                    stroke="hsl(var(--accent))"
+                    strokeWidth={2}
+                  />
+                  {/* Inner solid dot */}
+                  <circle
+                    r={4}
+                    fill="hsl(var(--accent))"
+                  />
+                </g>
+              </Marker>
+            );
+          })()}
         </ZoomableGroup>
       </ComposableMap>
 
