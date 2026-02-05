@@ -37,10 +37,48 @@ const AstraWalletCard: React.FC<AstraWalletCardProps> = ({ compact = false }) =>
     return new Intl.NumberFormat('id-ID').format(amount);
   };
 
+  // Get weekly check-in data
+  const getWeeklyCheckinData = () => {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const today = new Date();
+    const currentDay = today.getDay();
+    const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay;
+    
+    return days.map((day, index) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() + mondayOffset + index);
+      const dateStr = date.toISOString().split('T')[0];
+      const isPast = date < new Date(today.toDateString());
+      const isToday = date.toDateString() === today.toDateString();
+      const isFuture = date > today;
+      
+      // Check if this day was checked in (simplified - would need actual data)
+      const wasCheckedIn = walletStats.lastCheckin === dateStr || 
+        (isToday && checkinStatus?.hasCheckedInToday);
+      
+      // Base reward is 10 tokens, with streak bonus
+      const baseReward = 10;
+      const missedReward = isPast && !wasCheckedIn ? baseReward : 0;
+      
+      return {
+        day,
+        date: dateStr,
+        isToday,
+        isPast,
+        isFuture,
+        wasCheckedIn,
+        missedReward
+      };
+    });
+  };
+
+  const weeklyData = getWeeklyCheckinData();
+
   if (compact) {
     return (
       <Card className="relative overflow-hidden bg-gradient-to-br from-amber-500/10 via-yellow-500/10 to-orange-500/10 border-amber-500/20">
-        <CardContent className="p-3">
+        <CardContent className="p-3 space-y-3">
+          {/* Header Row */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
@@ -51,14 +89,93 @@ const AstraWalletCard: React.FC<AstraWalletCardProps> = ({ compact = false }) =>
                 <p className="text-lg font-bold">{formatTokenAmount(balance?.available_tokens || 0)}</p>
               </div>
             </div>
-            <Button 
-              size="sm" 
-              onClick={() => navigate('/astra-tokens')}
-              className="h-8 text-xs"
-            >
-              View Wallet <ArrowRight className="h-3 w-3 ml-1" />
-            </Button>
+            
+            {/* Daily Check-in Button */}
+            {!checkinStatus?.hasCheckedInToday && walletStats.canClaimToday ? (
+              <Button 
+                size="sm" 
+                onClick={() => performCheckin()}
+                disabled={isCheckingIn}
+                className="h-8 text-xs bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+              >
+                {isCheckingIn ? (
+                  <Sparkles className="h-3 w-3 animate-spin" />
+                ) : (
+                  <>
+                    <Gift className="h-3 w-3 mr-1" />
+                    Check-in
+                  </>
+                )}
+              </Button>
+            ) : (
+              <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                <CheckCircle2 className="h-3 w-3 mr-1" />
+                Done
+              </Badge>
+            )}
           </div>
+
+          {/* Weekly Check-in Tracker */}
+          <div className="bg-background/30 rounded-lg p-2">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] text-muted-foreground font-medium">Weekly Check-ins</span>
+              {walletStats.currentStreak > 0 && (
+                <div className="flex items-center gap-1 text-orange-400">
+                  <Flame className="h-3 w-3" />
+                  <span className="text-[10px] font-bold">{walletStats.currentStreak}</span>
+                </div>
+              )}
+            </div>
+            <div className="grid grid-cols-7 gap-1">
+              {weeklyData.map((dayData) => (
+                <div 
+                  key={dayData.day}
+                  className={`text-center p-1 rounded transition-all ${
+                    dayData.isToday 
+                      ? 'bg-amber-500/20 ring-1 ring-amber-500/50' 
+                      : dayData.wasCheckedIn 
+                        ? 'bg-emerald-500/20' 
+                        : dayData.isPast 
+                          ? 'bg-red-500/10' 
+                          : 'bg-muted/30'
+                  }`}
+                >
+                  <p className={`text-[9px] font-medium ${
+                    dayData.isToday 
+                      ? 'text-amber-400' 
+                      : dayData.wasCheckedIn 
+                        ? 'text-emerald-400' 
+                        : dayData.isPast 
+                          ? 'text-red-400' 
+                          : 'text-muted-foreground'
+                  }`}>
+                    {dayData.day}
+                  </p>
+                  <div className="h-4 flex items-center justify-center">
+                    {dayData.wasCheckedIn ? (
+                      <CheckCircle2 className="h-3 w-3 text-emerald-400" />
+                    ) : dayData.isPast ? (
+                      <span className="text-[8px] text-red-400">-{dayData.missedReward}</span>
+                    ) : dayData.isToday ? (
+                      <Sparkles className="h-3 w-3 text-amber-400" />
+                    ) : (
+                      <span className="text-[8px] text-muted-foreground">+10</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* View Wallet Link */}
+          <Button 
+            variant="ghost"
+            size="sm" 
+            onClick={() => navigate('/astra-tokens')}
+            className="w-full h-7 text-xs text-muted-foreground hover:text-foreground"
+          >
+            View Full Wallet <ArrowRight className="h-3 w-3 ml-1" />
+          </Button>
         </CardContent>
       </Card>
     );
