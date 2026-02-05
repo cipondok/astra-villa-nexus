@@ -4,22 +4,27 @@ import { X, Sparkles, Home, ArrowRight, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
-const STORAGE_KEY = 'astra_new_arrivals_seen';
+const STORAGE_KEY = 'astra_new_arrivals_seen_date';
+const SESSION_KEY = 'astra_new_arrivals_seen_session';
 
 export const NewArrivalsPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user has seen the popup
-    const hasSeen = localStorage.getItem(STORAGE_KEY);
-    
-    if (!hasSeen) {
-      // Show popup after a short delay for better UX
+    // Show at most once per session AND once per calendar day
+    const today = new Date().toISOString().split('T')[0];
+
+    const seenThisSession = sessionStorage.getItem(SESSION_KEY) === 'true';
+    const seenDate = localStorage.getItem(STORAGE_KEY);
+    const seenToday = seenDate === today;
+
+    if (!seenThisSession && !seenToday) {
       const showTimer = setTimeout(() => {
         setIsVisible(true);
+        sessionStorage.setItem(SESSION_KEY, 'true');
       }, 2000);
-      
+
       return () => clearTimeout(showTimer);
     }
   }, []);
@@ -30,14 +35,16 @@ export const NewArrivalsPopup = () => {
       const autoCloseTimer = setTimeout(() => {
         handleClose();
       }, 3000);
-      
+
       return () => clearTimeout(autoCloseTimer);
     }
   }, [isVisible]);
 
   const handleClose = () => {
     setIsVisible(false);
-    localStorage.setItem(STORAGE_KEY, 'true');
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem(STORAGE_KEY, today);
+    sessionStorage.setItem(SESSION_KEY, 'true');
   };
 
   const handleExplore = () => {
