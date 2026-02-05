@@ -260,6 +260,14 @@ function App() {
   useEffect(() => {
     const checkWelcomeScreen = async () => {
       try {
+        // FIRST: Check if welcome screen was already shown this session
+        const hasLoaded = sessionStorage.getItem('astra_app_loaded');
+        if (hasLoaded === 'true') {
+          // Already shown this session - skip immediately
+          setIsLoading(false);
+          return;
+        }
+
         // Import supabase client
         const { supabase } = await import('@/integrations/supabase/client');
         
@@ -282,21 +290,11 @@ function App() {
                           settings.welcomeScreenEnabled === true || 
                           settings.welcomeScreenEnabled === 'true';
         
-        const skipOnReturn = settings.welcomeSkipOnReturn === true || 
-                            settings.welcomeSkipOnReturn === 'true';
-        
         const loadingDuration = typeof settings.welcomeLoadingDuration === 'number' 
           ? settings.welcomeLoadingDuration 
           : parseInt(settings.welcomeLoadingDuration) || 2000;
 
         setWelcomeEnabled(isEnabled);
-
-        // Check if we should skip on return visit
-        const hasLoaded = sessionStorage.getItem('astra_app_loaded');
-        if (hasLoaded && skipOnReturn) {
-          setIsLoading(false);
-          return;
-        }
 
         if (!isEnabled) {
           setIsLoading(false);
@@ -304,7 +302,7 @@ function App() {
           return;
         }
 
-        // Show welcome screen for configured duration
+        // Show welcome screen for configured duration, then mark as loaded
         const timer = setTimeout(() => {
           setIsLoading(false);
           sessionStorage.setItem('astra_app_loaded', 'true');
