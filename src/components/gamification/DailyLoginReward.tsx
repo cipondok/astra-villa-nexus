@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Sparkles, Flame, X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,6 +24,9 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
   const [alreadyClaimed, setAlreadyClaimed] = useState(false);
   const [shouldShow, setShouldShow] = useState(false);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
+  
+  // Prevent re-showing in this session even after close
+  const hasShownThisSessionRef = useRef(false);
 
   // Popup queue integration - medium priority with 4s stagger
   const popupQueue = usePopupQueue('daily-login-reward', 'medium', { delay: 4000 });
@@ -44,7 +47,7 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
     }
   }, [isOpen, shouldShow]);
 
-  // Check if already claimed TODAY using database (not 24 hours - calendar day based)
+  // Check if already claimed TODAY using database (calendar day based)
   useEffect(() => {
     const checkClaimStatus = async () => {
       if (!autoShow || !user?.id) {
@@ -52,8 +55,17 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
         return;
       }
 
+      // Check session flag FIRST - don't show popup again if already shown this session
+      const sessionKey = `daily_login_shown_${user.id}`;
+      if (sessionStorage.getItem(sessionKey) === 'true' || hasShownThisSessionRef.current) {
+        console.log('Daily reward popup already shown this session');
+        setAlreadyClaimed(true);
+        setIsCheckingStatus(false);
+        return;
+      }
+
       try {
-        // Get today's date in YYYY-MM-DD format (calendar day, not 24hr window)
+        // Get today's date in YYYY-MM-DD format (calendar day)
         const today = new Date().toISOString().split('T')[0];
         
         // Check if user has a checkin record for TODAY in the database
@@ -69,26 +81,30 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
         }
 
         if (todayCheckin) {
-          // Already claimed today - don't show popup
+          // Already claimed today - mark session and don't show popup
           console.log('Daily reward already claimed today:', todayCheckin.checkin_date);
+          sessionStorage.setItem(sessionKey, 'true');
           setAlreadyClaimed(true);
           setIsCheckingStatus(false);
           return;
         }
 
-        // Also store in localStorage with TODAY's date for faster UI response
+        // Also check localStorage with TODAY's date for faster UI response
         const claimKey = `daily_login_date_${user.id}`;
         const lastClaimDate = localStorage.getItem(claimKey);
         
         if (lastClaimDate === today) {
           // Already claimed today according to localStorage
+          sessionStorage.setItem(sessionKey, 'true');
           setAlreadyClaimed(true);
           setIsCheckingStatus(false);
           return;
         }
 
-        // Not claimed today - show the popup
+        // Not claimed today - show the popup (only once per session)
         console.log('Daily reward not claimed today, showing popup');
+        hasShownThisSessionRef.current = true;
+        sessionStorage.setItem(sessionKey, 'true'); // Mark as shown for this session
         setShouldShow(true);
         setIsCheckingStatus(false);
         
