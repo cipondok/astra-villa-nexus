@@ -91,50 +91,47 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
           <span className="text-[9px] opacity-70">({categorySections.length})</span>
         </div>
 
-        {/* Compact Tabs */}
-        <ScrollArea className="w-full">
-          <div className="flex items-center gap-0.5 p-1 bg-muted/20">
-            {categorySections.map((section) => {
-              const Icon = section.icon;
-              const isActive = section.key === activeSection;
-              
-              return (
-                <button
-                  key={section.key}
-                  onClick={() => onSectionChange(section.key)}
-                  className={cn(
-                    "flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-all duration-150 whitespace-nowrap shrink-0",
-                    isActive
-                      ? cn("shadow-sm", theme.active)
-                      : "hover:bg-muted/60 text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <Icon className={cn(
-                    "h-2.5 w-2.5",
-                    isActive ? "text-white" : "text-current"
-                  )} />
-                  <span className="max-w-[80px] truncate">{section.label}</span>
-                  {'badge' in section && section.badge && (
-                    <Badge 
-                      variant="secondary"
-                      className={cn(
-                        "text-[7px] px-1 py-0 h-3 leading-none",
-                        isActive 
-                          ? "bg-white/25 text-white border-0" 
-                          : String(section.badge) === 'New' 
-                            ? "bg-green-500/15 text-green-600 border-0"
-                            : "bg-primary/10 text-primary border-0"
-                      )}
-                    >
-                      {String(section.badge)}
-                    </Badge>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-          <ScrollBar orientation="horizontal" className="h-1" />
-        </ScrollArea>
+        {/* Compact Tabs - Wrap to multiple rows */}
+        <div className="flex flex-wrap items-center gap-0.5 p-1 bg-muted/20">
+          {categorySections.map((section) => {
+            const Icon = section.icon;
+            const isActive = section.key === activeSection;
+            
+            return (
+              <button
+                key={section.key}
+                onClick={() => onSectionChange(section.key)}
+                className={cn(
+                  "flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-all duration-150 whitespace-nowrap",
+                  isActive
+                    ? cn("shadow-sm", theme.active)
+                    : "hover:bg-muted/60 text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Icon className={cn(
+                  "h-2.5 w-2.5",
+                  isActive ? "text-white" : "text-current"
+                )} />
+                <span className="max-w-[80px] truncate">{section.label}</span>
+                {'badge' in section && section.badge && (
+                  <Badge 
+                    variant="secondary"
+                    className={cn(
+                      "text-[7px] px-1 py-0 h-3 leading-none",
+                      isActive 
+                        ? "bg-white/25 text-white border-0" 
+                        : String(section.badge) === 'New' 
+                          ? "bg-green-500/15 text-green-600 border-0"
+                          : "bg-primary/10 text-primary border-0"
+                    )}
+                  >
+                    {String(section.badge)}
+                  </Badge>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
