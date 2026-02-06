@@ -222,14 +222,9 @@ const UserDashboardPage = () => {
             <Card 
               className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 text-white border-0 cursor-pointer group shadow-md shadow-emerald-500/20"
               onClick={() => {
-                const path = userRoles.includes('property_owner') 
-                  ? '/dashboard/property-owner'
-                  : userRoles.includes('agent') 
-                  ? '/dashboard/agent'
-                  : userRoles.includes('vendor') 
-                  ? '/dashboard/vendor'
-                  : '/dashboard/user';
-                window.open(path, '_blank');
+                if (userRoles.includes('property_owner')) navigate('/dashboard/property-owner');
+                else if (userRoles.includes('agent')) navigate('/dashboard/agent');
+                else if (userRoles.includes('vendor')) navigate('/dashboard/vendor');
               }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
