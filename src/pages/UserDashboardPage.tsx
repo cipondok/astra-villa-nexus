@@ -41,7 +41,8 @@ import {
   TrendingUp,
   Clock,
   Edit,
-  LogOut
+  LogOut,
+  Wallet
 } from 'lucide-react';
 
 const UserDashboardPage = () => {
@@ -166,6 +167,16 @@ const UserDashboardPage = () => {
                 Last login: Today
               </p>
             </div>
+
+            {/* ASTRA Wallet Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/astra-tokens')}
+              className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-amber-500/30 backdrop-blur-sm flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400/50 hover:bg-amber-500/40 transition-colors"
+            >
+              <Wallet className="h-5 w-5 text-white" />
+            </motion.button>
 
             {/* Settings Dropdown */}
             <DropdownMenu>
