@@ -94,21 +94,37 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
     }
   }, [isVerified]);
 
-  // Open AHU in new window and show confirmation dialog
+  // Open AHU in popup window and show confirmation dialog
   const handleOpenAHU = () => {
     if (!companyName.trim()) {
       toast.error('Please enter your company name first');
       return;
     }
     
-    // Open AHU in new window/tab
-    window.open('https://ahu.go.id/pencarian/profil-pt', '_blank', 'noopener,noreferrer');
-    setAhuWindowOpened(true);
+    // Calculate popup window dimensions and position (centered)
+    const width = 900;
+    const height = 700;
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
     
-    // Show confirmation dialog after a short delay
-    setTimeout(() => {
-      setConfirmDialogOpen(true);
-    }, 1000);
+    // Open AHU in popup window (not a full new tab)
+    const popup = window.open(
+      'https://ahu.go.id/pencarian/profil-pt',
+      'AHU_Search',
+      `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no`
+    );
+    
+    if (popup) {
+      popup.focus();
+      setAhuWindowOpened(true);
+      
+      // Show confirmation dialog after a short delay
+      setTimeout(() => {
+        setConfirmDialogOpen(true);
+      }, 1000);
+    } else {
+      toast.error('Popup was blocked. Please allow popups for this site.');
+    }
   };
 
   // Submit for verification
