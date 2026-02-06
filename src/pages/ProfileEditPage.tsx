@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,21 +6,41 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, User, Save, Crown, Sparkles, Shield, ChevronRight } from 'lucide-react';
+import { ArrowLeft, User, Save, Crown, Sparkles, Shield, ChevronRight, Lock, Info } from 'lucide-react';
 import { useUserMembership } from '@/hooks/useUserMembership';
 import { useVIPLimits } from '@/hooks/useVIPLimits';
 import { UserMembershipBadge, VerificationBadge } from '@/components/user/UserMembershipBadge';
 import { MEMBERSHIP_LEVELS } from '@/types/membership';
 import { Progress } from '@/components/ui/progress';
+import { useProfileEditCooldown } from '@/hooks/useProfileEditCooldown';
+import ProfileEditLockBanner from '@/components/profile/ProfileEditLockBanner';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+
+// Sensitive fields that trigger cooldown
+const SENSITIVE_FIELDS = ['full_name', 'phone', 'company_name'];
 
 const ProfileEditPage = () => {
   const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  
+  // Cooldown hook
+  const {
+    canEdit,
+    changeCount,
+    daysRemaining,
+    lockedUntil,
+    changesRemaining,
+    nextCooldownDays,
+    mustContactSupport,
+    loading: cooldownLoading,
+    recordProfileChange,
+  } = useProfileEditCooldown();
+
   const [formData, setFormData] = useState({
     full_name: '',
     phone: '',
@@ -31,9 +51,16 @@ const ProfileEditPage = () => {
     bio: ''
   });
 
+  // Track original values to detect changes
+  const [originalData, setOriginalData] = useState({
+    full_name: '',
+    phone: '',
+    company_name: '',
+  });
+
   useEffect(() => {
     if (profile) {
-      setFormData({
+      const data = {
         full_name: profile.full_name || '',
         phone: profile.phone || '',
         company_name: profile.company_name || '',
@@ -43,24 +70,68 @@ const ProfileEditPage = () => {
           ? profile.specializations.join(', ') 
           : profile.specializations || '',
         bio: profile.bio || ''
+      };
+      setFormData(data);
+      setOriginalData({
+        full_name: profile.full_name || '',
+        phone: profile.phone || '',
+        company_name: profile.company_name || '',
       });
     }
   }, [profile]);
 
+  // Check which sensitive fields have been changed
+  const changedSensitiveFields = useMemo(() => {
+    const changed: string[] = [];
+    SENSITIVE_FIELDS.forEach(field => {
+      if (formData[field as keyof typeof formData] !== originalData[field as keyof typeof originalData]) {
+        changed.push(field);
+      }
+    });
+    return changed;
+  }, [formData, originalData]);
+
+  const hasSensitiveChanges = changedSensitiveFields.length > 0;
+
   const handleSave = async () => {
     if (!user) return;
 
+    // Check if trying to change sensitive fields while locked
+    if (!canEdit && hasSensitiveChanges) {
+      toast({
+        title: "Editing Locked",
+        description: `Name, phone & company are locked for ${daysRemaining} more days. Only address and bio can be edited.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check if must contact support
+    if (mustContactSupport && hasSensitiveChanges) {
+      toast({
+        title: "Maximum Changes Reached",
+        description: "Please contact customer support to change identity fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setLoading(true);
     try {
-      const updateData = {
-        full_name: formData.full_name,
-        phone: formData.phone,
-        company_name: formData.company_name,
+      // Build update data - only include sensitive fields if allowed
+      const updateData: Record<string, any> = {
         business_address: formData.business_address,
         years_experience: formData.years_experience,
         specializations: formData.specializations,
         bio: formData.bio
       };
+
+      // Only include sensitive fields if they can be edited
+      if (canEdit && !mustContactSupport) {
+        updateData.full_name = formData.full_name;
+        updateData.phone = formData.phone;
+        updateData.company_name = formData.company_name;
+      }
 
       const { error } = await supabase
         .from('profiles')
@@ -69,30 +140,34 @@ const ProfileEditPage = () => {
 
       if (error) throw error;
 
+      // Record the change if sensitive fields were modified
+      if (hasSensitiveChanges && canEdit && !mustContactSupport) {
+        const result = await recordProfileChange(changedSensitiveFields);
+        
+        if (result.success) {
+          if (result.lockedUntil) {
+            toast({
+              title: "Profile Updated",
+              description: `Changes saved. Identity fields are now locked for ${result.cooldownDays} days.`,
+            });
+          } else {
+            toast({
+              title: "Success",
+              description: "Profile updated successfully"
+            });
+          }
+        }
+      } else {
+        toast({
+          title: "Success",
+          description: "Profile updated successfully"
+        });
+      }
+
       await refreshProfile();
       
-      toast({
-        title: "Success",
-        description: "Profile updated successfully"
-      });
-      
-      // Navigate back to appropriate dashboard
-      switch (profile?.role) {
-        case 'vendor':
-          navigate('/vendor');
-          break;
-        case 'agent':
-          navigate('/agent-dashboard');
-          break;
-        case 'admin':
-          navigate('/admin');
-          break;
-        case 'customer_service':
-          navigate('/dashboard/customer-service');
-          break;
-        default:
-          navigate('/dashboard/user');
-      }
+      // Navigate back to profile
+      navigate('/profile');
     } catch (error: any) {
       console.error('Error updating profile:', error);
       toast({
@@ -109,10 +184,20 @@ const ProfileEditPage = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleContactSupport = () => {
+    navigate('/help');
+  };
+
   if (!user) {
     navigate('/?auth=true');
     return null;
   }
+
+  // Check if a specific field is locked
+  const isFieldLocked = (fieldName: string) => {
+    if (!SENSITIVE_FIELDS.includes(fieldName)) return false;
+    return !canEdit || mustContactSupport;
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 pt-20">
@@ -128,17 +213,30 @@ const ProfileEditPage = () => {
             Back
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Edit Profile
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300">
-              Update your personal information and preferences
+            <h1 className="text-2xl font-bold">Edit Profile</h1>
+            <p className="text-sm text-muted-foreground">
+              Update your personal information
             </p>
           </div>
         </div>
 
         {/* VIP Membership Card */}
         <VIPMembershipCard />
+
+        {/* Cooldown Lock Banner */}
+        {!cooldownLoading && (
+          <ProfileEditLockBanner
+            canEdit={canEdit}
+            changeCount={changeCount}
+            daysRemaining={daysRemaining}
+            lockedUntil={lockedUntil}
+            changesRemaining={changesRemaining}
+            nextCooldownDays={nextCooldownDays}
+            mustContactSupport={mustContactSupport}
+            onContactSupport={handleContactSupport}
+            className="mb-4"
+          />
+        )}
 
         <Card>
           <CardHeader>
@@ -151,91 +249,173 @@ const ProfileEditPage = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="full_name">Full Name *</Label>
-                <Input
-                  id="full_name"
-                  value={formData.full_name}
-                  onChange={(e) => handleInputChange('full_name', e.target.value)}
-                  placeholder="Enter your full name"
+            {/* Sensitive Fields Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                {isFieldLocked('full_name') ? (
+                  <>
+                    <Lock className="h-3 w-3" />
+                    <span>Identity fields (locked)</span>
+                  </>
+                ) : (
+                  <>
+                    <Info className="h-3 w-3 text-primary" />
+                    <span>Identity fields (30-day lock after change)</span>
+                  </>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Full Name */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="full_name" className="flex items-center gap-1.5 text-xs">
+                    Full Name
+                    {isFieldLocked('full_name') && (
+                      <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">
+                        <Lock className="h-2.5 w-2.5 mr-0.5" />
+                        Locked
+                      </Badge>
+                    )}
+                  </Label>
+                  <Input
+                    id="full_name"
+                    value={formData.full_name}
+                    onChange={(e) => handleInputChange('full_name', e.target.value)}
+                    placeholder="Enter your full name"
+                    disabled={isFieldLocked('full_name')}
+                    className={cn(
+                      "h-9 text-sm",
+                      isFieldLocked('full_name') && "bg-muted cursor-not-allowed opacity-60"
+                    )}
+                  />
+                </div>
+
+                {/* Phone */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="phone" className="flex items-center gap-1.5 text-xs">
+                    Phone Number
+                    {isFieldLocked('phone') && (
+                      <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">
+                        <Lock className="h-2.5 w-2.5 mr-0.5" />
+                        Locked
+                      </Badge>
+                    )}
+                  </Label>
+                  <Input
+                    id="phone"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    placeholder="Enter your phone number"
+                    disabled={isFieldLocked('phone')}
+                    className={cn(
+                      "h-9 text-sm",
+                      isFieldLocked('phone') && "bg-muted cursor-not-allowed opacity-60"
+                    )}
+                  />
+                </div>
+
+                {/* Company Name */}
+                <div className="space-y-1.5 md:col-span-2">
+                  <Label htmlFor="company_name" className="flex items-center gap-1.5 text-xs">
+                    Company Name
+                    {isFieldLocked('company_name') && (
+                      <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">
+                        <Lock className="h-2.5 w-2.5 mr-0.5" />
+                        Locked
+                      </Badge>
+                    )}
+                  </Label>
+                  <Input
+                    id="company_name"
+                    value={formData.company_name}
+                    onChange={(e) => handleInputChange('company_name', e.target.value.toUpperCase())}
+                    placeholder="Enter your company name"
+                    disabled={isFieldLocked('company_name')}
+                    className={cn(
+                      "h-9 text-sm uppercase",
+                      isFieldLocked('company_name') && "bg-muted cursor-not-allowed opacity-60"
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Separator */}
+            <div className="border-t border-border" />
+
+            {/* Freely Editable Fields */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Sparkles className="h-3 w-3 text-primary" />
+                <span>Always editable</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="years_experience" className="text-xs">Years of Experience</Label>
+                  <Input
+                    id="years_experience"
+                    type="number"
+                    value={formData.years_experience}
+                    onChange={(e) => handleInputChange('years_experience', e.target.value)}
+                    placeholder="Enter years of experience"
+                    className="h-9 text-sm"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="specializations" className="text-xs">Specializations</Label>
+                  <Input
+                    id="specializations"
+                    value={formData.specializations}
+                    onChange={(e) => handleInputChange('specializations', e.target.value)}
+                    placeholder="E.g. Apartments, Commercial"
+                    className="h-9 text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="business_address" className="text-xs">Address</Label>
+                <Textarea
+                  id="business_address"
+                  value={formData.business_address}
+                  onChange={(e) => handleInputChange('business_address', e.target.value)}
+                  placeholder="Enter your address"
+                  rows={2}
+                  className="text-sm resize-none"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  placeholder="Enter your phone number"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="company_name">Company Name</Label>
-                <Input
-                  id="company_name"
-                  value={formData.company_name}
-                  onChange={(e) => handleInputChange('company_name', e.target.value)}
-                  placeholder="Enter your company name"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="years_experience">Years of Experience</Label>
-                <Input
-                  id="years_experience"
-                  type="number"
-                  value={formData.years_experience}
-                  onChange={(e) => handleInputChange('years_experience', e.target.value)}
-                  placeholder="Enter years of experience"
+              <div className="space-y-1.5">
+                <Label htmlFor="bio" className="text-xs">
+                  Bio <span className="text-muted-foreground">({formData.bio.length}/160)</span>
+                </Label>
+                <Textarea
+                  id="bio"
+                  value={formData.bio}
+                  onChange={(e) => handleInputChange('bio', e.target.value.slice(0, 160))}
+                  placeholder="Tell us about yourself"
+                  rows={3}
+                  maxLength={160}
+                  className="text-sm resize-none"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="business_address">Address</Label>
-              <Textarea
-                id="business_address"
-                value={formData.business_address}
-                onChange={(e) => handleInputChange('business_address', e.target.value)}
-                placeholder="Enter your address"
-                rows={3}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="specializations">Specializations</Label>
-              <Input
-                id="specializations"
-                value={formData.specializations}
-                onChange={(e) => handleInputChange('specializations', e.target.value)}
-                placeholder="Enter specializations (comma separated)"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="bio">Bio</Label>
-              <Textarea
-                id="bio"
-                value={formData.bio}
-                onChange={(e) => handleInputChange('bio', e.target.value)}
-                placeholder="Tell us about yourself"
-                rows={4}
-              />
-            </div>
-
-            <div className="flex justify-end space-x-4 pt-6">
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-3 pt-4 border-t">
               <Button
                 variant="outline"
                 onClick={() => navigate(-1)}
+                size="sm"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleSave}
-                disabled={loading}
+                disabled={loading || cooldownLoading}
+                size="sm"
                 className="flex items-center gap-2"
               >
                 <Save className="h-4 w-4" />
@@ -264,11 +444,11 @@ const VIPMembershipCard: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Card className="mb-6">
-        <CardContent className="p-6">
-          <div className="animate-pulse space-y-4">
-            <div className="h-6 bg-muted rounded w-1/3"></div>
-            <div className="h-4 bg-muted rounded w-1/2"></div>
+      <Card className="mb-4">
+        <CardContent className="p-4">
+          <div className="animate-pulse space-y-3">
+            <div className="h-5 bg-muted rounded w-1/3"></div>
+            <div className="h-3 bg-muted rounded w-1/2"></div>
           </div>
         </CardContent>
       </Card>
@@ -281,106 +461,79 @@ const VIPMembershipCard: React.FC = () => {
   const listingsPercent = maxListings > 0 ? (currentListings / maxListings) * 100 : 0;
 
   return (
-    <Card className={`mb-6 overflow-hidden ${isHighTier ? config.borderColor : ''}`}>
+    <Card className={`mb-4 overflow-hidden ${isHighTier ? config.borderColor : ''}`}>
       {isHighTier && (
         <div className={`h-1 ${config.bgColor}`} />
       )}
-      <CardHeader className={isHighTier ? config.bgColor : ''}>
+      <CardHeader className={`py-3 ${isHighTier ? config.bgColor : ''}`}>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-full ${config.bgColor}`}>
-              <Crown className={`h-5 w-5 ${config.color}`} />
+          <div className="flex items-center gap-2">
+            <div className={`p-1.5 rounded-full ${config.bgColor}`}>
+              <Crown className={`h-4 w-4 ${config.color}`} />
             </div>
             <div>
-              <CardTitle className="flex items-center gap-2">
-                Membership Status
-                {isHighTier && <Sparkles className="h-4 w-4 text-yellow-500" />}
+              <CardTitle className="text-sm flex items-center gap-1.5">
+                Membership
+                {isHighTier && <Sparkles className="h-3 w-3 text-yellow-500" />}
               </CardTitle>
-              <CardDescription>Your current membership level and benefits</CardDescription>
             </div>
           </div>
           <Button 
             variant="outline" 
             size="sm"
             onClick={() => navigate('/membership')}
-            className="shrink-0"
+            className="h-7 text-xs"
           >
             Upgrade
-            <ChevronRight className="h-4 w-4 ml-1" />
+            <ChevronRight className="h-3 w-3 ml-1" />
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="p-6 space-y-6">
+      <CardContent className="p-4 space-y-3">
         {/* Membership Level & Verification */}
-        <div className="flex items-center gap-4 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           <UserMembershipBadge 
             membershipLevel={membershipLevel}
-            size="md"
+            size="sm"
             variant="badge"
             showLabel={true}
             showIcon={true}
           />
           <VerificationBadge status={verificationStatus as any} size="sm" />
-          {userLevelName && (
-            <span className="text-sm text-muted-foreground">
-              Level: {userLevelName}
-            </span>
-          )}
         </div>
 
         {/* Usage Limits */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-[10px]">
               <span className="text-muted-foreground">Properties</span>
-              <span className="font-medium">{currentProperties} / {maxProperties}</span>
+              <span className="font-medium">{currentProperties}/{maxProperties}</span>
             </div>
-            <Progress value={propertiesPercent} className="h-2" />
+            <Progress value={propertiesPercent} className="h-1.5" />
           </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Active Listings</span>
-              <span className="font-medium">{currentListings} / {maxListings}</span>
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-[10px]">
+              <span className="text-muted-foreground">Listings</span>
+              <span className="font-medium">{currentListings}/{maxListings}</span>
             </div>
-            <Progress value={listingsPercent} className="h-2" />
+            <Progress value={listingsPercent} className="h-1.5" />
           </div>
         </div>
 
         {/* Features */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {canFeatureListings && (
-            <div className="flex items-center gap-1.5 text-xs bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-400 px-2 py-1 rounded-full">
-              <Sparkles className="h-3 w-3" />
-              Featured Listings
+            <div className="flex items-center gap-1 text-[9px] bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded">
+              <Sparkles className="h-2.5 w-2.5" />
+              Featured
             </div>
           )}
           {prioritySupport && (
-            <div className="flex items-center gap-1.5 text-xs bg-blue-100 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded-full">
-              <Shield className="h-3 w-3" />
-              Priority Support
+            <div className="flex items-center gap-1 text-[9px] bg-blue-100 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 px-1.5 py-0.5 rounded">
+              <Shield className="h-2.5 w-2.5" />
+              Priority
             </div>
           )}
-          {verificationStatus === 'verified' && (
-            <div className="flex items-center gap-1.5 text-xs bg-emerald-100 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 px-2 py-1 rounded-full">
-              <Shield className="h-3 w-3" />
-              Verified Account
-            </div>
-          )}
-        </div>
-
-        {/* Benefits List */}
-        <div className="border-t pt-4">
-          <p className="text-xs font-medium text-muted-foreground mb-2">Your Benefits:</p>
-          <div className="flex flex-wrap gap-1">
-            {config.benefits.map((benefit, index) => (
-              <span 
-                key={index}
-                className="text-xs bg-muted px-2 py-0.5 rounded"
-              >
-                {benefit}
-              </span>
-            ))}
-          </div>
         </div>
       </CardContent>
     </Card>
