@@ -1,24 +1,44 @@
 import { useState, useRef, useCallback } from 'react';
-import { Camera, Upload, X, Loader2 } from 'lucide-react';
+import { Camera, Upload, X, Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import imageCompression from 'browser-image-compression';
+import ImageCropper from './ImageCropper';
+import AvatarUploadGuard from './AvatarUploadGuard';
 
 interface AvatarUploadProps {
   userId: string;
   currentAvatarUrl?: string | null;
   onAvatarUpdate: (url: string) => void;
+  userEmail?: string;
+  userPhone?: string;
+  onEditProfile?: () => void;
 }
 
-export const AvatarUpload = ({ userId, currentAvatarUrl, onAvatarUpdate }: AvatarUploadProps) => {
+export const AvatarUpload = ({ 
+  userId, 
+  currentAvatarUrl, 
+  onAvatarUpdate,
+  userEmail,
+  userPhone,
+  onEditProfile,
+}: AvatarUploadProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentAvatarUrl || null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const optimizeImage = async (file: File): Promise<File> => {
+  // Security check - require email and phone before allowing upload
+  const hasEmail = Boolean(userEmail && userEmail.trim().length > 0);
+  const hasPhone = Boolean(userPhone && userPhone.trim().length > 0);
+  const canUploadAvatar = hasEmail && hasPhone;
+
+  const optimizeImage = async (blob: Blob): Promise<File> => {
+    const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
     const options = {
       maxSizeMB: 1,
       maxWidthOrHeight: 512,
@@ -35,11 +55,11 @@ export const AvatarUpload = ({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
     }
   };
 
-  const uploadAvatar = async (file: File) => {
+  const uploadAvatar = async (blob: Blob) => {
     setIsUploading(true);
     try {
       // Optimize the image first
-      const optimizedFile = await optimizeImage(file);
+      const optimizedFile = await optimizeImage(blob);
       
       // Delete old avatar if exists
       if (currentAvatarUrl) {
@@ -52,8 +72,7 @@ export const AvatarUpload = ({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
       }
 
       // Upload new avatar
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${userId}-${Date.now()}.${fileExt}`;
+      const fileName = `${userId}-${Date.now()}.jpg`;
       const filePath = `${userId}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
@@ -94,12 +113,26 @@ export const AvatarUpload = ({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
       });
     } finally {
       setIsUploading(false);
+      setSelectedFile(null);
+      setShowCropper(false);
     }
   };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Reset input
+    e.target.value = '';
+
+    if (!canUploadAvatar) {
+      toast({
+        title: "Verification Required",
+        description: "Please add your phone number and email before uploading a photo.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     if (!file.type.startsWith('image/')) {
       toast({
@@ -110,22 +143,35 @@ export const AvatarUpload = ({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
       toast({
         title: "File Too Large",
-        description: "Image must be less than 5MB",
+        description: "Image must be less than 10MB",
         variant: "destructive",
       });
       return;
     }
 
-    await uploadAvatar(file);
+    // Open cropper instead of direct upload
+    setSelectedFile(file);
+    setShowCropper(true);
+  };
+
+  const handleCropComplete = (croppedBlob: Blob) => {
+    uploadAvatar(croppedBlob);
+  };
+
+  const handleCropCancel = () => {
+    setSelectedFile(null);
+    setShowCropper(false);
   };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragging(true);
-  }, []);
+    if (canUploadAvatar) {
+      setIsDragging(true);
+    }
+  }, [canUploadAvatar]);
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -135,6 +181,15 @@ export const AvatarUpload = ({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
   const handleDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
+
+    if (!canUploadAvatar) {
+      toast({
+        title: "Verification Required",
+        description: "Please add your phone number and email before uploading a photo.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const file = e.dataTransfer.files?.[0];
     if (!file) return;
@@ -148,17 +203,19 @@ export const AvatarUpload = ({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
       toast({
         title: "File Too Large",
-        description: "Image must be less than 5MB",
+        description: "Image must be less than 10MB",
         variant: "destructive",
       });
       return;
     }
 
-    await uploadAvatar(file);
-  }, [userId, currentAvatarUrl, toast, onAvatarUpdate]);
+    // Open cropper
+    setSelectedFile(file);
+    setShowCropper(true);
+  }, [canUploadAvatar, toast]);
 
   const handleRemoveAvatar = async () => {
     if (!currentAvatarUrl) return;
@@ -197,8 +254,29 @@ export const AvatarUpload = ({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
     }
   };
 
+  const handleUploadClick = () => {
+    if (!canUploadAvatar) {
+      toast({
+        title: "Verification Required",
+        description: "Please add your phone number and email before uploading a photo.",
+        variant: "destructive",
+      });
+      return;
+    }
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="space-y-4">
+      {/* Security Guard - Show if not verified */}
+      {!canUploadAvatar && (
+        <AvatarUploadGuard
+          hasEmail={hasEmail}
+          hasPhone={hasPhone}
+          onEditProfile={onEditProfile}
+        />
+      )}
+
       <div className="flex flex-col items-center">
         <div
           onDragOver={handleDragOver}
@@ -206,7 +284,7 @@ export const AvatarUpload = ({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
           onDrop={handleDrop}
           className={`relative group transition-all duration-300 ${
             isDragging ? 'scale-105' : ''
-          }`}
+          } ${!canUploadAvatar ? 'opacity-50 pointer-events-none' : ''}`}
         >
           <div className={`w-32 h-32 rounded-2xl overflow-hidden border-4 transition-all ${
             isDragging 
@@ -232,20 +310,20 @@ export const AvatarUpload = ({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
             </div>
           )}
 
-          {!isUploading && (
+          {!isUploading && canUploadAvatar && (
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100">
               <Button
                 size="icon"
                 variant="secondary"
                 className="rounded-full"
-                onClick={() => fileInputRef.current?.click()}
+                onClick={handleUploadClick}
               >
                 <Upload className="h-5 w-5" />
               </Button>
             </div>
           )}
 
-          {previewUrl && !isUploading && (
+          {previewUrl && !isUploading && canUploadAvatar && (
             <Button
               size="icon"
               variant="destructive"
@@ -268,21 +346,32 @@ export const AvatarUpload = ({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
         <div className="text-center mt-4">
           <Button
             variant="outline"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isUploading}
+            onClick={handleUploadClick}
+            disabled={isUploading || !canUploadAvatar}
             className="gap-2"
           >
             <Upload className="h-4 w-4" />
             {previewUrl ? 'Change Photo' : 'Upload Photo'}
           </Button>
           <p className="text-xs text-muted-foreground mt-2">
-            Drag & drop or click to upload
+            {canUploadAvatar ? 'Drag & drop or click to upload' : 'Add email & phone first'}
           </p>
           <p className="text-xs text-muted-foreground">
-            Max 5MB • JPG, PNG, WEBP
+            Max 10MB • JPG, PNG, WEBP
           </p>
         </div>
       </div>
+
+      {/* Image Cropper Modal */}
+      {showCropper && selectedFile && (
+        <ImageCropper
+          imageFile={selectedFile}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+          aspectRatio={1}
+          circularCrop={true}
+        />
+      )}
     </div>
   );
 };

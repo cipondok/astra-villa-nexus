@@ -454,6 +454,8 @@ const Profile = () => {
                         userId={user.id}
                         currentAvatarUrl={profile?.avatar_url}
                         onAvatarUpdate={() => refreshProfile()}
+                        userEmail={user.email}
+                        userPhone={profile?.phone}
                       />
                     </div>
 
