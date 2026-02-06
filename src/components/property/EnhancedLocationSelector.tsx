@@ -124,21 +124,21 @@ const EnhancedLocationSelector = ({
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-blue-600" />
+            <MapPin className="h-5 w-5 text-primary" />
             Pilih Lokasi Wilayah
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="state" className="text-gray-700 font-medium">Provinsi *</Label>
+              <Label htmlFor="state" className="text-foreground font-medium">Provinsi *</Label>
               <Select value={selectedState} onValueChange={handleStateChange}>
-                <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                <SelectTrigger className="bg-background border-border text-foreground">
                   <SelectValue placeholder="Pilih Provinsi" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                <SelectContent className="bg-popover border border-border shadow-lg z-50">
                   {provinces.map((province) => (
-                    <SelectItem key={province} value={province} className="text-gray-900 hover:bg-blue-50">
+                    <SelectItem key={province} value={province} className="text-foreground hover:bg-accent">
                       {province}
                     </SelectItem>
                   ))}
@@ -147,14 +147,14 @@ const EnhancedLocationSelector = ({
             </div>
 
             <div>
-              <Label htmlFor="city" className="text-gray-700 font-medium">Kota/Kabupaten *</Label>
+              <Label htmlFor="city" className="text-foreground font-medium">Kota/Kabupaten *</Label>
               <Select value={selectedCity} onValueChange={handleCityChange} disabled={!selectedState}>
-                <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                <SelectTrigger className="bg-background border-border text-foreground">
                   <SelectValue placeholder="Pilih Kota" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                <SelectContent className="bg-popover border border-border shadow-lg z-50">
                   {cities.map((city) => (
-                    <SelectItem key={city} value={city} className="text-gray-900 hover:bg-blue-50">
+                    <SelectItem key={city} value={city} className="text-foreground hover:bg-accent">
                       {city}
                     </SelectItem>
                   ))}
@@ -163,14 +163,14 @@ const EnhancedLocationSelector = ({
             </div>
 
             <div>
-              <Label htmlFor="area" className="text-gray-700 font-medium">Kecamatan/Area *</Label>
+              <Label htmlFor="area" className="text-foreground font-medium">Kecamatan/Area *</Label>
               <Select value={selectedArea} onValueChange={onAreaChange} disabled={!selectedCity}>
-                <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                <SelectTrigger className="bg-background border-border text-foreground">
                   <SelectValue placeholder="Pilih Area" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                <SelectContent className="bg-popover border border-border shadow-lg z-50">
                   {areas.map((area) => (
-                    <SelectItem key={area} value={area} className="text-gray-900 hover:bg-blue-50">
+                    <SelectItem key={area} value={area} className="text-foreground hover:bg-accent">
                       {area}
                     </SelectItem>
                   ))}
@@ -181,14 +181,14 @@ const EnhancedLocationSelector = ({
 
           {/* Location Preview */}
           {selectedState && selectedCity && selectedArea && (
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center gap-2 text-blue-800">
+            <div className="mt-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+              <div className="flex items-center gap-2 text-primary">
                 <MapPin className="h-4 w-4" />
                 <span className="font-medium">Wilayah Terpilih:</span>
               </div>
-              <div className="text-blue-700 font-medium mt-1">
-                {selectedArea} <ChevronRight className="inline h-3 w-3 mx-1" />
-                {selectedCity} <ChevronRight className="inline h-3 w-3 mx-1" />
+              <div className="text-foreground font-medium mt-1">
+                {selectedArea} <ChevronRight className="inline h-3 w-3 mx-1 text-muted-foreground" />
+                {selectedCity} <ChevronRight className="inline h-3 w-3 mx-1 text-muted-foreground" />
                 {selectedState}
               </div>
             </div>
@@ -198,9 +198,7 @@ const EnhancedLocationSelector = ({
 
       {/* Detailed Address Form - Only show when location is selected */}
       {selectedState && selectedCity && selectedArea && (
-        <DetailedAddressForm
-          onAddressChange={handleDetailedAddressChange}
-        />
+        <DetailedAddressForm onAddressChange={handleDetailedAddressChange} />
       )}
     </div>
   );

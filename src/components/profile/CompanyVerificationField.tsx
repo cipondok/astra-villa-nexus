@@ -102,16 +102,18 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
     }
     
     // Calculate popup window dimensions and position (centered)
-    const width = 900;
-    const height = 700;
-    const left = (window.screen.width - width) / 2;
-    const top = (window.screen.height - height) / 2;
-    
-    // Open AHU in popup window (not a full new tab)
+    // NOTE: Browser decides whether this appears as a popup window or a new tab.
+    // We request a small centered popup, but some mobile browsers always open a tab.
+    const width = Math.min(520, window.screen.width);
+    const height = Math.min(680, window.screen.height);
+    const left = Math.max(0, Math.floor((window.screen.width - width) / 2));
+    const top = Math.max(0, Math.floor((window.screen.height - height) / 2));
+
+    // Open AHU in popup window (requested)
     const popup = window.open(
       'https://ahu.go.id/pencarian/profil-pt',
       'AHU_Search',
-      `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no`
+      `popup=yes,width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no`
     );
     
     if (popup) {
@@ -322,8 +324,8 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
           <Building2 className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
           <div className="flex-1 min-w-0 text-xs text-muted-foreground">
             <p>
-              Click <strong>Check AHU</strong> to open the official AHU website in a new tab. 
-              Search for your PT name there, then confirm if you found it.
+              Klik <strong>Check AHU</strong> untuk membuka situs resmi AHU di jendela popup kecil.
+              Cari nama PT Anda di sana, lalu kembali ke sini untuk konfirmasi.
             </p>
           </div>
         </div>
@@ -386,20 +388,11 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
             </DialogDescription>
           </DialogHeader>
           
-          <div className="py-4 space-y-3">
-            <p className="text-xs text-muted-foreground">
-              Search for your company name at{' '}
-              <a 
-                href="https://ahu.go.id/pencarian/profil-pt" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-primary hover:underline inline-flex items-center gap-0.5"
-              >
-                ahu.go.id/pencarian/profil-pt
-                <ExternalLink className="h-2.5 w-2.5" />
-              </a>
-            </p>
-          </div>
+           <div className="py-4 space-y-3">
+             <p className="text-xs text-muted-foreground">
+               Buka dan cari nama PT Anda di: <span className="font-medium text-foreground">ahu.go.id/pencarian/profil-pt</span>
+             </p>
+           </div>
           
           <DialogFooter className="flex-row gap-2 sm:justify-between">
             <Button
