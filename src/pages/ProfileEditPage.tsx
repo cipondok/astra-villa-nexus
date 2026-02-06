@@ -131,6 +131,13 @@ const ProfileEditPage = () => {
     }
   }, [profile]);
 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (user === null) {
+      navigate('/?auth=true');
+    }
+  }, [user, navigate]);
+
   // Check which sensitive fields have been changed
   const changedSensitiveFields = useMemo(() => {
     const changed: string[] = [];
@@ -242,9 +249,13 @@ const ProfileEditPage = () => {
     navigate('/help');
   };
 
+  // Show loading state while checking auth
   if (!user) {
-    navigate('/?auth=true');
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
   // Check if a specific field is locked
