@@ -55,6 +55,27 @@ const ProfileInfoCard: React.FC<ProfileDisplayProps> = ({
   notSetText,
   labels,
 }) => {
+  // Parse the business address JSON to display formatted location
+  const getFormattedAddress = (addressStr?: string): string => {
+    if (!addressStr) return notSetText;
+    
+    try {
+      const addr = JSON.parse(addressStr);
+      const parts: string[] = [];
+      
+      if (addr.building_address) parts.push(addr.building_address);
+      if (addr.subdistrict_name) parts.push(addr.subdistrict_name);
+      if (addr.district_name) parts.push(addr.district_name);
+      if (addr.city_name) parts.push(addr.city_name);
+      if (addr.province_name) parts.push(addr.province_name);
+      
+      return parts.length > 0 ? parts.join(', ') : notSetText;
+    } catch {
+      // If not JSON, return raw string
+      return addressStr || notSetText;
+    }
+  };
+
   return (
     <div className="space-y-2">
       <InfoRow 
@@ -81,7 +102,7 @@ const ProfileInfoCard: React.FC<ProfileDisplayProps> = ({
       <InfoRow 
         icon={<MapPin className="h-4 w-4" />} 
         label={labels.address} 
-        value={businessAddress || notSetText} 
+        value={getFormattedAddress(businessAddress)} 
       />
       {bio && (
         <div className="pt-2 border-t border-border">

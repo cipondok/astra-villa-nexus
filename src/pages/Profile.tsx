@@ -16,6 +16,7 @@ import ProfileInfoCard from '@/components/profile/ProfileInfoCard';
 import CompanyVerificationField from '@/components/profile/CompanyVerificationField';
 import ProfileAvatarWithBadge from '@/components/profile/ProfileAvatarWithBadge';
 import ProfileCompletionStatus from '@/components/profile/ProfileCompletionStatus';
+import ProfileLocationSelector from '@/components/profile/ProfileLocationSelector';
 import { useProfileEditCooldown } from '@/hooks/useProfileEditCooldown';
 import { useAccountNotifications } from '@/hooks/useAccountNotifications';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -66,6 +67,30 @@ const Profile = () => {
     company_name: '',
     business_address: '',
     company_registration_number: '',
+  });
+  
+  // Location selection state
+  const [locationData, setLocationData] = useState({
+    province_code: '',
+    province_name: '',
+    city_code: '',
+    city_name: '',
+    district_code: '',
+    district_name: '',
+    subdistrict_code: '',
+    subdistrict_name: '',
+    building_address: '',
+  });
+  const [originalLocationData, setOriginalLocationData] = useState({
+    province_code: '',
+    province_name: '',
+    city_code: '',
+    city_name: '',
+    district_code: '',
+    district_name: '',
+    subdistrict_code: '',
+    subdistrict_name: '',
+    building_address: '',
   });
 
   const text = {
@@ -140,17 +165,51 @@ const Profile = () => {
       };
       setFormData(data);
       setOriginalData(data);
+      
+      // Parse location data from business_address JSON if available
+      const addressData = profile.business_address ? (() => {
+        try {
+          return JSON.parse(profile.business_address);
+        } catch {
+          return null;
+        }
+      })() : null;
+      
+      const locData = {
+        province_code: addressData?.province_code || '',
+        province_name: addressData?.province_name || '',
+        city_code: addressData?.city_code || '',
+        city_name: addressData?.city_name || '',
+        district_code: addressData?.district_code || '',
+        district_name: addressData?.district_name || '',
+        subdistrict_code: addressData?.subdistrict_code || '',
+        subdistrict_name: addressData?.subdistrict_name || '',
+        building_address: addressData?.building_address || profile.business_address || '',
+      };
+      setLocationData(locData);
+      setOriginalLocationData(locData);
     }
   }, [profile, isEditing]);
 
   // Identify which fields changed
+  // Check if location data changed
+  const hasLocationChanges = (): boolean => {
+    return (
+      locationData.province_code !== originalLocationData.province_code ||
+      locationData.city_code !== originalLocationData.city_code ||
+      locationData.district_code !== originalLocationData.district_code ||
+      locationData.subdistrict_code !== originalLocationData.subdistrict_code ||
+      locationData.building_address !== originalLocationData.building_address
+    );
+  };
+
   const getChangedFields = (): string[] => {
     const changedFields: string[] = [];
     if (formData.full_name !== originalData.full_name) changedFields.push('full_name');
     if (formData.phone !== originalData.phone) changedFields.push('phone');
     if (formData.company_name !== originalData.company_name) changedFields.push('company_name');
     if (formData.bio !== originalData.bio) changedFields.push('bio');
-    if (formData.business_address !== originalData.business_address) changedFields.push('business_address');
+    if (hasLocationChanges()) changedFields.push('business_address');
     return changedFields;
   };
 
@@ -192,7 +251,25 @@ const Profile = () => {
 
     setIsSaving(true);
     try {
-      const { error } = await updateProfile(formData);
+      // Build the address JSON from location data
+      const addressJson = JSON.stringify({
+        province_code: locationData.province_code,
+        province_name: locationData.province_name,
+        city_code: locationData.city_code,
+        city_name: locationData.city_name,
+        district_code: locationData.district_code,
+        district_name: locationData.district_name,
+        subdistrict_code: locationData.subdistrict_code,
+        subdistrict_name: locationData.subdistrict_name,
+        building_address: locationData.building_address,
+      });
+
+      const updateData = {
+        ...formData,
+        business_address: addressJson,
+      };
+
+      const { error } = await updateProfile(updateData);
       
       if (error) {
         showError(
@@ -513,13 +590,18 @@ const Profile = () => {
                           <MapPin className="h-4 w-4 text-primary" />
                           <Label className="text-xs font-medium">{t.address}</Label>
                         </div>
-                        <Textarea
-                          id="business_address"
-                          value={formData.business_address}
-                          onChange={(e) => setFormData({ ...formData, business_address: e.target.value })}
-                          placeholder={language === 'en' ? "Enter your full address..." : "Masukkan alamat lengkap Anda..."}
-                          rows={2}
-                          className="resize-none text-sm"
+                        <ProfileLocationSelector
+                          selectedProvinceCode={locationData.province_code}
+                          selectedCityCode={locationData.city_code}
+                          selectedDistrictCode={locationData.district_code}
+                          selectedSubdistrictCode={locationData.subdistrict_code}
+                          buildingAddress={locationData.building_address}
+                          onProvinceChange={(code, name) => setLocationData(prev => ({ ...prev, province_code: code, province_name: name }))}
+                          onCityChange={(code, name) => setLocationData(prev => ({ ...prev, city_code: code, city_name: name }))}
+                          onDistrictChange={(code, name) => setLocationData(prev => ({ ...prev, district_code: code, district_name: name }))}
+                          onSubdistrictChange={(code, name) => setLocationData(prev => ({ ...prev, subdistrict_code: code, subdistrict_name: name }))}
+                          onBuildingAddressChange={(address) => setLocationData(prev => ({ ...prev, building_address: address }))}
+                          language={language}
                         />
                       </div>
                       <div className="space-y-1.5">
