@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAlert } from '@/contexts/AlertContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,6 +14,8 @@ import RoleUpgradeSection from '@/components/profile/RoleUpgradeSection';
 import ProfileEditLockBanner from '@/components/profile/ProfileEditLockBanner';
 import ProfileInfoCard from '@/components/profile/ProfileInfoCard';
 import CompanyVerificationField from '@/components/profile/CompanyVerificationField';
+import ProfileAvatarWithBadge from '@/components/profile/ProfileAvatarWithBadge';
+import ProfileCompletionStatus from '@/components/profile/ProfileCompletionStatus';
 import { useProfileEditCooldown } from '@/hooks/useProfileEditCooldown';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
@@ -25,12 +28,16 @@ import { useUserMembership } from '@/hooks/useUserMembership';
 import { MEMBERSHIP_LEVELS } from '@/types/membership';
 import { cn } from '@/lib/utils';
 
+// Bio character limit
+const BIO_MAX_LENGTH = 160;
+
 const Profile = () => {
   const { user, profile, signOut, updateProfile, refreshProfile } = useAuth();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const { showSuccess, showError } = useAlert();
   const { membershipLevel, verificationStatus } = useUserMembership();
   const levelConfig = MEMBERSHIP_LEVELS[membershipLevel];
   
@@ -174,11 +181,10 @@ const Profile = () => {
     
     // If restricted fields changed and cooldown applies, record the change
     if (restrictedChanges && !cooldown.canEdit) {
-      toast({
-        title: "Profile Locked",
-        description: cooldown.message || "You cannot edit your profile right now.",
-        variant: "destructive",
-      });
+      showError(
+        language === 'en' ? "Profile Locked" : "Profil Terkunci",
+        cooldown.message || (language === 'en' ? "You cannot edit your profile right now." : "Anda tidak dapat mengedit profil sekarang.")
+      );
       return;
     }
 
@@ -187,11 +193,10 @@ const Profile = () => {
       const { error } = await updateProfile(formData);
       
       if (error) {
-        toast({
-          title: "Error",
-          description: error.message || "Failed to update profile",
-          variant: "destructive",
-        });
+        showError(
+          language === 'en' ? "Update Failed" : "Gagal Memperbarui",
+          error.message || (language === 'en' ? "Failed to update profile" : "Gagal memperbarui profil")
+        );
         return;
       }
 
@@ -204,37 +209,39 @@ const Profile = () => {
         const result = await cooldown.recordProfileChange(restrictedFields);
         
         if (result.mustContactSupport) {
-          toast({
-            title: "Profile Updated",
-            description: "This was your last allowed edit. Contact support for future changes.",
-            variant: "default",
-          });
+          showSuccess(
+            language === 'en' ? "🎉 Profile Updated!" : "🎉 Profil Diperbarui!",
+            language === 'en' 
+              ? "This was your last allowed edit. Contact support for future changes."
+              : "Ini adalah edit terakhir yang diizinkan. Hubungi support untuk perubahan selanjutnya."
+          );
         } else if (result.cooldownDays) {
-          toast({
-            title: "Profile Updated",
-            description: `Next edit available in ${result.cooldownDays} days.`,
-          });
+          showSuccess(
+            language === 'en' ? "🎉 Congratulations!" : "🎉 Selamat!",
+            language === 'en'
+              ? `Profile updated successfully! Next edit available in ${result.cooldownDays} days.`
+              : `Profil berhasil diperbarui! Edit selanjutnya tersedia dalam ${result.cooldownDays} hari.`
+          );
         } else {
-          toast({
-            title: "Success",
-            description: "Profile updated successfully",
-          });
+          showSuccess(
+            language === 'en' ? "🎉 Congratulations!" : "🎉 Selamat!",
+            language === 'en' ? "Your profile has been updated successfully!" : "Profil Anda berhasil diperbarui!"
+          );
         }
       } else {
-        toast({
-          title: "Success",
-          description: "Profile updated successfully",
-        });
+        showSuccess(
+          language === 'en' ? "🎉 Congratulations!" : "🎉 Selamat!",
+          language === 'en' ? "Your profile has been updated successfully!" : "Profil Anda berhasil diperbarui!"
+        );
       }
 
       await refreshProfile();
       setIsEditing(false);
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update profile",
-        variant: "destructive",
-      });
+      showError(
+        language === 'en' ? "Update Failed" : "Gagal Memperbarui",
+        error.message || (language === 'en' ? "Failed to update profile" : "Gagal memperbarui profil")
+      );
     } finally {
       setIsSaving(false);
     }
@@ -310,26 +317,15 @@ const Profile = () => {
         <Card className="mb-4 border-border overflow-hidden">
           <div className="h-20 bg-gradient-to-r from-primary/20 via-primary/10 to-accent/20"></div>
           <CardContent className="pt-0 pb-4 px-4">
-            <div className="flex items-end gap-4 -mt-10">
-              {/* Avatar */}
-              <div className="relative">
-                {profile?.avatar_url ? (
-                  <img
-                    src={profile.avatar_url}
-                    alt={profile.full_name || 'User'}
-                    className="w-20 h-20 rounded-xl object-cover border-4 border-background shadow-lg"
-                  />
-                ) : (
-                  <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center border-4 border-background shadow-lg">
-                    <User className="h-8 w-8 text-white" />
-                  </div>
-                )}
-                {verificationStatus === 'verified' && (
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary flex items-center justify-center border-2 border-background">
-                    <CheckCircle className="h-3.5 w-3.5 text-primary-foreground" />
-                  </div>
-                )}
-              </div>
+          <div className="flex items-end gap-4 -mt-10">
+              {/* Avatar with TikTok/FB style badge */}
+              <ProfileAvatarWithBadge
+                avatarUrl={profile?.avatar_url}
+                fullName={profile?.full_name}
+                membershipLevel={membershipLevel}
+                verificationStatus={verificationStatus}
+                size="lg"
+              />
 
               {/* Info */}
               <div className="flex-1 min-w-0 pb-1">
@@ -506,23 +502,43 @@ const Profile = () => {
                         />
                       )}
                       
-                      <div className="space-y-1.5">
-                        <Label htmlFor="business_address" className="text-xs">{t.address}</Label>
-                        <Input
+                      {/* Location & Address Section */}
+                      <div className="space-y-1.5 p-3 rounded-lg bg-muted/30 border border-border/50">
+                        <div className="flex items-center gap-2 mb-2">
+                          <MapPin className="h-4 w-4 text-primary" />
+                          <Label className="text-xs font-medium">{t.address}</Label>
+                        </div>
+                        <Textarea
                           id="business_address"
                           value={formData.business_address}
                           onChange={(e) => setFormData({ ...formData, business_address: e.target.value })}
-                          className="h-9"
+                          placeholder={language === 'en' ? "Enter your full address..." : "Masukkan alamat lengkap Anda..."}
+                          rows={2}
+                          className="resize-none text-sm"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label htmlFor="bio" className="text-xs">{t.bio}</Label>
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor="bio" className="text-xs">{t.bio}</Label>
+                          <span className={cn(
+                            "text-[10px]",
+                            formData.bio.length > BIO_MAX_LENGTH ? "text-destructive" : "text-muted-foreground"
+                          )}>
+                            {formData.bio.length}/{BIO_MAX_LENGTH}
+                          </span>
+                        </div>
                         <Textarea
                           id="bio"
                           value={formData.bio}
-                          onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                          rows={3}
-                          className="resize-none"
+                          onChange={(e) => {
+                            if (e.target.value.length <= BIO_MAX_LENGTH) {
+                              setFormData({ ...formData, bio: e.target.value });
+                            }
+                          }}
+                          placeholder={language === 'en' ? "Write a short bio about yourself..." : "Tulis bio singkat tentang diri Anda..."}
+                          rows={2}
+                          maxLength={BIO_MAX_LENGTH}
+                          className="resize-none text-sm"
                         />
                       </div>
                     </div>
@@ -559,6 +575,14 @@ const Profile = () => {
                 )}
               </CardContent>
             </Card>
+
+            {/* Profile Completion Status */}
+            <ProfileCompletionStatus
+              profile={profile}
+              membershipLevel={membershipLevel}
+              verificationStatus={verificationStatus}
+              language={language}
+            />
 
             {/* Quick Actions */}
             <div className="flex gap-2">
