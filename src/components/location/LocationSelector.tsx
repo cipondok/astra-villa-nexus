@@ -57,7 +57,8 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         .from('locations')
         .select('province_code, province_name')
         .eq('is_active', true)
-        .order('province_name');
+        .order('province_name')
+        .limit(100000); // Ensure we get all records to extract all 38 provinces
 
       if (error) throw error;
 
