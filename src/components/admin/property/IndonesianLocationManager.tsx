@@ -352,13 +352,17 @@ const IndonesianLocationManager = () => {
         
         queryClient.invalidateQueries({ queryKey: ['locations'] });
         queryClient.invalidateQueries({ queryKey: ['location-stats'] });
-        queryClient.invalidateQueries({ queryKey: ['all-provinces'] });
+        queryClient.invalidateQueries({ queryKey: ['all-provinces-unique'] });
         
-        let description = `Provinsi: ${data.stats.provinces}, Kota/Kab: ${data.stats.cities}, Kecamatan: ${data.stats.districts}`;
-        if (data.stats.villages > 0) {
-          description += `, Kelurahan: ${data.stats.villages}`;
+        const stats = data?.stats;
+        let description = stats
+          ? `Provinsi: ${stats.provinces}, Kota/Kab: ${stats.cities}, Kecamatan: ${stats.districts}`
+          : 'Sync selesai.';
+
+        if (stats?.villages && stats.villages > 0) {
+          description += `, Kelurahan: ${stats.villages}`;
         }
-        if (data.remaining > 0) {
+        if (data?.remaining && data.remaining > 0) {
           description += ` | Tersisa: ${data.remaining} provinsi`;
         }
         toast.success('Sinkronisasi selesai!', { description });
