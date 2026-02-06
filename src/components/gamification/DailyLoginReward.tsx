@@ -10,7 +10,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { usePopupQueue } from '@/hooks/usePopupQueue';
 import { supabase } from '@/integrations/supabase/client';
 import confetti from 'canvas-confetti';
-import { getLocalDayKey, safeLocalStorage, safeSessionStorage } from '@/lib/safeStorage';
+import { getLocalDayKey, safeLocalStorage, safeSessionStorage, storageSupport } from '@/lib/safeStorage';
 
 interface DailyLoginRewardProps {
   autoShow?: boolean;
@@ -52,6 +52,13 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
   useEffect(() => {
     const checkClaimStatus = async () => {
       if (!autoShow || !user?.id) {
+        setIsCheckingStatus(false);
+        return;
+      }
+
+      // If storage is not persistent (private/restricted mode), fail-closed to prevent popup looping on refresh.
+      if (!storageSupport.session && !storageSupport.local) {
+        setAlreadyClaimed(true);
         setIsCheckingStatus(false);
         return;
       }

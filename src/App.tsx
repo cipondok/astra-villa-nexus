@@ -261,7 +261,15 @@ function App() {
   useEffect(() => {
     const checkWelcomeScreen = async () => {
       try {
-        const { safeSessionStorage } = await import('@/lib/safeStorage');
+        const { safeSessionStorage, storageSupport } = await import('@/lib/safeStorage');
+
+        // If sessionStorage is not persistent (private/restricted mode), fail-closed.
+        // Otherwise the welcome screen would reappear on every refresh.
+        if (!storageSupport.session) {
+          setWelcomeEnabled(false);
+          setIsLoading(false);
+          return;
+        }
 
         // FIRST: Check if welcome screen was already shown this session
         const hasLoaded = safeSessionStorage.getItem('astra_app_loaded');
