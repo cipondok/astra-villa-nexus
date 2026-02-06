@@ -338,9 +338,10 @@ export const AvatarUpload = ({
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/jpeg,image/jpg,image/png,image/webp"
+          accept="image/*,.jpg,.jpeg,.png,.webp"
           onChange={handleFileSelect}
           className="hidden"
+          style={{ display: 'none' }}
         />
 
         <div className="text-center mt-4">

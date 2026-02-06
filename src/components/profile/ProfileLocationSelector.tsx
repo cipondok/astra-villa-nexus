@@ -313,12 +313,12 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
           {text.step} 1 — {text.province}
         </Label>
         <Select value={selectedProvinceCode} onValueChange={handleProvinceChange}>
-          <SelectTrigger className="h-8 text-xs bg-background border-border">
+          <SelectTrigger className="h-8 text-xs bg-background border-border text-foreground">
             <SelectValue placeholder={loadingProvinces ? text.loading : text.selectProvince} />
           </SelectTrigger>
-          <SelectContent className="max-h-60">
+          <SelectContent className="max-h-60 bg-popover border border-border shadow-lg z-50">
             {provinces.map((province) => (
-              <SelectItem key={province.code} value={province.code} className="text-xs">
+              <SelectItem key={province.code} value={province.code} className="text-xs text-foreground hover:bg-accent">
                 {province.name}
               </SelectItem>
             ))}
@@ -336,7 +336,7 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
           onValueChange={handleCityChange}
           disabled={!selectedProvinceCode || cities.length === 0}
         >
-          <SelectTrigger className="h-8 text-xs bg-background border-border">
+          <SelectTrigger className="h-8 text-xs bg-background border-border text-foreground">
             {loadingCities ? (
               <div className="flex items-center gap-1.5">
                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -348,9 +348,9 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
               />
             )}
           </SelectTrigger>
-          <SelectContent className="max-h-60">
+          <SelectContent className="max-h-60 bg-popover border border-border shadow-lg z-50">
             {cities.map((city) => (
-              <SelectItem key={city.code} value={city.code} className="text-xs">
+              <SelectItem key={city.code} value={city.code} className="text-xs text-foreground hover:bg-accent">
                 {city.type} {city.name}
               </SelectItem>
             ))}
@@ -368,7 +368,7 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
           onValueChange={handleDistrictChange}
           disabled={!selectedCityCode || districts.length === 0}
         >
-          <SelectTrigger className="h-8 text-xs bg-background border-border">
+          <SelectTrigger className="h-8 text-xs bg-background border-border text-foreground">
             {loadingDistricts ? (
               <div className="flex items-center gap-1.5">
                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -380,9 +380,9 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
               />
             )}
           </SelectTrigger>
-          <SelectContent className="max-h-60">
+          <SelectContent className="max-h-60 bg-popover border border-border shadow-lg z-50">
             {districts.map((district) => (
-              <SelectItem key={district.code} value={district.code} className="text-xs">
+              <SelectItem key={district.code} value={district.code} className="text-xs text-foreground hover:bg-accent">
                 {district.name}
               </SelectItem>
             ))}
@@ -400,7 +400,7 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
           onValueChange={handleSubdistrictChange}
           disabled={!selectedDistrictCode || subdistricts.length === 0}
         >
-          <SelectTrigger className="h-8 text-xs bg-background border-border">
+          <SelectTrigger className="h-8 text-xs bg-background border-border text-foreground">
             {loadingSubdistricts ? (
               <div className="flex items-center gap-1.5">
                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -412,9 +412,9 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
               />
             )}
           </SelectTrigger>
-          <SelectContent className="max-h-60">
+          <SelectContent className="max-h-60 bg-popover border border-border shadow-lg z-50">
             {subdistricts.map((subdistrict) => (
-              <SelectItem key={subdistrict.code} value={subdistrict.code} className="text-xs">
+              <SelectItem key={subdistrict.code} value={subdistrict.code} className="text-xs text-foreground hover:bg-accent">
                 {subdistrict.name}
               </SelectItem>
             ))}
