@@ -99,8 +99,10 @@ const SelectContent = React.forwardRef<
         <SelectPrimitive.Viewport
           className={cn(
             "p-1.5",
-            // Make long lists (like 38 provinces) actually scrollable
-            "max-h-[var(--radix-select-content-available-height)] overflow-y-auto",
+            // Make long lists (e.g. 38 provinces) actually scrollable.
+            // Some layouts can cause Radix's available-height var to be too small;
+            // we add a sane fallback (16rem) while still respecting the available height.
+            "max-h-64 max-h-[min(16rem,var(--radix-select-content-available-height))] overflow-y-auto overscroll-contain",
             position === "popper" &&
               "w-full min-w-[var(--radix-select-trigger-width)]"
           )}
