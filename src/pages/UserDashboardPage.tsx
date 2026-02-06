@@ -21,6 +21,7 @@ import AstraWalletCard from '@/components/dashboard/AstraWalletCard';
 import { useUserDashboardData } from '@/hooks/useUserDashboardData';
 import { useUserRoles } from '@/hooks/useUserRoles';
 import { useAstraToken } from '@/hooks/useAstraToken';
+import { useUserMembership } from '@/hooks/useUserMembership';
 import { formatDistanceToNow } from 'date-fns';
 import { motion } from 'framer-motion';
 import { 
@@ -49,6 +50,7 @@ const UserDashboardPage = () => {
   const { stats, savedProperties, recentActivity, isLoading } = useUserDashboardData();
   const { data: userRoles = [], isLoading: rolesLoading } = useUserRoles();
   const { balance } = useAstraToken();
+  const { membershipLevel } = useUserMembership();
 
   const primaryRoleRaw = userRoles.find(role => role !== 'general_user') || userRoles[0] || 'general_user';
   const hasUpgradedRole = userRoles.some(role => 
@@ -127,23 +129,19 @@ const UserDashboardPage = () => {
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5 flex-wrap">
                 <h1 className="text-sm sm:text-base font-bold text-primary-foreground">
-                  Welcome, {profile?.full_name?.split(' ')[0] || user.email?.split('@')[0] || 'User'}!
+                  Welcome, {profile?.full_name || user.email?.split('@')[0] || 'User'}!
                 </h1>
+              </div>
+              <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
                 <Badge className="bg-white/20 text-white border-white/30 text-[8px] px-1 py-0">
                   <Sparkles className="h-2 w-2 mr-0.5" />
                   {primaryRole}
                 </Badge>
-              </div>
-              <div className="flex items-center gap-1.5 mt-0.5">
                 <Badge 
                   variant="outline" 
-                  className={`text-[8px] px-1 py-0 border-white/30 ${
-                    hasUpgradedRole 
-                      ? 'bg-emerald-500/30 text-white' 
-                      : 'bg-white/10 text-white/80'
-                  }`}
+                  className="text-[8px] px-1 py-0 border-white/30 bg-amber-500/30 text-white"
                 >
-                  {hasUpgradedRole ? '✓ Active' : 'Basic'}
+                  🏆 {membershipLevel || 'Basic'}
                 </Badge>
                 <p className="text-primary-foreground/70 text-[9px] flex items-center gap-0.5">
                   <Clock className="h-2.5 w-2.5" />
