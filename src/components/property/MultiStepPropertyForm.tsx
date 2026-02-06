@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { FileText, Home, MapPin, Sparkles, Image, Eye, Save, Send, CheckCircle2, Clock, Trash2, Box } from "lucide-react";
+import { FileText, Home, MapPin, Sparkles, Image, Eye, Save, Send, CheckCircle2, Clock, Trash2, Box, Lock, Crown } from "lucide-react";
 import BasicInfoStep from "./steps/BasicInfoStep";
 import PropertyDetailsStep from "./steps/PropertyDetailsStep";
 import LocationStep from "./steps/LocationStep";
@@ -18,19 +19,24 @@ import FeaturesStep from "./steps/FeaturesStep";
 import ImagesStep from "./steps/ImagesStep";
 import Virtual3DStep from "./steps/Virtual3DStep";
 import ReviewStep from "./steps/ReviewStep";
+import TierLockedFeature from "./TierLockedFeature";
+import TierFeatureBanner from "./TierFeatureBanner";
+import { usePropertyFormTiers } from "@/hooks/usePropertyFormTiers";
+import { MEMBERSHIP_LEVELS } from "@/types/membership";
 
 // Auto-save configuration
 const AUTO_SAVE_DELAY = 2000; // 2 seconds after user stops typing
 const DRAFT_EXPIRY_DAYS = 7; // Keep drafts for 7 days
 
-const steps = [
-  { id: 'basic', label: 'Basic Info', icon: FileText },
-  { id: 'details', label: 'Details', icon: Home },
-  { id: 'location', label: 'Location', icon: MapPin },
-  { id: 'features', label: 'Features', icon: Sparkles },
-  { id: 'images', label: 'Images', icon: Image },
-  { id: '3d-tour', label: '3D Tour', icon: Box },
-  { id: 'review', label: 'Review', icon: Eye },
+// Base steps definition
+const ALL_STEPS = [
+  { id: 'basic', label: 'Basic Info', labelId: 'Info Dasar', icon: FileText, requiredLevel: 'basic' as const },
+  { id: 'details', label: 'Details', labelId: 'Detail', icon: Home, requiredLevel: 'basic' as const },
+  { id: 'location', label: 'Location', labelId: 'Lokasi', icon: MapPin, requiredLevel: 'basic' as const },
+  { id: 'features', label: 'Features', labelId: 'Fitur', icon: Sparkles, requiredLevel: 'basic' as const },
+  { id: 'images', label: 'Images', labelId: 'Gambar', icon: Image, requiredLevel: 'basic' as const },
+  { id: '3d-tour', label: '3D Tour', labelId: '3D Tour', icon: Box, requiredLevel: 'gold' as const },
+  { id: 'review', label: 'Review', labelId: 'Review', icon: Eye, requiredLevel: 'basic' as const },
 ];
 
 const MultiStepPropertyForm = () => {
@@ -38,8 +44,29 @@ const MultiStepPropertyForm = () => {
   const navigate = useNavigate();
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+  const { language } = useLanguage();
   const isAdmin = profile?.role === 'admin';
   const isAgent = profile?.role === 'agent';
+  
+  // Get tier-based feature access
+  const {
+    membershipLevel,
+    maxImages,
+    canUseVirtualTour,
+    canUse3DModel,
+    isLoading: tierLoading
+  } = usePropertyFormTiers();
+
+  // Compute available steps based on membership tier
+  const steps = useMemo(() => {
+    return ALL_STEPS.filter(step => {
+      // Always show basic steps
+      if (step.requiredLevel === 'basic') return true;
+      // Show 3D tour only for Gold+ or admins
+      if (step.id === '3d-tour') return isAdmin || canUseVirtualTour || canUse3DModel;
+      return true;
+    });
+  }, [isAdmin, canUseVirtualTour, canUse3DModel]);
 
   const [currentTab, setCurrentTab] = useState('basic');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -403,6 +430,9 @@ const MultiStepPropertyForm = () => {
 
   return (
     <div className="space-y-5">
+      {/* Tier Feature Banner */}
+      <TierFeatureBanner />
+
       {/* Auto-save Status */}
       {lastSaved && (
         <Alert className="border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/30">
@@ -430,12 +460,13 @@ const MultiStepPropertyForm = () => {
 
       {/* Tabs */}
       <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-7 h-11 sm:h-12 p-1 gap-0.5 sm:gap-1 bg-muted/50 border border-border rounded-xl">
+        <TabsList className={`grid w-full h-11 sm:h-12 p-1 gap-0.5 sm:gap-1 bg-muted/50 border border-border rounded-xl ${steps.length === 7 ? 'grid-cols-7' : 'grid-cols-6'}`}>
           {steps.map((step, index) => {
             const Icon = step.icon;
             const stepIndex = steps.findIndex(s => s.id === step.id);
             const isCompleted = stepIndex < getCurrentStepIndex();
             const isCurrent = currentTab === step.id;
+            const stepLabel = language === 'id' ? step.labelId : step.label;
             
             return (
               <TabsTrigger
@@ -456,7 +487,7 @@ const MultiStepPropertyForm = () => {
                   </span>
                 )}
                 <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline truncate">{step.label}</span>
+                <span className="hidden sm:inline truncate">{stepLabel}</span>
               </TabsTrigger>
             );
           })}
