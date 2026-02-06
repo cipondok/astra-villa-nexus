@@ -1,12 +1,13 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useAstraToken } from '@/hooks/useAstraToken';
 import { useAstraWalletStats } from '@/hooks/useAstraWalletStats';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { 
   Wallet, 
   Coins, 
@@ -82,9 +83,12 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-gradient-to-br from-background via-background to-amber-500/5 border-amber-500/20">
-        {/* Header */}
+      <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-gradient-to-br from-background via-background to-amber-500/5 border-amber-500/20" autoClose={false}>
+        <VisuallyHidden>
+          <DialogTitle>ASTRA Wallet</DialogTitle>
+          <DialogDescription>View your ASTRA token balance, claim daily rewards, and manage wallet actions.</DialogDescription>
+        </VisuallyHidden>
         <div className="relative bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 p-4 text-white">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yIDItNCAyLTRzMiAyIDIgNC0yIDQtMiA0LTItMi0yLTR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
           <div className="relative flex items-center gap-3">
