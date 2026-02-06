@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useAccountNotifications } from '@/hooks/useAccountNotifications';
 import { Lock, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { z } from 'zod';
 
@@ -23,6 +24,7 @@ const passwordSchema = z.object({
 
 export const PasswordChange = () => {
   const { toast } = useToast();
+  const { sendPasswordChangedNotification } = useAccountNotifications();
   const [isChanging, setIsChanging] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -92,6 +94,9 @@ export const PasswordChange = () => {
         activity_description: 'Password changed successfully',
         metadata: { timestamp: new Date().toISOString() }
       });
+
+      // Send in-app notification
+      await sendPasswordChangedNotification();
 
       toast({
         title: "Password Updated",

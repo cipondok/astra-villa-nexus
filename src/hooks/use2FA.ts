@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -16,7 +16,7 @@ export interface TwoFASettings {
   updated_at: string;
 }
 
-export const use2FA = () => {
+export const use2FA = (onNotification?: (action: 'enabled' | 'disabled' | 'modified', method?: string) => void) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [settings, setSettings] = useState<TwoFASettings | null>(null);
@@ -71,6 +71,10 @@ export const use2FA = () => {
       if (error) throw error;
 
       setSettings(result as unknown as TwoFASettings);
+      
+      // Send notification
+      onNotification?.('enabled', method);
+      
       toast({
         title: "2FA Enabled",
         description: "Two-factor authentication has been enabled successfully.",
@@ -97,6 +101,10 @@ export const use2FA = () => {
       if (error) throw error;
 
       await fetchSettings();
+      
+      // Send notification
+      onNotification?.('disabled');
+      
       toast({
         title: "2FA Disabled",
         description: "Two-factor authentication has been disabled.",

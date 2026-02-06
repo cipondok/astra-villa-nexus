@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAccountNotifications } from '@/hooks/useAccountNotifications';
 
 export interface UserDevice {
   id: string;
@@ -24,6 +25,7 @@ export interface UserDevice {
 export const useDeviceManagement = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { sendDeviceNotification } = useAccountNotifications();
 
   // Fetch user devices
   const { data: devices, isLoading, error } = useQuery({
@@ -50,10 +52,16 @@ export const useDeviceManagement = () => {
         .single();
 
       if (error) throw error;
-      return data;
+      return { data, updates };
     },
-    onSuccess: () => {
+    onSuccess: ({ data, updates }) => {
       queryClient.invalidateQueries({ queryKey: ['user-devices'] });
+      
+      // Send notification for trust status changes
+      if (updates.is_trusted !== undefined) {
+        sendDeviceNotification(updates.is_trusted ? 'trusted' : 'untrusted', data.device_name || data.browser_name);
+      }
+      
       toast({
         title: 'Device Updated',
         description: 'Device settings have been updated successfully.',
@@ -72,15 +80,23 @@ export const useDeviceManagement = () => {
   // Remove device
   const removeDeviceMutation = useMutation({
     mutationFn: async (deviceId: string) => {
+      // Get device name before deleting
+      const device = devices?.find(d => d.id === deviceId);
+      
       const { error } = await supabase
         .from('user_devices')
         .delete()
         .eq('id', deviceId);
 
       if (error) throw error;
+      return device;
     },
-    onSuccess: () => {
+    onSuccess: (removedDevice) => {
       queryClient.invalidateQueries({ queryKey: ['user-devices'] });
+      
+      // Send notification
+      sendDeviceNotification('removed', removedDevice?.device_name || removedDevice?.browser_name);
+      
       toast({
         title: 'Device Removed',
         description: 'Device has been removed from your trusted devices.',

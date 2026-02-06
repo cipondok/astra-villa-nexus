@@ -17,6 +17,7 @@ import CompanyVerificationField from '@/components/profile/CompanyVerificationFi
 import ProfileAvatarWithBadge from '@/components/profile/ProfileAvatarWithBadge';
 import ProfileCompletionStatus from '@/components/profile/ProfileCompletionStatus';
 import { useProfileEditCooldown } from '@/hooks/useProfileEditCooldown';
+import { useAccountNotifications } from '@/hooks/useAccountNotifications';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   User, Settings, LogOut, Home, Edit2, Save, X, ArrowLeft, 
@@ -43,6 +44,7 @@ const Profile = () => {
   
   // Profile edit cooldown hook
   const cooldown = useProfileEditCooldown();
+  const { sendProfileUpdatedNotification } = useAccountNotifications();
 
   // Read initial tab from URL query param
   const initialTab = searchParams.get('tab') === 'roles' ? 'roles' : 'profile';
@@ -234,6 +236,9 @@ const Profile = () => {
           language === 'en' ? "Your profile has been updated successfully!" : "Profil Anda berhasil diperbarui!"
         );
       }
+      
+      // Send in-app notification for profile update
+      await sendProfileUpdatedNotification(changedFields);
 
       await refreshProfile();
       setIsEditing(false);

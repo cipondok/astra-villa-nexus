@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useAccountNotifications } from '@/hooks/useAccountNotifications';
 
 export interface UserPreferences {
   id?: string;
@@ -26,6 +27,7 @@ const defaultPreferences: UserPreferences = {
 export const useUserPreferences = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { sendPreferencesUpdatedNotification } = useAccountNotifications();
   const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -113,6 +115,9 @@ export const useUserPreferences = () => {
           activity_description: 'User preferences updated',
           metadata: { updated_fields: Object.keys(updates), timestamp: new Date().toISOString() }
         });
+        
+        // Send in-app notification
+        await sendPreferencesUpdatedNotification();
         
         toast({
           title: "Preferences Updated",
