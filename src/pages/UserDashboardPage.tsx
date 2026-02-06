@@ -1,10 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import CustomerServiceDashboard from '@/components/dashboard/CustomerServiceDashboard';
 import ProfileUpgradeCard from '@/components/ProfileUpgradeCard';
 import ApplicationStatusBar from '@/components/dashboard/ApplicationStatusBar';
@@ -29,7 +38,9 @@ import {
   UserPlus,
   Sparkles,
   TrendingUp,
-  Clock
+  Clock,
+  Edit,
+  LogOut
 } from 'lucide-react';
 
 const UserDashboardPage = () => {
@@ -115,17 +126,78 @@ const UserDashboardPage = () => {
                   {primaryRole?.replace('_', ' ')}
                 </Badge>
               </div>
-              <p className="text-primary-foreground/70 text-[10px] sm:text-xs mt-0.5 flex items-center gap-1">
-                <Clock className="h-3 w-3" />
-                Last login: Today
-              </p>
+              <div className="flex items-center gap-2 mt-0.5">
+                {/* User Status Badge */}
+                <Badge 
+                  variant="outline" 
+                  className={`text-[9px] px-1.5 py-0 border-white/30 ${
+                    hasUpgradedRole 
+                      ? 'bg-emerald-500/30 text-white' 
+                      : 'bg-white/10 text-white/80'
+                  }`}
+                >
+                  {hasUpgradedRole ? '✓ Active' : 'Basic'}
+                </Badge>
+                <p className="text-primary-foreground/70 text-[10px] sm:text-xs flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  Last login: Today
+                </p>
+              </div>
             </div>
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center ring-2 ring-white/30 flex-shrink-0"
-            >
-              <User className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-            </motion.div>
+            
+            {/* Profile Avatar with Dropdown Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-full ring-2 ring-white/30 flex-shrink-0 overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                >
+                  <Avatar className="h-full w-full">
+                    <AvatarImage 
+                      src={profile?.avatar_url || ''} 
+                      alt={profile?.full_name || 'User'} 
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="bg-white/20 backdrop-blur-sm text-white text-sm sm:text-base font-semibold">
+                      {profile?.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  {/* Online status indicator */}
+                  <span className="absolute bottom-0 right-0 h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-emerald-500 ring-2 ring-white" />
+                </motion.button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {profile?.full_name || 'User'}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
+                  <User className="mr-2 h-4 w-4" />
+                  <span>View Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/profile/edit')} className="cursor-pointer">
+                  <Edit className="mr-2 h-4 w-4" />
+                  <span>Edit Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/notifications')} className="cursor-pointer">
+                  <Bell className="mr-2 h-4 w-4" />
+                  <span>Notifications</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </motion.div>
 
