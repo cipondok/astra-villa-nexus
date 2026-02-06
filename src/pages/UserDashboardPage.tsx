@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import AstraWalletPopup from '@/components/dashboard/AstraWalletPopup';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -52,6 +53,7 @@ const UserDashboardPage = () => {
   const { data: userRoles = [], isLoading: rolesLoading } = useUserRoles();
   const { balance } = useAstraToken();
   const { membershipLevel } = useUserMembership();
+  const [walletPopupOpen, setWalletPopupOpen] = useState(false);
 
   const primaryRoleRaw = userRoles.find(role => role !== 'general_user') || userRoles[0] || 'general_user';
   const hasUpgradedRole = userRoles.some(role => 
@@ -172,7 +174,7 @@ const UserDashboardPage = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/astra-tokens')}
+              onClick={() => setWalletPopupOpen(true)}
               className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-amber-500/30 backdrop-blur-sm flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400/50 hover:bg-amber-500/40 transition-colors"
             >
               <Wallet className="h-5 w-5 text-white" />
@@ -480,6 +482,9 @@ const UserDashboardPage = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* ASTRA Wallet Popup */}
+      <AstraWalletPopup open={walletPopupOpen} onOpenChange={setWalletPopupOpen} />
     </div>
   );
 };
