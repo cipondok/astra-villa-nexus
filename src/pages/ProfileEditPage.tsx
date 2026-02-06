@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, User, Save, Crown, Sparkles, Shield, ChevronRight, Lock, Info, MapPin } from 'lucide-react';
+import { ArrowLeft, User, Save, Crown, Sparkles, Shield, ChevronRight, Lock, Info, MapPin, Camera } from 'lucide-react';
 import { useUserMembership } from '@/hooks/useUserMembership';
 import { useVIPLimits } from '@/hooks/useVIPLimits';
 import { UserMembershipBadge, VerificationBadge } from '@/components/user/UserMembershipBadge';
@@ -17,6 +17,7 @@ import { Progress } from '@/components/ui/progress';
 import { useProfileEditCooldown } from '@/hooks/useProfileEditCooldown';
 import ProfileEditLockBanner from '@/components/profile/ProfileEditLockBanner';
 import ProfileLocationSelector from '@/components/profile/ProfileLocationSelector';
+import { AvatarUpload } from '@/components/profile/AvatarUpload';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
@@ -314,6 +315,23 @@ const ProfileEditPage = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Avatar Upload Section */}
+            <div className="flex flex-col items-center pb-4 border-b border-border">
+              <div className="flex items-center gap-2 mb-3 text-xs text-muted-foreground">
+                <Camera className="h-3 w-3" />
+                <span>Profile Photo</span>
+              </div>
+              <AvatarUpload
+                userId={user.id}
+                currentAvatarUrl={profile?.avatar_url}
+                onAvatarUpdate={(url) => {
+                  refreshProfile();
+                }}
+                userEmail={user.email}
+                userPhone={formData.phone || profile?.phone}
+              />
+            </div>
+
             {/* Sensitive Fields Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
