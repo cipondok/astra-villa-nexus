@@ -293,7 +293,7 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
               size="sm"
               onClick={handleOpenAHU}
               className="h-9 gap-1.5 shrink-0"
-              disabled={verification.status === 'verified' || verification.status === 'pending'}
+              disabled={verification.status === 'verified'}
             >
               <Search className="h-3.5 w-3.5" />
               Check AHU
