@@ -281,9 +281,9 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
   };
 
   return (
-    <div className={cn("space-y-3", className)}>
+    <div className={cn("space-y-4", className)}>
       {/* Step Indicator */}
-      <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2">
+      <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
         {[1, 2, 3, 4].map((step, idx) => {
           const status = getStepStatus(step);
           return (
@@ -307,123 +307,126 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
         })}
       </div>
 
-      {/* Step 1: Province */}
-      <div className="space-y-1">
-        <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
-          {text.step} 1 — {text.province}
-        </Label>
-        <Select value={selectedProvinceCode} onValueChange={handleProvinceChange}>
-          <SelectTrigger className="h-8 text-xs bg-background border-border text-foreground">
-            <SelectValue placeholder={loadingProvinces ? text.loading : text.selectProvince} />
-          </SelectTrigger>
-          <SelectContent className="max-h-60 bg-popover border border-border shadow-lg z-50">
-            {provinces.map((province) => (
-              <SelectItem key={province.code} value={province.code} className="text-xs text-foreground hover:bg-accent">
-                {province.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Selectors Grid - 2 columns on mobile, 4 columns on desktop */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {/* Step 1: Province */}
+        <div className="space-y-1">
+          <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
+            {text.province}
+          </Label>
+          <Select value={selectedProvinceCode} onValueChange={handleProvinceChange}>
+            <SelectTrigger className="h-9 text-xs bg-background border-border text-foreground">
+              <SelectValue placeholder={loadingProvinces ? text.loading : text.selectProvince} />
+            </SelectTrigger>
+            <SelectContent position="popper" sideOffset={4}>
+              {provinces.map((province) => (
+                <SelectItem key={province.code} value={province.code} className="text-xs">
+                  {province.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      {/* Step 2: City */}
-      <div className="space-y-1">
-        <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
-          {text.step} 2 — {text.city}
-        </Label>
-        <Select 
-          value={selectedCityCode} 
-          onValueChange={handleCityChange}
-          disabled={!selectedProvinceCode || cities.length === 0}
-        >
-          <SelectTrigger className="h-8 text-xs bg-background border-border text-foreground">
-            {loadingCities ? (
-              <div className="flex items-center gap-1.5">
-                <Loader2 className="h-3 w-3 animate-spin" />
-                <span>{text.loading}</span>
-              </div>
-            ) : (
-              <SelectValue 
-                placeholder={!selectedProvinceCode ? text.selectProvinceFirst : text.selectCity} 
-              />
-            )}
-          </SelectTrigger>
-          <SelectContent className="max-h-60 bg-popover border border-border shadow-lg z-50">
-            {cities.map((city) => (
-              <SelectItem key={city.code} value={city.code} className="text-xs text-foreground hover:bg-accent">
-                {city.type} {city.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+        {/* Step 2: City */}
+        <div className="space-y-1">
+          <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
+            {text.city}
+          </Label>
+          <Select 
+            value={selectedCityCode} 
+            onValueChange={handleCityChange}
+            disabled={!selectedProvinceCode || cities.length === 0}
+          >
+            <SelectTrigger className="h-9 text-xs bg-background border-border text-foreground">
+              {loadingCities ? (
+                <div className="flex items-center gap-1.5">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <span>{text.loading}</span>
+                </div>
+              ) : (
+                <SelectValue 
+                  placeholder={!selectedProvinceCode ? text.selectProvinceFirst : text.selectCity} 
+                />
+              )}
+            </SelectTrigger>
+            <SelectContent position="popper" sideOffset={4}>
+              {cities.map((city) => (
+                <SelectItem key={city.code} value={city.code} className="text-xs">
+                  {city.type} {city.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      {/* Step 3: District */}
-      <div className="space-y-1">
-        <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
-          {text.step} 3 — {text.district}
-        </Label>
-        <Select 
-          value={selectedDistrictCode} 
-          onValueChange={handleDistrictChange}
-          disabled={!selectedCityCode || districts.length === 0}
-        >
-          <SelectTrigger className="h-8 text-xs bg-background border-border text-foreground">
-            {loadingDistricts ? (
-              <div className="flex items-center gap-1.5">
-                <Loader2 className="h-3 w-3 animate-spin" />
-                <span>{text.loading}</span>
-              </div>
-            ) : (
-              <SelectValue 
-                placeholder={!selectedCityCode ? text.selectCityFirst : text.selectDistrict} 
-              />
-            )}
-          </SelectTrigger>
-          <SelectContent className="max-h-60 bg-popover border border-border shadow-lg z-50">
-            {districts.map((district) => (
-              <SelectItem key={district.code} value={district.code} className="text-xs text-foreground hover:bg-accent">
-                {district.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+        {/* Step 3: District */}
+        <div className="space-y-1">
+          <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
+            {text.district}
+          </Label>
+          <Select 
+            value={selectedDistrictCode} 
+            onValueChange={handleDistrictChange}
+            disabled={!selectedCityCode || districts.length === 0}
+          >
+            <SelectTrigger className="h-9 text-xs bg-background border-border text-foreground">
+              {loadingDistricts ? (
+                <div className="flex items-center gap-1.5">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <span>{text.loading}</span>
+                </div>
+              ) : (
+                <SelectValue 
+                  placeholder={!selectedCityCode ? text.selectCityFirst : text.selectDistrict} 
+                />
+              )}
+            </SelectTrigger>
+            <SelectContent position="popper" sideOffset={4}>
+              {districts.map((district) => (
+                <SelectItem key={district.code} value={district.code} className="text-xs">
+                  {district.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      {/* Step 4: Subdistrict */}
-      <div className="space-y-1">
-        <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
-          {text.step} 4 — {text.subdistrict}
-        </Label>
-        <Select 
-          value={selectedSubdistrictCode} 
-          onValueChange={handleSubdistrictChange}
-          disabled={!selectedDistrictCode || subdistricts.length === 0}
-        >
-          <SelectTrigger className="h-8 text-xs bg-background border-border text-foreground">
-            {loadingSubdistricts ? (
-              <div className="flex items-center gap-1.5">
-                <Loader2 className="h-3 w-3 animate-spin" />
-                <span>{text.loading}</span>
-              </div>
-            ) : (
-              <SelectValue 
-                placeholder={!selectedDistrictCode ? text.selectDistrictFirst : text.selectSubdistrict} 
-              />
-            )}
-          </SelectTrigger>
-          <SelectContent className="max-h-60 bg-popover border border-border shadow-lg z-50">
-            {subdistricts.map((subdistrict) => (
-              <SelectItem key={subdistrict.code} value={subdistrict.code} className="text-xs text-foreground hover:bg-accent">
-                {subdistrict.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {/* Step 4: Subdistrict */}
+        <div className="space-y-1">
+          <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
+            {text.subdistrict}
+          </Label>
+          <Select 
+            value={selectedSubdistrictCode} 
+            onValueChange={handleSubdistrictChange}
+            disabled={!selectedDistrictCode || subdistricts.length === 0}
+          >
+            <SelectTrigger className="h-9 text-xs bg-background border-border text-foreground">
+              {loadingSubdistricts ? (
+                <div className="flex items-center gap-1.5">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <span>{text.loading}</span>
+                </div>
+              ) : (
+                <SelectValue 
+                  placeholder={!selectedDistrictCode ? text.selectDistrictFirst : text.selectSubdistrict} 
+                />
+              )}
+            </SelectTrigger>
+            <SelectContent position="popper" sideOffset={4}>
+              {subdistricts.map((subdistrict) => (
+                <SelectItem key={subdistrict.code} value={subdistrict.code} className="text-xs">
+                  {subdistrict.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Building/Street Address */}
-      <div className="space-y-1 pt-2 border-t border-border/50">
+      <div className="space-y-1 pt-3 border-t border-border/50">
         <Label className="text-[10px] text-muted-foreground uppercase tracking-wide flex items-center gap-1">
           <Building2 className="h-3 w-3" />
           {text.buildingAddress}
@@ -432,7 +435,7 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
           value={buildingAddress}
           onChange={(e) => onBuildingAddressChange(e.target.value)}
           placeholder={text.buildingPlaceholder}
-          className="h-8 text-xs"
+          className="h-9 text-xs"
           maxLength={200}
         />
       </div>
