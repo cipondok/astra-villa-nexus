@@ -13463,6 +13463,9 @@ export type Database = {
           bio: string | null
           business_address: string | null
           company_name: string | null
+          company_registration_number: string | null
+          company_verified: boolean | null
+          company_verified_at: string | null
           created_at: string | null
           email: string
           full_name: string | null
@@ -13492,6 +13495,9 @@ export type Database = {
           bio?: string | null
           business_address?: string | null
           company_name?: string | null
+          company_registration_number?: string | null
+          company_verified?: boolean | null
+          company_verified_at?: string | null
           created_at?: string | null
           email: string
           full_name?: string | null
@@ -13521,6 +13527,9 @@ export type Database = {
           bio?: string | null
           business_address?: string | null
           company_name?: string | null
+          company_registration_number?: string | null
+          company_verified?: boolean | null
+          company_verified_at?: string | null
           created_at?: string | null
           email?: string
           full_name?: string | null

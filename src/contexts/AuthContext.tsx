@@ -14,6 +14,9 @@ interface Profile {
   phone?: string;
   role?: UserRole; // Populated from user_roles table (read-only, for display only)
   company_name?: string;
+  company_registration_number?: string;
+  company_verified?: boolean;
+  company_verified_at?: string;
   license_number?: string;
   verification_status?: string;
   avatar_url?: string;
