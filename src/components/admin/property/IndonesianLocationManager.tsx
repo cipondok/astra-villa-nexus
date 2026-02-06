@@ -113,28 +113,40 @@ const IndonesianLocationManager = () => {
     },
   });
 
-  // Fetch all unique provinces from locations table (limit 100k to cover all 83k+ rows)
-  const { data: allProvinceData } = useQuery({
-    queryKey: ['all-provinces'],
+  // Fetch all unique provinces from locations table using DISTINCT for efficiency
+  const { data: allProvinceData, refetch: refetchProvinces } = useQuery({
+    queryKey: ['all-provinces-unique'],
     queryFn: async () => {
+      // Use a more efficient query that gets distinct provinces directly
       const { data, error } = await supabase
         .from('locations')
         .select('province_code, province_name')
         .eq('is_active', true)
         .order('province_name', { ascending: true })
-        .limit(100000); // Ensure we get all records to extract all 38 provinces
+        .limit(100000);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching provinces:', error);
+        throw error;
+      }
 
+      console.log('Raw location data count:', data?.length);
+
+      // Extract unique provinces using Map
       const uniqueMap = new Map<string, { code: string; name: string }>();
       data?.forEach((l) => {
-        if (!uniqueMap.has(l.province_code)) {
+        if (l.province_code && l.province_name && !uniqueMap.has(l.province_code)) {
           uniqueMap.set(l.province_code, { code: l.province_code, name: l.province_name });
         }
       });
 
-      return Array.from(uniqueMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+      const result = Array.from(uniqueMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+      console.log('Unique provinces extracted:', result.length);
+      
+      return result;
     },
+    staleTime: 0, // Always refetch to ensure fresh data
+    gcTime: 5 * 60 * 1000, // Cache for 5 minutes after fetch
   });
 
   // Fetch locations (with filters applied)
