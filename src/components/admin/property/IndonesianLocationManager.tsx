@@ -113,19 +113,16 @@ const IndonesianLocationManager = () => {
     },
   });
 
-  // Fetch province-only rows (city/district/subdistrict empty) to avoid the 1000-row limit
-  // NOTE: After sync "Provinsi saja", we store province entries with empty strings (not null) for these codes.
+  // Fetch all unique provinces from locations table (limit 100k to cover all 83k+ rows)
   const { data: allProvinceData } = useQuery({
     queryKey: ['all-provinces'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('locations')
         .select('province_code, province_name')
-        .eq('city_code', '')
-        .eq('district_code', '')
-        .eq('subdistrict_code', '')
+        .eq('is_active', true)
         .order('province_name', { ascending: true })
-        .limit(200);
+        .limit(100000); // Ensure we get all records to extract all 38 provinces
 
       if (error) throw error;
 
