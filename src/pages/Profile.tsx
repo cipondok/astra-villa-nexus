@@ -145,13 +145,19 @@ const Profile = () => {
     return changedFields;
   };
 
-  // Check if restricted fields changed (name, phone, company)
+  // Check if restricted fields changed (name, phone - identity fields only)
   const hasRestrictedFieldChanges = (): boolean => {
     return (
       formData.full_name !== originalData.full_name ||
-      formData.phone !== originalData.phone ||
-      formData.company_name !== originalData.company_name
+      formData.phone !== originalData.phone
     );
+  };
+  
+  // Check if ONLY non-restricted fields changed (company, bio, address)
+  const hasOnlyUnrestrictedChanges = (): boolean => {
+    const restrictedChanged = hasRestrictedFieldChanges();
+    const anyChange = getChangedFields().length > 0;
+    return anyChange && !restrictedChanged;
   };
 
   const handleSave = async () => {
@@ -189,10 +195,10 @@ const Profile = () => {
         return;
       }
 
-      // Record restricted field changes for cooldown tracking
+      // Record restricted field changes for cooldown tracking (name & phone only)
       if (restrictedChanges) {
         const restrictedFields = changedFields.filter(f => 
-          ['full_name', 'phone', 'company_name'].includes(f)
+          ['full_name', 'phone'].includes(f)
         );
         
         const result = await cooldown.recordProfileChange(restrictedFields);
@@ -235,14 +241,7 @@ const Profile = () => {
   };
 
   const handleStartEdit = () => {
-    if (!cooldown.canEdit && cooldown.changeCount >= 3) {
-      toast({
-        title: "Editing Locked",
-        description: "Maximum profile changes reached. Please contact support.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Always allow editing - some fields are always editable
     setIsEditing(true);
   };
 
@@ -415,23 +414,11 @@ const Profile = () => {
                     variant="outline"
                     size="sm"
                     onClick={handleStartEdit}
-                    className={cn(
-                      "h-8 text-xs gap-1.5",
-                      !cooldown.canEdit && cooldown.mustContactSupport && "opacity-50"
-                    )}
+                    className="h-8 text-xs gap-1.5"
                     disabled={isSaving || cooldown.loading}
                   >
-                    {cooldown.canEdit ? (
-                      <>
-                        <Edit2 className="h-3.5 w-3.5" />
-                        {t.edit}
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle className="h-3.5 w-3.5" />
-                        {t.locked}
-                      </>
-                    )}
+                    <Edit2 className="h-3.5 w-3.5" />
+                    {t.edit}
                   </Button>
                 )}
               </CardHeader>
@@ -464,10 +451,13 @@ const Profile = () => {
                     </div>
 
                     <div className="grid gap-3">
+                      {/* Restricted Fields - Name & Phone (locked after save) */}
                       <div className="space-y-1.5">
                         <Label htmlFor="full_name" className="text-xs flex items-center gap-1.5">
                           {t.name}
-                          <Badge variant="secondary" className="text-[9px] px-1 py-0">Tracked</Badge>
+                          {!cooldown.canEdit && (
+                            <Badge variant="outline" className="text-[9px] px-1 py-0 text-destructive border-destructive/30">Locked</Badge>
+                          )}
                         </Label>
                         <Input
                           id="full_name"
@@ -480,7 +470,9 @@ const Profile = () => {
                       <div className="space-y-1.5">
                         <Label htmlFor="phone" className="text-xs flex items-center gap-1.5">
                           {t.phone}
-                          <Badge variant="secondary" className="text-[9px] px-1 py-0">Tracked</Badge>
+                          {!cooldown.canEdit && (
+                            <Badge variant="outline" className="text-[9px] px-1 py-0 text-destructive border-destructive/30">Locked</Badge>
+                          )}
                         </Label>
                         <Input
                           id="phone"
@@ -490,17 +482,17 @@ const Profile = () => {
                           disabled={!cooldown.canEdit}
                         />
                       </div>
+                      
+                      {/* Unrestricted Fields - Always Editable */}
                       <div className="space-y-1.5">
-                        <Label htmlFor="company_name" className="text-xs flex items-center gap-1.5">
+                        <Label htmlFor="company_name" className="text-xs">
                           {t.company}
-                          <Badge variant="secondary" className="text-[9px] px-1 py-0">Tracked</Badge>
                         </Label>
                         <Input
                           id="company_name"
                           value={formData.company_name}
                           onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
                           className="h-9"
-                          disabled={!cooldown.canEdit}
                         />
                       </div>
                       
@@ -511,7 +503,6 @@ const Profile = () => {
                           registrationNumber={formData.company_registration_number}
                           isVerified={(profile as any)?.company_verified}
                           onRegistrationChange={(value) => setFormData({ ...formData, company_registration_number: value })}
-                          disabled={!cooldown.canEdit}
                         />
                       )}
                       

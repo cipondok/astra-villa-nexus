@@ -38,7 +38,7 @@ const ProfileEditLockBanner: React.FC<ProfileEditLockBannerProps> = ({
         <Info className="h-4 w-4 text-primary mt-0.5 shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-xs text-primary">
-            <span className="font-medium">First time edit:</span> After saving, you can edit again in 30 days.
+            <span className="font-medium">Note:</span> Name & phone will be locked for 30 days after saving. Other fields can be edited anytime.
           </p>
         </div>
       </div>
@@ -75,7 +75,7 @@ const ProfileEditLockBanner: React.FC<ProfileEditLockBannerProps> = ({
     );
   }
 
-  // Currently locked
+  // Currently locked - only name & phone are locked
   if (!canEdit && daysRemaining > 0) {
     return (
       <div className={cn(
@@ -86,7 +86,7 @@ const ProfileEditLockBanner: React.FC<ProfileEditLockBannerProps> = ({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <p className="text-sm font-medium">
-              Profile Editing Locked
+              Name & Phone Locked
             </p>
             <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-accent/30">
               <Clock className="h-2.5 w-2.5 mr-1" />
@@ -94,11 +94,12 @@ const ProfileEditLockBanner: React.FC<ProfileEditLockBannerProps> = ({
             </Badge>
           </div>
           <p className="text-xs text-muted-foreground">
-            You can edit your profile again on{' '}
+            Name & phone can be edited again on{' '}
             <span className="font-medium">{formatLockedUntil(lockedUntil)}</span>.
             {changeCount < 3 && (
-              <> You have <span className="font-medium text-primary">{changesRemaining}</span> edit{changesRemaining !== 1 ? 's' : ''} remaining.</>
+              <> You have <span className="font-medium text-primary">{changesRemaining}</span> identity edit{changesRemaining !== 1 ? 's' : ''} remaining.</>
             )}
+            <span className="block mt-1 text-primary">Company, address, and bio can still be edited.</span>
           </p>
         </div>
       </div>
@@ -115,17 +116,18 @@ const ProfileEditLockBanner: React.FC<ProfileEditLockBannerProps> = ({
         <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <p className="text-sm font-medium">Edit Available</p>
+            <p className="text-sm font-medium">Identity Edit Available</p>
             <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
               {changesRemaining} edit{changesRemaining !== 1 ? 's' : ''} left
             </Badge>
           </div>
           <p className="text-xs text-muted-foreground">
-            After this change, profile editing will be locked for{' '}
+            Changing name or phone will lock those fields for{' '}
             <span className="font-medium">{nextCooldownDays} days</span>.
             {changesRemaining === 1 && (
-              <span className="text-destructive font-medium"> This is your last edit before requiring support.</span>
+              <span className="text-destructive font-medium"> This is your last identity edit before requiring support.</span>
             )}
+            <span className="block mt-1 text-primary">Company, address, and bio can always be edited freely.</span>
           </p>
         </div>
       </div>
