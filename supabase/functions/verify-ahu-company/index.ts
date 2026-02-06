@@ -3,11 +3,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -18,106 +17,147 @@ serve(async (req) => {
     if (!company_name || !user_id) {
       return new Response(
         JSON.stringify({ error: 'company_name and user_id are required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     console.log(`Attempting to verify company: ${company_name}`);
 
-    // Normalize company name for search
     const normalizedName = company_name.trim().toUpperCase();
     
-    // Try to fetch from AHU website
-    // Note: AHU may block direct requests, so we attempt and handle failures gracefully
     let verificationResult = {
       status: 'pending_manual_review',
       message: 'Auto-verification unavailable, submitted for manual admin review',
       ahu_checked: false,
       company_found: false,
-      company_data: null as any
+      company_data: null as any,
+      search_url: ''
     };
 
     try {
-      // Attempt to query AHU's search endpoint
-      // The AHU website uses this pattern for company searches
-      const ahuSearchUrl = `https://ahu.go.id/pencarian/nama-pt?q=${encodeURIComponent(normalizedName)}`;
+      // AHU uses POST form submission for search at /pencarian/profil-pt
+      // The search form submits to the same page with form data
+      const ahuBaseUrl = 'https://ahu.go.id/pencarian/profil-pt';
       
-      console.log(`Fetching from AHU: ${ahuSearchUrl}`);
+      // First try to get the main search page
+      console.log(`Fetching AHU search page: ${ahuBaseUrl}`);
       
-      const ahuResponse = await fetch(ahuSearchUrl, {
+      const searchPageResponse = await fetch(ahuBaseUrl, {
         method: 'GET',
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
           'Accept-Language': 'id-ID,id;q=0.9,en;q=0.8',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive',
         },
       });
 
-      if (ahuResponse.ok) {
-        const htmlContent = await ahuResponse.text();
-        console.log(`Received HTML response, length: ${htmlContent.length}`);
+      console.log(`AHU search page status: ${searchPageResponse.status}`);
+
+      if (searchPageResponse.ok) {
+        const searchPageHtml = await searchPageResponse.text();
+        console.log(`Search page HTML length: ${searchPageHtml.length}`);
         
-        // Check if the company name appears in the response
-        // AHU returns a table with company information
-        const companyNameLower = normalizedName.toLowerCase();
-        const htmlLower = htmlContent.toLowerCase();
+        // Try to submit search form with company name
+        // AHU form typically uses 'nama' or 'keyword' as the search parameter
+        const formData = new URLSearchParams();
+        formData.append('nama', company_name.trim());
+        formData.append('keyword', company_name.trim());
         
-        if (htmlLower.includes(companyNameLower) || htmlLower.includes(company_name.toLowerCase())) {
-          // Try to extract basic info from HTML
-          // Look for patterns like "PT NAMA PERUSAHAAN" in the results
-          const ptPattern = new RegExp(`(PT\\.?\\s*${company_name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'i');
-          const match = htmlContent.match(ptPattern);
+        const searchResponse = await fetch(ahuBaseUrl, {
+          method: 'POST',
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'id-ID,id;q=0.9,en;q=0.8',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Origin': 'https://ahu.go.id',
+            'Referer': ahuBaseUrl,
+          },
+          body: formData.toString(),
+        });
+
+        console.log(`AHU search response status: ${searchResponse.status}`);
+
+        if (searchResponse.ok) {
+          const resultHtml = await searchResponse.text();
+          console.log(`Search result HTML length: ${resultHtml.length}`);
           
-          if (match) {
+          // Check if company name appears in results
+          const companyNameLower = company_name.toLowerCase();
+          const htmlLower = resultHtml.toLowerCase();
+          
+          // Look for common patterns in AHU search results
+          // AHU typically shows results in a table with company names
+          const hasResults = htmlLower.includes(companyNameLower) || 
+                            htmlLower.includes(normalizedName.toLowerCase()) ||
+                            (htmlLower.includes('pt ') && htmlLower.includes(companyNameLower.replace('pt ', '')));
+          
+          // Check for "tidak ditemukan" (not found) message
+          const notFound = htmlLower.includes('tidak ditemukan') || 
+                          htmlLower.includes('data tidak ada') ||
+                          htmlLower.includes('no results') ||
+                          htmlLower.includes('tidak ada data');
+
+          if (hasResults && !notFound) {
+            // Extract company info if possible
+            const ptPattern = new RegExp(`(PT\\.?\\s*[^<]+${company_name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace('PT ', '').replace('pt ', '')}[^<]*)`, 'i');
+            const match = resultHtml.match(ptPattern);
+            
             verificationResult = {
               status: 'verified',
               message: 'Company found in AHU database',
               ahu_checked: true,
               company_found: true,
               company_data: {
-                name: match[1],
-                source: 'AHU Indonesia',
+                name: match ? match[1].trim() : company_name,
+                source: 'AHU Indonesia - Pencarian Profil PT',
                 verified_at: new Date().toISOString()
-              }
+              },
+              search_url: ahuBaseUrl
             };
-            console.log(`Company verified: ${match[1]}`);
+            console.log(`Company verified: ${company_name}`);
+          } else if (notFound) {
+            verificationResult = {
+              status: 'not_found',
+              message: 'Company not found in AHU database. Please verify the exact company name.',
+              ahu_checked: true,
+              company_found: false,
+              company_data: null,
+              search_url: ahuBaseUrl
+            };
+            console.log(`Company not found in AHU: ${company_name}`);
           } else {
-            // Company name found but couldn't extract exact match
+            // Results ambiguous - submit for manual review
             verificationResult = {
               status: 'pending_manual_review',
-              message: 'Company name found in AHU, requires manual verification',
+              message: 'Search completed but requires manual verification. Admin will review.',
               ahu_checked: true,
-              company_found: true,
-              company_data: null
+              company_found: false,
+              company_data: null,
+              search_url: ahuBaseUrl
             };
           }
         } else {
-          // Company not found in search results
-          verificationResult = {
-            status: 'not_found',
-            message: 'Company not found in AHU database',
-            ahu_checked: true,
-            company_found: false,
-            company_data: null
-          };
+          console.log(`AHU search POST failed with status: ${searchResponse.status}`);
+          await searchResponse.text(); // Consume body
         }
       } else {
-        console.log(`AHU returned status: ${ahuResponse.status}`);
-        // AHU blocked or returned error - fall back to manual review
-        verificationResult.message = 'AHU website unavailable, submitted for manual review';
+        console.log(`AHU search page GET failed with status: ${searchPageResponse.status}`);
+        await searchPageResponse.text(); // Consume body
       }
     } catch (fetchError) {
       console.error('Error fetching from AHU:', fetchError);
-      // Network error or AHU blocking - fall back to manual review
       verificationResult.message = 'Could not reach AHU website, submitted for manual review';
     }
 
-    // Initialize Supabase client to update records
+    // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Update profile based on verification result
+    // Update profile based on result
     if (verificationResult.status === 'verified') {
       await supabase
         .from('profiles')
@@ -128,14 +168,14 @@ serve(async (req) => {
         .eq('id', user_id);
 
       console.log(`Profile updated as verified for user: ${user_id}`);
-    } else if (verificationResult.status === 'pending_manual_review') {
+    } else if (verificationResult.status === 'pending_manual_review' || verificationResult.status === 'not_found') {
       // Create admin alert for manual review
       await supabase
         .from('admin_alerts')
         .insert({
           type: 'verification_request',
-          title: 'Company Verification Request - Manual Review Required',
-          message: `Company "${company_name}" requires manual verification against AHU database. ${verificationResult.message}`,
+          title: `Company Verification - ${verificationResult.status === 'not_found' ? 'Not Found in AHU' : 'Manual Review Required'}`,
+          message: `Company "${company_name}" ${verificationResult.status === 'not_found' ? 'was not found' : 'requires verification'} in AHU database. ${verificationResult.message}`,
           priority: 'medium',
           action_required: true,
           reference_type: 'company_verification',
@@ -145,26 +185,28 @@ serve(async (req) => {
             company_name,
             ahu_checked: verificationResult.ahu_checked,
             company_found: verificationResult.company_found,
-            ahu_search_url: `https://ahu.go.id/pencarian/nama-pt?q=${encodeURIComponent(company_name)}`
+            ahu_search_url: 'https://ahu.go.id/pencarian/profil-pt',
+            verification_status: verificationResult.status
           }
         });
 
-      console.log(`Admin alert created for manual review of: ${company_name}`);
+      console.log(`Admin alert created for: ${company_name} (${verificationResult.status})`);
     }
 
     return new Response(
       JSON.stringify(verificationResult),
-      { 
-        status: 200, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
     console.error('Error in verify-ahu-company:', error);
     return new Response(
-      JSON.stringify({ error: 'Internal server error', details: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ 
+        status: 'error',
+        error: 'Internal server error', 
+        details: error.message 
+      }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
