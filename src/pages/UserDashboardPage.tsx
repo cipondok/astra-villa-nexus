@@ -117,58 +117,65 @@ const UserDashboardPage = () => {
     <div className="min-h-screen">
       <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-3 space-y-2 sm:space-y-3">
         
-        {/* Welcome Header - Slim Glassmorphism */}
+        {/* Welcome Header */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-lg bg-gradient-to-r from-primary/90 via-primary to-accent/90 p-2.5 sm:p-3 shadow-md shadow-primary/20"
+          className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary/90 via-primary to-accent/90 p-4 sm:p-5 shadow-lg shadow-primary/20"
         >
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yIDItNCAyLTRzMiAyIDIgNC0yIDQtMiA0LTItMi0yLTR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
-          <div className="relative flex items-center justify-between gap-2">
+          <div className="relative flex items-center gap-4">
+            {/* User Avatar - Larger Display */}
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-full ring-3 ring-white/40 flex-shrink-0 overflow-hidden shadow-lg"
+            >
+              <Avatar className="h-full w-full">
+                <AvatarImage 
+                  src={profile?.avatar_url || ''} 
+                  alt={profile?.full_name || 'User'} 
+                  className="object-cover"
+                />
+                <AvatarFallback className="bg-white/20 backdrop-blur-sm text-white text-lg sm:text-xl font-bold">
+                  {profile?.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <span className="absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white" />
+            </motion.div>
+
+            {/* User Info */}
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <h1 className="text-sm sm:text-base font-bold text-primary-foreground">
-                  Welcome, {profile?.full_name || user.email?.split('@')[0] || 'User'}!
-                </h1>
-              </div>
-              <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                <Badge className="bg-white/20 text-white border-white/30 text-[8px] px-1 py-0">
-                  <Sparkles className="h-2 w-2 mr-0.5" />
+              <h1 className="text-lg sm:text-xl font-bold text-primary-foreground truncate">
+                {profile?.full_name || user.email?.split('@')[0] || 'User'}
+              </h1>
+              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                <Badge className="bg-white/25 text-white border-white/40 text-[10px] sm:text-xs px-2 py-0.5">
+                  <Sparkles className="h-3 w-3 mr-1" />
                   {primaryRole}
                 </Badge>
                 <Badge 
                   variant="outline" 
-                  className="text-[8px] px-1 py-0 border-white/30 bg-amber-500/30 text-white"
+                  className="text-[10px] sm:text-xs px-2 py-0.5 border-amber-400/50 bg-amber-500/30 text-white"
                 >
                   🏆 {membershipLevel || 'Basic'}
                 </Badge>
-                <p className="text-primary-foreground/70 text-[9px] flex items-center gap-0.5">
-                  <Clock className="h-2.5 w-2.5" />
-                  Last login: Today
-                </p>
               </div>
+              <p className="text-primary-foreground/80 text-xs sm:text-sm flex items-center gap-1 mt-1.5">
+                <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                Last login: Today
+              </p>
             </div>
-            
-            {/* Profile Avatar with Dropdown Menu - Slim */}
+
+            {/* Settings Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-white/30 flex-shrink-0 overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50 hover:bg-white/30 transition-colors"
                 >
-                  <Avatar className="h-full w-full">
-                    <AvatarImage 
-                      src={profile?.avatar_url || ''} 
-                      alt={profile?.full_name || 'User'} 
-                      className="object-cover"
-                    />
-                    <AvatarFallback className="bg-white/20 backdrop-blur-sm text-white text-xs font-semibold">
-                      {profile?.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 ring-1 ring-white" />
+                  <Settings className="h-5 w-5 text-white" />
                 </motion.button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
