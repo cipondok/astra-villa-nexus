@@ -184,7 +184,8 @@ const Profile = () => {
         district_name: addressData?.district_name || '',
         subdistrict_code: addressData?.subdistrict_code || '',
         subdistrict_name: addressData?.subdistrict_name || '',
-        building_address: addressData?.building_address || profile.business_address || '',
+        // Only use building_address from parsed data; if parsing failed, address is not JSON - leave empty
+        building_address: addressData?.building_address || '',
       };
       setLocationData(locData);
       setOriginalLocationData(locData);
