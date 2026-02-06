@@ -141,3 +141,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.seo-content-generator]
     verify_jwt = false
+
+  [functions.verify-ahu-company]
+    verify_jwt = false
