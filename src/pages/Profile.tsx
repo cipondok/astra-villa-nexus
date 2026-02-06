@@ -10,11 +10,14 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AvatarUpload } from '@/components/profile/AvatarUpload';
 import RoleUpgradeSection from '@/components/profile/RoleUpgradeSection';
+import ProfileEditLockBanner from '@/components/profile/ProfileEditLockBanner';
+import ProfileInfoCard from '@/components/profile/ProfileInfoCard';
+import { useProfileEditCooldown } from '@/hooks/useProfileEditCooldown';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   User, Settings, LogOut, Home, Edit2, Save, X, ArrowLeft, 
   Mail, Phone, Building2, MapPin, FileText, Shield, Crown,
-  CheckCircle, Clock, Sparkles
+  CheckCircle, Clock, Sparkles, AlertCircle
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useUserMembership } from '@/hooks/useUserMembership';
@@ -29,6 +32,9 @@ const Profile = () => {
   const { toast } = useToast();
   const { membershipLevel, verificationStatus } = useUserMembership();
   const levelConfig = MEMBERSHIP_LEVELS[membershipLevel];
+  
+  // Profile edit cooldown hook
+  const cooldown = useProfileEditCooldown();
 
   // Read initial tab from URL query param
   const initialTab = searchParams.get('tab') === 'roles' ? 'roles' : 'profile';
@@ -36,6 +42,13 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
+    full_name: '',
+    phone: '',
+    bio: '',
+    company_name: '',
+    business_address: '',
+  });
+  const [originalData, setOriginalData] = useState({
     full_name: '',
     phone: '',
     bio: '',
@@ -69,6 +82,7 @@ const Profile = () => {
       pending: 'Pending',
       editProfile: 'Edit Profile',
       viewMembership: 'View Membership',
+      locked: 'Locked',
     },
     id: {
       profile: 'Profil',
@@ -95,6 +109,7 @@ const Profile = () => {
       pending: 'Menunggu',
       editProfile: 'Edit Profil',
       viewMembership: 'Lihat Keanggotaan',
+      locked: 'Terkunci',
     }
   };
 
@@ -103,17 +118,60 @@ const Profile = () => {
   // Initialize form data when profile loads or edit mode starts
   React.useEffect(() => {
     if (profile && isEditing) {
-      setFormData({
+      const data = {
         full_name: profile.full_name || '',
         phone: profile.phone || '',
         bio: profile.bio || '',
         company_name: profile.company_name || '',
         business_address: profile.business_address || '',
-      });
+      };
+      setFormData(data);
+      setOriginalData(data);
     }
   }, [profile, isEditing]);
 
+  // Identify which fields changed
+  const getChangedFields = (): string[] => {
+    const changedFields: string[] = [];
+    if (formData.full_name !== originalData.full_name) changedFields.push('full_name');
+    if (formData.phone !== originalData.phone) changedFields.push('phone');
+    if (formData.company_name !== originalData.company_name) changedFields.push('company_name');
+    if (formData.bio !== originalData.bio) changedFields.push('bio');
+    if (formData.business_address !== originalData.business_address) changedFields.push('business_address');
+    return changedFields;
+  };
+
+  // Check if restricted fields changed (name, phone, company)
+  const hasRestrictedFieldChanges = (): boolean => {
+    return (
+      formData.full_name !== originalData.full_name ||
+      formData.phone !== originalData.phone ||
+      formData.company_name !== originalData.company_name
+    );
+  };
+
   const handleSave = async () => {
+    const changedFields = getChangedFields();
+    
+    // If no changes, just close edit mode
+    if (changedFields.length === 0) {
+      setIsEditing(false);
+      return;
+    }
+
+    // Check if restricted fields are being changed
+    const restrictedChanges = hasRestrictedFieldChanges();
+    
+    // If restricted fields changed and cooldown applies, record the change
+    if (restrictedChanges && !cooldown.canEdit) {
+      toast({
+        title: "Profile Locked",
+        description: cooldown.message || "You cannot edit your profile right now.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSaving(true);
     try {
       const { error } = await updateProfile(formData);
@@ -127,13 +185,40 @@ const Profile = () => {
         return;
       }
 
+      // Record restricted field changes for cooldown tracking
+      if (restrictedChanges) {
+        const restrictedFields = changedFields.filter(f => 
+          ['full_name', 'phone', 'company_name'].includes(f)
+        );
+        
+        const result = await cooldown.recordProfileChange(restrictedFields);
+        
+        if (result.mustContactSupport) {
+          toast({
+            title: "Profile Updated",
+            description: "This was your last allowed edit. Contact support for future changes.",
+            variant: "default",
+          });
+        } else if (result.cooldownDays) {
+          toast({
+            title: "Profile Updated",
+            description: `Next edit available in ${result.cooldownDays} days.`,
+          });
+        } else {
+          toast({
+            title: "Success",
+            description: "Profile updated successfully",
+          });
+        }
+      } else {
+        toast({
+          title: "Success",
+          description: "Profile updated successfully",
+        });
+      }
+
       await refreshProfile();
       setIsEditing(false);
-      
-      toast({
-        title: "Success",
-        description: "Profile updated successfully",
-      });
     } catch (error: any) {
       toast({
         title: "Error",
@@ -145,8 +230,24 @@ const Profile = () => {
     }
   };
 
+  const handleStartEdit = () => {
+    if (!cooldown.canEdit && cooldown.changeCount >= 3) {
+      toast({
+        title: "Editing Locked",
+        description: "Maximum profile changes reached. Please contact support.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsEditing(true);
+  };
+
   const handleCancel = () => {
     setIsEditing(false);
+  };
+
+  const handleContactSupport = () => {
+    navigate('/support?subject=Profile Change Request');
   };
 
   if (!user) {
@@ -221,8 +322,8 @@ const Profile = () => {
                   </div>
                 )}
                 {verificationStatus === 'verified' && (
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center border-2 border-background">
-                    <CheckCircle className="h-3.5 w-3.5 text-white" />
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary flex items-center justify-center border-2 border-background">
+                    <CheckCircle className="h-3.5 w-3.5 text-primary-foreground" />
                   </div>
                 )}
               </div>
@@ -262,7 +363,7 @@ const Profile = () => {
                 <p className="text-xs text-muted-foreground mb-0.5">{t.verification}</p>
                 <p className={cn(
                   "text-sm font-semibold flex items-center gap-1",
-                  verificationStatus === 'verified' ? 'text-emerald-600' : 'text-amber-600'
+                  verificationStatus === 'verified' ? 'text-primary' : 'text-muted-foreground'
                 )}>
                   {verificationStatus === 'verified' ? (
                     <><CheckCircle className="h-3.5 w-3.5" /> {t.verified}</>
@@ -305,18 +406,46 @@ const Profile = () => {
                   <FileText className="h-4 w-4 text-muted-foreground" />
                   <span className="font-semibold text-sm">{t.editProfile}</span>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="h-8 text-xs gap-1.5"
-                  disabled={isSaving}
-                >
-                  <Edit2 className="h-3.5 w-3.5" />
-                  {t.edit}
-                </Button>
+                {!isEditing && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleStartEdit}
+                    className={cn(
+                      "h-8 text-xs gap-1.5",
+                      !cooldown.canEdit && cooldown.mustContactSupport && "opacity-50"
+                    )}
+                    disabled={isSaving || cooldown.loading}
+                  >
+                    {cooldown.canEdit ? (
+                      <>
+                        <Edit2 className="h-3.5 w-3.5" />
+                        {t.edit}
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle className="h-3.5 w-3.5" />
+                        {t.locked}
+                      </>
+                    )}
+                  </Button>
+                )}
               </CardHeader>
               <CardContent className="space-y-3">
+                {/* Cooldown Banner */}
+                {!cooldown.loading && (
+                  <ProfileEditLockBanner
+                    canEdit={cooldown.canEdit}
+                    changeCount={cooldown.changeCount}
+                    daysRemaining={cooldown.daysRemaining}
+                    lockedUntil={cooldown.lockedUntil}
+                    changesRemaining={cooldown.changesRemaining}
+                    nextCooldownDays={cooldown.nextCooldownDays}
+                    mustContactSupport={cooldown.mustContactSupport}
+                    onContactSupport={handleContactSupport}
+                  />
+                )}
+
                 {isEditing ? (
                   <div className="space-y-3">
                     {/* Avatar Upload */}
@@ -330,30 +459,42 @@ const Profile = () => {
 
                     <div className="grid gap-3">
                       <div className="space-y-1.5">
-                        <Label htmlFor="full_name" className="text-xs">{t.name}</Label>
+                        <Label htmlFor="full_name" className="text-xs flex items-center gap-1.5">
+                          {t.name}
+                          <Badge variant="secondary" className="text-[9px] px-1 py-0">Tracked</Badge>
+                        </Label>
                         <Input
                           id="full_name"
                           value={formData.full_name}
                           onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                           className="h-9"
+                          disabled={!cooldown.canEdit}
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label htmlFor="phone" className="text-xs">{t.phone}</Label>
+                        <Label htmlFor="phone" className="text-xs flex items-center gap-1.5">
+                          {t.phone}
+                          <Badge variant="secondary" className="text-[9px] px-1 py-0">Tracked</Badge>
+                        </Label>
                         <Input
                           id="phone"
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           className="h-9"
+                          disabled={!cooldown.canEdit}
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label htmlFor="company_name" className="text-xs">{t.company}</Label>
+                        <Label htmlFor="company_name" className="text-xs flex items-center gap-1.5">
+                          {t.company}
+                          <Badge variant="secondary" className="text-[9px] px-1 py-0">Tracked</Badge>
+                        </Label>
                         <Input
                           id="company_name"
                           value={formData.company_name}
                           onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
                           className="h-9"
+                          disabled={!cooldown.canEdit}
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -389,19 +530,23 @@ const Profile = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-2">
-                    <InfoRow icon={<Mail className="h-4 w-4" />} label={t.email} value={user.email} />
-                    <InfoRow icon={<User className="h-4 w-4" />} label={t.name} value={profile?.full_name || t.notSet} />
-                    <InfoRow icon={<Phone className="h-4 w-4" />} label={t.phone} value={profile?.phone || t.notSet} />
-                    <InfoRow icon={<Building2 className="h-4 w-4" />} label={t.company} value={profile?.company_name || t.notSet} />
-                    <InfoRow icon={<MapPin className="h-4 w-4" />} label={t.address} value={profile?.business_address || t.notSet} />
-                    {profile?.bio && (
-                      <div className="pt-2 border-t border-border">
-                        <p className="text-xs text-muted-foreground mb-1">{t.bio}</p>
-                        <p className="text-sm">{profile.bio}</p>
-                      </div>
-                    )}
-                  </div>
+                  <ProfileInfoCard
+                    email={user.email || ''}
+                    fullName={profile?.full_name}
+                    phone={profile?.phone}
+                    companyName={profile?.company_name}
+                    businessAddress={profile?.business_address}
+                    bio={profile?.bio}
+                    notSetText={t.notSet}
+                    labels={{
+                      email: t.email,
+                      name: t.name,
+                      phone: t.phone,
+                      company: t.company,
+                      address: t.address,
+                      bio: t.bio,
+                    }}
+                  />
                 )}
               </CardContent>
             </Card>
@@ -436,16 +581,5 @@ const Profile = () => {
     </div>
   );
 };
-
-// Helper component for info rows
-const InfoRow: React.FC<{ icon: React.ReactNode; label: string; value: string }> = ({ icon, label, value }) => (
-  <div className="flex items-center gap-3 p-2.5 rounded-lg bg-muted/30">
-    <span className="text-muted-foreground">{icon}</span>
-    <div className="flex-1 min-w-0">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="text-sm font-medium truncate">{value}</p>
-    </div>
-  </div>
-);
 
 export default Profile;

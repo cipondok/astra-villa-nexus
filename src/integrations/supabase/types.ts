@@ -13468,11 +13468,15 @@ export type Database = {
           full_name: string | null
           id: string
           is_suspended: boolean | null
+          last_profile_change_at: string | null
           last_seen_at: string | null
           license_number: string | null
           npwp_number: string | null
           phone: string | null
+          profile_change_count: number | null
+          profile_change_history: Json | null
           profile_completion_percentage: number | null
+          profile_locked_until: string | null
           specializations: string | null
           suspended_at: string | null
           suspended_by: string | null
@@ -13493,11 +13497,15 @@ export type Database = {
           full_name?: string | null
           id: string
           is_suspended?: boolean | null
+          last_profile_change_at?: string | null
           last_seen_at?: string | null
           license_number?: string | null
           npwp_number?: string | null
           phone?: string | null
+          profile_change_count?: number | null
+          profile_change_history?: Json | null
           profile_completion_percentage?: number | null
+          profile_locked_until?: string | null
           specializations?: string | null
           suspended_at?: string | null
           suspended_by?: string | null
@@ -13518,11 +13526,15 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_suspended?: boolean | null
+          last_profile_change_at?: string | null
           last_seen_at?: string | null
           license_number?: string | null
           npwp_number?: string | null
           phone?: string | null
+          profile_change_count?: number | null
+          profile_change_history?: Json | null
           profile_completion_percentage?: number | null
+          profile_locked_until?: string | null
           specializations?: string | null
           suspended_at?: string | null
           suspended_by?: string | null
@@ -23799,6 +23811,7 @@ export type Database = {
         Args: { dev_status: string; user_id: string }
         Returns: boolean
       }
+      can_edit_profile: { Args: { user_id: string }; Returns: Json }
       check_account_lockout: { Args: { p_email: string }; Returns: boolean }
       check_admin_access: { Args: never; Returns: boolean }
       check_financial_admin_access: { Args: never; Returns: boolean }
@@ -24684,6 +24697,10 @@ export type Database = {
         Returns: string
       }
       process_daily_login: { Args: { p_user_id: string }; Returns: Json }
+      record_profile_change: {
+        Args: { changed_fields: string[]; user_id: string }
+        Returns: Json
+      }
       reset_admin_password: { Args: { new_password: string }; Returns: string }
       resolve_database_error: {
         Args: {
