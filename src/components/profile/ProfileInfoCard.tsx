@@ -97,7 +97,7 @@ const ProfileInfoCard: React.FC<ProfileDisplayProps> = ({
       <InfoRow 
         icon={<Building2 className="h-4 w-4" />} 
         label={labels.company} 
-        value={companyName || notSetText} 
+        value={(companyName || notSetText).toUpperCase()} 
       />
       <InfoRow 
         icon={<MapPin className="h-4 w-4" />} 
