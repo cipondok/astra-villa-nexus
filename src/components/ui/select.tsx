@@ -74,9 +74,8 @@ const SelectContent = React.forwardRef<
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
-          "relative isolate max-h-60 min-w-[8rem] overflow-hidden rounded-xl",
+          "relative isolate min-w-[8rem] rounded-xl",
           "bg-popover text-popover-foreground border border-border shadow-xl",
-          "overscroll-contain overflow-y-auto",
           "!z-[99999999]",
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
@@ -100,6 +99,8 @@ const SelectContent = React.forwardRef<
         <SelectPrimitive.Viewport
           className={cn(
             "p-1.5",
+            // Make long lists (like 38 provinces) actually scrollable
+            "max-h-[var(--radix-select-content-available-height)] overflow-y-auto",
             position === "popper" &&
               "w-full min-w-[var(--radix-select-trigger-width)]"
           )}
