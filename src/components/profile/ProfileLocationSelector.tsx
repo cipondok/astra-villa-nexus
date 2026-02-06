@@ -125,12 +125,15 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
         .from('locations')
         .select('province_code, province_name')
         .eq('is_active', true)
-        .order('province_name');
+        .not('province_code', 'is', null)
+        .neq('province_code', '')
+        .order('province_name')
+        .limit(10000);
 
       if (error) throw error;
 
       const uniqueProvinces = data?.reduce((acc: Array<{code: string, name: string}>, curr) => {
-        if (!acc.find(p => p.code === curr.province_code)) {
+        if (curr.province_code && curr.province_name && !acc.find(p => p.code === curr.province_code)) {
           acc.push({ code: curr.province_code, name: curr.province_name });
         }
         return acc;
@@ -145,6 +148,8 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
   };
 
   const fetchCities = async (provinceCode: string) => {
+    if (!provinceCode) return;
+    
     try {
       setLoadingCities(true);
       const { data, error } = await supabase
@@ -152,13 +157,16 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
         .select('city_code, city_name, city_type')
         .eq('province_code', provinceCode)
         .eq('is_active', true)
-        .order('city_name');
+        .not('city_code', 'is', null)
+        .neq('city_code', '')
+        .order('city_name')
+        .limit(1000);
 
       if (error) throw error;
 
       const uniqueCities = data?.reduce((acc: Array<{code: string, name: string, type: string}>, curr) => {
-        if (!acc.find(c => c.code === curr.city_code)) {
-          acc.push({ code: curr.city_code, name: curr.city_name, type: curr.city_type });
+        if (curr.city_code && curr.city_name && !acc.find(c => c.code === curr.city_code)) {
+          acc.push({ code: curr.city_code, name: curr.city_name, type: curr.city_type || '' });
         }
         return acc;
       }, []) || [];
