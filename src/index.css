@@ -129,6 +129,12 @@ body.scroll-locked {
   scrollbar-gutter: stable;
 }
 
+/* Radix (react-remove-scroll) adds padding-right on body to compensate for scrollbar.
+   We already reserve gutter via `scrollbar-gutter`, so that padding causes a horizontal “jump”. */
+body[data-scroll-locked] {
+  padding-right: 0 !important;
+}
+
 /* Prevent width change when scrollbar hides */
 html {
   scrollbar-gutter: stable;
