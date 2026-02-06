@@ -71,7 +71,8 @@ const IndonesianLocationSelector: React.FC<IndonesianLocationSelectorProps> = ({
         .from('locations')
         .select('province_code, province_name')
         .eq('is_active', true)
-        .order('province_name');
+        .order('province_name')
+        .limit(100000); // Ensure we get all 83k+ records to extract all 38 provinces
 
       if (error) throw error;
 

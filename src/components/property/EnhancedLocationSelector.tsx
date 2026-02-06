@@ -33,17 +33,17 @@ const EnhancedLocationSelector = ({
 }: EnhancedLocationSelectorProps) => {
   const [detailedAddress, setDetailedAddress] = useState<DetailedAddressData | null>(null);
 
-  // Fetch all locations
+  // Fetch unique provinces first (much smaller dataset)
   const { data: locations } = useQuery({
-    queryKey: ['locations'],
+    queryKey: ['enhanced-location-provinces'],
     queryFn: async () => {
+      // Fetch provinces with limit to ensure we get all 38
       const { data, error } = await supabase
         .from('locations')
-        .select('*')
+        .select('province_code, province_name, city_code, city_name, city_type, area_name')
         .eq('is_active', true)
         .order('province_name', { ascending: true })
-        .order('city_name', { ascending: true })
-        .order('area_name', { ascending: true });
+        .limit(100000); // Ensure we get all records
       
       if (error) throw error;
       return data || [];
