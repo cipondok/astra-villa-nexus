@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, User, Save, Crown, Sparkles, Shield, ChevronRight, Lock, Info } from 'lucide-react';
+import { ArrowLeft, User, Save, Crown, Sparkles, Shield, ChevronRight, Lock, Info, MapPin } from 'lucide-react';
 import { useUserMembership } from '@/hooks/useUserMembership';
 import { useVIPLimits } from '@/hooks/useVIPLimits';
 import { UserMembershipBadge, VerificationBadge } from '@/components/user/UserMembershipBadge';
@@ -16,8 +16,22 @@ import { MEMBERSHIP_LEVELS } from '@/types/membership';
 import { Progress } from '@/components/ui/progress';
 import { useProfileEditCooldown } from '@/hooks/useProfileEditCooldown';
 import ProfileEditLockBanner from '@/components/profile/ProfileEditLockBanner';
+import ProfileLocationSelector from '@/components/profile/ProfileLocationSelector';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+
+// Location data interface
+interface LocationData {
+  province_code: string;
+  province_name: string;
+  city_code: string;
+  city_name: string;
+  district_code: string;
+  district_name: string;
+  subdistrict_code: string;
+  subdistrict_name: string;
+  building_address: string;
+}
 
 // Sensitive fields that trigger cooldown
 const SENSITIVE_FIELDS = ['full_name', 'phone', 'company_name'];
@@ -45,10 +59,22 @@ const ProfileEditPage = () => {
     full_name: '',
     phone: '',
     company_name: '',
-    business_address: '',
     years_experience: '',
     specializations: '',
     bio: ''
+  });
+
+  // Location state
+  const [locationData, setLocationData] = useState<LocationData>({
+    province_code: '',
+    province_name: '',
+    city_code: '',
+    city_name: '',
+    district_code: '',
+    district_name: '',
+    subdistrict_code: '',
+    subdistrict_name: '',
+    building_address: ''
   });
 
   // Track original values to detect changes
@@ -58,13 +84,34 @@ const ProfileEditPage = () => {
     company_name: '',
   });
 
+  // Parse location data from JSON string
+  const parseLocationData = (addressStr: string): LocationData => {
+    try {
+      if (addressStr && addressStr.startsWith('{')) {
+        return JSON.parse(addressStr);
+      }
+    } catch (e) {
+      console.error('Error parsing location data:', e);
+    }
+    return {
+      province_code: '',
+      province_name: '',
+      city_code: '',
+      city_name: '',
+      district_code: '',
+      district_name: '',
+      subdistrict_code: '',
+      subdistrict_name: '',
+      building_address: addressStr || ''
+    };
+  };
+
   useEffect(() => {
     if (profile) {
       const data = {
         full_name: profile.full_name || '',
         phone: profile.phone || '',
         company_name: profile.company_name || '',
-        business_address: profile.business_address || '',
         years_experience: profile.years_experience?.toString() || '',
         specializations: Array.isArray(profile.specializations) 
           ? profile.specializations.join(', ') 
@@ -77,6 +124,10 @@ const ProfileEditPage = () => {
         phone: profile.phone || '',
         company_name: profile.company_name || '',
       });
+      
+      // Parse location data
+      const parsedLocation = parseLocationData(profile.business_address || '');
+      setLocationData(parsedLocation);
     }
   }, [profile]);
 
@@ -118,9 +169,12 @@ const ProfileEditPage = () => {
 
     setLoading(true);
     try {
+      // Serialize location data to JSON
+      const serializedAddress = JSON.stringify(locationData);
+      
       // Build update data - only include sensitive fields if allowed
       const updateData: Record<string, any> = {
-        business_address: formData.business_address,
+        business_address: serializedAddress,
         years_experience: formData.years_experience,
         specializations: formData.specializations,
         bio: formData.bio
@@ -376,14 +430,53 @@ const ProfileEditPage = () => {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="business_address" className="text-xs">Address</Label>
-                <Textarea
-                  id="business_address"
-                  value={formData.business_address}
-                  onChange={(e) => handleInputChange('business_address', e.target.value)}
-                  placeholder="Enter your address"
-                  rows={2}
-                  className="text-sm resize-none"
+                <Label className="text-xs flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5" />
+                  Address
+                </Label>
+                <ProfileLocationSelector
+                  selectedProvinceCode={locationData.province_code}
+                  selectedCityCode={locationData.city_code}
+                  selectedDistrictCode={locationData.district_code}
+                  selectedSubdistrictCode={locationData.subdistrict_code}
+                  buildingAddress={locationData.building_address}
+                  onProvinceChange={(code, name) => setLocationData(prev => ({ 
+                    ...prev, 
+                    province_code: code, 
+                    province_name: name,
+                    city_code: '',
+                    city_name: '',
+                    district_code: '',
+                    district_name: '',
+                    subdistrict_code: '',
+                    subdistrict_name: ''
+                  }))}
+                  onCityChange={(code, name) => setLocationData(prev => ({ 
+                    ...prev, 
+                    city_code: code, 
+                    city_name: name,
+                    district_code: '',
+                    district_name: '',
+                    subdistrict_code: '',
+                    subdistrict_name: ''
+                  }))}
+                  onDistrictChange={(code, name) => setLocationData(prev => ({ 
+                    ...prev, 
+                    district_code: code, 
+                    district_name: name,
+                    subdistrict_code: '',
+                    subdistrict_name: ''
+                  }))}
+                  onSubdistrictChange={(code, name) => setLocationData(prev => ({ 
+                    ...prev, 
+                    subdistrict_code: code, 
+                    subdistrict_name: name 
+                  }))}
+                  onBuildingAddressChange={(address) => setLocationData(prev => ({ 
+                    ...prev, 
+                    building_address: address 
+                  }))}
+                  language="id"
                 />
               </div>
 
