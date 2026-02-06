@@ -9,6 +9,8 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useAstraToken } from "@/hooks/useAstraToken";
+import { useAstraWalletStats } from "@/hooks/useAstraWalletStats";
 import AgentTools from "./AgentTools";
 import AgentSettings from "./AgentSettings";
 import AgentNotifications from "./AgentNotifications";
@@ -54,13 +56,20 @@ import {
   Settings,
   Trophy,
   Brain,
-  Sparkles
+  Sparkles,
+  Wallet,
+  Coins,
+  Gift,
+  Flame,
+  CheckCircle2
 } from "lucide-react";
 
 const AgentOverview = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
+  const { balance, performCheckin, isCheckingIn, checkinStatus } = useAstraToken();
+  const { walletStats } = useAstraWalletStats();
 
   // Fetch real properties from database
   const { data: properties, isLoading, refetch } = useQuery({
@@ -158,115 +167,133 @@ const AgentOverview = () => {
 
   const CurrentIcon = agentMembership.currentLevel.icon;
 
+  const formatTokens = (num: number) => new Intl.NumberFormat('id-ID').format(num);
+
   return (
-    <div className="space-y-2 sm:space-y-3 px-1 sm:px-0">
-      {/* Unified Agent Control Panel - Mobile Optimized */}
-      <div className="glass-card bg-gradient-to-br from-teal-50/50 via-card to-cyan-50/30 dark:from-teal-950/30 dark:via-card dark:to-cyan-950/20 rounded-lg overflow-hidden shadow-lg shadow-teal-500/20 border border-teal-200/50 dark:border-teal-800/50">
-        <div className="p-2 sm:p-3 md:p-4">
-          {/* Header Row - Stack on mobile */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-md shadow-teal-500/40 shrink-0">
-                <Users className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white" />
+    <div className="space-y-2 px-1 sm:px-0">
+      {/* Compact Agent Header + Stats + Wallet in Single Card */}
+      <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
+        <div className="p-2 sm:p-3">
+          {/* Top Row: Agent Info + Actions */}
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center shrink-0">
+                <Users className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
               </div>
-              <div className="min-w-0 flex-1">
-                <h1 className="text-xs sm:text-sm md:text-base font-bold text-teal-900 dark:text-teal-100 truncate">Agent Control Panel</h1>
-                <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5 flex-wrap">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-[10px] sm:text-xs md:text-sm text-teal-600 dark:text-teal-400">Online</span>
-                  <Badge className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-1.5 sm:px-2 py-0 sm:py-0.5 text-[8px] sm:text-[10px] md:text-xs shadow-sm">
-                    <CurrentIcon className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 mr-0.5" />
-                    <span className="hidden xs:inline">{agentMembership.currentLevel.name}</span> Agent
+              <div className="min-w-0">
+                <h1 className="text-xs sm:text-sm font-bold text-foreground truncate">Agent Dashboard</h1>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                  <Badge className="bg-primary text-primary-foreground px-1.5 py-0 text-[8px] sm:text-[9px]">
+                    <CurrentIcon className="h-2 w-2 mr-0.5" />
+                    {agentMembership.currentLevel.name}
                   </Badge>
                 </div>
               </div>
             </div>
-            
             <Button 
               onClick={handleAddListing}
               size="sm"
-              className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white h-7 sm:h-8 md:h-9 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3 md:px-4 shadow-md w-full sm:w-auto"
+              className="h-7 sm:h-8 text-[10px] sm:text-xs px-2 sm:px-3"
             >
-              <PlusCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 mr-1" />
-              Add Property
+              <PlusCircle className="h-3 w-3 mr-1" />
+              <span className="hidden sm:inline">Add Property</span>
+              <span className="sm:hidden">Add</span>
             </Button>
           </div>
           
-          {/* Stats Grid - 2x2 on mobile, 4 cols on larger */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3 mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-teal-200/50 dark:border-teal-800/50">
-            <div className="text-center p-1.5 sm:p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-md sm:rounded-lg">
-              <div className="text-base sm:text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.totalListings}</div>
-              <div className="text-[9px] sm:text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Properties</div>
+          {/* Stats + ASTRA Wallet Row - 5 columns on larger screens */}
+          <div className="grid grid-cols-5 gap-1 sm:gap-1.5">
+            <div className="text-center p-1.5 bg-muted/50 rounded-md">
+              <Building className="h-3 w-3 mx-auto mb-0.5 text-primary" />
+              <div className="text-sm sm:text-base font-bold">{stats.totalListings}</div>
+              <div className="text-[8px] text-muted-foreground">Properties</div>
             </div>
-            <div className="text-center p-1.5 sm:p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-md sm:rounded-lg">
-              <div className="text-base sm:text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.activeListings}</div>
-              <div className="text-[9px] sm:text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Active</div>
+            <div className="text-center p-1.5 bg-muted/50 rounded-md">
+              <Activity className="h-3 w-3 mx-auto mb-0.5 text-green-600" />
+              <div className="text-sm sm:text-base font-bold">{stats.activeListings}</div>
+              <div className="text-[8px] text-muted-foreground">Active</div>
             </div>
-            <div className="text-center p-1.5 sm:p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-md sm:rounded-lg">
-              <div className="text-base sm:text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.pendingListings}</div>
-              <div className="text-[9px] sm:text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Pending</div>
+            <div className="text-center p-1.5 bg-muted/50 rounded-md">
+              <Clock className="h-3 w-3 mx-auto mb-0.5 text-amber-500" />
+              <div className="text-sm sm:text-base font-bold">{stats.pendingListings}</div>
+              <div className="text-[8px] text-muted-foreground">Pending</div>
             </div>
-            <div className="text-center p-1.5 sm:p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-md sm:rounded-lg">
-              <div className="text-base sm:text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.totalClients}</div>
-              <div className="text-[9px] sm:text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Clients</div>
+            <div className="text-center p-1.5 bg-muted/50 rounded-md">
+              <Users className="h-3 w-3 mx-auto mb-0.5 text-blue-600" />
+              <div className="text-sm sm:text-base font-bold">{stats.totalClients}</div>
+              <div className="text-[8px] text-muted-foreground">Clients</div>
+            </div>
+            {/* ASTRA Wallet Mini */}
+            <div 
+              className="text-center p-1.5 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-md cursor-pointer hover:from-amber-500/20 hover:to-orange-500/20 transition-colors"
+              onClick={() => navigate('/astra-tokens')}
+            >
+              <Coins className="h-3 w-3 mx-auto mb-0.5 text-amber-500" />
+              <div className="text-sm sm:text-base font-bold text-amber-600">{formatTokens(balance?.available_tokens || 0)}</div>
+              <div className="text-[8px] text-amber-600/80">ASTRA</div>
             </div>
           </div>
 
-          {/* Membership + Profile Progress Row */}
-          <div className="grid grid-cols-1 gap-1.5 sm:gap-2 md:gap-3 mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-teal-200/50 dark:border-teal-800/50">
+          {/* Membership + Profile + Daily Check-in Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 mt-2 pt-2 border-t border-border/50">
             {/* Membership Progress */}
-            <div className="p-2 sm:p-2.5 md:p-3 bg-gradient-to-br from-teal-200/50 to-cyan-200/50 dark:from-teal-800/50 dark:to-cyan-800/50 rounded-md sm:rounded-lg">
-              <div className="flex items-center justify-between mb-1 sm:mb-1.5">
-                <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                  <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-teal-600 dark:text-teal-300 shrink-0" />
-                  <span className="text-[10px] sm:text-xs md:text-sm font-semibold text-teal-800 dark:text-teal-200 truncate">
-                    Level {agentMembership.currentLevel.level}: {agentMembership.currentLevel.name}
-                  </span>
+            <div className="flex items-center gap-2 p-1.5 bg-muted/30 rounded-md">
+              <Crown className="h-4 w-4 text-primary shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-0.5">
+                  <span className="text-[9px] font-medium truncate">Lv{agentMembership.currentLevel.level} {agentMembership.currentLevel.name}</span>
+                  <span className="text-[9px] font-bold">{agentMembership.progress.percentage}%</span>
                 </div>
-                <span className="text-xs sm:text-sm md:text-base font-bold text-teal-700 dark:text-teal-300 shrink-0">{agentMembership.progress.percentage}%</span>
-              </div>
-              <Progress value={agentMembership.progress.percentage} className="h-1 sm:h-1.5 md:h-2 mb-1 sm:mb-1.5" />
-              <div className="flex items-center justify-between text-[9px] sm:text-[10px] md:text-xs text-teal-600 dark:text-teal-400">
-                <span>{agentMembership.progress.current}/{agentMembership.progress.required} sales to {agentMembership.nextLevel.name}</span>
-              </div>
-              <div className="flex flex-wrap gap-0.5 sm:gap-1 mt-1.5 sm:mt-2">
-                {agentMembership.benefits.slice(0, 2).map((benefit, index) => (
-                  <Badge key={index} variant="outline" className="text-[8px] sm:text-[9px] md:text-[10px] px-1 sm:px-1.5 py-0 sm:py-0.5 border-teal-400/50 text-teal-700 dark:text-teal-300 bg-white/50 dark:bg-teal-900/50">
-                    {benefit}
-                  </Badge>
-                ))}
-                <Badge variant="outline" className="hidden sm:inline-flex text-[9px] md:text-[10px] px-1.5 py-0.5 border-teal-400/50 text-teal-700 dark:text-teal-300 bg-white/50 dark:bg-teal-900/50">
-                  {agentMembership.benefits[2]}
-                </Badge>
+                <Progress value={agentMembership.progress.percentage} className="h-1" />
               </div>
             </div>
 
             {/* Profile Completion */}
-            <div className="p-2 sm:p-2.5 md:p-3 bg-gradient-to-br from-amber-100/50 to-orange-100/50 dark:from-amber-900/30 dark:to-orange-900/30 rounded-md sm:rounded-lg">
-              <div className="flex items-center justify-between mb-1 sm:mb-1.5">
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400 shrink-0" />
-                  <span className="text-[10px] sm:text-xs md:text-sm font-semibold text-amber-800 dark:text-amber-200">Profile</span>
+            <div className="flex items-center gap-2 p-1.5 bg-muted/30 rounded-md">
+              <User className="h-4 w-4 text-amber-500 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-0.5">
+                  <span className="text-[9px] font-medium">Profile</span>
+                  <span className="text-[9px] font-bold">{profile?.profile_completion_percentage || 0}%</span>
                 </div>
-                <span className="text-xs sm:text-sm md:text-base font-bold text-amber-700 dark:text-amber-300">
-                  {profile?.profile_completion_percentage || 0}%
-                </span>
+                <Progress value={profile?.profile_completion_percentage || 0} className="h-1" />
               </div>
-              <Progress value={profile?.profile_completion_percentage || 0} className="h-1 sm:h-1.5 md:h-2 mb-1 sm:mb-1.5" />
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[9px] sm:text-[10px] md:text-xs text-amber-600 dark:text-amber-400 truncate">
-                  {(profile?.profile_completion_percentage || 0) < 70 ? 'Complete for 3x leads!' : 'Great profile!'}
-                </span>
+              <Button 
+                onClick={() => setActiveTab("settings")}
+                variant="ghost"
+                size="sm"
+                className="h-5 w-5 p-0 shrink-0"
+              >
+                <ChevronRight className="h-3 w-3" />
+              </Button>
+            </div>
+
+            {/* Daily Check-in */}
+            <div className="flex items-center gap-2 p-1.5 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-md">
+              {walletStats?.currentStreak > 0 && (
+                <div className="flex items-center gap-0.5 text-orange-500 shrink-0">
+                  <Flame className="h-3 w-3" />
+                  <span className="text-[9px] font-bold">{walletStats.currentStreak}</span>
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <span className="text-[9px] font-medium text-amber-700 dark:text-amber-300">Daily Reward</span>
+              </div>
+              {!checkinStatus?.hasCheckedInToday && walletStats?.canClaimToday ? (
                 <Button 
-                  onClick={() => setActiveTab("settings")}
-                  variant="outline"
-                  size="sm"
-                  className="h-5 sm:h-6 md:h-7 text-[9px] sm:text-[10px] md:text-xs px-1.5 sm:px-2 border-amber-400/50 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50 shrink-0"
+                  size="sm" 
+                  onClick={() => performCheckin()}
+                  disabled={isCheckingIn}
+                  className="h-5 text-[8px] px-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
                 >
-                  <ChevronRight className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
-                  <span className="hidden sm:inline">Complete</span>
+                  {isCheckingIn ? <Sparkles className="h-2.5 w-2.5 animate-spin" /> : <><Gift className="h-2.5 w-2.5 mr-0.5" />Claim</>}
                 </Button>
-              </div>
+              ) : (
+                <Badge className="bg-emerald-500/20 text-emerald-600 border-emerald-500/30 text-[8px] px-1.5 py-0">
+                  <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />Done
+                </Badge>
+              )}
             </div>
           </div>
         </div>
