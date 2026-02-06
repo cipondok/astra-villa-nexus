@@ -123,7 +123,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     <div className={`space-y-4 ${className}`}>
       {showLabel && (
         <div className="flex items-center space-x-2">
-          <MapPin className="h-4 w-4 text-gray-500" />
+          <MapPin className="h-4 w-4 text-muted-foreground" />
           <Label className="text-sm font-semibold">Lokasi</Label>
         </div>
       )}
