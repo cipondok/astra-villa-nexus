@@ -32,8 +32,15 @@ const ProfileUpgradeCard = () => {
   const hasPendingApplication = restrictions?.hasPendingApplication;
   const daysUntilCanUpgrade = restrictions?.daysUntilCanUpgrade || 0;
 
+  // Format role for display (convert snake_case to Title Case)
+  const formatRole = (role: string) => {
+    return role.split('_').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+  };
+
   // Get the primary display role
-  const displayRole = userRoles.length > 0 ? userRoles[0] : 'general_user';
+  const displayRole = formatRole(userRoles.length > 0 ? userRoles[0] : 'general_user');
 
   return (
     <>
