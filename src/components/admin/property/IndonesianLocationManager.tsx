@@ -716,7 +716,7 @@ const IndonesianLocationManager = () => {
                     <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                       <SelectValue placeholder={`Semua Provinsi (${provinces.length} total)`} />
                     </SelectTrigger>
-                    <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+                    <SelectContent className="max-h-64 overflow-y-auto bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
                       <SelectItem value="all" className="font-medium">
                         Semua Provinsi ({provinces.length} total)
                       </SelectItem>
@@ -750,7 +750,7 @@ const IndonesianLocationManager = () => {
                     <SelectTrigger className="w-48 bg-white dark:bg-gray-800">
                       <SelectValue placeholder="Pilih provinsi" />
                     </SelectTrigger>
-                    <SelectContent className="max-h-60 bg-white dark:bg-gray-800 z-50">
+                    <SelectContent className="max-h-64 overflow-y-auto bg-white dark:bg-gray-800 z-50">
                       {provinces.map((prov) => (
                         <SelectItem key={prov.code} value={prov.code}>
                           {prov.name}
