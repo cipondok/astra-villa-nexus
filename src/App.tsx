@@ -363,13 +363,14 @@ function App() {
                             <Sonner />
                             <CookieSystem />
                             <ResponsiveAIChatWidget />
-                            {/* NewArrivalsPopup disabled temporarily - uncomment to re-enable */}
+                            {/* NewArrivalsPopup disabled - uncomment to re-enable */}
                             {/* <NewArrivalsPopup /> */}
                             <LoadingProgressPopup />
                             <SessionExpirationHandler />
                             <AuthNotificationHandler />
                             <OnboardingHandler />
-                            <DailyLoginReward autoShow />
+                            {/* DailyLoginReward disabled - claim via ASTRA Wallet instead */}
+                            {/* <DailyLoginReward autoShow /> */}
                           </PropertyComparisonProvider>
                         </NotificationProvider>
                       </AuthProvider>
