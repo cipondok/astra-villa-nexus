@@ -74,7 +74,7 @@ const SelectContent = React.forwardRef<
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
-          "relative isolate max-h-80 min-w-[8rem] overflow-hidden rounded-xl",
+          "relative isolate max-h-60 min-w-[8rem] overflow-hidden rounded-xl",
           "bg-popover text-popover-foreground border border-border shadow-xl",
           "overscroll-contain overflow-y-auto",
           "!z-[99999999]",
@@ -86,6 +86,9 @@ const SelectContent = React.forwardRef<
           className
         )}
         position={position}
+        sideOffset={4}
+        collisionPadding={8}
+        avoidCollisions={true}
         style={{ pointerEvents: 'auto' }}
         onCloseAutoFocus={(e) => {
           if (onCloseAutoFocus) return onCloseAutoFocus(e);
@@ -98,7 +101,7 @@ const SelectContent = React.forwardRef<
           className={cn(
             "p-1.5",
             position === "popper" &&
-              "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+              "w-full min-w-[var(--radix-select-trigger-width)]"
           )}
         >
           {children}
