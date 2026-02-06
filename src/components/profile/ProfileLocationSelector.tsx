@@ -172,6 +172,8 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
   };
 
   const fetchDistricts = async (cityCode: string) => {
+    if (!cityCode) return;
+    
     try {
       setLoadingDistricts(true);
       const { data, error } = await supabase
@@ -179,13 +181,16 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
         .select('district_code, district_name')
         .eq('city_code', cityCode)
         .eq('is_active', true)
-        .order('district_name');
+        .not('district_code', 'is', null)
+        .neq('district_code', '')
+        .order('district_name')
+        .limit(1000);
 
       if (error) throw error;
 
       const uniqueDistricts = data?.reduce((acc: Array<{code: string, name: string}>, curr) => {
-        if (curr.district_code && !acc.find(d => d.code === curr.district_code)) {
-          acc.push({ code: curr.district_code, name: curr.district_name || '' });
+        if (curr.district_code && curr.district_name && !acc.find(d => d.code === curr.district_code)) {
+          acc.push({ code: curr.district_code, name: curr.district_name });
         }
         return acc;
       }, []) || [];
@@ -199,6 +204,8 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
   };
 
   const fetchSubdistricts = async (districtCode: string) => {
+    if (!districtCode) return;
+    
     try {
       setLoadingSubdistricts(true);
       const { data, error } = await supabase
@@ -206,13 +213,16 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
         .select('subdistrict_code, subdistrict_name')
         .eq('district_code', districtCode)
         .eq('is_active', true)
-        .order('subdistrict_name');
+        .not('subdistrict_code', 'is', null)
+        .neq('subdistrict_code', '')
+        .order('subdistrict_name')
+        .limit(1000);
 
       if (error) throw error;
 
       const uniqueSubdistricts = data?.reduce((acc: Array<{code: string, name: string}>, curr) => {
-        if (curr.subdistrict_code && !acc.find(s => s.code === curr.subdistrict_code)) {
-          acc.push({ code: curr.subdistrict_code, name: curr.subdistrict_name || '' });
+        if (curr.subdistrict_code && curr.subdistrict_name && !acc.find(s => s.code === curr.subdistrict_code)) {
+          acc.push({ code: curr.subdistrict_code, name: curr.subdistrict_name });
         }
         return acc;
       }, []) || [];
