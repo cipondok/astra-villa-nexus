@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useAccountNotifications } from '@/hooks/useAccountNotifications';
 import { Mail, AlertCircle } from 'lucide-react';
 import { z } from 'zod';
 
@@ -16,6 +17,7 @@ const emailSchema = z.object({
 export const EmailChange = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { sendEmailChangeRequestedNotification } = useAccountNotifications();
   const [isChanging, setIsChanging] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [error, setError] = useState('');
@@ -54,6 +56,9 @@ export const EmailChange = () => {
         activity_description: `Email change requested to ${newEmail}`,
         metadata: { new_email: newEmail, timestamp: new Date().toISOString() }
       });
+
+      // Send in-app notification
+      await sendEmailChangeRequestedNotification(newEmail);
 
       toast({
         title: "Verification Email Sent",

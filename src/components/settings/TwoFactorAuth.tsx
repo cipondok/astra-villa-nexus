@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Shield, Smartphone, Key, CheckCircle2, XCircle, Lock } from 'lucide-react';
 import { use2FA } from '@/hooks/use2FA';
+import { useAccountNotifications } from '@/hooks/useAccountNotifications';
 import { TwoFactorSetupDialog } from './TwoFactorSetupDialog';
 
 export const TwoFactorAuth = () => {
-  const { settings, loading, disable2FA } = use2FA();
+  const { send2FANotification } = useAccountNotifications();
+  const { settings, loading, disable2FA } = use2FA(send2FANotification);
   const [showSetup, setShowSetup] = useState(false);
   const [isDisabling, setIsDisabling] = useState(false);
 
