@@ -105,32 +105,31 @@ const UserDashboardPage = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
+      <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-3 space-y-2 sm:space-y-3">
         
-        {/* Welcome Header - Glassmorphism */}
+        {/* Welcome Header - Slim Glassmorphism */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary/90 via-primary to-accent/90 p-3 sm:p-4 shadow-lg shadow-primary/20"
+          className="relative overflow-hidden rounded-lg bg-gradient-to-r from-primary/90 via-primary to-accent/90 p-2.5 sm:p-3 shadow-md shadow-primary/20"
         >
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yIDItNCAyLTRzMiAyIDIgNC0yIDQtMiA0LTItMi0yLTR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
-          <div className="relative flex items-center justify-between gap-3">
+          <div className="relative flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-base sm:text-lg md:text-xl font-bold text-primary-foreground">
-                  Welcome back, {profile?.full_name?.split(' ')[0] || user.email?.split('@')[0] || 'User'}!
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h1 className="text-sm sm:text-base font-bold text-primary-foreground">
+                  Welcome, {profile?.full_name?.split(' ')[0] || user.email?.split('@')[0] || 'User'}!
                 </h1>
-                <Badge className="bg-white/20 text-white border-white/30 text-[9px] px-1.5 py-0">
-                  <Sparkles className="h-2.5 w-2.5 mr-0.5" />
+                <Badge className="bg-white/20 text-white border-white/30 text-[8px] px-1 py-0">
+                  <Sparkles className="h-2 w-2 mr-0.5" />
                   {primaryRole?.replace('_', ' ')}
                 </Badge>
               </div>
-              <div className="flex items-center gap-2 mt-0.5">
-                {/* User Status Badge */}
+              <div className="flex items-center gap-1.5 mt-0.5">
                 <Badge 
                   variant="outline" 
-                  className={`text-[9px] px-1.5 py-0 border-white/30 ${
+                  className={`text-[8px] px-1 py-0 border-white/30 ${
                     hasUpgradedRole 
                       ? 'bg-emerald-500/30 text-white' 
                       : 'bg-white/10 text-white/80'
@@ -138,20 +137,20 @@ const UserDashboardPage = () => {
                 >
                   {hasUpgradedRole ? '✓ Active' : 'Basic'}
                 </Badge>
-                <p className="text-primary-foreground/70 text-[10px] sm:text-xs flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
+                <p className="text-primary-foreground/70 text-[9px] flex items-center gap-0.5">
+                  <Clock className="h-2.5 w-2.5" />
                   Last login: Today
                 </p>
               </div>
             </div>
             
-            {/* Profile Avatar with Dropdown Menu */}
+            {/* Profile Avatar with Dropdown Menu - Slim */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-full ring-2 ring-white/30 flex-shrink-0 overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="relative h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-white/30 flex-shrink-0 overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
                 >
                   <Avatar className="h-full w-full">
                     <AvatarImage 
@@ -159,41 +158,40 @@ const UserDashboardPage = () => {
                       alt={profile?.full_name || 'User'} 
                       className="object-cover"
                     />
-                    <AvatarFallback className="bg-white/20 backdrop-blur-sm text-white text-sm sm:text-base font-semibold">
+                    <AvatarFallback className="bg-white/20 backdrop-blur-sm text-white text-xs font-semibold">
                       {profile?.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
-                  {/* Online status indicator */}
-                  <span className="absolute bottom-0 right-0 h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-emerald-500 ring-2 ring-white" />
+                  <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 ring-1 ring-white" />
                 </motion.button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel className="font-normal py-1.5">
+                  <div className="flex flex-col space-y-0.5">
+                    <p className="text-xs font-medium leading-none">
                       {profile?.full_name || 'User'}
                     </p>
-                    <p className="text-xs leading-none text-muted-foreground">
+                    <p className="text-[10px] leading-none text-muted-foreground">
                       {user.email}
                     </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
-                  <User className="mr-2 h-4 w-4" />
+                <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer text-xs py-1.5">
+                  <User className="mr-2 h-3.5 w-3.5" />
                   <span>View Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/profile/edit')} className="cursor-pointer">
-                  <Edit className="mr-2 h-4 w-4" />
+                <DropdownMenuItem onClick={() => navigate('/profile/edit')} className="cursor-pointer text-xs py-1.5">
+                  <Edit className="mr-2 h-3.5 w-3.5" />
                   <span>Edit Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
-                  <Settings className="mr-2 h-4 w-4" />
+                <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer text-xs py-1.5">
+                  <Settings className="mr-2 h-3.5 w-3.5" />
                   <span>Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/notifications')} className="cursor-pointer">
-                  <Bell className="mr-2 h-4 w-4" />
+                <DropdownMenuItem onClick={() => navigate('/notifications')} className="cursor-pointer text-xs py-1.5">
+                  <Bell className="mr-2 h-3.5 w-3.5" />
                   <span>Notifications</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -201,7 +199,7 @@ const UserDashboardPage = () => {
           </div>
         </motion.div>
 
-        {/* Role Dashboard Card - Premium Glass */}
+        {/* Role Dashboard Card - Slim */}
         {hasUpgradedRole && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -209,7 +207,7 @@ const UserDashboardPage = () => {
             transition={{ delay: 0.1 }}
           >
             <Card 
-              className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 text-white border-0 cursor-pointer group shadow-lg shadow-emerald-500/20"
+              className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 text-white border-0 cursor-pointer group shadow-md shadow-emerald-500/20"
               onClick={() => {
                 if (userRoles.includes('property_owner')) navigate('/dashboard/property-owner');
                 else if (userRoles.includes('agent')) navigate('/dashboard/agent');
@@ -217,30 +215,30 @@ const UserDashboardPage = () => {
               }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-              <CardContent className="p-3 sm:p-4 relative">
+              <CardContent className="p-2 sm:p-2.5 relative">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                      <Home className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <div className="flex items-center gap-2">
+                    <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-md bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </div>
                     <div>
-                      <p className="text-[10px] text-white/70 flex items-center gap-1">
-                        <TrendingUp className="h-3 w-3" /> Your Dashboard
+                      <p className="text-[8px] text-white/70 flex items-center gap-0.5">
+                        <TrendingUp className="h-2.5 w-2.5" /> Your Dashboard
                       </p>
-                      <h3 className="text-sm sm:text-base font-bold capitalize">
+                      <h3 className="text-xs sm:text-sm font-bold capitalize">
                         {primaryRole?.replace('_', ' ')} Portal
                       </h3>
                     </div>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight className="h-4 w-4 text-white/70 group-hover:translate-x-1 transition-transform" />
                 </div>
               </CardContent>
             </Card>
           </motion.div>
         )}
 
-        {/* Stats Grid - Animated Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+        {/* Stats Grid - Slim Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
           {statsData.map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -248,15 +246,15 @@ const UserDashboardPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + index * 0.05 }}
             >
-              <Card className="relative overflow-hidden backdrop-blur-sm bg-card/80 border-border/50 hover:shadow-md hover:shadow-primary/10 transition-all duration-300 group">
-                <CardContent className="p-2.5 sm:p-3">
-                  <div className="flex items-center gap-2">
-                    <div className={`h-8 w-8 sm:h-9 sm:w-9 rounded-lg ${stat.bgColor} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
-                      <stat.icon className={`h-4 w-4 bg-gradient-to-br ${stat.color} bg-clip-text`} style={{ color: `hsl(var(--primary))` }} />
+              <Card className="relative overflow-hidden backdrop-blur-sm bg-card/80 border-border/50 hover:shadow-sm transition-all duration-300 group">
+                <CardContent className="p-2 sm:p-2.5">
+                  <div className="flex items-center gap-1.5">
+                    <div className={`h-6 w-6 sm:h-7 sm:w-7 rounded-md ${stat.bgColor} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                      <stat.icon className={`h-3 w-3 sm:h-3.5 sm:w-3.5 bg-gradient-to-br ${stat.color} bg-clip-text`} style={{ color: `hsl(var(--primary))` }} />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-lg sm:text-xl font-bold bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text">{stat.value}</p>
-                      <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">{stat.label}</p>
+                      <p className="text-sm sm:text-base font-bold bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text">{stat.value}</p>
+                      <p className="text-[8px] sm:text-[9px] text-muted-foreground truncate">{stat.label}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -274,22 +272,22 @@ const UserDashboardPage = () => {
         {/* ASTRA Wallet Card */}
         <AstraWalletCard />
 
-        {/* Dashboard Tabs - Glassmorphism */}
-        <Tabs defaultValue="overview" className="space-y-3">
-          <TabsList className="grid w-full grid-cols-2 h-9 bg-muted/50 backdrop-blur-sm p-0.5">
-            <TabsTrigger value="overview" className="flex items-center gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              <Home className="h-3.5 w-3.5" />
+        {/* Dashboard Tabs - Slim */}
+        <Tabs defaultValue="overview" className="space-y-2">
+          <TabsList className="grid w-full grid-cols-2 h-8 bg-muted/50 backdrop-blur-sm p-0.5">
+            <TabsTrigger value="overview" className="flex items-center gap-1 text-[10px] data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <Home className="h-3 w-3" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="settings" className="flex items-center gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              <Settings className="h-3.5 w-3.5" />
+            <TabsTrigger value="settings" className="flex items-center gap-1 text-[10px] data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <Settings className="h-3 w-3" />
               Settings
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-3 mt-3">
-            {/* Quick Actions - Glass Style */}
-            <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+          <TabsContent value="overview" className="space-y-2 mt-2">
+            {/* Quick Actions - Slim */}
+            <div className="grid grid-cols-4 gap-1 sm:gap-1.5">
               {quickActions.map((action, index) => (
                 <motion.div
                   key={action.label}
@@ -299,60 +297,60 @@ const UserDashboardPage = () => {
                 >
                   <Button 
                     variant="outline" 
-                    className="h-auto w-full p-2 sm:p-3 flex flex-col items-center gap-1 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-primary/5 hover:border-primary/30 active:scale-95 transition-all" 
+                    className="h-auto w-full p-1.5 sm:p-2 flex flex-col items-center gap-0.5 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-primary/5 hover:border-primary/30 active:scale-95 transition-all" 
                     onClick={() => navigate(action.path)}
                   >
-                    <action.icon className={`h-4 w-4 ${action.color}`} />
-                    <span className="text-[8px] sm:text-[10px] text-muted-foreground truncate w-full text-center">{action.label}</span>
+                    <action.icon className={`h-3.5 w-3.5 ${action.color}`} />
+                    <span className="text-[7px] sm:text-[9px] text-muted-foreground truncate w-full text-center">{action.label}</span>
                   </Button>
                 </motion.div>
               ))}
             </div>
 
-            {/* Recent Activity - Enhanced */}
+            {/* Recent Activity - Slim */}
             <Card className="backdrop-blur-sm bg-card/80 border-border/50">
-              <CardHeader className="p-3 pb-2">
+              <CardHeader className="p-2 pb-1.5">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-sm">
-                    <div className="h-6 w-6 rounded-md bg-primary/10 flex items-center justify-center">
-                      <Activity className="h-3.5 w-3.5 text-primary" />
+                  <CardTitle className="flex items-center gap-1.5 text-xs">
+                    <div className="h-5 w-5 rounded bg-primary/10 flex items-center justify-center">
+                      <Activity className="h-3 w-3 text-primary" />
                     </div>
                     Recent Activity
                   </CardTitle>
                   {recentActivity.length > 0 && (
-                    <Badge variant="secondary" className="text-[9px] px-1.5 py-0">
-                      {recentActivity.length} items
+                    <Badge variant="secondary" className="text-[8px] px-1 py-0">
+                      {recentActivity.length}
                     </Badge>
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="p-3 pt-0">
+              <CardContent className="p-2 pt-0">
                 {isLoading ? (
-                  <div className="flex justify-center py-6">
-                    <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary/20 border-t-primary"></div>
+                  <div className="flex justify-center py-4">
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary/20 border-t-primary"></div>
                   </div>
                 ) : recentActivity.length > 0 ? (
-                  <div className="space-y-1.5">
+                  <div className="space-y-1">
                     {recentActivity.slice(0, 5).map((activity, index) => (
                       <motion.div 
                         key={activity.id}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.05 }}
-                        className="flex items-center gap-2 p-2 bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors group"
+                        className="flex items-center gap-1.5 p-1.5 bg-muted/30 hover:bg-muted/50 rounded-md transition-colors group"
                       >
-                        <div className="h-7 w-7 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
-                          <Activity className="h-3.5 w-3.5 text-primary" />
+                        <div className="h-5 w-5 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
+                          <Activity className="h-2.5 w-2.5 text-primary" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-[11px] font-medium truncate capitalize">
+                          <p className="text-[10px] font-medium truncate capitalize">
                             {activity.activity_type.replace(/_/g, ' ')}
                           </p>
-                          <p className="text-[9px] text-muted-foreground truncate">
+                          <p className="text-[8px] text-muted-foreground truncate">
                             {activity.activity_description}
                           </p>
                         </div>
-                        <span className="text-[9px] text-muted-foreground flex-shrink-0 opacity-70">
+                        <span className="text-[8px] text-muted-foreground flex-shrink-0 opacity-70">
                           {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
                         </span>
                       </motion.div>
@@ -362,22 +360,22 @@ const UserDashboardPage = () => {
                   <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-center py-6"
+                    className="text-center py-4"
                   >
-                    <div className="h-12 w-12 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-3">
-                      <Bell className="h-5 w-5 text-muted-foreground/50" />
+                    <div className="h-8 w-8 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-2">
+                      <Bell className="h-4 w-4 text-muted-foreground/50" />
                     </div>
-                    <p className="text-xs text-muted-foreground">No recent activity</p>
-                    <p className="text-[10px] text-muted-foreground/70 mt-0.5">
-                      Start browsing to see activity here
+                    <p className="text-[10px] text-muted-foreground">No recent activity</p>
+                    <p className="text-[9px] text-muted-foreground/70 mt-0.5">
+                      Start browsing to see activity
                     </p>
                     <Button 
                       size="sm" 
-                      className="mt-3 h-7 text-[10px] px-3" 
+                      className="mt-2 h-6 text-[9px] px-2" 
                       onClick={() => navigate('/dijual')}
                     >
-                      <Search className="h-3 w-3 mr-1" />
-                      Browse Properties
+                      <Search className="h-2.5 w-2.5 mr-0.5" />
+                      Browse
                     </Button>
                   </motion.div>
                 )}
@@ -385,46 +383,46 @@ const UserDashboardPage = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="settings" className="space-y-3 mt-3">
+          <TabsContent value="settings" className="space-y-2 mt-2">
             <Card className="backdrop-blur-sm bg-card/80 border-border/50">
-              <CardHeader className="p-3 pb-2">
-                <CardTitle className="flex items-center gap-2 text-sm">
-                  <div className="h-6 w-6 rounded-md bg-primary/10 flex items-center justify-center">
-                    <User className="h-3.5 w-3.5 text-primary" />
+              <CardHeader className="p-2 pb-1.5">
+                <CardTitle className="flex items-center gap-1.5 text-xs">
+                  <div className="h-5 w-5 rounded bg-primary/10 flex items-center justify-center">
+                    <User className="h-3 w-3 text-primary" />
                   </div>
                   Account Settings
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0 space-y-3">
-                <div className="grid grid-cols-2 gap-1.5">
+              <CardContent className="p-2 pt-0 space-y-2">
+                <div className="grid grid-cols-2 gap-1">
                   {[
                     { label: 'Full Name', value: profile?.full_name || 'Not set' },
                     { label: 'Email', value: user.email || 'Not set' },
                     { label: 'Role', value: primaryRole?.replace('_', ' ') || 'User' },
                     { label: 'Status', value: hasUpgradedRole ? 'Active' : 'Basic', badge: true },
                   ].map((item) => (
-                    <div key={item.label} className="p-2 bg-muted/30 rounded-lg">
-                      <label className="text-[9px] font-medium text-muted-foreground uppercase tracking-wide">{item.label}</label>
+                    <div key={item.label} className="p-1.5 bg-muted/30 rounded">
+                      <label className="text-[8px] font-medium text-muted-foreground uppercase tracking-wide">{item.label}</label>
                       {item.badge ? (
                         <Badge 
-                          className={`text-[9px] mt-0.5 ${hasUpgradedRole ? 'bg-emerald-500/20 text-emerald-600 border-emerald-500/30' : ''}`}
+                          className={`text-[8px] mt-0.5 ${hasUpgradedRole ? 'bg-emerald-500/20 text-emerald-600 border-emerald-500/30' : ''}`}
                           variant={hasUpgradedRole ? 'outline' : 'secondary'}
                         >
                           {item.value}
                         </Badge>
                       ) : (
-                        <p className="text-[11px] font-medium truncate capitalize">{item.value}</p>
+                        <p className="text-[10px] font-medium truncate capitalize">{item.value}</p>
                       )}
                     </div>
                   ))}
                 </div>
-                <div className="flex gap-1.5">
+                <div className="flex gap-1">
                   <Button 
                     onClick={() => navigate('/profile/edit')} 
-                    className="h-8 text-[10px] flex-1"
+                    className="h-7 text-[9px] flex-1"
                     size="sm"
                   >
-                    <User className="h-3 w-3 mr-1" />
+                    <User className="h-2.5 w-2.5 mr-0.5" />
                     Edit Profile
                   </Button>
                   {hasUpgradedRole ? (
@@ -435,20 +433,20 @@ const UserDashboardPage = () => {
                         else if (userRoles.includes('agent')) navigate('/dashboard/agent');
                         else if (userRoles.includes('vendor')) navigate('/dashboard/vendor');
                       }} 
-                      className="h-8 text-[10px] flex-1 bg-emerald-600 hover:bg-emerald-700"
+                      className="h-7 text-[9px] flex-1 bg-emerald-600 hover:bg-emerald-700"
                       size="sm"
                     >
-                      <ChevronRight className="h-3 w-3 mr-1" />
-                      {primaryRole?.replace('_', ' ')} Dashboard
+                      <ChevronRight className="h-2.5 w-2.5 mr-0.5" />
+                      Dashboard
                     </Button>
                   ) : (
                     <Button 
                       variant="outline"
                       onClick={() => {}} 
-                      className="h-8 text-[10px] flex-1"
+                      className="h-7 text-[9px] flex-1"
                       size="sm"
                     >
-                      <UserPlus className="h-3 w-3 mr-1" />
+                      <UserPlus className="h-2.5 w-2.5 mr-0.5" />
                       Upgrade
                     </Button>
                   )}
