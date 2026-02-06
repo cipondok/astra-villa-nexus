@@ -184,122 +184,121 @@ const AstraWalletCard: React.FC<AstraWalletCardProps> = ({ compact = false }) =>
   return (
     <Card className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-yellow-500/5 to-orange-500/5" />
-      <CardHeader className="pb-2 relative">
-        <CardTitle className="flex items-center justify-between">
+      <CardContent className="p-3 space-y-2.5 relative">
+        {/* Header Row */}
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-              <Wallet className="h-4 w-4 text-white" />
+            <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+              <Wallet className="h-3.5 w-3.5 text-white" />
             </div>
-            <span className="text-sm font-semibold">ASTRA Wallet</span>
+            <span className="text-xs font-semibold">ASTRA Wallet</span>
           </div>
           {isVerified && (
-            <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
-              <ShieldCheck className="h-3 w-3 mr-1" />
+            <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 text-[9px] px-1.5 py-0">
+              <ShieldCheck className="h-2.5 w-2.5 mr-0.5" />
               Verified
             </Badge>
           )}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 relative">
-        {/* Main Balance */}
-        <div className="text-center py-4 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-500/20">
-          <p className="text-xs text-muted-foreground mb-1">Available Balance</p>
+        </div>
+
+        {/* Main Balance - Compact */}
+        <div className="text-center py-2 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-lg border border-amber-500/20">
+          <p className="text-[9px] text-muted-foreground mb-0.5">Available Balance</p>
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="flex items-center justify-center gap-2"
+            className="flex items-center justify-center gap-1.5"
           >
-            <Coins className="h-6 w-6 text-amber-500" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+            <Coins className="h-4 w-4 text-amber-500" />
+            <span className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
               {loadingBalance ? '...' : formatTokenAmount(balance?.available_tokens || 0)}
             </span>
           </motion.div>
-          <p className="text-[10px] text-muted-foreground mt-1">ASTRA Tokens</p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-2">
-          <div className="text-center p-2 bg-muted/50 rounded-lg">
-            <Gift className="h-4 w-4 mx-auto text-blue-500 mb-1" />
-            <p className="text-xs font-semibold">{formatTokenAmount(walletStats.todayRewards)}</p>
-            <p className="text-[9px] text-muted-foreground">Today</p>
+        {/* Stats Grid - Compact */}
+        <div className="grid grid-cols-3 gap-1.5">
+          <div className="text-center p-1.5 bg-muted/50 rounded-md">
+            <Gift className="h-3 w-3 mx-auto text-blue-500 mb-0.5" />
+            <p className="text-[10px] font-semibold">{formatTokenAmount(walletStats.todayRewards)}</p>
+            <p className="text-[8px] text-muted-foreground">Today</p>
           </div>
-          <div className="text-center p-2 bg-muted/50 rounded-lg">
-            <Calendar className="h-4 w-4 mx-auto text-purple-500 mb-1" />
-            <p className="text-xs font-semibold">{formatTokenAmount(walletStats.weekRewards)}</p>
-            <p className="text-[9px] text-muted-foreground">This Week</p>
+          <div className="text-center p-1.5 bg-muted/50 rounded-md">
+            <Calendar className="h-3 w-3 mx-auto text-purple-500 mb-0.5" />
+            <p className="text-[10px] font-semibold">{formatTokenAmount(walletStats.weekRewards)}</p>
+            <p className="text-[8px] text-muted-foreground">Week</p>
           </div>
-          <div className="text-center p-2 bg-muted/50 rounded-lg">
-            <TrendingUp className="h-4 w-4 mx-auto text-emerald-500 mb-1" />
-            <p className="text-xs font-semibold">{formatTokenAmount(walletStats.totalRewards)}</p>
-            <p className="text-[9px] text-muted-foreground">Total Earned</p>
+          <div className="text-center p-1.5 bg-muted/50 rounded-md">
+            <TrendingUp className="h-3 w-3 mx-auto text-emerald-500 mb-0.5" />
+            <p className="text-[10px] font-semibold">{formatTokenAmount(walletStats.totalRewards)}</p>
+            <p className="text-[8px] text-muted-foreground">Total</p>
           </div>
         </div>
 
-        {/* Streak Info */}
+        {/* Streak Info - Compact */}
         {walletStats.currentStreak > 0 && (
-          <div className="flex items-center justify-center gap-2 py-2 bg-orange-500/10 rounded-lg">
-            <Flame className="h-4 w-4 text-orange-500" />
-            <span className="text-xs font-medium">{walletStats.currentStreak} Day Streak!</span>
+          <div className="flex items-center justify-center gap-1.5 py-1.5 bg-orange-500/10 rounded-md">
+            <Flame className="h-3 w-3 text-orange-500" />
+            <span className="text-[10px] font-medium">{walletStats.currentStreak} Day Streak!</span>
           </div>
         )}
 
-        {/* Daily Check-in Button */}
-        {walletStats.canClaimToday && !checkinStatus?.hasCheckedInToday && (
+        {/* Daily Check-in Button - Compact */}
+        {walletStats.canClaimToday && !checkinStatus?.hasCheckedInToday ? (
           <Button 
             onClick={() => performCheckin()}
             disabled={isCheckingIn}
-            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+            size="sm"
+            className="w-full h-8 text-xs bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
           >
             {isCheckingIn ? (
               <>
-                <Sparkles className="h-4 w-4 mr-2 animate-spin" />
+                <Sparkles className="h-3 w-3 mr-1.5 animate-spin" />
                 Claiming...
               </>
             ) : (
               <>
-                <Gift className="h-4 w-4 mr-2" />
+                <Gift className="h-3 w-3 mr-1.5" />
                 Claim Daily Reward
               </>
             )}
           </Button>
-        )}
-
-        {(checkinStatus?.hasCheckedInToday || !walletStats.canClaimToday) && (
-          <div className="flex items-center justify-center gap-2 py-2 text-emerald-600 bg-emerald-500/10 rounded-lg">
-            <CheckCircle2 className="h-4 w-4" />
-            <span className="text-xs font-medium">Daily reward claimed!</span>
+        ) : (
+          <div className="flex items-center justify-center gap-1.5 py-1.5 text-emerald-600 bg-emerald-500/10 rounded-md">
+            <CheckCircle2 className="h-3 w-3" />
+            <span className="text-[10px] font-medium">Daily reward claimed!</span>
           </div>
         )}
 
-        {/* Transfer Eligibility */}
-        <div className="text-center pt-2 border-t border-border/50">
+        {/* Transfer Eligibility - Compact */}
+        <div className="text-center pt-1.5 border-t border-border/50">
           {isVerified ? (
             canTransfer ? (
-              <p className="text-[10px] text-emerald-600">
-                <ShieldCheck className="h-3 w-3 inline mr-1" />
-                You can transfer tokens to other users
+              <p className="text-[9px] text-emerald-600">
+                <ShieldCheck className="h-2.5 w-2.5 inline mr-0.5" />
+                You can transfer tokens
               </p>
             ) : (
-              <p className="text-[10px] text-muted-foreground">
-                Need 1,000+ tokens to enable transfers
+              <p className="text-[9px] text-muted-foreground">
+                Need 1,000+ tokens for transfers
               </p>
             )
           ) : (
-            <p className="text-[10px] text-amber-600">
-              Verify your account to enable token transfers
+            <p className="text-[9px] text-amber-600">
+              Verify account to enable transfers
             </p>
           )}
         </div>
 
-        {/* View Full Wallet */}
+        {/* View Full Wallet - Compact */}
         <Button 
-          variant="outline" 
+          variant="ghost" 
+          size="sm"
           onClick={() => navigate('/astra-tokens')}
-          className="w-full"
+          className="w-full h-7 text-[10px] text-muted-foreground hover:text-foreground"
         >
           View Full Wallet
-          <ArrowRight className="h-4 w-4 ml-2" />
+          <ArrowRight className="h-3 w-3 ml-1" />
         </Button>
       </CardContent>
     </Card>
