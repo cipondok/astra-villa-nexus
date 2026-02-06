@@ -12,6 +12,7 @@ import { AvatarUpload } from '@/components/profile/AvatarUpload';
 import RoleUpgradeSection from '@/components/profile/RoleUpgradeSection';
 import ProfileEditLockBanner from '@/components/profile/ProfileEditLockBanner';
 import ProfileInfoCard from '@/components/profile/ProfileInfoCard';
+import CompanyVerificationField from '@/components/profile/CompanyVerificationField';
 import { useProfileEditCooldown } from '@/hooks/useProfileEditCooldown';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
@@ -47,6 +48,7 @@ const Profile = () => {
     bio: '',
     company_name: '',
     business_address: '',
+    company_registration_number: '',
   });
   const [originalData, setOriginalData] = useState({
     full_name: '',
@@ -54,6 +56,7 @@ const Profile = () => {
     bio: '',
     company_name: '',
     business_address: '',
+    company_registration_number: '',
   });
 
   const text = {
@@ -124,6 +127,7 @@ const Profile = () => {
         bio: profile.bio || '',
         company_name: profile.company_name || '',
         business_address: profile.business_address || '',
+        company_registration_number: (profile as any).company_registration_number || '',
       };
       setFormData(data);
       setOriginalData(data);
@@ -499,6 +503,18 @@ const Profile = () => {
                           disabled={!cooldown.canEdit}
                         />
                       </div>
+                      
+                      {/* Company Verification Field */}
+                      {formData.company_name && (
+                        <CompanyVerificationField
+                          companyName={formData.company_name}
+                          registrationNumber={formData.company_registration_number}
+                          isVerified={(profile as any)?.company_verified}
+                          onRegistrationChange={(value) => setFormData({ ...formData, company_registration_number: value })}
+                          disabled={!cooldown.canEdit}
+                        />
+                      )}
+                      
                       <div className="space-y-1.5">
                         <Label htmlFor="business_address" className="text-xs">{t.address}</Label>
                         <Input
