@@ -174,7 +174,7 @@ const IndonesianLocationSelector: React.FC<IndonesianLocationSelectorProps> = ({
     <div className={`space-y-4 ${className}`}>
       {showLabel && (
         <div className="flex items-center space-x-2">
-          <MapPin className="h-4 w-4 text-gray-500" />
+          <MapPin className="h-4 w-4 text-muted-foreground" />
           <Label className="text-sm font-semibold">Lokasi Bisnis</Label>
         </div>
       )}
@@ -184,13 +184,13 @@ const IndonesianLocationSelector: React.FC<IndonesianLocationSelectorProps> = ({
         <div>
           <Label htmlFor="province">Provinsi</Label>
           <Select value={selectedProvinceCode} onValueChange={handleProvinceChange}>
-            <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+            <SelectTrigger className="bg-background border-border text-foreground">
               <SelectValue placeholder={loading ? "Memuat provinsi..." : "Pilih Provinsi"} />
             </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-200 shadow-lg z-[100]">
+            <SelectContent className="bg-popover border border-border shadow-lg z-[100]">
               <SelectItem value="all">Semua Provinsi</SelectItem>
               {provinces.map((province) => (
-                <SelectItem key={province.code} value={province.code} className="text-gray-900 hover:bg-blue-50">
+                <SelectItem key={province.code} value={province.code} className="text-foreground hover:bg-accent">
                   {province.name}
                 </SelectItem>
               ))}
@@ -206,7 +206,7 @@ const IndonesianLocationSelector: React.FC<IndonesianLocationSelectorProps> = ({
             onValueChange={handleCityChange}
             disabled={!selectedProvinceCode || selectedProvinceCode === 'all' || cities.length === 0}
           >
-            <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+            <SelectTrigger className="bg-background border-border text-foreground">
               <SelectValue 
                 placeholder={
                   !selectedProvinceCode || selectedProvinceCode === 'all' 
@@ -217,10 +217,10 @@ const IndonesianLocationSelector: React.FC<IndonesianLocationSelectorProps> = ({
                 } 
               />
             </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+            <SelectContent className="bg-popover border border-border shadow-lg z-50">
               <SelectItem value="all">Semua Kota/Kabupaten</SelectItem>
               {cities.map((city) => (
-                <SelectItem key={city.code} value={city.code} className="text-gray-900 hover:bg-blue-50">
+                <SelectItem key={city.code} value={city.code} className="text-foreground hover:bg-accent">
                   {city.type} {city.name}
                 </SelectItem>
               ))}
@@ -236,7 +236,7 @@ const IndonesianLocationSelector: React.FC<IndonesianLocationSelectorProps> = ({
             onValueChange={handleAreaChange}
             disabled={!selectedCityCode || selectedCityCode === 'all' || areas.length === 0}
           >
-            <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+            <SelectTrigger className="bg-background border-border text-foreground">
               <SelectValue 
                 placeholder={
                   !selectedCityCode || selectedCityCode === 'all' 
@@ -247,10 +247,10 @@ const IndonesianLocationSelector: React.FC<IndonesianLocationSelectorProps> = ({
                 } 
               />
             </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+            <SelectContent className="bg-popover border border-border shadow-lg z-50">
               <SelectItem value="all">Semua Area</SelectItem>
               {areas.map((area) => (
-                <SelectItem key={area} value={area} className="text-gray-900 hover:bg-blue-50">
+                <SelectItem key={area} value={area} className="text-foreground hover:bg-accent">
                   {area}
                 </SelectItem>
               ))}

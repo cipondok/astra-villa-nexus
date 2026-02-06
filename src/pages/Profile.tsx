@@ -214,11 +214,12 @@ const Profile = () => {
     return changedFields;
   };
 
-  // Check if restricted fields changed (name, phone - identity fields only)
+  // Check if restricted fields changed (name, phone, company - identity fields)
   const hasRestrictedFieldChanges = (): boolean => {
     return (
       formData.full_name !== originalData.full_name ||
-      formData.phone !== originalData.phone
+      formData.phone !== originalData.phone ||
+      formData.company_name !== originalData.company_name
     );
   };
   
@@ -280,10 +281,10 @@ const Profile = () => {
         return;
       }
 
-      // Record restricted field changes for cooldown tracking (name & phone only)
+      // Record restricted field changes for cooldown tracking (name, phone & company)
       if (restrictedChanges) {
         const restrictedFields = changedFields.filter(f => 
-          ['full_name', 'phone'].includes(f)
+          ['full_name', 'phone', 'company_name'].includes(f)
         );
         
         const result = await cooldown.recordProfileChange(restrictedFields);
@@ -562,16 +563,26 @@ const Profile = () => {
                         />
                       </div>
                       
-                      {/* Unrestricted Fields - Always Editable */}
+                      {/* Company Name - Locked after save like name/phone */}
                       <div className="space-y-1.5">
-                        <Label htmlFor="company_name" className="text-xs">
+                        <Label htmlFor="company_name" className="text-xs flex items-center gap-1.5">
                           {t.company}
+                          {!cooldown.canEdit && (
+                            <Badge variant="outline" className="text-[9px] px-1 py-0 text-destructive border-destructive/30">Locked</Badge>
+                          )}
+                          {(profile as any)?.company_verified && (
+                            <Badge variant="outline" className="text-[9px] px-1 py-0 text-primary border-primary/30 gap-0.5">
+                              <CheckCircle className="h-2.5 w-2.5" />
+                              AHU Verified
+                            </Badge>
+                          )}
                         </Label>
                         <Input
                           id="company_name"
                           value={formData.company_name}
                           onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
                           className="h-9"
+                          disabled={!cooldown.canEdit}
                         />
                       </div>
                       
