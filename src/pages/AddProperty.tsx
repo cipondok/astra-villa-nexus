@@ -7,7 +7,7 @@ import PropertyImporter from "@/components/property/PropertyImporter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool, Plus } from "lucide-react";
+import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool, Plus, ArrowRight } from "lucide-react";
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
 import { useVIPLimits } from "@/hooks/useVIPLimits";
 import VIPLimitAlert from "@/components/property/VIPLimitAlert";
@@ -129,30 +129,51 @@ const AddProperty = () => {
   if (!adminLoading && !hasRolePermission) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
-        <Card className="w-full max-w-sm shadow-lg border-border bg-card">
-          <CardHeader className="text-center p-4 pb-3">
-            <div className="mx-auto w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-3">
-              <Building className="h-6 w-6 text-amber-500" />
+        <Card className="w-full max-w-md shadow-lg border-border bg-card">
+          <CardHeader className="text-center p-5 pb-3">
+            <div className="mx-auto w-14 h-14 bg-amber-500/10 rounded-xl flex items-center justify-center mb-3">
+              <Building className="h-7 w-7 text-amber-500" />
             </div>
-            <CardTitle className="text-lg text-foreground">{t.upgradeRequired}</CardTitle>
-            <CardDescription className="text-sm text-muted-foreground">
+            <CardTitle className="text-xl text-foreground">{t.upgradeRequired}</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground mt-1">
               {t.upgradeDesc}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2.5 p-4 pt-0">
-            <Button 
-              onClick={() => navigate('/profile')}
-              className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              {t.upgradeAccount}
-            </Button>
-            <Button 
-              onClick={() => navigate('/dashboard')}
-              variant="outline"
-              className="w-full h-9 border-border"
-            >
-              {t.backDashboard}
-            </Button>
+          <CardContent className="p-5 pt-0 space-y-3">
+            {/* Role Options */}
+            <div className="space-y-2">
+              <RoleOptionButton 
+                icon={<Building className="h-5 w-5" />}
+                title={language === 'en' ? 'Property Owner' : 'Pemilik Properti'}
+                description={language === 'en' ? 'List your own properties' : 'Daftarkan properti Anda'}
+                onClick={() => navigate('/profile?tab=roles')}
+                color="text-blue-600 bg-blue-500/10"
+              />
+              <RoleOptionButton 
+                icon={<Crown className="h-5 w-5" />}
+                title={language === 'en' ? 'Real Estate Agent' : 'Agen Properti'}
+                description={language === 'en' ? 'Become a verified agent' : 'Jadi agen terverifikasi'}
+                onClick={() => navigate('/agent-registration')}
+                color="text-purple-600 bg-purple-500/10"
+              />
+              <RoleOptionButton 
+                icon={<Building className="h-5 w-5" />}
+                title={language === 'en' ? 'Service Vendor' : 'Vendor Layanan'}
+                description={language === 'en' ? 'Offer property services' : 'Tawarkan layanan properti'}
+                onClick={() => navigate('/profile?tab=roles')}
+                color="text-emerald-600 bg-emerald-500/10"
+              />
+            </div>
+
+            <div className="pt-2">
+              <Button 
+                onClick={() => navigate('/dashboard')}
+                variant="outline"
+                className="w-full h-9 border-border"
+              >
+                {t.backDashboard}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -359,5 +380,28 @@ const AddProperty = () => {
     </div>
   );
 };
+
+// Helper component for role option buttons
+const RoleOptionButton: React.FC<{
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  onClick: () => void;
+  color: string;
+}> = ({ icon, title, description, onClick, color }) => (
+  <button
+    onClick={onClick}
+    className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/30 hover:bg-muted/50 transition-all text-left"
+  >
+    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${color}`}>
+      {icon}
+    </div>
+    <div className="flex-1 min-w-0">
+      <p className="font-semibold text-sm">{title}</p>
+      <p className="text-xs text-muted-foreground">{description}</p>
+    </div>
+    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+  </button>
+);
 
 export default AddProperty;
