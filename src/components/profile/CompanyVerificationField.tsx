@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ExternalLink, Building2, CheckCircle, AlertCircle, HelpCircle, Clock, Loader2, RefreshCw, Search, XCircle, X, ThumbsUp } from 'lucide-react';
+import { ExternalLink, Building2, CheckCircle, AlertCircle, HelpCircle, Clock, Loader2, RefreshCw, Search, X, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -44,9 +44,8 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
     submitting: false,
     message: null,
   });
-  const [ahuPopupOpen, setAhuPopupOpen] = useState(false);
-  const [ahuLoading, setAhuLoading] = useState(true);
-  const [foundInAhu, setFoundInAhu] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [ahuWindowOpened, setAhuWindowOpened] = useState(false);
 
   // Fetch current verification status from database
   const fetchVerificationStatus = async () => {
@@ -95,8 +94,25 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
     }
   }, [isVerified]);
 
-  // Submit for verification after user confirms they found company in AHU
-  const handleSubmitVerification = async (userConfirmedInAhu: boolean) => {
+  // Open AHU in new window and show confirmation dialog
+  const handleOpenAHU = () => {
+    if (!companyName.trim()) {
+      toast.error('Please enter your company name first');
+      return;
+    }
+    
+    // Open AHU in new window/tab
+    window.open('https://ahu.go.id/pencarian/profil-pt', '_blank', 'noopener,noreferrer');
+    setAhuWindowOpened(true);
+    
+    // Show confirmation dialog after a short delay
+    setTimeout(() => {
+      setConfirmDialogOpen(true);
+    }, 1000);
+  };
+
+  // Submit for verification
+  const handleSubmitVerification = async (userFoundCompany: boolean) => {
     if (!companyName.trim()) {
       toast.error('Please enter your company name first');
       return;
@@ -126,13 +142,13 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
       // Create admin alert with AHU verification link
       await supabase.from('admin_alerts').insert({
         type: 'verification_request',
-        title: userConfirmedInAhu 
-          ? 'Company Verification - User Confirmed in AHU' 
+        title: userFoundCompany 
+          ? '✅ Company Verification - User Found in AHU' 
           : 'Company Verification Request',
-        message: userConfirmedInAhu
+        message: userFoundCompany
           ? `User ${user.email} confirmed finding "${companyName}" in AHU database. Please verify and approve.`
-          : `User ${user.email} submitted company "${companyName}" for verification.`,
-        priority: userConfirmedInAhu ? 'high' : 'medium',
+          : `User ${user.email} could not find "${companyName}" in AHU. Please investigate.`,
+        priority: userFoundCompany ? 'high' : 'medium',
         action_required: true,
         reference_type: 'company_verification',
         reference_id: user.id,
@@ -140,7 +156,7 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
           user_id: user.id,
           company_name: companyName,
           registration_number: registrationNumber || 'Not provided',
-          user_confirmed_in_ahu: userConfirmedInAhu,
+          user_found_in_ahu: userFoundCompany,
           ahu_search_url: 'https://ahu.go.id/pencarian/profil-pt',
         }
       });
@@ -149,17 +165,17 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
         ...prev, 
         status: 'pending', 
         submitting: false,
-        message: userConfirmedInAhu 
-          ? 'Your company was confirmed in AHU. Admin will verify shortly.'
-          : 'Submitted for verification. Admin will check AHU database.'
+        message: userFoundCompany 
+          ? 'Company confirmed! Admin will verify shortly.'
+          : 'Request submitted. Admin will investigate.'
       }));
       
-      setAhuPopupOpen(false);
-      setFoundInAhu(false);
+      setConfirmDialogOpen(false);
+      setAhuWindowOpened(false);
       
-      toast.success(userConfirmedInAhu 
-        ? 'Verification submitted! Your confirmation speeds up the process.'
-        : 'Submitted for verification!'
+      toast.success(userFoundCompany 
+        ? 'Verification submitted! Admin will approve shortly.'
+        : 'Request submitted for admin review.'
       );
     } catch (error) {
       console.error('Error submitting verification:', error);
@@ -172,16 +188,6 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
     setVerification(prev => ({ ...prev, loading: true }));
     await fetchVerificationStatus();
     toast.success('Status refreshed');
-  };
-
-  const handleOpenAHUPopup = () => {
-    setAhuLoading(true);
-    setFoundInAhu(false);
-    setAhuPopupOpen(true);
-  };
-
-  const handleOpenAHUNewTab = () => {
-    window.open('https://ahu.go.id/pencarian/profil-pt', '_blank', 'noopener,noreferrer');
   };
 
   const getStatusBadge = () => {
@@ -283,11 +289,11 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
             />
             <Button
               type="button"
-              variant="outline"
+              variant="default"
               size="sm"
-              onClick={handleOpenAHUPopup}
+              onClick={handleOpenAHU}
               className="h-9 gap-1.5 shrink-0"
-              disabled={verification.status === 'verified'}
+              disabled={verification.status === 'verified' || verification.status === 'pending'}
             >
               <Search className="h-3.5 w-3.5" />
               Check AHU
@@ -295,38 +301,13 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
           </div>
         </div>
 
-        {/* Quick Verify Button */}
-        {verification.status === 'unverified' && companyName.trim() && (
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="default"
-              size="sm"
-              className="h-8 gap-1.5"
-              onClick={handleOpenAHUPopup}
-              disabled={verification.submitting}
-            >
-              <CheckCircle className="h-3.5 w-3.5" />
-              Verify "{companyName}" on AHU
-            </Button>
-          </div>
-        )}
-
         {/* Info Banner */}
         <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-muted/50 border border-border">
           <Building2 className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
           <div className="flex-1 min-w-0 text-xs text-muted-foreground">
             <p>
-              Search for your PT name on{' '}
-              <button
-                type="button"
-                onClick={handleOpenAHUPopup}
-                className="text-primary hover:underline inline-flex items-center gap-0.5"
-              >
-                AHU Indonesia
-                <ExternalLink className="h-2.5 w-2.5" />
-              </button>
-              {' '}and confirm when found. Admin will then verify and approve your company.
+              Click <strong>Check AHU</strong> to open the official AHU website in a new tab. 
+              Search for your PT name there, then confirm if you found it.
             </p>
           </div>
         </div>
@@ -354,99 +335,81 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
             </span>
           </div>
         )}
-      </div>
 
-      {/* AHU Popup Modal */}
-      <Dialog open={ahuPopupOpen} onOpenChange={setAhuPopupOpen}>
-        <DialogContent className="max-w-4xl w-[95vw] h-[85vh] p-0 gap-0 bg-background border border-border shadow-2xl flex flex-col">
-          <DialogHeader className="p-3 border-b border-border flex-row items-center justify-between space-y-0 shrink-0">
-            <div className="flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-primary" />
-              <DialogTitle className="text-sm font-medium">
-                AHU Indonesia - Search Your Company
-              </DialogTitle>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-7 text-xs gap-1"
-                onClick={handleOpenAHUNewTab}
-              >
-                <ExternalLink className="h-3 w-3" />
-                New Tab
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7"
-                onClick={() => setAhuPopupOpen(false)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </DialogHeader>
-          
-          {/* Instructions */}
-          <div className="px-3 py-2 bg-muted/50 border-b border-border text-xs text-muted-foreground shrink-0">
-            <p>
-              <strong>Instructions:</strong> Search for "<span className="text-foreground font-medium">{companyName || 'your company name'}</span>" 
-              in the AHU search form below. If you find your company, click "I Found My Company" to submit for verification.
-            </p>
-          </div>
-          
-          <div className="flex-1 relative bg-white min-h-0">
-            {ahuLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-background z-10">
-                <div className="flex flex-col items-center gap-3">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                  <p className="text-sm text-muted-foreground">Loading AHU website...</p>
-                </div>
-              </div>
-            )}
-            <iframe
-              src="https://ahu.go.id/pencarian/profil-pt"
-              className="w-full h-full border-0"
-              title="AHU Indonesia Company Search"
-              onLoad={() => setAhuLoading(false)}
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-            />
-          </div>
-          
-          <DialogFooter className="p-3 border-t border-border bg-muted/30 flex-row justify-between items-center shrink-0">
-            <p className="text-[10px] text-muted-foreground">
-              Search results from ahu.go.id
-            </p>
+        {/* Show confirmation prompt if AHU was opened */}
+        {ahuWindowOpened && !confirmDialogOpen && verification.status === 'unverified' && (
+          <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-primary/10 border border-primary/30">
+            <span className="text-xs text-primary">
+              Did you find your company on AHU?
+            </span>
             <div className="flex gap-2">
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                className="h-8 text-xs gap-1"
-                onClick={() => handleSubmitVerification(false)}
-                disabled={verification.submitting || !companyName.trim()}
+                className="h-7 text-xs"
+                onClick={() => setConfirmDialogOpen(true)}
               >
-                <XCircle className="h-3.5 w-3.5" />
-                Not Found - Request Review
-              </Button>
-              <Button
-                type="button"
-                variant="default"
-                size="sm"
-                className="h-8 text-xs gap-1.5"
-                onClick={() => handleSubmitVerification(true)}
-                disabled={verification.submitting || !companyName.trim()}
-              >
-                {verification.submitting ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                ) : (
-                  <ThumbsUp className="h-3.5 w-3.5" />
-                )}
-                I Found My Company
+                Confirm Result
               </Button>
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+        <DialogContent className="max-w-md bg-background border border-border">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base">
+              <Building2 className="h-5 w-5 text-primary" />
+              AHU Verification Result
+            </DialogTitle>
+            <DialogDescription className="text-sm">
+              Did you find <strong className="text-foreground">"{companyName}"</strong> on the AHU website?
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4 space-y-3">
+            <p className="text-xs text-muted-foreground">
+              Search for your company name at{' '}
+              <a 
+                href="https://ahu.go.id/pencarian/profil-pt" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline inline-flex items-center gap-0.5"
+              >
+                ahu.go.id/pencarian/profil-pt
+                <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+            </p>
+          </div>
+          
+          <DialogFooter className="flex-row gap-2 sm:justify-between">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 gap-1.5"
+              onClick={() => handleSubmitVerification(false)}
+              disabled={verification.submitting}
+            >
+              <ThumbsDown className="h-4 w-4" />
+              Not Found
+            </Button>
+            <Button
+              type="button"
+              variant="default"
+              className="flex-1 gap-1.5"
+              onClick={() => handleSubmitVerification(true)}
+              disabled={verification.submitting}
+            >
+              {verification.submitting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ThumbsUp className="h-4 w-4" />
+              )}
+              Yes, I Found It!
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
