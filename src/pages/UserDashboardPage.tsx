@@ -50,10 +50,18 @@ const UserDashboardPage = () => {
   const { data: userRoles = [], isLoading: rolesLoading } = useUserRoles();
   const { balance } = useAstraToken();
 
-  const primaryRole = userRoles.find(role => role !== 'general_user') || userRoles[0] || 'general_user';
+  const primaryRoleRaw = userRoles.find(role => role !== 'general_user') || userRoles[0] || 'general_user';
   const hasUpgradedRole = userRoles.some(role => 
     ['property_owner', 'agent', 'vendor'].includes(role)
   );
+  
+  // Format role for display (convert snake_case to Title Case)
+  const formatRole = (role: string) => {
+    return role.split('_').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+  };
+  const primaryRole = formatRole(primaryRoleRaw);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -123,7 +131,7 @@ const UserDashboardPage = () => {
                 </h1>
                 <Badge className="bg-white/20 text-white border-white/30 text-[8px] px-1 py-0">
                   <Sparkles className="h-2 w-2 mr-0.5" />
-                  {primaryRole?.replace('_', ' ')}
+                  {primaryRole}
                 </Badge>
               </div>
               <div className="flex items-center gap-1.5 mt-0.5">
