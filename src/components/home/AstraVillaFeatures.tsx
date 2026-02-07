@@ -120,8 +120,8 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
     <div onClick={handleClick} className="group cursor-pointer relative">
       <div className={`relative overflow-hidden rounded-lg md:rounded-xl h-full flex flex-col items-center text-center transition-all duration-300 active:scale-95 md:hover:scale-[1.03] ${
         isHero 
-          ? 'bg-white/10 dark:bg-white/5 border border-white/20 hover:border-white/40 hover:bg-white/20 backdrop-blur-sm p-2 md:p-2' 
-          : 'bg-transparent dark:bg-white/5 border border-border/20 dark:border-white/10 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 p-2 md:p-3'
+          ? 'border border-white/20 hover:border-white/40 p-2 md:p-2' 
+          : 'border border-border/20 dark:border-white/10 hover:border-primary/40 p-2 md:p-3'
       }`}>
         {/* Icon Container - Touch friendly */}
         <div className="relative">
