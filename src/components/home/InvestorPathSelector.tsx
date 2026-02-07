@@ -316,8 +316,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                   <div className={cn(
                     "flex items-center justify-center",
                     "w-12 h-12 sm:w-14 sm:h-14 rounded-xl",
-                    item.bgColor,
-                    "shadow-sm group-hover:shadow-md transition-all group-hover:scale-105"
+                    "transition-all group-hover:scale-105"
                   )}>
                     <IconComponent className={cn("w-6 h-6 sm:w-7 sm:h-7", item.accentColor)} strokeWidth={1.5} />
                   </div>
@@ -349,7 +348,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                       key={idx}
                       className={cn(
                         "px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-medium",
-                        "bg-background/70 dark:bg-white/10 border border-border/30",
+                        "border border-border/30",
                         item.accentColor
                       )}
                     >
