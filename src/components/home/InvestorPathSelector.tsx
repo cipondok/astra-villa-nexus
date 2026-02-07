@@ -310,11 +310,6 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                   "p-3 sm:p-4 active:scale-[0.98]"
                 )}
               >
-                {/* Background Glow */}
-                <div className={cn(
-                  "absolute -top-8 -right-8 w-24 h-24 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity",
-                  `bg-gradient-to-br ${item.gradient}`
-                )} />
                 
                 {/* Header Row */}
                 <div className="relative flex items-start gap-3 mb-3">
