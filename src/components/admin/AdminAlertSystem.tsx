@@ -130,7 +130,20 @@ const AdminAlertSystem = () => {
     
     setIsProcessing(true);
     try {
+      let userId: string | null = null;
+      let notificationTitle = '';
+      let notificationMessage = '';
+
       if (selectedAlert.type === 'kyc_verification') {
+        // Get user_id from verification record
+        const { data: verificationData } = await supabase
+          .from('user_verification')
+          .select('user_id')
+          .eq('id', selectedAlert.reference_id)
+          .single();
+        
+        userId = verificationData?.user_id || null;
+
         // Approve KYC verification
         const { error } = await supabase
           .from('user_verification')
@@ -142,7 +155,12 @@ const AdminAlertSystem = () => {
           .eq('id', selectedAlert.reference_id);
         
         if (error) throw error;
+
+        notificationTitle = '✅ Identity Verification Approved';
+        notificationMessage = 'Your identity verification has been approved. You now have full access to all platform features.';
       } else if (selectedAlert.type === 'company_verification') {
+        userId = selectedAlert.reference_id; // reference_id is the user profile id
+
         // Approve company verification
         const { error } = await supabase
           .from('profiles')
@@ -153,6 +171,27 @@ const AdminAlertSystem = () => {
           .eq('id', selectedAlert.reference_id);
         
         if (error) throw error;
+
+        notificationTitle = '✅ Company Verification Approved';
+        notificationMessage = 'Your company/AHU has been verified. You can now list properties as a verified business.';
+      }
+
+      // Send notification to user
+      if (userId) {
+        await supabase.from('in_app_notifications').insert({
+          user_id: userId,
+          title: notificationTitle,
+          message: notificationMessage,
+          type: 'verification',
+          priority: 'high',
+          action_url: '/settings',
+          metadata: {
+            verification_type: selectedAlert.type,
+            status: 'approved',
+            admin_notes: reviewNotes || null,
+            approved_at: new Date().toISOString()
+          }
+        });
       }
 
       // Mark alert as resolved
@@ -171,7 +210,7 @@ const AdminAlertSystem = () => {
 
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
       queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
-      showSuccess("Approved", "Verification has been approved successfully.");
+      showSuccess("Approved", "Verification approved and user notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
       setReviewNotes('');
@@ -192,7 +231,20 @@ const AdminAlertSystem = () => {
     
     setIsProcessing(true);
     try {
+      let userId: string | null = null;
+      let notificationTitle = '';
+      let notificationMessage = '';
+
       if (selectedAlert.type === 'kyc_verification') {
+        // Get user_id from verification record
+        const { data: verificationData } = await supabase
+          .from('user_verification')
+          .select('user_id')
+          .eq('id', selectedAlert.reference_id)
+          .single();
+        
+        userId = verificationData?.user_id || null;
+
         // Deny KYC verification
         const { error } = await supabase
           .from('user_verification')
@@ -203,7 +255,12 @@ const AdminAlertSystem = () => {
           .eq('id', selectedAlert.reference_id);
         
         if (error) throw error;
+
+        notificationTitle = '❌ Identity Verification Denied';
+        notificationMessage = `Your identity verification was not approved. Reason: ${reviewNotes}. Please review and resubmit your documents.`;
       } else if (selectedAlert.type === 'company_verification') {
+        userId = selectedAlert.reference_id;
+
         // Deny company verification - keep as unverified
         const { error } = await supabase
           .from('profiles')
@@ -213,6 +270,27 @@ const AdminAlertSystem = () => {
           .eq('id', selectedAlert.reference_id);
         
         if (error) throw error;
+
+        notificationTitle = '❌ Company Verification Denied';
+        notificationMessage = `Your company verification was not approved. Reason: ${reviewNotes}. Please check your company details and try again.`;
+      }
+
+      // Send notification to user
+      if (userId) {
+        await supabase.from('in_app_notifications').insert({
+          user_id: userId,
+          title: notificationTitle,
+          message: notificationMessage,
+          type: 'verification',
+          priority: 'high',
+          action_url: '/settings',
+          metadata: {
+            verification_type: selectedAlert.type,
+            status: 'denied',
+            denial_reason: reviewNotes,
+            denied_at: new Date().toISOString()
+          }
+        });
       }
 
       // Mark alert as resolved with denial
@@ -231,7 +309,7 @@ const AdminAlertSystem = () => {
 
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
       queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
-      showSuccess("Denied", "Verification has been denied.");
+      showSuccess("Denied", "Verification denied and user notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
       setReviewNotes('');
