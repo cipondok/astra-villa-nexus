@@ -125,10 +125,10 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
       }`}>
         {/* Icon Container - Touch friendly */}
         <div className="relative">
-          <div className={`relative flex items-center justify-center rounded-lg shadow-sm ${
+          <div className={`relative flex items-center justify-center rounded-lg ${
             isHero 
-              ? 'w-10 h-10 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-background/40 dark:bg-white/20' 
-              : `w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 ${feature.iconBg}`
+              ? 'w-10 h-10 md:w-10 md:h-10 lg:w-12 lg:h-12' 
+              : 'w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16'
           }`}>
             <IconComponent className={`${
               isHero 
