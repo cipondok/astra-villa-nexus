@@ -20,7 +20,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-[999998] modal-overlay data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 overscroll-none",
+      "fixed inset-0 z-[999998] bg-black/60 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-300 overscroll-none",
       className
     )}
     style={{
@@ -90,7 +90,7 @@ const DialogContent = React.forwardRef<
         onKeyDown={handleInteraction}
         onFocus={handleInteraction}
         className={cn(
-          "fixed left-[50%] top-[50%] z-[999999] grid w-[88vw] max-w-[300px] md:max-w-[360px] translate-x-[-50%] translate-y-[-50%] gap-3 modal-surface p-4 md:p-5 duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-[0.97] data-[state=open]:zoom-in-[0.97] data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[49%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[49%] rounded-xl overscroll-contain",
+          "fixed left-[50%] top-[50%] z-[999999] grid w-[90vw] max-w-[340px] md:max-w-[400px] translate-x-[-50%] translate-y-[-50%] gap-4 bg-gradient-to-b from-background to-background/95 backdrop-blur-2xl border border-border/50 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] p-5 md:p-6 duration-300 ease-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[49%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[49%] rounded-2xl ring-1 ring-white/10 overscroll-contain",
           className
         )}
         style={{ 
@@ -136,9 +136,9 @@ const DialogContent = React.forwardRef<
         {!hideCloseButton && (
           <DialogPrimitive.Close 
             ref={closeRef}
-            className="absolute right-3 top-3 rounded-full p-1 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 disabled:pointer-events-none"
+            className="absolute right-4 top-4 rounded-full p-1.5 opacity-60 ring-offset-background transition-all duration-200 hover:opacity-100 hover:bg-muted/80 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 disabled:pointer-events-none active:scale-95"
           >
-            <X className="h-3.5 w-3.5 text-foreground" />
+            <X className="h-4 w-4 text-foreground" />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
         )}
@@ -183,7 +183,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      "text-sm md:text-base font-semibold leading-none tracking-tight text-foreground",
+      "text-base md:text-lg font-semibold leading-none tracking-tight text-foreground",
       className
     )}
     {...props}
@@ -197,7 +197,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn("text-xs md:text-sm text-muted-foreground", className)}
+    className={cn("text-sm text-muted-foreground leading-relaxed", className)}
     {...props}
   />
 ))
