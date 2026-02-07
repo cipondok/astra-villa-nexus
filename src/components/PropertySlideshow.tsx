@@ -180,7 +180,7 @@ const PropertySlideshow = () => {
               className="flex-shrink-0 w-[200px] md:w-[220px] lg:w-[240px] group/card cursor-pointer"
             >
               {/* Rumah123-Style Card */}
-              <div className="bg-card rounded-lg border border-border/50 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 overflow-hidden">
+              <div className="rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-300 overflow-hidden">
                 {/* Image */}
                 <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                   <img
