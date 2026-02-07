@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,6 +24,7 @@ import { useUserMembership } from '@/hooks/useUserMembership';
 import { useVIPLimits } from '@/hooks/useVIPLimits';
 import { MEMBERSHIP_LEVELS, MembershipLevel, getMembershipConfig } from '@/types/membership';
 import { cn } from '@/lib/utils';
+import MembershipUpgradeFlow from '@/components/membership/MembershipUpgradeFlow';
 
 // Define tier order for comparison
 const TIER_ORDER: MembershipLevel[] = ['basic', 'verified', 'vip', 'gold', 'platinum', 'diamond'];
@@ -54,14 +55,15 @@ const MembershipPage: React.FC = () => {
   const { membershipLevel, verificationStatus, userLevelName, isLoading } = useUserMembership();
   const { currentProperties, maxProperties, currentListings, maxListings, canFeatureListings, prioritySupport } = useVIPLimits();
   
+  const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
+  const [selectedTargetTier, setSelectedTargetTier] = useState<MembershipLevel>('verified');
+  
   const currentConfig = getMembershipConfig(membershipLevel);
   const currentTierIndex = TIER_ORDER.indexOf(membershipLevel);
 
   const handleUpgrade = (tier: MembershipLevel) => {
-    // In a real app, this would navigate to a payment page or open a payment modal
-    console.log(`Upgrading to ${tier}`);
-    // For now, show a toast or navigate to contact
-    navigate('/contact?subject=membership-upgrade&tier=' + tier);
+    setSelectedTargetTier(tier);
+    setUpgradeDialogOpen(true);
   };
 
   const isCurrentTier = (tier: MembershipLevel) => tier === membershipLevel;
@@ -344,6 +346,14 @@ const MembershipPage: React.FC = () => {
           </Card>
         </motion.div>
       </div>
+
+      {/* Upgrade Flow Dialog */}
+      <MembershipUpgradeFlow
+        open={upgradeDialogOpen}
+        onOpenChange={setUpgradeDialogOpen}
+        currentLevel={membershipLevel}
+        targetLevel={selectedTargetTier}
+      />
     </div>
   );
 };
