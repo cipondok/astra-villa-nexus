@@ -8,7 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, CheckCircle, Info, X, Eye, UserPlus, Building2, ShoppingCart } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { AlertTriangle, CheckCircle, Info, X, Eye, UserPlus, Building2, ShoppingCart, Shield, XCircle, ExternalLink } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import ActivityDetailsModal from "./ActivityDetailsModal";
 
@@ -22,12 +24,15 @@ interface AdminAlert {
   action_required: boolean;
   reference_id?: string;
   reference_type?: string;
+  metadata?: Record<string, any>;
   created_at: string;
 }
 
 const AdminAlertSystem = () => {
   const [selectedAlert, setSelectedAlert] = useState<AdminAlert | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [reviewNotes, setReviewNotes] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
   const [activityModal, setActivityModal] = useState<{
     isOpen: boolean;
     type: 'properties' | 'users';
@@ -37,7 +42,7 @@ const AdminAlertSystem = () => {
     type: 'properties',
     title: ''
   });
-  const { showSuccess } = useAlert();
+  const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
   const { data: alerts, isLoading } = useQuery({
@@ -119,9 +124,133 @@ const AdminAlertSystem = () => {
     },
   });
 
+  // Handle verification approval (KYC or Company)
+  const handleApproveVerification = async () => {
+    if (!selectedAlert?.reference_id) return;
+    
+    setIsProcessing(true);
+    try {
+      if (selectedAlert.type === 'kyc_verification') {
+        // Approve KYC verification
+        const { error } = await supabase
+          .from('user_verification')
+          .update({
+            identity_verified: true,
+            verified_at: new Date().toISOString(),
+            admin_notes: reviewNotes || 'Approved by admin'
+          })
+          .eq('id', selectedAlert.reference_id);
+        
+        if (error) throw error;
+      } else if (selectedAlert.type === 'company_verification') {
+        // Approve company verification
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            company_verified: true,
+            company_verified_at: new Date().toISOString()
+          })
+          .eq('id', selectedAlert.reference_id);
+        
+        if (error) throw error;
+      }
+
+      // Mark alert as resolved
+      await supabase
+        .from('admin_alerts')
+        .update({ 
+          action_required: false,
+          metadata: {
+            ...selectedAlert.metadata,
+            resolved_at: new Date().toISOString(),
+            resolution: 'approved',
+            admin_notes: reviewNotes
+          }
+        })
+        .eq('id', selectedAlert.id);
+
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      showSuccess("Approved", "Verification has been approved successfully.");
+      setIsDialogOpen(false);
+      setSelectedAlert(null);
+      setReviewNotes('');
+    } catch (error: any) {
+      showError("Error", error.message || "Failed to approve verification");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Handle verification denial
+  const handleDenyVerification = async () => {
+    if (!selectedAlert?.reference_id) return;
+    if (!reviewNotes.trim()) {
+      showError("Required", "Please provide a reason for denial");
+      return;
+    }
+    
+    setIsProcessing(true);
+    try {
+      if (selectedAlert.type === 'kyc_verification') {
+        // Deny KYC verification
+        const { error } = await supabase
+          .from('user_verification')
+          .update({
+            identity_verified: false,
+            admin_notes: reviewNotes
+          })
+          .eq('id', selectedAlert.reference_id);
+        
+        if (error) throw error;
+      } else if (selectedAlert.type === 'company_verification') {
+        // Deny company verification - keep as unverified
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            company_verified: false
+          })
+          .eq('id', selectedAlert.reference_id);
+        
+        if (error) throw error;
+      }
+
+      // Mark alert as resolved with denial
+      await supabase
+        .from('admin_alerts')
+        .update({ 
+          action_required: false,
+          metadata: {
+            ...selectedAlert.metadata,
+            resolved_at: new Date().toISOString(),
+            resolution: 'denied',
+            denial_reason: reviewNotes
+          }
+        })
+        .eq('id', selectedAlert.id);
+
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      showSuccess("Denied", "Verification has been denied.");
+      setIsDialogOpen(false);
+      setSelectedAlert(null);
+      setReviewNotes('');
+    } catch (error: any) {
+      showError("Error", error.message || "Failed to deny verification");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Check if alert is actionable (verification type)
+  const isVerificationAlert = (type: string) => {
+    return ['kyc_verification', 'company_verification'].includes(type);
+  };
+
   const handleViewAlert = (alert: AdminAlert) => {
     setSelectedAlert(alert);
     setIsDialogOpen(true);
+    setReviewNotes('');
     
     // Mark as read when opened
     if (!alert.is_read) {
@@ -132,6 +261,7 @@ const AdminAlertSystem = () => {
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
     setSelectedAlert(null);
+    setReviewNotes('');
   };
 
   const handleShowPropertiesDetails = () => {
@@ -163,15 +293,19 @@ const AdminAlertSystem = () => {
         return UserPlus;
       case 'sale':
         return ShoppingCart;
+      case 'kyc_verification':
+      case 'company_verification':
+        return Shield;
       default:
         return Info;
     }
   };
 
   const getAlertColor = (type: string, priority: string) => {
-    if (priority === 'high') return 'text-red-500';
+    if (priority === 'high') return 'text-destructive';
     if (type === 'error' || type === 'warning') return 'text-orange-500';
     if (type === 'success') return 'text-green-500';
+    if (type === 'kyc_verification' || type === 'company_verification') return 'text-primary';
     return 'text-blue-500';
   };
 
@@ -330,21 +464,21 @@ const AdminAlertSystem = () => {
           </DialogHeader>
           {selectedAlert && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <Badge variant={getPriorityVariant(selectedAlert.priority)}>
                   {selectedAlert.priority} priority
                 </Badge>
                 <Badge variant="outline">
-                  {selectedAlert.type}
+                  {selectedAlert.type.replace('_', ' ')}
                 </Badge>
                 {selectedAlert.action_required && (
                   <Badge variant="destructive">
                     Action Required
                   </Badge>
                 )}
-                {selectedAlert.is_read && (
-                  <Badge variant="default" className="bg-green-500">
-                    Read
+                {!selectedAlert.action_required && selectedAlert.metadata?.resolution && (
+                  <Badge variant="default" className={selectedAlert.metadata.resolution === 'approved' ? 'bg-green-500' : 'bg-orange-500'}>
+                    {selectedAlert.metadata.resolution === 'approved' ? 'Approved' : 'Denied'}
                   </Badge>
                 )}
               </div>
@@ -354,23 +488,100 @@ const AdminAlertSystem = () => {
               <DialogDescription className="text-base leading-relaxed whitespace-pre-wrap">
                 {selectedAlert.message}
               </DialogDescription>
+
+              {/* Metadata display for verification alerts */}
+              {selectedAlert.metadata && isVerificationAlert(selectedAlert.type) && (
+                <>
+                  <Separator />
+                  <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+                    <h4 className="font-medium text-sm">Verification Details</h4>
+                    {selectedAlert.metadata.user_name && (
+                      <p className="text-sm"><strong>User:</strong> {selectedAlert.metadata.user_name}</p>
+                    )}
+                    {selectedAlert.metadata.company_name && (
+                      <p className="text-sm"><strong>Company:</strong> {selectedAlert.metadata.company_name}</p>
+                    )}
+                    {selectedAlert.metadata.ahu_search_url && (
+                      <a 
+                        href={selectedAlert.metadata.ahu_search_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary flex items-center gap-1 hover:underline"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        Open AHU Search Portal
+                      </a>
+                    )}
+                    {selectedAlert.metadata.resolution && (
+                      <p className="text-sm"><strong>Resolution:</strong> {selectedAlert.metadata.resolution}</p>
+                    )}
+                    {selectedAlert.metadata.admin_notes && (
+                      <p className="text-sm"><strong>Admin Notes:</strong> {selectedAlert.metadata.admin_notes}</p>
+                    )}
+                    {selectedAlert.metadata.denial_reason && (
+                      <p className="text-sm"><strong>Denial Reason:</strong> {selectedAlert.metadata.denial_reason}</p>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {/* Review notes for actionable verification alerts */}
+              {isVerificationAlert(selectedAlert.type) && selectedAlert.action_required && (
+                <>
+                  <Separator />
+                  <div className="space-y-2">
+                    <Label htmlFor="review-notes">Admin Review Notes</Label>
+                    <Textarea
+                      id="review-notes"
+                      placeholder="Add notes about this verification (required for denial)..."
+                      value={reviewNotes}
+                      onChange={(e) => setReviewNotes(e.target.value)}
+                      rows={3}
+                    />
+                  </div>
+                </>
+              )}
               
               {selectedAlert.reference_type && selectedAlert.reference_id && (
                 <>
                   <Separator />
                   <div className="text-sm text-muted-foreground">
-                    <strong>Reference:</strong> {selectedAlert.reference_type} ({selectedAlert.reference_id})
+                    <strong>Reference:</strong> {selectedAlert.reference_type} ({selectedAlert.reference_id.slice(0, 8)}...)
                   </div>
                 </>
               )}
-              
-              <Separator />
               
               <div className="text-sm text-muted-foreground">
                 <strong>Created:</strong> {new Date(selectedAlert.created_at).toLocaleString()}
               </div>
               
-              <div className="flex justify-end gap-2 pt-4">
+              {/* Action buttons */}
+              <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4">
+                {/* Verification action buttons */}
+                {isVerificationAlert(selectedAlert.type) && selectedAlert.action_required && (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={handleDenyVerification}
+                      disabled={isProcessing}
+                      className="text-destructive border-destructive hover:bg-destructive/10"
+                    >
+                      <XCircle className="h-4 w-4 mr-2" />
+                      {isProcessing ? 'Processing...' : 'Deny'}
+                    </Button>
+                    <Button
+                      variant="default"
+                      onClick={handleApproveVerification}
+                      disabled={isProcessing}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      {isProcessing ? 'Processing...' : 'Approve'}
+                    </Button>
+                  </>
+                )}
+
+                {/* Standard alert buttons */}
                 <Button
                   variant="outline"
                   onClick={handleCloseDialog}
@@ -379,7 +590,7 @@ const AdminAlertSystem = () => {
                 </Button>
                 {!selectedAlert.is_read && (
                   <Button
-                    variant="default"
+                    variant="secondary"
                     onClick={() => {
                       markAsReadMutation.mutate(selectedAlert.id);
                     }}
@@ -389,13 +600,14 @@ const AdminAlertSystem = () => {
                   </Button>
                 )}
                 <Button
-                  variant="destructive"
+                  variant="ghost"
                   onClick={() => {
                     deleteAlertMutation.mutate(selectedAlert.id);
                   }}
                   disabled={deleteAlertMutation.isPending}
+                  className="text-destructive hover:text-destructive"
                 >
-                  {deleteAlertMutation.isPending ? 'Deleting...' : 'Delete Alert'}
+                  {deleteAlertMutation.isPending ? 'Deleting...' : 'Delete'}
                 </Button>
               </div>
             </div>
