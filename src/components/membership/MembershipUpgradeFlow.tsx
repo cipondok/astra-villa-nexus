@@ -308,41 +308,41 @@ export const MembershipUpgradeFlow: React.FC<MembershipUpgradeFlowProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg p-0 overflow-hidden">
-        {/* Header with gradient */}
-        <div className={cn("px-6 py-5", targetConfig.bgColor)}>
+      <DialogContent className="max-w-sm p-0 overflow-hidden">
+        {/* Slim Header */}
+        <div className={cn("px-4 py-3", targetConfig.bgColor)}>
           <DialogHeader>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <div className={cn(
-                "w-12 h-12 rounded-full flex items-center justify-center text-2xl",
-                "bg-background/50 border-2",
+                "w-9 h-9 rounded-full flex items-center justify-center text-xl",
+                "bg-background/50 border",
                 targetConfig.borderColor
               )}>
                 {targetConfig.icon}
               </div>
               <div>
-                <DialogTitle className={cn("text-xl", targetConfig.color)}>
-                  Upgrade to {targetConfig.label}
+                <DialogTitle className={cn("text-sm font-semibold", targetConfig.color)}>
+                  Upgrade ke {targetConfig.shortLabel}
                 </DialogTitle>
-                <p className="text-sm text-muted-foreground mt-0.5">
-                  {steps.length} steps to complete
+                <p className="text-[10px] text-muted-foreground">
+                  {steps.length} langkah
                 </p>
               </div>
             </div>
           </DialogHeader>
 
           {/* Progress bar */}
-          <div className="mt-4">
-            <div className="flex justify-between text-xs text-muted-foreground mb-2">
-              <span>Step {currentStep + 1} of {steps.length}</span>
-              <span>{Math.round(progress)}% Complete</span>
+          <div className="mt-3">
+            <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+              <span>Step {currentStep + 1}/{steps.length}</span>
+              <span>{Math.round(progress)}%</span>
             </div>
-            <Progress value={progress} className="h-2" />
+            <Progress value={progress} className="h-1" />
           </div>
         </div>
 
-        {/* Step indicators */}
-        <div className="px-6 py-4 bg-muted/30">
+        {/* Slim Step indicators */}
+        <div className="px-4 py-2.5 bg-muted/30">
           <div className="flex items-center justify-between">
             {steps.map((step, index) => {
               const status = getStepStatus(index);
@@ -350,19 +350,19 @@ export const MembershipUpgradeFlow: React.FC<MembershipUpgradeFlowProps> = ({
                 <React.Fragment key={step.id}>
                   <div className="flex flex-col items-center">
                     <div className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all",
-                      status === 'completed' && "bg-green-500 text-white",
-                      status === 'current' && "bg-primary text-primary-foreground ring-4 ring-primary/20",
+                      "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-medium transition-all",
+                      status === 'completed' && "bg-primary text-primary-foreground",
+                      status === 'current' && "bg-primary text-primary-foreground ring-2 ring-primary/30",
                       status === 'pending' && "bg-muted text-muted-foreground"
                     )}>
                       {status === 'completed' ? (
-                        <Check className="h-4 w-4" />
+                        <Check className="h-3 w-3" />
                       ) : (
                         index + 1
                       )}
                     </div>
                     <span className={cn(
-                      "text-[10px] mt-1 max-w-[60px] text-center truncate",
+                      "text-[8px] mt-0.5 max-w-[50px] text-center truncate",
                       status === 'current' ? "text-foreground font-medium" : "text-muted-foreground"
                     )}>
                       {step.title.split(' ')[0]}
@@ -370,8 +370,8 @@ export const MembershipUpgradeFlow: React.FC<MembershipUpgradeFlowProps> = ({
                   </div>
                   {index < steps.length - 1 && (
                     <div className={cn(
-                      "flex-1 h-0.5 mx-1",
-                      index < currentStep ? "bg-green-500" : "bg-muted"
+                      "flex-1 h-px mx-1",
+                      index < currentStep ? "bg-primary" : "bg-muted"
                     )} />
                   )}
                 </React.Fragment>
@@ -380,78 +380,69 @@ export const MembershipUpgradeFlow: React.FC<MembershipUpgradeFlowProps> = ({
           </div>
         </div>
 
-        {/* Current step content */}
+        {/* Current step content - Slim */}
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-            className="px-6 py-4"
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.15 }}
+            className="px-4 py-3"
           >
             {steps[currentStep] && (
-              <Card className="border-dashed">
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-4">
+              <Card className="border-dashed bg-card/50">
+                <CardContent className="p-3">
+                  <div className="flex items-start gap-3">
                     <div className={cn(
-                      "w-12 h-12 rounded-xl flex items-center justify-center shrink-0",
+                      "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
                       targetConfig.bgColor,
                       targetConfig.color
                     )}>
-                      {steps[currentStep].icon}
+                      {React.cloneElement(steps[currentStep].icon as React.ReactElement, { className: 'h-4 w-4' })}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold">{steps[currentStep].title}</h3>
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <h3 className="text-xs font-semibold">{steps[currentStep].title}</h3>
                         {steps[currentStep].isRequired ? (
-                          <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
-                            Required
+                          <Badge variant="destructive" className="text-[8px] px-1 py-0 h-4">
+                            Wajib
                           </Badge>
                         ) : (
-                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                            Optional
+                          <Badge variant="secondary" className="text-[8px] px-1 py-0 h-4">
+                            Opsional
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-[10px] text-muted-foreground leading-relaxed">
                         {steps[currentStep].description}
                       </p>
 
-                      {/* Step-specific info */}
+                      {/* Step-specific info - Compact */}
                       {steps[currentStep].id === 'review' && (
-                        <div className="mt-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
-                          <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
-                            <Clock className="h-4 w-4" />
-                            <span className="text-sm font-medium">Estimated: 1-3 business days</span>
+                        <div className="mt-2 p-2 rounded-md bg-accent/10 border border-accent/30">
+                          <div className="flex items-center gap-1.5 text-accent-foreground">
+                            <Clock className="h-3 w-3" />
+                            <span className="text-[10px] font-medium">Estimasi: 1-3 hari kerja</span>
                           </div>
-                          <p className="text-xs text-amber-600 dark:text-amber-500 mt-1">
-                            You'll receive a notification once your verification is approved.
-                          </p>
                         </div>
                       )}
 
                       {steps[currentStep].id === 'activation' && (
-                        <div className="mt-3 p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
-                          <div className="flex items-center gap-2 text-green-700 dark:text-green-400">
-                            <CheckCircle2 className="h-4 w-4" />
-                            <span className="text-sm font-medium">Instant Activation</span>
+                        <div className="mt-2 p-2 rounded-md bg-primary/10 border border-primary/30">
+                          <div className="flex items-center gap-1.5 text-primary">
+                            <CheckCircle2 className="h-3 w-3" />
+                            <span className="text-[10px] font-medium">Aktivasi Instan</span>
                           </div>
-                          <p className="text-xs text-green-600 dark:text-green-500 mt-1">
-                            Your benefits will be activated immediately after payment.
-                          </p>
                         </div>
                       )}
 
                       {steps[currentStep].id === 'verified_status' && currentLevel === 'basic' && (
-                        <div className="mt-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
-                          <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
-                            <AlertCircle className="h-4 w-4" />
-                            <span className="text-sm font-medium">Prerequisite</span>
+                        <div className="mt-2 p-2 rounded-md bg-destructive/10 border border-destructive/30">
+                          <div className="flex items-center gap-1.5 text-destructive">
+                            <AlertCircle className="h-3 w-3" />
+                            <span className="text-[10px] font-medium">Wajib Verified dulu</span>
                           </div>
-                          <p className="text-xs text-blue-600 dark:text-blue-500 mt-1">
-                            Please upgrade to Verified Member first before applying for {targetConfig.shortLabel}.
-                          </p>
                         </div>
                       )}
                     </div>
@@ -464,40 +455,44 @@ export const MembershipUpgradeFlow: React.FC<MembershipUpgradeFlowProps> = ({
 
         <Separator />
 
-        {/* Navigation buttons */}
-        <div className="px-6 py-4 flex items-center justify-between">
+        {/* Navigation buttons - Slim */}
+        <div className="px-4 py-3 flex items-center justify-between">
           <Button
-            variant="outline"
+            variant="ghost"
+            size="sm"
             onClick={handlePrevious}
             disabled={currentStep === 0}
-            className="gap-1"
+            className="h-7 text-[10px] gap-1"
           >
-            <ChevronLeft className="h-4 w-4" />
-            Previous
+            <ChevronLeft className="h-3 w-3" />
+            Back
           </Button>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <Button
               variant="ghost"
+              size="sm"
               onClick={() => onOpenChange(false)}
+              className="h-7 text-[10px]"
             >
-              Cancel
+              Batal
             </Button>
             
             <Button
+              size="sm"
               onClick={handleStartUpgrade}
               disabled={isProcessing}
-              className="gap-2"
+              className="h-7 text-[10px] gap-1"
             >
               {isProcessing ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Processing...
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Loading...
                 </>
               ) : (
                 <>
                   {steps[currentStep] && getActionButton(steps[currentStep])}
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-3 w-3" />
                 </>
               )}
             </Button>
