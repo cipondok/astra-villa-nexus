@@ -173,7 +173,7 @@ serve(async (req) => {
       await supabase
         .from('admin_alerts')
         .insert({
-          type: 'verification_request',
+          type: 'company_verification',
           title: `Company Verification - ${verificationResult.status === 'not_found' ? 'Not Found in AHU' : 'Manual Review Required'}`,
           message: `Company "${company_name}" ${verificationResult.status === 'not_found' ? 'was not found' : 'requires verification'} in AHU database. ${verificationResult.message}`,
           priority: 'medium',
