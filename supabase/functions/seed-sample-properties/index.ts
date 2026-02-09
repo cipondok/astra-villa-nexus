@@ -107,7 +107,7 @@ serve(async (req) => {
 
   try {
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
+    if (!authHeader?.startsWith('Bearer ')) {
       return new Response(JSON.stringify({ error: 'Authentication required' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
@@ -115,18 +115,20 @@ serve(async (req) => {
     const supabaseAuth = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!, {
       global: { headers: { Authorization: authHeader } }
     });
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
-    if (authError || !user) {
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims?.sub) {
       return new Response(JSON.stringify({ error: 'Invalid token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
+    const userId = claimsData.claims.sub as string;
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const { data: adminData } = await supabase
       .from('admin_users')
       .select('id')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .maybeSingle();
 
     if (!adminData) {
@@ -209,7 +211,7 @@ serve(async (req) => {
 
           // Skip AI image to reduce memory/compute — use placeholder
           const propertyData = {
-            owner_id: user.id,
+            owner_id: userId,
             title,
             description: `${title}. Properti ${propertyType} berlokasi di ${locationStr}. Luas ${areaSqm}m², ${bedrooms > 0 ? `${bedrooms} kamar tidur, ${bathrooms} kamar mandi.` : ''} Cocok untuk investasi atau hunian.`,
             property_type: propertyType,
