@@ -694,33 +694,7 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
         
       </div>
 
-      {/* Timeline - Slim */}
-      <div className="space-y-0.5">
-        <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
-          <Calendar className="h-2.5 w-2.5" />
-          {t.timeline}
-        </Label>
-        <Select value={timeline} onValueChange={setTimeline}>
-          <SelectTrigger className="h-7 text-xs">
-            <SelectValue placeholder="Select..." />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(t.timelineOptions).map(([key, label]) => (
-              <SelectItem key={key} value={key} className="text-xs py-1">
-                {label as string}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {timeline === 'other' && (
-          <Input
-            value={customTimeline}
-            onChange={(e) => setCustomTimeline(e.target.value)}
-            placeholder={t.otherPlaceholder}
-            className="h-7 text-xs mt-1"
-          />
-        )}
-      </div>
+      
 
       {/* Additional Message - Slim */}
       <div className="space-y-0.5">
