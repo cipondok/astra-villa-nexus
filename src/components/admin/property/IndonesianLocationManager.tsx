@@ -118,40 +118,55 @@ const IndonesianLocationManager = () => {
     },
   });
 
-  // Fetch all unique provinces from locations table using DISTINCT for efficiency
+  // Fetch all unique provinces via RPC (bypasses row limit)
   const { data: allProvinceData, refetch: refetchProvinces } = useQuery({
     queryKey: ['all-provinces-unique'],
     queryFn: async () => {
-      // Use a more efficient query that gets distinct provinces directly
-      const { data, error } = await supabase
-        .from('locations')
-        .select('province_code, province_name')
-        .eq('is_active', true)
-        .order('province_name', { ascending: true })
-        .limit(100000);
-
-      if (error) {
-        console.error('Error fetching provinces:', error);
-        throw error;
-      }
-
-      console.log('Raw location data count:', data?.length);
-
-      // Extract unique provinces using Map
-      const uniqueMap = new Map<string, { code: string; name: string }>();
-      data?.forEach((l) => {
-        if (l.province_code && l.province_name && !uniqueMap.has(l.province_code)) {
-          uniqueMap.set(l.province_code, { code: l.province_code, name: l.province_name });
-        }
-      });
-
-      const result = Array.from(uniqueMap.values()).sort((a, b) => a.name.localeCompare(b.name));
-      console.log('Unique provinces extracted:', result.length);
-      
-      return result;
+      const { data, error } = await supabase.rpc('get_distinct_provinces');
+      if (error) throw error;
+      return (data || []).map((p: any) => ({ code: p.province_code, name: p.province_name }));
     },
-    staleTime: 0, // Always refetch to ensure fresh data
-    gcTime: 5 * 60 * 1000, // Cache for 5 minutes after fetch
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
+
+  // Fetch all cities via RPC for cities tab
+  const { data: allCitiesTabData } = useQuery({
+    queryKey: ['all-cities-tab', selectedProvince],
+    queryFn: async () => {
+      const prov = selectedProvince === 'all' ? null : selectedProvince;
+      const { data, error } = await supabase.rpc('get_distinct_cities', { p_province_code: prov });
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 0,
+  });
+
+  // Fetch all districts via RPC for districts tab
+  const { data: allDistrictsTabData } = useQuery({
+    queryKey: ['all-districts-tab', selectedProvince, selectedCity],
+    queryFn: async () => {
+      const prov = selectedProvince === 'all' ? null : selectedProvince;
+      const city = selectedCity === 'all' ? null : selectedCity;
+      const { data, error } = await supabase.rpc('get_distinct_districts', { p_province_code: prov, p_city_code: city });
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 0,
+  });
+
+  // Fetch all subdistricts via RPC for subdistricts tab
+  const { data: allSubdistrictsTabData } = useQuery({
+    queryKey: ['all-subdistricts-tab', selectedProvince, selectedCity, selectedDistrict],
+    queryFn: async () => {
+      const prov = selectedProvince === 'all' ? null : selectedProvince;
+      const city = selectedCity === 'all' ? null : selectedCity;
+      const dist = selectedDistrict === 'all' ? null : selectedDistrict;
+      const { data, error } = await supabase.rpc('get_distinct_subdistricts', { p_province_code: prov, p_city_code: city, p_district_code: dist });
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 0,
   });
 
   // Fetch locations (with filters applied) - use cascading filters for efficiency
@@ -1161,36 +1176,28 @@ const IndonesianLocationManager = () => {
                     </TableRow>
                   ) : (
                     (() => {
-                      const allCitiesData = Array.from(new Map(locations?.filter(l => l.city_code).map(l => [l.city_code, l])).values())
-                        .filter(l => selectedCity === 'all' || l.city_code === selectedCity);
-                      const paginated = allCitiesData.slice((cityPage - 1) * PAGE_SIZE, cityPage * PAGE_SIZE);
-                      return paginated.map((location) => (
-                      <TableRow key={location.city_code}>
-                        <TableCell className="font-mono">{location.city_code}</TableCell>
-                        <TableCell className="font-medium">{location.city_name}</TableCell>
-                        <TableCell>{location.province_name}</TableCell>
+                      const cities = allCitiesTabData || [];
+                      const paginated = cities.slice((cityPage - 1) * PAGE_SIZE, cityPage * PAGE_SIZE);
+                      return paginated.map((c: any) => (
+                      <TableRow key={c.city_code}>
+                        <TableCell className="font-mono">{c.city_code}</TableCell>
+                        <TableCell className="font-medium">{c.city_name}</TableCell>
+                        <TableCell>{c.province_name}</TableCell>
                         <TableCell>
-                          <Badge variant={location.city_type === 'KOTA' ? 'default' : 'outline'}>
-                            {location.city_type}
+                          <Badge variant={c.city_type === 'KOTA' ? 'default' : 'outline'}>
+                            {c.city_type}
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={location.is_active ? "default" : "secondary"}>
-                            {location.is_active ? 'Aktif' : 'Nonaktif'}
-                          </Badge>
+                          <Badge variant="default">Aktif</Badge>
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => handleEdit(location)}>
+                            <Button variant="ghost" size="sm" onClick={() => {
+                              const loc = locations?.find(l => l.city_code === c.city_code);
+                              if (loc) handleEdit(loc);
+                            }}>
                               <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-destructive"
-                              onClick={() => deleteLocationMutation.mutate(location.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </TableCell>
@@ -1201,8 +1208,7 @@ const IndonesianLocationManager = () => {
                 </TableBody>
               </Table>
               {renderPagination(
-                Array.from(new Map(locations?.filter(l => l.city_code).map(l => [l.city_code, l])).values())
-                  .filter(l => selectedCity === 'all' || l.city_code === selectedCity).length,
+                (allCitiesTabData || []).length,
                 cityPage, setCityPage
               )}
             </TabsContent>
@@ -1229,33 +1235,24 @@ const IndonesianLocationManager = () => {
                     </TableRow>
                   ) : (
                     (() => {
-                      const allDistricts = (locations || [])
-                        .filter(l => l.district_code && l.district_name)
-                        .filter(l => selectedDistrict === 'all' || l.district_code === selectedDistrict);
-                      const paginated = allDistricts.slice((districtPage - 1) * PAGE_SIZE, districtPage * PAGE_SIZE);
-                      return paginated.map((location) => (
-                      <TableRow key={location.id}>
-                        <TableCell className="font-mono">{location.district_code}</TableCell>
-                        <TableCell className="font-medium">{location.district_name}</TableCell>
-                        <TableCell>{location.city_name}</TableCell>
-                        <TableCell>{location.province_name}</TableCell>
+                      const districts = allDistrictsTabData || [];
+                      const paginated = districts.slice((districtPage - 1) * PAGE_SIZE, districtPage * PAGE_SIZE);
+                      return paginated.map((d: any) => (
+                      <TableRow key={d.district_code}>
+                        <TableCell className="font-mono">{d.district_code}</TableCell>
+                        <TableCell className="font-medium">{d.district_name}</TableCell>
+                        <TableCell>{d.city_name}</TableCell>
+                        <TableCell>{d.province_name}</TableCell>
                         <TableCell>
-                          <Badge variant={location.is_active ? "default" : "secondary"}>
-                            {location.is_active ? 'Aktif' : 'Nonaktif'}
-                          </Badge>
+                          <Badge variant="default">Aktif</Badge>
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => handleEdit(location)}>
+                            <Button variant="ghost" size="sm" onClick={() => {
+                              const loc = locations?.find(l => l.district_code === d.district_code);
+                              if (loc) handleEdit(loc);
+                            }}>
                               <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-destructive"
-                              onClick={() => deleteLocationMutation.mutate(location.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </TableCell>
@@ -1266,8 +1263,7 @@ const IndonesianLocationManager = () => {
                 </TableBody>
               </Table>
               {renderPagination(
-                (locations || []).filter(l => l.district_code && l.district_name)
-                  .filter(l => selectedDistrict === 'all' || l.district_code === selectedDistrict).length,
+                (allDistrictsTabData || []).length,
                 districtPage, setDistrictPage
               )}
             </TabsContent>
@@ -1294,33 +1290,24 @@ const IndonesianLocationManager = () => {
                     </TableRow>
                   ) : (
                     (() => {
-                      const allSubs = (locations || [])
-                        .filter(l => l.subdistrict_code && l.subdistrict_name)
-                        .filter(l => selectedSubdistrict === 'all' || l.subdistrict_code === selectedSubdistrict);
-                      const paginated = allSubs.slice((subdistrictPage - 1) * PAGE_SIZE, subdistrictPage * PAGE_SIZE);
-                      return paginated.map((location) => (
-                      <TableRow key={location.id}>
-                        <TableCell className="font-mono">{location.subdistrict_code}</TableCell>
-                        <TableCell className="font-medium">{location.subdistrict_name}</TableCell>
-                        <TableCell>{location.district_name}</TableCell>
-                        <TableCell>{location.city_name}</TableCell>
+                      const subs = allSubdistrictsTabData || [];
+                      const paginated = subs.slice((subdistrictPage - 1) * PAGE_SIZE, subdistrictPage * PAGE_SIZE);
+                      return paginated.map((s: any) => (
+                      <TableRow key={s.subdistrict_code}>
+                        <TableCell className="font-mono">{s.subdistrict_code}</TableCell>
+                        <TableCell className="font-medium">{s.subdistrict_name}</TableCell>
+                        <TableCell>{s.district_name}</TableCell>
+                        <TableCell>{s.city_name}</TableCell>
                         <TableCell>
-                          <Badge variant={location.is_active ? "default" : "secondary"}>
-                            {location.is_active ? 'Aktif' : 'Nonaktif'}
-                          </Badge>
+                          <Badge variant="default">Aktif</Badge>
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => handleEdit(location)}>
+                            <Button variant="ghost" size="sm" onClick={() => {
+                              const loc = locations?.find(l => l.subdistrict_code === s.subdistrict_code);
+                              if (loc) handleEdit(loc);
+                            }}>
                               <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-destructive"
-                              onClick={() => deleteLocationMutation.mutate(location.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </TableCell>
@@ -1331,8 +1318,7 @@ const IndonesianLocationManager = () => {
                 </TableBody>
               </Table>
               {renderPagination(
-                (locations || []).filter(l => l.subdistrict_code && l.subdistrict_name)
-                  .filter(l => selectedSubdistrict === 'all' || l.subdistrict_code === selectedSubdistrict).length,
+                (allSubdistrictsTabData || []).length,
                 subdistrictPage, setSubdistrictPage
               )}
             </TabsContent>
