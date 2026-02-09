@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MapPin, Plus, Edit, Trash2, Globe, Building2, Home, RefreshCw, CloudDownload, CheckCircle2, AlertCircle, Database, Loader2 } from 'lucide-react';
+import { MapPin, Plus, Edit, Trash2, Globe, Building2, Home, RefreshCw, CloudDownload, CheckCircle2, AlertCircle, Database, Loader2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -65,6 +65,11 @@ const IndonesianLocationManager = () => {
   const [selectedDistrict, setSelectedDistrict] = useState('all');
   const [selectedSubdistrict, setSelectedSubdistrict] = useState('all');
   const [selectedPostalCode, setSelectedPostalCode] = useState('all');
+  const [provincePage, setProvincePage] = useState(1);
+  const [cityPage, setCityPage] = useState(1);
+  const [districtPage, setDistrictPage] = useState(1);
+  const [subdistrictPage, setSubdistrictPage] = useState(1);
+  const PAGE_SIZE = 15;
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncMode, setSyncMode] = useState<'provinces' | 'districts' | 'single-province'>('provinces');
   const [selectedSyncProvince, setSelectedSyncProvince] = useState<string>('');
@@ -519,6 +524,38 @@ const IndonesianLocationManager = () => {
       return 10;
     }
     return Math.min((provinces / 3) * 100, 95);
+  };
+
+  const renderPagination = (totalItems: number, currentPage: number, setPage: (p: number) => void) => {
+    const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+    if (totalPages <= 1) return null;
+    const startResult = (currentPage - 1) * PAGE_SIZE + 1;
+    const endResult = Math.min(currentPage * PAGE_SIZE, totalItems);
+    const maxButtons = 5;
+    let startBtn = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+    let endBtn = Math.min(totalPages, startBtn + maxButtons - 1);
+    if (endBtn - startBtn < maxButtons - 1) startBtn = Math.max(1, endBtn - maxButtons + 1);
+    const pages: number[] = [];
+    for (let i = startBtn; i <= endBtn; i++) pages.push(i);
+
+    return (
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 py-3 px-2 border-t border-border">
+        <p className="text-xs text-muted-foreground">
+          Menampilkan <span className="font-medium">{startResult}</span>–<span className="font-medium">{endResult}</span> dari <span className="font-medium">{totalItems}</span>
+        </p>
+        <div className="flex items-center gap-1">
+          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => setPage(1)} disabled={currentPage === 1}><ChevronsLeft className="h-3.5 w-3.5" /></Button>
+          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => setPage(currentPage - 1)} disabled={currentPage === 1}><ChevronLeft className="h-3.5 w-3.5" /></Button>
+          {startBtn > 1 && <span className="px-1 text-xs text-muted-foreground">…</span>}
+          {pages.map(p => (
+            <Button key={p} variant={p === currentPage ? "default" : "outline"} size="sm" className="h-7 min-w-[28px] px-2 text-xs" onClick={() => setPage(p)}>{p}</Button>
+          ))}
+          {endBtn < totalPages && <span className="px-1 text-xs text-muted-foreground">…</span>}
+          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => setPage(currentPage + 1)} disabled={currentPage === totalPages}><ChevronRight className="h-3.5 w-3.5" /></Button>
+          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => setPage(totalPages)} disabled={currentPage === totalPages}><ChevronsRight className="h-3.5 w-3.5" /></Button>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -1067,7 +1104,10 @@ const IndonesianLocationManager = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    Array.from(new Map(locations?.map(l => [l.province_code, l])).values()).map((location) => (
+                    (() => {
+                      const allProvs = Array.from(new Map(locations?.map(l => [l.province_code, l])).values());
+                      const paginated = allProvs.slice((provincePage - 1) * PAGE_SIZE, provincePage * PAGE_SIZE);
+                      return paginated.map((location) => (
                       <TableRow key={location.province_code}>
                         <TableCell className="font-mono">{location.province_code}</TableCell>
                         <TableCell className="font-medium">{location.province_name}</TableCell>
@@ -1095,10 +1135,15 @@ const IndonesianLocationManager = () => {
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))
+                    ));
+                    })()
                   )}
                 </TableBody>
               </Table>
+              {renderPagination(
+                Array.from(new Map(locations?.map(l => [l.province_code, l])).values()).length,
+                provincePage, setProvincePage
+              )}
             </TabsContent>
 
             {/* Cities Tab */}
@@ -1122,9 +1167,11 @@ const IndonesianLocationManager = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    Array.from(new Map(locations?.filter(l => l.city_code).map(l => [l.city_code, l])).values())
-                      .filter(l => selectedCity === 'all' || l.city_code === selectedCity)
-                      .map((location) => (
+                    (() => {
+                      const allCitiesData = Array.from(new Map(locations?.filter(l => l.city_code).map(l => [l.city_code, l])).values())
+                        .filter(l => selectedCity === 'all' || l.city_code === selectedCity);
+                      const paginated = allCitiesData.slice((cityPage - 1) * PAGE_SIZE, cityPage * PAGE_SIZE);
+                      return paginated.map((location) => (
                       <TableRow key={location.city_code}>
                         <TableCell className="font-mono">{location.city_code}</TableCell>
                         <TableCell className="font-medium">{location.city_name}</TableCell>
@@ -1155,10 +1202,16 @@ const IndonesianLocationManager = () => {
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))
+                    ));
+                    })()
                   )}
                 </TableBody>
               </Table>
+              {renderPagination(
+                Array.from(new Map(locations?.filter(l => l.city_code).map(l => [l.city_code, l])).values())
+                  .filter(l => selectedCity === 'all' || l.city_code === selectedCity).length,
+                cityPage, setCityPage
+              )}
             </TabsContent>
 
             {/* Districts Tab */}
@@ -1182,11 +1235,12 @@ const IndonesianLocationManager = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    locations
-                      ?.filter(l => l.district_code && l.district_name)
-                      .filter(l => selectedDistrict === 'all' || l.district_code === selectedDistrict)
-                      .slice(0, 100)
-                      .map((location) => (
+                    (() => {
+                      const allDistricts = (locations || [])
+                        .filter(l => l.district_code && l.district_name)
+                        .filter(l => selectedDistrict === 'all' || l.district_code === selectedDistrict);
+                      const paginated = allDistricts.slice((districtPage - 1) * PAGE_SIZE, districtPage * PAGE_SIZE);
+                      return paginated.map((location) => (
                       <TableRow key={location.id}>
                         <TableCell className="font-mono">{location.district_code}</TableCell>
                         <TableCell className="font-medium">{location.district_name}</TableCell>
@@ -1213,14 +1267,15 @@ const IndonesianLocationManager = () => {
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))
+                    ));
+                    })()
                   )}
                 </TableBody>
               </Table>
-              {locations && locations.filter(l => l.district_code).length > 100 && (
-                <div className="text-center py-4 text-sm text-muted-foreground">
-                  Menampilkan 100 dari {locations.filter(l => l.district_code).length} kecamatan. Gunakan filter untuk melihat lebih spesifik.
-                </div>
+              {renderPagination(
+                (locations || []).filter(l => l.district_code && l.district_name)
+                  .filter(l => selectedDistrict === 'all' || l.district_code === selectedDistrict).length,
+                districtPage, setDistrictPage
               )}
             </TabsContent>
 
@@ -1245,11 +1300,12 @@ const IndonesianLocationManager = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    locations
-                      ?.filter(l => l.subdistrict_code && l.subdistrict_name)
-                      .filter(l => selectedSubdistrict === 'all' || l.subdistrict_code === selectedSubdistrict)
-                      .slice(0, 100)
-                      .map((location) => (
+                    (() => {
+                      const allSubs = (locations || [])
+                        .filter(l => l.subdistrict_code && l.subdistrict_name)
+                        .filter(l => selectedSubdistrict === 'all' || l.subdistrict_code === selectedSubdistrict);
+                      const paginated = allSubs.slice((subdistrictPage - 1) * PAGE_SIZE, subdistrictPage * PAGE_SIZE);
+                      return paginated.map((location) => (
                       <TableRow key={location.id}>
                         <TableCell className="font-mono">{location.subdistrict_code}</TableCell>
                         <TableCell className="font-medium">{location.subdistrict_name}</TableCell>
@@ -1276,14 +1332,15 @@ const IndonesianLocationManager = () => {
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))
+                    ));
+                    })()
                   )}
                 </TableBody>
               </Table>
-              {locations && locations.filter(l => l.subdistrict_code).length > 100 && (
-                <div className="text-center py-4 text-sm text-muted-foreground">
-                  Menampilkan 100 dari {locations.filter(l => l.subdistrict_code).length} kelurahan/desa. Gunakan filter untuk melihat lebih spesifik.
-                </div>
+              {renderPagination(
+                (locations || []).filter(l => l.subdistrict_code && l.subdistrict_name)
+                  .filter(l => selectedSubdistrict === 'all' || l.subdistrict_code === selectedSubdistrict).length,
+                subdistrictPage, setSubdistrictPage
               )}
             </TabsContent>
 
