@@ -24,14 +24,9 @@ const SamplePropertyGenerator = () => {
   const { data: provinces = [], isLoading: loadingProvinces } = useQuery({
     queryKey: ["provinces-for-seeding"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("locations")
-        .select("province_name")
-        .eq("is_active", true)
-        .not("subdistrict_name", "is", null);
+      const { data, error } = await supabase.rpc("get_distinct_provinces");
       if (error) throw error;
-      const unique = [...new Set((data || []).map(d => d.province_name))].filter(Boolean).sort();
-      return unique as string[];
+      return ((data || []) as Array<{ province_name: string }>).map(d => d.province_name).filter(Boolean).sort();
     },
   });
 
