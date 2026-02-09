@@ -691,33 +691,7 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
           />
         </div>
         
-        {/* Budget */}
-        <div className="space-y-0.5">
-          <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
-            <DollarSign className="h-2.5 w-2.5" />
-            {t.budgetRange}
-          </Label>
-          <Select value={budgetRange} onValueChange={setBudgetRange}>
-            <SelectTrigger className="h-7 text-xs">
-              <SelectValue placeholder="Select..." />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(t.budgetOptions).map(([key, label]) => (
-                <SelectItem key={key} value={key} className="text-xs py-1">
-                  {label as string}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {budgetRange === 'other' && (
-            <Input
-              value={customBudget}
-              onChange={(e) => setCustomBudget(e.target.value)}
-              placeholder={t.otherPlaceholder}
-              className="h-7 text-xs mt-1"
-            />
-          )}
-        </div>
+        
       </div>
 
       {/* Timeline - Slim */}
