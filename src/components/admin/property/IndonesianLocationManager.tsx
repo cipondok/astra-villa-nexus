@@ -16,6 +16,7 @@ import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Checkbox } from '@/components/ui/checkbox';
+import { usePropertyCountsByProvince, PROPERTY_TYPE_LABELS, PROPERTY_TYPE_COLORS } from '@/hooks/usePropertyCountsByProvince';
 
 interface Location {
   id: string;
@@ -97,6 +98,7 @@ const IndonesianLocationManager = () => {
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+  const { data: provincePropCounts } = usePropertyCountsByProvince();
 
   // Fetch accurate counts directly from database using RPC function (bypasses 1000 row limit)
   const { data: locationStats } = useQuery({
@@ -1107,6 +1109,8 @@ const IndonesianLocationManager = () => {
                     <TableHead>Kode</TableHead>
                     <TableHead>Nama Provinsi</TableHead>
                     <TableHead>Jumlah Kota/Kab</TableHead>
+                    <TableHead>Property Types</TableHead>
+                    <TableHead>Total Properties</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Aksi</TableHead>
                   </TableRow>
@@ -1114,7 +1118,7 @@ const IndonesianLocationManager = () => {
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8">
+                      <TableCell colSpan={7} className="text-center py-8">
                         <Loader2 className="h-6 w-6 animate-spin mx-auto" />
                       </TableCell>
                     </TableRow>
@@ -1122,28 +1126,46 @@ const IndonesianLocationManager = () => {
                     (() => {
                       const allProvs = allProvinceData || [];
                       const paginated = allProvs.slice((provincePage - 1) * PAGE_SIZE, provincePage * PAGE_SIZE);
-                      return paginated.map((prov) => (
-                      <TableRow key={prov.code}>
-                        <TableCell className="font-mono">{prov.code}</TableCell>
-                        <TableCell className="font-medium">{prov.name}</TableCell>
-                        <TableCell>
-                          {locations?.filter(l => l.province_code === prov.code && l.city_code).length || '-'}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="default">Aktif</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => {
-                              const loc = locations?.find(l => l.province_code === prov.code);
-                              if (loc) handleEdit(loc);
-                            }}>
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ));
+                      return paginated.map((prov) => {
+                        const propTypes = provincePropCounts?.[prov.name] || {};
+                        const totalProps = Object.values(propTypes).reduce((s, c) => s + c, 0);
+                        return (
+                        <TableRow key={prov.code}>
+                          <TableCell className="font-mono">{prov.code}</TableCell>
+                          <TableCell className="font-medium">{prov.name}</TableCell>
+                          <TableCell>
+                            {locations?.filter(l => l.province_code === prov.code && l.city_code).length || '-'}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-wrap gap-1">
+                              {Object.entries(propTypes).map(([type, count]) => (
+                                <span key={type} className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${PROPERTY_TYPE_COLORS[type] || 'bg-muted text-muted-foreground'}`}>
+                                  {PROPERTY_TYPE_LABELS[type] || type}: {count}
+                                </span>
+                              ))}
+                              {Object.keys(propTypes).length === 0 && <span className="text-xs text-muted-foreground">-</span>}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {totalProps > 0 ? (
+                              <Badge variant="secondary" className="font-bold">{totalProps}</Badge>
+                            ) : '-'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="default">Aktif</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              <Button variant="ghost" size="sm" onClick={() => {
+                                const loc = locations?.find(l => l.province_code === prov.code);
+                                if (loc) handleEdit(loc);
+                              }}>
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );});
                     })()
                   )}
                 </TableBody>

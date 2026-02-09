@@ -24189,6 +24189,14 @@ export type Database = {
         Args: { p_property_id: string }
         Returns: Json
       }
+      get_property_counts_by_province: {
+        Args: never
+        Returns: {
+          count: number
+          property_type: string
+          province: string
+        }[]
+      }
       get_property_details_secure: {
         Args: { p_property_id: string }
         Returns: {
@@ -24238,6 +24246,15 @@ export type Database = {
           property_title: string
           status: string
           survey_type: string
+        }[]
+      }
+      get_property_views_by_location: {
+        Args: { days_back?: number }
+        Returns: {
+          city: string
+          country: string
+          page_path: string
+          view_count: number
         }[]
       }
       get_public_category_names: {
@@ -24484,6 +24501,15 @@ export type Database = {
         Args: { p_booking_id: string; p_requester_id: string }
         Returns: Json
       }
+      get_search_keyword_analytics: {
+        Args: { days_back?: number }
+        Returns: {
+          avg_results: number
+          last_searched: string
+          search_count: number
+          search_query: string
+        }[]
+      }
       get_survey_booking_stats_secure: {
         Args: { p_property_id?: string }
         Returns: Json
@@ -24611,6 +24637,16 @@ export type Database = {
           pending_documents: number
           rejected_documents: number
           verified_documents: number
+        }[]
+      }
+      get_visitor_location_analytics: {
+        Args: { days_back?: number }
+        Returns: {
+          avg_duration: number
+          city: string
+          country: string
+          page_views: number
+          visitor_count: number
         }[]
       }
       has_editor_access: { Args: { _user_id: string }; Returns: boolean }

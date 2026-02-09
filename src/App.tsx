@@ -52,6 +52,8 @@ import PropertyOwnerOnlyRoute from '@/components/PropertyOwnerOnlyRoute';
 // Lazy load heavy pages for better initial load performance
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
+const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
+const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
 const AgentDashboard = lazy(() => import('@/pages/AgentDashboard'));
 const VendorDashboard = lazy(() => import('@/pages/VendorDashboard'));
 const PropertyOwnerDashboard = lazy(() => import('@/pages/PropertyOwnerDashboard'));
@@ -163,6 +165,8 @@ const AppContent = () => {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/location-analytics" element={<LocationAnalyticsDashboard />} />
+            <Route path="/province-properties" element={<ProvinceProperties />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/admin/design-system" element={<DesignSystemSettings />} />
             <Route path="/agent-dashboard" element={<AgentDashboard />} />
