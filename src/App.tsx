@@ -20,6 +20,7 @@ import InitialLoadingScreen from '@/components/ui/InitialLoadingScreen';
 import { DesignSystemProvider } from '@/components/DesignSystemProvider';
 import CookieSystem from '@/components/cookies/CookieSystem';
 import ResponsiveAIChatWidget from '@/components/ai/ResponsiveAIChatWidget';
+import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
@@ -363,6 +364,7 @@ function App() {
                             <Sonner />
                             <CookieSystem />
                             <ResponsiveAIChatWidget />
+                            <WhatsAppInquiryButton variant="floating" defaultType="general" />
                             {/* NewArrivalsPopup disabled - uncomment to re-enable */}
                             {/* <NewArrivalsPopup /> */}
                             <LoadingProgressPopup />
