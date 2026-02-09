@@ -49,6 +49,44 @@ const AREA_RANGES: Record<string, { min: number; max: number }> = {
   kost: { min: 100, max: 500 },
 };
 
+const DEFAULT_IMAGES: Record<string, string[]> = {
+  house: [
+    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
+    'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&q=80',
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+  ],
+  apartment: [
+    'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80',
+    'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
+    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80',
+  ],
+  villa: [
+    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
+    'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&q=80',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+  ],
+  land: [
+    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80',
+    'https://images.unsplash.com/photo-1628624747186-a941c476b7ef?w=800&q=80',
+  ],
+  commercial: [
+    'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
+    'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
+  ],
+  townhouse: [
+    'https://images.unsplash.com/photo-1625602812206-5ec545ca1231?w=800&q=80',
+    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80',
+  ],
+  warehouse: [
+    'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80',
+    'https://images.unsplash.com/photo-1553246969-7dcb4222bd21?w=800&q=80',
+  ],
+  kost: [
+    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&q=80',
+    'https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&q=80',
+  ],
+};
+
 const BATCH_SIZE = 3; // kelurahan per invocation (keep small to avoid WORKER_LIMIT)
 
 function randomBetween(min: number, max: number): number {
@@ -209,7 +247,9 @@ serve(async (req) => {
           const areaRange = AREA_RANGES[propertyType];
           const areaSqm = randomBetween(areaRange.min, areaRange.max);
 
-          // Skip AI image to reduce memory/compute — use placeholder
+          const typeImages = DEFAULT_IMAGES[propertyType] || DEFAULT_IMAGES.house;
+          const selectedImage = pickRandom(typeImages);
+
           const propertyData = {
             owner_id: userId,
             title,
@@ -221,9 +261,9 @@ serve(async (req) => {
             bedrooms: bedrooms > 0 ? bedrooms : null,
             bathrooms: bathrooms > 0 ? bathrooms : null,
             area_sqm: areaSqm,
-            images: [],
-            image_urls: [],
-            thumbnail_url: null,
+            images: [selectedImage],
+            image_urls: [selectedImage],
+            thumbnail_url: selectedImage,
             status: 'active',
             approval_status: 'approved',
             state: loc.province_name,
