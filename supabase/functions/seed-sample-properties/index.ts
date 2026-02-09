@@ -1,4 +1,3 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
 
@@ -50,7 +49,7 @@ const AREA_RANGES: Record<string, { min: number; max: number }> = {
   kost: { min: 100, max: 500 },
 };
 
-const BATCH_SIZE = 5; // kelurahan per invocation
+const BATCH_SIZE = 3; // kelurahan per invocation (keep small to avoid WORKER_LIMIT)
 
 function randomBetween(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -74,6 +73,9 @@ async function generateAIImage(prompt: string): Promise<string | null> {
   if (!lovableApiKey) return null;
   
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
+    
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -85,25 +87,15 @@ async function generateAIImage(prompt: string): Promise<string | null> {
         messages: [{ role: 'user', content: prompt }],
         modalities: ['image', 'text']
       }),
+      signal: controller.signal,
     });
+    clearTimeout(timeout);
 
-    if (!response.ok) {
-      console.error('AI image generation failed:', response.status);
-      return null;
-    }
+    if (!response.ok) return null;
 
     const data = await response.json();
-    let imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-    
-    if (!imageUrl) {
-      const imageData = data.choices?.[0]?.message?.images?.[0];
-      if (typeof imageData === 'string') imageUrl = imageData;
-      else if (imageData?.url) imageUrl = imageData.url;
-    }
-    
-    return imageUrl || null;
-  } catch (error) {
-    console.error('AI image error:', error);
+    return data.choices?.[0]?.message?.images?.[0]?.image_url?.url || null;
+  } catch {
     return null;
   }
 }
@@ -149,33 +141,34 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    console.log(`Seeding properties for province: ${province}, offset: ${offset}, batch: ${BATCH_SIZE}`);
-
-    // Get all kelurahan for this province
-    const { data: locations, error: locError } = await supabase
+    // Get total count first (lightweight)
+    const { count: totalKelurahan, error: countError } = await supabase
       .from('locations')
-      .select('province_name, city_name, district_name, subdistrict_name')
+      .select('id', { count: 'exact', head: true })
       .eq('province_name', province)
       .eq('is_active', true)
       .not('subdistrict_name', 'is', null);
 
-    if (locError || !locations || locations.length === 0) {
+    if (countError || !totalKelurahan || totalKelurahan === 0) {
       return new Response(JSON.stringify({ error: 'No kelurahan found for this province' }),
         { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Deduplicate
-    const uniqueLocations = new Map<string, typeof locations[0]>();
-    for (const loc of locations) {
-      const key = `${loc.province_name}-${loc.city_name}-${loc.district_name}-${loc.subdistrict_name}`;
-      if (!uniqueLocations.has(key)) uniqueLocations.set(key, loc);
+    // Fetch only the batch we need using range()
+    const { data: batch, error: batchError } = await supabase
+      .from('locations')
+      .select('province_name, city_name, district_name, subdistrict_name')
+      .eq('province_name', province)
+      .eq('is_active', true)
+      .not('subdistrict_name', 'is', null)
+      .order('subdistrict_name')
+      .range(offset, offset + BATCH_SIZE - 1);
+
+    if (batchError || !batch || batch.length === 0) {
+      return new Response(JSON.stringify({ success: true, hasMore: false, created: 0, skipped: 0, errors: 0, totalKelurahan }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const allKelurahan = Array.from(uniqueLocations.values());
-    const totalKelurahan = allKelurahan.length;
-
-    // Slice the batch
-    const batch = allKelurahan.slice(offset, offset + BATCH_SIZE);
     const hasMore = offset + BATCH_SIZE < totalKelurahan;
     const nextOffset = offset + BATCH_SIZE;
 
@@ -214,15 +207,7 @@ serve(async (req) => {
           const areaRange = AREA_RANGES[propertyType];
           const areaSqm = randomBetween(areaRange.min, areaRange.max);
 
-          const imagePrompt = `Generate a realistic exterior photo of a ${propertyType} property in Indonesia, ${loc.city_name}, ${loc.province_name}. Modern Indonesian architecture, tropical setting, high quality real estate photo.`;
-
-          let imageUrl: string | null = null;
-          try {
-            imageUrl = await generateAIImage(imagePrompt);
-          } catch (imgErr) {
-            console.error(`Image generation failed for ${title}:`, imgErr);
-          }
-
+          // Skip AI image to reduce memory/compute — use placeholder
           const propertyData = {
             owner_id: user.id,
             title,
@@ -234,9 +219,9 @@ serve(async (req) => {
             bedrooms: bedrooms > 0 ? bedrooms : null,
             bathrooms: bathrooms > 0 ? bathrooms : null,
             area_sqm: areaSqm,
-            images: imageUrl ? [imageUrl] : [],
-            image_urls: imageUrl ? [imageUrl] : [],
-            thumbnail_url: imageUrl || null,
+            images: [],
+            image_urls: [],
+            thumbnail_url: null,
             status: 'active',
             approval_status: 'approved',
             state: loc.province_name,
@@ -249,13 +234,11 @@ serve(async (req) => {
             .insert(propertyData);
 
           if (insertError) {
-            console.error(`Insert error for ${title}:`, insertError.message);
             errors++;
           } else {
             created++;
           }
-        } catch (err) {
-          console.error(`Error processing ${propertyType} in ${loc.subdistrict_name}:`, err);
+        } catch {
           errors++;
         }
       }
