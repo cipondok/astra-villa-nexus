@@ -675,24 +675,7 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
         />
       </div>
 
-      {/* Investment Preferences - Slim 2-column */}
-      <div className="grid grid-cols-2 gap-2">
-        {/* Area */}
-        <div className="space-y-0.5">
-          <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
-            <MapPin className="h-2.5 w-2.5" />
-            {t.preferredArea}
-          </Label>
-          <Input
-            value={preferredArea}
-            onChange={(e) => setPreferredArea(e.target.value)}
-            placeholder={t.areaPlaceholder}
-            className="h-7 text-xs"
-          />
-        </div>
-        
-        
-      </div>
+      
 
       
 
