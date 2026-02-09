@@ -24021,6 +24021,44 @@ export type Database = {
           survey_type: string
         }[]
       }
+      get_distinct_cities: {
+        Args: { p_province_code?: string }
+        Returns: {
+          city_code: string
+          city_name: string
+          city_type: string
+          province_name: string
+        }[]
+      }
+      get_distinct_districts: {
+        Args: { p_city_code?: string; p_province_code?: string }
+        Returns: {
+          city_name: string
+          district_code: string
+          district_name: string
+          province_name: string
+        }[]
+      }
+      get_distinct_provinces: {
+        Args: never
+        Returns: {
+          province_code: string
+          province_name: string
+        }[]
+      }
+      get_distinct_subdistricts: {
+        Args: {
+          p_city_code?: string
+          p_district_code?: string
+          p_province_code?: string
+        }
+        Returns: {
+          city_name: string
+          district_name: string
+          subdistrict_code: string
+          subdistrict_name: string
+        }[]
+      }
       get_full_rejection_data: {
         Args: { rejection_code?: string }
         Returns: {
