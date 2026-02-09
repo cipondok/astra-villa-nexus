@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import React, { useState, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,16 +9,18 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Building2, Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon } from "lucide-react";
+import { Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon, StopCircle } from "lucide-react";
 
 const PROPERTY_TYPES = ['house', 'apartment', 'villa', 'land', 'commercial', 'townhouse', 'warehouse', 'kost'];
 
 const SamplePropertyGenerator = () => {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [skipExisting, setSkipExisting] = useState(true);
+  const [isRunning, setIsRunning] = useState(false);
+  const [progress, setProgress] = useState({ created: 0, skipped: 0, errors: 0, processed: 0, total: 0 });
   const [result, setResult] = useState<any>(null);
+  const cancelRef = useRef(false);
 
-  // Fetch provinces from locations table
   const { data: provinces = [], isLoading: loadingProvinces } = useQuery({
     queryKey: ["provinces-for-seeding"],
     queryFn: async () => {
@@ -27,15 +29,12 @@ const SamplePropertyGenerator = () => {
         .select("province_name")
         .eq("is_active", true)
         .not("subdistrict_name", "is", null);
-
       if (error) throw error;
-
       const unique = [...new Set((data || []).map(d => d.province_name))].filter(Boolean).sort();
       return unique as string[];
     },
   });
 
-  // Fetch kelurahan count for selected province
   const { data: kelurahanCount = 0 } = useQuery({
     queryKey: ["kelurahan-count", selectedProvince],
     queryFn: async () => {
@@ -46,15 +45,12 @@ const SamplePropertyGenerator = () => {
         .eq("province_name", selectedProvince)
         .eq("is_active", true)
         .not("subdistrict_name", "is", null);
-
       if (error) return 0;
-      const unique = new Set((data || []).map(d => d.subdistrict_name));
-      return unique.size;
+      return new Set((data || []).map(d => d.subdistrict_name)).size;
     },
     enabled: !!selectedProvince,
   });
 
-  // Fetch existing property count for province
   const { data: existingCount = 0 } = useQuery({
     queryKey: ["existing-properties-count", selectedProvince],
     queryFn: async () => {
@@ -63,36 +59,71 @@ const SamplePropertyGenerator = () => {
         .from("properties")
         .select("id", { count: "exact", head: true })
         .eq("state", selectedProvince);
-
       if (error) return 0;
       return count || 0;
     },
     enabled: !!selectedProvince,
   });
 
-  const generateMutation = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke("seed-sample-properties", {
-        body: { province: selectedProvince, skipExisting },
-      });
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      setResult(data);
-      toast.success(`Generated ${data.created} properties for ${selectedProvince}!`);
-    },
-    onError: (error: any) => {
-      toast.error(error.message || "Failed to generate properties");
-    },
-  });
-
   const totalExpected = kelurahanCount * PROPERTY_TYPES.length;
+
+  const handleGenerate = async () => {
+    cancelRef.current = false;
+    setIsRunning(true);
+    setResult(null);
+    const totals = { created: 0, skipped: 0, errors: 0, processed: 0, total: kelurahanCount };
+    setProgress(totals);
+
+    let offset = 0;
+    let hasMore = true;
+
+    while (hasMore && !cancelRef.current) {
+      try {
+        const { data, error } = await supabase.functions.invoke("seed-sample-properties", {
+          body: { province: selectedProvince, skipExisting, offset },
+        });
+
+        if (error) {
+          toast.error(`Batch error at offset ${offset}: ${error.message}`);
+          totals.errors += 1;
+          // retry logic: skip this batch
+          offset += 5;
+          hasMore = offset < kelurahanCount;
+          continue;
+        }
+
+        totals.created += data.created || 0;
+        totals.skipped += data.skipped || 0;
+        totals.errors += data.errors || 0;
+        totals.processed += data.batchProcessed || 0;
+        setProgress({ ...totals });
+
+        hasMore = data.hasMore;
+        if (data.nextOffset != null) {
+          offset = data.nextOffset;
+        } else {
+          hasMore = false;
+        }
+      } catch (err: any) {
+        toast.error(`Batch failed at offset ${offset}`);
+        offset += 5;
+        hasMore = offset < kelurahanCount;
+      }
+    }
+
+    setIsRunning(false);
+    setResult(totals);
+    if (cancelRef.current) {
+      toast.info("Generation cancelled");
+    } else {
+      toast.success(`Done! Created ${totals.created} properties for ${selectedProvince}`);
+    }
+  };
+
+  const progressPercent = progress.total > 0 ? Math.round((progress.processed / progress.total) * 100) : 0;
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-start gap-3">
         <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5">
           <Sparkles className="h-6 w-6 text-primary" />
@@ -100,12 +131,11 @@ const SamplePropertyGenerator = () => {
         <div>
           <h2 className="text-xl font-bold">Sample Property Generator</h2>
           <p className="text-sm text-muted-foreground">
-            Generate sample properties with AI images for each kelurahan/desa per province
+            Generate sample properties with AI images for each kelurahan/desa per province (batched)
           </p>
         </div>
       </div>
 
-      {/* Config Card */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
@@ -113,12 +143,12 @@ const SamplePropertyGenerator = () => {
             Select Province
           </CardTitle>
           <CardDescription>
-            Choose a province to generate 1 property per type ({PROPERTY_TYPES.length} types) for each kelurahan/desa
+            Choose a province to generate 1 property per type ({PROPERTY_TYPES.length} types) for each kelurahan/desa.
+            Processed in small batches to avoid timeouts.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Province Selector */}
-          <Select value={selectedProvince} onValueChange={setSelectedProvince}>
+          <Select value={selectedProvince} onValueChange={setSelectedProvince} disabled={isRunning}>
             <SelectTrigger>
               <SelectValue placeholder={loadingProvinces ? "Loading provinces..." : "Select a province"} />
             </SelectTrigger>
@@ -129,7 +159,6 @@ const SamplePropertyGenerator = () => {
             </SelectContent>
           </Select>
 
-          {/* Stats */}
           {selectedProvince && (
             <div className="grid grid-cols-3 gap-3">
               <div className="p-3 rounded-lg bg-muted/50 text-center">
@@ -147,79 +176,78 @@ const SamplePropertyGenerator = () => {
             </div>
           )}
 
-          {/* Property Types */}
           <div>
             <Label className="text-sm font-medium mb-2 block">Property Types (1 per kelurahan)</Label>
             <div className="flex flex-wrap gap-1.5">
               {PROPERTY_TYPES.map((type) => (
-                <Badge key={type} variant="secondary" className="text-xs capitalize">
-                  {type}
-                </Badge>
+                <Badge key={type} variant="secondary" className="text-xs capitalize">{type}</Badge>
               ))}
             </div>
           </div>
 
-          {/* Skip Existing */}
           <div className="flex items-center justify-between p-3 rounded-lg border">
             <div>
               <Label className="text-sm font-medium">Skip existing kelurahan</Label>
               <p className="text-xs text-muted-foreground">Skip kelurahan that already have properties of the same type</p>
             </div>
-            <Switch checked={skipExisting} onCheckedChange={setSkipExisting} />
+            <Switch checked={skipExisting} onCheckedChange={setSkipExisting} disabled={isRunning} />
           </div>
 
-          {/* Warning */}
           {selectedProvince && totalExpected > 100 && (
             <div className="flex items-start gap-2 p-3 rounded-lg bg-orange-500/10 border border-orange-500/20">
               <AlertTriangle className="h-4 w-4 text-orange-500 mt-0.5 shrink-0" />
               <div className="text-xs text-orange-700 dark:text-orange-300">
-                <p className="font-medium">Large batch warning</p>
-                <p>This will generate {totalExpected} properties with AI images. This may take a long time and use significant AI credits. The edge function has a timeout limit so very large provinces may need multiple runs.</p>
+                <p className="font-medium">Large batch info</p>
+                <p>This will generate {totalExpected} properties in batches of {PROPERTY_TYPES.length * 5} (5 kelurahan at a time). You can cancel at any time.</p>
               </div>
             </div>
           )}
 
-          {/* Generate Button */}
-          <Button
-            className="w-full gap-2"
-            size="lg"
-            disabled={!selectedProvince || generateMutation.isPending}
-            onClick={() => generateMutation.mutate()}
-          >
-            {generateMutation.isPending ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Generating... (this may take several minutes)
-              </>
-            ) : (
-              <>
-                <ImageIcon className="h-4 w-4" />
-                Generate {totalExpected} Properties with AI Images
-              </>
+          <div className="flex gap-2">
+            <Button
+              className="flex-1 gap-2"
+              size="lg"
+              disabled={!selectedProvince || isRunning}
+              onClick={handleGenerate}
+            >
+              <ImageIcon className="h-4 w-4" />
+              Generate {totalExpected} Properties
+            </Button>
+            {isRunning && (
+              <Button
+                variant="destructive"
+                size="lg"
+                onClick={() => { cancelRef.current = true; }}
+                className="gap-2"
+              >
+                <StopCircle className="h-4 w-4" />
+                Stop
+              </Button>
             )}
-          </Button>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Results */}
-      {generateMutation.isPending && (
+      {isRunning && (
         <Card>
-          <CardContent className="pt-6">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                <span className="text-sm font-medium">Generating properties for {selectedProvince}...</span>
-              </div>
-              <Progress value={undefined} className="h-2" />
-              <p className="text-xs text-muted-foreground">
-                Creating properties with AI-generated images. This may take several minutes depending on the number of kelurahan.
-              </p>
+          <CardContent className="pt-6 space-y-3">
+            <div className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+              <span className="text-sm font-medium">
+                Processing batch {Math.ceil(progress.processed / 5)} of {Math.ceil(progress.total / 5)}...
+              </span>
+            </div>
+            <Progress value={progressPercent} className="h-2" />
+            <div className="flex gap-4 text-xs text-muted-foreground">
+              <span className="text-green-600">✓ {progress.created} created</span>
+              <span className="text-orange-500">⊘ {progress.skipped} skipped</span>
+              <span className="text-red-500">✗ {progress.errors} errors</span>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {result && (
+      {result && !isRunning && (
         <Card className="border-green-500/30 bg-green-500/5">
           <CardContent className="pt-6">
             <div className="flex items-start gap-3">
@@ -228,7 +256,7 @@ const SamplePropertyGenerator = () => {
                 <h3 className="font-semibold text-green-700 dark:text-green-300">Generation Complete!</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div className="text-center p-2 rounded bg-background/50">
-                    <p className="text-lg font-bold">{result.totalKelurahan}</p>
+                    <p className="text-lg font-bold">{progress.total}</p>
                     <p className="text-[10px] text-muted-foreground">Kelurahan</p>
                   </div>
                   <div className="text-center p-2 rounded bg-background/50">
