@@ -149,15 +149,16 @@ const IndonesianLocationManager = () => {
     gcTime: 5 * 60 * 1000, // Cache for 5 minutes after fetch
   });
 
-  // Fetch locations (with filters applied)
+  // Fetch locations (with filters applied) - use cascading filters for efficiency
   const { data: locations, isLoading } = useQuery({
-    queryKey: ['locations', searchTerm, selectedProvince, selectedCity],
+    queryKey: ['locations', searchTerm, selectedProvince, selectedCity, selectedDistrict],
     queryFn: async () => {
       let query = supabase
         .from('locations')
         .select('*')
+        .eq('is_active', true)
         .order('province_name', { ascending: true })
-        .limit(50000); // Increased limit for full coverage (Indonesia has ~83,000 kelurahan)
+        .limit(100000);
 
       if (searchTerm) {
         query = query.or(`province_name.ilike.%${searchTerm}%,city_name.ilike.%${searchTerm}%,district_name.ilike.%${searchTerm}%,area_name.ilike.%${searchTerm}%`);
@@ -171,25 +172,79 @@ const IndonesianLocationManager = () => {
         query = query.eq('city_code', selectedCity);
       }
 
+      if (selectedDistrict && selectedDistrict !== 'all') {
+        query = query.eq('district_code', selectedDistrict);
+      }
+
       const { data, error } = await query;
       if (error) throw error;
       return data as Location[];
-    }
+    },
+    staleTime: 0,
+  });
+
+  // Fetch cities for the selected province (for cascading dropdown)
+  const { data: filteredCitiesData } = useQuery({
+    queryKey: ['cities-by-province', selectedProvince],
+    queryFn: async () => {
+      if (!selectedProvince || selectedProvince === 'all') return [];
+      const { data, error } = await supabase
+        .from('locations')
+        .select('city_code, city_name, city_type')
+        .eq('province_code', selectedProvince)
+        .eq('is_active', true)
+        .not('city_code', 'eq', '')
+        .limit(100000);
+      if (error) throw error;
+      const uniqueMap = new Map<string, { code: string; name: string; type: string }>();
+      data?.forEach(l => {
+        if (l.city_code && !uniqueMap.has(l.city_code)) {
+          uniqueMap.set(l.city_code, { code: l.city_code, name: l.city_name, type: l.city_type });
+        }
+      });
+      return Array.from(uniqueMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+    },
+    enabled: !!selectedProvince && selectedProvince !== 'all',
+  });
+
+  // Fetch districts for selected city (for cascading dropdown)
+  const { data: filteredDistrictsData } = useQuery({
+    queryKey: ['districts-by-city', selectedCity],
+    queryFn: async () => {
+      if (!selectedCity || selectedCity === 'all') return [];
+      const { data, error } = await supabase
+        .from('locations')
+        .select('district_code, district_name')
+        .eq('city_code', selectedCity)
+        .eq('is_active', true)
+        .not('district_code', 'is', null)
+        .not('district_code', 'eq', '')
+        .limit(100000);
+      if (error) throw error;
+      const uniqueMap = new Map<string, { code: string; name: string }>();
+      data?.forEach(l => {
+        if (l.district_code && !uniqueMap.has(l.district_code)) {
+          uniqueMap.set(l.district_code, { code: l.district_code, name: l.district_name || '' });
+        }
+      });
+      return Array.from(uniqueMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+    },
+    enabled: !!selectedCity && selectedCity !== 'all',
   });
 
   // Use allProvinceData for accurate province count
   const provinces = allProvinceData || [];
   
-  const uniqueCities = selectedProvince && selectedProvince !== 'all' && locations ?
-    Array.from(new Map(locations.filter(l => l.province_code === selectedProvince).map(l => [l.city_code, { code: l.city_code, name: l.city_name }])).values()) : [];
-  const cities = uniqueCities.sort((a, b) => a.name.localeCompare(b.name));
+  // Use cascading data from dedicated queries
+  const cities = filteredCitiesData || [];
+  const districts = filteredDistrictsData || [];
 
-  // Get all unique cities for cities tab dropdown - exclude province-only entries (empty city_code)
+  // Get all unique cities from loaded data for cities tab
   const allUniqueCities = locations ? 
     Array.from(new Map(locations.filter(l => l.city_code && l.city_code.trim() !== '').map(l => [l.city_code, { code: l.city_code, name: l.city_name, province: l.province_name }])).values()) : [];
   const allCities = allUniqueCities.sort((a, b) => a.name.localeCompare(b.name));
 
-  // Get all unique districts for districts tab dropdown
+  // Get all unique districts from loaded data for districts tab
   const allUniqueDistricts = locations ? 
     Array.from(new Map(locations.filter(l => l.district_code && l.district_name).map(l => [l.district_code, { 
       code: l.district_code!, 
@@ -199,7 +254,7 @@ const IndonesianLocationManager = () => {
     }])).values()) : [];
   const allDistricts = allUniqueDistricts.sort((a, b) => a.name.localeCompare(b.name));
 
-  // Get all unique subdistricts for subdistricts tab dropdown
+  // Get all unique subdistricts from loaded data for subdistricts tab
   const allUniqueSubdistricts = locations ? 
     Array.from(new Map(locations.filter(l => l.subdistrict_code && l.subdistrict_name).map(l => [l.subdistrict_code, { 
       code: l.subdistrict_code!, 
@@ -648,89 +703,93 @@ const IndonesianLocationManager = () => {
             </TabsList>
 
             <div className="flex justify-between items-center">
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-2 items-center">
                 <Input
                   placeholder="Cari lokasi..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-64"
+                  className="w-48"
                 />
-                {activeTab === 'cities' ? (
-                  <Select value={selectedCity} onValueChange={setSelectedCity}>
-                    <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                      <SelectValue placeholder={`Semua Kota/Kabupaten (${allCities.length} total)`} />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
-                      <SelectItem value="all" className="font-medium">
-                        Semua Kota/Kabupaten ({allCities.length} total)
+                {/* Step 1: Province */}
+                <Select value={selectedProvince} onValueChange={(v) => {
+                  setSelectedProvince(v);
+                  setSelectedCity('all');
+                  setSelectedDistrict('all');
+                  setSelectedSubdistrict('all');
+                }}>
+                  <SelectTrigger className="w-48 bg-card border-border">
+                    <SelectValue placeholder={`Provinsi (${locationStats?.provinces ?? 0})`} />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64 overflow-y-auto bg-card border-border z-50">
+                    <SelectItem value="all" className="font-medium">
+                      Semua Provinsi ({locationStats?.provinces ?? provinces.length})
+                    </SelectItem>
+                    {provinces.map((prov) => (
+                      <SelectItem key={prov.code} value={prov.code}>
+                        {prov.name}
                       </SelectItem>
-                      {allCities.map((city) => (
-                        <SelectItem 
-                          key={city.code} 
-                          value={city.code}
-                          className="hover:bg-gray-100 dark:hover:bg-gray-700"
-                        >
-                          {city.name} ({city.province})
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {/* Step 2: City (only when province selected) */}
+                {selectedProvince && selectedProvince !== 'all' && (
+                  <Select value={selectedCity} onValueChange={(v) => {
+                    setSelectedCity(v);
+                    setSelectedDistrict('all');
+                    setSelectedSubdistrict('all');
+                  }}>
+                    <SelectTrigger className="w-52 bg-card border-border">
+                      <SelectValue placeholder={`Kota/Kab (${cities.length})`} />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-64 overflow-y-auto bg-card border-border z-50">
+                      <SelectItem value="all" className="font-medium">
+                        Semua Kota/Kab ({cities.length})
+                      </SelectItem>
+                      {cities.map((city) => (
+                        <SelectItem key={city.code} value={city.code}>
+                          {city.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                ) : activeTab === 'districts' ? (
-                  <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
-                    <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                      <SelectValue placeholder={`Semua Kecamatan (${allDistricts.length} total)`} />
+                )}
+
+                {/* Step 3: District (only when city selected) */}
+                {selectedCity && selectedCity !== 'all' && (
+                  <Select value={selectedDistrict} onValueChange={(v) => {
+                    setSelectedDistrict(v);
+                    setSelectedSubdistrict('all');
+                  }}>
+                    <SelectTrigger className="w-48 bg-card border-border">
+                      <SelectValue placeholder={`Kecamatan (${districts.length})`} />
                     </SelectTrigger>
-                    <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+                    <SelectContent className="max-h-64 overflow-y-auto bg-card border-border z-50">
                       <SelectItem value="all" className="font-medium">
-                        Semua Kecamatan ({allDistricts.length} total)
+                        Semua Kecamatan ({districts.length})
                       </SelectItem>
-                      {allDistricts.map((district) => (
-                        <SelectItem 
-                          key={district.code} 
-                          value={district.code}
-                          className="hover:bg-gray-100 dark:hover:bg-gray-700"
-                        >
-                          {district.name} - {district.city}, {district.province}
+                      {districts.map((d) => (
+                        <SelectItem key={d.code} value={d.code}>
+                          {d.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                ) : activeTab === 'subdistricts' ? (
+                )}
+
+                {/* Step 4: Subdistrict filter (from loaded data) */}
+                {selectedDistrict && selectedDistrict !== 'all' && allSubdistricts.length > 0 && (
                   <Select value={selectedSubdistrict} onValueChange={setSelectedSubdistrict}>
-                    <SelectTrigger className="w-60 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                      <SelectValue placeholder={`Semua Kelurahan/Desa (${allSubdistricts.length} total)`} />
+                    <SelectTrigger className="w-52 bg-card border-border">
+                      <SelectValue placeholder={`Kelurahan (${allSubdistricts.length})`} />
                     </SelectTrigger>
-                    <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+                    <SelectContent className="max-h-64 overflow-y-auto bg-card border-border z-50">
                       <SelectItem value="all" className="font-medium">
-                        Semua Kelurahan/Desa ({allSubdistricts.length} total)
+                        Semua Kelurahan ({allSubdistricts.length})
                       </SelectItem>
-                      {allSubdistricts.map((subdistrict) => (
-                        <SelectItem 
-                          key={subdistrict.code} 
-                          value={subdistrict.code}
-                          className="hover:bg-gray-100 dark:hover:bg-gray-700"
-                        >
-                          {subdistrict.name} - {subdistrict.district}, {subdistrict.city}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-                    <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                      <SelectValue placeholder={`Semua Provinsi (${provinces.length} total)`} />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-64 overflow-y-auto bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
-                      <SelectItem value="all" className="font-medium">
-                        Semua Provinsi ({provinces.length} total)
-                      </SelectItem>
-                      {provinces.map((prov) => (
-                        <SelectItem 
-                          key={prov.code} 
-                          value={prov.code}
-                          className="hover:bg-gray-100 dark:hover:bg-gray-700"
-                        >
-                          {prov.name}
+                      {allSubdistricts.map((s) => (
+                        <SelectItem key={s.code} value={s.code}>
+                          {s.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -1237,7 +1296,7 @@ const IndonesianLocationManager = () => {
                       <CardTitle className="text-sm font-medium text-muted-foreground">Total Provinsi</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{provinces.length}</div>
+                      <div className="text-2xl font-bold text-primary">{locationStats?.provinces ?? provinces.length}</div>
                     </CardContent>
                   </Card>
                   <Card>
@@ -1245,7 +1304,7 @@ const IndonesianLocationManager = () => {
                       <CardTitle className="text-sm font-medium text-muted-foreground">Total Kota/Kabupaten</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{allCities.length}</div>
+                      <div className="text-2xl font-bold text-primary">{locationStats?.cities ?? allCities.length}</div>
                     </CardContent>
                   </Card>
                   <Card>
@@ -1253,7 +1312,7 @@ const IndonesianLocationManager = () => {
                       <CardTitle className="text-sm font-medium text-muted-foreground">Total Kecamatan</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{allDistricts.length}</div>
+                      <div className="text-2xl font-bold text-primary">{locationStats?.districts ?? allDistricts.length}</div>
                     </CardContent>
                   </Card>
                   <Card>
@@ -1261,7 +1320,7 @@ const IndonesianLocationManager = () => {
                       <CardTitle className="text-sm font-medium text-muted-foreground">Total Kelurahan/Desa</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{allSubdistricts.length}</div>
+                      <div className="text-2xl font-bold text-primary">{locationStats?.subdistricts ?? allSubdistricts.length}</div>
                     </CardContent>
                   </Card>
                 </div>
