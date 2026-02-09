@@ -15,9 +15,9 @@ const CrystalLogo3D = ({ logoUrl, className = '', size = 'md' }: CrystalLogo3DPr
   };
 
   const logoSizes = {
-    sm: 'h-7 w-7',
-    md: 'h-9 w-9',
-    lg: 'h-11 w-11',
+    sm: 'h-5 w-5',
+    md: 'h-6 w-6',
+    lg: 'h-8 w-8',
   };
 
   return (
