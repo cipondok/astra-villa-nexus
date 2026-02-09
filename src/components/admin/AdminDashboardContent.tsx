@@ -98,6 +98,7 @@ const TeamManagement = lazy(() => import("./TeamManagement"));
 const ViralGrowthCampaigns = lazy(() => import("./ViralGrowthCampaigns"));
 const MediaCoveragePR = lazy(() => import("./MediaCoveragePR"));
 const ConciergeServiceManagement = lazy(() => import("./ConciergeServiceManagement"));
+const SamplePropertyGenerator = lazy(() => import("./SamplePropertyGenerator"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -203,6 +204,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "viral-growth-campaigns": { label: "Viral Growth Campaigns", category: "Features" },
   "media-coverage-pr": { label: "Media Coverage & PR", category: "Features" },
   "concierge-service": { label: "Concierge Service", category: "Features" },
+  "sample-property-generator": { label: "Sample Property Generator", category: "Property System" },
 };
 
 // Loading fallback component
@@ -474,6 +476,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <MediaCoveragePR />;
       case "concierge-service":
         return <ConciergeServiceManagement />;
+      case "sample-property-generator":
+        return <SamplePropertyGenerator />;
       default:
         return <AdminOverview />;
     }
