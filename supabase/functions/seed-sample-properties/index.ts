@@ -17,7 +17,6 @@ const PROPERTY_TYPES = [
 
 const LISTING_TYPES = ['sale', 'rent'];
 
-// Price ranges by property type (in IDR)
 const PRICE_RANGES: Record<string, { min: number; max: number }> = {
   house: { min: 500_000_000, max: 5_000_000_000 },
   apartment: { min: 300_000_000, max: 3_000_000_000 },
@@ -50,6 +49,8 @@ const AREA_RANGES: Record<string, { min: number; max: number }> = {
   warehouse: { min: 200, max: 2000 },
   kost: { min: 100, max: 500 },
 };
+
+const BATCH_SIZE = 5; // kelurahan per invocation
 
 function randomBetween(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -113,7 +114,6 @@ serve(async (req) => {
   }
 
   try {
-    // Verify admin authentication
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Authentication required' }),
@@ -129,10 +129,8 @@ serve(async (req) => {
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Use service role for DB operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Check admin
     const { data: adminData } = await supabase
       .from('admin_users')
       .select('id')
@@ -144,16 +142,16 @@ serve(async (req) => {
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const { province, skipExisting } = await req.json();
+    const { province, skipExisting, offset = 0 } = await req.json();
 
     if (!province) {
       return new Response(JSON.stringify({ error: 'Province is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    console.log(`Seeding properties for province: ${province}`);
+    console.log(`Seeding properties for province: ${province}, offset: ${offset}, batch: ${BATCH_SIZE}`);
 
-    // Get all kelurahan/desa for this province
+    // Get all kelurahan for this province
     const { data: locations, error: locError } = await supabase
       .from('locations')
       .select('province_name, city_name, district_name, subdistrict_name')
@@ -162,34 +160,35 @@ serve(async (req) => {
       .not('subdistrict_name', 'is', null);
 
     if (locError || !locations || locations.length === 0) {
-      return new Response(JSON.stringify({ error: 'No kelurahan found for this province', details: locError?.message }),
+      return new Response(JSON.stringify({ error: 'No kelurahan found for this province' }),
         { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Deduplicate by subdistrict
+    // Deduplicate
     const uniqueLocations = new Map<string, typeof locations[0]>();
     for (const loc of locations) {
       const key = `${loc.province_name}-${loc.city_name}-${loc.district_name}-${loc.subdistrict_name}`;
-      if (!uniqueLocations.has(key)) {
-        uniqueLocations.set(key, loc);
-      }
+      if (!uniqueLocations.has(key)) uniqueLocations.set(key, loc);
     }
 
-    const kelurahanList = Array.from(uniqueLocations.values());
-    console.log(`Found ${kelurahanList.length} unique kelurahan in ${province}`);
+    const allKelurahan = Array.from(uniqueLocations.values());
+    const totalKelurahan = allKelurahan.length;
+
+    // Slice the batch
+    const batch = allKelurahan.slice(offset, offset + BATCH_SIZE);
+    const hasMore = offset + BATCH_SIZE < totalKelurahan;
+    const nextOffset = offset + BATCH_SIZE;
+
+    console.log(`Processing batch: ${batch.length} kelurahan (${offset}-${offset + batch.length} of ${totalKelurahan})`);
 
     let created = 0;
     let skipped = 0;
     let errors = 0;
-    const totalExpected = kelurahanList.length * PROPERTY_TYPES.length;
 
-    // Process each kelurahan
-    for (const loc of kelurahanList) {
+    for (const loc of batch) {
       for (const propertyType of PROPERTY_TYPES) {
         try {
-          // Check if property already exists for this kelurahan + type
           if (skipExisting) {
-            const locationStr = `${loc.subdistrict_name}, ${loc.district_name}, ${loc.city_name}, ${loc.province_name}`;
             const { data: existing } = await supabase
               .from('properties')
               .select('id')
@@ -207,26 +206,22 @@ serve(async (req) => {
           const title = generateTitle(propertyType, loc.subdistrict_name!);
           const listingType = pickRandom(LISTING_TYPES);
           const priceRange = PRICE_RANGES[propertyType];
-          const price = listingType === 'rent' 
-            ? randomBetween(priceRange.min / 100, priceRange.max / 100) 
+          const price = listingType === 'rent'
+            ? randomBetween(priceRange.min / 100, priceRange.max / 100)
             : randomBetween(priceRange.min, priceRange.max);
           const bedrooms = pickRandom(BEDROOMS[propertyType] || [0]);
           const bathrooms = propertyType === 'land' || propertyType === 'warehouse' ? 0 : Math.max(1, bedrooms - 1);
           const areaRange = AREA_RANGES[propertyType];
           const areaSqm = randomBetween(areaRange.min, areaRange.max);
 
-          // Generate AI image
           const imagePrompt = `Generate a realistic exterior photo of a ${propertyType} property in Indonesia, ${loc.city_name}, ${loc.province_name}. Modern Indonesian architecture, tropical setting, high quality real estate photo.`;
-          
+
           let imageUrl: string | null = null;
           try {
             imageUrl = await generateAIImage(imagePrompt);
           } catch (imgErr) {
             console.error(`Image generation failed for ${title}:`, imgErr);
           }
-
-          // Add small delay to avoid rate limiting on AI
-          await new Promise(resolve => setTimeout(resolve, 500));
 
           const propertyData = {
             owner_id: user.id,
@@ -266,24 +261,25 @@ serve(async (req) => {
       }
     }
 
-    console.log(`Seeding complete: ${created} created, ${skipped} skipped, ${errors} errors out of ${totalExpected} expected`);
+    console.log(`Batch complete: ${created} created, ${skipped} skipped, ${errors} errors`);
 
     return new Response(JSON.stringify({
       success: true,
       province,
-      totalKelurahan: kelurahanList.length,
-      totalExpected,
+      totalKelurahan,
+      batchProcessed: batch.length,
+      offset,
+      nextOffset: hasMore ? nextOffset : null,
+      hasMore,
       created,
       skipped,
-      errors
+      errors,
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Error in seed-sample-properties:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(JSON.stringify({ error: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
 });
