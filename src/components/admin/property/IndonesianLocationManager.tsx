@@ -1105,32 +1105,25 @@ const IndonesianLocationManager = () => {
                     </TableRow>
                   ) : (
                     (() => {
-                      const allProvs = Array.from(new Map(locations?.map(l => [l.province_code, l])).values());
+                      const allProvs = allProvinceData || [];
                       const paginated = allProvs.slice((provincePage - 1) * PAGE_SIZE, provincePage * PAGE_SIZE);
-                      return paginated.map((location) => (
-                      <TableRow key={location.province_code}>
-                        <TableCell className="font-mono">{location.province_code}</TableCell>
-                        <TableCell className="font-medium">{location.province_name}</TableCell>
+                      return paginated.map((prov) => (
+                      <TableRow key={prov.code}>
+                        <TableCell className="font-mono">{prov.code}</TableCell>
+                        <TableCell className="font-medium">{prov.name}</TableCell>
                         <TableCell>
-                          {locations?.filter(l => l.province_code === location.province_code && l.city_code).length || 0} kota/kab
+                          {locations?.filter(l => l.province_code === prov.code && l.city_code).length || '-'}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={location.is_active ? "default" : "secondary"}>
-                            {location.is_active ? 'Aktif' : 'Nonaktif'}
-                          </Badge>
+                          <Badge variant="default">Aktif</Badge>
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => handleEdit(location)}>
+                            <Button variant="ghost" size="sm" onClick={() => {
+                              const loc = locations?.find(l => l.province_code === prov.code);
+                              if (loc) handleEdit(loc);
+                            }}>
                               <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-destructive"
-                              onClick={() => deleteLocationMutation.mutate(location.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </TableCell>
@@ -1141,7 +1134,7 @@ const IndonesianLocationManager = () => {
                 </TableBody>
               </Table>
               {renderPagination(
-                Array.from(new Map(locations?.map(l => [l.province_code, l])).values()).length,
+                (allProvinceData || []).length,
                 provincePage, setProvincePage
               )}
             </TabsContent>
