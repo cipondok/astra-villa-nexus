@@ -226,7 +226,7 @@ serve(async (req) => {
             approval_status: 'approved',
             state: loc.province_name,
             city: loc.city_name,
-            development_status: 'existing',
+            development_status: 'completed',
           };
 
           const { error: insertError } = await supabase
