@@ -46,6 +46,9 @@ interface Property {
   status: string;
   created_at: string;
   owner_id: string;
+  images: any;
+  image_urls: any;
+  thumbnail_url: string;
   posted_by?: Array<{
     phone?: string;
     full_name?: string;
@@ -483,9 +486,41 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                           className="bg-white shadow-sm h-3.5 w-3.5"
                         />
                       </div>
-                      <div className="aspect-[4/3] bg-gradient-to-br from-primary/10 to-primary/5 rounded overflow-hidden flex items-center justify-center">
-                        <Building2 className="h-6 w-6 text-primary/30" />
-                      </div>
+                      {(() => {
+                        const imgSrc = (() => {
+                          if (property.thumbnail_url) return property.thumbnail_url;
+                          if (Array.isArray(property.images) && property.images.length > 0) return property.images[0];
+                          if (typeof property.images === 'string' && (property.images as string).startsWith('http')) return property.images;
+                          if (Array.isArray(property.image_urls) && property.image_urls.length > 0) return property.image_urls[0];
+                          return null;
+                        })();
+                        const imgCount = (Array.isArray(property.images) ? property.images.length : 0) + 
+                          (Array.isArray(property.image_urls) ? property.image_urls.length : 0);
+                        return (
+                          <div className="aspect-[4/3] bg-gradient-to-br from-primary/10 to-primary/5 rounded overflow-hidden relative">
+                            {imgSrc ? (
+                              <img 
+                                src={imgSrc} 
+                                alt={property.title} 
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  target.nextElementSibling?.classList.remove('hidden');
+                                }}
+                              />
+                            ) : null}
+                            <div className={`${imgSrc ? 'hidden' : ''} absolute inset-0 flex items-center justify-center`}>
+                              <Building2 className="h-6 w-6 text-primary/30" />
+                            </div>
+                            {imgCount > 1 && (
+                              <div className="absolute bottom-1 right-1 bg-black/60 text-white text-[8px] px-1 py-0.5 rounded">
+                                📷 {imgCount}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     {/* Property Info */}

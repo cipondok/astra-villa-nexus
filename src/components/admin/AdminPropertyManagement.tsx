@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter, Globe, Link2 } from "lucide-react";
+import { Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter, Globe, Link2, Image as ImageIcon } from "lucide-react";
 import SimplePropertyManagement from "./SimplePropertyManagement";
 import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
@@ -17,6 +17,7 @@ import AdminAccessChecker from "./AdminAccessChecker";
 import PropertyFilterSettings from "./settings/PropertyFilterSettings";
 import IndonesianLocationManager from "./property/IndonesianLocationManager";
 import CentralLocationSettings from "./location/CentralLocationSettings";
+import PropertyImageManager from "./PropertyImageManager";
 
 const AdminPropertyManagement = () => {
   const [activeTab, setActiveTab] = useState("properties");
@@ -90,6 +91,13 @@ const AdminPropertyManagement = () => {
             >
               <Plus className="h-3 w-3" />
               <span className="hidden sm:inline">Add</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="images" 
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              <ImageIcon className="h-3 w-3" />
+              <span className="hidden sm:inline">Images</span>
             </TabsTrigger>
             <TabsTrigger 
               value="slide-settings" 
@@ -168,6 +176,10 @@ const AdminPropertyManagement = () => {
 
         <TabsContent value="slide-settings" className="mt-3">
           <PropertySlideSettings />
+        </TabsContent>
+
+        <TabsContent value="images" className="mt-3">
+          <PropertyImageManager />
         </TabsContent>
 
         <TabsContent value="display-settings" className="mt-3">
