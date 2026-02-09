@@ -335,10 +335,10 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button
-              size="lg"
-              className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg hover:shadow-xl transition-all duration-300 group border-2 border-white/30"
+              size="sm"
+              className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-green-500 hover:bg-green-600 shadow-lg hover:shadow-xl transition-all duration-300 group border-2 border-white/30 p-0"
             >
-              <MessageCircle className="h-5 w-5 md:h-6 md:w-6 text-white group-hover:scale-110 transition-transform" />
+              <MessageCircle className="h-4 w-4 md:h-4.5 md:w-4.5 text-white group-hover:scale-110 transition-transform" />
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto bg-background/20 backdrop-blur-2xl border-white/30">
