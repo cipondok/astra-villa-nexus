@@ -240,6 +240,13 @@ export const navigationSections = {
       label: "Notifications Center",
       icon: Bell,
       description: "View and manage all system notifications and alerts"
+    },
+    {
+      key: "sample-property-generator",
+      label: "Sample Property Generator",
+      icon: Sparkles,
+      description: "Generate sample properties with AI images for each kelurahan/desa",
+      badge: "New"
     }
   ],
 
