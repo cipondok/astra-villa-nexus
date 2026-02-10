@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter, Globe, Link2, Image as ImageIcon } from "lucide-react";
+import { Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter, Link2, Image as ImageIcon } from "lucide-react";
 import SimplePropertyManagement from "./SimplePropertyManagement";
 import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
@@ -148,13 +148,6 @@ const AdminPropertyManagement = () => {
               <Filter className="h-3 w-3" />
               <span className="hidden sm:inline">Filters</span>
             </TabsTrigger>
-            <TabsTrigger 
-              value="global" 
-              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-            >
-              <Globe className="h-3 w-3" />
-              <span className="hidden sm:inline">Global</span>
-            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -207,12 +200,6 @@ const AdminPropertyManagement = () => {
 
         <TabsContent value="filters" className="mt-3">
           <PropertyFilterSettings />
-        </TabsContent>
-
-        <TabsContent value="global" className="mt-3">
-          <div className="space-y-4">
-            <PropertyFilterSettings />
-          </div>
         </TabsContent>
       </Tabs>
     </div>
