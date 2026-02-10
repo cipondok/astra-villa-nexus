@@ -87,14 +87,18 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
   // Check if user is admin (server-validated via RLS)
   const { isAdmin } = useIsAdmin();
 
-  // Fetch properties with enhanced filtering
-  const { data: allProperties = [], isLoading, error, refetch } = useQuery({
-    queryKey: ['simple-properties', searchTerm, propertyTypeFilter, statusFilter, listingTypeFilter, cityFilter, vendorIdFilter],
+  // Fetch properties with server-side pagination
+  const { data: queryResult, isLoading, error, refetch } = useQuery({
+    queryKey: ['simple-properties', searchTerm, propertyTypeFilter, statusFilter, listingTypeFilter, cityFilter, vendorIdFilter, currentPage],
     queryFn: async () => {
+      const from = (currentPage - 1) * itemsPerPage;
+      const to = from + itemsPerPage - 1;
+
       let query = supabase
         .from('properties')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(from, to);
 
       // Apply filters
       if (searchTerm.trim()) {
@@ -121,7 +125,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
         query = query.eq('owner_id', vendorIdFilter);
       }
 
-      const { data: properties, error } = await query;
+      const { data: properties, error, count } = await query;
       
       if (error) {
         throw error;
@@ -135,25 +139,22 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
           .select('id, phone, full_name')
           .in('id', ownerIds);
 
-        // Map profile data to properties
         const propertiesWithProfiles = properties.map(property => ({
           ...property,
           posted_by: profiles?.filter(p => p.id === property.owner_id) || []
         }));
 
-        return propertiesWithProfiles;
+        return { properties: propertiesWithProfiles, totalCount: count || 0 };
       }
       
-      return [];
+      return { properties: [], totalCount: count || 0 };
     },
     enabled: !!user && isAdmin,
   });
 
-  // Pagination calculations
-  const totalPages = Math.ceil(allProperties.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const properties = allProperties.slice(startIndex, endIndex);
+  const properties = queryResult?.properties || [];
+  const totalCount = queryResult?.totalCount || 0;
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   // Reset to first page when filters change
   useEffect(() => {
@@ -248,7 +249,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
       const { error } = await supabase
         .from('profiles')
         .update({ phone: whatsappValue })
-        .eq('id', allProperties.find(p => p.id === propertyId)?.owner_id);
+        .eq('id', properties.find(p => p.id === propertyId)?.owner_id);
       
       if (error) throw error;
       
@@ -332,7 +333,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
             Property Management
           </h2>
           <p className="text-[10px] text-muted-foreground">
-            {allProperties.length} total • Showing {startIndex + 1}-{Math.min(endIndex, allProperties.length)} • Page {currentPage}
+            {totalCount.toLocaleString()} total • Showing {((currentPage - 1) * itemsPerPage) + 1}-{Math.min(currentPage * itemsPerPage, totalCount)} • Page {currentPage}
           </p>
         </div>
         <Button onClick={onAddProperty} size="sm" className="h-7 text-xs">
@@ -446,14 +447,14 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
       <PropertyBulkActions
         selectedProperties={Array.from(selectedProperties)}
         onClearSelection={() => setSelectedProperties(new Set())}
-        totalProperties={allProperties.length}
+        totalProperties={totalCount}
       />
 
       {/* Properties Grid - Slim Style */}
       <Card className="bg-card/50 backdrop-blur-sm border-border/50">
         <CardHeader className="pb-2 pt-3 px-3">
           <CardTitle className="flex items-center justify-between text-xs">
-            <span>Properties ({allProperties.length} total, {properties.length} showing)</span>
+            <span>Properties ({totalCount.toLocaleString()} total, {properties.length} showing)</span>
             <span className="text-[10px] text-muted-foreground font-normal">
               Page {currentPage} of {totalPages}
             </span>
@@ -705,7 +706,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
             </Button>
             
             <span className="text-[10px] text-muted-foreground ml-2">
-              {startIndex + 1}-{Math.min(endIndex, allProperties.length)} of {allProperties.length}
+              {((currentPage - 1) * itemsPerPage) + 1}-{Math.min(currentPage * itemsPerPage, totalCount)} of {totalCount.toLocaleString()}
             </span>
           </div>
         )}
