@@ -475,6 +475,13 @@ export const navigationSections = {
       label: "Billing Management",
       icon: ShoppingBag,
       description: "Manage billing and subscription settings"
+    },
+    {
+      key: "verification-system-settings",
+      label: "Verification System",
+      icon: Shield,
+      description: "Configure verification steps, tier requirements, and auto-approve rules for all roles",
+      badge: "New"
     }
   ],
 
