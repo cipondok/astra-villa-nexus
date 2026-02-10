@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Label } from "@/components/ui/label";
@@ -91,109 +91,118 @@ const LocationSelector = ({
     }
   }[language];
 
-  // Fetch all locations
-  const { data: locations } = useQuery({
-    queryKey: ['locations'],
+  // Fetch provinces (distinct list)
+  const { data: provinces = [] } = useQuery({
+    queryKey: ['location-provinces'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('locations')
-        .select('province_name, city_name, district_name, subdistrict_name')
-        .eq('is_active', true);
+        .select('province_name')
+        .eq('is_active', true)
+        .not('province_name', 'is', null)
+        .not('province_name', 'eq', '');
       
       if (error) throw error;
-      return data || [];
+      const unique = new Map<string, string>();
+      (data || []).forEach(loc => {
+        if (loc.province_name) {
+          const normalized = normalizeText(loc.province_name);
+          const key = normalizeKey(loc.province_name);
+          if (!unique.has(key)) unique.set(key, normalized);
+        }
+      });
+      return Array.from(unique.values()).sort((a, b) => a.localeCompare(b, 'id'));
     },
-    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
+    staleTime: 10 * 60 * 1000,
   });
 
-  // Normalize and deduplicate provinces
-  const provinces = useMemo(() => {
-    if (!locations) return [];
-    const uniqueProvinces = new Map<string, string>();
-    locations.forEach(loc => {
-      if (loc.province_name) {
-        const normalized = normalizeText(loc.province_name);
-        const key = normalizeKey(loc.province_name);
-        if (!uniqueProvinces.has(key)) {
-          uniqueProvinces.set(key, normalized);
-        }
-      }
-    });
-    return Array.from(uniqueProvinces.values()).sort((a, b) => a.localeCompare(b, 'id'));
-  }, [locations]);
-
-  // Get cities for selected province
-  const cities = useMemo(() => {
-    if (!locations || !selectedState) return [];
-    const stateKey = normalizeKey(selectedState);
-    const uniqueCities = new Map<string, string>();
-
-    locations
-      .filter(loc => (loc.province_name ? normalizeKey(loc.province_name) === stateKey : false))
-      .forEach(loc => {
+  // Fetch cities for selected province
+  const { data: cities = [] } = useQuery({
+    queryKey: ['location-cities', selectedState],
+    queryFn: async () => {
+      if (!selectedState) return [];
+      const { data, error } = await supabase
+        .from('locations')
+        .select('city_name')
+        .eq('is_active', true)
+        .ilike('province_name', selectedState)
+        .not('city_name', 'is', null)
+        .not('city_name', 'eq', '');
+      
+      if (error) throw error;
+      const unique = new Map<string, string>();
+      (data || []).forEach(loc => {
         if (loc.city_name) {
           const normalized = normalizeText(loc.city_name);
           const key = normalizeKey(loc.city_name);
-          if (!uniqueCities.has(key)) {
-            uniqueCities.set(key, normalized);
-          }
+          if (!unique.has(key)) unique.set(key, normalized);
         }
       });
+      return Array.from(unique.values()).sort((a, b) => a.localeCompare(b, 'id'));
+    },
+    enabled: !!selectedState,
+    staleTime: 10 * 60 * 1000,
+  });
 
-    return Array.from(uniqueCities.values()).sort((a, b) => a.localeCompare(b, 'id'));
-  }, [locations, selectedState]);
-
-  // Get districts for selected city
-  const districts = useMemo(() => {
-    if (!locations || !selectedState || !selectedCity) return [];
-    const stateKey = normalizeKey(selectedState);
-    const cityKey = normalizeKey(selectedCity);
-
-    const uniqueDistricts = new Map<string, string>();
-    locations
-      .filter(loc =>
-        (loc.province_name ? normalizeKey(loc.province_name) === stateKey : false) &&
-        (loc.city_name ? normalizeKey(loc.city_name) === cityKey : false)
-      )
-      .forEach(loc => {
+  // Fetch districts for selected city
+  const { data: districts = [] } = useQuery({
+    queryKey: ['location-districts', selectedState, selectedCity],
+    queryFn: async () => {
+      if (!selectedState || !selectedCity) return [];
+      const { data, error } = await supabase
+        .from('locations')
+        .select('district_name')
+        .eq('is_active', true)
+        .ilike('province_name', selectedState)
+        .ilike('city_name', selectedCity)
+        .not('district_name', 'is', null)
+        .not('district_name', 'eq', '');
+      
+      if (error) throw error;
+      const unique = new Map<string, string>();
+      (data || []).forEach(loc => {
         if (loc.district_name) {
           const normalized = normalizeText(loc.district_name);
           const key = normalizeKey(loc.district_name);
-          if (!uniqueDistricts.has(key)) {
-            uniqueDistricts.set(key, normalized);
-          }
+          if (!unique.has(key)) unique.set(key, normalized);
         }
       });
+      return Array.from(unique.values()).sort((a, b) => a.localeCompare(b, 'id'));
+    },
+    enabled: !!selectedState && !!selectedCity,
+    staleTime: 10 * 60 * 1000,
+  });
 
-    return Array.from(uniqueDistricts.values()).sort((a, b) => a.localeCompare(b, 'id'));
-  }, [locations, selectedState, selectedCity]);
-
-  // Get subdistricts for selected district
-  const subdistricts = useMemo(() => {
-    if (!locations || !selectedState || !selectedCity || !selectedDistrict) return [];
-    const stateKey = normalizeKey(selectedState);
-    const cityKey = normalizeKey(selectedCity);
-    const districtKey = normalizeKey(selectedDistrict);
-
-    const uniqueSubdistricts = new Map<string, string>();
-    locations
-      .filter(loc =>
-        (loc.province_name ? normalizeKey(loc.province_name) === stateKey : false) &&
-        (loc.city_name ? normalizeKey(loc.city_name) === cityKey : false) &&
-        (loc.district_name ? normalizeKey(loc.district_name) === districtKey : false)
-      )
-      .forEach(loc => {
+  // Fetch subdistricts for selected district
+  const { data: subdistricts = [] } = useQuery({
+    queryKey: ['location-subdistricts', selectedState, selectedCity, selectedDistrict],
+    queryFn: async () => {
+      if (!selectedState || !selectedCity || !selectedDistrict) return [];
+      const { data, error } = await supabase
+        .from('locations')
+        .select('subdistrict_name')
+        .eq('is_active', true)
+        .ilike('province_name', selectedState)
+        .ilike('city_name', selectedCity)
+        .ilike('district_name', selectedDistrict)
+        .not('subdistrict_name', 'is', null)
+        .not('subdistrict_name', 'eq', '');
+      
+      if (error) throw error;
+      const unique = new Map<string, string>();
+      (data || []).forEach(loc => {
         if (loc.subdistrict_name) {
           const normalized = normalizeText(loc.subdistrict_name);
           const key = normalizeKey(loc.subdistrict_name);
-          if (!uniqueSubdistricts.has(key)) {
-            uniqueSubdistricts.set(key, normalized);
-          }
+          if (!unique.has(key)) unique.set(key, normalized);
         }
       });
+      return Array.from(unique.values()).sort((a, b) => a.localeCompare(b, 'id'));
+    },
+    enabled: !!selectedState && !!selectedCity && !!selectedDistrict,
+    staleTime: 10 * 60 * 1000,
+  });
 
-    return Array.from(uniqueSubdistricts.values()).sort((a, b) => a.localeCompare(b, 'id'));
-  }, [locations, selectedState, selectedCity, selectedDistrict]);
 
   // Update location string when selections change (prevent infinite loop)
   useEffect(() => {

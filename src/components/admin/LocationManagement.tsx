@@ -100,6 +100,9 @@ const LocationManagement = () => {
   const [locationToDelete, setLocationToDelete] = useState<Location | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncMode, setSyncMode] = useState<'full' | 'districts'>('districts');
+  const [villageSyncProvince, setVillageSyncProvince] = useState<string>('');
+  const [villageSyncProgress, setVillageSyncProgress] = useState<string[]>([]);
+  const [isSyncingVillages, setIsSyncingVillages] = useState(false);
   
   const queryClient = useQueryClient();
 
@@ -361,6 +364,7 @@ const LocationManagement = () => {
           description: `Provinces: ${data.stats.provinces}, Cities: ${data.stats.cities}, Districts: ${data.stats.districts}, Villages: ${data.stats.villages}`
         });
         queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
+        queryClient.invalidateQueries({ queryKey: ['locations'] });
       } else {
         throw new Error(data?.error || 'Sync failed');
       }
@@ -369,6 +373,74 @@ const LocationManagement = () => {
       toast.error('Sync failed', { description: err.message });
     } finally {
       setIsSyncing(false);
+    }
+  };
+
+  // Sync villages (4th level) for a specific province - city by city
+  const handleSyncVillages = async (provinceCode: string) => {
+    setIsSyncingVillages(true);
+    setVillageSyncProgress([]);
+    
+    try {
+      // Step 1: Get list of cities for this province
+      setVillageSyncProgress(prev => [...prev, 'Mengambil daftar kota/kabupaten...']);
+      const { data: provinceData, error: provinceError } = await supabase.functions.invoke('sync-indonesia-locations', {
+        body: { mode: 'single-province', provinceId: provinceCode, includeVillages: true }
+      });
+
+      if (provinceError) throw provinceError;
+
+      if (provinceData?.requiresCitySync && provinceData?.cities) {
+        const cities = provinceData.cities;
+        setVillageSyncProgress(prev => [...prev, `Ditemukan ${cities.length} kota/kabupaten. Mulai sync kelurahan...`]);
+
+        let totalVillages = 0;
+        let totalErrors = 0;
+
+        // Step 2: Sync each city one by one
+        for (let i = 0; i < cities.length; i++) {
+          const city = cities[i];
+          setVillageSyncProgress(prev => [...prev, `[${i + 1}/${cities.length}] Sync ${city.name}...`]);
+
+          try {
+            const { data: cityData, error: cityError } = await supabase.functions.invoke('sync-indonesia-locations', {
+              body: { 
+                mode: 'single-city', 
+                provinceId: provinceCode, 
+                cityId: city.id, 
+                includeVillages: true 
+              }
+            });
+
+            if (cityError) throw cityError;
+
+            if (cityData?.success) {
+              totalVillages += cityData.stats?.villages || 0;
+              setVillageSyncProgress(prev => [...prev, `  ✓ ${city.name}: ${cityData.stats?.villages || 0} kelurahan/desa`]);
+            } else {
+              throw new Error(cityData?.error || 'Failed');
+            }
+          } catch (cityErr: any) {
+            totalErrors++;
+            setVillageSyncProgress(prev => [...prev, `  ✗ ${city.name}: ${cityErr.message}`]);
+          }
+        }
+
+        setVillageSyncProgress(prev => [...prev, `Selesai! Total: ${totalVillages} kelurahan/desa, ${totalErrors} error`]);
+        toast.success(`Village sync completed for ${provinceData.province}`, {
+          description: `${totalVillages} villages synced, ${totalErrors} errors`
+        });
+        queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
+        queryClient.invalidateQueries({ queryKey: ['locations'] });
+      } else {
+        throw new Error('Unexpected response from server');
+      }
+    } catch (err: any) {
+      console.error('Village sync error:', err);
+      toast.error('Village sync failed', { description: err.message });
+      setVillageSyncProgress(prev => [...prev, `Error: ${err.message}`]);
+    } finally {
+      setIsSyncingVillages(false);
     }
   };
 
@@ -479,6 +551,59 @@ const LocationManagement = () => {
                 </DialogTrigger>
               </Dialog>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Village Sync Panel */}
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardContent className="p-3">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <TreePine className="h-3.5 w-3.5 text-primary" />
+              <span className="text-[10px] font-medium">Sync Kelurahan/Desa (4th Level)</span>
+            </div>
+            <div className="flex flex-col md:flex-row gap-1.5 items-start md:items-center">
+              <Select value={villageSyncProvince} onValueChange={setVillageSyncProvince}>
+                <SelectTrigger className="h-7 text-[10px] w-full md:w-48 bg-background/50 border-border/50">
+                  <SelectValue placeholder="Select Province" />
+                </SelectTrigger>
+                <SelectContent className="max-h-64 overflow-y-auto">
+                  {provinces.map(province => {
+                    // Find province code from locations
+                    const loc = locations.find(l => l.province_name === province);
+                    return loc ? (
+                      <SelectItem key={loc.province_code} value={loc.province_code} className="text-[10px]">
+                        {province}
+                      </SelectItem>
+                    ) : null;
+                  })}
+                </SelectContent>
+              </Select>
+              <Button
+                variant="default"
+                size="sm"
+                className="h-7 text-[10px] gap-1"
+                disabled={!villageSyncProvince || isSyncingVillages}
+                onClick={() => handleSyncVillages(villageSyncProvince)}
+              >
+                {isSyncingVillages ? (
+                  <RefreshCw className="h-3 w-3 animate-spin" />
+                ) : (
+                  <CloudDownload className="h-3 w-3" />
+                )}
+                {isSyncingVillages ? 'Syncing Villages...' : 'Sync Villages'}
+              </Button>
+            </div>
+            {villageSyncProgress.length > 0 && (
+              <div className="mt-1 max-h-32 overflow-y-auto bg-muted/50 rounded p-2 text-[9px] font-mono space-y-0.5">
+                {villageSyncProgress.map((msg, i) => (
+                  <div key={i} className={msg.includes('✗') ? 'text-destructive' : msg.includes('✓') ? 'text-primary' : 'text-muted-foreground'}>
+                    {msg}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
