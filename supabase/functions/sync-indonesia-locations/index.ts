@@ -255,15 +255,45 @@ Deno.serve(async (req) => {
       stats.cities = 1;
       progress.push(`Menyimpan ${locationBatch.length} lokasi...`);
 
+      // Delete old district-only records for this city before inserting village-level data
+      if (includeVillages && locationBatch.length > 0) {
+        const { error: delError } = await supabase
+          .from('locations')
+          .delete()
+          .eq('province_code', provinceId)
+          .eq('city_code', cityId)
+          .is('subdistrict_code', null);
+        
+        if (delError) {
+          console.error('Error deleting old district records:', delError);
+        } else {
+          progress.push('Menghapus data kecamatan lama (tanpa kelurahan)...');
+        }
+
+        // Also delete records with empty subdistrict_code
+        await supabase
+          .from('locations')
+          .delete()
+          .eq('province_code', provinceId)
+          .eq('city_code', cityId)
+          .eq('subdistrict_code', '');
+      }
+
       // Batch insert in chunks of 300 (smaller for stability)
       for (let i = 0; i < locationBatch.length; i += 300) {
         const chunk = locationBatch.slice(i, i + 300);
-        const { error } = await supabase.from('locations').upsert(chunk, {
-          onConflict: 'province_code,city_code,district_code,subdistrict_code',
-        });
+        const { error } = await supabase.from('locations').insert(chunk);
         if (error) {
-          console.error(`Batch insert error:`, error);
-          stats.errors++;
+          // Try upsert as fallback
+          const { error: upsertError } = await supabase.from('locations').upsert(chunk, {
+            onConflict: 'province_code,city_code,district_code,subdistrict_code',
+          });
+          if (upsertError) {
+            console.error(`Batch insert error:`, upsertError);
+            stats.errors++;
+          } else {
+            stats.inserted += chunk.length;
+          }
         } else {
           stats.inserted += chunk.length;
         }
