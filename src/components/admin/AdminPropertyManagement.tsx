@@ -208,6 +208,12 @@ const AdminPropertyManagement = () => {
         <TabsContent value="filters" className="mt-3">
           <PropertyFilterSettings />
         </TabsContent>
+
+        <TabsContent value="global" className="mt-3">
+          <div className="space-y-4">
+            <PropertyFilterSettings />
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   );
