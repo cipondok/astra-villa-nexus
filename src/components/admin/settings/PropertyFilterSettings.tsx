@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Filter, Plus, Edit2, Trash2, Save, Home, ShoppingCart, X, GripVertical, ChevronDown, ChevronUp, Eye, EyeOff, Copy, AlertCircle } from 'lucide-react';
+import { Filter, Plus, Edit2, Trash2, Save, Home, ShoppingCart, X, GripVertical, ChevronDown, ChevronUp, Copy, AlertCircle, Settings2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -33,7 +33,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface FilterConfiguration {
   id?: string;
@@ -54,43 +53,34 @@ interface FilterConfiguration {
 }
 
 const FILTER_CATEGORIES = [
-  { value: 'search', label: '🔍 Search', color: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30' },
-  { value: 'location', label: '📍 Location', color: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30' },
-  { value: 'price', label: '💰 Price', color: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30' },
-  { value: 'specifications', label: '📐 Specifications', color: 'bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/30' },
-  { value: 'investment', label: '📈 Investment', color: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30' },
-  { value: 'rental_terms', label: '📋 Rental Terms', color: 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border-cyan-500/30' },
-  { value: 'facilities', label: '🏊 Facilities', color: 'bg-pink-500/10 text-pink-700 dark:text-pink-400 border-pink-500/30' },
+  { value: 'search', label: 'Search', emoji: '🔍', bg: 'bg-blue-500/10 dark:bg-blue-500/20', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-500/30' },
+  { value: 'location', label: 'Location', emoji: '📍', bg: 'bg-green-500/10 dark:bg-green-500/20', text: 'text-green-700 dark:text-green-300', border: 'border-green-500/30' },
+  { value: 'price', label: 'Price', emoji: '💰', bg: 'bg-amber-500/10 dark:bg-amber-500/20', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-500/30' },
+  { value: 'specifications', label: 'Specs', emoji: '📐', bg: 'bg-purple-500/10 dark:bg-purple-500/20', text: 'text-purple-700 dark:text-purple-300', border: 'border-purple-500/30' },
+  { value: 'investment', label: 'Investment', emoji: '📈', bg: 'bg-emerald-500/10 dark:bg-emerald-500/20', text: 'text-emerald-700 dark:text-emerald-300', border: 'border-emerald-500/30' },
+  { value: 'rental_terms', label: 'Rental', emoji: '📋', bg: 'bg-cyan-500/10 dark:bg-cyan-500/20', text: 'text-cyan-700 dark:text-cyan-300', border: 'border-cyan-500/30' },
+  { value: 'facilities', label: 'Facilities', emoji: '🏊', bg: 'bg-pink-500/10 dark:bg-pink-500/20', text: 'text-pink-700 dark:text-pink-300', border: 'border-pink-500/30' },
 ];
 
 const FILTER_TYPES = [
   { value: 'select', label: 'Dropdown', icon: '▾' },
-  { value: 'range', label: 'Range Slider', icon: '↔' },
+  { value: 'range', label: 'Range', icon: '↔' },
   { value: 'checkbox', label: 'Multi-Select', icon: '☑' },
-  { value: 'radio', label: 'Single Choice', icon: '◉' },
+  { value: 'radio', label: 'Single', icon: '◉' },
   { value: 'slider', label: 'Slider', icon: '⬤' },
 ];
 
 const emptyFilter = (listingType: 'sale' | 'rent'): FilterConfiguration => ({
-  listing_type: listingType,
-  filter_category: 'search',
-  filter_name: '',
-  filter_type: 'select',
-  filter_options: [],
-  display_order: 0,
-  is_required: false,
-  is_active: true,
-  description: '',
+  listing_type: listingType, filter_category: 'search', filter_name: '', filter_type: 'select',
+  filter_options: [], display_order: 0, is_required: false, is_active: true, description: '',
 });
 
-const getCategoryMeta = (cat: string) => FILTER_CATEGORIES.find(c => c.value === cat) || FILTER_CATEGORIES[0];
-const getTypeMeta = (type: string) => FILTER_TYPES.find(t => t.value === type) || FILTER_TYPES[0];
+const getCat = (cat: string) => FILTER_CATEGORIES.find(c => c.value === cat) || FILTER_CATEGORIES[0];
+const getType = (type: string) => FILTER_TYPES.find(t => t.value === type) || FILTER_TYPES[0];
 
-// ─── Filter Form Component ──────────────────────────────────────────────────
+// ─── Filter Form ────────────────────────────────────────────────────────────
 const FilterForm = ({ filter, onSave, onCancel }: {
-  filter: FilterConfiguration;
-  onSave: (f: FilterConfiguration) => void;
-  onCancel: () => void;
+  filter: FilterConfiguration; onSave: (f: FilterConfiguration) => void; onCancel: () => void;
 }) => {
   const [form, setForm] = useState<FilterConfiguration>(filter);
   const set = (field: keyof FilterConfiguration, value: any) => setForm(prev => ({ ...prev, [field]: value }));
@@ -98,7 +88,6 @@ const FilterForm = ({ filter, onSave, onCancel }: {
 
   return (
     <div className="space-y-4">
-      {/* Row 1: Type & Category */}
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label className="text-xs font-medium text-muted-foreground">Listing Type</Label>
@@ -115,13 +104,12 @@ const FilterForm = ({ filter, onSave, onCancel }: {
           <Select value={form.filter_category} onValueChange={v => set('filter_category', v)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {FILTER_CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+              {FILTER_CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.emoji} {c.label}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      {/* Row 2: Name & Type */}
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label className="text-xs font-medium text-muted-foreground">Filter Name</Label>
@@ -138,7 +126,6 @@ const FilterForm = ({ filter, onSave, onCancel }: {
         </div>
       </div>
 
-      {/* Row 3: Options or Range */}
       {isOptionsType ? (
         <div className="space-y-1.5">
           <Label className="text-xs font-medium text-muted-foreground">Options (one per line)</Label>
@@ -149,16 +136,16 @@ const FilterForm = ({ filter, onSave, onCancel }: {
             rows={4}
             className="text-sm resize-none font-mono"
           />
-          <p className="text-[10px] text-muted-foreground">{form.filter_options?.length || 0} option(s) defined</p>
+          <p className="text-[11px] text-muted-foreground">{form.filter_options?.length || 0} option(s)</p>
         </div>
       ) : (
         <div className="grid grid-cols-3 gap-3">
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-muted-foreground">Min Value</Label>
+            <Label className="text-xs font-medium text-muted-foreground">Min</Label>
             <Input type="number" value={form.min_value ?? ''} onChange={e => set('min_value', e.target.value ? parseFloat(e.target.value) : undefined)} className="h-9 text-sm" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-muted-foreground">Max Value</Label>
+            <Label className="text-xs font-medium text-muted-foreground">Max</Label>
             <Input type="number" value={form.max_value ?? ''} onChange={e => set('max_value', e.target.value ? parseFloat(e.target.value) : undefined)} className="h-9 text-sm" />
           </div>
           <div className="space-y-1.5">
@@ -168,16 +155,14 @@ const FilterForm = ({ filter, onSave, onCancel }: {
         </div>
       )}
 
-      {/* Row 4: Description */}
       <div className="space-y-1.5">
         <Label className="text-xs font-medium text-muted-foreground">Description (optional)</Label>
-        <Input value={form.description || ''} onChange={e => set('description', e.target.value)} placeholder="Brief description of this filter" className="h-9 text-sm" />
+        <Input value={form.description || ''} onChange={e => set('description', e.target.value)} placeholder="Brief description" className="h-9 text-sm" />
       </div>
 
-      {/* Row 5: Settings */}
-      <div className="flex items-center gap-6 p-3 rounded-lg bg-muted/30 border border-border/50">
+      <div className="flex flex-wrap items-center gap-4 p-3 rounded-lg bg-muted/30 border border-border/50">
         <div className="flex items-center gap-2">
-          <Label className="text-xs font-medium text-muted-foreground">Order</Label>
+          <Label className="text-xs text-muted-foreground">Order</Label>
           <Input type="number" value={form.display_order} onChange={e => set('display_order', parseInt(e.target.value) || 0)} className="h-8 w-16 text-sm text-center" />
         </div>
         <div className="flex items-center gap-2">
@@ -190,101 +175,90 @@ const FilterForm = ({ filter, onSave, onCancel }: {
         </div>
       </div>
 
-      {/* Actions */}
       <div className="flex justify-end gap-2 pt-1">
         <Button variant="outline" size="sm" onClick={onCancel}>
-          <X className="h-3.5 w-3.5 mr-1" /> Cancel
+          <X className="h-3.5 w-3.5 mr-1.5" /> Cancel
         </Button>
         <Button size="sm" onClick={() => onSave(form)} disabled={!form.filter_name.trim()}>
-          <Save className="h-3.5 w-3.5 mr-1" /> {filter.id ? 'Update' : 'Create'} Filter
+          <Save className="h-3.5 w-3.5 mr-1.5" /> {filter.id ? 'Update' : 'Create'} Filter
         </Button>
       </div>
     </div>
   );
 };
 
-// ─── Filter Card Component ──────────────────────────────────────────────────
+// ─── Filter Card ────────────────────────────────────────────────────────────
 const FilterCard = ({ filter, onEdit, onDelete, onToggle, onDuplicate }: {
-  filter: FilterConfiguration;
-  onEdit: () => void;
-  onDelete: () => void;
-  onToggle: (active: boolean) => void;
-  onDuplicate: () => void;
+  filter: FilterConfiguration; onEdit: () => void; onDelete: () => void;
+  onToggle: (active: boolean) => void; onDuplicate: () => void;
 }) => {
-  const catMeta = getCategoryMeta(filter.filter_category);
-  const typeMeta = getTypeMeta(filter.filter_type);
+  const cat = getCat(filter.filter_category);
+  const typ = getType(filter.filter_type);
 
   return (
-    <div className={`group relative flex items-center gap-3 p-3 rounded-lg border transition-all hover:shadow-sm ${
-      filter.is_active 
-        ? 'bg-card border-border/60 hover:border-primary/30' 
-        : 'bg-muted/20 border-border/30 opacity-60'
+    <div className={`flex items-start sm:items-center gap-3 p-3 sm:p-3.5 rounded-lg border transition-all ${
+      filter.is_active
+        ? 'bg-card border-border hover:border-primary/40 hover:shadow-sm'
+        : 'bg-muted/30 border-border/40 opacity-70'
     }`}>
-      {/* Drag Handle & Order */}
-      <div className="flex flex-col items-center gap-0.5 text-muted-foreground/50">
-        <GripVertical className="h-4 w-4" />
-        <span className="text-[9px] font-mono">#{filter.display_order}</span>
+      {/* Order indicator */}
+      <div className="flex flex-col items-center gap-1 pt-0.5 shrink-0">
+        <GripVertical className="h-4 w-4 text-muted-foreground/40" />
+        <span className="text-[10px] font-mono text-muted-foreground font-medium">#{filter.display_order}</span>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-sm font-semibold text-foreground truncate">{filter.filter_name}</span>
+      {/* Content */}
+      <div className="flex-1 min-w-0 space-y-1.5">
+        {/* Title row */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <h4 className="text-sm font-semibold text-foreground">{filter.filter_name}</h4>
           {filter.is_required && (
-            <Badge variant="destructive" className="text-[9px] h-4 px-1.5 shrink-0">Required</Badge>
+            <Badge variant="destructive" className="text-[10px] h-5 px-1.5">Required</Badge>
           )}
         </div>
+
+        {/* Badges row */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <Badge variant="outline" className={`text-[10px] h-5 px-1.5 border ${catMeta.color}`}>
-            {catMeta.label}
-          </Badge>
-          <Badge variant="secondary" className="text-[10px] h-5 px-1.5">
-            {typeMeta.icon} {typeMeta.label}
-          </Badge>
+          <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full border ${cat.bg} ${cat.text} ${cat.border}`}>
+            {cat.emoji} {cat.label}
+          </span>
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-secondary/50 text-secondary-foreground border border-border/50">
+            {typ.icon} {typ.label}
+          </span>
           {filter.filter_options?.length > 0 && (
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-[11px] text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
               {filter.filter_options.length} options
             </span>
           )}
           {filter.min_value !== undefined && filter.max_value !== undefined && (
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-[11px] text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
               {filter.min_value.toLocaleString()} – {filter.max_value.toLocaleString()}
             </span>
           )}
         </div>
+
+        {/* Description */}
         {filter.description && (
-          <p className="text-[10px] text-muted-foreground mt-1 truncate">{filter.description}</p>
+          <p className="text-xs text-muted-foreground truncate">{filter.description}</p>
         )}
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center gap-1.5 shrink-0">
-        <TooltipProvider delayDuration={300}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Switch 
-                checked={filter.is_active} 
-                onCheckedChange={onToggle}
-                className="data-[state=checked]:bg-primary"
-              />
-            </TooltipTrigger>
-            <TooltipContent side="top" className="text-xs">
-              {filter.is_active ? 'Deactivate' : 'Activate'}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-
-        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={onDuplicate} title="Duplicate">
-            <Copy className="h-3.5 w-3.5" />
-          </Button>
-          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={onEdit} title="Edit">
-            <Edit2 className="h-3.5 w-3.5" />
-          </Button>
-          <Button size="icon" variant="ghost" className="h-7 w-7 hover:bg-destructive/10 hover:text-destructive" onClick={onDelete} title="Delete">
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
+      {/* Actions — always visible */}
+      <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        <Switch
+          checked={filter.is_active}
+          onCheckedChange={onToggle}
+          className="data-[state=checked]:bg-primary"
+        />
+        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={onDuplicate} title="Duplicate">
+          <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+        </Button>
+        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={onEdit} title="Edit">
+          <Edit2 className="h-3.5 w-3.5 text-muted-foreground" />
+        </Button>
+        <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive" onClick={onDelete} title="Delete">
+          <Trash2 className="h-3.5 w-3.5" />
+        </Button>
       </div>
     </div>
   );
@@ -355,12 +329,7 @@ const PropertyFilterSettings = () => {
   };
 
   const duplicateFilter = (filter: FilterConfiguration) => {
-    setEditingFilter({
-      ...filter,
-      id: undefined,
-      filter_name: `${filter.filter_name} (Copy)`,
-      display_order: filter.display_order + 1,
-    });
+    setEditingFilter({ ...filter, id: undefined, filter_name: `${filter.filter_name} (Copy)`, display_order: filter.display_order + 1 });
     setDialogOpen(true);
   };
 
@@ -382,50 +351,57 @@ const PropertyFilterSettings = () => {
     });
   };
 
-  const renderCategoryGroup = (listingType: 'sale' | 'rent') => {
+  const renderFiltersPanel = (listingType: 'sale' | 'rent') => {
     const typeFilters = filters.filter(f => f.listing_type === listingType);
     const grouped = FILTER_CATEGORIES.map(cat => ({
       ...cat,
       filters: typeFilters.filter(f => f.filter_category === cat.value),
     })).filter(g => g.filters.length > 0);
-
     const ungrouped = typeFilters.filter(f => !FILTER_CATEGORIES.some(c => c.value === f.filter_category));
 
     return (
-      <div className="space-y-2">
-        {/* Add Button */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">{typeFilters.length} filters configured</span>
-            <span className="text-xs text-muted-foreground">•</span>
-            <span className="text-xs text-muted-foreground">{typeFilters.filter(f => f.is_active).length} active</span>
+      <div className="space-y-3">
+        {/* Summary bar */}
+        <div className="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-border/40">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5">
+              <Settings2 className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">{typeFilters.length}</span>
+              <span className="text-xs text-muted-foreground">filters</span>
+            </div>
+            <span className="text-border">|</span>
+            <div className="flex items-center gap-1.5">
+              <div className="h-2 w-2 rounded-full bg-green-500" />
+              <span className="text-xs text-muted-foreground">{typeFilters.filter(f => f.is_active).length} active</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="h-2 w-2 rounded-full bg-muted-foreground/40" />
+              <span className="text-xs text-muted-foreground">{typeFilters.filter(f => !f.is_active).length} inactive</span>
+            </div>
           </div>
-          <Button size="sm" onClick={() => openAdd(listingType)} className="h-8 text-xs gap-1.5">
+          <Button size="sm" onClick={() => openAdd(listingType)} className="h-8 text-xs gap-1.5 shadow-sm">
             <Plus className="h-3.5 w-3.5" /> Add Filter
           </Button>
         </div>
 
-        {/* Category Groups */}
+        {/* Category groups */}
         {grouped.map(group => (
-          <Collapsible
-            key={group.value}
-            open={expandedCategories.has(group.value)}
-            onOpenChange={() => toggleCategory(group.value)}
-          >
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors border border-border/30">
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className={`text-xs px-2 py-0.5 border ${group.color}`}>
-                  {group.label}
+          <Collapsible key={group.value} open={expandedCategories.has(group.value)} onOpenChange={() => toggleCategory(group.value)}>
+            <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2.5 rounded-lg bg-muted/15 hover:bg-muted/30 transition-colors border border-border/30">
+              <div className="flex items-center gap-2.5">
+                <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-md border ${group.bg} ${group.text} ${group.border}`}>
+                  {group.emoji} {group.label}
+                </span>
+                <Badge variant="secondary" className="text-[11px] h-5 px-2 font-medium">
+                  {group.filters.length}
                 </Badge>
-                <span className="text-xs text-muted-foreground">{group.filters.length} filter{group.filters.length !== 1 ? 's' : ''}</span>
               </div>
-              {expandedCategories.has(group.value) ? (
-                <ChevronUp className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="h-4 w-4 text-muted-foreground" />
-              )}
+              {expandedCategories.has(group.value)
+                ? <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                : <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              }
             </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-1.5 mt-1.5 ml-1">
+            <CollapsibleContent className="space-y-2 mt-2 pl-2 border-l-2 border-border/20 ml-3">
               {group.filters.map(filter => (
                 <FilterCard
                   key={filter.id}
@@ -440,30 +416,26 @@ const PropertyFilterSettings = () => {
           </Collapsible>
         ))}
 
-        {/* Ungrouped */}
         {ungrouped.length > 0 && (
-          <div className="space-y-1.5">
-            <p className="text-xs font-medium text-muted-foreground px-1">Other</p>
+          <div className="space-y-2 pl-2 border-l-2 border-border/20 ml-3">
+            <p className="text-xs font-semibold text-muted-foreground px-1 uppercase tracking-wider">Other</p>
             {ungrouped.map(filter => (
-              <FilterCard
-                key={filter.id}
-                filter={filter}
-                onEdit={() => openEdit(filter)}
-                onDelete={() => setDeleteConfirm(filter.id!)}
-                onToggle={(active) => toggleFilter(filter.id!, active)}
-                onDuplicate={() => duplicateFilter(filter)}
-              />
+              <FilterCard key={filter.id} filter={filter} onEdit={() => openEdit(filter)}
+                onDelete={() => setDeleteConfirm(filter.id!)} onToggle={(active) => toggleFilter(filter.id!, active)}
+                onDuplicate={() => duplicateFilter(filter)} />
             ))}
           </div>
         )}
 
         {typeFilters.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-8 text-center rounded-lg border-2 border-dashed border-border/40">
-            <Filter className="h-8 w-8 text-muted-foreground/30 mb-2" />
-            <p className="text-sm text-muted-foreground mb-1">No filters configured</p>
-            <p className="text-xs text-muted-foreground/70 mb-3">Add filters to customize the search experience</p>
-            <Button size="sm" variant="outline" onClick={() => openAdd(listingType)} className="h-8 text-xs gap-1.5">
-              <Plus className="h-3.5 w-3.5" /> Add First Filter
+          <div className="flex flex-col items-center justify-center py-10 text-center rounded-xl border-2 border-dashed border-border/40 bg-muted/10">
+            <Filter className="h-10 w-10 text-muted-foreground/20 mb-3" />
+            <p className="text-sm font-medium text-muted-foreground mb-1">No filters configured yet</p>
+            <p className="text-xs text-muted-foreground/70 mb-4 max-w-xs">
+              Add filters to let users narrow down {listingType === 'sale' ? 'sale' : 'rental'} property searches
+            </p>
+            <Button size="sm" variant="outline" onClick={() => openAdd(listingType)} className="gap-1.5">
+              <Plus className="h-3.5 w-3.5" /> Create First Filter
             </Button>
           </div>
         )}
@@ -473,9 +445,9 @@ const PropertyFilterSettings = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary" />
-        <span className="ml-3 text-sm text-muted-foreground">Loading filter configuration...</span>
+      <div className="flex items-center justify-center p-10">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
+        <span className="ml-3 text-sm text-muted-foreground">Loading filters...</span>
       </div>
     );
   }
@@ -488,52 +460,52 @@ const PropertyFilterSettings = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <div className="p-2 rounded-lg bg-primary/10 shrink-0">
+          <Filter className="h-5 w-5 text-primary" />
+        </div>
         <div>
-          <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-primary/10">
-              <Filter className="h-4 w-4 text-primary" />
-            </div>
-            Filter Configuration
-          </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">Manage search filters for property listings</p>
+          <h2 className="text-base font-bold text-foreground">Filter Configuration</h2>
+          <p className="text-xs text-muted-foreground">Manage search filters for property listings</p>
         </div>
       </div>
 
-      {/* Stats Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
         {[
-          { label: 'Sale Filters', value: saleCount, icon: '🏷️', accent: 'border-l-primary' },
-          { label: 'Rent Filters', value: rentCount, icon: '🏠', accent: 'border-l-accent' },
-          { label: 'Active', value: activeCount, icon: '✅', accent: 'border-l-green-500' },
-          { label: 'Inactive', value: inactiveCount, icon: '⏸️', accent: 'border-l-muted-foreground' },
-        ].map(stat => (
-          <Card key={stat.label} className={`border-l-4 ${stat.accent}`}>
+          { label: 'Sale Filters', value: saleCount, emoji: '🏷️', accent: 'border-l-primary' },
+          { label: 'Rent Filters', value: rentCount, emoji: '🏠', accent: 'border-l-accent' },
+          { label: 'Active', value: activeCount, emoji: '✅', accent: 'border-l-green-500' },
+          { label: 'Inactive', value: inactiveCount, emoji: '⏸️', accent: 'border-l-muted-foreground' },
+        ].map(s => (
+          <Card key={s.label} className={`border-l-4 ${s.accent}`}>
             <CardContent className="p-3 flex items-center gap-3">
-              <span className="text-xl">{stat.icon}</span>
+              <span className="text-2xl">{s.emoji}</span>
               <div>
-                <p className="text-lg font-bold text-foreground leading-none">{stat.value}</p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">{stat.label}</p>
+                <p className="text-xl font-bold text-foreground leading-none">{s.value}</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{s.label}</p>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Main Tabs */}
-      <Card>
-        <CardContent className="p-4">
+      {/* Tabs */}
+      <Card className="overflow-hidden">
+        <CardContent className="p-4 sm:p-5">
           <Tabs defaultValue="sale" className="w-full">
-            <TabsList className="h-9 w-full bg-muted/30 mb-4">
-              <TabsTrigger value="sale" className="flex-1 gap-2 text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                <ShoppingCart className="h-4 w-4" /> Sale ({saleCount})
+            <TabsList className="h-10 w-full bg-muted/30 mb-4 p-1">
+              <TabsTrigger value="sale" className="flex-1 gap-2 text-sm font-medium h-8 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                <ShoppingCart className="h-4 w-4" /> Sale
+                <Badge variant="secondary" className="text-[10px] h-5 px-1.5 ml-1">{saleCount}</Badge>
               </TabsTrigger>
-              <TabsTrigger value="rent" className="flex-1 gap-2 text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                <Home className="h-4 w-4" /> Rent ({rentCount})
+              <TabsTrigger value="rent" className="flex-1 gap-2 text-sm font-medium h-8 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                <Home className="h-4 w-4" /> Rent
+                <Badge variant="secondary" className="text-[10px] h-5 px-1.5 ml-1">{rentCount}</Badge>
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="sale">{renderCategoryGroup('sale')}</TabsContent>
-            <TabsContent value="rent">{renderCategoryGroup('rent')}</TabsContent>
+            <TabsContent value="sale">{renderFiltersPanel('sale')}</TabsContent>
+            <TabsContent value="rent">{renderFiltersPanel('rent')}</TabsContent>
           </Tabs>
         </CardContent>
       </Card>
@@ -542,41 +514,34 @@ const PropertyFilterSettings = () => {
       <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) setEditingFilter(null); }}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-base">
+            <DialogTitle className="text-base font-bold">
               {editingFilter?.id ? '✏️ Edit Filter' : '➕ New Filter'}
             </DialogTitle>
             <DialogDescription className="text-xs">
-              {editingFilter?.id ? 'Update the filter configuration below' : 'Configure a new search filter for your properties'}
+              {editingFilter?.id ? 'Update filter settings below' : 'Create a new search filter for your properties'}
             </DialogDescription>
           </DialogHeader>
           {editingFilter && (
-            <FilterForm
-              filter={editingFilter}
-              onSave={saveFilter}
-              onCancel={() => { setDialogOpen(false); setEditingFilter(null); }}
-            />
+            <FilterForm filter={editingFilter} onSave={saveFilter} onCancel={() => { setDialogOpen(false); setEditingFilter(null); }} />
           )}
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation */}
+      {/* Delete Confirm */}
       <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
+            <AlertDialogTitle className="flex items-center gap-2 text-base">
               <AlertCircle className="h-5 w-5 text-destructive" /> Delete Filter?
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently remove this filter from your configuration. Users will no longer see it in the search interface.
+            <AlertDialogDescription className="text-sm">
+              This filter will be permanently removed. Users will no longer see it in search.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={() => deleteConfirm && deleteFilter(deleteConfirm)}
-            >
-              <Trash2 className="h-4 w-4 mr-1" /> Delete
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => deleteConfirm && deleteFilter(deleteConfirm)}>
+              <Trash2 className="h-4 w-4 mr-1.5" /> Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
