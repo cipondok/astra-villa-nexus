@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AstraWalletPopup from '@/components/dashboard/AstraWalletPopup';
+import { Progress } from '@/components/ui/progress';
+import { MEMBERSHIP_LEVELS, MembershipLevel, getMembershipConfig } from '@/types/membership';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -40,7 +42,7 @@ import {
   UserPlus,
   Sparkles,
   TrendingUp,
-  Clock,
+  Clock, Zap,
   Edit,
   LogOut,
   Wallet
@@ -164,10 +166,37 @@ const UserDashboardPage = () => {
                   🏆 {membershipLevel || 'Basic'}
                 </Badge>
               </div>
-              <p className="text-primary-foreground/80 text-xs sm:text-sm flex items-center gap-1 mt-1.5">
-                <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                Last login: Today
-              </p>
+              {/* Next Level Progress */}
+              {(() => {
+                const levels: MembershipLevel[] = ['basic', 'verified', 'vip', 'gold', 'platinum', 'diamond'];
+                const currentIdx = levels.indexOf(membershipLevel || 'basic');
+                const nextLevel = currentIdx < levels.length - 1 ? levels[currentIdx + 1] : null;
+                const nextConfig = nextLevel ? getMembershipConfig(nextLevel) : null;
+                const progressPercent = nextLevel ? Math.min(((currentIdx + 1) / levels.length) * 100, 90) : 100;
+                const tips: Record<string, string> = {
+                  verified: '💡 Complete profile & verify identity',
+                  vip: '💡 Get verified + activate subscription',
+                  gold: '💡 List 5+ properties & maintain ratings',
+                  platinum: '💡 Reach Gold + 20 transactions',
+                  diamond: '💡 Platinum + top performer status',
+                };
+                return (
+                  <div className="mt-2 space-y-1 max-w-[260px]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] text-primary-foreground/70">
+                        {nextLevel ? `Next: ${nextConfig?.icon} ${nextConfig?.shortLabel}` : '🏆 Max Level!'}
+                      </span>
+                      <span className="text-[10px] text-primary-foreground/60 font-medium">{Math.round(progressPercent)}%</span>
+                    </div>
+                    <Progress value={progressPercent} className="h-1.5 bg-white/20 [&>div]:bg-amber-400" />
+                    {nextLevel && tips[nextLevel] && (
+                      <p className="text-[9px] text-primary-foreground/60 leading-tight animate-pulse">
+                        {tips[nextLevel]}
+                      </p>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* ASTRA Wallet Button */}
