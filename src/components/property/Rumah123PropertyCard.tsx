@@ -86,7 +86,7 @@ const Rumah123PropertyCard = ({
 
   const getImageUrl = () => {
     if (imageError) return "/placeholder.svg";
-    return getPropertyImage(property.images, property.thumbnail_url);
+    return getPropertyImage(property.images, property.thumbnail_url, (property as any).image_urls);
   };
 
   const getLocation = () => {
