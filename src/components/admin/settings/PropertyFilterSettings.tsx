@@ -230,9 +230,9 @@ const FilterCard = ({ filter, onEdit, onDelete, onToggle, onDuplicate }: {
               {filter.filter_options.length} options
             </span>
           )}
-          {filter.min_value != null && filter.max_value != null && (
+          {typeof filter.min_value === 'number' && typeof filter.max_value === 'number' && (
             <span className="text-[11px] text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
-              {Number(filter.min_value).toLocaleString()} – {Number(filter.max_value).toLocaleString()}
+              {filter.min_value.toLocaleString()} – {filter.max_value.toLocaleString()}
             </span>
           )}
         </div>
