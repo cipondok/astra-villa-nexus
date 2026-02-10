@@ -92,6 +92,9 @@ const LocationManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProvince, setSelectedProvince] = useState<string>('');
   const [selectedCity, setSelectedCity] = useState<string>('');
+  const [selectedDistrict, setSelectedDistrict] = useState<string>('');
+  const [selectedProvinceCode, setSelectedProvinceCode] = useState<string>('');
+  const [selectedCityCode, setSelectedCityCode] = useState<string>('');
   const [activeTab, setActiveTab] = useState('tree');
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -103,6 +106,8 @@ const LocationManagement = () => {
   const [villageSyncProvince, setVillageSyncProvince] = useState<string>('');
   const [villageSyncProgress, setVillageSyncProgress] = useState<string[]>([]);
   const [isSyncingVillages, setIsSyncingVillages] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const PAGE_SIZE = 50;
   
   const queryClient = useQueryClient();
 
@@ -125,19 +130,58 @@ const LocationManagement = () => {
     is_active: true
   });
 
-  // Fetch locations - Indonesia has ~83,000+ kelurahan/desa (level 4)
-  // Use higher limit to ensure all subdistricts are fetched
-  const { data: locations = [], isLoading, error } = useQuery({
-    queryKey: ['locations', searchTerm, selectedProvince, selectedCity],
+  // Fetch provinces via RPC (all 38)
+  const { data: provinces = [] } = useQuery({
+    queryKey: ['admin-filter-provinces'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_distinct_provinces');
+      if (error) throw error;
+      return (data || []).sort((a: any, b: any) => a.province_name.localeCompare(b.province_name, 'id'));
+    },
+    staleTime: 10 * 60 * 1000,
+  });
+
+  // Fetch cities via RPC filtered by province
+  const { data: cities = [] } = useQuery({
+    queryKey: ['admin-filter-cities', selectedProvinceCode],
+    queryFn: async () => {
+      if (!selectedProvinceCode) return [];
+      const { data, error } = await supabase.rpc('get_distinct_cities', { p_province_code: selectedProvinceCode });
+      if (error) throw error;
+      return (data || []).sort((a: any, b: any) => a.city_name.localeCompare(b.city_name, 'id'));
+    },
+    enabled: !!selectedProvinceCode,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  // Fetch districts via RPC filtered by province + city
+  const { data: districts = [] } = useQuery({
+    queryKey: ['admin-filter-districts', selectedProvinceCode, selectedCityCode],
+    queryFn: async () => {
+      if (!selectedProvinceCode || !selectedCityCode) return [];
+      const { data, error } = await supabase.rpc('get_distinct_districts', { 
+        p_province_code: selectedProvinceCode, 
+        p_city_code: selectedCityCode 
+      });
+      if (error) throw error;
+      return (data || []).sort((a: any, b: any) => a.district_name.localeCompare(b.district_name, 'id'));
+    },
+    enabled: !!selectedProvinceCode && !!selectedCityCode,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  // Fetch locations with pagination and proper filters
+  const { data: locationsResult, isLoading, error } = useQuery({
+    queryKey: ['locations', searchTerm, selectedProvince, selectedCity, selectedDistrict, currentPage],
     queryFn: async () => {
       let query = supabase
         .from('locations')
-        .select('*')
+        .select('*', { count: 'exact' })
         .order('province_name', { ascending: true })
         .order('city_name', { ascending: true })
         .order('district_name', { ascending: true })
         .order('subdistrict_name', { ascending: true })
-        .limit(100000); // Increase limit for Indonesian location data (83K+ subdistricts)
+        .range(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE - 1);
 
       if (searchTerm) {
         query = query.or(`province_name.ilike.%${searchTerm}%,city_name.ilike.%${searchTerm}%,district_name.ilike.%${searchTerm}%,subdistrict_name.ilike.%${searchTerm}%,area_name.ilike.%${searchTerm}%`);
@@ -151,17 +195,42 @@ const LocationManagement = () => {
         query = query.eq('city_name', selectedCity);
       }
 
-      const { data, error } = await query;
+      if (selectedDistrict && selectedDistrict !== 'ALL_DISTRICTS') {
+        query = query.eq('district_name', selectedDistrict);
+      }
+
+      const { data, error, count } = await query;
       if (error) throw error;
-      return data as Location[];
+      return { data: data as Location[], count: count || 0 };
     }
   });
 
-  // Get unique provinces and cities for filters
-  const provinces = [...new Set(locations.map(loc => loc.province_name))].sort();
-  const cities = selectedProvince && selectedProvince !== 'ALL_PROVINCES'
-    ? [...new Set(locations.filter(loc => loc.province_name === selectedProvince).map(loc => loc.city_name))].sort()
-    : [];
+  const locations = locationsResult?.data || [];
+  const totalCount = locationsResult?.count || 0;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+  const handleProvinceFilterChange = (value: string) => {
+    setSelectedProvince(value === 'ALL_PROVINCES' ? '' : value);
+    setSelectedCity('');
+    setSelectedDistrict('');
+    setCurrentPage(0);
+    const prov = provinces.find((p: any) => p.province_name === value);
+    setSelectedProvinceCode(prov?.province_code || '');
+    setSelectedCityCode('');
+  };
+
+  const handleCityFilterChange = (value: string) => {
+    setSelectedCity(value === 'ALL_CITIES' ? '' : value);
+    setSelectedDistrict('');
+    setCurrentPage(0);
+    const city = cities.find((c: any) => c.city_name === value);
+    setSelectedCityCode(city?.city_code || '');
+  };
+
+  const handleDistrictFilterChange = (value: string) => {
+    setSelectedDistrict(value === 'ALL_DISTRICTS' ? '' : value);
+    setCurrentPage(0);
+  };
 
   // Add location mutation
   const addLocationMutation = useMutation({
@@ -487,27 +556,41 @@ const LocationManagement = () => {
                 />
               </div>
               
-              <Select value={selectedProvince} onValueChange={setSelectedProvince}>
+              <Select value={selectedProvince || 'ALL_PROVINCES'} onValueChange={handleProvinceFilterChange}>
                 <SelectTrigger className="h-7 text-[10px] w-full md:w-36 bg-background/50 border-border/50">
                   <SelectValue placeholder="Province" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ALL_PROVINCES" className="text-[10px]">All Provinces</SelectItem>
-                  {provinces.map(province => (
-                    <SelectItem key={province} value={province} className="text-[10px]">{province}</SelectItem>
+                  {provinces.map((p: any) => (
+                    <SelectItem key={p.province_code} value={p.province_name} className="text-[10px]">{p.province_name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
 
-              {selectedProvince && selectedProvince !== 'ALL_PROVINCES' && (
-                <Select value={selectedCity} onValueChange={setSelectedCity}>
+              {selectedProvince && (
+                <Select value={selectedCity || 'ALL_CITIES'} onValueChange={handleCityFilterChange}>
                   <SelectTrigger className="h-7 text-[10px] w-full md:w-36 bg-background/50 border-border/50">
                     <SelectValue placeholder="City" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="ALL_CITIES" className="text-[10px]">All Cities</SelectItem>
-                    {cities.map(city => (
-                      <SelectItem key={city} value={city} className="text-[10px]">{city}</SelectItem>
+                    {cities.map((c: any) => (
+                      <SelectItem key={c.city_code} value={c.city_name} className="text-[10px]">{c.city_type} {c.city_name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+
+              {selectedCity && (
+                <Select value={selectedDistrict || 'ALL_DISTRICTS'} onValueChange={handleDistrictFilterChange}>
+                  <SelectTrigger className="h-7 text-[10px] w-full md:w-36 bg-background/50 border-border/50">
+                    <SelectValue placeholder="District" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ALL_DISTRICTS" className="text-[10px]">All Districts</SelectItem>
+                    {districts.map((d: any) => (
+                      <SelectItem key={d.district_code} value={d.district_name} className="text-[10px]">{d.district_name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -569,15 +652,11 @@ const LocationManagement = () => {
                   <SelectValue placeholder="Select Province" />
                 </SelectTrigger>
                 <SelectContent className="max-h-64 overflow-y-auto">
-                  {provinces.map(province => {
-                    // Find province code from locations
-                    const loc = locations.find(l => l.province_name === province);
-                    return loc ? (
-                      <SelectItem key={loc.province_code} value={loc.province_code} className="text-[10px]">
-                        {province}
-                      </SelectItem>
-                    ) : null;
-                  })}
+                  {provinces.map((p: any) => (
+                    <SelectItem key={p.province_code} value={p.province_code} className="text-[10px]">
+                      {p.province_name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <Button
@@ -614,8 +693,8 @@ const LocationManagement = () => {
           <CardContent className="p-2.5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-medium text-muted-foreground">Total</p>
-                <p className="text-sm font-bold text-foreground">{locations.length}</p>
+                <p className="text-[9px] font-medium text-muted-foreground">Total (page)</p>
+                <p className="text-sm font-bold text-foreground">{locations.length} / {totalCount}</p>
               </div>
               <MapPin className="h-4 w-4 text-primary" />
             </div>
@@ -672,6 +751,22 @@ const LocationManagement = () => {
         </Card>
       </div>
 
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <CardContent className="p-2 flex items-center justify-between">
+            <span className="text-[10px] text-muted-foreground">
+              Page {currentPage + 1} of {totalPages} ({totalCount} records)
+            </span>
+            <div className="flex gap-1">
+              <Button variant="outline" size="sm" className="h-6 text-[10px] px-2" disabled={currentPage === 0} onClick={() => setCurrentPage(0)}>First</Button>
+              <Button variant="outline" size="sm" className="h-6 text-[10px] px-2" disabled={currentPage === 0} onClick={() => setCurrentPage(p => p - 1)}>Prev</Button>
+              <Button variant="outline" size="sm" className="h-6 text-[10px] px-2" disabled={currentPage >= totalPages - 1} onClick={() => setCurrentPage(p => p + 1)}>Next</Button>
+              <Button variant="outline" size="sm" className="h-6 text-[10px] px-2" disabled={currentPage >= totalPages - 1} onClick={() => setCurrentPage(totalPages - 1)}>Last</Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       {/* Province Analysis */}
       <Card>
         <CardHeader>
@@ -685,13 +780,13 @@ const LocationManagement = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-auto">
-            {provinces.sort().map((province, index) => {
-              const provinceLocations = locations.filter(l => l.province_name === province);
+            {provinces.map((p: any, index: number) => {
+              const provinceLocations = locations.filter(l => l.province_name === p.province_name);
               const cityCount = [...new Set(provinceLocations.map(l => l.city_name))].length;
               const isComplete = cityCount > 0;
               
               return (
-                <div key={province} className="p-3 border rounded-lg bg-card hover:bg-accent/50 transition-colors">
+                <div key={p.province_code} className="p-3 border rounded-lg bg-card hover:bg-accent/50 transition-colors">
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant={isComplete ? "default" : "secondary"} className="text-xs">
                       #{index + 1}
@@ -700,7 +795,7 @@ const LocationManagement = () => {
                       {cityCount} cities
                     </Badge>
                   </div>
-                  <h4 className="font-medium text-sm mb-1">{province}</h4>
+                  <h4 className="font-medium text-sm mb-1">{p.province_name}</h4>
                   <p className="text-xs text-muted-foreground">
                     {provinceLocations.length} locations total
                   </p>
