@@ -99,6 +99,7 @@ const ViralGrowthCampaigns = lazy(() => import("./ViralGrowthCampaigns"));
 const MediaCoveragePR = lazy(() => import("./MediaCoveragePR"));
 const ConciergeServiceManagement = lazy(() => import("./ConciergeServiceManagement"));
 const SamplePropertyGenerator = lazy(() => import("./SamplePropertyGenerator"));
+const VerificationSystemSettings = lazy(() => import("./settings/VerificationSystemSettings"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -205,6 +206,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "media-coverage-pr": { label: "Media Coverage & PR", category: "Features" },
   "concierge-service": { label: "Concierge Service", category: "Features" },
   "sample-property-generator": { label: "Sample Property Generator", category: "Property System" },
+  "verification-system-settings": { label: "Verification System Settings", category: "Settings" },
 };
 
 // Loading fallback component
@@ -478,6 +480,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <ConciergeServiceManagement />;
       case "sample-property-generator":
         return <SamplePropertyGenerator />;
+      case "verification-system-settings":
+        return <VerificationSystemSettings />;
       default:
         return <AdminOverview />;
     }

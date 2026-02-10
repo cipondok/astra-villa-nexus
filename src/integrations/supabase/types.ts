@@ -13217,6 +13217,108 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_tier_requirements: {
+        Row: {
+          auto_upgrade: boolean | null
+          created_at: string
+          custom_requirements: Json | null
+          id: string
+          min_account_age_days: number | null
+          min_listings: number | null
+          min_properties: number | null
+          min_rating: number | null
+          min_transactions: number | null
+          requires_subscription: boolean | null
+          requires_verification: boolean | null
+          tier_name: string
+          updated_at: string
+        }
+        Insert: {
+          auto_upgrade?: boolean | null
+          created_at?: string
+          custom_requirements?: Json | null
+          id?: string
+          min_account_age_days?: number | null
+          min_listings?: number | null
+          min_properties?: number | null
+          min_rating?: number | null
+          min_transactions?: number | null
+          requires_subscription?: boolean | null
+          requires_verification?: boolean | null
+          tier_name: string
+          updated_at?: string
+        }
+        Update: {
+          auto_upgrade?: boolean | null
+          created_at?: string
+          custom_requirements?: Json | null
+          id?: string
+          min_account_age_days?: number | null
+          min_listings?: number | null
+          min_properties?: number | null
+          min_rating?: number | null
+          min_transactions?: number | null
+          requires_subscription?: boolean | null
+          requires_verification?: boolean | null
+          tier_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      portal_verification_settings: {
+        Row: {
+          auto_approve: boolean
+          auto_approve_conditions: Json | null
+          created_at: string
+          documents_required: string[] | null
+          expiry_days: number | null
+          id: string
+          is_enabled: boolean
+          is_required: boolean
+          role_type: string
+          step_description: string | null
+          step_key: string
+          step_label: string
+          step_order: number
+          tier_requirement: string | null
+          updated_at: string
+        }
+        Insert: {
+          auto_approve?: boolean
+          auto_approve_conditions?: Json | null
+          created_at?: string
+          documents_required?: string[] | null
+          expiry_days?: number | null
+          id?: string
+          is_enabled?: boolean
+          is_required?: boolean
+          role_type: string
+          step_description?: string | null
+          step_key: string
+          step_label: string
+          step_order?: number
+          tier_requirement?: string | null
+          updated_at?: string
+        }
+        Update: {
+          auto_approve?: boolean
+          auto_approve_conditions?: Json | null
+          created_at?: string
+          documents_required?: string[] | null
+          expiry_days?: number | null
+          id?: string
+          is_enabled?: boolean
+          is_required?: boolean
+          role_type?: string
+          step_description?: string | null
+          step_key?: string
+          step_label?: string
+          step_order?: number
+          tier_requirement?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pr_agencies: {
         Row: {
           agency_name: string
