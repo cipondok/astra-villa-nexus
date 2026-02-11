@@ -106,6 +106,7 @@ const LocationManagement = () => {
   const [villageSyncProvince, setVillageSyncProvince] = useState<string>('');
   const [villageSyncProgress, setVillageSyncProgress] = useState<string[]>([]);
   const [isSyncingVillages, setIsSyncingVillages] = useState(false);
+  const [villageSyncStats, setVillageSyncStats] = useState<{total: number; done: number; failed: number; villages: number}>({total: 0, done: 0, failed: 0, villages: 0});
   const [currentPage, setCurrentPage] = useState(0);
   const PAGE_SIZE = 50;
   
@@ -449,10 +450,10 @@ const LocationManagement = () => {
   const handleSyncVillages = async (provinceCode: string) => {
     setIsSyncingVillages(true);
     setVillageSyncProgress([]);
+    setVillageSyncStats({total: 0, done: 0, failed: 0, villages: 0});
     
     try {
-      // Step 1: Get list of cities for this province
-      setVillageSyncProgress(prev => [...prev, 'Mengambil daftar kota/kabupaten...']);
+      setVillageSyncProgress(prev => [...prev, '📡 Mengambil daftar kota/kabupaten...']);
       const { data: provinceData, error: provinceError } = await supabase.functions.invoke('sync-indonesia-locations', {
         body: { mode: 'single-province', provinceId: provinceCode, includeVillages: true }
       });
@@ -461,53 +462,64 @@ const LocationManagement = () => {
 
       if (provinceData?.requiresCitySync && provinceData?.cities) {
         const cities = provinceData.cities;
-        setVillageSyncProgress(prev => [...prev, `Ditemukan ${cities.length} kota/kabupaten. Mulai sync kelurahan...`]);
+        const total = cities.length;
+        setVillageSyncStats(prev => ({...prev, total}));
+        setVillageSyncProgress(prev => [...prev, `📊 ${total} kota/kabupaten ditemukan. Mulai sync...`]);
 
-        let totalVillages = 0;
-        let totalErrors = 0;
+        const failedCities: any[] = [];
 
-        // Step 2: Sync each city one by one
         for (let i = 0; i < cities.length; i++) {
           const city = cities[i];
-          setVillageSyncProgress(prev => [...prev, `[${i + 1}/${cities.length}] Sync ${city.name}...`]);
+          setVillageSyncProgress(prev => [...prev, `⏳ [${i + 1}/${total}] ${city.name}...`]);
 
           try {
             const { data: cityData, error: cityError } = await supabase.functions.invoke('sync-indonesia-locations', {
-              body: { 
-                mode: 'single-city', 
-                provinceId: provinceCode, 
-                cityId: city.id, 
-                includeVillages: true 
-              }
+              body: { mode: 'single-city', provinceId: provinceCode, cityId: city.id, includeVillages: true }
             });
 
             if (cityError) throw cityError;
+            if (!cityData?.success) throw new Error(cityData?.error || 'Failed');
 
-            if (cityData?.success) {
-              totalVillages += cityData.stats?.villages || 0;
-              setVillageSyncProgress(prev => [...prev, `  ✓ ${city.name}: ${cityData.stats?.villages || 0} kelurahan/desa`]);
-            } else {
-              throw new Error(cityData?.error || 'Failed');
-            }
+            const v = cityData.stats?.villages || 0;
+            setVillageSyncStats(prev => ({...prev, done: prev.done + 1, villages: prev.villages + v}));
+            setVillageSyncProgress(prev => [...prev, `✅ ${city.name}: ${v} kelurahan/desa`]);
           } catch (cityErr: any) {
-            totalErrors++;
-            setVillageSyncProgress(prev => [...prev, `  ✗ ${city.name}: ${cityErr.message}`]);
+            failedCities.push(city);
+            setVillageSyncStats(prev => ({...prev, failed: prev.failed + 1}));
+            setVillageSyncProgress(prev => [...prev, `❌ ${city.name}: ${cityErr.message}`]);
           }
         }
 
-        setVillageSyncProgress(prev => [...prev, `Selesai! Total: ${totalVillages} kelurahan/desa, ${totalErrors} error`]);
-        toast.success(`Village sync completed for ${provinceData.province}`, {
-          description: `${totalVillages} villages synced, ${totalErrors} errors`
-        });
+        // Auto-retry failed cities once
+        if (failedCities.length > 0) {
+          setVillageSyncProgress(prev => [...prev, `🔄 Retry ${failedCities.length} kota yang gagal...`]);
+          for (const city of failedCities) {
+            try {
+              const { data: cityData, error: cityError } = await supabase.functions.invoke('sync-indonesia-locations', {
+                body: { mode: 'single-city', provinceId: provinceCode, cityId: city.id, includeVillages: true }
+              });
+              if (cityError) throw cityError;
+              if (!cityData?.success) throw new Error(cityData?.error || 'Failed');
+              const v = cityData.stats?.villages || 0;
+              setVillageSyncStats(prev => ({...prev, failed: prev.failed - 1, done: prev.done + 1, villages: prev.villages + v}));
+              setVillageSyncProgress(prev => [...prev, `✅ Retry OK: ${city.name}: ${v} kelurahan`]);
+            } catch {
+              setVillageSyncProgress(prev => [...prev, `❌ Retry gagal: ${city.name}`]);
+            }
+          }
+        }
+
+        setVillageSyncProgress(prev => [...prev, `🎉 Selesai!`]);
+        toast.success(`Sync kelurahan selesai untuk ${provinceData.province}`);
         queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
         queryClient.invalidateQueries({ queryKey: ['locations'] });
       } else {
-        throw new Error('Unexpected response from server');
+        throw new Error('Unexpected response');
       }
     } catch (err: any) {
       console.error('Village sync error:', err);
-      toast.error('Village sync failed', { description: err.message });
-      setVillageSyncProgress(prev => [...prev, `Error: ${err.message}`]);
+      toast.error('Sync gagal', { description: err.message });
+      setVillageSyncProgress(prev => [...prev, `❌ Error: ${err.message}`]);
     } finally {
       setIsSyncingVillages(false);
     }
@@ -638,7 +650,7 @@ const LocationManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Village Sync Panel */}
+       {/* Village Sync Panel */}
       <Card className="bg-card/50 backdrop-blur-sm border-border/50">
         <CardContent className="p-3">
           <div className="flex flex-col gap-2">
@@ -671,13 +683,31 @@ const LocationManagement = () => {
                 ) : (
                   <CloudDownload className="h-3 w-3" />
                 )}
-                {isSyncingVillages ? 'Syncing Villages...' : 'Sync Villages'}
+                {isSyncingVillages ? 'Syncing...' : 'Sync Kelurahan'}
               </Button>
             </div>
+
+            {/* Progress Bar */}
+            {villageSyncStats.total > 0 && (
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] text-muted-foreground">
+                  <span>{villageSyncStats.done + villageSyncStats.failed}/{villageSyncStats.total} kota</span>
+                  <span>{villageSyncStats.villages.toLocaleString()} kelurahan</span>
+                  {villageSyncStats.failed > 0 && <span className="text-destructive">{villageSyncStats.failed} gagal</span>}
+                </div>
+                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-primary rounded-full transition-all duration-300"
+                    style={{ width: `${Math.round(((villageSyncStats.done + villageSyncStats.failed) / villageSyncStats.total) * 100)}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
             {villageSyncProgress.length > 0 && (
-              <div className="mt-1 max-h-32 overflow-y-auto bg-muted/50 rounded p-2 text-[9px] font-mono space-y-0.5">
+              <div className="mt-1 max-h-40 overflow-y-auto bg-muted/50 rounded p-2 text-[9px] font-mono space-y-0.5">
                 {villageSyncProgress.map((msg, i) => (
-                  <div key={i} className={msg.includes('✗') ? 'text-destructive' : msg.includes('✓') ? 'text-primary' : 'text-muted-foreground'}>
+                  <div key={i} className={msg.includes('❌') ? 'text-destructive' : msg.includes('✅') ? 'text-primary' : 'text-muted-foreground'}>
                     {msg}
                   </div>
                 ))}
