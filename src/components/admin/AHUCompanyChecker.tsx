@@ -61,28 +61,31 @@ const AHUCompanyChecker = () => {
 
   const handleNPWPSearch = async () => {
     const cleanNpwp = npwpSearch.replace(/\D/g, '');
-    if (cleanNpwp.length < 5) {
-      toast.error('Masukkan minimal 5 digit NPWP');
+    const formattedNpwp = npwpSearch.trim();
+    
+    if (cleanNpwp.length < 3 && formattedNpwp.length < 3) {
+      toast.error('Masukkan minimal 3 karakter untuk pencarian');
       return;
     }
     setNpwpSearching(true);
     try {
-      // Search in profiles by npwp_number
-      const { data, error } = await supabase
+      const results: any[] = [];
+
+      // 1. Search profiles by NPWP number OR company name
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .select('id, full_name, email, company_name, company_verified, company_registration_number, business_address, npwp_number')
-        .or(`npwp_number.ilike.%${cleanNpwp}%`)
+        .select('id, full_name, email, company_name, company_verified, company_registration_number, business_address, npwp_number, phone')
+        .or(`npwp_number.ilike.%${cleanNpwp}%,company_name.ilike.%${formattedNpwp}%,company_registration_number.ilike.%${formattedNpwp}%`)
         .limit(20);
       
-      if (error) throw error;
-
-      const results: any[] = [];
-      
-      if (data?.length) {
-        data.forEach((p: any) => results.push({
+      if (!profileError && profileData?.length) {
+        profileData.forEach((p: any) => results.push({
+          source: 'profiles',
           type: 'user',
           id: p.id,
           name: p.full_name || p.email,
+          email: p.email,
+          phone: p.phone,
           company: p.company_name,
           npwp: p.npwp_number,
           verified: p.company_verified,
@@ -91,11 +94,63 @@ const AHUCompanyChecker = () => {
         }));
       }
 
-      setNpwpResults(results);
-      if (results.length === 0) {
-        toast.info('Tidak ada data ditemukan dengan NPWP tersebut');
+      // 2. Search vendor_business_profiles by business_name or tax_id
+      const { data: vendorData, error: vendorError } = await supabase
+        .from('vendor_business_profiles')
+        .select('id, vendor_id, business_name, business_address, tax_id, business_license_number, is_verified, business_phone, business_email, city, province')
+        .or(`tax_id.ilike.%${cleanNpwp}%,business_name.ilike.%${formattedNpwp}%,business_license_number.ilike.%${formattedNpwp}%`)
+        .limit(20);
+      
+      if (!vendorError && vendorData?.length) {
+        vendorData.forEach((v: any) => results.push({
+          source: 'vendor_business_profiles',
+          type: 'vendor',
+          id: v.vendor_id || v.id,
+          name: v.business_name,
+          email: v.business_email,
+          phone: v.business_phone,
+          company: v.business_name,
+          npwp: v.tax_id,
+          verified: v.is_verified,
+          address: v.business_address ? `${v.business_address}${v.city ? ', ' + v.city : ''}${v.province ? ', ' + v.province : ''}` : v.city || '',
+          regNumber: v.business_license_number,
+        }));
+      }
+
+      // 3. Search agent_registration_requests
+      const { data: agentData, error: agentError } = await supabase
+        .from('agent_registration_requests')
+        .select('id, user_id, full_name, email, phone, company_name, license_number, status')
+        .or(`company_name.ilike.%${formattedNpwp}%,license_number.ilike.%${formattedNpwp}%`)
+        .limit(10);
+      
+      if (!agentError && agentData?.length) {
+        agentData.forEach((a: any) => results.push({
+          source: 'agent_requests',
+          type: 'agent',
+          id: a.user_id || a.id,
+          name: a.full_name,
+          email: a.email,
+          phone: a.phone,
+          company: a.company_name,
+          npwp: null,
+          verified: a.status === 'approved',
+          address: null,
+          regNumber: a.license_number,
+          status: a.status,
+        }));
+      }
+
+      // Deduplicate by id
+      const uniqueResults = results.filter((r, i, arr) => 
+        arr.findIndex(x => x.id === r.id && x.source === r.source) === i
+      );
+
+      setNpwpResults(uniqueResults);
+      if (uniqueResults.length === 0) {
+        toast.info('Tidak ada data ditemukan — coba cari dengan nama perusahaan atau nomor NPWP');
       } else {
-        toast.success(`Ditemukan ${results.length} hasil`);
+        toast.success(`Ditemukan ${uniqueResults.length} hasil dari ${new Set(uniqueResults.map(r => r.source)).size} sumber`);
       }
     } catch (err: any) {
       toast.error('Error: ' + err.message);
@@ -216,7 +271,7 @@ const AHUCompanyChecker = () => {
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="npwp" className="gap-1.5">
                 <Hash className="h-3.5 w-3.5" />
-                NPWP Lookup
+                Internal Search
               </TabsTrigger>
               <TabsTrigger value="ahu" className="gap-1.5">
                 <Globe className="h-3.5 w-3.5" />
@@ -228,40 +283,47 @@ const AHUCompanyChecker = () => {
               </TabsTrigger>
             </TabsList>
 
-            {/* NPWP Lookup Tab */}
+            {/* NPWP & Company Search Tab */}
             <TabsContent value="npwp" className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Cari perusahaan berdasarkan nomor NPWP di database internal (profiles & vendors).
+                Cari perusahaan berdasarkan <strong>NPWP, nama perusahaan, SK number, atau license number</strong> di seluruh database internal (profiles, vendors, agents).
               </p>
               <div className="flex gap-2">
                 <Input
-                  placeholder="Masukkan NPWP (e.g., 01.234.567.8-901.234)"
+                  placeholder="NPWP / Nama PT / SK Number / License..."
                   value={npwpSearch}
-                  onChange={(e) => setNpwpSearch(formatNPWP(e.target.value))}
+                  onChange={(e) => setNpwpSearch(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleNPWPSearch()}
-                  className="flex-1 font-mono"
-                  maxLength={20}
+                  className="flex-1"
                 />
                 <Button onClick={handleNPWPSearch} disabled={npwpSearching} className="gap-2">
                   {npwpSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-                  Cari NPWP
+                  Cari
                 </Button>
               </div>
 
               {npwpResults.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">{npwpResults.length} hasil ditemukan:</p>
+                  <p className="text-sm font-medium">{npwpResults.length} hasil ditemukan dari database internal:</p>
                   {npwpResults.map((r, i) => (
-                    <div key={`${r.type}-${r.id}-${i}`} className="p-3 border rounded-lg space-y-1.5">
+                    <div key={`${r.source}-${r.id}-${i}`} className="p-3 border rounded-lg space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <Building2 className="h-4 w-4 text-primary" />
                           <span className="font-medium text-sm uppercase">{r.company || r.name}</span>
-                          <Badge variant="outline" className="text-xs">{r.type === 'vendor' ? 'Vendor' : 'User'}</Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {r.type === 'vendor' ? 'Vendor' : r.type === 'agent' ? 'Agent' : 'User'}
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs font-mono">
+                            {r.source}
+                          </Badge>
                           {r.verified && (
                             <Badge variant="default" className="text-xs">
                               <CheckCircle className="h-3 w-3 mr-1" />Verified
                             </Badge>
+                          )}
+                          {r.status && !r.verified && (
+                            <Badge variant="secondary" className="text-xs capitalize">{r.status}</Badge>
                           )}
                         </div>
                         {r.type === 'user' && !r.verified && (
@@ -284,9 +346,11 @@ const AHUCompanyChecker = () => {
                           </span>
                         )}
                         {r.name && <span className="flex items-center gap-1"><User className="h-3 w-3" />{r.name}</span>}
-                        {r.regNumber && <span className="flex items-center gap-1"><FileText className="h-3 w-3" />SK: {r.regNumber}</span>}
+                        {r.email && <span className="flex items-center gap-1"><Mail className="h-3 w-3" />{r.email}</span>}
+                        {r.phone && <span className="flex items-center gap-1"><Phone className="h-3 w-3" />{r.phone}</span>}
+                        {r.regNumber && <span className="flex items-center gap-1"><FileText className="h-3 w-3" />SK/License: {r.regNumber}</span>}
                         {r.address && (
-                          <span className="flex items-center gap-1 truncate max-w-[300px]">
+                          <span className="flex items-center gap-1 truncate max-w-[400px]">
                             <MapPin className="h-3 w-3" />{typeof r.address === 'string' ? r.address : 'Set'}
                           </span>
                         )}
