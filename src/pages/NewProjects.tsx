@@ -167,7 +167,7 @@ const NewProjects = () => {
       if (filters.minArea) query = query.gte('area_sqm', parseInt(filters.minArea));
       if (filters.maxArea) query = query.lte('area_sqm', parseInt(filters.maxArea));
       if (filters.projectTitle) query = query.ilike('title', `%${filters.projectTitle}%`);
-      if (filters.marketedBy && filters.marketedBy !== 'all') query = query.ilike('marketed_by', `%${filters.marketedBy}%`);
+      // marketed_by filter removed - column does not exist in properties table
 
       const { data, error } = await query.order('created_at', { ascending: false }).limit(50);
       if (error) throw error;
