@@ -169,14 +169,14 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                        )}
                      </button>
 
-                     {/* Hover Tooltip */}
-                     {isHovered && !openCategory && (
-                       <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 animate-in fade-in-0 slide-in-from-left-1 duration-150">
-                         <div className="px-2 py-1 bg-slate-800/95 backdrop-blur-sm text-white text-xs font-medium rounded-md shadow-lg border border-slate-700/50 whitespace-nowrap">
-                           {sectionTitles[category as keyof typeof sectionTitles]}
-                         </div>
-                       </div>
-                     )}
+                      {/* Hover Tooltip */}
+                      {isHovered && openCategory !== category && (
+                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 animate-in fade-in-0 slide-in-from-left-1 duration-150 pointer-events-none">
+                          <div className="px-2.5 py-1.5 bg-slate-800/95 backdrop-blur-sm text-white text-xs font-medium rounded-md shadow-lg border border-slate-700/50 whitespace-nowrap">
+                            {sectionTitles[category as keyof typeof sectionTitles]}
+                          </div>
+                        </div>
+                      )}
                    </div>
                  );
                })}
