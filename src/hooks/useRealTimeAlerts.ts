@@ -260,7 +260,8 @@ export const useRealTimeAlerts = () => {
     console.log('Setting up comprehensive real-time alert monitoring...');
     setIsMonitoring(true);
 
-    // Listen for new user registrations
+    // Listen for new user registrations - just refresh queries
+    // (DB trigger handles alert creation to work even when admin panel is closed)
     const profilesChannel = supabase
       .channel('profiles-realtime')
       .on(
@@ -272,7 +273,12 @@ export const useRealTimeAlerts = () => {
         },
         (payload) => {
           console.log('New user registration detected:', payload.new);
-          handleUserRegistration(payload.new);
+          // Refresh alert queries - the DB trigger creates the alert
+          queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+          queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+          toast.info('New User Registration!', {
+            description: `${payload.new.full_name || payload.new.email} just registered`
+          });
         }
       )
       .subscribe();
