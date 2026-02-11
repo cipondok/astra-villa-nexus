@@ -178,13 +178,17 @@ const AHUCompanyChecker = () => {
         </Card>
       </div>
 
-      {/* AHU Quick Check Tool */}
+      {/* AHU Manual Check Tool */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <Search className="h-5 w-5 text-primary" />
-            AHU Company Quick Check
+            AHU Company Verification
           </CardTitle>
+          <p className="text-sm text-muted-foreground mt-1">
+            AHU menggunakan reCAPTCHA Enterprise sehingga pengecekan otomatis tidak dapat dilakukan. 
+            Gunakan tombol di bawah untuk membuka situs AHU dan verifikasi manual.
+          </p>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex gap-2">
@@ -192,50 +196,35 @@ const AHUCompanyChecker = () => {
               placeholder="Masukkan nama perusahaan (e.g., PT TELKOM INDONESIA)"
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleCheckAHU()}
               className="flex-1"
             />
-            <Button onClick={handleCheckAHU} disabled={checking} className="gap-2">
-              {checking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-              Check AHU
-            </Button>
-            <Button variant="outline" asChild>
-              <a href="https://ahu.go.id/pencarian/profil-pt" target="_blank" rel="noopener noreferrer" className="gap-2">
+            <Button asChild className="gap-2">
+              <a 
+                href={`https://ahu.go.id/pencarian/profil-pt${searchName.trim() ? `?q=${encodeURIComponent(searchName.trim())}` : ''}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
                 <ExternalLink className="h-4 w-4" />
-                Open AHU
+                Buka AHU & Cari
               </a>
             </Button>
           </div>
 
-          {checkResult && (
-            <div className={`p-4 rounded-lg border ${
-              checkResult.status === 'verified' ? 'bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800' :
-              checkResult.status === 'captcha_blocked' ? 'bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-800' :
-              'bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-800'
-            }`}>
-              <div className="flex items-center gap-2 mb-2">
-                {checkResult.status === 'verified' ? (
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                ) : checkResult.status === 'captcha_blocked' ? (
-                  <Shield className="h-5 w-5 text-amber-600" />
-                ) : (
-                  <XCircle className="h-5 w-5 text-red-600" />
-                )}
-                <span className="font-medium text-sm">
-                  {checkResult.status === 'verified' ? 'Company Found' :
-                   checkResult.status === 'captcha_blocked' ? 'CAPTCHA Protection Detected' :
-                   'Check Failed'}
-                </span>
-                <Badge variant="outline" className="text-xs">{checkResult.status}</Badge>
+          <div className="p-4 rounded-lg border bg-muted/50 border-border">
+            <div className="flex items-start gap-3">
+              <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+              <div className="space-y-1.5 text-sm">
+                <p className="font-medium">Cara Verifikasi Manual:</p>
+                <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
+                  <li>Klik <strong>"Buka AHU & Cari"</strong> untuk membuka situs AHU di tab baru</li>
+                  <li>Masukkan nama perusahaan di halaman AHU, lalu klik <strong>"Cari"</strong></li>
+                  <li>Klik <strong>"Profil Lengkap"</strong> pada hasil yang ditemukan</li>
+                  <li>Periksa data perusahaan (alamat, SK, NPWP, Notaris)</li>
+                  <li>Kembali ke sini dan <strong>Approve/Deny</strong> perusahaan pada daftar di bawah</li>
+                </ol>
               </div>
-              <p className="text-sm text-muted-foreground">{checkResult.message}</p>
-              {checkResult.requires_manual && (
-                <p className="text-xs text-muted-foreground mt-2">
-                  💡 AHU menggunakan reCAPTCHA Enterprise. Gunakan tombol "Open AHU" untuk cek manual.
-                </p>
-              )}
             </div>
-          )}
+          </div>
         </CardContent>
       </Card>
 
