@@ -98,6 +98,7 @@ const AutomationPlatformManagement = lazy(() => import("./AutomationPlatformMana
 const TeamManagement = lazy(() => import("./TeamManagement"));
 const ViralGrowthCampaigns = lazy(() => import("./ViralGrowthCampaigns"));
 const MediaCoveragePR = lazy(() => import("./MediaCoveragePR"));
+const AHUCompanyChecker = lazy(() => import("./AHUCompanyChecker"));
 const ConciergeServiceManagement = lazy(() => import("./ConciergeServiceManagement"));
 const SamplePropertyGenerator = lazy(() => import("./SamplePropertyGenerator"));
 const VerificationSystemSettings = lazy(() => import("./settings/VerificationSystemSettings"));
@@ -208,6 +209,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "concierge-service": { label: "Concierge Service", category: "Features" },
   "sample-property-generator": { label: "Sample Property Generator", category: "Property System" },
   "verification-system-settings": { label: "Verification System Settings", category: "Settings" },
+  "ahu-company-checker": { label: "AHU Company Checker", category: "Verification" },
 };
 
 // Loading fallback component
@@ -483,6 +485,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <SamplePropertyGenerator />;
       case "verification-system-settings":
         return <VerificationSystemSettings />;
+      case "ahu-company-checker":
+        return <AHUCompanyChecker />;
       default:
         return <AdminOverview />;
     }
