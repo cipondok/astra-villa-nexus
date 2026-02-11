@@ -53,26 +53,13 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   const fetchProvinces = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('locations')
-        .select('province_code, province_name')
-        .eq('is_active', true)
-        .order('province_name')
-        .limit(100000); // Ensure we get all records to extract all 38 provinces
-
+      const { data, error } = await supabase.rpc('get_distinct_provinces');
       if (error) throw error;
 
-      // Remove duplicates
-      const uniqueProvinces = data?.reduce((acc: Array<{code: string, name: string}>, curr) => {
-        if (!acc.find(p => p.code === curr.province_code)) {
-          acc.push({
-            code: curr.province_code,
-            name: curr.province_name
-          });
-        }
-        return acc;
-      }, []) || [];
-
+      const uniqueProvinces = (data || []).map((d: any) => ({
+        code: d.province_code,
+        name: d.province_name,
+      }));
       setProvinces(uniqueProvinces);
     } catch (error) {
       console.error('Error fetching provinces:', error);
