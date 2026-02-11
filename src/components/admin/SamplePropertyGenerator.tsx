@@ -74,6 +74,9 @@ const SamplePropertyGenerator = () => {
 
     while (hasMore && !cancelRef.current) {
       try {
+        // Refresh session to prevent token expiry during long batch runs
+        await supabase.auth.refreshSession();
+        
         const { data, error } = await supabase.functions.invoke("seed-sample-properties", {
           body: { province: selectedProvince, skipExisting, offset },
         });
