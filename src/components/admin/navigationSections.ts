@@ -80,7 +80,8 @@ export const categories = [
   "astra-token", 
   "tools",
   "core-management",
-  "customer-service", 
+  "customer-service",
+  "user-management",
   "vendor-management",
   "analytics-monitoring",
   "content-settings",
@@ -272,13 +273,7 @@ export const navigationSections = {
     }
   ],
 
-  "vendor-management": [
-    {
-      key: "vendors-hub",
-      label: "Vendors Hub",
-      icon: ShoppingBag,
-      description: "Comprehensive vendor management platform with all vendor-related functionality including services, categories, KYC, analytics, and control panel"
-    },
+  "user-management": [
     {
       key: "user-management",
       label: "User Management",
@@ -330,6 +325,15 @@ export const navigationSections = {
       label: "Document OCR Scanner",
       icon: FileText,
       description: "Automatically extract data from uploaded KYC documents using OCR"
+    }
+  ],
+
+  "vendor-management": [
+    {
+      key: "vendors-hub",
+      label: "Vendors Hub",
+      icon: ShoppingBag,
+      description: "Comprehensive vendor management platform with all vendor-related functionality including services, categories, KYC, analytics, and control panel"
     }
   ],
 
@@ -670,7 +674,8 @@ export const sectionTitles = {
   tools: "Tools & Management",
   "core-management": "Core Management",
   "customer-service": "Customer Service",
-  "vendor-management": "Vendor & Users Management", 
+  "user-management": "User Management",
+  "vendor-management": "Vendor Management", 
   "analytics-monitoring": "Analytics & Monitoring",
   "content-settings": "Content & Settings",
   "system-settings": "System Settings",

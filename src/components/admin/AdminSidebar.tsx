@@ -32,6 +32,7 @@ const categoryIcons: Record<string, LucideIcon> = {
   "tools": Wrench,
   "core-management": Building2,
   "customer-service": Headphones,
+  "user-management": Users,
   "vendor-management": ShoppingBag,
   "analytics-monitoring": BarChart3,
   "content-settings": Palette,

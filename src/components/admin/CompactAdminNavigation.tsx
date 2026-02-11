@@ -83,15 +83,22 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
 
   const tabGroups: TabGroup[] = [
     {
-      id: "management",
-      label: "Management",
+      id: "user-management",
+      label: "Users",
       icon: Users,
       items: [
         { id: "user-management", label: "Users", icon: Users },
         { id: "user-auth-mfa", label: "User Auth & MFA", icon: Shield, badge: "New" },
+        { id: "admin-kyc-review", label: "KYC Review", icon: Shield, badge: "New" },
+      ]
+    },
+    {
+      id: "management",
+      label: "Management",
+      icon: Building,
+      items: [
         { id: "property-management-hub", label: "Properties", icon: Building },
         { id: "vendors-hub", label: "Vendors", icon: ShoppingBag },
-        { id: "admin-kyc-review", label: "KYC Review", icon: Shield, badge: "New" },
         { id: "location-management", label: "Locations", icon: MapPin },
         { id: "tools-management", label: "Tools", icon: Settings },
       ]
