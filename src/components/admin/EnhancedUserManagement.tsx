@@ -224,6 +224,25 @@ const EnhancedUserManagement = () => {
     },
   });
 
+  // Update verification status mutation
+  const updateVerificationStatusMutation = useMutation({
+    mutationFn: async ({ userId, status }: { userId: string; status: string }) => {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ verification_status: status })
+        .eq('id', userId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      showSuccess("Status Updated", "Verification status updated successfully.");
+      queryClient.invalidateQueries({ queryKey: ['enhanced-users'] });
+    },
+    onError: (error: any) => {
+      showError("Update Failed", error.message);
+    },
+  });
+
   // Update user role mutation
   const updateUserRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: UserRole }) => {
@@ -433,7 +452,24 @@ const EnhancedUserManagement = () => {
                         </Select>
                       )}
                     </TableCell>
-                    <TableCell className="py-1.5 px-2">{getStatusBadge(user)}</TableCell>
+                    <TableCell className="py-1.5 px-2">
+                      <Select
+                        value={user.verification_status || 'pending'}
+                        onValueChange={(status) => updateVerificationStatusMutation.mutate({ userId: user.id, status })}
+                      >
+                        <SelectTrigger className="w-[90px] h-5 text-[9px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pending" className="text-[10px]">Pending</SelectItem>
+                          <SelectItem value="verified" className="text-[10px]">Verified</SelectItem>
+                          <SelectItem value="approved" className="text-[10px]">Approved</SelectItem>
+                          <SelectItem value="rejected" className="text-[10px]">Rejected</SelectItem>
+                          <SelectItem value="suspended" className="text-[10px]">Suspended</SelectItem>
+                          <SelectItem value="unverified" className="text-[10px]">Unverified</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
                     <TableCell className="py-1.5 px-2 text-[9px] text-muted-foreground">
                       {new Date(user.created_at).toLocaleDateString()}
                     </TableCell>
