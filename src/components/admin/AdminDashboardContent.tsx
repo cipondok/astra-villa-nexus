@@ -8,6 +8,7 @@ import { AdminCategoryTabs } from "./AdminCategoryTabs";
 // Lazy load all admin components to prevent module import failures
 const AdminOverview = lazy(() => import("./AdminOverview"));
 const EnhancedUserManagement = lazy(() => import("./EnhancedUserManagement"));
+const UserManagementHub = lazy(() => import("./UserManagementHub"));
 const PropertyManagementAdvanced = lazy(() => import("./PropertyManagementAdvanced"));
 const AdminPropertyManagement = lazy(() => import("./AdminPropertyManagement"));
 const SystemSettings = lazy(() => import("./SystemSettings"));
@@ -288,7 +289,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "launch-readiness":
         return <LaunchReadinessDashboard onSectionChange={onSectionChange} />;
       case "user-management":
-        return <EnhancedUserManagement />;
+        return <UserManagementHub onNavigate={onSectionChange} />;
       case "user-levels":
         return <UserLevelManagement onNavigate={onSectionChange} />;
       case "verification-management":
