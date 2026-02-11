@@ -35,18 +35,20 @@ const EnhancedLocationSelector = ({
 
   // Fetch unique provinces first (much smaller dataset)
   const { data: locations } = useQuery({
-    queryKey: ['enhanced-location-provinces'],
+    queryKey: ['enhanced-location-all'],
     queryFn: async () => {
-      // Fetch provinces with limit to ensure we get all 38
-      const { data, error } = await supabase
+      const { data, error } = await supabase.rpc('get_distinct_provinces');
+      if (error) throw error;
+      
+      // Also fetch all locations for city/area filtering
+      const { data: allLocs, error: allErr } = await supabase
         .from('locations')
         .select('province_code, province_name, city_code, city_name, city_type, area_name')
         .eq('is_active', true)
-        .order('province_name', { ascending: true })
-        .limit(100000); // Ensure we get all records
+        .limit(100000);
       
-      if (error) throw error;
-      return data || [];
+      if (allErr) throw allErr;
+      return allLocs || [];
     },
   });
 

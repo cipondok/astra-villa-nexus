@@ -121,25 +121,16 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
   const fetchProvinces = async () => {
     try {
       setLoadingProvinces(true);
-      const { data, error } = await supabase
-        .from('locations')
-        .select('province_code, province_name')
-        .eq('is_active', true)
-        .not('province_code', 'is', null)
-        .neq('province_code', '')
-        .order('province_name')
-        .limit(10000);
+      const { data, error } = await supabase.rpc('get_distinct_provinces');
 
       if (error) throw error;
 
-      const uniqueProvinces = data?.reduce((acc: Array<{code: string, name: string}>, curr) => {
-        if (curr.province_code && curr.province_name && !acc.find(p => p.code === curr.province_code)) {
-          acc.push({ code: curr.province_code, name: curr.province_name });
-        }
-        return acc;
-      }, []) || [];
+      const mapped = (data || []).map((d: any) => ({
+        code: d.province_code,
+        name: d.province_name,
+      }));
 
-      setProvinces(uniqueProvinces);
+      setProvinces(mapped);
     } catch (error) {
       console.error('Error fetching provinces:', error);
     } finally {
@@ -152,26 +143,17 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
     
     try {
       setLoadingCities(true);
-      const { data, error } = await supabase
-        .from('locations')
-        .select('city_code, city_name, city_type')
-        .eq('province_code', provinceCode)
-        .eq('is_active', true)
-        .not('city_code', 'is', null)
-        .neq('city_code', '')
-        .order('city_name')
-        .limit(1000);
+      const { data, error } = await supabase.rpc('get_distinct_cities', { p_province_code: provinceCode });
 
       if (error) throw error;
 
-      const uniqueCities = data?.reduce((acc: Array<{code: string, name: string, type: string}>, curr) => {
-        if (curr.city_code && curr.city_name && !acc.find(c => c.code === curr.city_code)) {
-          acc.push({ code: curr.city_code, name: curr.city_name, type: curr.city_type || '' });
-        }
-        return acc;
-      }, []) || [];
+      const mapped = (data || []).map((d: any) => ({
+        code: d.city_code,
+        name: d.city_name,
+        type: d.city_type || '',
+      }));
 
-      setCities(uniqueCities);
+      setCities(mapped);
     } catch (error) {
       console.error('Error fetching cities:', error);
     } finally {
@@ -184,26 +166,16 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
     
     try {
       setLoadingDistricts(true);
-      const { data, error } = await supabase
-        .from('locations')
-        .select('district_code, district_name')
-        .eq('city_code', cityCode)
-        .eq('is_active', true)
-        .not('district_code', 'is', null)
-        .neq('district_code', '')
-        .order('district_name')
-        .limit(1000);
+      const { data, error } = await supabase.rpc('get_distinct_districts', { p_city_code: cityCode });
 
       if (error) throw error;
 
-      const uniqueDistricts = data?.reduce((acc: Array<{code: string, name: string}>, curr) => {
-        if (curr.district_code && curr.district_name && !acc.find(d => d.code === curr.district_code)) {
-          acc.push({ code: curr.district_code, name: curr.district_name });
-        }
-        return acc;
-      }, []) || [];
+      const mapped = (data || []).map((d: any) => ({
+        code: d.district_code,
+        name: d.district_name,
+      }));
 
-      setDistricts(uniqueDistricts);
+      setDistricts(mapped);
     } catch (error) {
       console.error('Error fetching districts:', error);
     } finally {
@@ -216,26 +188,16 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
     
     try {
       setLoadingSubdistricts(true);
-      const { data, error } = await supabase
-        .from('locations')
-        .select('subdistrict_code, subdistrict_name')
-        .eq('district_code', districtCode)
-        .eq('is_active', true)
-        .not('subdistrict_code', 'is', null)
-        .neq('subdistrict_code', '')
-        .order('subdistrict_name')
-        .limit(1000);
+      const { data, error } = await supabase.rpc('get_distinct_subdistricts', { p_district_code: districtCode });
 
       if (error) throw error;
 
-      const uniqueSubdistricts = data?.reduce((acc: Array<{code: string, name: string}>, curr) => {
-        if (curr.subdistrict_code && curr.subdistrict_name && !acc.find(s => s.code === curr.subdistrict_code)) {
-          acc.push({ code: curr.subdistrict_code, name: curr.subdistrict_name });
-        }
-        return acc;
-      }, []) || [];
+      const mapped = (data || []).map((d: any) => ({
+        code: d.subdistrict_code,
+        name: d.subdistrict_name,
+      }));
 
-      setSubdistricts(uniqueSubdistricts);
+      setSubdistricts(mapped);
     } catch (error) {
       console.error('Error fetching subdistricts:', error);
     } finally {
