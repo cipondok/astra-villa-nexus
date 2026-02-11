@@ -94,22 +94,68 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
     }
   }, [isVerified]);
 
-  // Open AHU in popup window and show confirmation dialog
-  const handleOpenAHU = () => {
+  // Hybrid: try auto-check first, then fallback to manual popup
+  const handleCheckAHU = async () => {
     if (!companyName.trim()) {
       toast.error('Please enter your company name first');
       return;
     }
-    
-    // Calculate popup window dimensions and position (centered)
-    // NOTE: Browser decides whether this appears as a popup window or a new tab.
-    // We request a small centered popup, but some mobile browsers always open a tab.
+
+    setVerification(prev => ({ ...prev, submitting: true, message: 'Checking AHU automatically...' }));
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('Please log in first');
+        setVerification(prev => ({ ...prev, submitting: false, message: null }));
+        return;
+      }
+
+      // Step 1: Try auto-check via edge function
+      const { data, error } = await supabase.functions.invoke('verify-ahu-company', {
+        body: { company_name: companyName.trim(), user_id: user.id },
+      });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        // Fallback to manual
+        openAHUPopup();
+        return;
+      }
+
+      if (data?.status === 'verified') {
+        // Auto-verification succeeded (rare but possible if CAPTCHA is bypassed)
+        setVerification(prev => ({
+          ...prev,
+          status: 'verified',
+          submitting: false,
+          message: 'Company verified automatically via AHU!',
+        }));
+        toast.success('Company verified via AHU!');
+        return;
+      }
+
+      // Step 2: Auto-check failed (CAPTCHA blocked) — fallback to manual popup
+      console.log('Auto-check result:', data?.status, '— falling back to manual popup');
+      toast.info('AHU memerlukan CAPTCHA. Silakan cari manual di jendela popup.', { duration: 5000 });
+      openAHUPopup();
+
+    } catch (err) {
+      console.error('AHU check error:', err);
+      // Fallback to manual on any error
+      openAHUPopup();
+    } finally {
+      setVerification(prev => ({ ...prev, submitting: false }));
+    }
+  };
+
+  // Open AHU in popup window and show confirmation dialog
+  const openAHUPopup = () => {
     const width = Math.min(520, window.screen.width);
     const height = Math.min(680, window.screen.height);
     const left = Math.max(0, Math.floor((window.screen.width - width) / 2));
     const top = Math.max(0, Math.floor((window.screen.height - height) / 2));
 
-    // Open AHU in popup window (requested)
     const popup = window.open(
       'https://ahu.go.id/pencarian/profil-pt',
       'AHU_Search',
@@ -119,11 +165,7 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
     if (popup) {
       popup.focus();
       setAhuWindowOpened(true);
-      
-      // Show confirmation dialog after a short delay
-      setTimeout(() => {
-        setConfirmDialogOpen(true);
-      }, 1000);
+      setTimeout(() => setConfirmDialogOpen(true), 1000);
     } else {
       toast.error('Popup was blocked. Please allow popups for this site.');
     }
@@ -309,7 +351,7 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
               type="button"
               variant="default"
               size="sm"
-              onClick={handleOpenAHU}
+              onClick={handleCheckAHU}
               className="h-9 gap-1.5 shrink-0"
               disabled={verification.status === 'verified'}
             >
