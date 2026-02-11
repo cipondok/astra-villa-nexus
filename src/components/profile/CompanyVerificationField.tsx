@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { ExternalLink, Building2, CheckCircle, AlertCircle, HelpCircle, Clock, Loader2, RefreshCw, Search, X, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { ExternalLink, Building2, CheckCircle, AlertCircle, HelpCircle, Clock, Loader2, RefreshCw, Search, X, ThumbsUp, ThumbsDown, MapPin, Phone, Mail, FileText, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
+export interface AHUCompanyData {
+  companyAddress: string;
+  skNumber: string;
+  npwp: string;
+  notaryName: string;
+  companyPhone: string;
+  companyEmail: string;
+}
+
 interface CompanyVerificationFieldProps {
   companyName: string;
   registrationNumber: string;
   isVerified?: boolean;
   onRegistrationChange: (value: string) => void;
+  onAHUDataChange?: (data: AHUCompanyData) => void;
   disabled?: boolean;
   className?: string;
 }
@@ -34,6 +45,7 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
   registrationNumber,
   isVerified = false,
   onRegistrationChange,
+  onAHUDataChange,
   disabled = false,
   className,
 }) => {
@@ -46,6 +58,14 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
   });
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [ahuWindowOpened, setAhuWindowOpened] = useState(false);
+  const [ahuData, setAhuData] = useState<AHUCompanyData>({
+    companyAddress: '',
+    skNumber: '',
+    npwp: '',
+    notaryName: '',
+    companyPhone: '',
+    companyEmail: '',
+  });
 
   // Fetch current verification status from database
   const fetchVerificationStatus = async () => {
@@ -111,20 +131,17 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
         return;
       }
 
-      // Step 1: Try auto-check via edge function
       const { data, error } = await supabase.functions.invoke('verify-ahu-company', {
         body: { company_name: companyName.trim(), user_id: user.id },
       });
 
       if (error) {
         console.error('Edge function error:', error);
-        // Fallback to manual
         openAHUPopup();
         return;
       }
 
       if (data?.status === 'verified') {
-        // Auto-verification succeeded (rare but possible if CAPTCHA is bypassed)
         setVerification(prev => ({
           ...prev,
           status: 'verified',
@@ -135,21 +152,18 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
         return;
       }
 
-      // Step 2: Auto-check failed (CAPTCHA blocked) — fallback to manual popup
       console.log('Auto-check result:', data?.status, '— falling back to manual popup');
       toast.info('AHU memerlukan CAPTCHA. Silakan cari manual di jendela popup.', { duration: 5000 });
       openAHUPopup();
 
     } catch (err) {
       console.error('AHU check error:', err);
-      // Fallback to manual on any error
       openAHUPopup();
     } finally {
       setVerification(prev => ({ ...prev, submitting: false }));
     }
   };
 
-  // Open AHU in popup window and show confirmation dialog
   const openAHUPopup = () => {
     const width = Math.min(520, window.screen.width);
     const height = Math.min(680, window.screen.height);
@@ -171,7 +185,14 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
     }
   };
 
-  // Submit for verification
+  const handleAhuDataField = (field: keyof AHUCompanyData, value: string) => {
+    setAhuData(prev => {
+      const updated = { ...prev, [field]: value };
+      return updated;
+    });
+  };
+
+  // Submit for verification with AHU data
   const handleSubmitVerification = async (userFoundCompany: boolean) => {
     if (!companyName.trim()) {
       toast.error('Please enter your company name first');
@@ -188,18 +209,39 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
         return;
       }
 
-      // Update registration number if provided
+      // Build profile update with AHU data
+      const profileUpdate: Record<string, any> = {
+        updated_at: new Date().toISOString(),
+      };
+
       if (registrationNumber.trim()) {
+        profileUpdate.company_registration_number = registrationNumber.trim();
+      }
+
+      // If user found company and provided AHU data, auto-fill SK number
+      if (userFoundCompany && ahuData.skNumber.trim()) {
+        profileUpdate.company_registration_number = ahuData.skNumber.trim();
+        onRegistrationChange(ahuData.skNumber.trim());
+      }
+
+      // Update business_address from AHU if provided
+      if (userFoundCompany && ahuData.companyAddress.trim()) {
+        profileUpdate.business_address = ahuData.companyAddress.trim();
+      }
+
+      if (Object.keys(profileUpdate).length > 1) {
         await supabase
           .from('profiles')
-          .update({
-            company_registration_number: registrationNumber.trim(),
-            updated_at: new Date().toISOString(),
-          })
+          .update(profileUpdate)
           .eq('id', user.id);
       }
 
-      // Create admin alert with AHU verification link
+      // Notify parent of AHU data
+      if (userFoundCompany && onAHUDataChange) {
+        onAHUDataChange(ahuData);
+      }
+
+      // Create admin alert with AHU data included
       await supabase.from('admin_alerts').insert({
         type: 'verification_request',
         title: userFoundCompany 
@@ -215,9 +257,17 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
         metadata: {
           user_id: user.id,
           company_name: companyName,
-          registration_number: registrationNumber || 'Not provided',
+          registration_number: ahuData.skNumber || registrationNumber || 'Not provided',
           user_found_in_ahu: userFoundCompany,
           ahu_search_url: 'https://ahu.go.id/pencarian/profil-pt',
+          ahu_data: userFoundCompany ? {
+            company_address: ahuData.companyAddress || null,
+            sk_number: ahuData.skNumber || null,
+            npwp: ahuData.npwp || null,
+            notary_name: ahuData.notaryName || null,
+            company_phone: ahuData.companyPhone || null,
+            company_email: ahuData.companyEmail || null,
+          } : null,
         }
       });
 
@@ -234,7 +284,7 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
       setAhuWindowOpened(false);
       
       toast.success(userFoundCompany 
-        ? 'Verification submitted! Admin will approve shortly.'
+        ? 'Verification submitted with AHU data! Admin will approve shortly.'
         : 'Request submitted for admin review.'
       );
     } catch (error) {
@@ -290,6 +340,8 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
         );
     }
   };
+
+  const hasAnyAhuData = Object.values(ahuData).some(v => v.trim() !== '');
 
   return (
     <>
@@ -353,9 +405,13 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
               size="sm"
               onClick={handleCheckAHU}
               className="h-9 gap-1.5 shrink-0"
-              disabled={verification.status === 'verified'}
+              disabled={verification.status === 'verified' || verification.submitting}
             >
-              <Search className="h-3.5 w-3.5" />
+              {verification.submitting ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Search className="h-3.5 w-3.5" />
+              )}
               Check AHU
             </Button>
           </div>
@@ -366,8 +422,8 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
           <Building2 className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
           <div className="flex-1 min-w-0 text-xs text-muted-foreground">
             <p>
-              Klik <strong>Check AHU</strong> untuk membuka situs resmi AHU di jendela popup kecil.
-              Cari nama PT Anda di sana, lalu kembali ke sini untuk konfirmasi.
+              Klik <strong>Check AHU</strong> untuk membuka situs resmi AHU di jendela popup.
+              Cari nama PT Anda, lalu <strong>salin data perusahaan</strong> (alamat, SK, NPWP) ke form konfirmasi.
             </p>
           </div>
         </div>
@@ -417,24 +473,122 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
         )}
       </div>
 
-      {/* Confirmation Dialog */}
+      {/* Confirmation Dialog with Data Capture */}
       <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
-        <DialogContent className="max-w-md bg-background border border-border">
+        <DialogContent className="max-w-lg bg-background border border-border max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base">
               <Building2 className="h-5 w-5 text-primary" />
               AHU Verification Result
             </DialogTitle>
             <DialogDescription className="text-sm">
-              Did you find <strong className="text-foreground">"{companyName}"</strong> on the AHU website?
+              Did you find <strong className="text-foreground">"{companyName}"</strong> on AHU?
+              If yes, please copy the company details below.
             </DialogDescription>
           </DialogHeader>
           
-           <div className="py-4 space-y-3">
-             <p className="text-xs text-muted-foreground">
-               Buka dan cari nama PT Anda di: <span className="font-medium text-foreground">ahu.go.id/pencarian/profil-pt</span>
-             </p>
-           </div>
+          <div className="space-y-4 py-2">
+            <div className="p-2.5 rounded-lg bg-muted/50 border border-border">
+              <p className="text-[11px] text-muted-foreground">
+                💡 Buka <strong className="text-foreground">Profil Lengkap</strong> perusahaan di AHU, lalu salin data berikut ke form ini.
+              </p>
+            </div>
+
+            {/* SK Number / Nomor SK */}
+            <div className="space-y-1">
+              <Label className="text-xs flex items-center gap-1.5">
+                <FileText className="h-3 w-3 text-muted-foreground" />
+                Nomor SK / SK Number
+              </Label>
+              <Input
+                placeholder="e.g., AHU-0012345.AH.01.01.TAHUN 2024"
+                value={ahuData.skNumber}
+                onChange={(e) => handleAhuDataField('skNumber', e.target.value)}
+                className="h-8 text-xs font-mono"
+              />
+            </div>
+
+            {/* Company Address */}
+            <div className="space-y-1">
+              <Label className="text-xs flex items-center gap-1.5">
+                <MapPin className="h-3 w-3 text-muted-foreground" />
+                Alamat Perusahaan / Company Address
+              </Label>
+              <Textarea
+                placeholder="Salin alamat lengkap dari AHU..."
+                value={ahuData.companyAddress}
+                onChange={(e) => handleAhuDataField('companyAddress', e.target.value)}
+                className="text-xs min-h-[60px] resize-none"
+                rows={2}
+              />
+            </div>
+
+            {/* NPWP */}
+            <div className="space-y-1">
+              <Label className="text-xs flex items-center gap-1.5">
+                <FileText className="h-3 w-3 text-muted-foreground" />
+                NPWP Perusahaan
+              </Label>
+              <Input
+                placeholder="e.g., 01.234.567.8-012.345"
+                value={ahuData.npwp}
+                onChange={(e) => handleAhuDataField('npwp', e.target.value)}
+                className="h-8 text-xs font-mono"
+              />
+            </div>
+
+            {/* Notary Name */}
+            <div className="space-y-1">
+              <Label className="text-xs flex items-center gap-1.5">
+                <Building2 className="h-3 w-3 text-muted-foreground" />
+                Nama Notaris
+              </Label>
+              <Input
+                placeholder="Nama notaris dari akta pendirian..."
+                value={ahuData.notaryName}
+                onChange={(e) => handleAhuDataField('notaryName', e.target.value)}
+                className="h-8 text-xs"
+              />
+            </div>
+
+            {/* Contact Info Row */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs flex items-center gap-1.5">
+                  <Phone className="h-3 w-3 text-muted-foreground" />
+                  Telepon
+                </Label>
+                <Input
+                  placeholder="021-xxx / 08xx"
+                  value={ahuData.companyPhone}
+                  onChange={(e) => handleAhuDataField('companyPhone', e.target.value)}
+                  className="h-8 text-xs"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs flex items-center gap-1.5">
+                  <Mail className="h-3 w-3 text-muted-foreground" />
+                  Email
+                </Label>
+                <Input
+                  placeholder="company@email.com"
+                  value={ahuData.companyEmail}
+                  onChange={(e) => handleAhuDataField('companyEmail', e.target.value)}
+                  className="h-8 text-xs"
+                  type="email"
+                />
+              </div>
+            </div>
+
+            {hasAnyAhuData && (
+              <div className="p-2 rounded-lg bg-primary/5 border border-primary/20">
+                <p className="text-[11px] text-primary flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3" />
+                  Data akan disimpan ke profil dan dikirim ke admin untuk verifikasi.
+                </p>
+              </div>
+            )}
+          </div>
           
           <DialogFooter className="flex-row gap-2 sm:justify-between">
             <Button
@@ -459,7 +613,7 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
               ) : (
                 <ThumbsUp className="h-4 w-4" />
               )}
-              Yes, I Found It!
+              Yes, Found It!
             </Button>
           </DialogFooter>
         </DialogContent>
