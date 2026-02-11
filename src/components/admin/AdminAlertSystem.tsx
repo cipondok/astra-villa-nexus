@@ -320,7 +320,191 @@ const AdminAlertSystem = () => {
     }
   };
 
-  // Check if alert is actionable (verification type)
+  // Handle profile update approval (acknowledge changes are OK)
+  const handleApproveProfileUpdate = async () => {
+    if (!selectedAlert?.reference_id) return;
+    setIsProcessing(true);
+    try {
+      // Notify user their profile changes were acknowledged
+      await supabase.from('in_app_notifications').insert({
+        user_id: selectedAlert.reference_id,
+        title: '✅ Profile Update Approved',
+        message: reviewNotes 
+          ? `Your profile changes have been reviewed and approved. Note: ${reviewNotes}` 
+          : 'Your recent profile changes have been reviewed and approved.',
+        type: 'profile',
+        priority: 'medium',
+        action_url: '/profile',
+        metadata: {
+          status: 'approved',
+          changed_fields: selectedAlert.metadata?.changed_fields,
+          approved_at: new Date().toISOString()
+        }
+      });
+
+      // Mark alert as resolved
+      await supabase.from('admin_alerts').update({ 
+        action_required: false,
+        metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'approved', admin_notes: reviewNotes }
+      }).eq('id', selectedAlert.id);
+
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      showSuccess("Approved", "Profile changes approved and user notified.");
+      setIsDialogOpen(false);
+      setSelectedAlert(null);
+      setReviewNotes('');
+    } catch (error: any) {
+      showError("Error", error.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Handle profile update denial (revert or flag)
+  const handleDenyProfileUpdate = async () => {
+    if (!selectedAlert?.reference_id || !reviewNotes.trim()) {
+      showError("Required", "Please provide a reason for denial");
+      return;
+    }
+    setIsProcessing(true);
+    try {
+      // Revert profile changes if we have the old values
+      const changes = selectedAlert.metadata?.changes;
+      if (changes && typeof changes === 'object') {
+        const revertData: Record<string, any> = {};
+        Object.keys(changes).forEach(field => {
+          if (changes[field]?.old !== undefined) {
+            revertData[field] = changes[field].old;
+          }
+        });
+        if (Object.keys(revertData).length > 0) {
+          await supabase.from('profiles').update(revertData).eq('id', selectedAlert.reference_id);
+        }
+      }
+
+      // Notify user
+      await supabase.from('in_app_notifications').insert({
+        user_id: selectedAlert.reference_id,
+        title: '❌ Profile Update Reverted',
+        message: `Your recent profile changes were reverted by admin. Reason: ${reviewNotes}`,
+        type: 'profile',
+        priority: 'high',
+        action_url: '/profile',
+        metadata: {
+          status: 'denied',
+          denial_reason: reviewNotes,
+          changed_fields: selectedAlert.metadata?.changed_fields,
+          denied_at: new Date().toISOString()
+        }
+      });
+
+      await supabase.from('admin_alerts').update({ 
+        action_required: false,
+        metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'denied', denial_reason: reviewNotes }
+      }).eq('id', selectedAlert.id);
+
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      queryClient.invalidateQueries({ queryKey: ['enhanced-users'] });
+      showSuccess("Denied", "Profile changes reverted and user notified.");
+      setIsDialogOpen(false);
+      setSelectedAlert(null);
+      setReviewNotes('');
+    } catch (error: any) {
+      showError("Error", error.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Handle property listing approval
+  const handleApproveProperty = async () => {
+    if (!selectedAlert?.reference_id) return;
+    setIsProcessing(true);
+    try {
+      // Update property status to available
+      await supabase.from('properties').update({ status: 'available' }).eq('id', selectedAlert.reference_id);
+
+      // Notify property owner
+      const ownerId = selectedAlert.metadata?.owner_id;
+      if (ownerId) {
+        await supabase.from('in_app_notifications').insert({
+          user_id: ownerId,
+          title: '✅ Property Listing Approved',
+          message: `Your property "${selectedAlert.metadata?.title || 'listing'}" has been approved and is now live.`,
+          type: 'property',
+          priority: 'medium',
+          action_url: `/property/${selectedAlert.reference_id}`,
+          metadata: { property_id: selectedAlert.reference_id, status: 'approved', approved_at: new Date().toISOString() }
+        });
+      }
+
+      await supabase.from('admin_alerts').update({ 
+        action_required: false,
+        metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'approved', admin_notes: reviewNotes }
+      }).eq('id', selectedAlert.id);
+
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      showSuccess("Approved", "Property listing approved and owner notified.");
+      setIsDialogOpen(false);
+      setSelectedAlert(null);
+      setReviewNotes('');
+    } catch (error: any) {
+      showError("Error", error.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Handle property listing denial
+  const handleDenyProperty = async () => {
+    if (!selectedAlert?.reference_id || !reviewNotes.trim()) {
+      showError("Required", "Please provide a reason for denial");
+      return;
+    }
+    setIsProcessing(true);
+    try {
+      // Update property status to rejected
+      await supabase.from('properties').update({ status: 'rejected' }).eq('id', selectedAlert.reference_id);
+
+      const ownerId = selectedAlert.metadata?.owner_id;
+      if (ownerId) {
+        await supabase.from('in_app_notifications').insert({
+          user_id: ownerId,
+          title: '❌ Property Listing Denied',
+          message: `Your property "${selectedAlert.metadata?.title || 'listing'}" was not approved. Reason: ${reviewNotes}`,
+          type: 'property',
+          priority: 'high',
+          action_url: `/property/${selectedAlert.reference_id}`,
+          metadata: { property_id: selectedAlert.reference_id, status: 'denied', denial_reason: reviewNotes, denied_at: new Date().toISOString() }
+        });
+      }
+
+      await supabase.from('admin_alerts').update({ 
+        action_required: false,
+        metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'denied', denial_reason: reviewNotes }
+      }).eq('id', selectedAlert.id);
+
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      showSuccess("Denied", "Property listing denied and owner notified.");
+      setIsDialogOpen(false);
+      setSelectedAlert(null);
+      setReviewNotes('');
+    } catch (error: any) {
+      showError("Error", error.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Check if alert is actionable
+  const isActionableAlert = (type: string) => {
+    return ['kyc_verification', 'company_verification', 'profile_update', 'property_listing'].includes(type);
+  };
+
   const isVerificationAlert = (type: string) => {
     return ['kyc_verification', 'company_verification'].includes(type);
   };
@@ -362,12 +546,15 @@ const AdminAlertSystem = () => {
     switch (type.toLowerCase()) {
       case 'error':
       case 'warning':
+      case 'system_error':
         return AlertTriangle;
       case 'success':
         return CheckCircle;
-      case 'property':
+      case 'property_listing':
         return Building2;
-      case 'user':
+      case 'user_registration':
+        return UserPlus;
+      case 'profile_update':
         return UserPlus;
       case 'sale':
         return ShoppingCart;
@@ -380,9 +567,12 @@ const AdminAlertSystem = () => {
   };
 
   const getAlertColor = (type: string, priority: string) => {
-    if (priority === 'high') return 'text-destructive';
-    if (type === 'error' || type === 'warning') return 'text-orange-500';
+    if (priority === 'high' || priority === 'critical') return 'text-destructive';
+    if (type === 'error' || type === 'warning' || type === 'system_error') return 'text-orange-500';
     if (type === 'success') return 'text-green-500';
+    if (type === 'profile_update') return 'text-amber-500';
+    if (type === 'property_listing') return 'text-emerald-500';
+    if (type === 'user_registration') return 'text-blue-500';
     if (type === 'kyc_verification' || type === 'company_verification') return 'text-primary';
     return 'text-blue-500';
   };
@@ -580,12 +770,8 @@ const AdminAlertSystem = () => {
                       <p className="text-sm"><strong>Company:</strong> {selectedAlert.metadata.company_name}</p>
                     )}
                     {selectedAlert.metadata.ahu_search_url && (
-                      <a 
-                        href={selectedAlert.metadata.ahu_search_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-sm text-primary flex items-center gap-1 hover:underline"
-                      >
+                      <a href={selectedAlert.metadata.ahu_search_url} target="_blank" rel="noopener noreferrer"
+                        className="text-sm text-primary flex items-center gap-1 hover:underline">
                         <ExternalLink className="h-3 w-3" />
                         Open AHU Search Portal
                       </a>
@@ -603,15 +789,84 @@ const AdminAlertSystem = () => {
                 </>
               )}
 
-              {/* Review notes for actionable verification alerts */}
-              {isVerificationAlert(selectedAlert.type) && selectedAlert.action_required && (
+              {/* Metadata display for profile update alerts */}
+              {selectedAlert.metadata && selectedAlert.type === 'profile_update' && (
+                <>
+                  <Separator />
+                  <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+                    <h4 className="font-medium text-sm">Profile Change Details</h4>
+                    {selectedAlert.metadata.user_name && (
+                      <p className="text-sm"><strong>User:</strong> {selectedAlert.metadata.user_name}</p>
+                    )}
+                    {selectedAlert.metadata.email && (
+                      <p className="text-sm"><strong>Email:</strong> {selectedAlert.metadata.email}</p>
+                    )}
+                    {selectedAlert.metadata.changed_fields && (
+                      <p className="text-sm"><strong>Changed Fields:</strong> {Array.isArray(selectedAlert.metadata.changed_fields) ? selectedAlert.metadata.changed_fields.join(', ') : selectedAlert.metadata.changed_fields}</p>
+                    )}
+                    {selectedAlert.metadata.changes && typeof selectedAlert.metadata.changes === 'object' && (
+                      <div className="space-y-1 mt-2">
+                        <h5 className="text-xs font-semibold text-muted-foreground uppercase">Changes</h5>
+                        {Object.entries(selectedAlert.metadata.changes).map(([field, vals]: [string, any]) => (
+                          <div key={field} className="text-xs bg-background p-2 rounded border">
+                            <span className="font-medium capitalize">{field.replace(/_/g, ' ')}:</span>{' '}
+                            <span className="text-destructive line-through">{vals?.old || '(empty)'}</span>
+                            {' → '}
+                            <span className="text-green-600 dark:text-green-400">{vals?.new || '(empty)'}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {selectedAlert.metadata.resolution && (
+                      <p className="text-sm mt-2"><strong>Resolution:</strong> {selectedAlert.metadata.resolution}</p>
+                    )}
+                    {selectedAlert.metadata.denial_reason && (
+                      <p className="text-sm"><strong>Denial Reason:</strong> {selectedAlert.metadata.denial_reason}</p>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {/* Metadata display for property listing alerts */}
+              {selectedAlert.metadata && selectedAlert.type === 'property_listing' && (
+                <>
+                  <Separator />
+                  <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+                    <h4 className="font-medium text-sm">Property Details</h4>
+                    {selectedAlert.metadata.title && (
+                      <p className="text-sm"><strong>Title:</strong> {selectedAlert.metadata.title}</p>
+                    )}
+                    {selectedAlert.metadata.property_type && (
+                      <p className="text-sm"><strong>Type:</strong> {selectedAlert.metadata.property_type}</p>
+                    )}
+                    {selectedAlert.metadata.listing_type && (
+                      <p className="text-sm"><strong>Listing:</strong> {selectedAlert.metadata.listing_type}</p>
+                    )}
+                    {selectedAlert.metadata.location && (
+                      <p className="text-sm"><strong>Location:</strong> {selectedAlert.metadata.location}</p>
+                    )}
+                    {selectedAlert.metadata.price && (
+                      <p className="text-sm"><strong>Price:</strong> ${Number(selectedAlert.metadata.price).toLocaleString()}</p>
+                    )}
+                    {selectedAlert.metadata.status && (
+                      <p className="text-sm"><strong>Status:</strong> {selectedAlert.metadata.status}</p>
+                    )}
+                    {selectedAlert.metadata.resolution && (
+                      <p className="text-sm mt-2"><strong>Resolution:</strong> {selectedAlert.metadata.resolution}</p>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {/* Review notes for actionable alerts */}
+              {isActionableAlert(selectedAlert.type) && selectedAlert.action_required && (
                 <>
                   <Separator />
                   <div className="space-y-2">
                     <Label htmlFor="review-notes">Admin Review Notes</Label>
                     <Textarea
                       id="review-notes"
-                      placeholder="Add notes about this verification (required for denial)..."
+                      placeholder="Add notes (required for denial)..."
                       value={reviewNotes}
                       onChange={(e) => setReviewNotes(e.target.value)}
                       rows={3}
@@ -638,53 +893,61 @@ const AdminAlertSystem = () => {
                 {/* Verification action buttons */}
                 {isVerificationAlert(selectedAlert.type) && selectedAlert.action_required && (
                   <>
-                    <Button
-                      variant="outline"
-                      onClick={handleDenyVerification}
-                      disabled={isProcessing}
-                      className="text-destructive border-destructive hover:bg-destructive/10"
-                    >
+                    <Button variant="outline" onClick={handleDenyVerification} disabled={isProcessing}
+                      className="text-destructive border-destructive hover:bg-destructive/10">
                       <XCircle className="h-4 w-4 mr-2" />
                       {isProcessing ? 'Processing...' : 'Deny'}
                     </Button>
-                    <Button
-                      variant="default"
-                      onClick={handleApproveVerification}
-                      disabled={isProcessing}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
+                    <Button variant="default" onClick={handleApproveVerification} disabled={isProcessing}
+                      className="bg-green-600 hover:bg-green-700">
                       <CheckCircle className="h-4 w-4 mr-2" />
                       {isProcessing ? 'Processing...' : 'Approve'}
                     </Button>
                   </>
                 )}
 
+                {/* Profile update action buttons */}
+                {selectedAlert.type === 'profile_update' && selectedAlert.action_required && (
+                  <>
+                    <Button variant="outline" onClick={handleDenyProfileUpdate} disabled={isProcessing}
+                      className="text-destructive border-destructive hover:bg-destructive/10">
+                      <XCircle className="h-4 w-4 mr-2" />
+                      {isProcessing ? 'Processing...' : 'Revert Changes'}
+                    </Button>
+                    <Button variant="default" onClick={handleApproveProfileUpdate} disabled={isProcessing}
+                      className="bg-green-600 hover:bg-green-700">
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      {isProcessing ? 'Processing...' : 'Approve Changes'}
+                    </Button>
+                  </>
+                )}
+
+                {/* Property listing action buttons */}
+                {selectedAlert.type === 'property_listing' && selectedAlert.action_required && (
+                  <>
+                    <Button variant="outline" onClick={handleDenyProperty} disabled={isProcessing}
+                      className="text-destructive border-destructive hover:bg-destructive/10">
+                      <XCircle className="h-4 w-4 mr-2" />
+                      {isProcessing ? 'Processing...' : 'Reject Listing'}
+                    </Button>
+                    <Button variant="default" onClick={handleApproveProperty} disabled={isProcessing}
+                      className="bg-green-600 hover:bg-green-700">
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      {isProcessing ? 'Processing...' : 'Approve Listing'}
+                    </Button>
+                  </>
+                )}
+
                 {/* Standard alert buttons */}
-                <Button
-                  variant="outline"
-                  onClick={handleCloseDialog}
-                >
-                  Close
-                </Button>
+                <Button variant="outline" onClick={handleCloseDialog}>Close</Button>
                 {!selectedAlert.is_read && (
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      markAsReadMutation.mutate(selectedAlert.id);
-                    }}
-                    disabled={markAsReadMutation.isPending}
-                  >
+                  <Button variant="secondary" onClick={() => markAsReadMutation.mutate(selectedAlert.id)}
+                    disabled={markAsReadMutation.isPending}>
                     {markAsReadMutation.isPending ? 'Marking...' : 'Mark as Read'}
                   </Button>
                 )}
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    deleteAlertMutation.mutate(selectedAlert.id);
-                  }}
-                  disabled={deleteAlertMutation.isPending}
-                  className="text-destructive hover:text-destructive"
-                >
+                <Button variant="ghost" onClick={() => deleteAlertMutation.mutate(selectedAlert.id)}
+                  disabled={deleteAlertMutation.isPending} className="text-destructive hover:text-destructive">
                   {deleteAlertMutation.isPending ? 'Deleting...' : 'Delete'}
                 </Button>
               </div>

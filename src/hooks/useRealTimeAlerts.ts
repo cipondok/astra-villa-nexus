@@ -283,7 +283,8 @@ export const useRealTimeAlerts = () => {
       )
       .subscribe();
 
-    // Listen for new properties
+    // Listen for new properties - just refresh queries
+    // (DB trigger handles alert creation)
     const propertiesChannel = supabase
       .channel('properties-realtime')
       .on(
@@ -295,7 +296,30 @@ export const useRealTimeAlerts = () => {
         },
         (payload) => {
           console.log('New property listing detected:', payload.new);
-          handlePropertyListing(payload.new);
+          queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+          queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+          toast.info('New Property Listed!', {
+            description: `${payload.new.title || 'New property'} posted`
+          });
+        }
+      )
+      .subscribe();
+
+    // Listen for profile updates - refresh queries
+    // (DB trigger handles alert creation)
+    const profileUpdatesChannel = supabase
+      .channel('profile-updates-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles'
+        },
+        (payload) => {
+          console.log('Profile update detected:', payload.new);
+          queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+          queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
         }
       )
       .subscribe();
@@ -462,6 +486,7 @@ export const useRealTimeAlerts = () => {
       console.log('Cleaning up real-time alert monitoring...');
       supabase.removeChannel(profilesChannel);
       supabase.removeChannel(propertiesChannel);
+      supabase.removeChannel(profileUpdatesChannel);
       supabase.removeChannel(complaintsChannel);
       supabase.removeChannel(inquiriesChannel);
       supabase.removeChannel(reportsChannel);
