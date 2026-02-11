@@ -165,23 +165,22 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
   };
 
   const openAHUPopup = () => {
-    const width = Math.min(520, window.screen.width);
-    const height = Math.min(680, window.screen.height);
-    const left = Math.max(0, Math.floor((window.screen.width - width) / 2));
-    const top = Math.max(0, Math.floor((window.screen.height - height) / 2));
-
-    const popup = window.open(
-      'https://ahu.go.id/pencarian/profil-pt',
-      'AHU_Search',
-      `popup=yes,width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no`
-    );
+    // Open as a regular new tab — AHU blocks popup/iframe access
+    const newTab = window.open('https://ahu.go.id/pencarian/profil-pt', '_blank', 'noopener,noreferrer');
     
-    if (popup) {
-      popup.focus();
+    if (newTab) {
       setAhuWindowOpened(true);
       setTimeout(() => setConfirmDialogOpen(true), 1000);
     } else {
-      toast.error('Popup was blocked. Please allow popups for this site.');
+      // Fallback: direct link click
+      toast.info('Silakan buka link AHU secara manual.', { duration: 5000 });
+      const a = document.createElement('a');
+      a.href = 'https://ahu.go.id/pencarian/profil-pt';
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.click();
+      setAhuWindowOpened(true);
+      setTimeout(() => setConfirmDialogOpen(true), 1500);
     }
   };
 
