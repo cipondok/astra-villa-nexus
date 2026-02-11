@@ -46,7 +46,7 @@ const NewProjects = () => {
         .select('city_name')
         .eq('is_active', true)
         .order('city_name');
-      return [...new Set(data?.map(l => l.city_name))];
+      return [...new Set(data?.map(l => l.city_name).filter(Boolean))] as string[];
     }
   });
 
