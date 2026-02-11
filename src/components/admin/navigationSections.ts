@@ -325,6 +325,13 @@ export const navigationSections = {
       label: "Document OCR Scanner",
       icon: FileText,
       description: "Automatically extract data from uploaded KYC documents using OCR"
+    },
+    {
+      key: "ahu-company-checker",
+      label: "AHU Company Checker",
+      icon: Building,
+      description: "Verify PT company registration status via AHU (Administrasi Hukum Umum) system",
+      badge: "New"
     }
   ],
 

@@ -90,6 +90,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
         { id: "user-management", label: "Users", icon: Users },
         { id: "user-auth-mfa", label: "User Auth & MFA", icon: Shield, badge: "New" },
         { id: "admin-kyc-review", label: "KYC Review", icon: Shield, badge: "New" },
+        { id: "ahu-company-checker", label: "AHU Checker", icon: Building, badge: "New" },
       ]
     },
     {
