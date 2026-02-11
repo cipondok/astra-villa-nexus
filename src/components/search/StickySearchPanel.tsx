@@ -1115,7 +1115,7 @@ const StickySearchPanel = ({
       // In production, use actual VAPID key
       const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib37J8Tqx9c5zVK5Y4UgP5MQ7Z3J_YRv2X1k8TqY9c5zVK5Y4UgP5MQ7Z3J';
       
-      const subscription = await registration.pushManager.subscribe({
+      const subscription = await (registration as any).pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
       });

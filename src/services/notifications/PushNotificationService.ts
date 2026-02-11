@@ -82,11 +82,11 @@ class PushNotificationService {
         throw new Error('Notification permission denied');
       }
 
-      let pushSubscription = await this.swRegistration.pushManager.getSubscription();
+      let pushSubscription = await (this.swRegistration as any).pushManager.getSubscription();
       
       if (!pushSubscription) {
         const keyBytes = this.urlBase64ToUint8Array(this.vapidPublicKey);
-        pushSubscription = await this.swRegistration.pushManager.subscribe({
+        pushSubscription = await (this.swRegistration as any).pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: keyBytes.buffer as ArrayBuffer
         });
@@ -122,7 +122,7 @@ class PushNotificationService {
     if (!this.swRegistration) return false;
 
     try {
-      const subscription = await this.swRegistration.pushManager.getSubscription();
+      const subscription = await (this.swRegistration as any).pushManager.getSubscription();
       if (subscription) {
         await subscription.unsubscribe();
         localStorage.removeItem(`push_subscription_${userId}`);
@@ -140,7 +140,7 @@ class PushNotificationService {
     }
 
     try {
-      const subscription = await this.swRegistration.pushManager.getSubscription();
+      const subscription = await (this.swRegistration as any).pushManager.getSubscription();
       if (!subscription) {
         return { isSubscribed: false };
       }
