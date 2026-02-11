@@ -769,9 +769,70 @@ const AdminAlertSystem = () => {
                     {selectedAlert.metadata.company_name && (
                       <p className="text-sm"><strong>Company:</strong> {selectedAlert.metadata.company_name}</p>
                     )}
+                    {selectedAlert.metadata.registration_number && (
+                      <p className="text-sm"><strong>Registration/SK:</strong> <span className="font-mono">{selectedAlert.metadata.registration_number}</span></p>
+                    )}
+                    {selectedAlert.metadata.user_found_in_ahu !== undefined && (
+                      <p className="text-sm">
+                        <strong>User Found in AHU:</strong>{' '}
+                        <Badge variant={selectedAlert.metadata.user_found_in_ahu ? 'default' : 'destructive'} className="text-xs">
+                          {selectedAlert.metadata.user_found_in_ahu ? 'Yes ✓' : 'No ✗'}
+                        </Badge>
+                      </p>
+                    )}
+
+                    {/* AHU Company Data from user */}
+                    {selectedAlert.metadata.ahu_data && (
+                      <div className="mt-3 p-3 rounded-lg bg-background border border-border space-y-2">
+                        <h5 className="text-xs font-semibold text-primary uppercase flex items-center gap-1.5">
+                          <Building2 className="h-3.5 w-3.5" />
+                          Data dari AHU (diisi oleh user)
+                        </h5>
+                        {selectedAlert.metadata.ahu_data.sk_number && (
+                          <div className="text-xs">
+                            <span className="font-medium text-muted-foreground">Nomor SK:</span>{' '}
+                            <span className="font-mono text-foreground">{selectedAlert.metadata.ahu_data.sk_number}</span>
+                          </div>
+                        )}
+                        {selectedAlert.metadata.ahu_data.company_address && (
+                          <div className="text-xs">
+                            <span className="font-medium text-muted-foreground">Alamat:</span>{' '}
+                            <span className="text-foreground">{selectedAlert.metadata.ahu_data.company_address}</span>
+                          </div>
+                        )}
+                        {selectedAlert.metadata.ahu_data.npwp && (
+                          <div className="text-xs">
+                            <span className="font-medium text-muted-foreground">NPWP:</span>{' '}
+                            <span className="font-mono text-foreground">{selectedAlert.metadata.ahu_data.npwp}</span>
+                          </div>
+                        )}
+                        {selectedAlert.metadata.ahu_data.notary_name && (
+                          <div className="text-xs">
+                            <span className="font-medium text-muted-foreground">Notaris:</span>{' '}
+                            <span className="text-foreground">{selectedAlert.metadata.ahu_data.notary_name}</span>
+                          </div>
+                        )}
+                        {selectedAlert.metadata.ahu_data.company_phone && (
+                          <div className="text-xs">
+                            <span className="font-medium text-muted-foreground">Telepon:</span>{' '}
+                            <span className="text-foreground">{selectedAlert.metadata.ahu_data.company_phone}</span>
+                          </div>
+                        )}
+                        {selectedAlert.metadata.ahu_data.company_email && (
+                          <div className="text-xs">
+                            <span className="font-medium text-muted-foreground">Email:</span>{' '}
+                            <span className="text-foreground">{selectedAlert.metadata.ahu_data.company_email}</span>
+                          </div>
+                        )}
+                        {!selectedAlert.metadata.ahu_data.sk_number && !selectedAlert.metadata.ahu_data.company_address && (
+                          <p className="text-xs text-muted-foreground italic">User tidak mengisi data AHU</p>
+                        )}
+                      </div>
+                    )}
+
                     {selectedAlert.metadata.ahu_search_url && (
                       <a href={selectedAlert.metadata.ahu_search_url} target="_blank" rel="noopener noreferrer"
-                        className="text-sm text-primary flex items-center gap-1 hover:underline">
+                        className="text-sm text-primary flex items-center gap-1 hover:underline mt-2">
                         <ExternalLink className="h-3 w-3" />
                         Open AHU Search Portal
                       </a>
