@@ -69,6 +69,8 @@ const EnhancedUserManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [suspensionFilter, setSuspensionFilter] = useState("all");
+  const [verificationFilter, setVerificationFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("all");
   const [selectedUser, setSelectedUser] = useState<EnhancedUser | null>(null);
   const [suspensionReason, setSuspensionReason] = useState("");
   const [securityModalUser, setSecurityModalUser] = useState<string | null>(null);
@@ -261,17 +263,31 @@ const EnhancedUserManagement = () => {
   });
 
   // Filter users
-  const filteredUsers = users?.filter((user) => {
+  const filteredUsers = users?.filter((u) => {
     const matchesSearch = 
-      user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase());
+      u.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.company_name?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesRole = roleFilter === "all" || (user.role || 'general_user') === roleFilter;
+    const matchesRole = roleFilter === "all" || (u.role || 'general_user') === roleFilter;
     const matchesSuspension = suspensionFilter === "all" || 
-      (suspensionFilter === "suspended" && user.is_suspended) ||
-      (suspensionFilter === "active" && !user.is_suspended);
+      (suspensionFilter === "suspended" && u.is_suspended) ||
+      (suspensionFilter === "active" && !u.is_suspended);
+    const matchesVerification = verificationFilter === "all" || 
+      (u.verification_status || 'pending') === verificationFilter;
     
-    return matchesSearch && matchesRole && matchesSuspension;
+    let matchesDate = true;
+    if (dateFilter !== "all") {
+      const created = new Date(u.created_at);
+      const now = new Date();
+      if (dateFilter === "today") matchesDate = created.toDateString() === now.toDateString();
+      else if (dateFilter === "7d") matchesDate = created >= new Date(now.getTime() - 7 * 86400000);
+      else if (dateFilter === "30d") matchesDate = created >= new Date(now.getTime() - 30 * 86400000);
+      else if (dateFilter === "90d") matchesDate = created >= new Date(now.getTime() - 90 * 86400000);
+    }
+    
+    return matchesSearch && matchesRole && matchesSuspension && matchesVerification && matchesDate;
   }) || [];
 
   const getStatusBadge = (user: EnhancedUser) => {
@@ -336,7 +352,7 @@ const EnhancedUserManagement = () => {
               <div className="relative">
                 <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3 w-3" />
                 <Input
-                  placeholder="Search users..."
+                  placeholder="Search name, email, phone, company..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-7 h-7 text-[10px]"
@@ -345,7 +361,7 @@ const EnhancedUserManagement = () => {
             </div>
             <Select value={roleFilter} onValueChange={setRoleFilter}>
               <SelectTrigger className="w-[120px] h-7 text-[10px]">
-                <SelectValue placeholder="Filter by role" />
+                <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Roles</SelectItem>
@@ -359,7 +375,7 @@ const EnhancedUserManagement = () => {
             </Select>
             <Select value={suspensionFilter} onValueChange={setSuspensionFilter}>
               <SelectTrigger className="w-[100px] h-7 text-[10px]">
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder="Account" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Users</SelectItem>
@@ -367,6 +383,48 @@ const EnhancedUserManagement = () => {
                 <SelectItem value="suspended">Suspended</SelectItem>
               </SelectContent>
             </Select>
+            <Select value={verificationFilter} onValueChange={setVerificationFilter}>
+              <SelectTrigger className="w-[110px] h-7 text-[10px]">
+                <SelectValue placeholder="Verification" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="verified">Verified</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+                <SelectItem value="suspended">Suspended</SelectItem>
+                <SelectItem value="unverified">Unverified</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={dateFilter} onValueChange={setDateFilter}>
+              <SelectTrigger className="w-[100px] h-7 text-[10px]">
+                <SelectValue placeholder="Joined" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Time</SelectItem>
+                <SelectItem value="today">Today</SelectItem>
+                <SelectItem value="7d">Last 7 Days</SelectItem>
+                <SelectItem value="30d">Last 30 Days</SelectItem>
+                <SelectItem value="90d">Last 90 Days</SelectItem>
+              </SelectContent>
+            </Select>
+            {(roleFilter !== "all" || suspensionFilter !== "all" || verificationFilter !== "all" || dateFilter !== "all") && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 text-[10px] px-2 text-muted-foreground hover:text-foreground"
+                onClick={() => {
+                  setRoleFilter("all");
+                  setSuspensionFilter("all");
+                  setVerificationFilter("all");
+                  setDateFilter("all");
+                  setSearchTerm("");
+                }}
+              >
+                Clear All
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
