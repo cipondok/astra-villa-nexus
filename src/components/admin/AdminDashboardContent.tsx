@@ -1,107 +1,129 @@
 
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, ComponentType } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Home, ChevronRight, Loader2, AlertCircle } from "lucide-react";
 import { AdminCategoryTabs } from "./AdminCategoryTabs";
 
-// Lazy load all admin components to prevent module import failures
-const AdminOverview = lazy(() => import("./AdminOverview"));
-const EnhancedUserManagement = lazy(() => import("./EnhancedUserManagement"));
-const UserManagementHub = lazy(() => import("./UserManagementHub"));
-const PropertyManagementAdvanced = lazy(() => import("./PropertyManagementAdvanced"));
-const AdminPropertyManagement = lazy(() => import("./AdminPropertyManagement"));
-const SystemSettings = lazy(() => import("./SystemSettings"));
-const WebTrafficAnalytics = lazy(() => import("./WebTrafficAnalytics"));
-const AIBotManagement = lazy(() => import("./AIBotManagement"));
-const FeedbackManagement = lazy(() => import("./FeedbackManagement"));
-const CustomerServiceCenter = lazy(() => import("./CustomerServiceCenter"));
-const ContactManagement = lazy(() => import("./ContactManagement"));
-const ContentManagement = lazy(() => import("./ContentManagement"));
-const SearchFiltersManagement = lazy(() => import("./SearchFiltersManagement"));
-const BillingManagement = lazy(() => import("./BillingManagement"));
-const DatabaseTableManagement = lazy(() => import("./DatabaseTableManagement"));
-const SecurityMonitoringDashboard = lazy(() => import("./SecurityMonitoringDashboard"));
-const PerformanceMonitor = lazy(() => import("../PerformanceMonitor"));
-const ReportExportFunction = lazy(() => import("./ReportExportFunction"));
-const PropertyComparison = lazy(() => import("../PropertyComparison"));
-const EnhancedSearchFilters = lazy(() => import("../EnhancedSearchFilters"));
-const SystemReports = lazy(() => import("./SystemReports"));
-const DailyCheckInManagement = lazy(() => import("./DailyCheckInManagement"));
-const ASTRATokenHub = lazy(() => import("./ASTRATokenHub"));
-const ToolsManagementDashboard = lazy(() => import("./ToolsManagementDashboard"));
-const SEOSettings = lazy(() => import("./SEOSettings"));
-const ProjectDiagnosticSystem = lazy(() => import("./ProjectDiagnosticSystem"));
-const IndonesianPaymentMerchantConfig = lazy(() => import("./IndonesianPaymentMerchantConfig"));
-const VendorsHubContent = lazy(() => import("./VendorsHubContent"));
-const EnhancedVendorAgentControl = lazy(() => import("./EnhancedVendorAgentControl"));
-const AuthorizationMonitoringSystem = lazy(() => import("./AuthorizationMonitoringSystem"));
-const AdminAlertSystem = lazy(() => import("./AdminAlertSystem"));
-const CustomerServiceControlPanel = lazy(() => import("./CustomerServiceControlPanel"));
-const DatabaseErrorManager = lazy(() => import("./cs-tools/DatabaseErrorManager"));
-const Property3DViewSettings = lazy(() => import("./Property3DViewSettings"));
-const PropertySurveyManagement = lazy(() => import("./PropertySurveyManagement"));
-const EmailSettings = lazy(() => import("@/pages/admin/EmailSettings"));
-const LocationManagement = lazy(() => import("./LocationManagement"));
-const APISettingsManagement = lazy(() => import("./APISettingsManagement"));
-const AIPropertyAssistant = lazy(() => import("./AIPropertyAssistant"));
-const BookingPaymentSettings = lazy(() => import("./BookingPaymentSettings"));
-const BPJSAPISettings = lazy(() => import("./BPJSAPISettings"));
-const AdminKYCReview = lazy(() => import("./AdminKYCReview"));
-const KYCAnalyticsDashboard = lazy(() => import("./KYCAnalyticsDashboard").then(m => ({ default: m.KYCAnalyticsDashboard })));
-const BulkKYCOperations = lazy(() => import("./BulkKYCOperations").then(m => ({ default: m.BulkKYCOperations })));
-const DocumentOCR = lazy(() => import("./DocumentOCR").then(m => ({ default: m.DocumentOCR })));
-const ErrorLogsTable = lazy(() => import("./ErrorLogsTable"));
-const ErrorMonitoringDashboard = lazy(() => import("./ErrorMonitoringDashboard"));
-const UserExperienceTips = lazy(() => import("./UserExperienceTips"));
-const AlgorithmDashboard = lazy(() => import("./AlgorithmDashboard").then(m => ({ default: m.AlgorithmDashboard })));
-const AdminNotificationsCenter = lazy(() => import("./AdminNotificationsCenter").then(m => ({ default: m.AdminNotificationsCenter })));
-const LaunchReadinessDashboard = lazy(() => import("./LaunchReadinessDashboard"));
-const AIFeedbackAnalytics = lazy(() => import("./AIFeedbackAnalytics").then(m => ({ default: m.AIFeedbackAnalytics })));
-const HomepageSliderSettings = lazy(() => import("./HomepageSliderSettings"));
-const CarouselSettingsManager = lazy(() => import("./CarouselSettingsManager"));
-const ProjectMapVisualization = lazy(() => import("./ProjectMapVisualization"));
-const CookieConsentSettings = lazy(() => import("./CookieConsentSettings"));
-const CaptchaSettings = lazy(() => import("./CaptchaSettings"));
-const CloudflareSettings = lazy(() => import("./CloudflareSettings"));
-const PropertyFiltersManagement = lazy(() => import("./PropertyFiltersManagement"));
-const SocialMediaSettings = lazy(() => import("./SocialMediaSettings"));
-const VerificationManagement = lazy(() => import("./VerificationManagement"));
-const UserUpgradeApplications = lazy(() => import("./UserUpgradeApplications"));
-const UserLevelManagement = lazy(() => import("./UserLevelManagement"));
-const BugErrorDashboard = lazy(() => import("./diagnostics/BugErrorDashboard").then(m => ({ default: m.BugErrorDashboard })));
-const VisitorAnalytics = lazy(() => import("./VisitorAnalytics"));
-const TestingDashboard = lazy(() => import("./TestingDashboard"));
-const VIPAnalyticsDashboard = lazy(() => import("./VIPAnalyticsDashboard"));
-const BookingManagement = lazy(() => import("./BookingManagement"));
-const TransactionManagementTabs = lazy(() => import("./TransactionManagementTabs"));
-const LiveChatManagement = lazy(() => import("./LiveChatManagement"));
-const InvestorSettingsHub = lazy(() => import("./InvestorSettingsHub"));
-const VideoVerificationReviewDashboard = lazy(() => import("./video-verification/VideoVerificationReviewDashboard"));
-const WebsiteDesignControl = lazy(() => import("./WebsiteDesignControl"));
-const RateLimitingDashboard = lazy(() => import("./RateLimitingDashboard"));
-const VideoTourManager = lazy(() => import("./VideoTourManager"));
-const VRTourSettings = lazy(() => import("./VRTourSettings"));
-const MortgageManagement = lazy(() => import("./MortgageManagement"));
-const LiveMonitoringDashboard = lazy(() => import("./LiveMonitoringDashboard"));
-const AdminBlockchainManagement = lazy(() => import("./AdminBlockchainManagement"));
-const B2BMarketplaceManagement = lazy(() => import("./B2BMarketplaceManagement"));
-const PartnerProgramManagement = lazy(() => import("./PartnerProgramManagement"));
-const ExpansionPlanningManagement = lazy(() => import("./ExpansionPlanningManagement"));
-const MediaNetworkManagement = lazy(() => import("./MediaNetworkManagement"));
-const UserAcquisitionManagement = lazy(() => import("./UserAcquisitionManagement"));
-const InnovationLabManagement = lazy(() => import("./InnovationLabManagement"));
-const MobileEnhancementsManagement = lazy(() => import("./MobileEnhancementsManagement"));
-const SocialCommerceManagement = lazy(() => import("./SocialCommerceManagement"));
-const DataExchangeManagement = lazy(() => import("./DataExchangeManagement"));
-const AutomationPlatformManagement = lazy(() => import("./AutomationPlatformManagement"));
-const TeamManagement = lazy(() => import("./TeamManagement"));
-const ViralGrowthCampaigns = lazy(() => import("./ViralGrowthCampaigns"));
-const MediaCoveragePR = lazy(() => import("./MediaCoveragePR"));
-const AHUCompanyChecker = lazy(() => import("./AHUCompanyChecker"));
-const ConciergeServiceManagement = lazy(() => import("./ConciergeServiceManagement"));
-const SamplePropertyGenerator = lazy(() => import("./SamplePropertyGenerator"));
-const VerificationSystemSettings = lazy(() => import("./settings/VerificationSystemSettings"));
+// Retry wrapper for lazy imports to handle transient chunk loading failures
+function lazyRetry<T extends ComponentType<any>>(
+  factory: () => Promise<{ default: T }>,
+  retries = 3
+): React.LazyExoticComponent<T> {
+  return lazy(() => {
+    let attempt = 0;
+    const load = (): Promise<{ default: T }> =>
+      factory().catch((err) => {
+        if (attempt < retries) {
+          attempt++;
+          // Wait briefly then retry - helps with transient network/cache issues
+          return new Promise<{ default: T }>((resolve) =>
+            setTimeout(() => resolve(load()), 1000 * attempt)
+          );
+        }
+        throw err;
+      });
+    return load();
+  });
+}
+
+// Lazy load all admin components with retry logic to prevent module import failures
+const AdminOverview = lazyRetry(() => import("./AdminOverview"));
+const EnhancedUserManagement = lazyRetry(() => import("./EnhancedUserManagement"));
+const UserManagementHub = lazyRetry(() => import("./UserManagementHub"));
+const PropertyManagementAdvanced = lazyRetry(() => import("./PropertyManagementAdvanced"));
+const AdminPropertyManagement = lazyRetry(() => import("./AdminPropertyManagement"));
+const SystemSettings = lazyRetry(() => import("./SystemSettings"));
+const WebTrafficAnalytics = lazyRetry(() => import("./WebTrafficAnalytics"));
+const AIBotManagement = lazyRetry(() => import("./AIBotManagement"));
+const FeedbackManagement = lazyRetry(() => import("./FeedbackManagement"));
+const CustomerServiceCenter = lazyRetry(() => import("./CustomerServiceCenter"));
+const ContactManagement = lazyRetry(() => import("./ContactManagement"));
+const ContentManagement = lazyRetry(() => import("./ContentManagement"));
+const SearchFiltersManagement = lazyRetry(() => import("./SearchFiltersManagement"));
+const BillingManagement = lazyRetry(() => import("./BillingManagement"));
+const DatabaseTableManagement = lazyRetry(() => import("./DatabaseTableManagement"));
+const SecurityMonitoringDashboard = lazyRetry(() => import("./SecurityMonitoringDashboard"));
+const PerformanceMonitor = lazyRetry(() => import("../PerformanceMonitor"));
+const ReportExportFunction = lazyRetry(() => import("./ReportExportFunction"));
+const PropertyComparison = lazyRetry(() => import("../PropertyComparison"));
+const EnhancedSearchFilters = lazyRetry(() => import("../EnhancedSearchFilters"));
+const SystemReports = lazyRetry(() => import("./SystemReports"));
+const DailyCheckInManagement = lazyRetry(() => import("./DailyCheckInManagement"));
+const ASTRATokenHub = lazyRetry(() => import("./ASTRATokenHub"));
+const ToolsManagementDashboard = lazyRetry(() => import("./ToolsManagementDashboard"));
+const SEOSettings = lazyRetry(() => import("./SEOSettings"));
+const ProjectDiagnosticSystem = lazyRetry(() => import("./ProjectDiagnosticSystem"));
+const IndonesianPaymentMerchantConfig = lazyRetry(() => import("./IndonesianPaymentMerchantConfig"));
+const VendorsHubContent = lazyRetry(() => import("./VendorsHubContent"));
+const EnhancedVendorAgentControl = lazyRetry(() => import("./EnhancedVendorAgentControl"));
+const AuthorizationMonitoringSystem = lazyRetry(() => import("./AuthorizationMonitoringSystem"));
+const AdminAlertSystem = lazyRetry(() => import("./AdminAlertSystem"));
+const CustomerServiceControlPanel = lazyRetry(() => import("./CustomerServiceControlPanel"));
+const DatabaseErrorManager = lazyRetry(() => import("./cs-tools/DatabaseErrorManager"));
+const Property3DViewSettings = lazyRetry(() => import("./Property3DViewSettings"));
+const PropertySurveyManagement = lazyRetry(() => import("./PropertySurveyManagement"));
+const EmailSettings = lazyRetry(() => import("@/pages/admin/EmailSettings"));
+const LocationManagement = lazyRetry(() => import("./LocationManagement"));
+const APISettingsManagement = lazyRetry(() => import("./APISettingsManagement"));
+const AIPropertyAssistant = lazyRetry(() => import("./AIPropertyAssistant"));
+const BookingPaymentSettings = lazyRetry(() => import("./BookingPaymentSettings"));
+const BPJSAPISettings = lazyRetry(() => import("./BPJSAPISettings"));
+const AdminKYCReview = lazyRetry(() => import("./AdminKYCReview"));
+const KYCAnalyticsDashboard = lazyRetry(() => import("./KYCAnalyticsDashboard").then(m => ({ default: m.KYCAnalyticsDashboard })));
+const BulkKYCOperations = lazyRetry(() => import("./BulkKYCOperations").then(m => ({ default: m.BulkKYCOperations })));
+const DocumentOCR = lazyRetry(() => import("./DocumentOCR").then(m => ({ default: m.DocumentOCR })));
+const ErrorLogsTable = lazyRetry(() => import("./ErrorLogsTable"));
+const ErrorMonitoringDashboard = lazyRetry(() => import("./ErrorMonitoringDashboard"));
+const UserExperienceTips = lazyRetry(() => import("./UserExperienceTips"));
+const AlgorithmDashboard = lazyRetry(() => import("./AlgorithmDashboard").then(m => ({ default: m.AlgorithmDashboard })));
+const AdminNotificationsCenter = lazyRetry(() => import("./AdminNotificationsCenter").then(m => ({ default: m.AdminNotificationsCenter })));
+const LaunchReadinessDashboard = lazyRetry(() => import("./LaunchReadinessDashboard"));
+const AIFeedbackAnalytics = lazyRetry(() => import("./AIFeedbackAnalytics").then(m => ({ default: m.AIFeedbackAnalytics })));
+const HomepageSliderSettings = lazyRetry(() => import("./HomepageSliderSettings"));
+const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
+const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
+const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
+const CaptchaSettings = lazyRetry(() => import("./CaptchaSettings"));
+const CloudflareSettings = lazyRetry(() => import("./CloudflareSettings"));
+const PropertyFiltersManagement = lazyRetry(() => import("./PropertyFiltersManagement"));
+const SocialMediaSettings = lazyRetry(() => import("./SocialMediaSettings"));
+const VerificationManagement = lazyRetry(() => import("./VerificationManagement"));
+const UserUpgradeApplications = lazyRetry(() => import("./UserUpgradeApplications"));
+const UserLevelManagement = lazyRetry(() => import("./UserLevelManagement"));
+const BugErrorDashboard = lazyRetry(() => import("./diagnostics/BugErrorDashboard").then(m => ({ default: m.BugErrorDashboard })));
+const VisitorAnalytics = lazyRetry(() => import("./VisitorAnalytics"));
+const TestingDashboard = lazyRetry(() => import("./TestingDashboard"));
+const VIPAnalyticsDashboard = lazyRetry(() => import("./VIPAnalyticsDashboard"));
+const BookingManagement = lazyRetry(() => import("./BookingManagement"));
+const TransactionManagementTabs = lazyRetry(() => import("./TransactionManagementTabs"));
+const LiveChatManagement = lazyRetry(() => import("./LiveChatManagement"));
+const InvestorSettingsHub = lazyRetry(() => import("./InvestorSettingsHub"));
+const VideoVerificationReviewDashboard = lazyRetry(() => import("./video-verification/VideoVerificationReviewDashboard"));
+const WebsiteDesignControl = lazyRetry(() => import("./WebsiteDesignControl"));
+const RateLimitingDashboard = lazyRetry(() => import("./RateLimitingDashboard"));
+const VideoTourManager = lazyRetry(() => import("./VideoTourManager"));
+const VRTourSettings = lazyRetry(() => import("./VRTourSettings"));
+const MortgageManagement = lazyRetry(() => import("./MortgageManagement"));
+const LiveMonitoringDashboard = lazyRetry(() => import("./LiveMonitoringDashboard"));
+const AdminBlockchainManagement = lazyRetry(() => import("./AdminBlockchainManagement"));
+const B2BMarketplaceManagement = lazyRetry(() => import("./B2BMarketplaceManagement"));
+const PartnerProgramManagement = lazyRetry(() => import("./PartnerProgramManagement"));
+const ExpansionPlanningManagement = lazyRetry(() => import("./ExpansionPlanningManagement"));
+const MediaNetworkManagement = lazyRetry(() => import("./MediaNetworkManagement"));
+const UserAcquisitionManagement = lazyRetry(() => import("./UserAcquisitionManagement"));
+const InnovationLabManagement = lazyRetry(() => import("./InnovationLabManagement"));
+const MobileEnhancementsManagement = lazyRetry(() => import("./MobileEnhancementsManagement"));
+const SocialCommerceManagement = lazyRetry(() => import("./SocialCommerceManagement"));
+const DataExchangeManagement = lazyRetry(() => import("./DataExchangeManagement"));
+const AutomationPlatformManagement = lazyRetry(() => import("./AutomationPlatformManagement"));
+const TeamManagement = lazyRetry(() => import("./TeamManagement"));
+const ViralGrowthCampaigns = lazyRetry(() => import("./ViralGrowthCampaigns"));
+const MediaCoveragePR = lazyRetry(() => import("./MediaCoveragePR"));
+const AHUCompanyChecker = lazyRetry(() => import("./AHUCompanyChecker"));
+const ConciergeServiceManagement = lazyRetry(() => import("./ConciergeServiceManagement"));
+const SamplePropertyGenerator = lazyRetry(() => import("./SamplePropertyGenerator"));
+const VerificationSystemSettings = lazyRetry(() => import("./settings/VerificationSystemSettings"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
