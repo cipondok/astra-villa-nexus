@@ -1,19 +1,26 @@
+import React, { Component, ErrorInfo, ReactNode } from "react";
 import { OnboardingWizard } from "@/components/onboarding";
 import { useOnboarding } from "@/hooks/useOnboarding";
 
-/**
- * Global onboarding handler that auto-shows wizard for new authenticated users
- * Place this component inside AuthProvider to access auth state
- */
-const OnboardingHandler = () => {
-  const { isWizardOpen, closeWizard } = useOnboarding();
+/** Silently catches errors so onboarding never crashes the app */
+class OnboardingSafeBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.warn("OnboardingHandler error (non-fatal):", error.message);
+  }
+  render() { return this.state.hasError ? null : this.props.children; }
+}
 
-  return (
-    <OnboardingWizard 
-      isOpen={isWizardOpen} 
-      onClose={closeWizard} 
-    />
-  );
+const OnboardingInner = () => {
+  const { isWizardOpen, closeWizard } = useOnboarding();
+  return <OnboardingWizard isOpen={isWizardOpen} onClose={closeWizard} />;
 };
+
+const OnboardingHandler = () => (
+  <OnboardingSafeBoundary>
+    <OnboardingInner />
+  </OnboardingSafeBoundary>
+);
 
 export default OnboardingHandler;
