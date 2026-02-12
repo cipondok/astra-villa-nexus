@@ -20,6 +20,8 @@ import {
   CheckCircle,
   X,
   Building2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 const PropertyImageManager = () => {
@@ -31,6 +33,8 @@ const PropertyImageManager = () => {
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
   const [viewImage, setViewImage] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 30;
 
   // Fetch all properties with image data
   const { data: properties = [], isLoading } = useQuery({
@@ -70,10 +74,19 @@ const PropertyImageManager = () => {
     return true;
   });
 
+  const totalPages = Math.max(1, Math.ceil(filteredProperties.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedProperties = filteredProperties.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
   const stats = {
     total: properties.length,
     withImages: properties.filter((p) => getImages(p).length > 0).length,
     noImages: properties.filter((p) => getImages(p).length === 0).length,
+  };
+
+  const handleFilterChange = (f: typeof filter) => {
+    setFilter(f);
+    setCurrentPage(1);
   };
 
   // Upload image to selected property
@@ -177,7 +190,7 @@ const PropertyImageManager = () => {
     <div className="space-y-3">
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
-        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setFilter("all")}>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleFilterChange("all")}>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
@@ -188,7 +201,7 @@ const PropertyImageManager = () => {
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setFilter("with-images")}>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleFilterChange("with-images")}>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
@@ -199,7 +212,7 @@ const PropertyImageManager = () => {
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setFilter("no-images")}>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleFilterChange("no-images")}>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
@@ -218,7 +231,7 @@ const PropertyImageManager = () => {
         <Input
           placeholder="Search properties by title or city..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
           className="pl-8 h-8 text-xs"
         />
       </div>
@@ -229,37 +242,90 @@ const PropertyImageManager = () => {
           <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-          {filteredProperties.map((property) => {
-            const imgs = getImages(property);
-            return (
-              <Card
-                key={property.id}
-                className="cursor-pointer hover:shadow-md transition-all group overflow-hidden"
-                onClick={() => setSelectedProperty(property)}
-              >
-                <CardContent className="p-2">
-                  <div className="aspect-[4/3] rounded overflow-hidden relative mb-1.5 bg-muted">
-                    {imgs.length > 0 ? (
-                      <img src={imgs[0]} alt={property.title} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <ImageOff className="h-6 w-6 text-muted-foreground/40" />
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+            {paginatedProperties.map((property) => {
+              const imgs = getImages(property);
+              return (
+                <Card
+                  key={property.id}
+                  className="cursor-pointer hover:shadow-md transition-all group overflow-hidden"
+                  onClick={() => setSelectedProperty(property)}
+                >
+                  <CardContent className="p-2">
+                    <div className="aspect-[4/3] rounded overflow-hidden relative mb-1.5 bg-muted">
+                      {imgs.length > 0 ? (
+                        <img src={imgs[0]} alt={property.title} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <ImageOff className="h-6 w-6 text-muted-foreground/40" />
+                        </div>
+                      )}
+                      <div className="absolute top-1 right-1">
+                        <Badge variant={imgs.length > 0 ? "default" : "destructive"} className="text-[8px] px-1 py-0 h-4">
+                          📷 {imgs.length}
+                        </Badge>
                       </div>
-                    )}
-                    <div className="absolute top-1 right-1">
-                      <Badge variant={imgs.length > 0 ? "default" : "destructive"} className="text-[8px] px-1 py-0 h-4">
-                        📷 {imgs.length}
-                      </Badge>
                     </div>
-                  </div>
-                  <h4 className="text-[10px] font-semibold line-clamp-1">{property.title}</h4>
-                  <p className="text-[9px] text-muted-foreground line-clamp-1">{property.city || property.location}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                    <h4 className="text-[10px] font-semibold line-clamp-1">{property.title}</h4>
+                    <p className="text-[9px] text-muted-foreground line-clamp-1">{property.city || property.location}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between pt-3 border-t border-border/50">
+              <p className="text-[10px] text-muted-foreground">
+                Showing {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filteredProperties.length)} of {filteredProperties.length}
+              </p>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 w-7 p-0"
+                  disabled={safePage <= 1}
+                  onClick={() => setCurrentPage(safePage - 1)}
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                </Button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(p => p === 1 || p === totalPages || Math.abs(p - safePage) <= 2)
+                  .reduce<(number | string)[]>((acc, p, i, arr) => {
+                    if (i > 0 && p - (arr[i - 1] as number) > 1) acc.push("...");
+                    acc.push(p);
+                    return acc;
+                  }, [])
+                  .map((p, i) =>
+                    typeof p === "string" ? (
+                      <span key={`e-${i}`} className="px-1 text-[10px] text-muted-foreground">…</span>
+                    ) : (
+                      <Button
+                        key={p}
+                        variant={p === safePage ? "default" : "outline"}
+                        size="sm"
+                        className="h-7 min-w-[28px] px-1.5 text-[10px]"
+                        onClick={() => setCurrentPage(p)}
+                      >
+                        {p}
+                      </Button>
+                    )
+                  )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 w-7 p-0"
+                  disabled={safePage >= totalPages}
+                  onClick={() => setCurrentPage(safePage + 1)}
+                >
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* Image Manager Dialog */}
