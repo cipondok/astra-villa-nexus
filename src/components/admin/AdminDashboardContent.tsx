@@ -124,6 +124,7 @@ const AHUCompanyChecker = lazyRetry(() => import("./AHUCompanyChecker"));
 const ConciergeServiceManagement = lazyRetry(() => import("./ConciergeServiceManagement"));
 const SamplePropertyGenerator = lazyRetry(() => import("./SamplePropertyGenerator"));
 const VerificationSystemSettings = lazyRetry(() => import("./settings/VerificationSystemSettings"));
+const AuthRegistrationSettings = lazyRetry(() => import("./settings/AuthRegistrationSettings"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -231,6 +232,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "concierge-service": { label: "Concierge Service", category: "Features" },
   "sample-property-generator": { label: "Sample Property Generator", category: "Property System" },
   "verification-system-settings": { label: "Verification System Settings", category: "Settings" },
+  "auth-registration-settings": { label: "Auth & Registration", category: "Settings" },
   "ahu-company-checker": { label: "AHU Company Checker", category: "Verification" },
 };
 
@@ -509,6 +511,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <VerificationSystemSettings />;
       case "ahu-company-checker":
         return <AHUCompanyChecker />;
+      case "auth-registration-settings":
+        return <AuthRegistrationSettings />;
       default:
         return <AdminOverview />;
     }
