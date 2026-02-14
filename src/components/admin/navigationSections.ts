@@ -450,6 +450,13 @@ export const navigationSections = {
       description: "Configure global system settings"
     },
     {
+      key: "auth-registration-settings",
+      label: "Auth & Registration",
+      icon: Shield,
+      description: "Login methods, signup rewards, promotions, affiliate & social login settings",
+      badge: "New"
+    },
+    {
       key: "seo-settings",
       label: "SEO Settings",
       icon: Globe,
