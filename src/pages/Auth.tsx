@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { EmailValidationIndicator } from "@/components/auth/EmailValidationIndicator";
 import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
+import SignupPromotionBanner from "@/components/auth/SignupPromotionBanner";
 import {
   Dialog,
   DialogContent,
@@ -240,6 +241,12 @@ const Auth = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* Signup Promotion Banner */}
+          <SignupPromotionBanner onSignupClick={() => {
+            const tabTrigger = document.querySelector('[value="register"]') as HTMLButtonElement;
+            tabTrigger?.click();
+          }} />
+          
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="login">Login</TabsTrigger>

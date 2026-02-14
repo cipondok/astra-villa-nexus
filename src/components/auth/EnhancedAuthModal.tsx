@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { EmailValidationIndicator } from "./EmailValidationIndicator";
 import { PasswordStrengthBar } from "./PasswordStrengthBar";
+import SignupPromotionBanner from "./SignupPromotionBanner";
 import {
   Dialog,
   DialogContent,
@@ -249,36 +250,47 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     setErrors({});
     
     try {
-      // For WhatsApp auth, we'd need to look up the email by phone number
-      // For now, use email auth
-      const emailToUse = authMethod === "email" ? loginData.email : `${loginData.whatsapp.replace(/[^0-9]/g, '')}@whatsapp.local`;
-      const result = await signIn(emailToUse, loginData.password);
-      
-      if (result.error) {
-        console.error('Login error:', result.error);
-        let errorMessage = result.error.message || 'Login failed. Please try again.';
+      if (authMethod === "whatsapp") {
+        // Use phone + password auth for WhatsApp login
+        const phoneNumber = loginData.whatsapp.replace(/[\s-]/g, '');
+        const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+62${phoneNumber.replace(/^0/, '')}`;
         
-        if (errorMessage.includes('Invalid login credentials')) {
-          errorMessage = 'Invalid credentials. Please check and try again.';
-        }
-        
-        setErrors({ login: errorMessage });
-        toast.error(errorMessage);
-      } else if (result.success) {
-        // Store remember me preference
-        if (rememberMe && authMethod === "email") {
-          localStorage.setItem('rememberEmail', loginData.email);
+        const { data, error } = await supabase.auth.signInWithPassword({
+          phone: formattedPhone,
+          password: loginData.password,
+        });
+
+        if (error) {
+          console.error('WhatsApp login error:', error);
+          setErrors({ login: error.message });
+          toast.error(error.message);
         } else {
-          localStorage.removeItem('rememberEmail');
+          setIsSuccess(true);
+          toast.success(currentText.loginSuccess);
+          setTimeout(() => { onClose(); resetForms(); }, 1500);
         }
+      } else {
+        // Email login
+        const result = await signIn(loginData.email, loginData.password);
         
-        setIsSuccess(true);
-        toast.success(currentText.loginSuccess);
-        
-        setTimeout(() => {
-          onClose();
-          resetForms();
-        }, 1500);
+        if (result.error) {
+          console.error('Login error:', result.error);
+          let errorMessage = result.error.message || 'Login failed. Please try again.';
+          if (errorMessage.includes('Invalid login credentials')) {
+            errorMessage = 'Invalid credentials. Please check and try again.';
+          }
+          setErrors({ login: errorMessage });
+          toast.error(errorMessage);
+        } else if (result.success) {
+          if (rememberMe && authMethod === "email") {
+            localStorage.setItem('rememberEmail', loginData.email);
+          } else {
+            localStorage.removeItem('rememberEmail');
+          }
+          setIsSuccess(true);
+          toast.success(currentText.loginSuccess);
+          setTimeout(() => { onClose(); resetForms(); }, 1500);
+        }
       }
     } catch (error: any) {
       console.error('Login catch error:', error);
@@ -299,28 +311,48 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     setErrors({});
     
     try {
-      // For WhatsApp registration, create email from phone
-      const emailToUse = authMethod === "email" ? registerData.email : `${registerData.whatsapp.replace(/[^0-9]/g, '')}@whatsapp.local`;
-      const result = await signUp(emailToUse, registerData.password, registerData.fullName);
-      
-      if (result.error) {
-        console.error('Register error:', result.error);
-        let errorMessage = result.error.message || 'Registration failed. Please try again.';
+      if (authMethod === "whatsapp") {
+        // Use Supabase phone auth with OTP for WhatsApp numbers
+        const phoneNumber = registerData.whatsapp.replace(/[\s-]/g, '');
+        const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+62${phoneNumber.replace(/^0/, '')}`;
         
-        if (errorMessage.includes('User already registered')) {
-          errorMessage = 'An account with this already exists. Please try logging in instead.';
+        const { data, error } = await supabase.auth.signUp({
+          phone: formattedPhone,
+          password: registerData.password,
+          options: {
+            data: {
+              full_name: registerData.fullName,
+              phone: formattedPhone,
+            }
+          }
+        });
+
+        if (error) {
+          console.error('WhatsApp register error:', error);
+          setErrors({ register: error.message });
+          toast.error(error.message);
+        } else {
+          setIsSuccess(true);
+          toast.success(currentText.signupSuccess + ' Please verify your phone number.');
+          setTimeout(() => { onClose(); resetForms(); }, 1500);
         }
+      } else {
+        // Email registration
+        const result = await signUp(registerData.email, registerData.password, registerData.fullName);
         
-        setErrors({ register: errorMessage });
-        toast.error(errorMessage);
-      } else if (result.success) {
-        setIsSuccess(true);
-        toast.success(currentText.signupSuccess);
-        
-        setTimeout(() => {
-          onClose();
-          resetForms();
-        }, 1500);
+        if (result.error) {
+          console.error('Register error:', result.error);
+          let errorMessage = result.error.message || 'Registration failed. Please try again.';
+          if (errorMessage.includes('User already registered')) {
+            errorMessage = 'An account with this already exists. Please try logging in instead.';
+          }
+          setErrors({ register: errorMessage });
+          toast.error(errorMessage);
+        } else if (result.success) {
+          setIsSuccess(true);
+          toast.success(currentText.signupSuccess);
+          setTimeout(() => { onClose(); resetForms(); }, 1500);
+        }
       }
     } catch (error: any) {
       console.error('Register catch error:', error);
@@ -474,6 +506,13 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
           {/* Content */}
           <div className="px-3 py-2 space-y-2">
+            {/* Signup Promotion Banner */}
+            {!isLogin && !isSuccess && (
+              <SignupPromotionBanner 
+                onSignupClick={handleInteraction} 
+                compact 
+              />
+            )}
             {/* Success State */}
             {isSuccess && (
               <Alert className="border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800/50 py-2">
