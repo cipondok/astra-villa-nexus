@@ -1,7 +1,7 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { isSessionCheckSuppressed } from '@/hooks/useSessionMonitor';
 import { isValidUUID } from '@/utils/uuid-validation';
 import { validateUUIDWithLogging } from '@/utils/uuid-validation-logger';
 
@@ -224,6 +224,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         
         if (event === 'SIGNED_OUT') {
+          // Skip logout during suppressed batch operations (e.g. Sample Property Generator)
+          if (isSessionCheckSuppressed()) {
+            console.log('SIGNED_OUT suppressed during batch operation in AuthContext');
+            return;
+          }
           console.log('User signed out, clearing all state');
           setProfile(null);
           setUser(null);
