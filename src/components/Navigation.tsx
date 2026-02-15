@@ -34,9 +34,28 @@ const Navigation = () => {
   // Fetch header logo from system settings (checks both categories)
   const { logoUrl: headerLogoUrl, isLoading: isLogoLoading, hasCustomLogo } = useHeaderLogo();
 
+  // Close mobile menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location]);
+
+  // Close mobile menu on scroll
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleScroll = () => setIsMenuOpen(false);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isMenuOpen]);
+
+  // Close mobile menu on window resize to desktop
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setIsMenuOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMenuOpen]);
 
   // Handle scroll effect with throttling for better performance
   useEffect(() => {
@@ -378,7 +397,8 @@ const Navigation = () => {
               {/* Overlay backdrop - click to close - covers full screen */}
               <div 
                 className="lg:hidden fixed inset-0 bg-black/30 dark:bg-black/50 backdrop-blur-sm z-[9998] animate-in fade-in duration-200"
-                onClick={toggleMenu}
+                onClick={() => setIsMenuOpen(false)}
+                onTouchEnd={(e) => { e.preventDefault(); setIsMenuOpen(false); }}
               />
               
               {/* Menu content with smooth slide and scale animation */}
