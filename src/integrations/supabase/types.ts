@@ -8162,6 +8162,53 @@ export type Database = {
         }
         Relationships: []
       }
+      keyword_rank_history: {
+        Row: {
+          clicks: number | null
+          created_at: string
+          ctr: number | null
+          id: string
+          impressions: number | null
+          keyword: string
+          keyword_id: string | null
+          position: number | null
+          recorded_at: string
+          search_volume: number | null
+        }
+        Insert: {
+          clicks?: number | null
+          created_at?: string
+          ctr?: number | null
+          id?: string
+          impressions?: number | null
+          keyword: string
+          keyword_id?: string | null
+          position?: number | null
+          recorded_at?: string
+          search_volume?: number | null
+        }
+        Update: {
+          clicks?: number | null
+          created_at?: string
+          ctr?: number | null
+          id?: string
+          impressions?: number | null
+          keyword?: string
+          keyword_id?: string | null
+          position?: number | null
+          recorded_at?: string
+          search_volume?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "keyword_rank_history_keyword_id_fkey"
+            columns: ["keyword_id"]
+            isOneToOne: false
+            referencedRelation: "seo_keywords"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kyc_verifications: {
         Row: {
           created_at: string
@@ -14647,6 +14694,105 @@ export type Database = {
           },
         ]
       }
+      property_seo_analysis: {
+        Row: {
+          ai_model_used: string | null
+          analysis_version: number | null
+          created_at: string
+          custom_description: string | null
+          custom_hashtags: string[] | null
+          custom_keywords: string[] | null
+          custom_title: string | null
+          description_score: number | null
+          hashtag_score: number | null
+          id: string
+          keyword_score: number | null
+          last_analyzed_at: string | null
+          location_score: number | null
+          missing_keywords: string[] | null
+          property_id: string | null
+          ranking_difficulty: string | null
+          seo_description: string | null
+          seo_hashtags: string[] | null
+          seo_keywords: string[] | null
+          seo_rating: string | null
+          seo_score: number | null
+          seo_title: string | null
+          suggested_keywords: string[] | null
+          title_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          ai_model_used?: string | null
+          analysis_version?: number | null
+          created_at?: string
+          custom_description?: string | null
+          custom_hashtags?: string[] | null
+          custom_keywords?: string[] | null
+          custom_title?: string | null
+          description_score?: number | null
+          hashtag_score?: number | null
+          id?: string
+          keyword_score?: number | null
+          last_analyzed_at?: string | null
+          location_score?: number | null
+          missing_keywords?: string[] | null
+          property_id?: string | null
+          ranking_difficulty?: string | null
+          seo_description?: string | null
+          seo_hashtags?: string[] | null
+          seo_keywords?: string[] | null
+          seo_rating?: string | null
+          seo_score?: number | null
+          seo_title?: string | null
+          suggested_keywords?: string[] | null
+          title_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          ai_model_used?: string | null
+          analysis_version?: number | null
+          created_at?: string
+          custom_description?: string | null
+          custom_hashtags?: string[] | null
+          custom_keywords?: string[] | null
+          custom_title?: string | null
+          description_score?: number | null
+          hashtag_score?: number | null
+          id?: string
+          keyword_score?: number | null
+          last_analyzed_at?: string | null
+          location_score?: number | null
+          missing_keywords?: string[] | null
+          property_id?: string | null
+          ranking_difficulty?: string | null
+          seo_description?: string | null
+          seo_hashtags?: string[] | null
+          seo_keywords?: string[] | null
+          seo_rating?: string | null
+          seo_score?: number | null
+          seo_title?: string | null
+          suggested_keywords?: string[] | null
+          title_score?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_seo_analysis_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_seo_analysis_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_service_bookings: {
         Row: {
           booking_date: string
@@ -16616,6 +16762,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      seo_trend_data: {
+        Row: {
+          category: string | null
+          competition_level: string | null
+          created_at: string
+          id: string
+          keyword: string
+          language: string | null
+          last_updated: string | null
+          location_relevance: string | null
+          property_type_relevance: string | null
+          ranking_frequency: number | null
+          search_volume: number | null
+          source: string | null
+          trend_direction: string | null
+          trend_score: number | null
+        }
+        Insert: {
+          category?: string | null
+          competition_level?: string | null
+          created_at?: string
+          id?: string
+          keyword: string
+          language?: string | null
+          last_updated?: string | null
+          location_relevance?: string | null
+          property_type_relevance?: string | null
+          ranking_frequency?: number | null
+          search_volume?: number | null
+          source?: string | null
+          trend_direction?: string | null
+          trend_score?: number | null
+        }
+        Update: {
+          category?: string | null
+          competition_level?: string | null
+          created_at?: string
+          id?: string
+          keyword?: string
+          language?: string | null
+          last_updated?: string | null
+          location_relevance?: string | null
+          property_type_relevance?: string | null
+          ranking_frequency?: number | null
+          search_volume?: number | null
+          source?: string | null
+          trend_direction?: string | null
+          trend_score?: number | null
+        }
+        Relationships: []
       }
       service_area_mappings: {
         Row: {

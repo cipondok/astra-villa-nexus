@@ -147,3 +147,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.seed-sample-properties]
     verify_jwt = false
+
+  [functions.seo-analyzer]
+    verify_jwt = false

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -13,8 +13,10 @@ import { toast } from 'sonner';
 import { 
   Search, TrendingUp, Globe, FileText, Play, Pause, RefreshCw, 
   Eye, BarChart3, Target, Zap, Clock, CheckCircle, AlertCircle,
-  ArrowUp, ArrowDown, Minus, MapPin, Building2, Loader2
+  ArrowUp, ArrowDown, Minus, MapPin, Building2, Loader2, Brain
 } from 'lucide-react';
+
+const SeoIntelligenceDashboard = lazy(() => import('./SeoIntelligenceDashboard'));
 
 interface SEOLandingPage {
   id: string;
@@ -57,7 +59,7 @@ interface InternalSearch {
 }
 
 const SEOManagement = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('intelligence');
   const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
 
@@ -371,6 +373,10 @@ const SEOManagement = () => {
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="bg-muted/50">
+          <TabsTrigger value="intelligence">
+            <Brain className="h-4 w-4 mr-2" />
+            SEO Intelligence
+          </TabsTrigger>
           <TabsTrigger value="overview">
             <Globe className="h-4 w-4 mr-2" />
             Landing Pages
@@ -388,6 +394,13 @@ const SEOManagement = () => {
             Queue
           </TabsTrigger>
         </TabsList>
+
+        {/* SEO Intelligence Tab */}
+        <TabsContent value="intelligence" className="mt-4">
+          <Suspense fallback={<div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+            <SeoIntelligenceDashboard />
+          </Suspense>
+        </TabsContent>
 
         {/* Landing Pages Tab */}
         <TabsContent value="overview" className="mt-4">
