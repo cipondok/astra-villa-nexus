@@ -374,7 +374,7 @@ function App() {
                             <LoadingProgressPopup />
                             <SessionExpirationHandler />
                             <AuthNotificationHandler />
-                            <OnboardingHandler />
+                            {/* OnboardingHandler disabled permanently */}
                             {/* DailyLoginReward disabled - claim via ASTRA Wallet instead */}
                             {/* <DailyLoginReward autoShow /> */}
                           </PropertyComparisonProvider>
