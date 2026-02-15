@@ -3,18 +3,21 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { toast } from "sonner";
-import { Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon, StopCircle } from "lucide-react";
+import { Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon, StopCircle, ChevronsUpDown, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const PROPERTY_TYPES = ['house', 'apartment', 'villa', 'land', 'commercial', 'townhouse', 'warehouse', 'kost'];
 
 const SamplePropertyGenerator = () => {
   const [selectedProvince, setSelectedProvince] = useState("");
+  const [provinceOpen, setProvinceOpen] = useState(false);
   const [skipExisting, setSkipExisting] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState({ created: 0, skipped: 0, errors: 0, processed: 0, total: 0 });
@@ -162,16 +165,43 @@ const SamplePropertyGenerator = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Select value={selectedProvince} onValueChange={setSelectedProvince} disabled={isRunning}>
-            <SelectTrigger>
-              <SelectValue placeholder={loadingProvinces ? "Loading provinces..." : "Select a province"} />
-            </SelectTrigger>
-            <SelectContent>
-              {provinces.map((p) => (
-                <SelectItem key={p} value={p}>{p}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Popover open={provinceOpen} onOpenChange={setProvinceOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={provinceOpen}
+                disabled={isRunning}
+                className="w-full justify-between font-normal"
+              >
+                {selectedProvince || (loadingProvinces ? "Loading provinces..." : "Select a province...")}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-popover border border-border shadow-lg z-50" align="start">
+              <Command>
+                <CommandInput placeholder="Search province..." />
+                <CommandList className="max-h-64">
+                  <CommandEmpty>No province found.</CommandEmpty>
+                  <CommandGroup>
+                    {provinces.map((p) => (
+                      <CommandItem
+                        key={p}
+                        value={p}
+                        onSelect={() => {
+                          setSelectedProvince(p);
+                          setProvinceOpen(false);
+                        }}
+                      >
+                        <Check className={cn("mr-2 h-4 w-4", selectedProvince === p ? "opacity-100" : "opacity-0")} />
+                        {p}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
 
           {selectedProvince && (
             <div className="grid grid-cols-3 gap-3">
