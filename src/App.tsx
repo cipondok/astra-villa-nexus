@@ -29,7 +29,7 @@ import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import { useQueryLoadingIntegration } from '@/hooks/useQueryLoadingIntegration';
 import GlobalLoadingIndicator from '@/components/ui/GlobalLoadingIndicator';
 import LoadingProgressPopup from '@/components/ui/LoadingProgressPopup';
-import NewArrivalsPopup from '@/components/ui/NewArrivalsPopup';
+
 import SessionExpirationHandler from '@/components/SessionExpirationHandler';
 import AuthNotificationHandler from '@/components/AuthNotificationHandler';
 import OnboardingHandler from '@/components/OnboardingHandler';
@@ -369,8 +369,6 @@ function App() {
                             <CookieSystem />
                             <ResponsiveAIChatWidget />
                             <WhatsAppInquiryButton variant="floating" defaultType="general" />
-                            {/* NewArrivalsPopup disabled - uncomment to re-enable */}
-                            {/* <NewArrivalsPopup /> */}
                             <LoadingProgressPopup />
                             <SessionExpirationHandler />
                             <AuthNotificationHandler />
