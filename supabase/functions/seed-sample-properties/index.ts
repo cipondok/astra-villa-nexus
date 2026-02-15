@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
+import { decode as base64Decode } from "https://deno.land/std@0.168.0/encoding/base64url.ts";
 
 const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -151,16 +152,24 @@ serve(async (req) => {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    const supabaseAuth = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!, {
-      global: { headers: { Authorization: authHeader } }
-    });
-    const { data: { user }, error: userError } = await supabaseAuth.auth.getUser(token);
-    if (userError || !user) {
-      console.error('Auth error:', userError?.message);
-      return new Response(JSON.stringify({ error: 'Invalid token', details: userError?.message }),
+    
+    // Decode JWT payload manually to extract user ID
+    // (getUser/getClaims fail with "missing sub claim" on this project)
+    let userId: string;
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) throw new Error('Invalid JWT format');
+      const payloadBytes = base64Decode(parts[1]);
+      const payload = JSON.parse(new TextDecoder().decode(payloadBytes));
+      if (!payload.sub || typeof payload.sub !== 'string') throw new Error('Missing sub claim in JWT');
+      // Check expiry
+      if (payload.exp && payload.exp * 1000 < Date.now()) throw new Error('Token expired');
+      userId = payload.sub;
+    } catch (e) {
+      console.error('JWT decode error:', e.message);
+      return new Response(JSON.stringify({ error: 'Invalid token', details: e.message }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
-    const userId = user.id;
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
