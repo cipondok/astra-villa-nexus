@@ -29,11 +29,12 @@ serve(async (req) => {
       });
     }
 
-    // Verify the user
+    // Verify the user with explicit token
+    const token = authHeader.replace('Bearer ', '');
     const authSupabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } }
     });
-    const { data: { user }, error: authError } = await authSupabase.auth.getUser();
+    const { data: { user }, error: authError } = await authSupabase.auth.getUser(token);
     
     if (authError || !user) {
       console.error('Authentication failed:', authError);
