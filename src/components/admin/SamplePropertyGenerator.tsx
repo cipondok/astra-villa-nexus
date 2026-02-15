@@ -63,6 +63,13 @@ const SamplePropertyGenerator = () => {
   const totalExpected = kelurahanCount * PROPERTY_TYPES.length;
 
   const handleGenerate = async () => {
+    // Verify we have a valid user session before starting
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      toast.error("You must be logged in to generate properties. Please log in again.");
+      return;
+    }
+
     cancelRef.current = false;
     setIsRunning(true);
     setResult(null);
@@ -75,7 +82,11 @@ const SamplePropertyGenerator = () => {
     while (hasMore && !cancelRef.current) {
       try {
         // Refresh session to prevent token expiry during long batch runs
-        await supabase.auth.refreshSession();
+        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+        if (refreshError || !refreshData.session) {
+          toast.error("Session expired during generation. Please log in again and retry.");
+          break;
+        }
         
         const { data, error } = await supabase.functions.invoke("seed-sample-properties", {
           body: { province: selectedProvince, skipExisting, offset },
