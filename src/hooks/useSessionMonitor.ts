@@ -175,6 +175,11 @@ export const useSessionMonitor = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log('Auth state change in session monitor:', event);
       
+      if (sessionCheckSuppressed) {
+        // During long-running operations, ignore auth state changes to prevent logout
+        console.log('Auth state change suppressed during batch operation:', event);
+        return;
+      }
       if (event === 'SIGNED_OUT') {
         const wasExpired = state.isSessionExpired;
         if (!wasExpired) {
