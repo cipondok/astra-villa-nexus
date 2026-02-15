@@ -40,6 +40,25 @@ const SamplePropertyGenerator = () => {
     },
   });
 
+  // Fetch property counts per province to show done/remaining status
+  const { data: provincePropertyCounts = {} } = useQuery({
+    queryKey: ["province-property-counts"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("properties")
+        .select("state");
+      if (error) return {};
+      const counts: Record<string, number> = {};
+      (data || []).forEach((p: any) => {
+        if (p.state) counts[p.state] = (counts[p.state] || 0) + 1;
+      });
+      return counts;
+    },
+  });
+
+  const doneProvinces = provinces.filter(p => (provincePropertyCounts[p] || 0) > 0);
+  const remainingProvinces = provinces.filter(p => !(provincePropertyCounts[p] || 0));
+
   const { data: kelurahanCount = 0 } = useQuery({
     queryKey: ["kelurahan-count", selectedProvince],
     queryFn: async () => {
@@ -192,10 +211,21 @@ const SamplePropertyGenerator = () => {
 
       <Card>
         <CardHeader className="px-4 py-3">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            Select Province
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              Select Province
+            </CardTitle>
+            <div className="flex items-center gap-1.5">
+              <Badge variant="outline" className="text-[10px] gap-1 border-green-500/30 text-green-600">
+                <CheckCircle className="h-3 w-3" />
+                {doneProvinces.length} done
+              </Badge>
+              <Badge variant="outline" className="text-[10px] gap-1 border-orange-500/30 text-orange-500">
+                {remainingProvinces.length} remaining
+              </Badge>
+            </div>
+          </div>
           <CardDescription className="text-xs">
             Choose a province to generate 1 property per type ({PROPERTY_TYPES.length} types) for each kelurahan/desa.
           </CardDescription>
@@ -217,21 +247,42 @@ const SamplePropertyGenerator = () => {
             <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-popover border border-border shadow-lg z-50" align="start">
               <Command>
                 <CommandInput placeholder="Search province..." />
-                <CommandList className="max-h-56">
+                <CommandList className="max-h-64">
                   <CommandEmpty>No province found.</CommandEmpty>
-                  <CommandGroup>
-                    {provinces.map((p) => (
-                      <CommandItem
-                        key={p}
-                        value={p}
-                        onSelect={() => handleProvinceSelect(p)}
-                        className="text-sm"
-                      >
-                        <Check className={cn("mr-2 h-3.5 w-3.5", selectedProvince === p ? "opacity-100" : "opacity-0")} />
-                        {p}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
+                  {remainingProvinces.length > 0 && (
+                    <CommandGroup heading={`Remaining (${remainingProvinces.length})`}>
+                      {remainingProvinces.map((p) => (
+                        <CommandItem
+                          key={p}
+                          value={p}
+                          onSelect={() => handleProvinceSelect(p)}
+                          className="text-sm"
+                        >
+                          <Check className={cn("mr-2 h-3.5 w-3.5", selectedProvince === p ? "opacity-100" : "opacity-0")} />
+                          <span className="flex-1">{p}</span>
+                          <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-orange-500/30 text-orange-500 ml-2">new</Badge>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  )}
+                  {doneProvinces.length > 0 && (
+                    <CommandGroup heading={`Done (${doneProvinces.length})`}>
+                      {doneProvinces.map((p) => (
+                        <CommandItem
+                          key={p}
+                          value={p}
+                          onSelect={() => handleProvinceSelect(p)}
+                          className="text-sm"
+                        >
+                          <Check className={cn("mr-2 h-3.5 w-3.5", selectedProvince === p ? "opacity-100" : "opacity-0")} />
+                          <span className="flex-1">{p}</span>
+                          <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-green-500/30 text-green-600 ml-2">
+                            {provincePropertyCounts[p]} props
+                          </Badge>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  )}
                 </CommandList>
               </Command>
             </PopoverContent>
