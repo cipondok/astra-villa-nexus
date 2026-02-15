@@ -89,14 +89,21 @@ const SamplePropertyGenerator = () => {
 
     let offset = 0;
     let hasMore = true;
+    let lastRefreshTime = Date.now();
+    const REFRESH_INTERVAL = 4 * 60 * 1000; // Refresh token every 4 minutes (well before 1hr expiry)
 
     while (hasMore && !cancelRef.current) {
       try {
-        // Refresh session to prevent token expiry during long batch runs
-        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
-        if (refreshError || !refreshData.session) {
-          toast.error("Session expired during generation. Please log in again and retry.");
-          break;
+        // Only refresh session periodically, NOT every iteration
+        // Rapid refreshSession() calls cause token rotation conflicts and SIGNED_OUT
+        const now = Date.now();
+        if (now - lastRefreshTime > REFRESH_INTERVAL) {
+          const { error: refreshError } = await supabase.auth.refreshSession();
+          if (refreshError) {
+            console.warn('Session refresh failed during batch, continuing with existing token:', refreshError.message);
+          } else {
+            lastRefreshTime = now;
+          }
         }
         
         const { data, error } = await supabase.functions.invoke("seed-sample-properties", {
@@ -105,7 +112,6 @@ const SamplePropertyGenerator = () => {
 
         if (error) {
           const errorMsg = error.message || '';
-          // If 401/auth error, stop the loop instead of continuing (prevents logout cascade)
           if (errorMsg.includes('401') || errorMsg.includes('Unauthorized') || errorMsg.includes('Invalid token')) {
             toast.error("Session expired. Please log in again and retry.");
             break;
