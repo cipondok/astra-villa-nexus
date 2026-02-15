@@ -201,6 +201,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       async (event, session) => {
         if (!mounted) return;
         
+        // During batch operations, completely ignore SIGNED_OUT events
+        // to prevent logout during long-running processes like property generation
+        if (event === 'SIGNED_OUT' && isSessionCheckSuppressed()) {
+          console.log('SIGNED_OUT fully suppressed during batch operation in AuthContext');
+          return;
+        }
+        
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -216,7 +223,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             localStorage.setItem('login_time', Date.now().toString());
             localStorage.setItem('last_activity', Date.now().toString());
           }
-        } else if (!session) {
+        } else if (!session && !isSessionCheckSuppressed()) {
           setProfile(null);
           setLoading(false);
           localStorage.removeItem('login_time');
@@ -224,11 +231,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         
         if (event === 'SIGNED_OUT') {
-          // Skip logout during suppressed batch operations (e.g. Sample Property Generator)
-          if (isSessionCheckSuppressed()) {
-            console.log('SIGNED_OUT suppressed during batch operation in AuthContext');
-            return;
-          }
           console.log('User signed out, clearing all state');
           setProfile(null);
           setUser(null);
