@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { suppressSessionCheck } from "@/hooks/useSessionMonitor";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,25 +11,64 @@ import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { toast } from "sonner";
-import { Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon, StopCircle, ChevronsUpDown, Check } from "lucide-react";
+import { Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon, StopCircle, ChevronsUpDown, Check, Play, Pause, RotateCcw, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PROPERTY_TYPES = ['house', 'apartment', 'villa', 'land', 'commercial', 'townhouse', 'warehouse', 'kost'];
 
-const SamplePropertyGenerator = () => {
-  const [selectedProvince, setSelectedProvince] = useState(() => localStorage.getItem('spg_last_province') || "");
+const AUTO_RUN_STORAGE_KEY = 'spg_auto_run_state';
 
-  const handleProvinceSelect = (province: string) => {
-    setSelectedProvince(province);
-    localStorage.setItem('spg_last_province', province);
-    setProvinceOpen(false);
-  };
+interface AutoRunState {
+  isAutoMode: boolean;
+  completedProvinces: string[];
+  currentProvince: string;
+  currentOffset: number;
+  totalCreated: number;
+  totalSkipped: number;
+  totalErrors: number;
+  provincesQueue: string[];
+  startedAt: number;
+  lastUpdated: number;
+}
+
+const loadAutoRunState = (): AutoRunState | null => {
+  try {
+    const stored = localStorage.getItem(AUTO_RUN_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : null;
+  } catch { return null; }
+};
+
+const saveAutoRunState = (state: AutoRunState) => {
+  try { localStorage.setItem(AUTO_RUN_STORAGE_KEY, JSON.stringify(state)); } catch {}
+};
+
+const clearAutoRunState = () => {
+  try { localStorage.removeItem(AUTO_RUN_STORAGE_KEY); } catch {}
+};
+
+const SamplePropertyGenerator = () => {
+  const queryClient = useQueryClient();
+  const [selectedProvince, setSelectedProvince] = useState(() => localStorage.getItem('spg_last_province') || "");
   const [provinceOpen, setProvinceOpen] = useState(false);
   const [skipExisting, setSkipExisting] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState({ created: 0, skipped: 0, errors: 0, processed: 0, total: 0 });
   const [result, setResult] = useState<any>(null);
   const cancelRef = useRef(false);
+
+  // Auto-run state
+  const [isAutoMode, setIsAutoMode] = useState(false);
+  const [autoRunState, setAutoRunState] = useState<AutoRunState | null>(() => loadAutoRunState());
+  const [autoCurrentProvince, setAutoCurrentProvince] = useState("");
+  const [autoProvinceIndex, setAutoProvinceIndex] = useState(0);
+  const [autoTotalProvinces, setAutoTotalProvinces] = useState(0);
+  const autoRunningRef = useRef(false);
+
+  const handleProvinceSelect = (province: string) => {
+    setSelectedProvince(province);
+    localStorage.setItem('spg_last_province', province);
+    setProvinceOpen(false);
+  };
 
   const { data: provinces = [], isLoading: loadingProvinces } = useQuery({
     queryKey: ["provinces-for-seeding"],
@@ -40,8 +79,7 @@ const SamplePropertyGenerator = () => {
     },
   });
 
-  // Fetch property counts per province to show done/remaining status
-  const { data: provincePropertyCounts = {} } = useQuery({
+  const { data: provincePropertyCounts = {}, refetch: refetchCounts } = useQuery({
     queryKey: ["province-property-counts"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -91,79 +129,86 @@ const SamplePropertyGenerator = () => {
 
   const totalExpected = kelurahanCount * PROPERTY_TYPES.length;
 
-  const handleGenerate = async () => {
-    // Verify we have a valid user session before starting
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.access_token) {
-      toast.error("You must be logged in to generate properties. Please log in again.");
-      return;
-    }
+  // Get kelurahan count for a specific province
+  const getKelurahanCount = async (province: string): Promise<number> => {
+    const { data, error } = await supabase
+      .from("locations")
+      .select("subdistrict_name")
+      .eq("province_name", province)
+      .eq("is_active", true)
+      .not("subdistrict_name", "is", null);
+    if (error) return 0;
+    return new Set((data || []).map(d => d.subdistrict_name)).size;
+  };
 
-    suppressSessionCheck(true);
-    cancelRef.current = false;
-    setIsRunning(true);
-    setResult(null);
-    const totals = { created: 0, skipped: 0, errors: 0, processed: 0, total: kelurahanCount };
-    setProgress(totals);
+  // Core batch runner for a single province
+  const runProvinceGeneration = async (
+    province: string,
+    startOffset: number = 0,
+    onProgress: (p: { created: number; skipped: number; errors: number; processed: number; total: number }) => void,
+    onSaveState?: (offset: number, totals: { created: number; skipped: number; errors: number }) => void
+  ): Promise<{ created: number; skipped: number; errors: number; cancelled: boolean }> => {
+    const provKelurahanCount = await getKelurahanCount(province);
+    const totals = { created: 0, skipped: 0, errors: 0, processed: startOffset, total: provKelurahanCount };
+    onProgress({ ...totals });
 
-    let offset = 0;
-    let hasMore = true;
+    let offset = startOffset;
+    let hasMore = offset < provKelurahanCount;
     let consecutiveErrors = 0;
 
     while (hasMore && !cancelRef.current) {
       try {
-        // Session health check every 10 batches or after errors
-        // This catches session loss BEFORE sending a request with the anon key
         if (offset % 30 === 0 || consecutiveErrors > 0) {
           const { data: { session: currentSession } } = await supabase.auth.getSession();
           if (!currentSession?.access_token) {
-            toast.error("Session lost during generation. Please log in again and retry.");
+            toast.error("Session lost. Please log in again and retry.");
+            cancelRef.current = true;
             break;
           }
         }
-        
+
         const { data, error } = await supabase.functions.invoke("seed-sample-properties", {
-          body: { province: selectedProvince, skipExisting, offset },
+          body: { province, skipExisting: true, offset },
         });
 
         if (error) {
           const errorMsg = error.message || '';
-          // Detect auth failures - stop immediately
-          if (errorMsg.includes('401') || errorMsg.includes('Unauthorized') || 
-              errorMsg.includes('Invalid token') || errorMsg.includes('Authentication required')) {
-            toast.error("Session expired. Please log in again and retry.");
+          if (errorMsg.includes('401') || errorMsg.includes('Unauthorized') || errorMsg.includes('Invalid token') || errorMsg.includes('Authentication required')) {
+            toast.error("Session expired. Please log in again.");
+            cancelRef.current = true;
             break;
           }
-          // Detect network failures (page reload, connection lost)
           if (errorMsg.includes('Load failed') || errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError')) {
             consecutiveErrors++;
             if (consecutiveErrors >= 3) {
-              toast.error("Connection lost. Please check your network and retry.");
+              toast.error("Connection lost. Pausing auto-run.");
+              cancelRef.current = true;
               break;
             }
-            // Brief delay before retry on network error
             await new Promise(r => setTimeout(r, 2000));
             continue;
           }
-          toast.error(`Batch error at offset ${offset}: ${errorMsg}`);
           totals.errors += 1;
           consecutiveErrors++;
           if (consecutiveErrors >= 5) {
-            toast.error("Too many consecutive errors. Stopping.");
+            toast.error("Too many errors. Pausing auto-run.");
+            cancelRef.current = true;
             break;
           }
           offset += 5;
-          hasMore = offset < kelurahanCount;
+          hasMore = offset < provKelurahanCount;
           continue;
         }
 
-        // Success - reset error counter
         consecutiveErrors = 0;
         totals.created += data.created || 0;
         totals.skipped += data.skipped || 0;
         totals.errors += data.errors || 0;
         totals.processed += data.batchProcessed || 0;
-        setProgress({ ...totals });
+        onProgress({ ...totals });
+
+        // Save state for resume
+        if (onSaveState) onSaveState(data.nextOffset ?? offset + 5, totals);
 
         hasMore = data.hasMore;
         if (data.nextOffset != null) {
@@ -174,27 +219,192 @@ const SamplePropertyGenerator = () => {
       } catch (err: any) {
         consecutiveErrors++;
         if (consecutiveErrors >= 3) {
-          toast.error("Multiple failures detected. Stopping to prevent session issues.");
+          cancelRef.current = true;
           break;
         }
-        toast.error(`Batch failed at offset ${offset}`);
         await new Promise(r => setTimeout(r, 2000));
         offset += 5;
-        hasMore = offset < kelurahanCount;
+        hasMore = offset < provKelurahanCount;
       }
     }
 
+    return { ...totals, cancelled: cancelRef.current };
+  };
+
+  // Single province generation (manual mode)
+  const handleGenerate = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      toast.error("You must be logged in to generate properties.");
+      return;
+    }
+
+    suppressSessionCheck(true);
+    cancelRef.current = false;
+    setIsRunning(true);
+    setResult(null);
+
+    const result = await runProvinceGeneration(selectedProvince, 0, (p) => setProgress(p));
+
     suppressSessionCheck(false);
     setIsRunning(false);
-    setResult(totals);
-    if (cancelRef.current) {
-      toast.info("Generation cancelled");
+    setResult(result);
+    refetchCounts();
+
+    if (result.cancelled) {
+      toast.info("Generation paused/cancelled");
     } else {
-      toast.success(`Done! Created ${totals.created} properties for ${selectedProvince}`);
+      toast.success(`Done! Created ${result.created} properties for ${selectedProvince}`);
     }
   };
 
+  // Auto-run: process all remaining provinces
+  const startAutoRun = useCallback(async (resumeState?: AutoRunState | null) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      toast.error("You must be logged in.");
+      return;
+    }
+
+    suppressSessionCheck(true);
+    cancelRef.current = false;
+    autoRunningRef.current = true;
+    setIsRunning(true);
+    setIsAutoMode(true);
+    setResult(null);
+
+    let queue: string[];
+    let completedList: string[];
+    let globalTotals = { created: 0, skipped: 0, errors: 0 };
+    let startOffset = 0;
+    let currentProv = "";
+
+    if (resumeState) {
+      // Resume from saved state
+      queue = resumeState.provincesQueue;
+      completedList = resumeState.completedProvinces;
+      globalTotals = { created: resumeState.totalCreated, skipped: resumeState.totalSkipped, errors: resumeState.totalErrors };
+      currentProv = resumeState.currentProvince;
+      startOffset = resumeState.currentOffset;
+      toast.info(`Resuming from ${currentProv} (offset ${startOffset}), ${queue.length} provinces left`);
+    } else {
+      // Fresh start - get remaining provinces
+      queue = [...remainingProvinces];
+      completedList = [];
+      if (queue.length === 0) {
+        toast.info("All provinces already have properties!");
+        suppressSessionCheck(false);
+        setIsRunning(false);
+        setIsAutoMode(false);
+        return;
+      }
+      currentProv = queue[0];
+      toast.info(`Starting auto-run for ${queue.length} remaining provinces`);
+    }
+
+    setAutoTotalProvinces(queue.length + completedList.length);
+
+    // Process each province
+    let idx = resumeState ? completedList.length : 0;
+
+    while (queue.length > 0 && !cancelRef.current) {
+      const province = currentProv || queue[0];
+      setAutoCurrentProvince(province);
+      setAutoProvinceIndex(idx + 1);
+
+      const state: AutoRunState = {
+        isAutoMode: true,
+        completedProvinces: completedList,
+        currentProvince: province,
+        currentOffset: startOffset,
+        totalCreated: globalTotals.created,
+        totalSkipped: globalTotals.skipped,
+        totalErrors: globalTotals.errors,
+        provincesQueue: queue,
+        startedAt: resumeState?.startedAt || Date.now(),
+        lastUpdated: Date.now(),
+      };
+      setAutoRunState(state);
+      saveAutoRunState(state);
+
+      const provResult = await runProvinceGeneration(
+        province,
+        startOffset,
+        (p) => setProgress(p),
+        (offset, totals) => {
+          const updatedState: AutoRunState = {
+            ...state,
+            currentOffset: offset,
+            totalCreated: globalTotals.created + totals.created,
+            totalSkipped: globalTotals.skipped + totals.skipped,
+            totalErrors: globalTotals.errors + totals.errors,
+            lastUpdated: Date.now(),
+          };
+          saveAutoRunState(updatedState);
+        }
+      );
+
+      if (provResult.cancelled) {
+        // Save paused state for resume
+        const pausedState: AutoRunState = {
+          isAutoMode: true,
+          completedProvinces: completedList,
+          currentProvince: province,
+          currentOffset: startOffset,
+          totalCreated: globalTotals.created + provResult.created,
+          totalSkipped: globalTotals.skipped + provResult.skipped,
+          totalErrors: globalTotals.errors + provResult.errors,
+          provincesQueue: queue,
+          startedAt: resumeState?.startedAt || Date.now(),
+          lastUpdated: Date.now(),
+        };
+        setAutoRunState(pausedState);
+        saveAutoRunState(pausedState);
+        toast.info(`Auto-run paused at ${province}. You can resume anytime.`);
+        break;
+      }
+
+      // Province completed
+      globalTotals.created += provResult.created;
+      globalTotals.skipped += provResult.skipped;
+      globalTotals.errors += provResult.errors;
+
+      completedList.push(province);
+      queue.shift();
+      startOffset = 0;
+      currentProv = queue[0] || "";
+      idx++;
+
+      // Refresh counts after each province
+      refetchCounts();
+      toast.success(`✓ ${province} done (${provResult.created} created). ${queue.length} provinces left.`);
+    }
+
+    suppressSessionCheck(false);
+    autoRunningRef.current = false;
+    setIsRunning(false);
+
+    if (!cancelRef.current) {
+      // All done
+      clearAutoRunState();
+      setAutoRunState(null);
+      setResult({ ...globalTotals, allDone: true });
+      toast.success(`🎉 Auto-run complete! ${globalTotals.created} total properties created across ${completedList.length} provinces.`);
+      refetchCounts();
+    }
+  }, [remainingProvinces, refetchCounts]);
+
+  const handleAutoRun = () => startAutoRun(null);
+  const handleResumeAutoRun = () => startAutoRun(autoRunState);
+  const handleClearAutoState = () => {
+    clearAutoRunState();
+    setAutoRunState(null);
+    setIsAutoMode(false);
+    toast.info("Auto-run state cleared.");
+  };
+
   const progressPercent = progress.total > 0 ? Math.round((progress.processed / progress.total) * 100) : 0;
+  const hasSavedState = !!autoRunState && autoRunState.provincesQueue.length > 0;
 
   return (
     <div className="space-y-4">
@@ -209,12 +419,13 @@ const SamplePropertyGenerator = () => {
         </div>
       </div>
 
-      <Card>
+      {/* Auto-Run Card */}
+      <Card className="border-primary/20 bg-primary/5">
         <CardHeader className="px-4 py-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              Select Province
+              <Zap className="h-4 w-4 text-primary" />
+              Auto-Run All Remaining
             </CardTitle>
             <div className="flex items-center gap-1.5">
               <Badge variant="outline" className="text-[10px] gap-1 border-green-500/30 text-green-600">
@@ -227,7 +438,126 @@ const SamplePropertyGenerator = () => {
             </div>
           </div>
           <CardDescription className="text-xs">
-            Choose a province to generate 1 property per type ({PROPERTY_TYPES.length} types) for each kelurahan/desa.
+            Automatically generate properties for all remaining provinces one by one. Progress is saved — you can pause and resume anytime.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 pt-0 space-y-3">
+          {/* Saved state resume banner */}
+          {hasSavedState && !isRunning && (
+            <div className="p-3 rounded-lg border border-primary/30 bg-primary/5 space-y-2">
+              <div className="flex items-center gap-2">
+                <Pause className="h-4 w-4 text-primary" />
+                <span className="text-xs font-semibold">Paused Auto-Run</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                <div>Current: <span className="font-medium text-foreground">{autoRunState!.currentProvince}</span></div>
+                <div>Offset: <span className="font-medium text-foreground">{autoRunState!.currentOffset}</span></div>
+                <div>Completed: <span className="font-medium text-green-600">{autoRunState!.completedProvinces.length} provinces</span></div>
+                <div>Remaining: <span className="font-medium text-orange-500">{autoRunState!.provincesQueue.length} provinces</span></div>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="text-center p-1.5 rounded bg-muted/50">
+                  <span className="font-bold text-green-600">{autoRunState!.totalCreated}</span>
+                  <p className="text-[9px] text-muted-foreground">Created</p>
+                </div>
+                <div className="text-center p-1.5 rounded bg-muted/50">
+                  <span className="font-bold text-orange-500">{autoRunState!.totalSkipped}</span>
+                  <p className="text-[9px] text-muted-foreground">Skipped</p>
+                </div>
+                <div className="text-center p-1.5 rounded bg-muted/50">
+                  <span className="font-bold text-red-500">{autoRunState!.totalErrors}</span>
+                  <p className="text-[9px] text-muted-foreground">Errors</p>
+                </div>
+              </div>
+              {/* Completed provinces list */}
+              {autoRunState!.completedProvinces.length > 0 && (
+                <div className="text-[10px] text-muted-foreground">
+                  <span className="font-medium">Done: </span>
+                  {autoRunState!.completedProvinces.join(", ")}
+                </div>
+              )}
+              <div className="flex gap-2">
+                <Button size="sm" className="flex-1 gap-1.5 h-8 text-xs" onClick={handleResumeAutoRun}>
+                  <Play className="h-3.5 w-3.5" />
+                  Resume Auto-Run
+                </Button>
+                <Button size="sm" variant="outline" className="gap-1.5 h-8 text-xs" onClick={handleClearAutoState}>
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  Reset
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Auto-run progress */}
+          {isRunning && isAutoMode && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                  <span className="text-xs font-medium">
+                    Province {autoProvinceIndex}/{autoTotalProvinces}: {autoCurrentProvince}
+                  </span>
+                </div>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => { cancelRef.current = true; }}
+                  className="gap-1 h-7 text-xs"
+                >
+                  <StopCircle className="h-3.5 w-3.5" />
+                  Pause
+                </Button>
+              </div>
+              {/* Overall province progress */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[10px] text-muted-foreground">
+                  <span>Overall provinces</span>
+                  <span>{autoProvinceIndex}/{autoTotalProvinces}</span>
+                </div>
+                <Progress value={(autoProvinceIndex / autoTotalProvinces) * 100} className="h-1.5" />
+              </div>
+              {/* Current province batch progress */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[10px] text-muted-foreground">
+                  <span>Current province batches</span>
+                  <span>{progressPercent}%</span>
+                </div>
+                <Progress value={progressPercent} className="h-1.5" />
+              </div>
+              <div className="flex gap-4 text-xs text-muted-foreground">
+                <span className="text-green-600">✓ {progress.created} created</span>
+                <span className="text-orange-500">⊘ {progress.skipped} skipped</span>
+                <span className="text-red-500">✗ {progress.errors} errors</span>
+              </div>
+            </div>
+          )}
+
+          {/* Start button */}
+          {!isRunning && !hasSavedState && (
+            <Button
+              className="w-full gap-2 h-9 text-sm"
+              disabled={isRunning || remainingProvinces.length === 0}
+              onClick={handleAutoRun}
+            >
+              <Zap className="h-4 w-4" />
+              {remainingProvinces.length === 0
+                ? "All Provinces Complete!"
+                : `Auto-Generate ${remainingProvinces.length} Remaining Provinces`}
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Manual Single Province Card */}
+      <Card>
+        <CardHeader className="px-4 py-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <MapPin className="h-4 w-4" />
+            Single Province (Manual)
+          </CardTitle>
+          <CardDescription className="text-xs">
+            Or pick a specific province to generate individually.
           </CardDescription>
         </CardHeader>
         <CardContent className="px-4 pb-4 pt-0 space-y-3">
@@ -252,12 +582,7 @@ const SamplePropertyGenerator = () => {
                   {remainingProvinces.length > 0 && (
                     <CommandGroup heading={`Remaining (${remainingProvinces.length})`}>
                       {remainingProvinces.map((p) => (
-                        <CommandItem
-                          key={p}
-                          value={p}
-                          onSelect={() => handleProvinceSelect(p)}
-                          className="text-sm"
-                        >
+                        <CommandItem key={p} value={p} onSelect={() => handleProvinceSelect(p)} className="text-sm">
                           <Check className={cn("mr-2 h-3.5 w-3.5", selectedProvince === p ? "opacity-100" : "opacity-0")} />
                           <span className="flex-1">{p}</span>
                           <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-orange-500/30 text-orange-500 ml-2">new</Badge>
@@ -268,12 +593,7 @@ const SamplePropertyGenerator = () => {
                   {doneProvinces.length > 0 && (
                     <CommandGroup heading={`Done (${doneProvinces.length})`}>
                       {doneProvinces.map((p) => (
-                        <CommandItem
-                          key={p}
-                          value={p}
-                          onSelect={() => handleProvinceSelect(p)}
-                          className="text-sm"
-                        >
+                        <CommandItem key={p} value={p} onSelect={() => handleProvinceSelect(p)} className="text-sm">
                           <Check className={cn("mr-2 h-3.5 w-3.5", selectedProvince === p ? "opacity-100" : "opacity-0")} />
                           <span className="flex-1">{p}</span>
                           <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-green-500/30 text-green-600 ml-2">
@@ -340,7 +660,7 @@ const SamplePropertyGenerator = () => {
               <ImageIcon className="h-4 w-4" />
               Generate {totalExpected} Properties
             </Button>
-            {isRunning && (
+            {isRunning && !isAutoMode && (
               <Button
                 variant="destructive"
                 onClick={() => { cancelRef.current = true; }}
@@ -354,7 +674,8 @@ const SamplePropertyGenerator = () => {
         </CardContent>
       </Card>
 
-      {isRunning && (
+      {/* Single province progress */}
+      {isRunning && !isAutoMode && (
         <Card>
           <CardContent className="p-4 space-y-2.5">
             <div className="flex items-center gap-2">
@@ -379,12 +700,10 @@ const SamplePropertyGenerator = () => {
             <div className="flex items-start gap-2.5">
               <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
               <div className="space-y-2 flex-1">
-                <h3 className="text-sm font-semibold text-green-700 dark:text-green-300">Generation Complete!</h3>
-                <div className="grid grid-cols-4 gap-2">
-                  <div className="text-center p-2 rounded-md bg-background/50">
-                    <p className="text-base font-bold">{progress.total}</p>
-                    <p className="text-[10px] text-muted-foreground">Kelurahan</p>
-                  </div>
+                <h3 className="text-sm font-semibold text-green-700 dark:text-green-300">
+                  {result.allDone ? "🎉 All Provinces Complete!" : "Generation Complete!"}
+                </h3>
+                <div className="grid grid-cols-3 gap-2">
                   <div className="text-center p-2 rounded-md bg-background/50">
                     <p className="text-base font-bold text-green-600">{result.created}</p>
                     <p className="text-[10px] text-muted-foreground">Created</p>
