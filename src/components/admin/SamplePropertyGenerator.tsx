@@ -143,31 +143,29 @@ const SamplePropertyGenerator = () => {
   const progressPercent = progress.total > 0 ? Math.round((progress.processed / progress.total) * 100) : 0;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start gap-3">
-        <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5">
-          <Sparkles className="h-6 w-6 text-primary" />
+    <div className="space-y-3">
+      {/* Header - Slim */}
+      <div className="flex items-center gap-2">
+        <div className="p-1.5 rounded-lg bg-primary/10">
+          <Sparkles className="h-4 w-4 text-primary" />
         </div>
         <div>
-          <h2 className="text-xl font-bold">Sample Property Generator</h2>
-          <p className="text-sm text-muted-foreground">
-            Generate sample properties with AI images for each kelurahan/desa per province (batched)
-          </p>
+          <h2 className="text-sm font-bold leading-tight">Sample Property Generator</h2>
+          <p className="text-[10px] text-muted-foreground">Generate sample properties with AI images for each kelurahan/desa per province (batched)</p>
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
+      <Card className="border-border/50">
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="text-xs flex items-center gap-1.5">
+            <MapPin className="h-3 w-3" />
             Select Province
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-[10px] leading-snug">
             Choose a province to generate 1 property per type ({PROPERTY_TYPES.length} types) for each kelurahan/desa.
-            Processed in small batches to avoid timeouts.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-3 pt-0 space-y-2.5">
           <Popover open={provinceOpen} onOpenChange={setProvinceOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -175,16 +173,16 @@ const SamplePropertyGenerator = () => {
                 role="combobox"
                 aria-expanded={provinceOpen}
                 disabled={isRunning}
-                className="w-full justify-between font-normal"
+                className="w-full justify-between font-normal h-8 text-xs"
               >
-                {selectedProvince || (loadingProvinces ? "Loading provinces..." : "Select a province...")}
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                {selectedProvince || (loadingProvinces ? "Loading..." : "Select a province...")}
+                <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-popover border border-border shadow-lg z-50" align="start">
               <Command>
-                <CommandInput placeholder="Search province..." />
-                <CommandList className="max-h-64">
+                <CommandInput placeholder="Search province..." className="h-8 text-xs" />
+                <CommandList className="max-h-52">
                   <CommandEmpty>No province found.</CommandEmpty>
                   <CommandGroup>
                     {provinces.map((p) => (
@@ -195,8 +193,9 @@ const SamplePropertyGenerator = () => {
                           setSelectedProvince(p);
                           setProvinceOpen(false);
                         }}
+                        className="text-xs py-1.5"
                       >
-                        <Check className={cn("mr-2 h-4 w-4", selectedProvince === p ? "opacity-100" : "opacity-0")} />
+                        <Check className={cn("mr-1.5 h-3 w-3", selectedProvince === p ? "opacity-100" : "opacity-0")} />
                         {p}
                       </CommandItem>
                     ))}
@@ -207,67 +206,64 @@ const SamplePropertyGenerator = () => {
           </Popover>
 
           {selectedProvince && (
-            <div className="grid grid-cols-3 gap-3">
-              <div className="p-3 rounded-lg bg-muted/50 text-center">
-                <p className="text-2xl font-bold text-primary">{kelurahanCount}</p>
-                <p className="text-xs text-muted-foreground">Kelurahan/Desa</p>
+            <div className="grid grid-cols-3 gap-2">
+              <div className="p-2 rounded-md bg-muted/40 text-center">
+                <p className="text-base font-bold text-primary leading-none">{kelurahanCount}</p>
+                <p className="text-[9px] text-muted-foreground mt-0.5">Kelurahan/Desa</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/50 text-center">
-                <p className="text-2xl font-bold text-primary">{totalExpected}</p>
-                <p className="text-xs text-muted-foreground">Properties to Create</p>
+              <div className="p-2 rounded-md bg-muted/40 text-center">
+                <p className="text-base font-bold text-primary leading-none">{totalExpected}</p>
+                <p className="text-[9px] text-muted-foreground mt-0.5">To Create</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/50 text-center">
-                <p className="text-2xl font-bold text-orange-500">{existingCount}</p>
-                <p className="text-xs text-muted-foreground">Existing Properties</p>
+              <div className="p-2 rounded-md bg-muted/40 text-center">
+                <p className="text-base font-bold text-orange-500 leading-none">{existingCount}</p>
+                <p className="text-[9px] text-muted-foreground mt-0.5">Existing</p>
               </div>
             </div>
           )}
 
           <div>
-            <Label className="text-sm font-medium mb-2 block">Property Types (1 per kelurahan)</Label>
-            <div className="flex flex-wrap gap-1.5">
+            <Label className="text-[10px] font-medium mb-1 block">Property Types (1 per kelurahan)</Label>
+            <div className="flex flex-wrap gap-1">
               {PROPERTY_TYPES.map((type) => (
-                <Badge key={type} variant="secondary" className="text-xs capitalize">{type}</Badge>
+                <Badge key={type} variant="secondary" className="text-[9px] px-1.5 py-0 h-4 capitalize">{type}</Badge>
               ))}
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-lg border">
+          <div className="flex items-center justify-between p-2 rounded-md border text-xs">
             <div>
-              <Label className="text-sm font-medium">Skip existing kelurahan</Label>
-              <p className="text-xs text-muted-foreground">Skip kelurahan that already have properties of the same type</p>
+              <Label className="text-[11px] font-medium">Skip existing kelurahan</Label>
+              <p className="text-[9px] text-muted-foreground leading-tight">Skip kelurahan that already have properties</p>
             </div>
-            <Switch checked={skipExisting} onCheckedChange={setSkipExisting} disabled={isRunning} />
+            <Switch checked={skipExisting} onCheckedChange={setSkipExisting} disabled={isRunning} className="scale-75" />
           </div>
 
           {selectedProvince && totalExpected > 100 && (
-            <div className="flex items-start gap-2 p-3 rounded-lg bg-orange-500/10 border border-orange-500/20">
-              <AlertTriangle className="h-4 w-4 text-orange-500 mt-0.5 shrink-0" />
-              <div className="text-xs text-orange-700 dark:text-orange-300">
-                <p className="font-medium">Large batch info</p>
-                <p>This will generate {totalExpected} properties in batches of {PROPERTY_TYPES.length * 5} (5 kelurahan at a time). You can cancel at any time.</p>
-              </div>
+            <div className="flex items-start gap-1.5 p-2 rounded-md bg-orange-500/10 border border-orange-500/20">
+              <AlertTriangle className="h-3 w-3 text-orange-500 mt-0.5 shrink-0" />
+              <p className="text-[9px] text-orange-700 dark:text-orange-300 leading-snug">
+                <span className="font-medium">Large batch:</span> {totalExpected} properties in batches of {PROPERTY_TYPES.length * 5}. You can cancel anytime.
+              </p>
             </div>
           )}
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <Button
-              className="flex-1 gap-2"
-              size="lg"
+              className="flex-1 gap-1.5 h-8 text-xs"
               disabled={!selectedProvince || isRunning}
               onClick={handleGenerate}
             >
-              <ImageIcon className="h-4 w-4" />
+              <ImageIcon className="h-3 w-3" />
               Generate {totalExpected} Properties
             </Button>
             {isRunning && (
               <Button
                 variant="destructive"
-                size="lg"
                 onClick={() => { cancelRef.current = true; }}
-                className="gap-2"
+                className="gap-1 h-8 text-xs"
               >
-                <StopCircle className="h-4 w-4" />
+                <StopCircle className="h-3 w-3" />
                 Stop
               </Button>
             )}
@@ -276,19 +272,19 @@ const SamplePropertyGenerator = () => {
       </Card>
 
       {isRunning && (
-        <Card>
-          <CardContent className="pt-6 space-y-3">
-            <div className="flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin text-primary" />
-              <span className="text-sm font-medium">
-                Processing batch {Math.ceil(progress.processed / 5)} of {Math.ceil(progress.total / 5)}...
+        <Card className="border-border/50">
+          <CardContent className="p-3 space-y-2">
+            <div className="flex items-center gap-1.5">
+              <Loader2 className="h-3 w-3 animate-spin text-primary" />
+              <span className="text-[11px] font-medium">
+                Batch {Math.ceil(progress.processed / 5)} / {Math.ceil(progress.total / 5)}
               </span>
             </div>
-            <Progress value={progressPercent} className="h-2" />
-            <div className="flex gap-4 text-xs text-muted-foreground">
-              <span className="text-green-600">✓ {progress.created} created</span>
-              <span className="text-orange-500">⊘ {progress.skipped} skipped</span>
-              <span className="text-red-500">✗ {progress.errors} errors</span>
+            <Progress value={progressPercent} className="h-1.5" />
+            <div className="flex gap-3 text-[10px] text-muted-foreground">
+              <span className="text-green-600">✓ {progress.created}</span>
+              <span className="text-orange-500">⊘ {progress.skipped}</span>
+              <span className="text-red-500">✗ {progress.errors}</span>
             </div>
           </CardContent>
         </Card>
@@ -296,27 +292,27 @@ const SamplePropertyGenerator = () => {
 
       {result && !isRunning && (
         <Card className="border-green-500/30 bg-green-500/5">
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-3">
-              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-              <div className="space-y-2">
-                <h3 className="font-semibold text-green-700 dark:text-green-300">Generation Complete!</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="text-center p-2 rounded bg-background/50">
-                    <p className="text-lg font-bold">{progress.total}</p>
-                    <p className="text-[10px] text-muted-foreground">Kelurahan</p>
+          <CardContent className="p-3">
+            <div className="flex items-start gap-2">
+              <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
+              <div className="space-y-1.5 flex-1">
+                <h3 className="text-xs font-semibold text-green-700 dark:text-green-300">Generation Complete!</h3>
+                <div className="grid grid-cols-4 gap-2">
+                  <div className="text-center p-1.5 rounded bg-background/50">
+                    <p className="text-sm font-bold leading-none">{progress.total}</p>
+                    <p className="text-[8px] text-muted-foreground mt-0.5">Kelurahan</p>
                   </div>
-                  <div className="text-center p-2 rounded bg-background/50">
-                    <p className="text-lg font-bold text-green-600">{result.created}</p>
-                    <p className="text-[10px] text-muted-foreground">Created</p>
+                  <div className="text-center p-1.5 rounded bg-background/50">
+                    <p className="text-sm font-bold text-green-600 leading-none">{result.created}</p>
+                    <p className="text-[8px] text-muted-foreground mt-0.5">Created</p>
                   </div>
-                  <div className="text-center p-2 rounded bg-background/50">
-                    <p className="text-lg font-bold text-orange-500">{result.skipped}</p>
-                    <p className="text-[10px] text-muted-foreground">Skipped</p>
+                  <div className="text-center p-1.5 rounded bg-background/50">
+                    <p className="text-sm font-bold text-orange-500 leading-none">{result.skipped}</p>
+                    <p className="text-[8px] text-muted-foreground mt-0.5">Skipped</p>
                   </div>
-                  <div className="text-center p-2 rounded bg-background/50">
-                    <p className="text-lg font-bold text-red-500">{result.errors}</p>
-                    <p className="text-[10px] text-muted-foreground">Errors</p>
+                  <div className="text-center p-1.5 rounded bg-background/50">
+                    <p className="text-sm font-bold text-red-500 leading-none">{result.errors}</p>
+                    <p className="text-[8px] text-muted-foreground mt-0.5">Errors</p>
                   </div>
                 </div>
               </div>
