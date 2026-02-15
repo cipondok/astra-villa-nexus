@@ -17,7 +17,13 @@ import { cn } from "@/lib/utils";
 const PROPERTY_TYPES = ['house', 'apartment', 'villa', 'land', 'commercial', 'townhouse', 'warehouse', 'kost'];
 
 const SamplePropertyGenerator = () => {
-  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState(() => localStorage.getItem('spg_last_province') || "");
+
+  const handleProvinceSelect = (province: string) => {
+    setSelectedProvince(province);
+    localStorage.setItem('spg_last_province', province);
+    setProvinceOpen(false);
+  };
   const [provinceOpen, setProvinceOpen] = useState(false);
   const [skipExisting, setSkipExisting] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
@@ -189,10 +195,7 @@ const SamplePropertyGenerator = () => {
                       <CommandItem
                         key={p}
                         value={p}
-                        onSelect={() => {
-                          setSelectedProvince(p);
-                          setProvinceOpen(false);
-                        }}
+                        onSelect={() => handleProvinceSelect(p)}
                         className="text-sm"
                       >
                         <Check className={cn("mr-2 h-3.5 w-3.5", selectedProvince === p ? "opacity-100" : "opacity-0")} />
