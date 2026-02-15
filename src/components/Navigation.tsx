@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -55,6 +55,26 @@ const Navigation = () => {
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, [isMenuOpen]);
+
+  // Close mobile menu when clicking anywhere outside the menu and toggle button
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleGlobalClick = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as Node;
+      if (menuRef.current?.contains(target)) return;
+      if (menuButtonRef.current?.contains(target)) return;
+      setIsMenuOpen(false);
+    };
+    // Use capture phase to catch clicks before they're stopped
+    document.addEventListener('click', handleGlobalClick, true);
+    document.addEventListener('touchend', handleGlobalClick, true);
+    return () => {
+      document.removeEventListener('click', handleGlobalClick, true);
+      document.removeEventListener('touchend', handleGlobalClick, true);
+    };
   }, [isMenuOpen]);
 
   // Handle scroll effect with throttling for better performance
@@ -380,6 +400,7 @@ const Navigation = () => {
               {/* Mobile/Tablet menu button - visible on screens smaller than lg (1024px) */}
               <div className="lg:hidden flex items-center">
                 <Button
+                  ref={menuButtonRef}
                   variant="ghost"
                   size="sm"
                   className="w-8 h-8 p-0 rounded-xl bg-primary/5 hover:bg-primary/10 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500 border border-primary/20 hover:border-primary/40 text-foreground hover:text-primary"
@@ -402,7 +423,7 @@ const Navigation = () => {
               />
               
               {/* Menu content with smooth slide and scale animation */}
-              <div className="lg:hidden absolute top-full right-0 w-48 glass-popup backdrop-blur-2xl border-primary/20 shadow-2xl shadow-primary/30 z-[9999] rounded-bl-2xl rounded-tl-lg overflow-hidden animate-in slide-in-from-top-2 fade-in zoom-in-95 duration-500 origin-top-right">
+              <div ref={menuRef} className="lg:hidden absolute top-full right-0 w-48 glass-popup backdrop-blur-2xl border-primary/20 shadow-2xl shadow-primary/30 z-[9999] rounded-bl-2xl rounded-tl-lg overflow-hidden animate-in slide-in-from-top-2 fade-in zoom-in-95 duration-500 origin-top-right">
                 <div className="px-1.5 py-1.5 space-y-0.5">
                 <Button variant="ghost" className="w-full justify-start h-8 text-[11px] font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => { navigate('/'); toggleMenu(); }}>
                   <HomeIcon className="h-3 w-3 mr-1.5" />
