@@ -89,11 +89,19 @@ const SamplePropertyGenerator = () => {
 
     let offset = 0;
     let hasMore = true;
+    let consecutiveErrors = 0;
 
     while (hasMore && !cancelRef.current) {
       try {
-        // DO NOT call refreshSession() manually - Supabase JS client handles auto-refresh
-        // Manual calls conflict with built-in token rotation and cause SIGNED_OUT events
+        // Session health check every 10 batches or after errors
+        // This catches session loss BEFORE sending a request with the anon key
+        if (offset % 30 === 0 || consecutiveErrors > 0) {
+          const { data: { session: currentSession } } = await supabase.auth.getSession();
+          if (!currentSession?.access_token) {
+            toast.error("Session lost during generation. Please log in again and retry.");
+            break;
+          }
+        }
         
         const { data, error } = await supabase.functions.invoke("seed-sample-properties", {
           body: { province: selectedProvince, skipExisting, offset },
@@ -101,17 +109,37 @@ const SamplePropertyGenerator = () => {
 
         if (error) {
           const errorMsg = error.message || '';
-          if (errorMsg.includes('401') || errorMsg.includes('Unauthorized') || errorMsg.includes('Invalid token')) {
+          // Detect auth failures - stop immediately
+          if (errorMsg.includes('401') || errorMsg.includes('Unauthorized') || 
+              errorMsg.includes('Invalid token') || errorMsg.includes('Authentication required')) {
             toast.error("Session expired. Please log in again and retry.");
             break;
           }
+          // Detect network failures (page reload, connection lost)
+          if (errorMsg.includes('Load failed') || errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError')) {
+            consecutiveErrors++;
+            if (consecutiveErrors >= 3) {
+              toast.error("Connection lost. Please check your network and retry.");
+              break;
+            }
+            // Brief delay before retry on network error
+            await new Promise(r => setTimeout(r, 2000));
+            continue;
+          }
           toast.error(`Batch error at offset ${offset}: ${errorMsg}`);
           totals.errors += 1;
+          consecutiveErrors++;
+          if (consecutiveErrors >= 5) {
+            toast.error("Too many consecutive errors. Stopping.");
+            break;
+          }
           offset += 5;
           hasMore = offset < kelurahanCount;
           continue;
         }
 
+        // Success - reset error counter
+        consecutiveErrors = 0;
         totals.created += data.created || 0;
         totals.skipped += data.skipped || 0;
         totals.errors += data.errors || 0;
@@ -125,7 +153,13 @@ const SamplePropertyGenerator = () => {
           hasMore = false;
         }
       } catch (err: any) {
+        consecutiveErrors++;
+        if (consecutiveErrors >= 3) {
+          toast.error("Multiple failures detected. Stopping to prevent session issues.");
+          break;
+        }
         toast.error(`Batch failed at offset ${offset}`);
+        await new Promise(r => setTimeout(r, 2000));
         offset += 5;
         hasMore = offset < kelurahanCount;
       }
