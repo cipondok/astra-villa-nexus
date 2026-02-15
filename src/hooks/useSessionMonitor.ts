@@ -15,6 +15,7 @@ const WARNING_BEFORE_EXPIRY = 5 * 60 * 1000; // Show warning 5 minutes before ex
 // Global flag to suppress session checks during long-running operations
 let sessionCheckSuppressed = false;
 export const suppressSessionCheck = (suppress: boolean) => { sessionCheckSuppressed = suppress; };
+export const isSessionCheckSuppressed = () => sessionCheckSuppressed;
 
 // Create a global event emitter for auth errors
 export const authErrorEmitter = {
