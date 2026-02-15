@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { suppressSessionCheck } from "@/hooks/useSessionMonitor";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -73,6 +74,7 @@ const SamplePropertyGenerator = () => {
       return;
     }
 
+    suppressSessionCheck(true);
     cancelRef.current = false;
     setIsRunning(true);
     setResult(null);
@@ -128,6 +130,7 @@ const SamplePropertyGenerator = () => {
       }
     }
 
+    suppressSessionCheck(false);
     setIsRunning(false);
     setResult(totals);
     if (cancelRef.current) {
