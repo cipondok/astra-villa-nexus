@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminCommandPalette } from "./AdminCommandPalette";
@@ -29,6 +29,13 @@ const ModernEnhancedAdminDashboard = () => {
   const navigate = useNavigate();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const queryClient = useQueryClient();
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to top of content area when section changes
+  useEffect(() => {
+    contentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeSection]);
 
   const handleLogout = async () => {
     await signOut();
@@ -232,7 +239,7 @@ const ModernEnhancedAdminDashboard = () => {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 animate-in fade-in slide-in-from-bottom-1 duration-300">
+          <main ref={contentRef} className="flex-1 animate-in fade-in slide-in-from-bottom-1 duration-300">
             <AdminDashboardContent 
               activeSection={activeSection}
               onSectionChange={setActiveSection}
