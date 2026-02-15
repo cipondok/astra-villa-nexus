@@ -82,9 +82,14 @@ const SamplePropertyGenerator = () => {
         });
 
         if (error) {
-          toast.error(`Batch error at offset ${offset}: ${error.message}`);
+          const errorMsg = error.message || '';
+          // If 401/auth error, stop the loop instead of continuing (prevents logout cascade)
+          if (errorMsg.includes('401') || errorMsg.includes('Unauthorized') || errorMsg.includes('Invalid token')) {
+            toast.error("Session expired. Please log in again and retry.");
+            break;
+          }
+          toast.error(`Batch error at offset ${offset}: ${errorMsg}`);
           totals.errors += 1;
-          // retry logic: skip this batch
           offset += 5;
           hasMore = offset < kelurahanCount;
           continue;
