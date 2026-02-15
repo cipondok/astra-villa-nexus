@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { isSessionCheckSuppressed } from '@/hooks/useSessionMonitor';
 
 export const useAuthNotifications = () => {
   const hasShownWelcomeRef = useRef(false);
@@ -35,12 +36,15 @@ export const useAuthNotifications = () => {
         if (event === 'SIGNED_OUT') {
           hasShownWelcomeRef.current = false;
           
-          toast({
-            title: "Signed out successfully",
-            description: "You have been logged out. See you next time!",
-            variant: "info",
-            duration: 3000,
-          });
+          // Don't show logout toast during batch operations
+          if (!isSessionCheckSuppressed()) {
+            toast({
+              title: "Signed out successfully",
+              description: "You have been logged out. See you next time!",
+              variant: "info",
+              duration: 3000,
+            });
+          }
         }
       }
     );

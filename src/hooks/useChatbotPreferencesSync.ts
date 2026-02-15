@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { isSessionCheckSuppressed } from '@/hooks/useSessionMonitor';
 
 interface CustomSound {
   event: string;
@@ -35,6 +36,7 @@ export const useChatbotPreferencesSync = () => {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (_event === 'SIGNED_OUT' && isSessionCheckSuppressed()) return;
       setUserId(session?.user?.id || null);
     });
 

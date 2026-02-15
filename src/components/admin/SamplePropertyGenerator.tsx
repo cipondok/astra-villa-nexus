@@ -89,22 +89,11 @@ const SamplePropertyGenerator = () => {
 
     let offset = 0;
     let hasMore = true;
-    let lastRefreshTime = Date.now();
-    const REFRESH_INTERVAL = 4 * 60 * 1000; // Refresh token every 4 minutes (well before 1hr expiry)
 
     while (hasMore && !cancelRef.current) {
       try {
-        // Only refresh session periodically, NOT every iteration
-        // Rapid refreshSession() calls cause token rotation conflicts and SIGNED_OUT
-        const now = Date.now();
-        if (now - lastRefreshTime > REFRESH_INTERVAL) {
-          const { error: refreshError } = await supabase.auth.refreshSession();
-          if (refreshError) {
-            console.warn('Session refresh failed during batch, continuing with existing token:', refreshError.message);
-          } else {
-            lastRefreshTime = now;
-          }
-        }
+        // DO NOT call refreshSession() manually - Supabase JS client handles auto-refresh
+        // Manual calls conflict with built-in token rotation and cause SIGNED_OUT events
         
         const { data, error } = await supabase.functions.invoke("seed-sample-properties", {
           body: { province: selectedProvince, skipExisting, offset },
