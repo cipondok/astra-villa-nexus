@@ -81,6 +81,7 @@ interface PropertyData {
   listing_type: string;
   property_type: string;
   images?: string[];
+  image_urls?: string[];
   owner_id: string;
   agent_id?: string;
   status: string;
@@ -766,7 +767,7 @@ const PropertyDetail: React.FC = () => {
         {/* Image Gallery */}
         <div className="mb-2 -mx-2 sm:mx-0">
           <EnhancedImageGallery
-            images={property.images || []}
+            images={property.images?.length ? property.images : (property.image_urls?.length ? property.image_urls : [])}
             title={property.title}
             propertyType={property.property_type}
             listingType={property.listing_type}

@@ -89,11 +89,12 @@ const EnhancedImageGallery = ({
         <div className="relative group">
           <div className="relative aspect-[16/9] overflow-hidden rounded-xl sm:rounded-2xl bg-muted">
             {imageError[currentImageIndex] ? (
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-muted-foreground text-xl mb-2">🖼️</div>
-                  <p className="text-muted-foreground">Image unavailable</p>
-                </div>
+              <div className="w-full h-full flex items-center justify-center bg-muted">
+                <img
+                  src="/placeholder.svg"
+                  alt={`${title} - placeholder`}
+                  className="w-full h-full object-contain opacity-50"
+                />
               </div>
             ) : (
               <img
@@ -303,9 +304,12 @@ const EnhancedImageGallery = ({
             {/* Main Image */}
             <div className="relative w-full h-full flex items-center justify-center p-8">
               {imageError[currentImageIndex] ? (
-                <div className="text-center text-white">
-                  <div className="text-4xl mb-4">🖼️</div>
-                  <p>Image unavailable</p>
+                <div className="flex items-center justify-center w-full h-full">
+                  <img
+                    src="/placeholder.svg"
+                    alt={`${title} - placeholder`}
+                    className="max-w-[300px] max-h-[300px] object-contain opacity-50"
+                  />
                 </div>
               ) : (
                 <img
