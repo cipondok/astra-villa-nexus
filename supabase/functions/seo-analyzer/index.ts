@@ -6,7 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-// Indonesian property keywords database
 const INDONESIAN_KEYWORDS: Record<string, string[]> = {
   general_id: ['dijual', 'disewa', 'murah', 'mewah', 'terbaik', 'strategis', 'investasi', 'properti', 'harga', 'lokasi'],
   general_en: ['luxury', 'premium', 'exclusive', 'investment', 'prime', 'beachfront', 'private pool', 'modern', 'furnished'],
@@ -45,6 +44,14 @@ serve(async (req) => {
         return await updateCustomSeo(supabase, body);
       case 'auto-optimize':
         return await autoOptimizeWeak(supabase, lovableApiKey, body);
+      case 'apply-seo':
+        return await applySeoToProperty(supabase, body);
+      case 'competitor-analysis':
+        return await competitorAnalysis(supabase, lovableApiKey, body);
+      case 'content-optimize':
+        return await contentOptimize(supabase, lovableApiKey, body);
+      case 'generate-serp-preview':
+        return await generateSerpPreview(supabase, lovableApiKey, body);
       default:
         return jsonResponse({ error: 'Invalid action' }, 400);
     }
@@ -64,7 +71,6 @@ function jsonResponse(data: any, status = 200) {
 async function analyzeProperty(supabase: any, apiKey: string | undefined, body: any) {
   const { propertyId } = body;
 
-  // Fetch property
   const { data: property, error } = await supabase
     .from('properties')
     .select('id, title, description, location, property_type, listing_type, price, state, city, property_features')
@@ -73,7 +79,6 @@ async function analyzeProperty(supabase: any, apiKey: string | undefined, body: 
 
   if (error || !property) return jsonResponse({ error: 'Property not found' }, 404);
 
-  // Fetch trending keywords for context
   const { data: trendKeywords } = await supabase
     .from('seo_trend_data')
     .select('keyword, search_volume, trend_score, competition_level')
@@ -85,10 +90,8 @@ async function analyzeProperty(supabase: any, apiKey: string | undefined, body: 
     aiResult = await generateAISeoAnalysis(apiKey, property, trendKeywords || []);
   }
 
-  // Fallback: rule-based analysis
   const analysis = aiResult || generateRuleBasedAnalysis(property, trendKeywords || []);
 
-  // Upsert analysis
   const { data: saved, error: saveErr } = await supabase
     .from('property_seo_analysis')
     .upsert({
@@ -134,7 +137,7 @@ Price: Rp ${property.price?.toLocaleString('id-ID') || 'N/A'}
 TRENDING KEYWORDS IN MARKET:
 ${trendContext}
 
-Generate a JSON response with:
+Return ONLY valid JSON:
 {
   "seo_score": <0-100>,
   "seo_title": "<optimized title max 60 chars including ASTRA Villa>",
@@ -164,7 +167,7 @@ Focus on Indonesian property market. Include both Bahasa Indonesia and English k
       body: JSON.stringify({
         model: 'google/gemini-3-flash-preview',
         messages: [
-          { role: 'system', content: 'You are an SEO specialist for Indonesian real estate. Return ONLY valid JSON.' },
+          { role: 'system', content: 'You are an SEO specialist for Indonesian real estate. Return ONLY valid JSON, no markdown.' },
           { role: 'user', content: prompt },
         ],
         temperature: 0.4,
@@ -172,7 +175,10 @@ Focus on Indonesian property market. Include both Bahasa Indonesia and English k
     });
 
     if (!response.ok) {
-      console.error('AI API error:', response.status);
+      const status = response.status;
+      console.error('AI API error:', status);
+      if (status === 429) return null; // rate limited
+      if (status === 402) return null; // payment required
       return null;
     }
 
@@ -194,14 +200,12 @@ function generateRuleBasedAnalysis(property: any, trendKeywords: any[]) {
   const type = (property.property_type || '').toLowerCase();
   const state = (property.state || '').toLowerCase();
 
-  // Score title
   let titleScore = 40;
   if (title.length >= 20 && title.length <= 60) titleScore += 20;
   if (title.includes(type) || title.includes('villa') || title.includes('rumah')) titleScore += 15;
   if (location && title.includes(location.split(',')[0]?.trim().toLowerCase())) titleScore += 15;
   if (title.includes('dijual') || title.includes('disewa')) titleScore += 10;
 
-  // Score description
   let descScore = 30;
   if (desc.length >= 100) descScore += 20;
   if (desc.length >= 200) descScore += 15;
@@ -211,17 +215,15 @@ function generateRuleBasedAnalysis(property: any, trendKeywords: any[]) {
   featureWords.forEach(w => { if (desc.includes(w)) descScore += 3; });
   descScore = Math.min(descScore, 100);
 
-  // Keywords present
   const typeKeywords = INDONESIAN_KEYWORDS[type] || INDONESIAN_KEYWORDS.general_id;
   const presentKeywords = typeKeywords.filter(k => title.includes(k) || desc.includes(k));
   const missingKeywords = typeKeywords.filter(k => !title.includes(k) && !desc.includes(k));
   const keywordScore = Math.min(100, Math.round((presentKeywords.length / typeKeywords.length) * 100));
 
-  // Location score
   let locationScore = 30;
   if (state) locationScore += 30;
   if (property.city) locationScore += 20;
-  if (INDONESIAN_KEYWORDS.locations.some(l => location.includes(l))) locationScore += 20;
+  if (INDONESIAN_KEYWORDS.locations.some((l: string) => location.includes(l))) locationScore += 20;
 
   const seoScore = Math.round((titleScore * 0.3 + descScore * 0.25 + keywordScore * 0.25 + locationScore * 0.2));
 
@@ -271,11 +273,9 @@ function getSeoRating(score: number): string {
 async function analyzeBatch(supabase: any, apiKey: string | undefined, body: any) {
   const { limit = 50, offset = 0, filter = 'unanalyzed' } = body;
 
-  // Get properties that haven't been analyzed or need re-analysis
   let query = supabase.from('properties').select('id').order('created_at', { ascending: false });
   
   if (filter === 'unanalyzed') {
-    // Get properties without analysis
     const { data: analyzed } = await supabase.from('property_seo_analysis').select('property_id');
     const analyzedIds = (analyzed || []).map((a: any) => a.property_id);
     if (analyzedIds.length > 0) {
@@ -295,18 +295,20 @@ async function analyzeBatch(supabase: any, apiKey: string | undefined, body: any
   if (!properties?.length) return jsonResponse({ success: true, analyzed: 0, message: 'No properties to analyze' });
 
   let analyzed = 0;
+  const errors: string[] = [];
   for (const prop of properties) {
     try {
       await analyzeProperty(supabase, apiKey, { propertyId: prop.id });
       analyzed++;
-      // Rate limit: small delay between AI calls
-      if (apiKey) await new Promise(r => setTimeout(r, 500));
+      if (apiKey) await new Promise(r => setTimeout(r, 300));
     } catch (e) {
-      console.error(`Failed to analyze ${prop.id}:`, e);
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error(`Failed to analyze ${prop.id}:`, msg);
+      errors.push(prop.id);
     }
   }
 
-  return jsonResponse({ success: true, analyzed, total: properties.length });
+  return jsonResponse({ success: true, analyzed, total: properties.length, errors: errors.length > 0 ? errors : undefined });
 }
 
 async function getKeywordSuggestions(supabase: any, apiKey: string | undefined, body: any) {
@@ -330,7 +332,7 @@ Include both Bahasa Indonesia and English keywords. Focus on what Indonesian buy
         body: JSON.stringify({
           model: 'google/gemini-3-flash-preview',
           messages: [
-            { role: 'system', content: 'SEO keyword specialist for Indonesian real estate. Return only valid JSON.' },
+            { role: 'system', content: 'SEO keyword specialist for Indonesian real estate. Return only valid JSON, no markdown.' },
             { role: 'user', content: prompt },
           ],
         }),
@@ -350,7 +352,6 @@ Include both Bahasa Indonesia and English keywords. Focus on what Indonesian buy
     }
   }
 
-  // Fallback: return from database
   let query = supabase.from('seo_trend_data').select('*').order('trend_score', { ascending: false }).limit(15);
   if (location) query = query.or(`location_relevance.ilike.%${location}%,location_relevance.is.null`);
   if (propertyType) query = query.or(`property_type_relevance.ilike.%${propertyType}%,property_type_relevance.is.null`);
@@ -421,11 +422,253 @@ async function autoOptimizeWeak(supabase: any, apiKey: string | undefined, body:
     try {
       await analyzeProperty(supabase, apiKey, { propertyId: listing.property_id });
       optimized++;
-      if (apiKey) await new Promise(r => setTimeout(r, 500));
+      if (apiKey) await new Promise(r => setTimeout(r, 300));
     } catch (e) {
       console.error(`Failed to optimize ${listing.property_id}:`, e);
     }
   }
 
   return jsonResponse({ success: true, optimized, total: weakListings.length });
+}
+
+// NEW: Apply AI-generated SEO data back to the property listing
+async function applySeoToProperty(supabase: any, body: any) {
+  const { propertyId } = body;
+
+  // Get the SEO analysis
+  const { data: seo, error: seoErr } = await supabase
+    .from('property_seo_analysis')
+    .select('*')
+    .eq('property_id', propertyId)
+    .single();
+
+  if (seoErr || !seo) return jsonResponse({ error: 'SEO analysis not found' }, 404);
+
+  // Apply optimized title & description to the property
+  const newTitle = seo.custom_title || seo.seo_title;
+  const newDescription = seo.custom_description || seo.seo_description;
+
+  const { error: updateErr } = await supabase
+    .from('properties')
+    .update({
+      title: newTitle,
+      description: newDescription,
+    })
+    .eq('id', propertyId);
+
+  if (updateErr) return jsonResponse({ error: updateErr.message }, 500);
+
+  return jsonResponse({ 
+    success: true, 
+    applied: { title: newTitle, description: newDescription },
+    keywords: seo.seo_keywords,
+    hashtags: seo.seo_hashtags,
+  });
+}
+
+// NEW: Competitor keyword analysis for a specific location/type
+async function competitorAnalysis(supabase: any, apiKey: string | undefined, body: any) {
+  const { location, propertyType, limit: propLimit = 10 } = body;
+
+  // Fetch similar properties in the same area
+  let query = supabase.from('properties')
+    .select('id, title, description, location, property_type, price, listing_type')
+    .order('created_at', { ascending: false })
+    .limit(propLimit);
+
+  if (location) query = query.ilike('location', `%${location}%`);
+  if (propertyType) query = query.eq('property_type', propertyType);
+
+  const { data: competitors } = await query;
+  if (!competitors?.length) return jsonResponse({ success: true, competitors: [], insights: null });
+
+  // Get their SEO scores
+  const ids = competitors.map((c: any) => c.id);
+  const { data: seoData } = await supabase
+    .from('property_seo_analysis')
+    .select('*')
+    .in('property_id', ids);
+
+  const seoMap: Record<string, any> = {};
+  (seoData || []).forEach((s: any) => { seoMap[s.property_id] = s; });
+
+  const competitorList = competitors.map((c: any) => ({
+    id: c.id,
+    title: c.title,
+    location: c.location,
+    price: c.price,
+    property_type: c.property_type,
+    seo_score: seoMap[c.id]?.seo_score || null,
+    seo_rating: seoMap[c.id]?.seo_rating || 'unanalyzed',
+    keywords: seoMap[c.id]?.seo_keywords || [],
+  }));
+
+  // AI-powered insights if available
+  let insights: any = null;
+  if (apiKey && competitors.length >= 3) {
+    try {
+      const competitorSummary = competitorList.map((c: any) => 
+        `- "${c.title}" (Score: ${c.seo_score || 'N/A'}, Keywords: ${(c.keywords || []).join(', ')})`
+      ).join('\n');
+
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'google/gemini-3-flash-preview',
+          messages: [
+            { role: 'system', content: 'Indonesian real estate SEO analyst. Return ONLY valid JSON, no markdown.' },
+            { role: 'user', content: `Analyze these competitor listings in ${location || 'Indonesia'} for ${propertyType || 'property'}:
+
+${competitorSummary}
+
+Return JSON:
+{
+  "market_saturation": "<low|medium|high>",
+  "avg_keyword_density": <number>,
+  "top_performing_keywords": ["<5 keywords competitors use well>"],
+  "keyword_gaps": ["<5 keywords nobody is targeting yet>"],
+  "price_positioning": "<below_market|competitive|premium>",
+  "recommendations": ["<3 strategic recommendations to outrank competitors>"],
+  "difficulty_score": <0-100>
+}` },
+          ],
+          temperature: 0.3,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const content = data.choices?.[0]?.message?.content;
+        const jsonMatch = content?.match(/\{[\s\S]*\}/);
+        if (jsonMatch) insights = JSON.parse(jsonMatch[0]);
+      }
+    } catch (e) {
+      console.error('Competitor analysis AI error:', e);
+    }
+  }
+
+  return jsonResponse({ success: true, competitors: competitorList, insights });
+}
+
+// NEW: AI content optimization for a specific property
+async function contentOptimize(supabase: any, apiKey: string | undefined, body: any) {
+  const { propertyId } = body;
+
+  const { data: property } = await supabase
+    .from('properties')
+    .select('id, title, description, location, property_type, listing_type, price, state, city, property_features')
+    .eq('id', propertyId)
+    .single();
+
+  if (!property) return jsonResponse({ error: 'Property not found' }, 404);
+
+  if (!apiKey) return jsonResponse({ error: 'AI not available' }, 503);
+
+  try {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'google/gemini-3-flash-preview',
+        messages: [
+          { role: 'system', content: 'You are an expert SEO content writer for Indonesian real estate. Return ONLY valid JSON, no markdown.' },
+          { role: 'user', content: `Optimize this property listing for maximum SEO ranking in Google Indonesia.
+
+CURRENT:
+Title: ${property.title}
+Description: ${property.description || 'No description provided'}
+Location: ${property.location} (${property.state || ''}, ${property.city || ''})
+Type: ${property.property_type || 'property'}
+Price: Rp ${property.price?.toLocaleString('id-ID') || 'N/A'}
+Features: ${JSON.stringify(property.property_features || {})}
+
+Return JSON:
+{
+  "optimized_title": "<SEO-optimized title, max 60 chars, include ASTRA Villa brand>",
+  "optimized_description": "<Full SEO-optimized description, 200-400 words, rich with keywords, in Bahasa Indonesia with English terms>",
+  "meta_title": "<meta title for search engines, max 60 chars>",
+  "meta_description": "<meta description, max 160 chars>",
+  "focus_keywords": ["<5 primary keywords to target>"],
+  "secondary_keywords": ["<5 secondary/long-tail keywords>"],
+  "hashtags": ["<8 optimized hashtags for social sharing>"],
+  "content_score": <estimated score 0-100 after optimization>,
+  "word_count_recommendation": <ideal word count>,
+  "readability_tips": ["<3 readability improvements>"],
+  "schema_suggestions": ["<2 schema markup types recommended>"]
+}` },
+        ],
+        temperature: 0.4,
+      }),
+    });
+
+    if (!response.ok) {
+      if (response.status === 429) return jsonResponse({ error: 'Rate limited, try again later' }, 429);
+      if (response.status === 402) return jsonResponse({ error: 'AI credits exhausted' }, 402);
+      return jsonResponse({ error: 'AI service error' }, 500);
+    }
+
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content;
+    const jsonMatch = content?.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const result = JSON.parse(jsonMatch[0]);
+      return jsonResponse({ success: true, propertyId, currentTitle: property.title, ...result });
+    }
+    return jsonResponse({ error: 'Failed to parse AI response' }, 500);
+  } catch (e) {
+    console.error('Content optimize error:', e);
+    return jsonResponse({ error: 'Content optimization failed' }, 500);
+  }
+}
+
+// NEW: Generate SERP preview showing how the listing would appear in Google
+async function generateSerpPreview(supabase: any, apiKey: string | undefined, body: any) {
+  const { propertyId } = body;
+
+  const { data: seo } = await supabase
+    .from('property_seo_analysis')
+    .select('*')
+    .eq('property_id', propertyId)
+    .single();
+
+  const { data: property } = await supabase
+    .from('properties')
+    .select('title, description, location, property_type, price')
+    .eq('id', propertyId)
+    .single();
+
+  if (!property) return jsonResponse({ error: 'Property not found' }, 404);
+
+  const serpTitle = seo?.custom_title || seo?.seo_title || property.title;
+  const serpDescription = seo?.custom_description || seo?.seo_description || (property.description || '').slice(0, 160);
+  const serpUrl = `astra-villa-realty.lovable.app/properties/${propertyId}`;
+
+  // Generate both current and optimized previews
+  const currentPreview = {
+    title: property.title?.slice(0, 60) || 'Untitled',
+    description: (property.description || '').slice(0, 160) || 'No description available',
+    url: serpUrl,
+    type: 'current',
+  };
+
+  const optimizedPreview = {
+    title: serpTitle?.slice(0, 60),
+    description: serpDescription?.slice(0, 160),
+    url: serpUrl,
+    type: 'optimized',
+    keywords: seo?.seo_keywords || [],
+    score: seo?.seo_score || 0,
+  };
+
+  return jsonResponse({ 
+    success: true, 
+    current: currentPreview, 
+    optimized: optimizedPreview,
+    improvements: {
+      title_changed: currentPreview.title !== optimizedPreview.title,
+      description_changed: currentPreview.description !== optimizedPreview.description,
+      seo_score: seo?.seo_score || 0,
+    }
+  });
 }
