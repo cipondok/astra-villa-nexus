@@ -446,9 +446,13 @@ const PropertyImageManager = () => {
       const updatedImages = currentImages.filter((i) => i !== imageUrl);
       const newThumb = selectedProperty.thumbnail_url === imageUrl ? (updatedImages[0] || null) : selectedProperty.thumbnail_url;
 
+      const cleanImageUrls = Array.isArray(selectedProperty.image_urls)
+        ? selectedProperty.image_urls.filter((u: string) => u !== imageUrl)
+        : [];
+
       const { error } = await supabase
         .from("properties")
-        .update({ images: updatedImages, thumbnail_url: newThumb })
+        .update({ images: updatedImages, image_urls: cleanImageUrls, thumbnail_url: newThumb })
         .eq("id", selectedProperty.id);
 
       if (error) throw error;
@@ -489,22 +493,27 @@ const PropertyImageManager = () => {
   // Remove all broken images from a property
   const handleRemoveBrokenImages = async (property: any) => {
     const imgs = getImages(property);
-    const brokenUrls = imgs.filter(url => healthResults[url]?.status === 'broken');
-    if (brokenUrls.length === 0) return;
+    const brokenUrls = new Set(imgs.filter(url => healthResults[url]?.status === 'broken'));
+    if (brokenUrls.size === 0) return;
 
     try {
-      const validImages = imgs.filter(url => healthResults[url]?.status !== 'broken');
-      const newThumb = brokenUrls.includes(property.thumbnail_url) 
+      const validImages = imgs.filter(url => !brokenUrls.has(url));
+      const newThumb = brokenUrls.has(property.thumbnail_url) 
         ? (validImages[0] || null) 
         : property.thumbnail_url;
 
+      // Clear broken URLs from BOTH images and image_urls fields
+      const cleanImageUrls = Array.isArray(property.image_urls)
+        ? property.image_urls.filter((u: string) => !brokenUrls.has(u))
+        : [];
+
       const { error } = await supabase
         .from("properties")
-        .update({ images: validImages, thumbnail_url: newThumb })
+        .update({ images: validImages, image_urls: cleanImageUrls, thumbnail_url: newThumb })
         .eq("id", property.id);
 
       if (error) throw error;
-      showSuccess("Cleaned", `Removed ${brokenUrls.length} broken image(s)`);
+      showSuccess("Cleaned", `Removed ${brokenUrls.size} broken image(s)`);
       queryClient.invalidateQueries({ queryKey: ["admin-property-images"] });
     } catch (err: any) {
       showError("Error", err.message);
@@ -520,20 +529,24 @@ const PropertyImageManager = () => {
     let totalRemoved = 0;
     for (const prop of targetProps) {
       const imgs = getImages(prop);
-      const brokenUrls = imgs.filter(url => healthResults[url]?.status === 'broken');
-      if (brokenUrls.length === 0) continue;
+      const brokenUrls = new Set(imgs.filter(url => healthResults[url]?.status === 'broken'));
+      if (brokenUrls.size === 0) continue;
 
-      const validImages = imgs.filter(url => healthResults[url]?.status !== 'broken');
-      const newThumb = brokenUrls.includes(prop.thumbnail_url)
+      const validImages = imgs.filter(url => !brokenUrls.has(url));
+      const newThumb = brokenUrls.has(prop.thumbnail_url)
         ? (validImages[0] || null)
         : prop.thumbnail_url;
+
+      const cleanImageUrls = Array.isArray(prop.image_urls)
+        ? prop.image_urls.filter((u: string) => !brokenUrls.has(u))
+        : [];
 
       try {
         const { error } = await supabase
           .from("properties")
-          .update({ images: validImages, thumbnail_url: newThumb })
+          .update({ images: validImages, image_urls: cleanImageUrls, thumbnail_url: newThumb })
           .eq("id", prop.id);
-        if (!error) totalRemoved += brokenUrls.length;
+        if (!error) totalRemoved += brokenUrls.size;
       } catch { /* continue */ }
     }
 
