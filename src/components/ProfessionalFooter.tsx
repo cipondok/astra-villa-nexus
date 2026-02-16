@@ -175,19 +175,17 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         dark:border-[hsl(210,40%,20%)] dark:from-[hsl(210,55%,8%)] dark:via-[hsl(200,50%,10%)] dark:to-[hsl(210,45%,6%)]
         shadow-[0_-8px_30px_-10px_hsl(200,70%,50%/0.25)] dark:shadow-[0_-10px_40px_-15px_rgba(0,10,20,0.5)]"
     >
-      {/* Logo - centered top */}
-      <div className="flex justify-center mb-4">
-        <div className="opacity-70 mix-blend-luminosity dark:mix-blend-screen dark:opacity-60">
+      {/* Logo + Dock in same row, logo left, dock centered */}
+      <div className="flex items-end gap-4 mb-4">
+        <div className="flex-shrink-0 opacity-70 mix-blend-luminosity dark:mix-blend-screen dark:opacity-60">
           <AnimatedLogo src={footerLogoUrl} size="lg" />
+        </div>
+        <div className="flex-1 flex justify-center">
+          <Dock items={allDockItems} />
         </div>
       </div>
 
-      {/* Row 2: macOS Dock - centered */}
-      <div className="flex justify-center mb-4">
-        <Dock items={allDockItems} />
-      </div>
-
-      {/* Row 3: Social + Copyright - centered */}
+      {/* Row 2: Social + Copyright - centered */}
       <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
         <div className="flex items-center gap-2">
           {socialIcons.map((s, i) => (
