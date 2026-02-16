@@ -90,9 +90,9 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
 
   const footerContainerStyle: React.CSSProperties = {
     width: '100%',
-    maxWidth: '1300px',
-    margin: '0 auto 2rem auto',
-    borderRadius: '60px 60px 30px 30px',
+    maxWidth: 'none',
+    margin: '0',
+    borderRadius: '0',
     background: `
       radial-gradient(circle at 10% 20%, rgba(255,255,255,0.95) 0%, transparent 40%),
       radial-gradient(circle at 90% 70%, rgba(255,240,150,0.6) 5%, transparent 40%),
@@ -100,8 +100,9 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     `,
     backdropFilter: 'blur(25px)',
     WebkitBackdropFilter: 'blur(25px)',
-    border: '1px solid rgba(255,255,240,0.7)',
-    boxShadow: '0 35px 60px -20px rgba(0,20,30,0.6), inset 0 1px 6px rgba(255,255,255,0.9), inset 0 0 35px rgba(250,230,130,0.3)',
+    border: 'none',
+    borderTop: '1px solid rgba(255,255,240,0.7)',
+    boxShadow: '0 -10px 40px -15px rgba(0,20,30,0.3), inset 0 1px 6px rgba(255,255,255,0.9), inset 0 0 35px rgba(250,230,130,0.3)',
     padding: '2.8rem 2.2rem 2.2rem 2.2rem',
     transition: 'box-shadow 0.3s ease, border-color 0.2s ease',
   };
@@ -110,7 +111,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     background: 'rgba(255,255,255,0.1)',
     backdropFilter: 'blur(8px)',
     WebkitBackdropFilter: 'blur(8px)',
-    borderRadius: '40px',
+    borderRadius: '12px',
     padding: '1.6rem 1.2rem',
     border: '1px solid rgba(255,245,180,0.4)',
     boxShadow: 'inset 0 2px 8px rgba(255,250,210,0.3)',
@@ -129,7 +130,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     background: 'rgba(10,50,60,0.1)',
     backdropFilter: 'blur(12px)',
     WebkitBackdropFilter: 'blur(12px)',
-    borderRadius: '60px',
+    borderRadius: '12px',
     border: '1px solid rgba(255,245,160,0.5)',
   };
 
@@ -161,7 +162,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     background: 'rgba(255,255,255,0.15)',
     backdropFilter: 'blur(20px)',
     WebkitBackdropFilter: 'blur(20px)',
-    borderRadius: '90px',
+    borderRadius: '12px',
     border: '1px solid rgba(255,245,130,0.6)',
     fontSize: '0.95rem',
     color: '#022b36',
