@@ -103,7 +103,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     border: 'none',
     borderTop: '1px solid rgba(255,255,240,0.7)',
     boxShadow: '0 -10px 40px -15px rgba(0,20,30,0.3), inset 0 1px 6px rgba(255,255,255,0.9), inset 0 0 35px rgba(250,230,130,0.3)',
-    padding: '2.8rem 2.2rem 2.2rem 2.2rem',
+    padding: '1.2rem 2rem',
     transition: 'box-shadow 0.3s ease, border-color 0.2s ease',
   };
 
@@ -226,164 +226,95 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   ];
 
   return (
-    <footer style={footerContainerStyle} className="group">
-      {/* Footer Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-3 mb-6">
-        {/* Column 1 - Company */}
-        <div style={colStyle} className="hover:translate-y-[-4px] hover:bg-white/20 col-span-2 md:col-span-1">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            {footerLogoUrl ? (
-              <img src={footerLogoUrl} alt={currentText.company} className="h-10 max-w-[140px] object-contain" loading="lazy" />
-            ) : (
-              <>
-                <div className="p-1.5 rounded-lg" style={{ background: 'rgba(255,225,100,0.4)' }}>
-                  <Rocket className="w-5 h-5" style={{ color: '#0c404e' }} />
-                </div>
-                <span className="text-lg font-bold" style={{ color: '#0a3340' }}>{currentText.company}</span>
-              </>
-            )}
-          </div>
-          <p className="text-sm mb-3" style={{ color: '#0a3340', textShadow: '0 1px 2px rgba(255,255,255,0.5)' }}>
-            {currentText.tagline}
-          </p>
-          <div className="flex flex-col gap-1.5 text-sm" style={{ color: '#0c4455' }}>
-            <div className="flex items-center justify-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-              <span className="text-xs">Seminyak, Bali</span>
-            </div>
-            <a href="tel:+622112345678" className="flex items-center justify-center gap-1.5 hover:opacity-80 transition-opacity">
-              <Phone className="w-3.5 h-3.5 flex-shrink-0" />
-              <span className="text-xs">+62 21 1234 5678</span>
-            </a>
-            <a href="mailto:info@astravilla.com" className="flex items-center justify-center gap-1.5 hover:opacity-80 transition-opacity">
-              <Mail className="w-3.5 h-3.5 flex-shrink-0" />
-              <span className="text-xs">info@astravilla.com</span>
-            </a>
-          </div>
+    <footer style={footerContainerStyle}>
+      {/* Row 1: Brand + All Links in one flowing row */}
+      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-3">
+        {/* Brand */}
+        <div className="flex items-center gap-2 mr-4">
+          {footerLogoUrl ? (
+            <img src={footerLogoUrl} alt={currentText.company} className="h-7 max-w-[100px] object-contain" loading="lazy" />
+          ) : (
+            <>
+              <div className="p-1 rounded" style={{ background: 'rgba(255,225,100,0.4)' }}>
+                <Rocket className="w-4 h-4" style={{ color: '#0c404e' }} />
+              </div>
+              <span className="text-sm font-bold" style={{ color: '#0a3340' }}>{currentText.company}</span>
+            </>
+          )}
         </div>
 
-        {/* Column 2 - Quick Links */}
-        <div style={colStyle} className="hover:translate-y-[-4px] hover:bg-white/20">
-          <h3 style={colTitleGradient}>✦ {currentText.quickLinks} ✦</h3>
-          <ul className="space-y-1.5">
-            {quickLinks.map(link => (
-              <li key={link.to}>
-                <Link to={link.to} style={linkStyle} className="hover:bg-yellow-100/50 hover:scale-[1.03] inline-flex items-center gap-1.5">
-                  <link.icon className="w-3.5 h-3.5 flex-shrink-0" />
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* Divider */}
+        <span style={{ color: 'rgba(255,230,130,0.6)' }}>|</span>
 
-        {/* Column 3 - Services */}
-        <div style={colStyle} className="hover:translate-y-[-4px] hover:bg-white/20">
-          <h3 style={colTitleGradient}>✦ {currentText.services} ✦</h3>
-          <ul className="space-y-1.5">
-            {serviceLinks.map(link => (
-              <li key={link.label}>
-                <span style={linkStyle} className="cursor-pointer hover:bg-yellow-100/50 hover:scale-[1.03] inline-flex items-center gap-1.5">
-                  <link.icon className="w-3.5 h-3.5 flex-shrink-0" />
-                  {link.label}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Column 4 - Support */}
-        <div style={colStyle} className="hover:translate-y-[-4px] hover:bg-white/20">
-          <h3 style={colTitleGradient}>✦ {currentText.support} ✦</h3>
-          <ul className="space-y-1.5">
-            {supportLinks.map(link => (
-              <li key={link.label}>
-                <span style={linkStyle} className="cursor-pointer hover:bg-yellow-100/50 hover:scale-[1.03] inline-flex items-center gap-1.5">
-                  <link.icon className="w-3.5 h-3.5 flex-shrink-0" />
-                  {link.label}
-                </span>
-              </li>
-            ))}
-          </ul>
-
-          {/* Partners Collapsible */}
-          <div className="mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,245,180,0.3)' }}>
-            <Collapsible open={isPartnersOpen} onOpenChange={setIsPartnersOpen}>
-              <CollapsibleTrigger className="flex items-center justify-center gap-1.5 text-sm font-semibold cursor-pointer hover:opacity-80 transition-opacity" style={{ color: '#0c4455' }}>
-                <Handshake className="w-4 h-4" />
-                <span>{currentText.businessPartners}</span>
-                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isPartnersOpen ? 'rotate-180' : ''}`} />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="pt-2 space-y-1.5">
-                {[
-                  { to: "/partners/network", label: currentText.partnerNetwork },
-                  { to: "/partners/become", label: currentText.becomePartner },
-                  { to: "/partners/benefits", label: currentText.partnerBenefits },
-                  { to: "/partners/ventures", label: currentText.jointVentures },
-                ].map(p => (
-                  <Link key={p.to} to={p.to} style={linkStyle} className="hover:bg-yellow-100/50 hover:scale-[1.03]">
-                    {p.label}
-                  </Link>
-                ))}
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-        </div>
-      </div>
-
-      {/* Social Media Row */}
-      <div style={socialRowStyle}>
-        {socialIcons.map((s, i) => (
-          <a
-            key={i}
-            href="#"
-            style={{ ...socialIconBase, background: s.bg }}
-            className="hover:translate-y-[-6px] hover:scale-[1.08]"
-            aria-label={s.label}
-          >
-            {s.icon}
-          </a>
+        {/* All links flowing in a single row */}
+        {quickLinks.map(link => (
+          <Link key={link.to} to={link.to} style={linkStyle} className="hover:opacity-70 inline-flex items-center gap-1 text-xs">
+            <link.icon className="w-3 h-3 flex-shrink-0" />
+            {link.label}
+          </Link>
         ))}
-        <span
-          style={{
-            color: '#083945',
-            fontWeight: 400,
-            background: 'rgba(255,240,160,0.2)',
-            padding: '0.4rem 1.4rem',
-            borderRadius: '40px',
-            backdropFilter: 'blur(4px)',
-            border: '1px solid rgba(255,230,130,0.3)',
-          }}
-        >
-          @astravilla
-        </span>
-      </div>
 
-      {/* Copyright Area */}
-      <div style={copyrightStyle} className="flex-col md:flex-row text-center md:text-left">
-        <span style={copyrightBadge}>© {new Date().getFullYear()} {currentText.company}. {currentText.allRights}</span>
-        <span style={{
-          background: 'rgba(255,230,140,0.25)',
-          padding: '0.3rem 1.8rem',
-          borderRadius: '60px',
-          border: '1px solid #fffac2',
-          backdropFilter: 'blur(4px)',
-          fontWeight: 400,
-          color: '#02222b',
-        }}>
-          ✦ Astra Villa ✦
-        </span>
-      </div>
+        <span style={{ color: 'rgba(255,230,130,0.6)' }}>|</span>
 
-      {/* Glass Dots */}
-      <div className="flex justify-center gap-3 mt-5">
-        {dotColors.map((bg, i) => (
-          <div
-            key={i}
-            className="w-3 h-3 rounded-full"
-            style={{ background: bg, boxShadow: 'inset 0 1px 4px white' }}
-          />
+        {serviceLinks.map(link => (
+          <span key={link.label} style={linkStyle} className="cursor-pointer hover:opacity-70 inline-flex items-center gap-1 text-xs">
+            <link.icon className="w-3 h-3 flex-shrink-0" />
+            {link.label}
+          </span>
         ))}
+
+        <span style={{ color: 'rgba(255,230,130,0.6)' }}>|</span>
+
+        {supportLinks.map(link => (
+          <span key={link.label} style={linkStyle} className="cursor-pointer hover:opacity-70 inline-flex items-center gap-1 text-xs">
+            <link.icon className="w-3 h-3 flex-shrink-0" />
+            {link.label}
+          </span>
+        ))}
+      </div>
+
+      {/* Row 2: Social + Copyright */}
+      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+        {/* Social icons */}
+        <div className="flex items-center gap-2">
+          {socialIcons.map((s, i) => (
+            <a
+              key={i}
+              href="#"
+              className="hover:opacity-80 transition-opacity inline-flex items-center justify-center"
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: s.bg,
+                border: '1px solid rgba(255,250,180,0.6)',
+                boxShadow: '0 4px 10px -4px rgba(0,0,0,0.2), inset 0 1px 4px rgba(255,255,250,0.8)',
+                color: '#0c404e',
+                fontSize: '1rem',
+              }}
+              aria-label={s.label}
+            >
+              {s.icon}
+            </a>
+          ))}
+          <span className="text-xs" style={{ color: '#083945' }}>@astravilla</span>
+        </div>
+
+        <span style={{ color: 'rgba(255,230,130,0.6)' }}>|</span>
+
+        {/* Copyright */}
+        <span className="text-xs" style={{ color: '#022b36', fontWeight: 450 }}>
+          © {new Date().getFullYear()} {currentText.company}. {currentText.allRights}
+        </span>
+
+        <span className="text-xs" style={{ color: '#02222b' }}>✦ Astra Villa ✦</span>
+
+        {/* Glass dots inline */}
+        <div className="flex items-center gap-1.5">
+          {dotColors.map((bg, i) => (
+            <div key={i} className="w-2 h-2 rounded-full" style={{ background: bg, boxShadow: 'inset 0 1px 3px white' }} />
+          ))}
+        </div>
       </div>
     </footer>
   );
