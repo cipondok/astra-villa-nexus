@@ -23,13 +23,45 @@ import {
 const SeoIntelligenceDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [analysisFilter, setAnalysisFilter] = useState<string | undefined>();
+  const [batchProgress, setBatchProgress] = useState<{ running: boolean; analyzed: number; total: number } | null>(null);
 
-  const { data: stats, isLoading: loadingStats } = useSeoStats();
+  const { data: stats, isLoading: loadingStats, refetch: refetchStats } = useSeoStats();
   const { data: analyses = [], isLoading: loadingAnalyses } = usePropertySeoAnalyses({ limit: 100, filter: analysisFilter });
   const { data: trendingId = [] } = useSeoTrendKeywords({ language: 'id', limit: 15 });
   const { data: trendingEn = [] } = useSeoTrendKeywords({ language: 'en', limit: 10 });
   const analyzeBatch = useAnalyzeBatch();
   const autoOptimize = useAutoOptimize();
+
+  const runFullBatchAnalysis = async () => {
+    const total = stats?.unanalyzedCount || 0;
+    if (total === 0) return;
+    setBatchProgress({ running: true, analyzed: 0, total });
+    let offset = 0;
+    const batchSize = 50;
+    let totalAnalyzed = 0;
+    
+    while (true) {
+      try {
+        const { data, error } = await (await import('@/integrations/supabase/client')).supabase.functions.invoke('seo-analyzer', {
+          body: { action: 'analyze-batch', limit: batchSize, offset: 0, filter: 'unanalyzed' },
+        });
+        if (error) throw error;
+        const count = data?.analyzed || 0;
+        if (count === 0) break;
+        totalAnalyzed += count;
+        setBatchProgress({ running: true, analyzed: totalAnalyzed, total });
+        refetchStats();
+        // Small delay between batches
+        await new Promise(r => setTimeout(r, 1000));
+      } catch (e) {
+        console.error('Batch analysis error:', e);
+        break;
+      }
+    }
+    
+    setBatchProgress({ running: false, analyzed: totalAnalyzed, total });
+    refetchStats();
+  };
 
   const getRatingColor = (rating: string) => {
     switch (rating) {
@@ -87,11 +119,20 @@ const SeoIntelligenceDashboard = () => {
         <div className="flex flex-wrap gap-2">
           <Button
             size="sm"
-            onClick={() => analyzeBatch.mutate({ limit: 20, filter: 'unanalyzed' })}
-            disabled={analyzeBatch.isPending}
+            onClick={runFullBatchAnalysis}
+            disabled={batchProgress?.running || analyzeBatch.isPending}
           >
-            {analyzeBatch.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
-            Analyze Unscanned ({stats?.unanalyzedCount || 0})
+            {batchProgress?.running ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                Analyzing... {batchProgress.analyzed}/{batchProgress.total}
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4 mr-2" />
+                Analyze All Unscanned ({stats?.unanalyzedCount || 0})
+              </>
+            )}
           </Button>
           <Button
             size="sm"

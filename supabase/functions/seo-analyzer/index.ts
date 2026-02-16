@@ -269,7 +269,7 @@ function getSeoRating(score: number): string {
 }
 
 async function analyzeBatch(supabase: any, apiKey: string | undefined, body: any) {
-  const { limit = 20, offset = 0, filter = 'unanalyzed' } = body;
+  const { limit = 50, offset = 0, filter = 'unanalyzed' } = body;
 
   // Get properties that haven't been analyzed or need re-analysis
   let query = supabase.from('properties').select('id').order('created_at', { ascending: false });
