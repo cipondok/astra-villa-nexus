@@ -498,17 +498,16 @@ const Index = () => {
           {/* Hero Banner Section - Full Width Image */}
         <section className="relative w-full" id="hero-section">
           {/* Hero Banner Image */}
-          <div className="w-full">
+          <div className="w-full overflow-visible">
             <img 
               src={astraHeroBanner} 
               alt="Astra Villa - Indonesia's Smart Property Platform" 
-              className="w-full h-auto object-cover"
-              style={{ maxHeight: isMobile ? '60vh' : '85vh' }}
+              className="w-full h-auto object-contain"
             />
           </div>
           
           {/* Bottom gradient fade into next section */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-24 bg-gradient-to-t from-[hsl(210,100%,45%)] to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-8 sm:h-12 bg-gradient-to-t from-[hsl(210,100%,45%)] to-transparent pointer-events-none" />
         </section>
 
         {/* Search Section - Blue themed */}
