@@ -11,7 +11,8 @@ import {
   Database,
   Bell,
   Monitor,
-  ExternalLink
+  ExternalLink,
+  Search
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -70,6 +71,14 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
       action: "database",
       color: "text-indigo-500",
       badge: "Database"
+    },
+    {
+      title: "SEO Management",
+      description: "Search engine optimization and content management",
+      icon: Search,
+      action: "seo-management",
+      color: "text-teal-500",
+      badge: "SEO"
     }
   ];
 
