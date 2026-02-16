@@ -302,31 +302,31 @@ const CompactPropertyCard = ({
             </h4>
 
             {/* Property Details Row - KT/KM/LB */}
-            <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 mt-1 sm:mt-1.5 flex-wrap">
+            <div className="flex items-center gap-1.5 sm:gap-2 mt-1 sm:mt-1.5 flex-wrap">
               {property.bedrooms && property.bedrooms > 0 && (
-                <div className="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm rounded-md px-1.5 sm:px-2 py-0.5">
-                  <Bed className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white" />
-                  <span className="text-[9px] sm:text-[10px] md:text-xs text-white font-bold">{property.bedrooms}</span>
-                  <span className="text-[8px] sm:text-[9px] text-white/70 font-medium">KT</span>
+                <div className="flex items-center gap-0.5 border border-white/20 bg-white/15 backdrop-blur-sm rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1">
+                  <Bed className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-white" />
+                  <span className="text-[10px] sm:text-xs text-white font-bold">{property.bedrooms}</span>
+                  <span className="text-[8px] sm:text-[10px] text-white/70 font-semibold">KT</span>
                 </div>
               )}
               {property.bathrooms && property.bathrooms > 0 && (
-                <div className="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm rounded-md px-1.5 sm:px-2 py-0.5">
-                  <Bath className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white" />
-                  <span className="text-[9px] sm:text-[10px] md:text-xs text-white font-bold">{property.bathrooms}</span>
-                  <span className="text-[8px] sm:text-[9px] text-white/70 font-medium">KM</span>
+                <div className="flex items-center gap-0.5 border border-white/20 bg-white/15 backdrop-blur-sm rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1">
+                  <Bath className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-white" />
+                  <span className="text-[10px] sm:text-xs text-white font-bold">{property.bathrooms}</span>
+                  <span className="text-[8px] sm:text-[10px] text-white/70 font-semibold">KM</span>
                 </div>
               )}
               {property.area_sqm && (
-                <div className="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm rounded-md px-1.5 sm:px-2 py-0.5">
-                  <span className="text-[8px] sm:text-[9px] text-white/70 font-bold">LB</span>
-                  <span className="text-[9px] sm:text-[10px] md:text-xs text-white font-bold">{property.area_sqm}m²</span>
+                <div className="flex items-center gap-0.5 border border-white/20 bg-white/15 backdrop-blur-sm rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1">
+                  <span className="text-[8px] sm:text-[10px] text-white/70 font-bold">LB</span>
+                  <span className="text-[10px] sm:text-xs text-white font-bold">{property.area_sqm}m²</span>
                 </div>
               )}
               {(property.three_d_model_url || property.virtual_tour_url) && (
-                <div className="flex items-center gap-0.5 bg-blue-500/80 backdrop-blur-sm rounded-md px-1.5 sm:px-2 py-0.5">
-                  <ViewIcon className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white" />
-                  <span className="text-[9px] sm:text-[10px] md:text-xs text-white font-bold">3D</span>
+                <div className="flex items-center gap-0.5 border border-white/20 bg-blue-500/80 backdrop-blur-sm rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1">
+                  <ViewIcon className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-white" />
+                  <span className="text-[10px] sm:text-xs text-white font-bold">3D</span>
                 </div>
               )}
             </div>

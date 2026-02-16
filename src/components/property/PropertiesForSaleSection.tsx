@@ -172,25 +172,25 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                 </div>
 
                 {/* Specs - KT/KM/LB */}
-                <div className="flex items-center flex-wrap gap-1.5 pt-1 border-t border-border/30">
+                <div className="flex items-center flex-wrap gap-2 pt-1.5 border-t border-border/30">
                   {property.bedrooms && property.bedrooms > 0 && (
-                    <div className="flex items-center gap-0.5 bg-accent/5 dark:bg-accent/10 rounded px-1.5 py-0.5">
-                      <Bed className="h-2.5 w-2.5 text-accent" />
-                      <span className="text-[10px] text-foreground font-bold">{property.bedrooms}</span>
-                      <span className="text-[8px] text-muted-foreground font-medium">KT</span>
+                    <div className="flex items-center gap-1 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2 py-0.5">
+                      <Bed className="h-3 w-3 text-accent" />
+                      <span className="text-[11px] text-foreground font-bold">{property.bedrooms}</span>
+                      <span className="text-[9px] text-muted-foreground font-semibold">KT</span>
                     </div>
                   )}
                   {property.bathrooms && property.bathrooms > 0 && (
-                    <div className="flex items-center gap-0.5 bg-accent/5 dark:bg-accent/10 rounded px-1.5 py-0.5">
-                      <Bath className="h-2.5 w-2.5 text-accent" />
-                      <span className="text-[10px] text-foreground font-bold">{property.bathrooms}</span>
-                      <span className="text-[8px] text-muted-foreground font-medium">KM</span>
+                    <div className="flex items-center gap-1 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2 py-0.5">
+                      <Bath className="h-3 w-3 text-accent" />
+                      <span className="text-[11px] text-foreground font-bold">{property.bathrooms}</span>
+                      <span className="text-[9px] text-muted-foreground font-semibold">KM</span>
                     </div>
                   )}
                   {property.area_sqm && (
-                    <div className="flex items-center gap-0.5 bg-accent/5 dark:bg-accent/10 rounded px-1.5 py-0.5">
-                      <span className="text-[8px] text-accent font-bold">LB</span>
-                      <span className="text-[10px] text-foreground font-bold">{property.area_sqm}m²</span>
+                    <div className="flex items-center gap-1 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2 py-0.5">
+                      <span className="text-[9px] text-accent font-bold">LB</span>
+                      <span className="text-[11px] text-foreground font-bold">{property.area_sqm}m²</span>
                     </div>
                   )}
                 </div>
