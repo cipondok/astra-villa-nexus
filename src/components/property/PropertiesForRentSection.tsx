@@ -141,13 +141,13 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
               {/* Content */}
               <div className="p-2.5 space-y-1.5">
                 {/* Price */}
-                <div className="space-y-0">
-                  <div className="flex items-baseline gap-0.5">
-                    <span className="text-sm sm:text-base font-extrabold text-primary tracking-tight">{priceInfo.main}</span>
+                <div className="border border-border/40 bg-primary/5 dark:bg-primary/10 rounded-lg px-2.5 py-1.5">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-base sm:text-lg font-black text-primary tracking-tight leading-none">{priceInfo.main}</span>
                     {priceInfo.suffix && (
-                      <span className="text-[10px] sm:text-xs font-bold text-primary/70">{priceInfo.suffix}</span>
+                      <span className="text-[11px] sm:text-sm font-extrabold text-primary/70">{priceInfo.suffix}</span>
                     )}
-                    <span className="text-[9px] text-primary/50 font-semibold">/bln</span>
+                    <span className="text-[10px] text-primary/50 font-bold">/bln</span>
                   </div>
                 </div>
 

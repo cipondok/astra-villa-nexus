@@ -192,25 +192,25 @@ const Rumah123PropertyCard = ({
       {/* Content Section */}
       <div className="p-3 space-y-2">
         {/* Price Section */}
-        <div className="space-y-0.5">
-          <div className="flex items-baseline gap-1">
-            <span className="text-lg sm:text-xl font-extrabold text-primary tracking-tight">
+        <div className="border border-border/40 bg-primary/5 dark:bg-primary/10 rounded-lg px-3 py-2">
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-xl sm:text-2xl font-black text-primary tracking-tight leading-none">
               {priceInfo.main}
             </span>
             {priceInfo.suffix && (
-              <span className="text-xs sm:text-sm font-bold text-primary/70">
+              <span className="text-sm sm:text-base font-extrabold text-primary/70">
                 {priceInfo.suffix}
+              </span>
+            )}
+            {property.listing_type === "rent" && (
+              <span className="text-[11px] text-primary/60 font-bold">
+                / {language === "id" ? "bln" : "mo"}
               </span>
             )}
           </div>
           {property.listing_type === "sale" && (
-            <p className="text-[10px] sm:text-[11px] text-muted-foreground/80 font-medium">
+            <p className="text-[10px] sm:text-[11px] text-muted-foreground/70 font-medium mt-0.5">
               ≈ {formatMonthlyPayment(property.price)}
-            </p>
-          )}
-          {property.listing_type === "rent" && (
-            <p className="text-[10px] sm:text-[11px] text-primary/60 font-semibold">
-              / {language === "id" ? "bulan" : "month"}
             </p>
           )}
         </div>
