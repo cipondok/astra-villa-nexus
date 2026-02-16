@@ -108,7 +108,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
             <div
               key={property.id}
               onClick={() => onPropertyClick(property)}
-              className="group cursor-pointer bg-card rounded-lg border border-border/50 shadow-sm hover:shadow-md hover:border-accent/30 transition-all duration-300 overflow-hidden"
+              className="group cursor-pointer bg-card/60 backdrop-blur-md rounded-lg border border-white/20 dark:border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:border-accent/30 transition-all duration-300 overflow-hidden"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden bg-muted">
