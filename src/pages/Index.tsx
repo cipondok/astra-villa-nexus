@@ -738,7 +738,7 @@ const Index = () => {
         <div className="px-3 sm:px-4 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-primary/30 via-primary/20 to-background dark:from-primary/15 dark:via-primary/10 dark:to-background">
           <div className="w-full max-w-7xl mx-auto space-y-4">
             {hasSearched ? (
-              <section className="bg-card/80 backdrop-blur-sm rounded-xl shadow-md border border-border">
+              <section className="bg-primary/10 backdrop-blur-sm rounded-xl shadow-md border border-primary/15 dark:bg-primary/5 dark:border-primary/10">
                 <div className="p-3 sm:p-4 md:p-6">
                   {/* Active Filter Pills */}
                   <Suspense fallback={null}>
@@ -850,7 +850,7 @@ const Index = () => {
                 {/* AI Recommended Properties */}
                 <div className="mb-4">
                   <Suspense fallback={
-                    <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+                    <div className="bg-primary/10 dark:bg-primary/5 rounded-xl shadow-sm border border-primary/15 dark:border-primary/10 p-4">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 bg-primary/20 rounded-lg animate-pulse" />
                         <div className="flex-1">
