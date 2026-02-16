@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +39,7 @@ import {
   ThumbsDown,
   HelpCircle,
   Wand2,
+  CheckSquare,
 } from "lucide-react";
 
 interface AIRelevanceResult {
@@ -72,6 +74,125 @@ const PropertyImageManager = () => {
 
   // Image regeneration
   const [regenerating, setRegenerating] = useState<string | null>(null);
+
+  // Bulk selection
+  const [selectedPropertyIds, setSelectedPropertyIds] = useState<Set<string>>(new Set());
+  const [bulkRegenerating, setBulkRegenerating] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState({ done: 0, total: 0 });
+
+  const toggleSelectProperty = useCallback((id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setSelectedPropertyIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const selectAllOnPage = useCallback((pageProps: any[]) => {
+    setSelectedPropertyIds(prev => {
+      const next = new Set(prev);
+      const allSelected = pageProps.every(p => next.has(p.id));
+      if (allSelected) {
+        pageProps.forEach(p => next.delete(p.id));
+      } else {
+        pageProps.forEach(p => next.add(p.id));
+      }
+      return next;
+    });
+  }, []);
+
+  const clearSelection = useCallback(() => setSelectedPropertyIds(new Set()), []);
+
+  // Bulk AI regenerate all broken images for selected properties
+  const handleBulkRegenerate = async () => {
+    const selectedProps = properties.filter(p => selectedPropertyIds.has(p.id));
+    const brokenEntries: { url: string; property: any }[] = [];
+    for (const prop of selectedProps) {
+      const imgs = getImages(prop);
+      for (const url of imgs) {
+        if (healthResults[url]?.status === 'broken') {
+          brokenEntries.push({ url, property: prop });
+        }
+      }
+    }
+    if (brokenEntries.length === 0) {
+      showError("No broken images", "Run health check first to find broken images in selected properties.");
+      return;
+    }
+
+    setBulkRegenerating(true);
+    setBulkProgress({ done: 0, total: brokenEntries.length });
+
+    // Process in batches of 3
+    const BATCH_SIZE = 3;
+    for (let i = 0; i < brokenEntries.length; i += BATCH_SIZE) {
+      const batch = brokenEntries.slice(i, i + BATCH_SIZE);
+      await Promise.allSettled(
+        batch.map(async ({ url, property }) => {
+          try {
+            const { data, error } = await supabase.functions.invoke('regenerate-property-image', {
+              body: {
+                propertyId: property.id,
+                title: property.title,
+                description: property.description,
+                propertyType: property.property_type,
+                location: property.location || property.city,
+                brokenImageUrl: url,
+              }
+            });
+            if (error) throw error;
+            if (data?.error) throw new Error(data.error);
+          } catch (err) {
+            console.error("Bulk regen failed for", url, err);
+          } finally {
+            setBulkProgress(prev => ({ ...prev, done: prev.done + 1 }));
+          }
+        })
+      );
+    }
+
+    setBulkRegenerating(false);
+    showSuccess("Bulk Regeneration Complete", `Processed ${brokenEntries.length} broken image(s)`);
+    queryClient.invalidateQueries({ queryKey: ["admin-property-images"] });
+    queryClient.invalidateQueries({ queryKey: ["simple-properties"] });
+    clearResults();
+    clearSelection();
+  };
+
+  // Bulk AI relevance check for selected properties
+  const handleBulkAICheck = async () => {
+    const selectedProps = properties.filter(p => selectedPropertyIds.has(p.id));
+    const allImgs: { url: string; property: any }[] = [];
+    for (const prop of selectedProps) {
+      for (const url of getImages(prop)) {
+        allImgs.push({ url, property: prop });
+      }
+    }
+    if (allImgs.length === 0) return;
+
+    setAiChecking(true);
+    for (const { url, property } of allImgs) {
+      setAiCheckingUrl(url);
+      try {
+        const { data, error } = await supabase.functions.invoke('check-image-relevance', {
+          body: {
+            imageUrl: url,
+            title: property.title,
+            description: property.description,
+            propertyType: property.property_type,
+            location: property.location || property.city,
+          }
+        });
+        if (!error && data) {
+          setAiResults(prev => ({ ...prev, [url]: data }));
+        }
+      } catch { /* continue */ }
+    }
+    setAiChecking(false);
+    setAiCheckingUrl(null);
+  };
 
   // Fetch all properties with image data
   const { data: properties = [], isLoading } = useQuery({
@@ -486,6 +607,50 @@ const PropertyImageManager = () => {
         />
       </div>
 
+      {/* Bulk Selection Bar */}
+      {selectedPropertyIds.size > 0 && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <CheckSquare className="h-4 w-4 text-primary" />
+                <span className="text-xs font-semibold">{selectedPropertyIds.size} selected</span>
+                <Button variant="ghost" size="sm" className="h-6 text-[10px] px-2" onClick={clearSelection}>
+                  <X className="h-3 w-3 mr-1" /> Clear
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-[10px] gap-1.5"
+                  onClick={handleBulkAICheck}
+                  disabled={aiChecking}
+                >
+                  {aiChecking ? <Loader2 className="h-3 w-3 animate-spin" /> : <BrainCircuit className="h-3 w-3" />}
+                  Bulk AI Check
+                </Button>
+                <Button
+                  size="sm"
+                  variant="default"
+                  className="h-7 text-[10px] gap-1.5"
+                  onClick={handleBulkRegenerate}
+                  disabled={bulkRegenerating}
+                >
+                  {bulkRegenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
+                  {bulkRegenerating
+                    ? `Regenerating ${bulkProgress.done}/${bulkProgress.total}...`
+                    : "Bulk AI Regenerate Broken"}
+                </Button>
+              </div>
+            </div>
+            {bulkRegenerating && (
+              <Progress value={(bulkProgress.done / Math.max(bulkProgress.total, 1)) * 100} className="h-1.5 mt-2" />
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       {/* Property Grid */}
       {isLoading ? (
         <div className="text-center py-8">
@@ -493,6 +658,17 @@ const PropertyImageManager = () => {
         </div>
       ) : (
         <>
+          {/* Select All on Page */}
+          <div className="flex items-center gap-2 mb-1">
+            <Checkbox
+              checked={paginatedProperties.length > 0 && paginatedProperties.every(p => selectedPropertyIds.has(p.id))}
+              onCheckedChange={() => selectAllOnPage(paginatedProperties)}
+              className="h-3.5 w-3.5"
+            />
+            <span className="text-[10px] text-muted-foreground cursor-pointer" onClick={() => selectAllOnPage(paginatedProperties)}>
+              Select all on this page
+            </span>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
             {paginatedProperties.map((property) => {
               const imgs = getImages(property);
@@ -501,13 +677,25 @@ const PropertyImageManager = () => {
               const firstImg = imgs[0];
               const firstHealth = firstImg ? healthResults[firstImg] : undefined;
 
+              const isSelected = selectedPropertyIds.has(property.id);
+
               return (
                 <Card
                   key={property.id}
-                  className={`cursor-pointer hover:shadow-md transition-all group overflow-hidden ${propertyBroken > 0 ? 'border-destructive/50' : ''}`}
+                  className={`cursor-pointer hover:shadow-md transition-all group overflow-hidden ${propertyBroken > 0 ? 'border-destructive/50' : ''} ${isSelected ? 'ring-2 ring-primary' : ''}`}
                   onClick={() => setSelectedProperty(property)}
                 >
                   <CardContent className="p-2">
+                    {/* Checkbox */}
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Checkbox
+                        checked={isSelected}
+                        onCheckedChange={() => toggleSelectProperty(property.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="h-3.5 w-3.5"
+                      />
+                      <span className="text-[8px] text-muted-foreground">{isSelected ? 'Selected' : 'Select'}</span>
+                    </div>
                     <div className="aspect-[4/3] rounded overflow-hidden relative mb-1.5 bg-muted">
                       {imgs.length > 0 ? (
                         <>
