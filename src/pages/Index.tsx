@@ -735,7 +735,7 @@ const Index = () => {
         </div>
 
         {/* Property Display Section */}
-        <div className="px-3 sm:px-4 py-4 sm:py-6 space-y-4">
+        <div className="px-3 sm:px-4 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-primary/30 via-primary/20 to-background dark:from-primary/15 dark:via-primary/10 dark:to-background">
           <div className="w-full max-w-7xl mx-auto space-y-4">
             {hasSearched ? (
               <section className="bg-card/80 backdrop-blur-sm rounded-xl shadow-md border border-border">
