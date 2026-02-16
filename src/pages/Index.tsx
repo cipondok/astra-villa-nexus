@@ -510,7 +510,7 @@ const Index = () => {
               />
             ) : (
               <div
-                className="w-full h-full bg-gradient-to-b from-[hsl(200,100%,55%)] via-[hsl(195,95%,60%)] to-[hsl(200,100%,70%)] dark:from-[hsl(210,55%,12%)] dark:via-[hsl(200,50%,18%)] dark:to-[hsl(210,55%,10%)]"
+                className="w-full h-full bg-gradient-to-b from-primary/30 via-primary/20 to-background dark:from-primary/15 dark:via-primary/10 dark:to-background"
                 style={{
                   filter: `brightness(${(heroConfig?.imageBrightness ?? 110) / 100}) saturate(${(heroConfig?.imageSaturation ?? 110) / 100})`,
                 }}
