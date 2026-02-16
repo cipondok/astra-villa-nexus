@@ -223,7 +223,7 @@ const PropertySlideshow = () => {
                 </div>
 
                 {/* Content - Rumah123 Style */}
-                <div className="p-2.5 space-y-1">
+                <div className="relative p-2.5 space-y-1 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/10 before:via-transparent before:to-accent/10 before:opacity-60 before:rounded-b-lg after:absolute after:inset-0 after:bg-gradient-to-bl after:from-rose-500/5 after:via-transparent after:to-cyan-500/8 after:opacity-50 after:rounded-b-lg border-t border-white/20">
                   {/* Price */}
                   <div className="flex items-baseline gap-1 flex-wrap">
                     <span className="text-sm font-bold text-primary">{priceInfo.main}</span>
