@@ -237,7 +237,7 @@ const AIPropertyRecommendations = ({
           {recommendations.map((property) => (
             <div
               key={property.id}
-              className="group relative bg-card/60 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-lg overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:border-accent/30 transition-all"
+              className="group relative bg-card/70 backdrop-blur-md border border-primary/10 dark:border-primary/15 rounded-lg overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.1)] hover:border-primary/25 transition-all"
             >
               {/* Image */}
               <div 
@@ -295,36 +295,36 @@ const AIPropertyRecommendations = ({
                   {property.title}
                 </h3>
                 
-                <div className="border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2.5 py-1.5">
+                <div className="border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-2.5 py-1.5">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-base font-black text-accent tracking-tight leading-none">{formatPrice(property.price)}</span>
+                    <span className="text-base font-black text-primary tracking-tight leading-none">{formatPrice(property.price)}</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 bg-secondary/60 dark:bg-secondary/30 rounded px-1.5 py-0.5" title={property.city || property.location}>
-                  <MapPin className="h-3 w-3 flex-shrink-0 text-primary" />
-                  <span className="text-[10px] text-foreground/80 font-medium truncate">{property.city || property.location}</span>
+                <div className="flex items-center gap-1 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5" title={property.city || property.location}>
+                  <MapPin className="h-3 w-3 flex-shrink-0 text-primary/70" />
+                  <span className="text-[10px] text-foreground/70 font-medium truncate">{property.city || property.location}</span>
                 </div>
 
-                <div className="flex items-center gap-1 pt-1.5 border-t border-border/30">
+                <div className="flex items-center gap-1 pt-1.5 border-t border-primary/10">
                   {property.bedrooms > 0 && (
-                    <div className="flex items-center gap-0.5 border border-primary/30 bg-primary/10 dark:bg-primary/20 rounded px-1.5 py-0.5">
-                      <Bed className="h-3 w-3 text-primary" />
-                      <span className="text-[11px] text-foreground font-bold">{property.bedrooms}</span>
-                      <span className="text-[9px] text-muted-foreground font-semibold">KT</span>
+                    <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                      <Bed className="h-3 w-3 text-primary/60" />
+                      <span className="text-[11px] text-foreground/80 font-bold">{property.bedrooms}</span>
+                      <span className="text-[9px] text-muted-foreground/70 font-semibold">KT</span>
                     </div>
                   )}
                   {property.bathrooms > 0 && (
-                    <div className="flex items-center gap-0.5 border border-primary/30 bg-primary/10 dark:bg-primary/20 rounded px-1.5 py-0.5">
-                      <Bath className="h-3 w-3 text-primary" />
-                      <span className="text-[11px] text-foreground font-bold">{property.bathrooms}</span>
-                      <span className="text-[9px] text-muted-foreground font-semibold">KM</span>
+                    <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                      <Bath className="h-3 w-3 text-primary/60" />
+                      <span className="text-[11px] text-foreground/80 font-bold">{property.bathrooms}</span>
+                      <span className="text-[9px] text-muted-foreground/70 font-semibold">KM</span>
                     </div>
                   )}
                   {property.area_sqm && (
-                    <div className="flex items-center gap-0.5 border border-primary/30 bg-primary/10 dark:bg-primary/20 rounded px-1.5 py-0.5">
-                      <span className="text-[9px] text-primary font-bold">LB</span>
-                      <span className="text-[11px] text-foreground font-bold">{property.area_sqm}m²</span>
+                    <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                      <span className="text-[9px] text-primary/60 font-bold">LB</span>
+                      <span className="text-[11px] text-foreground/80 font-bold">{property.area_sqm}m²</span>
                     </div>
                   )}
                 </div>
