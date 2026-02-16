@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Rocket, Instagram, Youtube, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, CircleHelp, PhoneCall, MapPin, Glasses, UserCheck } from "lucide-react";
+import { Rocket, Instagram, Youtube, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, PhoneCall, MapPin, Glasses, UserCheck } from "lucide-react";
 import AnimatedLogo from "@/components/AnimatedLogo";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 
@@ -22,25 +22,29 @@ const Dock = ({ items }: { items: DockItem[] }) => {
   const dockRef = useRef<HTMLDivElement>(null);
   const iconRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [scales, setScales] = useState<number[]>(() => items.map(() => 1));
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const animFrame = useRef<number>(0);
   const mouseXRef = useRef<number | null>(null);
 
-  const MAX_DISTANCE = 100; // px radius of effect
+  const MAX_DISTANCE = 100;
   const MAX_SCALE = 1.65;
 
   const computeScales = useCallback(() => {
     const mx = mouseXRef.current;
+    let closestIdx = -1;
+    let closestDist = Infinity;
     const newScales = items.map((_, i) => {
       const el = iconRefs.current[i];
       if (mx === null || !el) return 1;
       const rect = el.getBoundingClientRect();
       const center = rect.left + rect.width / 2;
       const dist = Math.abs(mx - center);
+      if (dist < closestDist) { closestDist = dist; closestIdx = i; }
       if (dist > MAX_DISTANCE) return 1;
-      // cosine ease for smooth falloff
       return 1 + (MAX_SCALE - 1) * (0.5 + 0.5 * Math.cos((Math.PI * dist) / MAX_DISTANCE));
     });
     setScales(newScales);
+    setHoveredIndex(closestDist <= MAX_DISTANCE ? closestIdx : null);
   }, [items.length]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
@@ -53,6 +57,7 @@ const Dock = ({ items }: { items: DockItem[] }) => {
     mouseXRef.current = null;
     cancelAnimationFrame(animFrame.current);
     setScales(items.map(() => 1));
+    setHoveredIndex(null);
   }, [items.length]);
 
   useEffect(() => {
@@ -71,7 +76,7 @@ const Dock = ({ items }: { items: DockItem[] }) => {
     >
       {items.map((item, i) => {
         const scale = scales[i] ?? 1;
-        const isHovered = scale > 1.35;
+        const isHovered = hoveredIndex === i;
 
         const iconEl = (
           <div
@@ -156,8 +161,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     { to: "/consultation", label: currentText.consultation, icon: MessageSquare },
     { to: "/valuation", label: currentText.valuation, icon: Calculator },
     { to: "/investment", label: currentText.investment, icon: PiggyBank },
-    { to: "/help", label: currentText.help, icon: HelpCircle },
-    { to: "/faq", label: currentText.faq, icon: CircleHelp },
+    { to: "/faq", label: currentText.faq, icon: HelpCircle },
     { to: "/contact", label: currentText.contactUs, icon: PhoneCall },
   ];
 
