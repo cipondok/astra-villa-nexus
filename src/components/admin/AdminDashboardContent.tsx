@@ -53,6 +53,7 @@ const DailyCheckInManagement = lazyRetry(() => import("./DailyCheckInManagement"
 const ASTRATokenHub = lazyRetry(() => import("./ASTRATokenHub"));
 const ToolsManagementDashboard = lazyRetry(() => import("./ToolsManagementDashboard"));
 const SEOSettings = lazyRetry(() => import("./SEOSettings"));
+const SEOManagement = lazyRetry(() => import("./SEOManagement"));
 const ProjectDiagnosticSystem = lazyRetry(() => import("./ProjectDiagnosticSystem"));
 const IndonesianPaymentMerchantConfig = lazyRetry(() => import("./IndonesianPaymentMerchantConfig"));
 const VendorsHubContent = lazyRetry(() => import("./VendorsHubContent"));
@@ -175,6 +176,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "rate-limiting": { label: "API Rate Limiting", category: "System & Tools" },
   "customer-service-control": { label: "CS Control Panel", category: "Support" },
   "seo-settings": { label: "SEO Settings", category: "Settings" },
+  "seo-management": { label: "SEO Management", category: "Marketing" },
   "vendor-agent-control": { label: "Vendor/Agent Control", category: "Vendors & Services" },
   "authorization-monitoring": { label: "Authorization", category: "Security" },
   "admin-alerts": { label: "Admin Alerts", category: "System" },
@@ -388,6 +390,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <CustomerServiceControlPanel />;
       case "seo-settings":
         return <SEOSettings />;
+      case "seo-management":
+        return <SEOManagement />;
       case "vendor-agent-control":
         return <EnhancedVendorAgentControl />;
       case "authorization-monitoring":
