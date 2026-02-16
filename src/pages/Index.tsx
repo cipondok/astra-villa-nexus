@@ -495,17 +495,18 @@ const Index = () => {
         
           {/* Hero Search Section - Modern Clean Design */}
         <section className="relative w-full min-h-[380px] sm:min-h-[440px] md:min-h-[500px] lg:h-screen lg:min-h-[580px]" id="hero-section">
-            {/* Villa Community Background with Modern Overlay */}
+            {/* Sky Blue Gradient Background */}
           <div className="absolute inset-0 z-0">
-            <img 
-                src={modernVillaCommunityBlue} 
-                alt="Luxury villa community in daylight" 
-              className="w-full h-full object-cover"
-              loading="eager"
-            />
-            {/* Clean gradient overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-background" />
+            {/* Vibrant sky blue gradient */}
+            <div className="w-full h-full bg-gradient-to-b from-[hsl(200,100%,55%)] via-[hsl(195,95%,60%)] to-[hsl(200,100%,70%)]" />
+            {/* Decorative wave shapes */}
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+            {/* Subtle cloud-like overlay */}
+            <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(ellipse at 20% 50%, white 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, white 0%, transparent 50%)' }} />
+            {/* Sparkle/star decorations */}
+            <div className="absolute top-[15%] left-[10%] w-2 h-2 bg-white rounded-full animate-pulse opacity-60" />
+            <div className="absolute top-[25%] right-[15%] w-1.5 h-1.5 bg-white rounded-full animate-pulse opacity-40" style={{ animationDelay: '0.5s' }} />
+            <div className="absolute top-[10%] right-[30%] w-1 h-1 bg-white rounded-full animate-pulse opacity-50" style={{ animationDelay: '1s' }} />
           </div>
           
           {/* Content */}
@@ -520,23 +521,23 @@ const Index = () => {
               <div className={cn(
                 "inline-flex items-center gap-1.5 mb-2 sm:mb-3",
                 "px-3 py-1 sm:px-4 sm:py-1.5",
-                "bg-primary/90 backdrop-blur-md",
-                "rounded-full border border-primary-foreground/20",
-                "shadow-lg shadow-primary/30"
+                "bg-[hsl(48,100%,52%)] backdrop-blur-md",
+                "rounded-full border border-[hsl(48,100%,60%)]/40",
+                "shadow-lg shadow-[hsl(48,100%,52%)]/30"
               )}>
-                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-primary-foreground" />
-                <span className="text-[10px] sm:text-xs font-semibold text-primary-foreground">
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-[hsl(210,60%,12%)]" />
+                <span className="text-[10px] sm:text-xs font-bold text-[hsl(210,60%,12%)] uppercase tracking-wide">
                   AI-Powered Search
                 </span>
               </div>
               
-              {/* Title - Cleaner Typography */}
-              <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-tight mb-1 sm:mb-2">
+              {/* Title - Bold Typography */}
+              <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-1 sm:mb-2">
                 <span className="text-white drop-shadow-lg">
                   {t.findYour}
                 </span>
               </h1>
-              <p className="flex text-xs sm:text-sm md:text-base text-white/80 items-center justify-center gap-1.5">
+              <p className="flex text-xs sm:text-sm md:text-base text-white/90 items-center justify-center gap-1.5 font-medium">
                 <Search className="h-3 w-3 sm:h-4 sm:w-4" />
                 {t.searchPowered}
               </p>
@@ -570,11 +571,11 @@ const Index = () => {
             {/* Featured Properties Slideshow */}
             <div className="w-full max-w-[2400px] mx-auto mt-4 md:mt-8">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Star className="h-3 w-3 md:h-4 md:w-4 text-accent fill-accent/50" />
+                <Star className="h-3 w-3 md:h-4 md:w-4 text-[hsl(48,100%,52%)] fill-[hsl(48,100%,52%)]/50" />
                 <h2 className="text-xs md:text-sm font-semibold text-white/90">
                   {t.featuredProperties}
                 </h2>
-                <Star className="h-3 w-3 md:h-4 md:w-4 text-accent fill-accent/50" />
+                <Star className="h-3 w-3 md:h-4 md:w-4 text-[hsl(48,100%,52%)] fill-[hsl(48,100%,52%)]/50" />
               </div>
               <Suspense fallback={
                 <div className="flex gap-2 px-3 overflow-hidden justify-center">

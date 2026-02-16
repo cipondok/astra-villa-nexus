@@ -215,90 +215,90 @@ html {
 
 @layer base {
   :root {
-    /* Light Mode - Vibrant Blue Property Theme */
-    --background: 207 100% 96%; /* Soft sky-blue tint */
-    --foreground: 213 80% 15%; /* Deep navy text */
+    /* Light Mode - Bright Sky Blue + Yellow/Green Brand */
+    --background: 200 100% 97%; /* Very light sky blue */
+    --foreground: 210 60% 12%; /* Deep navy text */
     --card: 0 0% 100%; /* White cards */
-    --card-foreground: 213 80% 15%;
+    --card-foreground: 210 60% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 213 80% 15%;
-    --primary: 211 100% 50%; /* Vibrant Blue #0080FF */
+    --popover-foreground: 210 60% 12%;
+    --primary: 200 100% 48%; /* Bright sky blue #00A3F5 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 207 60% 92%; /* Light blue-gray */
-    --secondary-foreground: 213 80% 15%;
-    --muted: 207 40% 93%;
-    --muted-foreground: 213 30% 45%;
-    --accent: 80 85% 45%; /* Lime green accent from reference */
-    --accent-foreground: 213 80% 15%;
+    --secondary: 200 50% 92%; /* Light sky blue */
+    --secondary-foreground: 210 60% 12%;
+    --muted: 200 30% 94%;
+    --muted-foreground: 210 20% 45%;
+    --accent: 90 75% 45%; /* Lime green accent */
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 210 30% 88%;
-    --input: 210 30% 88%;
-    --ring: 211 100% 50%;
-    --radius: 8px;
+    --border: 200 25% 88%;
+    --input: 200 25% 90%;
+    --ring: 200 100% 48%;
+    --radius: 10px;
     
     /* ASTRA Brand Colors - Light Mode */
-    --gold-primary: 45 100% 51%; /* Warm yellow like reference badges */
-    --gold-secondary: 38 95% 50%;
-    --navy-primary: 211 100% 50%;
-    --navy-secondary: 215 85% 45%;
-    --dark-bg: 207 60% 92%;
+    --gold-primary: 48 100% 52%; /* Bright yellow badges */
+    --gold-secondary: 42 95% 50%;
+    --navy-primary: 200 100% 48%;
+    --navy-secondary: 205 85% 42%;
+    --dark-bg: 200 50% 94%;
     --dark-card: 0 0% 100%;
-    --text-light: 213 80% 15%;
-    --text-muted: 213 30% 45%;
+    --text-light: 210 60% 12%;
+    --text-muted: 210 20% 45%;
     
     /* Glassy effect colors - Light Mode */
-    --glass-bg: 207 100% 98%;
-    --glass-border: 210 40% 85%;
-    --glass-shadow: 211 60% 70%;
+    --glass-bg: 200 100% 98%;
+    --glass-border: 200 35% 85%;
+    --glass-shadow: 200 50% 70%;
     
     /* Theme Colors */
-    --titanium-light: 207 40% 93%;
+    --titanium-light: 200 30% 94%;
     --titanium-white: 0 0% 100%;
-    --samsung-blue-primary: 211 100% 50%;
+    --samsung-blue-primary: 200 100% 48%;
   }
 
   .dark {
-    /* Dark Mode - ASTRA Purple Gradient Theme */
-    --background: 229 57% 11%; /* Deep Slate */
-    --foreground: 216 12% 91%; /* Light Gray */
-    --card: 270 45% 15%; /* Purple-tinted card */
-    --card-foreground: 216 12% 91%;
-    --popover: 270 50% 12%;
-    --popover-foreground: 216 12% 91%;
-    --primary: 280 60% 55%; /* Vibrant Purple */
+    /* Dark Mode - Deep Ocean Blue Theme */
+    --background: 210 55% 8%; /* Deep ocean */
+    --foreground: 200 15% 92%; /* Light text */
+    --card: 210 45% 13%; /* Dark blue card */
+    --card-foreground: 200 15% 92%;
+    --popover: 210 50% 11%;
+    --popover-foreground: 200 15% 92%;
+    --primary: 200 100% 55%; /* Bright sky blue */
     --primary-foreground: 0 0% 100%;
-    --secondary: 270 35% 20%;
-    --secondary-foreground: 216 12% 91%;
-    --muted: 270 30% 18%;
-    --muted-foreground: 218 11% 65%;
-    --accent: 38 92% 50%; /* ASTRA Gold/Amber */
-    --accent-foreground: 229 57% 11%;
+    --secondary: 210 35% 18%;
+    --secondary-foreground: 200 15% 92%;
+    --muted: 210 30% 16%;
+    --muted-foreground: 200 15% 60%;
+    --accent: 90 75% 50%; /* Lime green */
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
-    --border: 270 35% 25%;
-    --input: 270 40% 18%;
-    --ring: 280 60% 55%;
+    --border: 210 30% 22%;
+    --input: 210 35% 16%;
+    --ring: 200 100% 55%;
     
     /* ASTRA Brand Colors - Dark Mode */
-    --gold-primary: 38 92% 50%;
-    --gold-secondary: 32 95% 44%;
-    --navy-primary: 280 60% 55%;
-    --navy-secondary: 270 50% 45%;
-    --dark-bg: 229 57% 6%;
-    --dark-card: 270 45% 12%;
+    --gold-primary: 48 100% 55%;
+    --gold-secondary: 42 95% 48%;
+    --navy-primary: 200 100% 55%;
+    --navy-secondary: 205 80% 48%;
+    --dark-bg: 210 55% 5%;
+    --dark-card: 210 45% 10%;
     --text-light: 0 0% 100%;
-    --text-muted: 218 11% 65%;
+    --text-muted: 200 15% 60%;
     
     /* Glassy effect colors - Dark Mode */
-    --glass-bg: 270 50% 10%;
-    --glass-border: 280 60% 35%;
-    --glass-shadow: 229 60% 3%;
+    --glass-bg: 210 50% 10%;
+    --glass-border: 200 50% 30%;
+    --glass-shadow: 210 60% 3%;
     
     /* Theme Colors - Dark */
-    --titanium-light: 270 30% 18%;
+    --titanium-light: 210 30% 16%;
     --titanium-white: 0 0% 100%;
-    --samsung-blue-primary: 280 60% 55%;
+    --samsung-blue-primary: 200 100% 55%;
   }
 
   * {
@@ -314,9 +314,9 @@ html {
 
   html.dark {
     background: linear-gradient(135deg, 
-      hsl(229 57% 11%) 0%, 
-      hsl(280 50% 15%) 50%, 
-      hsl(229 57% 11%) 100%);
+      hsl(210 55% 8%) 0%, 
+      hsl(200 50% 12%) 50%, 
+      hsl(210 55% 8%) 100%);
   }
 
   body {
@@ -333,9 +333,9 @@ html {
 
   .dark body {
     background: linear-gradient(135deg, 
-      hsl(229 57% 11%) 0%, 
-      hsl(280 50% 15%) 50%, 
-      hsl(229 57% 11%) 100%);
+      hsl(210 55% 8%) 0%, 
+      hsl(200 50% 12%) 50%, 
+      hsl(210 55% 8%) 100%);
     background-attachment: fixed;
   }
 }
@@ -356,12 +356,12 @@ html {
 
   .dark .glass-effect {
     background: linear-gradient(135deg, 
-      hsl(270 50% 12% / 0.85) 0%, 
-      hsl(280 45% 8% / 0.75) 100%);
-    border: 1px solid hsl(280 60% 55% / 0.25);
+      hsl(210 45% 12% / 0.85) 0%, 
+      hsl(200 40% 8% / 0.75) 100%);
+    border: 1px solid hsl(200 60% 40% / 0.25);
     box-shadow: 
-      0 8px 32px hsl(229 60% 3% / 0.5),
-      inset 0 1px 0 hsl(280 50% 60% / 0.1);
+      0 8px 32px hsl(210 60% 3% / 0.5),
+      inset 0 1px 0 hsl(200 50% 50% / 0.1);
   }
 
   .glass-card {
@@ -380,13 +380,13 @@ html {
 
   .dark .glass-card {
     background: linear-gradient(145deg, 
-      hsl(270 45% 12% / 0.9) 0%, 
-      hsl(280 50% 8% / 0.85) 100%);
-    border: 1px solid hsl(280 60% 55% / 0.2);
+      hsl(210 45% 12% / 0.9) 0%, 
+      hsl(200 40% 8% / 0.85) 100%);
+    border: 1px solid hsl(200 60% 40% / 0.2);
     box-shadow: 
-      0 4px 24px hsl(229 60% 3% / 0.6),
-      0 1px 3px hsl(280 60% 55% / 0.1),
-      inset 0 1px 0 hsl(280 50% 60% / 0.06);
+      0 4px 24px hsl(210 60% 3% / 0.6),
+      0 1px 3px hsl(200 50% 40% / 0.1),
+      inset 0 1px 0 hsl(200 50% 50% / 0.06);
   }
 
   /* ========================================
@@ -405,9 +405,9 @@ html {
     --modal-overlay-opacity: 0.8;
     background: linear-gradient(
       135deg,
-      hsl(229 60% 4% / 0.7) 0%,
-      hsl(280 55% 5% / var(--modal-overlay-opacity)) 50%,
-      hsl(38 80% 25% / 0.06) 100%
+      hsl(210 55% 4% / 0.7) 0%,
+      hsl(200 50% 5% / var(--modal-overlay-opacity)) 50%,
+      hsl(48 80% 25% / 0.06) 100%
     );
   }
 
@@ -426,15 +426,15 @@ html {
   .dark .modal-surface {
     background: linear-gradient(
       155deg,
-      hsl(270 45% 14% / 0.95) 0%,
-      hsl(280 50% 10% / 0.9) 50%,
-      hsl(270 48% 12% / 0.92) 100%
+      hsl(210 45% 13% / 0.95) 0%,
+      hsl(200 40% 9% / 0.9) 50%,
+      hsl(210 42% 11% / 0.92) 100%
     );
-    border: 1px solid hsl(280 60% 55% / 0.25);
+    border: 1px solid hsl(200 60% 40% / 0.25);
     box-shadow: 
-      0 25px 60px hsl(229 60% 3% / 0.7),
-      0 10px 25px hsl(229 60% 3% / 0.5),
-      inset 0 1px 2px hsl(280 50% 60% / 0.08);
+      0 25px 60px hsl(210 60% 3% / 0.7),
+      0 10px 25px hsl(210 60% 3% / 0.5),
+      inset 0 1px 2px hsl(200 50% 50% / 0.08);
   }
 
   /* Glass Popup - Light Mode */
@@ -452,13 +452,13 @@ html {
   .dark .glass-popup {
     background: linear-gradient(
       150deg,
-      hsl(270 45% 14% / 0.95) 0%,
-      hsl(280 50% 10% / 0.9) 100%
+      hsl(210 45% 13% / 0.95) 0%,
+      hsl(200 40% 9% / 0.9) 100%
     );
     border: 1px solid hsl(0 0% 100% / 0.12);
     box-shadow: 
-      0 15px 40px hsl(229 60% 3% / 0.5),
-      0 5px 15px hsl(229 60% 3% / 0.35);
+      0 15px 40px hsl(210 60% 3% / 0.5),
+      0 5px 15px hsl(210 60% 3% / 0.35);
   }
 
   /* Glass Menu - Light Mode */
@@ -476,13 +476,13 @@ html {
   .dark .glass-menu {
     background: linear-gradient(
       160deg,
-      hsl(270 45% 13% / 0.97) 0%,
-      hsl(280 50% 9% / 0.94) 100%
+      hsl(210 45% 12% / 0.97) 0%,
+      hsl(200 40% 8% / 0.94) 100%
     );
-    border: 1px solid hsl(280 60% 55% / 0.15);
+    border: 1px solid hsl(200 60% 40% / 0.15);
     box-shadow: 
-      0 12px 35px hsl(229 60% 3% / 0.5),
-      0 4px 12px hsl(229 60% 3% / 0.3);
+      0 12px 35px hsl(210 60% 3% / 0.5),
+      0 4px 12px hsl(210 60% 3% / 0.3);
   }
 
   /* Glass Menu Item - Individual menu options */
@@ -503,8 +503,8 @@ html {
   .dark .glass-menu-item:hover {
     background: linear-gradient(
       135deg,
-      hsl(280 60% 50% / 0.15) 0%,
-      hsl(38 80% 45% / 0.08) 100%
+      hsl(200 70% 50% / 0.15) 0%,
+      hsl(48 80% 50% / 0.08) 100%
     );
   }
 
@@ -527,13 +527,13 @@ html {
   .dark .glass-dropdown {
     background: linear-gradient(
       155deg,
-      hsl(270 45% 13% / 0.98) 0%,
-      hsl(280 50% 9% / 0.95) 100%
+      hsl(210 45% 12% / 0.98) 0%,
+      hsl(200 40% 8% / 0.95) 100%
     );
-    border: 1px solid hsl(280 60% 55% / 0.15);
+    border: 1px solid hsl(200 60% 40% / 0.15);
     box-shadow: 
-      0 10px 30px hsl(229 60% 3% / 0.45),
-      inset 0 1px 0 hsl(280 50% 60% / 0.05);
+      0 10px 30px hsl(210 60% 3% / 0.45),
+      inset 0 1px 0 hsl(200 50% 50% / 0.05);
   }
 
   /* Glass Tooltip */
