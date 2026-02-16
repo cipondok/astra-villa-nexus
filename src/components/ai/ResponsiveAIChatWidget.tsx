@@ -1695,26 +1695,28 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             )}
           </div>
 
-          {/* WhatsApp Button - Always visible above chat button */}
-          <a
-            href="https://wa.me/6285716008080"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="relative h-[55px] w-[55px] rounded-full flex items-center justify-center mb-2
-              bg-gradient-to-br from-background/90 via-background/80 to-[hsl(145,63%,49%)/0.2]
-              shadow-[0_4px_24px_hsla(145,63%,49%,0.3),0_8px_40px_hsla(145,63%,49%,0.2)]
-              border-2 border-[hsl(145,63%,49%)/0.5] backdrop-blur-xl
-              hover:scale-110 active:scale-95 transition-all duration-300
-              pointer-events-auto z-[99999]"
-            aria-label="Chat on WhatsApp"
-          >
-            <svg viewBox="0 0 32 32" className="h-7 w-7" style={{ fill: '#25D366' }} xmlns="http://www.w3.org/2000/svg">
-              <path d="M16.004 2.003C8.272 2.003 2.006 8.267 2.003 15.999c-.001 2.467.644 4.877 1.87 7.002L2 30l7.186-1.885A13.93 13.93 0 0 0 16 29.997h.004c7.73 0 13.997-6.265 14-13.997.001-3.74-1.455-7.255-4.1-9.9A13.909 13.909 0 0 0 16.004 2.003zm0 25.594h-.003a11.58 11.58 0 0 1-5.906-1.618l-.424-.251-4.393 1.152 1.173-4.287-.276-.44a11.57 11.57 0 0 1-1.775-6.155C4.402 9.553 9.557 4.4 16.004 4.4c3.12.001 6.054 1.217 8.258 3.422a11.593 11.593 0 0 1 3.413 8.262c-.003 6.448-5.157 11.6-11.671 11.6v-.087zm6.393-8.685c-.35-.176-2.074-1.024-2.395-1.14-.322-.117-.556-.176-.79.175-.234.35-.907 1.14-1.112 1.374-.205.234-.41.263-.76.088-.35-.176-1.48-.546-2.818-1.74-1.042-.928-1.745-2.075-1.95-2.425-.205-.35-.022-.54.154-.714.158-.157.35-.41.526-.614.175-.205.234-.35.35-.585.118-.234.06-.44-.029-.614-.088-.176-.79-1.904-1.082-2.607-.285-.685-.575-.592-.79-.603-.204-.01-.44-.012-.672-.012a1.292 1.292 0 0 0-.936.44c-.322.35-1.228 1.2-1.228 2.925s1.258 3.393 1.433 3.627c.176.234 2.475 3.78 5.997 5.3.838.362 1.492.578 2.002.74.842.268 1.607.23 2.212.14.675-.101 2.074-.848 2.366-1.666.293-.82.293-1.52.205-1.666-.088-.146-.322-.234-.672-.41z"/>
-            </svg>
-          </a>
+          {/* WhatsApp + Chat Button Stack */}
+          <div className="flex flex-col items-center gap-3">
+            {/* WhatsApp Button - Always visible above chat button */}
+            <a
+              href="https://wa.me/6285716008080"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative h-[55px] w-[55px] rounded-full flex items-center justify-center
+                bg-gradient-to-br from-background/90 via-background/80 to-[hsl(145,63%,49%)/0.2]
+                shadow-[0_4px_24px_hsla(145,63%,49%,0.3),0_8px_40px_hsla(145,63%,49%,0.2)]
+                border-2 border-[hsl(145,63%,49%)/0.5] backdrop-blur-xl
+                hover:scale-110 active:scale-95 transition-all duration-300
+                pointer-events-auto cursor-pointer"
+              aria-label="Chat on WhatsApp"
+            >
+              <svg viewBox="0 0 32 32" className="h-7 w-7" style={{ fill: '#25D366' }} xmlns="http://www.w3.org/2000/svg">
+                <path d="M16.004 2.003C8.272 2.003 2.006 8.267 2.003 15.999c-.001 2.467.644 4.877 1.87 7.002L2 30l7.186-1.885A13.93 13.93 0 0 0 16 29.997h.004c7.73 0 13.997-6.265 14-13.997.001-3.74-1.455-7.255-4.1-9.9A13.909 13.909 0 0 0 16.004 2.003zm0 25.594h-.003a11.58 11.58 0 0 1-5.906-1.618l-.424-.251-4.393 1.152 1.173-4.287-.276-.44a11.57 11.57 0 0 1-1.775-6.155C4.402 9.553 9.557 4.4 16.004 4.4c3.12.001 6.054 1.217 8.258 3.422a11.593 11.593 0 0 1 3.413 8.262c-.003 6.448-5.157 11.6-11.671 11.6v-.087zm6.393-8.685c-.35-.176-2.074-1.024-2.395-1.14-.322-.117-.556-.176-.79.175-.234.35-.907 1.14-1.112 1.374-.205.234-.41.263-.76.088-.35-.176-1.48-.546-2.818-1.74-1.042-.928-1.745-2.075-1.95-2.425-.205-.35-.022-.54.154-.714.158-.157.35-.41.526-.614.175-.205.234-.35.35-.585.118-.234.06-.44-.029-.614-.088-.176-.79-1.904-1.082-2.607-.285-.685-.575-.592-.79-.603-.204-.01-.44-.012-.672-.012a1.292 1.292 0 0 0-.936.44c-.322.35-1.228 1.2-1.228 2.925s1.258 3.393 1.433 3.627c.176.234 2.475 3.78 5.997 5.3.838.362 1.492.578 2.002.74.842.268 1.607.23 2.212.14.675-.101 2.074-.848 2.366-1.666.293-.82.293-1.52.205-1.666-.088-.146-.322-.234-.672-.41z"/>
+              </svg>
+            </a>
 
-          {/* Main Chat Button */}
-          <div className="relative">
+            {/* Main Chat Button */}
+            <div className="relative">
             {/* Tips Popup */}
             <ChatbotTipsPopup
               isVisible={showTipsPopup && !isOpen}
@@ -1757,6 +1759,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               </Tooltip>
             </TooltipProvider>
             
+          </div>
           </div>
         </div>
       )}
