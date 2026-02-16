@@ -569,7 +569,7 @@ const Index = () => {
           
           {/* Content */}
           <div className={cn(
-            "relative z-10 w-full h-full flex flex-col items-center",
+            "relative z-10 w-full h-full flex flex-col items-center bg-transparent",
             "pt-12 sm:pt-20 md:pt-28 lg:pt-36",
             "px-3 pb-4 sm:px-4 sm:pb-6 md:px-6 md:pb-8"
           )}>
