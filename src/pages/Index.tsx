@@ -720,8 +720,8 @@ const Index = () => {
         </div>
 
         {/* Global Investment Platform */}
-        <div className="px-3 sm:px-4 pt-3 sm:pt-4 bg-primary/20 dark:bg-primary/10">
-          <div className="w-full max-w-7xl mx-auto">
+        <div className="px-0 pt-3 sm:pt-4 bg-primary/20 dark:bg-primary/10">
+          <div className="w-full">
             <Suspense fallback={
               <div className="flex gap-3 justify-center py-3">
                 <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />
