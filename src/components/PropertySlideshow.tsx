@@ -133,10 +133,22 @@ const PropertySlideshow = () => {
 
   return (
     <div 
-      className="w-full overflow-hidden relative py-3 group"
+      className="w-full overflow-hidden relative py-6 group"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
+      {/* Property-themed background wallpaper */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/25 via-primary/10 to-primary/25 dark:from-primary/15 dark:via-primary/5 dark:to-primary/15" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background/60" />
+        <div 
+          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 10 L45 25 L45 45 L15 45 L15 25 Z' fill='none' stroke='currentColor' stroke-width='1'/%3E%3Cpath d='M25 45 L25 35 L35 35 L35 45' fill='none' stroke='currentColor' stroke-width='1'/%3E%3Cpath d='M30 10 L30 5 L35 5 L35 15' fill='none' stroke='currentColor' stroke-width='1'/%3E%3C/svg%3E")`,
+            backgroundSize: '60px 60px',
+          }}
+        />
+      </div>
       {/* Navigation Arrows */}
       <Button
         variant="outline"
@@ -164,7 +176,7 @@ const PropertySlideshow = () => {
 
       <div 
         ref={containerRef}
-        className="flex gap-3 overflow-x-auto scrollbar-hide px-2 py-1"
+        className="flex gap-3 overflow-x-auto scrollbar-hide px-4 py-1 relative z-10"
         style={{ scrollBehavior: 'auto' }}
       >
         {displayProperties.map((property, idx) => {
