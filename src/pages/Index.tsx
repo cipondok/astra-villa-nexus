@@ -702,7 +702,7 @@ const Index = () => {
         )}
 
         {/* AI Tools & Features */}
-        <div className="px-3 sm:px-4 pt-4 sm:pt-6">
+        <div className="px-3 sm:px-4 pt-4 sm:pt-6 bg-gradient-to-b from-primary/30 via-primary/20 to-primary/15 dark:from-primary/15 dark:via-primary/10 dark:to-primary/5">
           <div className="w-full max-w-7xl mx-auto">
             <Suspense fallback={
               <div className="flex gap-2 justify-center py-3">
