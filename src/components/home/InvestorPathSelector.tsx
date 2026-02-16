@@ -305,9 +305,14 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                 onClick={() => handleCardClick(item.path)}
                 className={cn(
                   "group relative overflow-hidden rounded-xl cursor-pointer",
-                  "border-2", item.borderColor, item.hoverBorder,
-                  "transition-all duration-300",
-                  "p-3 sm:p-4 active:scale-[0.98]"
+                  "border border-white/20",
+                  "bg-gradient-to-br from-white/10 via-white/5 to-transparent",
+                  "backdrop-blur-xl shadow-lg shadow-black/5",
+                  "transition-all duration-300 hover:shadow-xl hover:shadow-primary/10",
+                  "hover:border-white/30 hover:from-white/15 hover:via-white/10",
+                  "p-3 sm:p-4 active:scale-[0.98]",
+                  "before:absolute before:inset-0 before:rounded-xl before:bg-gradient-to-tr before:from-primary/10 before:via-transparent before:to-accent/10 before:opacity-60",
+                  "after:absolute after:inset-0 after:rounded-xl after:bg-gradient-to-bl after:from-rose-500/5 after:via-transparent after:to-cyan-500/8 after:opacity-50"
                 )}
               >
                 
