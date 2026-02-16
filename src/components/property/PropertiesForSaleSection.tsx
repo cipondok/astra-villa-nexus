@@ -172,7 +172,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                 </div>
 
                 {/* Specs - KT/KM/LB */}
-                <div className="flex items-center flex-wrap gap-2 pt-1.5 border-t border-border/30">
+                <div className="flex items-center gap-1.5 pt-1.5 border-t border-border/30 overflow-x-auto">
                   {property.bedrooms && property.bedrooms > 0 && (
                     <div className="flex items-center gap-1.5 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2.5 py-1">
                       <Bed className="h-3.5 w-3.5 text-accent" />
