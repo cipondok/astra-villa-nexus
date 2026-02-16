@@ -246,29 +246,35 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         {/* Divider */}
         <span style={{ color: 'rgba(130,200,240,0.6)' }}>|</span>
 
-        {/* All links flowing in a single row */}
+        {/* All links as icon-only with tooltip on hover */}
         {quickLinks.map(link => (
-          <Link key={link.to} to={link.to} style={linkStyle} className="hover:opacity-70 inline-flex items-center gap-1 text-xs">
-            <link.icon className="w-3 h-3 flex-shrink-0" />
-            {link.label}
+          <Link key={link.to} to={link.to} style={linkStyle} className="relative group hover:opacity-70 inline-flex items-center justify-center" title={link.label}>
+            <link.icon className="w-5 h-5 flex-shrink-0" />
+            <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] px-2 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              {link.label}
+            </span>
           </Link>
         ))}
 
         <span style={{ color: 'rgba(130,200,240,0.6)' }}>|</span>
 
         {serviceLinks.map(link => (
-          <span key={link.label} style={linkStyle} className="cursor-pointer hover:opacity-70 inline-flex items-center gap-1 text-xs">
-            <link.icon className="w-3 h-3 flex-shrink-0" />
-            {link.label}
+          <span key={link.label} style={linkStyle} className="relative group cursor-pointer hover:opacity-70 inline-flex items-center justify-center" title={link.label}>
+            <link.icon className="w-5 h-5 flex-shrink-0" />
+            <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] px-2 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              {link.label}
+            </span>
           </span>
         ))}
 
         <span style={{ color: 'rgba(130,200,240,0.6)' }}>|</span>
 
         {supportLinks.map(link => (
-          <span key={link.label} style={linkStyle} className="cursor-pointer hover:opacity-70 inline-flex items-center gap-1 text-xs">
-            <link.icon className="w-3 h-3 flex-shrink-0" />
-            {link.label}
+          <span key={link.label} style={linkStyle} className="relative group cursor-pointer hover:opacity-70 inline-flex items-center justify-center" title={link.label}>
+            <link.icon className="w-5 h-5 flex-shrink-0" />
+            <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] px-2 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              {link.label}
+            </span>
           </span>
         ))}
       </div>
