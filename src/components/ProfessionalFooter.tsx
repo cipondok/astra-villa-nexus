@@ -189,10 +189,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   };
 
   const copyrightBadge: React.CSSProperties = {
-    background: 'rgba(255,255,240,0.2)',
     padding: '0.3rem 1.4rem',
-    borderRadius: '60px',
-    backdropFilter: 'blur(4px)',
   };
 
   const dotColors = [
