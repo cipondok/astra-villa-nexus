@@ -166,16 +166,16 @@ const PropertyGridView = ({
             {/* Content Section - Rumah123 Style */}
             <CardContent className="p-2.5 sm:p-3 space-y-1.5">
               {/* Price */}
-              <div className="space-y-0">
-                <div className="flex items-baseline gap-0.5">
-                  <span className="text-sm sm:text-base font-bold text-primary">{priceInfo.main}</span>
+              <div className="border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-2.5 py-1.5">
+                <div className="flex items-baseline gap-1 flex-wrap">
+                  <span className="text-base sm:text-lg font-black text-primary tracking-tight leading-none">{priceInfo.main}</span>
                   {priceInfo.suffix && (
-                    <span className="text-xs font-medium text-primary/80">{priceInfo.suffix}</span>
+                    <span className="text-[11px] sm:text-sm font-extrabold text-primary/70">{priceInfo.suffix}</span>
                   )}
-                  {isRent && <span className="text-[10px] text-muted-foreground">/bln</span>}
+                  {isRent && <span className="text-[10px] text-primary/50 font-bold">/bln</span>}
                 </div>
                 {!isRent && (
-                  <p className="text-[9px] sm:text-[10px] text-muted-foreground">{formatMonthlyPayment(property.price)}</p>
+                  <p className="text-[9px] sm:text-[10px] text-muted-foreground/70 font-medium mt-0.5">≈ {formatMonthlyPayment(property.price)}</p>
                 )}
               </div>
 
