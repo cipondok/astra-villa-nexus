@@ -6,6 +6,73 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+async function generateImageWithRetry(apiKey: string, prompt: string, maxRetries = 2): Promise<string> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    console.log(`Image generation attempt ${attempt + 1}/${maxRetries + 1}`);
+
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-image",
+        messages: [{ role: "user", content: prompt }],
+        modalities: ["image", "text"],
+      }),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => "");
+      console.error(`AI gateway error (attempt ${attempt + 1}):`, response.status, errorBody.substring(0, 500));
+
+      if (response.status === 429) {
+        throw new Error("Rate limit exceeded. Please try again later.");
+      }
+      if (response.status === 402) {
+        throw new Error("AI credits required. Please add credits in Lovable workspace.");
+      }
+      // Retry on 502/503/500 transient errors
+      if ((response.status === 502 || response.status === 503 || response.status === 500) && attempt < maxRetries) {
+        const delay = (attempt + 1) * 2000;
+        console.log(`Retrying in ${delay}ms...`);
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+      throw new Error(`Image generation failed after ${attempt + 1} attempt(s): ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("AI response structure:", JSON.stringify({
+      hasChoices: !!data.choices,
+      hasImages: !!data.choices?.[0]?.message?.images,
+      imagesLength: data.choices?.[0]?.message?.images?.length,
+    }));
+
+    // Extract image - check multiple response formats
+    let imageData = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    if (!imageData) {
+      const img = data.choices?.[0]?.message?.images?.[0];
+      if (typeof img === "string") imageData = img;
+      else if (img?.url) imageData = img.url;
+    }
+
+    if (imageData) return imageData;
+
+    // No image returned - retry if attempts remain
+    console.warn(`No image in response (attempt ${attempt + 1}). Text content:`, 
+      (data.choices?.[0]?.message?.content || "").substring(0, 200));
+    
+    if (attempt < maxRetries) {
+      await new Promise(r => setTimeout(r, 1500));
+      continue;
+    }
+  }
+
+  throw new Error("AI model did not generate an image after multiple attempts. Try again or use a different prompt.");
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -18,47 +85,17 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
     if (!propertyId || !title) throw new Error("propertyId and title are required");
 
-    // Build a descriptive prompt from property details
     const prompt = [
       `Generate a realistic, high-quality real estate property photo for:`,
       `Property: "${title}"`,
       propertyType && `Type: ${propertyType}`,
       location && `Location: ${location}`,
-      description && `Description: ${description.slice(0, 200)}`,
+      description && `Description: ${(description || "").slice(0, 200)}`,
       `Style: Professional real estate listing photo, well-lit, attractive angle, 16:9 aspect ratio.`,
       `The image should look like a genuine property listing photograph.`,
     ].filter(Boolean).join("\n");
 
-    // Generate image using Gemini image model
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
-        messages: [{ role: "user", content: prompt }],
-        modalities: ["image", "text"],
-      }),
-    });
-
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Try again later." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      throw new Error(`Image generation failed: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const imageData = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-
-    if (!imageData) {
-      throw new Error("No image generated");
-    }
+    const imageData = await generateImageWithRetry(LOVABLE_API_KEY, prompt);
 
     // Convert base64 to blob and upload to storage
     const base64 = imageData.replace(/^data:image\/\w+;base64,/, "");
@@ -68,8 +105,6 @@ serve(async (req) => {
       bytes[i] = binaryStr.charCodeAt(i);
     }
 
-    // Get auth user for storage path
-    const authHeader = req.headers.get("Authorization");
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
