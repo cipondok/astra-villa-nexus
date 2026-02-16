@@ -223,7 +223,7 @@ const PropertySlideshow = () => {
                 </div>
 
                 {/* Content - Rumah123 Style */}
-                <div className="relative p-2.5 space-y-1 bg-gradient-to-br from-slate-900/70 via-slate-800/50 to-slate-900/60 backdrop-blur-xl before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/15 before:via-transparent before:to-accent/15 before:opacity-60 before:rounded-b-lg after:absolute after:inset-0 after:bg-gradient-to-bl after:from-rose-500/8 after:via-transparent after:to-cyan-500/10 after:opacity-50 after:rounded-b-lg border-t border-white/15">
+                <div className="relative p-2.5 space-y-1 bg-gradient-to-br from-white/25 via-white/10 to-white/5 backdrop-blur-xl before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/8 before:via-transparent before:to-accent/8 before:opacity-70 before:rounded-b-lg after:absolute after:inset-0 after:bg-gradient-to-bl after:from-rose-400/5 after:via-transparent after:to-cyan-400/6 after:opacity-60 after:rounded-b-lg border-t border-white/20">
                   {/* Price */}
                   <div className="flex items-baseline gap-1 flex-wrap">
                     <span className="text-sm font-bold text-primary">{priceInfo.main}</span>

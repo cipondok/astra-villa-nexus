@@ -217,7 +217,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     return (
       <div
         onClick={() => onPropertyClick(property)}
-        className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px] cursor-pointer group/card rounded-lg border border-white/15 shadow-lg shadow-black/10 bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/70 backdrop-blur-xl hover:shadow-xl hover:border-white/25 hover:from-slate-800/85 transition-all duration-300 overflow-hidden"
+        className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px] cursor-pointer group/card rounded-lg border border-white/25 shadow-lg shadow-black/5 bg-gradient-to-br from-white/30 via-white/15 to-white/10 backdrop-blur-xl hover:shadow-xl hover:border-white/40 hover:from-white/40 transition-all duration-300 overflow-hidden"
       >
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -260,7 +260,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         </div>
 
         {/* Content - Rumah123 Style */}
-        <div className="relative p-2 space-y-1 bg-gradient-to-br from-slate-900/70 via-slate-800/50 to-slate-900/60 backdrop-blur-xl border-t border-white/15 before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/15 before:via-transparent before:to-accent/15 before:opacity-60 after:absolute after:inset-0 after:bg-gradient-to-bl after:from-rose-500/8 after:via-transparent after:to-cyan-500/10 after:opacity-50">
+        <div className="relative p-2 space-y-1 bg-gradient-to-br from-white/25 via-white/10 to-white/5 backdrop-blur-xl border-t border-white/20 before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/8 before:via-transparent before:to-accent/8 before:opacity-70 after:absolute after:inset-0 after:bg-gradient-to-bl after:from-rose-400/5 after:via-transparent after:to-cyan-400/6 after:opacity-60">
           {/* Price */}
           <div className="flex items-baseline gap-0.5">
             <span className="text-xs sm:text-sm font-bold text-primary">{priceInfo.main}</span>
