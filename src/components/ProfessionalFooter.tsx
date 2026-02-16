@@ -26,8 +26,8 @@ const Dock = ({ items }: { items: DockItem[] }) => {
   const animFrame = useRef<number>(0);
   const mouseXRef = useRef<number | null>(null);
 
-  const MAX_DISTANCE = 100;
-  const MAX_SCALE = 1.65;
+  const MAX_DISTANCE = 80;
+  const MAX_SCALE = 1.35;
 
   const computeScales = useCallback(() => {
     const mx = mouseXRef.current;
@@ -84,20 +84,20 @@ const Dock = ({ items }: { items: DockItem[] }) => {
             className="relative flex flex-col items-center justify-end cursor-pointer"
             style={{
               transition: 'transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              transform: `translateY(${-(scale - 1) * 18}px) scale(${scale})`,
+              transform: `translateY(${-(scale - 1) * 12}px) scale(${scale})`,
               transformOrigin: 'bottom center',
               zIndex: isHovered ? 10 : 1,
             }}
           >
             {/* Tooltip label */}
             <span
-              className="absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap pointer-events-none z-50
+              className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md text-[10px] font-medium whitespace-nowrap pointer-events-none z-50
                 bg-[hsl(210,30%,15%)] text-white dark:bg-[hsl(200,20%,85%)] dark:text-[hsl(210,50%,15%)]
                 shadow-lg"
               style={{
                 opacity: isHovered ? 1 : 0,
-                transform: `scale(${isHovered ? 1 / scale : 0.8}) translateY(${isHovered ? -4 : 0}px)`,
-                transition: 'opacity 0.15s ease, transform 0.15s ease',
+                transform: `scale(${isHovered ? 1 / scale : 0.8})`,
+                transition: 'opacity 0.12s ease, transform 0.12s ease',
               }}
             >
               {item.label}
