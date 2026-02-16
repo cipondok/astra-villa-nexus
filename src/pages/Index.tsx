@@ -16,7 +16,7 @@ import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, Star } from "lucide-react";
-import modernVillaCommunityBlue from "@/assets/modern-villa-community-blue.jpg";
+import astraHeroBanner from "@/assets/astra-hero-banner.jpeg";
 import { cn } from "@/lib/utils";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
@@ -495,93 +495,33 @@ const Index = () => {
       {/* Content Layer - full width edge-to-edge */}
       <div className="relative z-10 min-h-screen pb-20 md:pb-4">
         
-          {/* Hero Search Section - Modern Clean Design */}
-        <section className="relative w-full min-h-[380px] sm:min-h-[440px] md:min-h-[500px] lg:h-screen lg:min-h-[580px]" id="hero-section">
-            {/* Hero Background - Driven by admin config */}
-          <div className="absolute inset-0 z-0">
-            {heroConfig?.backgroundImage ? (
-              <img
-                src={heroConfig.backgroundImage}
-                alt="Hero background"
-                className="w-full h-full object-cover"
-                style={{
-                  filter: `brightness(${(heroConfig?.imageBrightness ?? 110) / 100}) saturate(${(heroConfig?.imageSaturation ?? 110) / 100}) blur(${heroConfig?.imageBlur ?? 0}px)`,
-                }}
-              />
-            ) : (
-              <div
-                className="w-full h-full bg-gradient-to-b from-primary/30 via-primary/20 to-background dark:from-primary/15 dark:via-primary/10 dark:to-background"
-                style={{
-                  filter: `brightness(${(heroConfig?.imageBrightness ?? 110) / 100}) saturate(${(heroConfig?.imageSaturation ?? 110) / 100})`,
-                }}
-              />
-            )}
-            {/* Bottom fade */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
-            {/* Gradient overlay from admin */}
-            {(heroConfig?.enableGradientOverlay ?? true) && (
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40" style={{ opacity: (heroConfig?.gradientOpacity ?? 40) / 100 }} />
-            )}
-            {/* Primary tint from admin */}
-            {(heroConfig?.enablePrimaryTint ?? true) && (
-              <div className="absolute inset-0 bg-primary/10" style={{ opacity: (heroConfig?.primaryTintOpacity ?? 5) / 100 }} />
-            )}
-            {/* Cloud overlay */}
-            <div className="absolute inset-0 opacity-20 dark:opacity-10" style={{ backgroundImage: 'radial-gradient(ellipse at 20% 50%, white 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, white 0%, transparent 50%)' }} />
-            {/* Dark mode glow */}
-            <div className="hidden dark:block absolute inset-0 opacity-15" style={{ backgroundImage: 'radial-gradient(ellipse at 50% 60%, hsl(200,100%,50%) 0%, transparent 60%)' }} />
-            {/* Floating particles from admin */}
-            {heroConfig?.enableParticles && (
-              <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                {Array.from({ length: heroConfig.particleCount }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
-                    style={{
-                      top: `${Math.random() * 100}%`,
-                      left: `${Math.random() * 100}%`,
-                      opacity: 0.3 + Math.random() * 0.4,
-                      animationDelay: `${Math.random() * 3}s`,
-                      animationDuration: `${2 + Math.random() * 3}s`,
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-            {/* Glow effect from admin */}
-            {heroConfig?.enableGlowEffect && (
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  backgroundImage: `radial-gradient(ellipse at 50% 50%, hsl(var(--primary) / ${(heroConfig.glowIntensity ?? 20) / 100}) 0%, transparent 60%)`,
-                }}
-              />
-            )}
-            {/* Floating decorative elements from admin */}
-            {heroConfig?.enableFloatingElements && (
-              <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute top-[15%] left-[10%] w-2 h-2 bg-white rounded-full animate-pulse opacity-60" />
-                <div className="absolute top-[25%] right-[15%] w-1.5 h-1.5 bg-white rounded-full animate-pulse opacity-40" style={{ animationDelay: '0.5s' }} />
-                <div className="absolute top-[10%] right-[30%] w-1 h-1 bg-white rounded-full animate-pulse opacity-50" style={{ animationDelay: '1s' }} />
-              </div>
-            )}
+          {/* Hero Banner Section - Full Width Image */}
+        <section className="relative w-full" id="hero-section">
+          {/* Hero Banner Image */}
+          <div className="w-full">
+            <img 
+              src={astraHeroBanner} 
+              alt="Astra Villa - Indonesia's Smart Property Platform" 
+              className="w-full h-auto object-cover"
+              style={{ maxHeight: isMobile ? '60vh' : '85vh' }}
+            />
           </div>
           
-          {/* Content */}
-          <div className={cn(
-            "relative z-10 w-full h-full flex flex-col items-center bg-transparent",
-            "pt-12 sm:pt-20 md:pt-28 lg:pt-36",
-            "px-0 pb-4 sm:px-0 sm:pb-6 md:px-0 md:pb-8"
-          )}>
-            {/* Simplified Header */}
-            <div className="mb-3 sm:mb-4 md:mb-6 text-center animate-in fade-in-50 duration-500">
-              {/* AI Badge - Using Design Tokens */}
+          {/* Bottom gradient fade into next section */}
+          <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-24 bg-gradient-to-t from-[hsl(210,100%,45%)] to-transparent" />
+        </section>
+
+        {/* Search Section - Blue themed */}
+        <section className="w-full bg-gradient-to-b from-[hsl(210,100%,45%)] via-[hsl(210,100%,50%)] to-[hsl(210,100%,55%)] py-4 sm:py-6 md:py-8">
+          <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
+            {/* AI Badge */}
+            <div className="text-center mb-3 sm:mb-4 animate-in fade-in-50 duration-500">
               <div className={cn(
                 "inline-flex items-center gap-1.5 mb-2 sm:mb-3",
                 "px-3 py-1 sm:px-4 sm:py-1.5",
-                "bg-[hsl(48,100%,52%)] dark:bg-[hsl(48,100%,50%)]/90 backdrop-blur-md",
-                "rounded-full border border-[hsl(48,100%,60%)]/40 dark:border-[hsl(48,100%,55%)]/30",
-                "shadow-lg shadow-[hsl(48,100%,52%)]/30 dark:shadow-[hsl(48,100%,50%)]/20"
+                "bg-[hsl(48,100%,52%)] dark:bg-[hsl(48,100%,50%)]/90",
+                "rounded-full border border-[hsl(48,100%,60%)]/40",
+                "shadow-lg shadow-[hsl(48,100%,52%)]/30"
               )}>
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-[hsl(210,60%,12%)]" />
                 <span className="text-[10px] sm:text-xs font-bold text-[hsl(210,60%,12%)] uppercase tracking-wide">
@@ -589,12 +529,11 @@ const Index = () => {
                 </span>
               </div>
               
-              {/* Title - Bold Typography */}
-              <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-1 sm:mb-2">
-                <span className="bg-gradient-to-r from-[hsl(48,100%,52%)] via-[hsl(200,100%,60%)] to-[hsl(280,80%,65%)] bg-clip-text text-transparent drop-shadow-lg animate-in fade-in-50 duration-700">
+              <h2 className="text-lg sm:text-xl md:text-3xl lg:text-4xl font-extrabold leading-tight mb-1 sm:mb-2">
+                <span className="bg-gradient-to-r from-[hsl(48,100%,52%)] via-white to-[hsl(48,100%,52%)] bg-clip-text text-transparent drop-shadow-lg">
                   {t.findYour}
                 </span>
-              </h1>
+              </h2>
               <p className="flex text-xs sm:text-sm md:text-base text-white/90 items-center justify-center gap-1.5 font-medium">
                 <Search className="h-3 w-3 sm:h-4 sm:w-4" />
                 {t.searchPowered}
@@ -602,59 +541,50 @@ const Index = () => {
             </div>
             
             {/* Search Panel */}
-            <div className="w-full max-w-7xl mx-auto px-3">
-              <Suspense fallback={<SearchPanelSkeleton />}>
-                <SearchErrorBoundary>
-                  <AstraSearchPanel
-                    language={language}
-                    onSearch={(searchData) => {
-                      setQuickSearch(searchData.searchQuery || "");
-                      handleQuickSearch(searchData);
-                    }}
-                    onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                    resultsCount={hasSearched ? searchResults.length : undefined}
-                  />
-                </SearchErrorBoundary>
-              </Suspense>
-              
-              {/* Retry Indicator */}
-              {isRetrying && (
-                <div className="absolute bottom-2 right-2 bg-primary text-primary-foreground px-3 py-1.5 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-bottom-2">
-                  <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                  <span className="text-xs font-medium">Retrying... ({retryCount}/3)</span>
-                </div>
-              )}
-            </div>
-
-            {/* Featured Properties Slideshow */}
-            <div className="w-full mt-4 md:mt-8">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Star className="h-3 w-3 md:h-4 md:w-4 text-[hsl(48,100%,52%)] fill-[hsl(48,100%,52%)]/50" />
-                <h2 className="text-xs md:text-sm font-semibold text-white/90">
-                  {t.featuredProperties}
-                </h2>
-                <Star className="h-3 w-3 md:h-4 md:w-4 text-[hsl(48,100%,52%)] fill-[hsl(48,100%,52%)]/50" />
+            <Suspense fallback={<SearchPanelSkeleton />}>
+              <SearchErrorBoundary>
+                <AstraSearchPanel
+                  language={language}
+                  onSearch={(searchData) => {
+                    setQuickSearch(searchData.searchQuery || "");
+                    handleQuickSearch(searchData);
+                  }}
+                  onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                  resultsCount={hasSearched ? searchResults.length : undefined}
+                />
+              </SearchErrorBoundary>
+            </Suspense>
+            
+            {/* Retry Indicator */}
+            {isRetrying && (
+              <div className="mt-2 bg-[hsl(48,100%,52%)] text-[hsl(210,60%,12%)] px-3 py-1.5 rounded-lg shadow-lg flex items-center justify-center gap-2 animate-in slide-in-from-bottom-2">
+                <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                <span className="text-xs font-bold">Retrying... ({retryCount}/3)</span>
               </div>
-              <Suspense fallback={
-                <div className="flex gap-2 px-3 overflow-hidden justify-center">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="flex-shrink-0 w-[130px] md:w-[160px] animate-pulse">
-                      <div className="h-16 md:h-24 bg-white/10 rounded-lg mb-1" />
-                      <div className="h-2 bg-white/10 rounded w-3/4" />
-                    </div>
-                  ))}
-                </div>
-              }>
-                <PropertySlideshow />
-              </Suspense>
-            </div>
+            )}
           </div>
 
-          {/* Scroll indicator - desktop only */}
-          <div className="hidden lg:flex absolute bottom-4 left-1/2 -translate-x-1/2 z-20 animate-bounce">
-            <div className="w-5 h-8 rounded-full border-2 border-white/30 flex items-start justify-center p-1">
-              <div className="w-1 h-2 bg-white/50 rounded-full" />
+          {/* Featured Properties Slideshow */}
+          <div className="w-full mt-4 md:mt-6">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Star className="h-3 w-3 md:h-4 md:w-4 text-[hsl(48,100%,52%)] fill-[hsl(48,100%,52%)]/50" />
+              <h3 className="text-xs md:text-sm font-semibold text-white">
+                {t.featuredProperties}
+              </h3>
+              <Star className="h-3 w-3 md:h-4 md:w-4 text-[hsl(48,100%,52%)] fill-[hsl(48,100%,52%)]/50" />
             </div>
+            <Suspense fallback={
+              <div className="flex gap-2 px-3 overflow-hidden justify-center">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="flex-shrink-0 w-[130px] md:w-[160px] animate-pulse">
+                    <div className="h-16 md:h-24 bg-white/10 rounded-lg mb-1" />
+                    <div className="h-2 bg-white/10 rounded w-3/4" />
+                  </div>
+                ))}
+              </div>
+            }>
+              <PropertySlideshow />
+            </Suspense>
           </div>
         </section>
 
@@ -702,7 +632,7 @@ const Index = () => {
         )}
 
         {/* AI Tools & Features */}
-        <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-primary/30 via-primary/20 to-primary/15 dark:from-primary/15 dark:via-primary/10 dark:to-primary/5">
+        <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-[hsl(210,100%,55%)] via-[hsl(210,100%,60%)] to-[hsl(210,80%,65%)]">
           <div className="w-full">
             <Suspense fallback={
               <div className="flex gap-2 justify-center py-3">
@@ -720,7 +650,7 @@ const Index = () => {
         </div>
 
         {/* Global Investment Platform */}
-        <div className="px-0 pt-3 sm:pt-4 bg-primary/20 dark:bg-primary/10">
+        <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-[hsl(210,80%,65%)] to-[hsl(210,70%,70%)]">
           <div className="w-full">
             <Suspense fallback={
               <div className="flex gap-3 justify-center py-3">
@@ -735,7 +665,7 @@ const Index = () => {
         </div>
 
         {/* Property Display Section */}
-        <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-primary/30 via-primary/20 to-background dark:from-primary/15 dark:via-primary/10 dark:to-background">
+        <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-[hsl(210,70%,70%)] via-[hsl(210,60%,75%)] to-background">
           <div className="w-full space-y-4">
             {hasSearched ? (
               <section className="bg-primary/10 backdrop-blur-sm rounded-xl shadow-md border border-primary/15 dark:bg-primary/5 dark:border-primary/10">
