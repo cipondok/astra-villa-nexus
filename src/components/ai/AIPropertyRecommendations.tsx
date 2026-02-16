@@ -189,22 +189,27 @@ const AIPropertyRecommendations = ({
   }
 
   return (
-    <Card className={cn("", className)}>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-primary" />
-          Recommended for You
-          <Badge variant="secondary" className="ml-2">
+    <Card className={cn("bg-card/40 backdrop-blur-xl border-white/20 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.08)]", className)}>
+      <CardHeader className="flex flex-row items-center justify-between pb-4">
+        <CardTitle className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20">
+            <Sparkles className="h-5 w-5 text-primary" />
+          </div>
+          <span className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            Recommended for You
+          </span>
+          <Badge className="ml-1 bg-primary/10 text-primary border border-primary/20 text-[10px] font-semibold">
             AI Powered
           </Badge>
         </CardTitle>
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
+          className="border-primary/20 hover:bg-primary/5"
           onClick={() => refetch()}
           disabled={isFetching}
         >
-          <RefreshCw className={cn("h-4 w-4 mr-1", isFetching && "animate-spin")} />
+          <RefreshCw className={cn("h-3.5 w-3.5 mr-1", isFetching && "animate-spin")} />
           Refresh
         </Button>
       </CardHeader>
@@ -282,17 +287,19 @@ const AIPropertyRecommendations = ({
               </div>
 
               {/* Content */}
-              <div className="p-3 space-y-2">
+              <div className="p-2.5 space-y-1.5">
                 <h3 
-                  className="font-medium line-clamp-1 cursor-pointer hover:text-primary"
+                  className="text-[11px] font-semibold text-foreground line-clamp-2 leading-snug cursor-pointer group-hover:text-primary transition-colors"
                   onClick={() => handlePropertyClick(property.id)}
                 >
                   {property.title}
                 </h3>
                 
-                <p className="text-lg font-bold text-primary">
-                  {formatPrice(property.price)}
-                </p>
+                <div className="border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2.5 py-1.5">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-base font-black text-accent tracking-tight leading-none">{formatPrice(property.price)}</span>
+                  </div>
+                </div>
 
                 <div className="flex items-center gap-1 bg-secondary/60 dark:bg-secondary/30 rounded px-1.5 py-0.5" title={property.city || property.location}>
                   <MapPin className="h-3 w-3 flex-shrink-0 text-primary" />
