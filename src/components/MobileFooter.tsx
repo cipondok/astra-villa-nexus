@@ -100,15 +100,6 @@ const MobileFooter = () => {
           <Button
             variant="ghost" size="sm"
             className="h-7 w-7 p-0 rounded-full"
-            style={socialIconStyle('rgba(210,240,230,0.6)')}
-            onClick={() => window.open('https://wa.me/6285716008080')}
-            aria-label="WhatsApp"
-          >
-            <MessageCircle className="h-3.5 w-3.5" style={{ color: '#0c404e' }} />
-          </Button>
-          <Button
-            variant="ghost" size="sm"
-            className="h-7 w-7 p-0 rounded-full"
             style={socialIconStyle('rgba(190,230,250,0.6)')}
             onClick={() => window.open('mailto:info@astravilla.com')}
             aria-label="Email"
