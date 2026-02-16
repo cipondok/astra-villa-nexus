@@ -28,7 +28,7 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { NetworkStatusIndicator } from "@/components/NetworkStatusIndicator";
 import { UserProfileHeader } from "@/components/user/UserProfileHeader";
 import { StickyHeaderSearch } from "@/components/search/StickyHeaderSearch";
-import ProfessionalFooter from "@/components/ProfessionalFooter";
+
 
 // Lazy load heavy components for better performance
 const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
@@ -912,9 +912,6 @@ const Index = () => {
             />
           </Suspense>
         )}
-
-        {/* Footer */}
-        <ProfessionalFooter language={language} />
       </div>
     </div>
   );
