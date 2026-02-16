@@ -720,7 +720,7 @@ const Index = () => {
         </div>
 
         {/* Global Investment Platform */}
-        <div className="px-3 sm:px-4 pt-3 sm:pt-4">
+        <div className="px-3 sm:px-4 pt-3 sm:pt-4 bg-primary/20 dark:bg-primary/10">
           <div className="w-full max-w-7xl mx-auto">
             <Suspense fallback={
               <div className="flex gap-3 justify-center py-3">
