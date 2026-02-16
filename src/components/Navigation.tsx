@@ -200,7 +200,7 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10 dark:bg-background dark:from-background dark:via-background dark:to-background border-b border-primary/20 dark:border-border shadow-sm shadow-primary/5 dark:shadow-none h-10 md:h-11 lg:h-12 transition-all duration-300 backdrop-blur-xl">
+      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios glass-popup backdrop-blur-2xl border-b border-primary/15 dark:border-primary/10 shadow-sm shadow-primary/5 h-10 md:h-11 lg:h-12 transition-all duration-300">
         <div className="w-full mx-auto px-1 sm:px-2 lg:px-4">
           <div className="flex items-center justify-between h-10 md:h-11 lg:h-12 gap-2">
             {/* Enhanced ASTRA Villa Logo with Animation - Left Corner */}
