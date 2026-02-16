@@ -69,7 +69,9 @@ const Dock = ({ items }: { items: DockItem[] }) => {
       ref={dockRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative flex items-end justify-center gap-3 px-5 py-2 pt-8 rounded-2xl overflow-visible
+      className="relative flex items-end gap-2 md:gap-3 px-3 md:px-5 py-2 pt-6 md:pt-8 rounded-2xl
+        overflow-x-auto overflow-y-visible md:overflow-visible md:justify-center
+        scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
         bg-[hsl(200,40%,85%/0.6)] border border-[hsl(200,50%,75%/0.5)] backdrop-blur-md
         dark:bg-[hsl(210,40%,10%/0.6)] dark:border-[hsl(200,35%,25%/0.5)]
         shadow-[0_4px_20px_hsl(200,50%,50%/0.15)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
@@ -107,12 +109,12 @@ const Dock = ({ items }: { items: DockItem[] }) => {
 
             {/* Icon box */}
             <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center
+              className="w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center flex-shrink-0
                 bg-[hsl(200,60%,92%)] border border-[hsl(200,50%,80%)] shadow-md
                 dark:bg-[hsl(210,40%,16%)] dark:border-[hsl(200,35%,28%)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]
                 transition-colors duration-150"
             >
-              <item.icon className="w-5 h-5 text-[hsl(210,60%,30%)] dark:text-[hsl(200,50%,72%)]" />
+              <item.icon className="w-4 h-4 md:w-5 md:h-5 text-[hsl(210,60%,30%)] dark:text-[hsl(200,50%,72%)]" />
             </div>
           </div>
         );
@@ -179,12 +181,12 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         dark:border-[hsl(210,40%,20%)] dark:from-[hsl(210,55%,8%)] dark:via-[hsl(200,50%,10%)] dark:to-[hsl(210,45%,6%)]
         shadow-[0_-8px_30px_-10px_hsl(200,70%,50%/0.25)] dark:shadow-[0_-10px_40px_-15px_rgba(0,10,20,0.5)]"
     >
-      {/* Logo + Dock in same row, logo left, dock centered */}
-      <div className="flex items-end gap-4 mb-4">
-        <div className="flex-shrink-0 opacity-70 mix-blend-luminosity dark:mix-blend-screen dark:opacity-60">
+      {/* Logo + Dock */}
+      <div className="flex flex-col md:flex-row items-center md:items-end gap-4 mb-4">
+        <div className="flex-shrink-0 opacity-70 mix-blend-luminosity dark:mix-blend-screen dark:opacity-60 hidden md:block">
           <AnimatedLogo src={footerLogoUrl} size="lg" />
         </div>
-        <div className="flex-1 flex justify-center">
+        <div className="w-full md:flex-1 flex justify-center">
           <Dock items={allDockItems} />
         </div>
       </div>
