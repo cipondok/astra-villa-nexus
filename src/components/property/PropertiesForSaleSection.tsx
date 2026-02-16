@@ -93,7 +93,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
   }
 
   return (
-    <section className="rounded-xl p-3">
+    <section className="w-full p-3">
       <div className="mb-3 flex items-center justify-center gap-2">
         <Home className="h-4 w-4 text-accent" />
         <h2 className="text-sm font-semibold text-foreground">Properti Dijual</h2>
