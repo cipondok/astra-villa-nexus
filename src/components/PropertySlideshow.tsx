@@ -241,7 +241,7 @@ const PropertySlideshow = () => {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-[11px] font-medium text-foreground line-clamp-2 leading-snug group-hover/card:text-primary transition-colors">
+                  <h3 className="text-[11px] font-medium text-foreground line-clamp-1 leading-snug group-hover/card:text-primary transition-colors truncate">
                     {property.title}
                   </h3>
 
