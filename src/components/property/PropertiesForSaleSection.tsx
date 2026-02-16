@@ -188,9 +188,9 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                     </div>
                   )}
                   {property.area_sqm && (
-                    <div className="flex items-center gap-1 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2 py-0.5">
-                      <span className="text-[9px] text-accent font-bold">LB</span>
-                      <span className="text-[11px] text-foreground font-bold">{property.area_sqm}m²</span>
+                    <div className="flex items-center gap-1.5 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2.5 py-1">
+                      <span className="text-[11px] text-accent font-bold">LB</span>
+                      <span className="text-[13px] text-foreground font-bold">{property.area_sqm}m²</span>
                     </div>
                   )}
                 </div>
