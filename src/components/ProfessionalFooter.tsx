@@ -94,15 +94,15 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     margin: '0',
     borderRadius: '0',
     background: `
-      radial-gradient(circle at 10% 20%, rgba(255,255,255,0.95) 0%, transparent 40%),
-      radial-gradient(circle at 90% 70%, rgba(150,210,255,0.6) 5%, transparent 40%),
-      linear-gradient(125deg, rgba(255,255,255,0.92) 0%, rgba(130,200,240,0.4) 18%, rgba(140,210,230,0.5) 42%, rgba(180,220,250,0.7) 68%, rgba(255,255,255,0.96) 92%)
+      radial-gradient(circle at 10% 20%, rgba(15,25,40,0.98) 0%, transparent 40%),
+      radial-gradient(circle at 90% 70%, rgba(30,80,120,0.6) 5%, transparent 40%),
+      linear-gradient(125deg, rgba(10,20,35,0.95) 0%, rgba(20,60,100,0.7) 18%, rgba(15,45,80,0.8) 42%, rgba(25,70,110,0.6) 68%, rgba(10,20,35,0.97) 92%)
     `,
     backdropFilter: 'blur(25px)',
     WebkitBackdropFilter: 'blur(25px)',
     border: 'none',
-    borderTop: '1px solid rgba(180,220,255,0.7)',
-    boxShadow: '0 -10px 40px -15px rgba(0,20,30,0.3), inset 0 1px 6px rgba(255,255,255,0.9), inset 0 0 35px rgba(150,210,250,0.3)',
+    borderTop: '1px solid rgba(80,160,220,0.3)',
+    boxShadow: '0 -10px 40px -15px rgba(0,10,20,0.5), inset 0 1px 6px rgba(80,160,220,0.15), inset 0 0 35px rgba(30,80,130,0.2)',
     padding: '1.2rem 2rem',
     transition: 'box-shadow 0.3s ease, border-color 0.2s ease',
   };
@@ -121,27 +121,27 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     gap: '0.9rem 2rem',
     margin: '1.8rem 0',
     padding: '1rem 1.8rem',
-    background: 'rgba(10,50,60,0.1)',
+    background: 'rgba(20,60,100,0.3)',
     backdropFilter: 'blur(12px)',
     WebkitBackdropFilter: 'blur(12px)',
     borderRadius: '12px',
-    border: '1px solid rgba(150,210,250,0.5)',
+    border: '1px solid rgba(60,140,200,0.3)',
   };
 
   const socialIconBase: React.CSSProperties = {
     width: '48px',
     height: '48px',
     borderRadius: '50%',
-    background: 'rgba(255,255,255,0.4)',
+    background: 'rgba(30,70,110,0.6)',
     backdropFilter: 'blur(8px)',
     WebkitBackdropFilter: 'blur(8px)',
-    border: '1.5px solid rgba(150,210,250,0.8)',
-    boxShadow: '0 8px 18px -8px black, inset 0 2px 8px rgba(255,255,250,0.9)',
+    border: '1.5px solid rgba(80,160,220,0.5)',
+    boxShadow: '0 8px 18px -8px rgba(0,0,0,0.5), inset 0 2px 8px rgba(60,140,200,0.3)',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '1.7rem',
-    color: '#0c404e',
+    color: '#a0d0f0',
     transition: 'all 0.2s ease',
     cursor: 'pointer',
   };
@@ -154,13 +154,13 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     gap: '1.2rem',
     padding: '1rem 1.8rem',
     fontSize: '0.95rem',
-    color: '#022b36',
+    color: '#8cbfe0',
     fontWeight: 450,
     marginTop: '1rem',
   };
 
   const colTitleGradient: React.CSSProperties = {
-    background: 'linear-gradient(135deg, #b8dff5, #c1e4f0, #a0d4f0)',
+    background: 'linear-gradient(135deg, #7ec8f0, #a0d8f5, #5bb8e8)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text',
@@ -172,7 +172,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
 
   const linkStyle: React.CSSProperties = {
     textDecoration: 'none',
-    color: '#0c4455',
+    color: '#a0d0f0',
     fontWeight: 450,
     padding: '0.2rem 0.4rem',
     transition: 'all 0.15s ease',
@@ -185,13 +185,13 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   };
 
   const dotColors = [
-    'rgba(130,200,240,0.7)',
-    'rgba(190,230,250,0.7)',
-    'rgba(160,215,245,0.8)',
-    'rgba(210,235,250,0.8)',
-    'rgba(140,205,240,0.7)',
-    'rgba(180,220,250,0.7)',
-    'rgba(120,195,235,0.75)',
+    'rgba(40,110,170,0.7)',
+    'rgba(60,140,200,0.7)',
+    'rgba(50,120,180,0.8)',
+    'rgba(70,150,210,0.8)',
+    'rgba(45,115,175,0.7)',
+    'rgba(55,130,190,0.7)',
+    'rgba(35,100,160,0.75)',
   ];
 
   const quickLinks = [
@@ -219,10 +219,10 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   ];
 
   const socialIcons = [
-    { icon: '𝕏', bg: 'rgba(130,200,240,0.5)', label: 'Twitter' },
-    { icon: 'ⓕ', bg: 'rgba(190,230,250,0.6)', label: 'Facebook' },
-    { icon: <Instagram className="w-5 h-5" />, bg: 'rgba(160,215,245,0.7)', label: 'Instagram' },
-    { icon: <Youtube className="w-5 h-5" />, bg: 'rgba(210,235,250,0.6)', label: 'YouTube' },
+    { icon: '𝕏', bg: 'rgba(30,80,130,0.6)', label: 'Twitter' },
+    { icon: 'ⓕ', bg: 'rgba(25,70,120,0.6)', label: 'Facebook' },
+    { icon: <Instagram className="w-5 h-5" />, bg: 'rgba(35,85,135,0.6)', label: 'Instagram' },
+    { icon: <Youtube className="w-5 h-5" />, bg: 'rgba(30,75,125,0.6)', label: 'YouTube' },
   ];
 
   return (
@@ -235,16 +235,16 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             <img src={footerLogoUrl} alt={currentText.company} className="h-7 max-w-[100px] object-contain" loading="lazy" />
           ) : (
             <>
-              <div className="p-1 rounded" style={{ background: 'rgba(130,200,240,0.4)' }}>
-                <Rocket className="w-4 h-4" style={{ color: '#0c404e' }} />
+              <div className="p-1 rounded" style={{ background: 'rgba(40,100,160,0.5)' }}>
+                <Rocket className="w-4 h-4" style={{ color: '#a0d0f0' }} />
               </div>
-              <span className="text-sm font-bold" style={{ color: '#0a3340' }}>{currentText.company}</span>
+              <span className="text-sm font-bold" style={{ color: '#c0e0f5' }}>{currentText.company}</span>
             </>
           )}
         </div>
 
         {/* Divider */}
-        <span style={{ color: 'rgba(130,200,240,0.6)' }}>|</span>
+        <span style={{ color: 'rgba(60,140,200,0.4)' }}>|</span>
 
         {/* All links as icon-only with tooltip on hover */}
         {quickLinks.map(link => (
@@ -256,7 +256,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           </Link>
         ))}
 
-        <span style={{ color: 'rgba(130,200,240,0.6)' }}>|</span>
+        <span style={{ color: 'rgba(60,140,200,0.4)' }}>|</span>
 
         {serviceLinks.map(link => (
           <span key={link.label} style={linkStyle} className="relative group cursor-pointer hover:opacity-70 inline-flex items-center justify-center" title={link.label}>
@@ -267,7 +267,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           </span>
         ))}
 
-        <span style={{ color: 'rgba(130,200,240,0.6)' }}>|</span>
+        <span style={{ color: 'rgba(60,140,200,0.4)' }}>|</span>
 
         {supportLinks.map(link => (
           <span key={link.label} style={linkStyle} className="relative group cursor-pointer hover:opacity-70 inline-flex items-center justify-center" title={link.label}>
@@ -293,9 +293,9 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                 height: '32px',
                 borderRadius: '50%',
                 background: s.bg,
-                border: '1px solid rgba(150,210,250,0.6)',
-                boxShadow: '0 4px 10px -4px rgba(0,0,0,0.2), inset 0 1px 4px rgba(255,255,250,0.8)',
-                color: '#0c404e',
+                border: '1px solid rgba(60,140,200,0.4)',
+                boxShadow: '0 4px 10px -4px rgba(0,0,0,0.4), inset 0 1px 4px rgba(60,140,200,0.2)',
+                color: '#a0d0f0',
                 fontSize: '1rem',
               }}
               aria-label={s.label}
@@ -303,22 +303,22 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               {s.icon}
             </a>
           ))}
-          <span className="text-xs" style={{ color: '#083945' }}>@astravilla</span>
+          <span className="text-xs" style={{ color: '#8cbfe0' }}>@astravilla</span>
         </div>
 
-        <span style={{ color: 'rgba(130,200,240,0.6)' }}>|</span>
+        <span style={{ color: 'rgba(60,140,200,0.4)' }}>|</span>
 
         {/* Copyright */}
-        <span className="text-xs" style={{ color: '#022b36', fontWeight: 450 }}>
+        <span className="text-xs" style={{ color: '#8cbfe0', fontWeight: 450 }}>
           © {new Date().getFullYear()} {currentText.company}. {currentText.allRights}
         </span>
 
-        <span className="text-xs" style={{ color: '#02222b' }}>✦ Astra Villa ✦</span>
+        <span className="text-xs" style={{ color: '#7ab5d8' }}>✦ Astra Villa ✦</span>
 
         {/* Glass dots inline */}
         <div className="flex items-center gap-1.5">
           {dotColors.map((bg, i) => (
-            <div key={i} className="w-2 h-2 rounded-full" style={{ background: bg, boxShadow: 'inset 0 1px 3px white' }} />
+            <div key={i} className="w-2 h-2 rounded-full" style={{ background: bg, boxShadow: 'inset 0 1px 3px rgba(80,160,220,0.4)' }} />
           ))}
         </div>
       </div>
