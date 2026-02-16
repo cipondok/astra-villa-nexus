@@ -591,7 +591,7 @@ const Index = () => {
               
               {/* Title - Bold Typography */}
               <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-1 sm:mb-2">
-                <span className="text-white drop-shadow-lg">
+                <span className="bg-gradient-to-r from-[hsl(48,100%,52%)] via-[hsl(200,100%,60%)] to-[hsl(280,80%,65%)] bg-clip-text text-transparent drop-shadow-lg animate-in fade-in-50 duration-700">
                   {t.findYour}
                 </span>
               </h1>
