@@ -511,6 +511,42 @@ const PropertyImageManager = () => {
     }
   };
 
+  // Bulk delete ALL broken images across all properties on the page
+  const handleBulkDeleteBroken = async () => {
+    const targetProps = selectedPropertyIds.size > 0
+      ? properties.filter(p => selectedPropertyIds.has(p.id))
+      : paginatedProperties;
+
+    let totalRemoved = 0;
+    for (const prop of targetProps) {
+      const imgs = getImages(prop);
+      const brokenUrls = imgs.filter(url => healthResults[url]?.status === 'broken');
+      if (brokenUrls.length === 0) continue;
+
+      const validImages = imgs.filter(url => healthResults[url]?.status !== 'broken');
+      const newThumb = brokenUrls.includes(prop.thumbnail_url)
+        ? (validImages[0] || null)
+        : prop.thumbnail_url;
+
+      try {
+        const { error } = await supabase
+          .from("properties")
+          .update({ images: validImages, thumbnail_url: newThumb })
+          .eq("id", prop.id);
+        if (!error) totalRemoved += brokenUrls.length;
+      } catch { /* continue */ }
+    }
+
+    if (totalRemoved > 0) {
+      showSuccess("Bulk Cleanup", `Deleted ${totalRemoved} broken image(s)`);
+      queryClient.invalidateQueries({ queryKey: ["admin-property-images"] });
+      queryClient.invalidateQueries({ queryKey: ["simple-properties"] });
+      clearResults();
+    } else {
+      showError("No broken images", "Run health check first to detect broken images.");
+    }
+  };
+
   return (
     <div className="space-y-3">
       {/* Stats */}
@@ -579,6 +615,17 @@ const PropertyImageManager = () => {
               {healthChecking ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
               {healthChecking ? "Checking..." : "Check This Page"}
             </Button>
+            {brokenCount > 0 && (
+              <Button
+                size="sm"
+                variant="destructive"
+                className="h-7 text-[10px] gap-1.5"
+                onClick={handleBulkDeleteBroken}
+              >
+                <Trash2 className="h-3 w-3" />
+                Delete All Broken ({brokenCount})
+              </Button>
+            )}
           </div>
           {checkedCount > 0 && (
             <div className="space-y-1.5">
