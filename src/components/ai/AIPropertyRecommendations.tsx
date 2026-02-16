@@ -232,7 +232,7 @@ const AIPropertyRecommendations = ({
           {recommendations.map((property) => (
             <div
               key={property.id}
-              className="group relative bg-card border rounded-lg overflow-hidden hover:shadow-lg transition-all"
+              className="group relative bg-card/60 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-lg overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:border-accent/30 transition-all"
             >
               {/* Image */}
               <div 
@@ -294,24 +294,32 @@ const AIPropertyRecommendations = ({
                   {formatPrice(property.price)}
                 </p>
 
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <MapPin className="h-3 w-3" />
-                  <span className="line-clamp-1">{property.city || property.location}</span>
+                <div className="flex items-center gap-1 bg-secondary/60 dark:bg-secondary/30 rounded px-1.5 py-0.5" title={property.city || property.location}>
+                  <MapPin className="h-3 w-3 flex-shrink-0 text-primary" />
+                  <span className="text-[10px] text-foreground/80 font-medium truncate">{property.city || property.location}</span>
                 </div>
 
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Bed className="h-3 w-3" />
-                    {property.bedrooms}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Bath className="h-3 w-3" />
-                    {property.bathrooms}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Maximize className="h-3 w-3" />
-                    {property.area_sqm}m²
-                  </span>
+                <div className="flex items-center gap-1 pt-1.5 border-t border-border/30">
+                  {property.bedrooms > 0 && (
+                    <div className="flex items-center gap-0.5 border border-primary/30 bg-primary/10 dark:bg-primary/20 rounded px-1.5 py-0.5">
+                      <Bed className="h-3 w-3 text-primary" />
+                      <span className="text-[11px] text-foreground font-bold">{property.bedrooms}</span>
+                      <span className="text-[9px] text-muted-foreground font-semibold">KT</span>
+                    </div>
+                  )}
+                  {property.bathrooms > 0 && (
+                    <div className="flex items-center gap-0.5 border border-primary/30 bg-primary/10 dark:bg-primary/20 rounded px-1.5 py-0.5">
+                      <Bath className="h-3 w-3 text-primary" />
+                      <span className="text-[11px] text-foreground font-bold">{property.bathrooms}</span>
+                      <span className="text-[9px] text-muted-foreground font-semibold">KM</span>
+                    </div>
+                  )}
+                  {property.area_sqm && (
+                    <div className="flex items-center gap-0.5 border border-primary/30 bg-primary/10 dark:bg-primary/20 rounded px-1.5 py-0.5">
+                      <span className="text-[9px] text-primary font-bold">LB</span>
+                      <span className="text-[11px] text-foreground font-bold">{property.area_sqm}m²</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* AI Explanation Preview */}
