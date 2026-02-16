@@ -1602,7 +1602,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     <>
       {/* Floating chat button with quick actions on hover - draggable and always visible */}
       {!isOpen && (
-        <div className="fixed bottom-3 right-3 z-[99999] pointer-events-auto group" onMouseEnter={handleFirstHover}>
+        <div className="fixed bottom-3 right-3 z-[99999] pointer-events-none group" onMouseEnter={handleFirstHover}>
           {/* Pulsing glow hint animation for first-time users */}
           {!hasSeenQuickActions && !showQuickActionsHint && (
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 animate-pulse blur-xl" />
@@ -1623,7 +1623,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           
           {/* Quick Action Items - Show on hover, hint, or if pinned */}
           <div className={cn(
-            "absolute bottom-20 right-0 transition-all duration-700 flex flex-col gap-3",
+            "absolute bottom-[140px] right-0 transition-all duration-700 flex flex-col gap-3",
             showQuickActionsHint || pinnedActions.size > 0
               ? "opacity-100 pointer-events-auto" 
               : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
@@ -1702,7 +1702,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               href="https://wa.me/6285716008080"
               target="_blank"
               rel="noopener noreferrer"
-              className="relative h-[55px] w-[55px] rounded-full flex items-center justify-center
+              className="relative z-[100000] h-[55px] w-[55px] rounded-full flex items-center justify-center
                 bg-gradient-to-br from-background/90 via-background/80 to-[hsl(145,63%,49%)/0.2]
                 shadow-[0_4px_24px_hsla(145,63%,49%,0.3),0_8px_40px_hsla(145,63%,49%,0.2)]
                 border-2 border-[hsl(145,63%,49%)/0.5] backdrop-blur-xl
@@ -1716,7 +1716,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             </a>
 
             {/* Main Chat Button */}
-            <div className="relative">
+            <div className="relative pointer-events-auto">
             {/* Tips Popup */}
             <ChatbotTipsPopup
               isVisible={showTipsPopup && !isOpen}
