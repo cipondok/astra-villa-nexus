@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Rocket, Instagram, Youtube, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, CircleHelp, PhoneCall, MapPin, Glasses, UserCheck } from "lucide-react";
 import AnimatedLogo from "@/components/AnimatedLogo";
@@ -14,93 +14,49 @@ interface DockItem {
   to?: string;
 }
 
-const DockIcon = ({
-  item,
-  mouseX,
-  index,
-  totalItems,
-}: {
-  item: DockItem;
-  mouseX: number | null;
-  index: number;
-  totalItems: number;
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-
-  // Calculate scale based on distance from mouse
-  let scale = 1;
-  if (mouseX !== null && ref.current) {
-    const rect = ref.current.getBoundingClientRect();
-    const iconCenterX = rect.left + rect.width / 2;
-    const distance = Math.abs(mouseX - iconCenterX);
-    const maxDistance = 120;
-    scale = Math.max(1, 1.8 - (distance / maxDistance) * 0.8);
-    if (distance > maxDistance) scale = 1;
-  }
-
-  const isHovered = scale > 1.3;
-
-  const content = (
-    <div
-      ref={ref}
-      className="relative flex flex-col items-center justify-end cursor-pointer"
-      style={{
-        transition: 'transform 0.15s cubic-bezier(0.25, 0.1, 0.25, 1)',
-        transform: `scale(${scale})`,
-        transformOrigin: 'bottom center',
-        zIndex: isHovered ? 10 : 1,
-      }}
-    >
-      {/* Label on hover */}
-      <span
-        className="absolute -top-9 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap pointer-events-none
-          bg-[hsl(210,30%,15%)] text-white dark:bg-[hsl(200,20%,85%)] dark:text-[hsl(210,50%,15%)]
-          shadow-lg"
-        style={{
-          opacity: isHovered ? 1 : 0,
-          transition: 'opacity 0.15s ease',
-        }}
-      >
-        {item.label}
-        {/* Arrow */}
-        <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45
-          bg-[hsl(210,30%,15%)] dark:bg-[hsl(200,20%,85%)]" />
-      </span>
-
-      {/* Icon container */}
-      <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center
-          bg-[hsl(200,60%,92%)] border border-[hsl(200,50%,80%)] shadow-md
-          dark:bg-[hsl(210,40%,16%)] dark:border-[hsl(200,35%,28%)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]
-          transition-colors duration-150"
-      >
-        <item.icon
-          className="w-5 h-5 text-[hsl(210,60%,30%)] dark:text-[hsl(200,50%,72%)]"
-        />
-      </div>
-    </div>
-  );
-
-  if (item.to) {
-    return (
-      <Link to={item.to} className="no-underline">
-        {content}
-      </Link>
-    );
-  }
-  return content;
-};
-
+/**
+ * macOS-style Dock with proximity magnification.
+ * Uses useEffect + refs so getBoundingClientRect is read outside render.
+ */
 const Dock = ({ items }: { items: DockItem[] }) => {
-  const [mouseX, setMouseX] = useState<number | null>(null);
   const dockRef = useRef<HTMLDivElement>(null);
+  const iconRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [scales, setScales] = useState<number[]>(() => items.map(() => 1));
+  const animFrame = useRef<number>(0);
+  const mouseXRef = useRef<number | null>(null);
+
+  const MAX_DISTANCE = 100; // px radius of effect
+  const MAX_SCALE = 1.65;
+
+  const computeScales = useCallback(() => {
+    const mx = mouseXRef.current;
+    const newScales = items.map((_, i) => {
+      const el = iconRefs.current[i];
+      if (mx === null || !el) return 1;
+      const rect = el.getBoundingClientRect();
+      const center = rect.left + rect.width / 2;
+      const dist = Math.abs(mx - center);
+      if (dist > MAX_DISTANCE) return 1;
+      // cosine ease for smooth falloff
+      return 1 + (MAX_SCALE - 1) * (0.5 + 0.5 * Math.cos((Math.PI * dist) / MAX_DISTANCE));
+    });
+    setScales(newScales);
+  }, [items.length]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    setMouseX(e.clientX);
-  }, []);
+    mouseXRef.current = e.clientX;
+    cancelAnimationFrame(animFrame.current);
+    animFrame.current = requestAnimationFrame(computeScales);
+  }, [computeScales]);
 
   const handleMouseLeave = useCallback(() => {
-    setMouseX(null);
+    mouseXRef.current = null;
+    cancelAnimationFrame(animFrame.current);
+    setScales(items.map(() => 1));
+  }, [items.length]);
+
+  useEffect(() => {
+    return () => cancelAnimationFrame(animFrame.current);
   }, []);
 
   return (
@@ -108,20 +64,62 @@ const Dock = ({ items }: { items: DockItem[] }) => {
       ref={dockRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="flex items-end justify-center gap-1.5 px-4 py-2 rounded-2xl
+      className="flex items-end justify-center gap-1 px-4 py-2 rounded-2xl
         bg-[hsl(200,40%,85%/0.6)] border border-[hsl(200,50%,75%/0.5)] backdrop-blur-md
         dark:bg-[hsl(210,40%,10%/0.6)] dark:border-[hsl(200,35%,25%/0.5)]
         shadow-[0_4px_20px_hsl(200,50%,50%/0.15)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
     >
-      {items.map((item, i) => (
-        <DockIcon
-          key={item.label}
-          item={item}
-          mouseX={mouseX}
-          index={i}
-          totalItems={items.length}
-        />
-      ))}
+      {items.map((item, i) => {
+        const scale = scales[i] ?? 1;
+        const isHovered = scale > 1.35;
+
+        const iconEl = (
+          <div
+            ref={(el) => { iconRefs.current[i] = el; }}
+            className="relative flex flex-col items-center justify-end cursor-pointer"
+            style={{
+              transition: 'transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              transform: `translateY(${-(scale - 1) * 18}px) scale(${scale})`,
+              transformOrigin: 'bottom center',
+              zIndex: isHovered ? 10 : 1,
+            }}
+          >
+            {/* Tooltip label */}
+            <span
+              className="absolute -top-10 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap pointer-events-none
+                bg-[hsl(210,30%,15%)] text-white dark:bg-[hsl(200,20%,85%)] dark:text-[hsl(210,50%,15%)]
+                shadow-lg"
+              style={{
+                opacity: isHovered ? 1 : 0,
+                transform: `scale(${isHovered ? 1 / scale : 0.8})`,
+                transition: 'opacity 0.12s ease, transform 0.12s ease',
+              }}
+            >
+              {item.label}
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45
+                bg-[hsl(210,30%,15%)] dark:bg-[hsl(200,20%,85%)]" />
+            </span>
+
+            {/* Icon box */}
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center
+                bg-[hsl(200,60%,92%)] border border-[hsl(200,50%,80%)] shadow-md
+                dark:bg-[hsl(210,40%,16%)] dark:border-[hsl(200,35%,28%)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]
+                transition-colors duration-150"
+            >
+              <item.icon className="w-5 h-5 text-[hsl(210,60%,30%)] dark:text-[hsl(200,50%,72%)]" />
+            </div>
+          </div>
+        );
+
+        return item.to ? (
+          <Link key={item.label} to={item.to} className="no-underline">
+            {iconEl}
+          </Link>
+        ) : (
+          <div key={item.label}>{iconEl}</div>
+        );
+      })}
     </div>
   );
 };
