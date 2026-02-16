@@ -1,8 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Rocket, Phone, Mail, Facebook, Twitter, Instagram, Youtube, Handshake, ChevronDown, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, CircleHelp, PhoneCall, Shield, FileText, Cookie, MapPin, Glasses, UserCheck } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { Rocket, Instagram, Youtube, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, CircleHelp, PhoneCall, MapPin, Glasses, UserCheck } from "lucide-react";
 import AnimatedLogo from "@/components/AnimatedLogo";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 
@@ -10,47 +8,144 @@ interface ProfessionalFooterProps {
   language: "en" | "id";
 }
 
+interface DockItem {
+  label: string;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  to?: string;
+}
+
+const DockIcon = ({
+  item,
+  mouseX,
+  index,
+  totalItems,
+}: {
+  item: DockItem;
+  mouseX: number | null;
+  index: number;
+  totalItems: number;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Calculate scale based on distance from mouse
+  let scale = 1;
+  if (mouseX !== null && ref.current) {
+    const rect = ref.current.getBoundingClientRect();
+    const iconCenterX = rect.left + rect.width / 2;
+    const distance = Math.abs(mouseX - iconCenterX);
+    const maxDistance = 120;
+    scale = Math.max(1, 1.8 - (distance / maxDistance) * 0.8);
+    if (distance > maxDistance) scale = 1;
+  }
+
+  const isHovered = scale > 1.3;
+
+  const content = (
+    <div
+      ref={ref}
+      className="relative flex flex-col items-center justify-end cursor-pointer"
+      style={{
+        transition: 'transform 0.15s cubic-bezier(0.25, 0.1, 0.25, 1)',
+        transform: `scale(${scale})`,
+        transformOrigin: 'bottom center',
+        zIndex: isHovered ? 10 : 1,
+      }}
+    >
+      {/* Label on hover */}
+      <span
+        className="absolute -top-9 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap pointer-events-none
+          bg-[hsl(210,30%,15%)] text-white dark:bg-[hsl(200,20%,85%)] dark:text-[hsl(210,50%,15%)]
+          shadow-lg"
+        style={{
+          opacity: isHovered ? 1 : 0,
+          transition: 'opacity 0.15s ease',
+        }}
+      >
+        {item.label}
+        {/* Arrow */}
+        <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45
+          bg-[hsl(210,30%,15%)] dark:bg-[hsl(200,20%,85%)]" />
+      </span>
+
+      {/* Icon container */}
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center
+          bg-[hsl(200,60%,92%)] border border-[hsl(200,50%,80%)] shadow-md
+          dark:bg-[hsl(210,40%,16%)] dark:border-[hsl(200,35%,28%)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]
+          transition-colors duration-150"
+      >
+        <item.icon
+          className="w-5 h-5 text-[hsl(210,60%,30%)] dark:text-[hsl(200,50%,72%)]"
+        />
+      </div>
+    </div>
+  );
+
+  if (item.to) {
+    return (
+      <Link to={item.to} className="no-underline">
+        {content}
+      </Link>
+    );
+  }
+  return content;
+};
+
+const Dock = ({ items }: { items: DockItem[] }) => {
+  const [mouseX, setMouseX] = useState<number | null>(null);
+  const dockRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    setMouseX(e.clientX);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setMouseX(null);
+  }, []);
+
+  return (
+    <div
+      ref={dockRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="flex items-end justify-center gap-1.5 px-4 py-2 rounded-2xl
+        bg-[hsl(200,40%,85%/0.6)] border border-[hsl(200,50%,75%/0.5)] backdrop-blur-md
+        dark:bg-[hsl(210,40%,10%/0.6)] dark:border-[hsl(200,35%,25%/0.5)]
+        shadow-[0_4px_20px_hsl(200,50%,50%/0.15)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
+    >
+      {items.map((item, i) => (
+        <DockIcon
+          key={item.label}
+          item={item}
+          mouseX={mouseX}
+          index={i}
+          totalItems={items.length}
+        />
+      ))}
+    </div>
+  );
+};
+
 const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const { logoUrl: footerLogoUrl } = useBrandingLogo('footerLogo');
 
-  const text = {
-    en: {
-      company: "Astra Villa",
-      tagline: "Your trusted real estate partner",
-      allRights: "All rights reserved.",
-      home: "Home",
-      buy: "Buy",
-      rent: "Rent",
-      community: "Community",
-      propertySearch: "Property Search",
-      consultation: "Consultation",
-      valuation: "Property Valuation",
-      investment: "Investment Advisory",
-      help: "Help Center",
-      faq: "FAQ",
-      contactUs: "Contact Us",
-    },
-    id: {
-      company: "Astra Villa",
-      tagline: "Mitra real estate terpercaya Anda",
-      allRights: "Semua hak dilindungi.",
-      home: "Beranda",
-      buy: "Beli",
-      rent: "Sewa",
-      community: "Komunitas",
-      propertySearch: "Pencarian Properti",
-      consultation: "Konsultasi",
-      valuation: "Valuasi Properti",
-      investment: "Konsultan Investasi",
-      help: "Pusat Bantuan",
-      faq: "FAQ",
-      contactUs: "Hubungi Kami",
-    },
+  const currentText = language === "en" ? {
+    company: "Astra Villa",
+    allRights: "All rights reserved.",
+    home: "Home", buy: "Buy", rent: "Rent", community: "Community",
+    propertySearch: "Property Search", consultation: "Consultation",
+    valuation: "Property Valuation", investment: "Investment Advisory",
+    help: "Help Center", faq: "FAQ", contactUs: "Contact Us",
+  } : {
+    company: "Astra Villa",
+    allRights: "Semua hak dilindungi.",
+    home: "Beranda", buy: "Beli", rent: "Sewa", community: "Komunitas",
+    propertySearch: "Pencarian Properti", consultation: "Konsultasi",
+    valuation: "Valuasi Properti", investment: "Konsultan Investasi",
+    help: "Pusat Bantuan", faq: "FAQ", contactUs: "Hubungi Kami",
   };
 
-  const currentText = text[language];
-
-  const quickLinks = [
+  const allDockItems: DockItem[] = [
     { to: "/", label: currentText.home, icon: Home },
     { to: "/dijual", label: currentText.buy, icon: ShoppingCart },
     { to: "/disewa", label: currentText.rent, icon: Key },
@@ -59,16 +154,10 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     { to: "/community", label: currentText.community, icon: UsersRound },
     { to: "/agents", label: language === "en" ? "Find Agents" : "Cari Agen", icon: UserCheck },
     { to: "/development", label: language === "en" ? "Development" : "Pengembangan", icon: Construction },
-  ];
-
-  const serviceLinks = [
     { label: currentText.propertySearch, icon: Search },
     { label: currentText.consultation, icon: MessageSquare },
     { label: currentText.valuation, icon: Calculator },
     { label: currentText.investment, icon: PiggyBank },
-  ];
-
-  const supportLinks = [
     { label: currentText.help, icon: HelpCircle },
     { label: currentText.faq, icon: CircleHelp },
     { label: currentText.contactUs, icon: PhoneCall },
@@ -77,86 +166,39 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const socialIcons = [
     { icon: '𝕏', label: 'Twitter' },
     { icon: 'ⓕ', label: 'Facebook' },
-    { icon: <Instagram className="w-5 h-5" />, label: 'Instagram' },
-    { icon: <Youtube className="w-5 h-5" />, label: 'YouTube' },
+    { icon: <Instagram className="w-4 h-4" />, label: 'Instagram' },
+    { icon: <Youtube className="w-4 h-4" />, label: 'YouTube' },
   ];
 
   return (
     <footer
-      className="w-full border-t backdrop-blur-xl px-4 md:px-8 py-5 transition-colors duration-200
+      className="w-full border-t backdrop-blur-xl px-4 md:px-8 py-6 transition-colors duration-200
         border-[hsl(200,60%,75%)] bg-gradient-to-br from-[hsl(200,85%,72%)] via-[hsl(200,90%,80%)] to-[hsl(195,80%,68%)]
-        dark:border-[hsl(210,40%,20%)] dark:bg-gradient-to-br dark:from-[hsl(210,55%,8%)] dark:via-[hsl(200,50%,10%)] dark:to-[hsl(210,45%,6%)]
+        dark:border-[hsl(210,40%,20%)] dark:from-[hsl(210,55%,8%)] dark:via-[hsl(200,50%,10%)] dark:to-[hsl(210,45%,6%)]
         shadow-[0_-8px_30px_-10px_hsl(200,70%,50%/0.25)] dark:shadow-[0_-10px_40px_-15px_rgba(0,10,20,0.5)]"
     >
-      {/* Row 1: Logo left + Links right */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-3">
-        {/* Logo - left aligned */}
-        <div className="flex items-center gap-3 mr-auto">
+      {/* Row 1: Logo left */}
+      <div className="flex items-center mb-4">
+        <div className="mr-auto">
           <AnimatedLogo src={footerLogoUrl} size="lg" />
         </div>
-
-        {/* Links */}
-        {quickLinks.map(link => (
-          <Link
-            key={link.to}
-            to={link.to}
-            className="relative group hover:opacity-70 inline-flex items-center justify-center transition-colors
-              text-[hsl(210,50%,20%)] hover:text-[hsl(210,80%,30%)]
-              dark:text-[hsl(200,30%,70%)] dark:hover:text-[hsl(200,80%,70%)]"
-            title={link.label}
-          >
-            <link.icon className="w-5 h-5 flex-shrink-0" />
-            <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] px-2 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              {link.label}
-            </span>
-          </Link>
-        ))}
-
-        <span className="text-[hsl(200,40%,55%)] dark:text-[hsl(200,40%,30%)]">|</span>
-
-        {serviceLinks.map(link => (
-          <span
-            key={link.label}
-            className="relative group cursor-pointer hover:opacity-70 inline-flex items-center justify-center transition-colors
-              text-[hsl(210,50%,20%)] hover:text-[hsl(210,80%,30%)]
-              dark:text-[hsl(200,30%,70%)] dark:hover:text-[hsl(200,80%,70%)]"
-            title={link.label}
-          >
-            <link.icon className="w-5 h-5 flex-shrink-0" />
-            <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] px-2 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              {link.label}
-            </span>
-          </span>
-        ))}
-
-        <span className="text-[hsl(200,40%,55%)] dark:text-[hsl(200,40%,30%)]">|</span>
-
-        {supportLinks.map(link => (
-          <span
-            key={link.label}
-            className="relative group cursor-pointer hover:opacity-70 inline-flex items-center justify-center transition-colors
-              text-[hsl(210,50%,20%)] hover:text-[hsl(210,80%,30%)]
-              dark:text-[hsl(200,30%,70%)] dark:hover:text-[hsl(200,80%,70%)]"
-            title={link.label}
-          >
-            <link.icon className="w-5 h-5 flex-shrink-0" />
-            <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] px-2 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              {link.label}
-            </span>
-          </span>
-        ))}
       </div>
 
-      {/* Row 2: Social + Copyright */}
+      {/* Row 2: macOS Dock - centered */}
+      <div className="flex justify-center mb-4">
+        <Dock items={allDockItems} />
+      </div>
+
+      {/* Row 3: Social + Copyright - centered */}
       <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
         <div className="flex items-center gap-2">
           {socialIcons.map((s, i) => (
             <a
               key={i}
               href="#"
-              className="hover:opacity-80 transition-opacity inline-flex items-center justify-center w-8 h-8 rounded-full shadow-sm
-                bg-[hsl(200,60%,90%)] border border-[hsl(200,50%,70%)] text-[hsl(210,50%,25%)] hover:text-[hsl(210,80%,30%)]
-                dark:bg-[hsl(210,40%,15%)] dark:border-[hsl(200,40%,30%)] dark:text-[hsl(200,30%,70%)] dark:hover:text-[hsl(200,80%,70%)]"
+              className="hover:scale-110 transition-transform inline-flex items-center justify-center w-8 h-8 rounded-full shadow-sm
+                bg-[hsl(200,60%,90%)] border border-[hsl(200,50%,70%)] text-[hsl(210,50%,25%)]
+                dark:bg-[hsl(210,40%,15%)] dark:border-[hsl(200,40%,30%)] dark:text-[hsl(200,30%,70%)]"
               aria-label={s.label}
             >
               {s.icon}
