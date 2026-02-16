@@ -33,7 +33,20 @@ import {
   RefreshCw,
   XCircle,
   CheckCircle2,
+  BrainCircuit,
+  ThumbsUp,
+  ThumbsDown,
+  HelpCircle,
 } from "lucide-react";
+
+interface AIRelevanceResult {
+  relevant: boolean;
+  relevanceScore: number;
+  imageType: string;
+  issues: string[];
+  suggestion: string;
+  confidence: number;
+}
 
 const PropertyImageManager = () => {
   const { showSuccess, showError } = useAlert();
@@ -51,13 +64,18 @@ const PropertyImageManager = () => {
   const { results: healthResults, checking: healthChecking, checkAllImages, clearResults } = useImageHealthCheck();
   const [checkedPropertyId, setCheckedPropertyId] = useState<string | null>(null);
 
+  // AI Relevance checking
+  const [aiResults, setAiResults] = useState<Record<string, AIRelevanceResult>>({});
+  const [aiChecking, setAiChecking] = useState(false);
+  const [aiCheckingUrl, setAiCheckingUrl] = useState<string | null>(null);
+
   // Fetch all properties with image data
   const { data: properties = [], isLoading } = useQuery({
     queryKey: ["admin-property-images", searchTerm],
     queryFn: async () => {
       let query = supabase
         .from("properties")
-        .select("id, title, images, image_urls, thumbnail_url, property_type, status, city, location")
+        .select("id, title, description, images, image_urls, thumbnail_url, property_type, status, city, location")
         .order("created_at", { ascending: false });
 
       if (searchTerm.trim()) {
@@ -150,6 +168,56 @@ const PropertyImageManager = () => {
     const urls = getImages(property);
     setCheckedPropertyId(property.id);
     await checkAllImages(urls);
+  };
+
+  // AI Relevance check for a single image
+  const handleAIRelevanceCheck = async (imageUrl: string, property: any) => {
+    setAiChecking(true);
+    setAiCheckingUrl(imageUrl);
+    try {
+      const { data, error } = await supabase.functions.invoke('check-image-relevance', {
+        body: {
+          imageUrl,
+          title: property.title,
+          description: property.description,
+          propertyType: property.property_type,
+          location: property.location || property.city,
+        }
+      });
+      if (error) throw error;
+      setAiResults(prev => ({ ...prev, [imageUrl]: data }));
+    } catch (err: any) {
+      showError("AI Check Failed", err.message);
+    } finally {
+      setAiChecking(false);
+      setAiCheckingUrl(null);
+    }
+  };
+
+  // AI check all images of a property
+  const handleAICheckAllImages = async (property: any) => {
+    const imgs = getImages(property);
+    setAiChecking(true);
+    for (const img of imgs) {
+      setAiCheckingUrl(img);
+      try {
+        const { data, error } = await supabase.functions.invoke('check-image-relevance', {
+          body: {
+            imageUrl: img,
+            title: property.title,
+            description: property.description,
+            propertyType: property.property_type,
+            location: property.location || property.city,
+          }
+        });
+        if (error) continue;
+        setAiResults(prev => ({ ...prev, [img]: data }));
+      } catch {
+        // continue to next image
+      }
+    }
+    setAiChecking(false);
+    setAiCheckingUrl(null);
   };
 
   // Upload image to selected property
@@ -529,6 +597,16 @@ const PropertyImageManager = () => {
                       Remove Broken
                     </Button>
                   )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs gap-1.5 border-primary/30 text-primary"
+                    onClick={() => handleAICheckAllImages(selectedProperty)}
+                    disabled={aiChecking}
+                  >
+                    {aiChecking ? <Loader2 className="h-3 w-3 animate-spin" /> : <BrainCircuit className="h-3 w-3" />}
+                    {aiChecking ? "AI Checking..." : "AI Relevance Check"}
+                  </Button>
                 </>
               )}
             </div>
@@ -550,10 +628,13 @@ const PropertyImageManager = () => {
                     const health = healthResults[img];
                     const format = getImageFormat(img);
                     const isBroken = health?.status === 'broken';
+                    const ai = aiResults[img];
+                    const isAiChecking = aiCheckingUrl === img;
                     
                     return (
-                      <div key={idx} className={`relative group/img rounded-lg overflow-hidden border ${isBroken ? 'border-destructive border-2' : ''}`}>
-                        <div className="aspect-video bg-muted">
+                      <div key={idx} className={`rounded-lg overflow-hidden border ${isBroken ? 'border-destructive border-2' : ai && !ai.relevant ? 'border-yellow-500 border-2' : ''}`}>
+                        {/* Image */}
+                        <div className="aspect-video bg-muted relative group/img">
                           {isBroken ? (
                             <div className="w-full h-full flex flex-col items-center justify-center bg-destructive/5">
                               <XCircle className="h-8 w-8 text-destructive/60 mb-1" />
@@ -572,55 +653,114 @@ const PropertyImageManager = () => {
                               }}
                             />
                           )}
+
+                          {/* Status badges */}
+                          <div className="absolute top-1 left-1 flex gap-1 flex-wrap">
+                            {selectedProperty.thumbnail_url === img && (
+                              <Badge className="text-[8px] bg-primary h-4">Thumbnail</Badge>
+                            )}
+                            <Badge variant="secondary" className="text-[7px] px-1 py-0 h-3.5 bg-black/60 text-white border-0">
+                              {format}
+                            </Badge>
+                            {health && (
+                              <Badge
+                                variant={health.status === 'ok' ? 'default' : health.status === 'broken' ? 'destructive' : 'secondary'}
+                                className="text-[7px] px-1 py-0 h-3.5"
+                              >
+                                {health.status === 'ok' ? '✓' : health.status === 'broken' ? '✗' : '⏳'}
+                              </Badge>
+                            )}
+                          </div>
+
+                          {/* AI relevance badge */}
+                          {ai && (
+                            <div className="absolute top-1 right-1">
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <Badge
+                                      variant={ai.relevant ? 'default' : 'destructive'}
+                                      className="text-[7px] px-1.5 py-0 h-4 gap-0.5"
+                                    >
+                                      {ai.relevant ? <ThumbsUp className="h-2.5 w-2.5" /> : <ThumbsDown className="h-2.5 w-2.5" />}
+                                      {ai.relevanceScore}%
+                                    </Badge>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="left" className="max-w-[250px]">
+                                    <div className="space-y-1">
+                                      <p className="text-xs font-medium">{ai.imageType}</p>
+                                      <p className="text-[10px]">{ai.suggestion}</p>
+                                      {ai.issues.length > 0 && (
+                                        <ul className="text-[10px] text-destructive list-disc pl-3">
+                                          {ai.issues.map((issue, i) => <li key={i}>{issue}</li>)}
+                                        </ul>
+                                      )}
+                                      <p className="text-[9px] text-muted-foreground">Confidence: {ai.confidence}%</p>
+                                    </div>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                          )}
+
+                          {/* Loading overlay for AI check */}
+                          {isAiChecking && (
+                            <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                              <div className="flex flex-col items-center gap-1">
+                                <BrainCircuit className="h-5 w-5 text-primary animate-pulse" />
+                                <p className="text-[9px] text-primary font-medium">AI Analyzing...</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Hover actions */}
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-1.5">
+                            {!isBroken && (
+                              <Button size="sm" variant="secondary" className="h-7 w-7 p-0" onClick={() => setViewImage(img)}>
+                                <Eye className="h-3 w-3" />
+                              </Button>
+                            )}
+                            {!isBroken && (
+                              <Button size="sm" variant="secondary" className="h-7 text-[10px] px-2" onClick={() => handleSetThumbnail(img)}>
+                                Set Cover
+                              </Button>
+                            )}
+                            {!isBroken && !ai && (
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                className="h-7 w-7 p-0"
+                                onClick={() => handleAIRelevanceCheck(img, selectedProperty)}
+                                disabled={aiChecking}
+                              >
+                                <BrainCircuit className="h-3 w-3" />
+                              </Button>
+                            )}
+                            <Button size="sm" variant="destructive" className="h-7 w-7 p-0" onClick={() => handleDeleteImage(img)}>
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
 
-                        {/* Status badges */}
-                        <div className="absolute top-1 left-1 flex gap-1">
-                          {selectedProperty.thumbnail_url === img && (
-                            <Badge className="text-[8px] bg-primary h-4">Thumbnail</Badge>
-                          )}
-                          <Badge variant="secondary" className="text-[7px] px-1 py-0 h-3.5 bg-black/60 text-white border-0">
-                            {format}
-                          </Badge>
-                          {health && (
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger>
-                                  <Badge
-                                    variant={health.status === 'ok' ? 'default' : health.status === 'broken' ? 'destructive' : 'secondary'}
-                                    className="text-[7px] px-1 py-0 h-3.5"
-                                  >
-                                    {health.status === 'ok' ? '✓ OK' : health.status === 'broken' ? '✗ Broken' : health.status === 'slow' ? '⏳ Slow' : '...'}
-                                  </Badge>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p className="text-xs">
-                                    {health.status === 'ok' && `Loaded in ${health.loadTime}ms`}
-                                    {health.status === 'broken' && `Failed to load: ${health.error}`}
-                                    {health.status === 'slow' && `Slow load: ${health.loadTime}ms`}
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          )}
-                        </div>
-
-                        {/* Hover actions */}
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-1.5">
-                          {!isBroken && (
-                            <Button size="sm" variant="secondary" className="h-7 w-7 p-0" onClick={() => setViewImage(img)}>
-                              <Eye className="h-3 w-3" />
-                            </Button>
-                          )}
-                          {!isBroken && (
-                            <Button size="sm" variant="secondary" className="h-7 text-[10px] px-2" onClick={() => handleSetThumbnail(img)}>
-                              Set Cover
-                            </Button>
-                          )}
-                          <Button size="sm" variant="destructive" className="h-7 w-7 p-0" onClick={() => handleDeleteImage(img)}>
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
+                        {/* AI Result panel below image */}
+                        {ai && (
+                          <div className={`px-2 py-1.5 text-[9px] border-t ${ai.relevant ? 'bg-green-50 dark:bg-green-950/20' : 'bg-yellow-50 dark:bg-yellow-950/20'}`}>
+                            <div className="flex items-center gap-1 mb-0.5">
+                              {ai.relevant ? (
+                                <CheckCircle2 className="h-3 w-3 text-green-600 shrink-0" />
+                              ) : (
+                                <AlertTriangle className="h-3 w-3 text-yellow-600 shrink-0" />
+                              )}
+                              <span className="font-medium truncate">
+                                {ai.relevant ? 'Relevant' : 'May not match'} • {ai.imageType}
+                              </span>
+                            </div>
+                            <p className="text-muted-foreground line-clamp-2">{ai.suggestion}</p>
+                            {ai.issues.length > 0 && (
+                              <p className="text-destructive mt-0.5">⚠ {ai.issues[0]}</p>
+                            )}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
