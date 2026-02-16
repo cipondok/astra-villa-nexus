@@ -174,17 +174,17 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                 {/* Specs - KT/KM/LB */}
                 <div className="flex items-center flex-wrap gap-2 pt-1.5 border-t border-border/30">
                   {property.bedrooms && property.bedrooms > 0 && (
-                    <div className="flex items-center gap-1 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2 py-0.5">
-                      <Bed className="h-3 w-3 text-accent" />
-                      <span className="text-[11px] text-foreground font-bold">{property.bedrooms}</span>
-                      <span className="text-[9px] text-muted-foreground font-semibold">KT</span>
+                    <div className="flex items-center gap-1.5 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2.5 py-1">
+                      <Bed className="h-3.5 w-3.5 text-accent" />
+                      <span className="text-[13px] text-foreground font-bold">{property.bedrooms}</span>
+                      <span className="text-[11px] text-muted-foreground font-semibold">KT</span>
                     </div>
                   )}
                   {property.bathrooms && property.bathrooms > 0 && (
-                    <div className="flex items-center gap-1 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2 py-0.5">
-                      <Bath className="h-3 w-3 text-accent" />
-                      <span className="text-[11px] text-foreground font-bold">{property.bathrooms}</span>
-                      <span className="text-[9px] text-muted-foreground font-semibold">KM</span>
+                    <div className="flex items-center gap-1.5 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2.5 py-1">
+                      <Bath className="h-3.5 w-3.5 text-accent" />
+                      <span className="text-[13px] text-foreground font-bold">{property.bathrooms}</span>
+                      <span className="text-[11px] text-muted-foreground font-semibold">KM</span>
                     </div>
                   )}
                   {property.area_sqm && (
