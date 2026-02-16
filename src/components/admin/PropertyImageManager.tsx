@@ -37,6 +37,7 @@ import {
   ThumbsUp,
   ThumbsDown,
   HelpCircle,
+  Wand2,
 } from "lucide-react";
 
 interface AIRelevanceResult {
@@ -68,6 +69,9 @@ const PropertyImageManager = () => {
   const [aiResults, setAiResults] = useState<Record<string, AIRelevanceResult>>({});
   const [aiChecking, setAiChecking] = useState(false);
   const [aiCheckingUrl, setAiCheckingUrl] = useState<string | null>(null);
+
+  // Image regeneration
+  const [regenerating, setRegenerating] = useState<string | null>(null);
 
   // Fetch all properties with image data
   const { data: properties = [], isLoading } = useQuery({
@@ -218,6 +222,42 @@ const PropertyImageManager = () => {
     }
     setAiChecking(false);
     setAiCheckingUrl(null);
+  };
+
+  // Regenerate broken image using AI
+  const handleRegenerateImage = async (brokenUrl: string, property: any) => {
+    setRegenerating(brokenUrl);
+    try {
+      const { data, error } = await supabase.functions.invoke('regenerate-property-image', {
+        body: {
+          propertyId: property.id,
+          title: property.title,
+          description: property.description,
+          propertyType: property.property_type,
+          location: property.location || property.city,
+          brokenImageUrl: brokenUrl,
+        }
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      
+      showSuccess("Image Regenerated", "AI generated a new image to replace the broken one");
+      queryClient.invalidateQueries({ queryKey: ["admin-property-images"] });
+      queryClient.invalidateQueries({ queryKey: ["simple-properties"] });
+      
+      // Update selected property in state
+      const currentImages = getImages(property);
+      const updatedImages = currentImages.map(img => img === brokenUrl ? data.newImageUrl : img);
+      const newThumb = property.thumbnail_url === brokenUrl ? data.newImageUrl : property.thumbnail_url;
+      setSelectedProperty({ ...property, images: updatedImages, thumbnail_url: newThumb });
+      
+      // Clear health result for old URL
+      clearResults();
+    } catch (err: any) {
+      showError("Regeneration Failed", err.message);
+    } finally {
+      setRegenerating(null);
+    }
   };
 
   // Upload image to selected property
@@ -637,9 +677,40 @@ const PropertyImageManager = () => {
                         <div className="aspect-video bg-muted relative group/img">
                           {isBroken ? (
                             <div className="w-full h-full flex flex-col items-center justify-center bg-destructive/5">
-                              <XCircle className="h-8 w-8 text-destructive/60 mb-1" />
-                              <p className="text-[10px] text-destructive font-medium">Broken Image</p>
-                              <p className="text-[8px] text-muted-foreground mt-0.5 px-2 text-center truncate max-w-full">{img.slice(0, 60)}...</p>
+                              {regenerating === img ? (
+                                <>
+                                  <Wand2 className="h-8 w-8 text-primary animate-pulse mb-1" />
+                                  <p className="text-[10px] text-primary font-medium">AI Generating...</p>
+                                  <p className="text-[8px] text-muted-foreground">Creating replacement image</p>
+                                </>
+                              ) : (
+                                <>
+                                  <XCircle className="h-6 w-6 text-destructive/60 mb-1" />
+                                  <p className="text-[10px] text-destructive font-medium">Broken Image</p>
+                                  <p className="text-[8px] text-muted-foreground mt-0.5 px-2 text-center truncate max-w-full">{img.slice(0, 50)}...</p>
+                                  <div className="flex gap-1.5 mt-2">
+                                    <Button
+                                      size="sm"
+                                      variant="default"
+                                      className="h-6 text-[9px] px-2 gap-1"
+                                      onClick={() => handleRegenerateImage(img, selectedProperty)}
+                                      disabled={!!regenerating}
+                                    >
+                                      <Wand2 className="h-3 w-3" />
+                                      AI Regenerate
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="destructive"
+                                      className="h-6 text-[9px] px-2 gap-1"
+                                      onClick={() => handleDeleteImage(img)}
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                      Remove
+                                    </Button>
+                                  </div>
+                                </>
+                              )}
                             </div>
                           ) : (
                             <img
