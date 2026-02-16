@@ -151,13 +151,13 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
               <div className="p-2.5 space-y-1.5">
                 {/* Price */}
                 <div className="border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2.5 py-1.5">
-                  <div className="flex items-baseline gap-1">
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
                     <span className="text-base sm:text-lg font-black text-accent tracking-tight leading-none">{priceInfo.main}</span>
                     {priceInfo.suffix && (
                       <span className="text-[11px] sm:text-sm font-extrabold text-accent/70">{priceInfo.suffix}</span>
                     )}
+                    <span className="text-[9px] text-muted-foreground/60 font-medium bg-muted/50 rounded-full px-1.5 py-px">≈ {formatMonthly(property.price)}</span>
                   </div>
-                  <p className="text-[9px] text-muted-foreground/70 font-medium mt-0.5">≈ {formatMonthly(property.price)}</p>
                 </div>
 
                 {/* Title */}
