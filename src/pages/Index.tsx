@@ -602,7 +602,7 @@ const Index = () => {
             </div>
             
             {/* Search Panel */}
-            <div className="w-full max-w-5xl mx-auto">
+            <div className="w-full max-w-7xl mx-auto px-3">
               <Suspense fallback={<SearchPanelSkeleton />}>
                 <SearchErrorBoundary>
                   <AstraSearchPanel
@@ -627,7 +627,7 @@ const Index = () => {
             </div>
 
             {/* Featured Properties Slideshow */}
-            <div className="w-full max-w-[2400px] mx-auto mt-4 md:mt-8">
+            <div className="w-full mt-4 md:mt-8">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Star className="h-3 w-3 md:h-4 md:w-4 text-[hsl(48,100%,52%)] fill-[hsl(48,100%,52%)]/50" />
                 <h2 className="text-xs md:text-sm font-semibold text-white/90">
