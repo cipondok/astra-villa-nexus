@@ -230,15 +230,15 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       {/* Row 1: Brand + All Links in one flowing row */}
       <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-3">
         {/* Brand */}
-        <div className="flex items-center gap-2 mr-4">
+        <div className="flex items-center gap-3 mr-6">
           {footerLogoUrl ? (
-            <img src={footerLogoUrl} alt={currentText.company} className="h-7 max-w-[100px] object-contain" loading="lazy" />
+            <img src={footerLogoUrl} alt={currentText.company} className="h-12 max-w-[160px] object-contain" loading="lazy" />
           ) : (
             <>
-              <div className="p-1 rounded" style={{ background: 'rgba(40,100,160,0.5)' }}>
-                <Rocket className="w-4 h-4" style={{ color: '#a0d0f0' }} />
+              <div className="p-2 rounded-lg" style={{ background: 'rgba(40,100,160,0.5)' }}>
+                <Rocket className="w-7 h-7" style={{ color: '#a0d0f0' }} />
               </div>
-              <span className="text-sm font-bold" style={{ color: '#c0e0f5' }}>{currentText.company}</span>
+              <span className="text-lg font-bold" style={{ color: '#c0e0f5' }}>{currentText.company}</span>
             </>
           )}
         </div>
