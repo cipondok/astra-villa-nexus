@@ -64,7 +64,7 @@ const Dock = ({ items }: { items: DockItem[] }) => {
       ref={dockRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="flex items-end justify-center gap-1 px-4 py-2 rounded-2xl
+      className="relative flex items-end justify-center gap-1 px-4 py-2 pt-8 rounded-2xl overflow-visible
         bg-[hsl(200,40%,85%/0.6)] border border-[hsl(200,50%,75%/0.5)] backdrop-blur-md
         dark:bg-[hsl(210,40%,10%/0.6)] dark:border-[hsl(200,35%,25%/0.5)]
         shadow-[0_4px_20px_hsl(200,50%,50%/0.15)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
@@ -86,13 +86,13 @@ const Dock = ({ items }: { items: DockItem[] }) => {
           >
             {/* Tooltip label */}
             <span
-              className="absolute -top-10 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap pointer-events-none
+              className="absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap pointer-events-none z-50
                 bg-[hsl(210,30%,15%)] text-white dark:bg-[hsl(200,20%,85%)] dark:text-[hsl(210,50%,15%)]
                 shadow-lg"
               style={{
                 opacity: isHovered ? 1 : 0,
-                transform: `scale(${isHovered ? 1 / scale : 0.8})`,
-                transition: 'opacity 0.12s ease, transform 0.12s ease',
+                transform: `scale(${isHovered ? 1 / scale : 0.8}) translateY(${isHovered ? -4 : 0}px)`,
+                transition: 'opacity 0.15s ease, transform 0.15s ease',
               }}
             >
               {item.label}
@@ -152,13 +152,13 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     { to: "/community", label: currentText.community, icon: UsersRound },
     { to: "/agents", label: language === "en" ? "Find Agents" : "Cari Agen", icon: UserCheck },
     { to: "/development", label: language === "en" ? "Development" : "Pengembangan", icon: Construction },
-    { label: currentText.propertySearch, icon: Search },
-    { label: currentText.consultation, icon: MessageSquare },
-    { label: currentText.valuation, icon: Calculator },
-    { label: currentText.investment, icon: PiggyBank },
-    { label: currentText.help, icon: HelpCircle },
-    { label: currentText.faq, icon: CircleHelp },
-    { label: currentText.contactUs, icon: PhoneCall },
+    { to: "/search", label: currentText.propertySearch, icon: Search },
+    { to: "/consultation", label: currentText.consultation, icon: MessageSquare },
+    { to: "/valuation", label: currentText.valuation, icon: Calculator },
+    { to: "/investment", label: currentText.investment, icon: PiggyBank },
+    { to: "/help", label: currentText.help, icon: HelpCircle },
+    { to: "/faq", label: currentText.faq, icon: CircleHelp },
+    { to: "/contact", label: currentText.contactUs, icon: PhoneCall },
   ];
 
   const socialIcons = [
