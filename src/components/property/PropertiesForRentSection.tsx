@@ -99,7 +99,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
             <div
               key={property.id}
               onClick={() => onPropertyClick(property)}
-              className="group cursor-pointer bg-card/60 backdrop-blur-md rounded-lg border border-white/20 dark:border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:border-accent/30 transition-all duration-300 overflow-hidden"
+              className="group cursor-pointer bg-card/70 backdrop-blur-md rounded-lg border border-primary/10 dark:border-primary/15 shadow-[0_2px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.1)] hover:border-primary/25 transition-all duration-300 overflow-hidden"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -141,7 +141,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
               {/* Content */}
               <div className="p-2.5 space-y-1.5">
                 {/* Price */}
-                <div className="border border-border/40 bg-primary/5 dark:bg-primary/10 rounded-lg px-2.5 py-1.5">
+                <div className="border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-2.5 py-1.5">
                   <div className="flex items-baseline gap-1">
                     <span className="text-base sm:text-lg font-black text-primary tracking-tight leading-none">{priceInfo.main}</span>
                     {priceInfo.suffix && (
@@ -157,31 +157,31 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
                 </h3>
 
                 {/* Location */}
-                <div className="flex items-center gap-1 bg-secondary/60 dark:bg-secondary/30 rounded px-1.5 py-0.5" title={getLocation(property)}>
-                  <MapPin className="h-3 w-3 flex-shrink-0 text-primary" />
-                  <span className="text-[10px] text-foreground/80 font-medium truncate">{getLocation(property)}</span>
+                <div className="flex items-center gap-1 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5" title={getLocation(property)}>
+                  <MapPin className="h-3 w-3 flex-shrink-0 text-primary/70" />
+                  <span className="text-[10px] text-foreground/70 font-medium truncate">{getLocation(property)}</span>
                 </div>
 
                 {/* Specs - KT/KM/LB */}
-                <div className="flex items-center gap-1 pt-1.5 border-t border-border/30">
+                <div className="flex items-center gap-1 pt-1.5 border-t border-primary/10">
                   {property.bedrooms && property.bedrooms > 0 && (
-                    <div className="flex items-center gap-0.5 border border-primary/30 bg-primary/10 dark:bg-primary/20 rounded px-1.5 py-0.5">
-                      <Bed className="h-3 w-3 text-primary" />
-                      <span className="text-[11px] text-foreground font-bold">{property.bedrooms}</span>
-                      <span className="text-[9px] text-muted-foreground font-semibold">KT</span>
+                    <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                      <Bed className="h-3 w-3 text-primary/60" />
+                      <span className="text-[11px] text-foreground/80 font-bold">{property.bedrooms}</span>
+                      <span className="text-[9px] text-muted-foreground/70 font-semibold">KT</span>
                     </div>
                   )}
                   {property.bathrooms && property.bathrooms > 0 && (
-                    <div className="flex items-center gap-0.5 border border-primary/30 bg-primary/10 dark:bg-primary/20 rounded px-1.5 py-0.5">
-                      <Bath className="h-3 w-3 text-primary" />
-                      <span className="text-[11px] text-foreground font-bold">{property.bathrooms}</span>
-                      <span className="text-[9px] text-muted-foreground font-semibold">KM</span>
+                    <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                      <Bath className="h-3 w-3 text-primary/60" />
+                      <span className="text-[11px] text-foreground/80 font-bold">{property.bathrooms}</span>
+                      <span className="text-[9px] text-muted-foreground/70 font-semibold">KM</span>
                     </div>
                   )}
                   {property.area_sqm && (
-                    <div className="flex items-center gap-0.5 border border-primary/30 bg-primary/10 dark:bg-primary/20 rounded px-1.5 py-0.5">
-                      <span className="text-[9px] text-primary font-bold">LB</span>
-                      <span className="text-[11px] text-foreground font-bold">{property.area_sqm}m²</span>
+                    <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                      <span className="text-[9px] text-primary/60 font-bold">LB</span>
+                      <span className="text-[11px] text-foreground/80 font-bold">{property.area_sqm}m²</span>
                     </div>
                   )}
                 </div>
