@@ -69,7 +69,7 @@ const Dock = ({ items }: { items: DockItem[] }) => {
       ref={dockRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative flex items-end justify-center gap-1 px-4 py-2 pt-8 rounded-2xl overflow-visible
+      className="relative flex items-end justify-center gap-3 px-5 py-2 pt-8 rounded-2xl overflow-visible
         bg-[hsl(200,40%,85%/0.6)] border border-[hsl(200,50%,75%/0.5)] backdrop-blur-md
         dark:bg-[hsl(210,40%,10%/0.6)] dark:border-[hsl(200,35%,25%/0.5)]
         shadow-[0_4px_20px_hsl(200,50%,50%/0.15)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
