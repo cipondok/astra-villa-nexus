@@ -108,13 +108,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   };
 
   const colStyle: React.CSSProperties = {
-    background: 'rgba(255,255,255,0.1)',
-    backdropFilter: 'blur(8px)',
-    WebkitBackdropFilter: 'blur(8px)',
-    borderRadius: '12px',
     padding: '1.6rem 1.2rem',
-    border: '1px solid rgba(255,245,180,0.4)',
-    boxShadow: 'inset 0 2px 8px rgba(255,250,210,0.3)',
     transition: 'all 0.2s ease',
     textAlign: 'center' as const,
   };
