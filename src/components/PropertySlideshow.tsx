@@ -235,20 +235,18 @@ const PropertySlideshow = () => {
                 </div>
 
                 {/* Content - Rumah123 Style */}
-                <div className="p-2.5 space-y-1.5">
+                <div className="p-2.5 space-y-1">
                   {/* Price */}
-                  <div className="space-y-0">
-                    <div className="flex items-baseline gap-0.5">
-                      <span className="text-sm font-bold text-primary">{priceInfo.main}</span>
-                      {priceInfo.suffix && (
-                        <span className="text-xs font-medium text-primary/80">{priceInfo.suffix}</span>
-                      )}
-                    </div>
-                    {!isRent && (
-                      <p className="text-[9px] text-muted-foreground">{formatMonthly(property.price)}</p>
+                  <div className="flex items-baseline gap-1 flex-wrap">
+                    <span className="text-sm font-bold text-primary">{priceInfo.main}</span>
+                    {priceInfo.suffix && (
+                      <span className="text-xs font-medium text-primary/80">{priceInfo.suffix}</span>
                     )}
                     {isRent && (
-                      <p className="text-[9px] text-muted-foreground">per bulan</p>
+                      <span className="text-[9px] text-muted-foreground">/bln</span>
+                    )}
+                    {!isRent && (
+                      <span className="text-[9px] text-muted-foreground">≈ {formatMonthly(property.price)}</span>
                     )}
                   </div>
 
