@@ -271,7 +271,8 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           <ul className="space-y-1.5">
             {quickLinks.map(link => (
               <li key={link.to}>
-                <Link to={link.to} style={linkStyle} className="hover:bg-yellow-100/50 hover:scale-[1.03]">
+                <Link to={link.to} style={linkStyle} className="hover:bg-yellow-100/50 hover:scale-[1.03] inline-flex items-center gap-1.5">
+                  <link.icon className="w-3.5 h-3.5 flex-shrink-0" />
                   {link.label}
                 </Link>
               </li>
@@ -285,7 +286,8 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           <ul className="space-y-1.5">
             {serviceLinks.map(link => (
               <li key={link.label}>
-                <span style={linkStyle} className="cursor-pointer hover:bg-yellow-100/50 hover:scale-[1.03]">
+                <span style={linkStyle} className="cursor-pointer hover:bg-yellow-100/50 hover:scale-[1.03] inline-flex items-center gap-1.5">
+                  <link.icon className="w-3.5 h-3.5 flex-shrink-0" />
                   {link.label}
                 </span>
               </li>
@@ -299,7 +301,8 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           <ul className="space-y-1.5">
             {supportLinks.map(link => (
               <li key={link.label}>
-                <span style={linkStyle} className="cursor-pointer hover:bg-yellow-100/50 hover:scale-[1.03]">
+                <span style={linkStyle} className="cursor-pointer hover:bg-yellow-100/50 hover:scale-[1.03] inline-flex items-center gap-1.5">
+                  <link.icon className="w-3.5 h-3.5 flex-shrink-0" />
                   {link.label}
                 </span>
               </li>
