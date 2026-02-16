@@ -53,9 +53,9 @@ const MobileFooter = () => {
   }
 
   return (
-    <footer className="bg-gradient-to-b from-background to-muted/20 border-t border-border/30">
+    <footer className="relative bg-gradient-to-br from-white/30 via-white/15 to-white/10 dark:from-slate-900/80 dark:via-slate-800/60 dark:to-slate-900/70 backdrop-blur-xl border-t border-white/25 dark:border-white/15 before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/8 before:via-transparent before:to-accent/8 before:opacity-70 after:absolute after:inset-0 after:bg-gradient-to-bl after:from-rose-400/5 after:via-transparent after:to-cyan-400/6 after:opacity-60 overflow-hidden">
       {/* Weblinks (always visible) */}
-      <nav className="px-3 py-2 flex items-center justify-between gap-2 text-[10px] border-b border-border/20">
+      <nav className="relative z-10 px-3 py-2 flex items-center justify-between gap-2 text-[10px] border-b border-white/20 dark:border-white/10">
         <button
           onClick={() => navigate('/')}
           className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
@@ -94,7 +94,7 @@ const MobileFooter = () => {
       </nav>
 
       {/* Compact actions row */}
-      <div className="px-3 py-2 flex items-center justify-between">
+      <div className="relative z-10 px-3 py-2 flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <Button
             variant="ghost"

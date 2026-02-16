@@ -107,8 +107,8 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const currentText = text[language];
 
   return (
-    <footer className="bg-slate-100 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700">
-      <div className="container mx-auto px-4 md:px-6 py-8 md:py-10">
+    <footer className="relative bg-gradient-to-br from-white/30 via-white/15 to-white/10 dark:from-slate-900/80 dark:via-slate-800/60 dark:to-slate-900/70 backdrop-blur-xl border-t border-white/25 dark:border-white/15 before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/8 before:via-transparent before:to-accent/8 before:opacity-70 after:absolute after:inset-0 after:bg-gradient-to-bl after:from-rose-400/5 after:via-transparent after:to-cyan-400/6 after:opacity-60 overflow-hidden">
+      <div className="relative z-10 container mx-auto px-4 md:px-6 py-8 md:py-10">
         {/* Main Footer Grid - 4 columns */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 mb-8">
           {/* Company Info */}
