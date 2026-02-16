@@ -114,54 +114,38 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
     }
   }, [isVerified]);
 
-  // Hybrid: try auto-check first, then fallback to manual popup
+  // Open AHU directly in browser - server-side auto-check is not possible due to CAPTCHA
   const handleCheckAHU = async () => {
     if (!companyName.trim()) {
-      toast.error('Please enter your company name first');
+      toast.error('Masukkan nama perusahaan terlebih dahulu');
       return;
     }
 
-    setVerification(prev => ({ ...prev, submitting: true, message: 'Checking AHU automatically...' }));
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error('Please log in first');
-        setVerification(prev => ({ ...prev, submitting: false, message: null }));
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('verify-ahu-company', {
-        body: { company_name: companyName.trim(), user_id: user.id },
-      });
-
-      if (error) {
-        console.error('Edge function error:', error);
-        openAHUPopup();
-        return;
-      }
-
-      if (data?.status === 'verified') {
-        setVerification(prev => ({
-          ...prev,
-          status: 'verified',
-          submitting: false,
-          message: 'Company verified automatically via AHU!',
-        }));
-        toast.success('Company verified via AHU!');
-        return;
-      }
-
-      console.log('Auto-check result:', data?.status, '— falling back to manual popup');
-      toast.info('AHU memerlukan CAPTCHA. Silakan cari manual di jendela popup.', { duration: 5000 });
-      openAHUPopup();
-
-    } catch (err) {
-      console.error('AHU check error:', err);
-      openAHUPopup();
-    } finally {
-      setVerification(prev => ({ ...prev, submitting: false }));
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error('Silakan login terlebih dahulu');
+      return;
     }
+
+    setVerification(prev => ({ ...prev, submitting: true, message: 'Membuka AHU...' }));
+
+    // Copy company name to clipboard for easy pasting in AHU
+    try {
+      await navigator.clipboard.writeText(companyName.trim());
+      toast.success(`"${companyName.trim()}" disalin ke clipboard! Paste di AHU untuk mencari.`, { duration: 5000 });
+    } catch {
+      // Clipboard API may fail in some contexts
+      toast.info('Buka AHU dan cari nama perusahaan Anda.', { duration: 4000 });
+    }
+
+    // Log the attempt via edge function (background, non-blocking)
+    supabase.functions.invoke('verify-ahu-company', {
+      body: { company_name: companyName.trim(), user_id: user.id },
+    }).catch(() => {});
+
+    // Open AHU directly
+    openAHUPopup();
+    setVerification(prev => ({ ...prev, submitting: false }));
   };
 
   const openAHUPopup = () => {
@@ -419,11 +403,14 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
         {/* Info Banner */}
         <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-muted/50 border border-border">
           <Building2 className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-          <div className="flex-1 min-w-0 text-xs text-muted-foreground">
-            <p>
-              Klik <strong>Check AHU</strong> untuk membuka situs resmi AHU di jendela popup.
-              Cari nama PT Anda, lalu <strong>salin data perusahaan</strong> (alamat, SK, NPWP) ke form konfirmasi.
-            </p>
+          <div className="flex-1 min-w-0 text-xs text-muted-foreground space-y-1">
+            <p className="font-medium text-foreground">Cara verifikasi:</p>
+            <ol className="list-decimal list-inside space-y-0.5">
+              <li>Klik <strong>Check AHU</strong> — nama perusahaan otomatis disalin</li>
+              <li>Di halaman AHU, <strong>paste</strong> nama dan klik cari</li>
+              <li>Klik <strong>Profil Lengkap</strong> pada hasil pencarian</li>
+              <li>Salin data (SK, NPWP, Alamat) ke form konfirmasi</li>
+            </ol>
           </div>
         </div>
 
