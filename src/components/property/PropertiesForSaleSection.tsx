@@ -166,9 +166,9 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                 </h3>
 
                 {/* Location */}
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-accent" />
-                  <span className="text-[10px] text-muted-foreground font-medium line-clamp-1">{getLocation(property)}</span>
+                <div className="flex items-center gap-1 bg-secondary/60 dark:bg-secondary/30 rounded px-1.5 py-0.5 group/loc" title={getLocation(property)}>
+                  <MapPin className="h-3 w-3 flex-shrink-0 text-primary" />
+                  <span className="text-[10px] text-foreground/80 font-medium truncate">{getLocation(property)}</span>
                 </div>
 
                 {/* Specs - KT/KM/LB */}
