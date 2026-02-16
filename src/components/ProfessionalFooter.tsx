@@ -95,14 +95,14 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     borderRadius: '0',
     background: `
       radial-gradient(circle at 10% 20%, rgba(255,255,255,0.95) 0%, transparent 40%),
-      radial-gradient(circle at 90% 70%, rgba(255,240,150,0.6) 5%, transparent 40%),
-      linear-gradient(125deg, rgba(255,255,255,0.92) 0%, rgba(255,225,100,0.4) 18%, rgba(140,210,230,0.5) 42%, rgba(255,245,190,0.7) 68%, rgba(255,255,255,0.96) 92%)
+      radial-gradient(circle at 90% 70%, rgba(150,210,255,0.6) 5%, transparent 40%),
+      linear-gradient(125deg, rgba(255,255,255,0.92) 0%, rgba(130,200,240,0.4) 18%, rgba(140,210,230,0.5) 42%, rgba(180,220,250,0.7) 68%, rgba(255,255,255,0.96) 92%)
     `,
     backdropFilter: 'blur(25px)',
     WebkitBackdropFilter: 'blur(25px)',
     border: 'none',
-    borderTop: '1px solid rgba(255,255,240,0.7)',
-    boxShadow: '0 -10px 40px -15px rgba(0,20,30,0.3), inset 0 1px 6px rgba(255,255,255,0.9), inset 0 0 35px rgba(250,230,130,0.3)',
+    borderTop: '1px solid rgba(180,220,255,0.7)',
+    boxShadow: '0 -10px 40px -15px rgba(0,20,30,0.3), inset 0 1px 6px rgba(255,255,255,0.9), inset 0 0 35px rgba(150,210,250,0.3)',
     padding: '1.2rem 2rem',
     transition: 'box-shadow 0.3s ease, border-color 0.2s ease',
   };
@@ -125,7 +125,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     backdropFilter: 'blur(12px)',
     WebkitBackdropFilter: 'blur(12px)',
     borderRadius: '12px',
-    border: '1px solid rgba(255,245,160,0.5)',
+    border: '1px solid rgba(150,210,250,0.5)',
   };
 
   const socialIconBase: React.CSSProperties = {
@@ -135,7 +135,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     background: 'rgba(255,255,255,0.4)',
     backdropFilter: 'blur(8px)',
     WebkitBackdropFilter: 'blur(8px)',
-    border: '1.5px solid rgba(255,250,180,0.8)',
+    border: '1.5px solid rgba(150,210,250,0.8)',
     boxShadow: '0 8px 18px -8px black, inset 0 2px 8px rgba(255,255,250,0.9)',
     display: 'inline-flex',
     alignItems: 'center',
@@ -160,7 +160,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   };
 
   const colTitleGradient: React.CSSProperties = {
-    background: 'linear-gradient(135deg, #f8f0c6, #c1e4f0, #fdeba9)',
+    background: 'linear-gradient(135deg, #b8dff5, #c1e4f0, #a0d4f0)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text',
@@ -185,13 +185,13 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   };
 
   const dotColors = [
-    'rgba(255,215,100,0.7)',
+    'rgba(130,200,240,0.7)',
     'rgba(190,230,250,0.7)',
-    'rgba(255,240,170,0.8)',
-    'rgba(210,235,220,0.8)',
-    'rgba(255,210,160,0.7)',
-    'rgba(220,200,245,0.7)',
-    'rgba(245,195,110,0.75)',
+    'rgba(160,215,245,0.8)',
+    'rgba(210,235,250,0.8)',
+    'rgba(140,205,240,0.7)',
+    'rgba(180,220,250,0.7)',
+    'rgba(120,195,235,0.75)',
   ];
 
   const quickLinks = [
@@ -219,10 +219,10 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   ];
 
   const socialIcons = [
-    { icon: '𝕏', bg: 'rgba(255,220,120,0.5)', label: 'Twitter' },
+    { icon: '𝕏', bg: 'rgba(130,200,240,0.5)', label: 'Twitter' },
     { icon: 'ⓕ', bg: 'rgba(190,230,250,0.6)', label: 'Facebook' },
-    { icon: <Instagram className="w-5 h-5" />, bg: 'rgba(255,240,180,0.7)', label: 'Instagram' },
-    { icon: <Youtube className="w-5 h-5" />, bg: 'rgba(210,240,230,0.6)', label: 'YouTube' },
+    { icon: <Instagram className="w-5 h-5" />, bg: 'rgba(160,215,245,0.7)', label: 'Instagram' },
+    { icon: <Youtube className="w-5 h-5" />, bg: 'rgba(210,235,250,0.6)', label: 'YouTube' },
   ];
 
   return (
@@ -235,7 +235,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             <img src={footerLogoUrl} alt={currentText.company} className="h-7 max-w-[100px] object-contain" loading="lazy" />
           ) : (
             <>
-              <div className="p-1 rounded" style={{ background: 'rgba(255,225,100,0.4)' }}>
+              <div className="p-1 rounded" style={{ background: 'rgba(130,200,240,0.4)' }}>
                 <Rocket className="w-4 h-4" style={{ color: '#0c404e' }} />
               </div>
               <span className="text-sm font-bold" style={{ color: '#0a3340' }}>{currentText.company}</span>
@@ -244,7 +244,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         </div>
 
         {/* Divider */}
-        <span style={{ color: 'rgba(255,230,130,0.6)' }}>|</span>
+        <span style={{ color: 'rgba(130,200,240,0.6)' }}>|</span>
 
         {/* All links flowing in a single row */}
         {quickLinks.map(link => (
@@ -254,7 +254,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           </Link>
         ))}
 
-        <span style={{ color: 'rgba(255,230,130,0.6)' }}>|</span>
+        <span style={{ color: 'rgba(130,200,240,0.6)' }}>|</span>
 
         {serviceLinks.map(link => (
           <span key={link.label} style={linkStyle} className="cursor-pointer hover:opacity-70 inline-flex items-center gap-1 text-xs">
@@ -263,7 +263,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           </span>
         ))}
 
-        <span style={{ color: 'rgba(255,230,130,0.6)' }}>|</span>
+        <span style={{ color: 'rgba(130,200,240,0.6)' }}>|</span>
 
         {supportLinks.map(link => (
           <span key={link.label} style={linkStyle} className="cursor-pointer hover:opacity-70 inline-flex items-center gap-1 text-xs">
@@ -287,7 +287,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                 height: '32px',
                 borderRadius: '50%',
                 background: s.bg,
-                border: '1px solid rgba(255,250,180,0.6)',
+                border: '1px solid rgba(150,210,250,0.6)',
                 boxShadow: '0 4px 10px -4px rgba(0,0,0,0.2), inset 0 1px 4px rgba(255,255,250,0.8)',
                 color: '#0c404e',
                 fontSize: '1rem',
@@ -300,7 +300,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           <span className="text-xs" style={{ color: '#083945' }}>@astravilla</span>
         </div>
 
-        <span style={{ color: 'rgba(255,230,130,0.6)' }}>|</span>
+        <span style={{ color: 'rgba(130,200,240,0.6)' }}>|</span>
 
         {/* Copyright */}
         <span className="text-xs" style={{ color: '#022b36', fontWeight: 450 }}>
