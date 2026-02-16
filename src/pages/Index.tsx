@@ -497,16 +497,18 @@ const Index = () => {
         <section className="relative w-full min-h-[380px] sm:min-h-[440px] md:min-h-[500px] lg:h-screen lg:min-h-[580px]" id="hero-section">
             {/* Sky Blue Gradient Background */}
           <div className="absolute inset-0 z-0">
-            {/* Vibrant sky blue gradient */}
-            <div className="w-full h-full bg-gradient-to-b from-[hsl(200,100%,55%)] via-[hsl(195,95%,60%)] to-[hsl(200,100%,70%)]" />
+            {/* Light mode: vibrant sky blue gradient / Dark mode: deep ocean gradient */}
+            <div className="w-full h-full bg-gradient-to-b from-[hsl(200,100%,55%)] via-[hsl(195,95%,60%)] to-[hsl(200,100%,70%)] dark:from-[hsl(210,55%,12%)] dark:via-[hsl(200,50%,18%)] dark:to-[hsl(210,55%,10%)]" />
             {/* Decorative wave shapes */}
             <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
             {/* Subtle cloud-like overlay */}
-            <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(ellipse at 20% 50%, white 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, white 0%, transparent 50%)' }} />
+            <div className="absolute inset-0 opacity-20 dark:opacity-10" style={{ backgroundImage: 'radial-gradient(ellipse at 20% 50%, white 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, white 0%, transparent 50%)' }} />
+            {/* Dark mode accent glow */}
+            <div className="hidden dark:block absolute inset-0 opacity-15" style={{ backgroundImage: 'radial-gradient(ellipse at 50% 60%, hsl(200,100%,50%) 0%, transparent 60%)' }} />
             {/* Sparkle/star decorations */}
-            <div className="absolute top-[15%] left-[10%] w-2 h-2 bg-white rounded-full animate-pulse opacity-60" />
-            <div className="absolute top-[25%] right-[15%] w-1.5 h-1.5 bg-white rounded-full animate-pulse opacity-40" style={{ animationDelay: '0.5s' }} />
-            <div className="absolute top-[10%] right-[30%] w-1 h-1 bg-white rounded-full animate-pulse opacity-50" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-[15%] left-[10%] w-2 h-2 bg-white rounded-full animate-pulse opacity-60 dark:opacity-30" />
+            <div className="absolute top-[25%] right-[15%] w-1.5 h-1.5 bg-white rounded-full animate-pulse opacity-40 dark:opacity-20" style={{ animationDelay: '0.5s' }} />
+            <div className="absolute top-[10%] right-[30%] w-1 h-1 bg-white rounded-full animate-pulse opacity-50 dark:opacity-25" style={{ animationDelay: '1s' }} />
           </div>
           
           {/* Content */}
@@ -521,9 +523,9 @@ const Index = () => {
               <div className={cn(
                 "inline-flex items-center gap-1.5 mb-2 sm:mb-3",
                 "px-3 py-1 sm:px-4 sm:py-1.5",
-                "bg-[hsl(48,100%,52%)] backdrop-blur-md",
-                "rounded-full border border-[hsl(48,100%,60%)]/40",
-                "shadow-lg shadow-[hsl(48,100%,52%)]/30"
+                "bg-[hsl(48,100%,52%)] dark:bg-[hsl(48,100%,50%)]/90 backdrop-blur-md",
+                "rounded-full border border-[hsl(48,100%,60%)]/40 dark:border-[hsl(48,100%,55%)]/30",
+                "shadow-lg shadow-[hsl(48,100%,52%)]/30 dark:shadow-[hsl(48,100%,50%)]/20"
               )}>
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-[hsl(210,60%,12%)]" />
                 <span className="text-[10px] sm:text-xs font-bold text-[hsl(210,60%,12%)] uppercase tracking-wide">
