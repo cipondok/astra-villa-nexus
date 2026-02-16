@@ -508,11 +508,11 @@ const Index = () => {
           </div>
           
           {/* Bottom gradient fade into next section */}
-          <div className="absolute bottom-0 left-0 right-0 h-8 sm:h-12 bg-gradient-to-t from-[hsl(210,100%,45%)] to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-8 sm:h-12 bg-gradient-to-t from-[hsl(210,100%,45%)] dark:from-[hsl(210,55%,12%)] to-transparent pointer-events-none" />
         </section>
 
         {/* Search Section - Blue themed */}
-        <section className="w-full bg-gradient-to-b from-[hsl(210,100%,45%)] via-[hsl(210,100%,50%)] to-[hsl(210,100%,55%)] py-4 sm:py-6 md:py-8">
+        <section className="w-full bg-gradient-to-b from-[hsl(210,100%,45%)] via-[hsl(210,100%,50%)] to-[hsl(210,100%,55%)] dark:from-[hsl(210,55%,12%)] dark:via-[hsl(210,50%,16%)] dark:to-[hsl(210,45%,20%)] py-4 sm:py-6 md:py-8">
           <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
             {/* AI Badge */}
             <div className="text-center mb-3 sm:mb-4 animate-in fade-in-50 duration-500">
@@ -632,7 +632,7 @@ const Index = () => {
         )}
 
         {/* AI Tools & Features */}
-        <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-[hsl(210,100%,55%)] via-[hsl(210,100%,60%)] to-[hsl(210,80%,65%)]">
+        <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-[hsl(210,100%,55%)] via-[hsl(210,100%,60%)] to-[hsl(210,80%,65%)] dark:from-[hsl(210,45%,20%)] dark:via-[hsl(210,40%,22%)] dark:to-[hsl(210,35%,24%)]">
           <div className="w-full">
             <Suspense fallback={
               <div className="flex gap-2 justify-center py-3">
@@ -650,7 +650,7 @@ const Index = () => {
         </div>
 
         {/* Global Investment Platform */}
-        <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-[hsl(210,80%,65%)] to-[hsl(210,70%,70%)]">
+        <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-[hsl(210,80%,65%)] to-[hsl(210,70%,70%)] dark:from-[hsl(210,35%,24%)] dark:to-[hsl(210,30%,18%)]">
           <div className="w-full">
             <Suspense fallback={
               <div className="flex gap-3 justify-center py-3">
@@ -665,7 +665,7 @@ const Index = () => {
         </div>
 
         {/* Property Display Section */}
-        <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-[hsl(210,70%,70%)] via-[hsl(210,60%,75%)] to-background">
+        <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-[hsl(210,70%,70%)] via-[hsl(210,60%,75%)] to-background dark:from-[hsl(210,30%,18%)] dark:via-[hsl(210,35%,14%)] dark:to-background">
           <div className="w-full space-y-4">
             {hasSearched ? (
               <section className="bg-primary/10 backdrop-blur-sm rounded-xl shadow-md border border-primary/15 dark:bg-primary/5 dark:border-primary/10">
