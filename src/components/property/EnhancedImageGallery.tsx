@@ -32,6 +32,8 @@ const EnhancedImageGallery = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showFullscreen, setShowFullscreen] = useState(false);
   const [imageError, setImageError] = useState<{ [key: number]: boolean }>({});
+  const [retryCount, setRetryCount] = useState<{ [key: number]: number }>({});
+  const MAX_RETRIES = 3;
 
   if (!images || images.length === 0) {
     return (
@@ -53,7 +55,30 @@ const EnhancedImageGallery = ({
   };
 
   const handleImageError = (index: number) => {
-    setImageError(prev => ({ ...prev, [index]: true }));
+    const currentRetries = retryCount[index] || 0;
+    if (currentRetries < MAX_RETRIES) {
+      setRetryCount(prev => ({ ...prev, [index]: currentRetries + 1 }));
+      // Force re-render with cache-busted URL after a delay
+      setTimeout(() => {
+        setImageError(prev => ({ ...prev, [index]: false }));
+      }, 1500);
+    } else {
+      setImageError(prev => ({ ...prev, [index]: true }));
+    }
+  };
+
+  const handleImageLoad = (index: number) => {
+    setImageError(prev => ({ ...prev, [index]: false }));
+    setRetryCount(prev => ({ ...prev, [index]: 0 }));
+  };
+
+  const getImageSrc = (url: string, index: number) => {
+    const retries = retryCount[index] || 0;
+    if (retries > 0) {
+      const separator = url.includes('?') ? '&' : '?';
+      return `${url}${separator}_retry=${retries}`;
+    }
+    return url;
   };
 
   const handleDownloadImage = () => {
@@ -98,10 +123,12 @@ const EnhancedImageGallery = ({
               </div>
             ) : (
               <img
-                src={currentImage}
+                key={`img-${currentImageIndex}-${retryCount[currentImageIndex] || 0}`}
+                src={getImageSrc(currentImage, currentImageIndex)}
                 alt={`${title} - Image ${currentImageIndex + 1}`}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 onError={() => handleImageError(currentImageIndex)}
+                onLoad={() => handleImageLoad(currentImageIndex)}
               />
             )}
 
@@ -266,10 +293,12 @@ const EnhancedImageGallery = ({
                     </div>
                   ) : (
                     <img
-                      src={image}
+                      key={`thumb-${index}-${retryCount[index] || 0}`}
+                      src={getImageSrc(image, index)}
                       alt={`Thumbnail ${index + 1}`}
                       className="w-full h-full object-cover"
                       onError={() => handleImageError(index)}
+                      onLoad={() => handleImageLoad(index)}
                     />
                   )}
                 </div>
@@ -313,10 +342,12 @@ const EnhancedImageGallery = ({
                 </div>
               ) : (
                 <img
-                  src={currentImage}
+                  key={`fs-${currentImageIndex}-${retryCount[currentImageIndex] || 0}`}
+                  src={getImageSrc(currentImage, currentImageIndex)}
                   alt={`${title} - Image ${currentImageIndex + 1}`}
                   className="max-w-full max-h-full object-contain"
                   onError={() => handleImageError(currentImageIndex)}
+                  onLoad={() => handleImageLoad(currentImageIndex)}
                 />
               )}
             </div>
