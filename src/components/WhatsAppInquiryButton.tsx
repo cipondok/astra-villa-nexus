@@ -11,15 +11,15 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+  DialogTrigger } from
+'@/components/ui/dialog';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue } from
+'@/components/ui/select';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { openWhatsAppChat, InquiryType } from '@/utils/whatsappUtils';
@@ -53,12 +53,12 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [inquiryType, setInquiryType] = useState<InquiryType | 'other'>(defaultType);
   const [customInquiryType, setCustomInquiryType] = useState('');
-  
+
   // User info - auto-pickup from profile if logged in
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userPhone, setUserPhone] = useState('');
-  
+
   // Inquiry preferences
   const [preferredArea, setPreferredArea] = useState('');
   const [budgetRange, setBudgetRange] = useState('');
@@ -192,13 +192,13 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
   const generateSmartMessage = (): string => {
     const lang = language;
     const isLoggedIn = !!user;
-    const inquiryLabel = inquiryType === 'other' 
-      ? `✏️ ${customInquiryType || (lang === 'en' ? 'Custom Inquiry' : 'Pertanyaan Khusus')}`
-      : (t.types[inquiryType] || t.types.general);
-    
-    let message = lang === 'en' 
-      ? `Hello ASTRA Villa! 👋\n\n`
-      : `Halo ASTRA Villa! 👋\n\n`;
+    const inquiryLabel = inquiryType === 'other' ?
+    `✏️ ${customInquiryType || (lang === 'en' ? 'Custom Inquiry' : 'Pertanyaan Khusus')}` :
+    t.types[inquiryType] || t.types.general;
+
+    let message = lang === 'en' ?
+    `Hello ASTRA Villa! 👋\n\n` :
+    `Halo ASTRA Villa! 👋\n\n`;
 
     // Header with inquiry type
     message += `━━━━━━━━━━━━━━━━━━━━\n`;
@@ -232,15 +232,15 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
         message += lang === 'en' ? `• Preferred Area: ${preferredArea}\n` : `• Area Pilihan: ${preferredArea}\n`;
       }
       if (budgetRange) {
-        const budgetLabel = budgetRange === 'other' 
-          ? customBudget || (lang === 'en' ? 'Custom Budget' : 'Anggaran Khusus')
-          : (t.budgetOptions[budgetRange as keyof typeof t.budgetOptions] || budgetRange);
+        const budgetLabel = budgetRange === 'other' ?
+        customBudget || (lang === 'en' ? 'Custom Budget' : 'Anggaran Khusus') :
+        t.budgetOptions[budgetRange as keyof typeof t.budgetOptions] || budgetRange;
         message += lang === 'en' ? `• Budget: ${budgetLabel}\n` : `• Anggaran: ${budgetLabel}\n`;
       }
       if (timeline) {
-        const timelineLabel = timeline === 'other'
-          ? customTimeline || (lang === 'en' ? 'Custom Timeline' : 'Timeline Khusus')
-          : (t.timelineOptions[timeline as keyof typeof t.timelineOptions] || timeline);
+        const timelineLabel = timeline === 'other' ?
+        customTimeline || (lang === 'en' ? 'Custom Timeline' : 'Timeline Khusus') :
+        t.timelineOptions[timeline as keyof typeof t.timelineOptions] || timeline;
         message += lang === 'en' ? `• Timeline: ${timelineLabel}\n` : `• Timeline: ${timelineLabel}\n`;
       }
       message += `\n`;
@@ -254,9 +254,9 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
 
     // Footer
     message += `━━━━━━━━━━━━━━━━━━━━\n`;
-    message += lang === 'en' 
-      ? `📱 Sent via ASTRA Villa App\n⏰ ${new Date().toLocaleString('en-ID')}`
-      : `📱 Dikirim via Aplikasi ASTRA Villa\n⏰ ${new Date().toLocaleString('id-ID')}`;
+    message += lang === 'en' ?
+    `📱 Sent via ASTRA Villa App\n⏰ ${new Date().toLocaleString('en-ID')}` :
+    `📱 Dikirim via Aplikasi ASTRA Villa\n⏰ ${new Date().toLocaleString('id-ID')}`;
 
     return message;
   };
@@ -270,48 +270,48 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
       toast({
         title: language === 'en' ? "Name Required" : "Nama Diperlukan",
         description: language === 'en' ? "Please enter your name (minimum 2 characters)" : "Silakan masukkan nama Anda (minimal 2 karakter)",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-    
+
     if (!validatePhoneNumber(userPhone).isValid) {
       toast({
         title: language === 'en' ? "Valid Phone Required" : "Nomor Telepon Valid Diperlukan",
         description: language === 'en' ? "Please enter a valid phone number with country code" : "Silakan masukkan nomor telepon yang valid dengan kode negara",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
 
     setIsSending(true);
-    
+
     try {
       const message = generateSmartMessage();
       const encodedMessage = encodeURIComponent(message);
       const whatsappUrl = `https://wa.me/6285716008080?text=${encodedMessage}`;
-      
+
       // Open WhatsApp
       const newWindow = window.open(whatsappUrl, '_blank');
-      
+
       if (newWindow) {
         toast({
           title: language === 'en' ? "WhatsApp Opened!" : "WhatsApp Terbuka!",
-          description: language === 'en' ? "Your inquiry has been prepared. Send it in WhatsApp!" : "Pertanyaan Anda telah disiapkan. Kirim di WhatsApp!",
+          description: language === 'en' ? "Your inquiry has been prepared. Send it in WhatsApp!" : "Pertanyaan Anda telah disiapkan. Kirim di WhatsApp!"
         });
         setIsOpen(false);
       } else {
         toast({
           title: language === 'en' ? "Popup Blocked" : "Popup Diblokir",
           description: language === 'en' ? "Please allow popups to open WhatsApp" : "Izinkan popup untuk membuka WhatsApp",
-          variant: "destructive",
+          variant: "destructive"
         });
       }
     } catch (error) {
       toast({
         title: language === 'en' ? "Error" : "Kesalahan",
         description: language === 'en' ? "Failed to open WhatsApp. Please try again." : "Gagal membuka WhatsApp. Silakan coba lagi.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setIsSending(false);
@@ -334,12 +334,12 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
       <div className={`fixed bottom-24 left-4 z-40 md:bottom-24 md:left-6 ${className}`}>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button
-              size="sm"
-              className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-green-500 hover:bg-green-600 shadow-lg hover:shadow-xl transition-all duration-300 group border-2 border-white/30 p-0"
-            >
-              <MessageCircle className="h-4 w-4 md:h-4.5 md:w-4.5 text-white group-hover:scale-110 transition-transform" />
-            </Button>
+            
+
+
+
+
+
           </DialogTrigger>
           <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto bg-background/20 backdrop-blur-2xl border-white/30">
             <DialogHeader>
@@ -380,12 +380,12 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
               onSubmit={handleSendMessage}
               t={t}
               isLoggedIn={!!user}
-              isSending={isSending}
-            />
+              isSending={isSending} />
+
           </DialogContent>
         </Dialog>
-      </div>
-    );
+      </div>);
+
   }
 
   // Compact button variant (icon only)
@@ -394,11 +394,11 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
       <Button
         onClick={handleQuickSend}
         size="sm"
-        className={`bg-green-500 hover:bg-green-600 text-white ${className}`}
-      >
+        className={`bg-green-500 hover:bg-green-600 text-white ${className}`}>
+
         <MessageCircle className="h-4 w-4" />
-      </Button>
-    );
+      </Button>);
+
   }
 
   // Inline variant (simple button)
@@ -406,12 +406,12 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
     return (
       <Button
         onClick={handleQuickSend}
-        className={`bg-green-500 hover:bg-green-600 text-white gap-2 ${className}`}
-      >
+        className={`bg-green-500 hover:bg-green-600 text-white gap-2 ${className}`}>
+
         <MessageCircle className="h-4 w-4" />
         <span>{t.quickInquiry}</span>
-      </Button>
-    );
+      </Button>);
+
   }
 
   // Default variant with dialog
@@ -419,8 +419,8 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          className={`bg-green-500 hover:bg-green-600 text-white gap-2 ${className}`}
-        >
+          className={`bg-green-500 hover:bg-green-600 text-white gap-2 ${className}`}>
+
           <MessageCircle className="h-4 w-4" />
           <span>{t.quickInquiry}</span>
         </Button>
@@ -464,11 +464,11 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
           onSubmit={handleSendMessage}
           t={t}
           isLoggedIn={!!user}
-          isSending={isSending}
-        />
+          isSending={isSending} />
+
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>);
+
 };
 
 // Smart Inquiry Form Component
@@ -532,31 +532,31 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
   // Calculate form completion progress
   const isNameValid = validateName(userName);
   const isPhoneValid = validatePhoneNumber(userPhone).isValid;
-  
+
   const requiredFields = [
-    { name: t.yourName || 'Name', filled: isNameValid, required: true },
-    { name: t.yourPhone || 'Phone', filled: isPhoneValid, required: true },
-  ];
-  
+  { name: t.yourName || 'Name', filled: isNameValid, required: true },
+  { name: t.yourPhone || 'Phone', filled: isPhoneValid, required: true }];
+
+
   const optionalFields = [
-    { name: t.yourEmail || 'Email', filled: !!userEmail && validateEmail(userEmail) },
-    { name: t.preferredArea || 'Area', filled: !!preferredArea },
-    { name: t.budgetRange || 'Budget', filled: !!budgetRange },
-    { name: t.timeline || 'Timeline', filled: !!timeline },
-    { name: t.additionalMessage || 'Message', filled: !!customMessage },
-  ];
-  
-  const requiredFilled = requiredFields.filter(f => f.filled).length;
-  const optionalFilled = optionalFields.filter(f => f.filled).length;
+  { name: t.yourEmail || 'Email', filled: !!userEmail && validateEmail(userEmail) },
+  { name: t.preferredArea || 'Area', filled: !!preferredArea },
+  { name: t.budgetRange || 'Budget', filled: !!budgetRange },
+  { name: t.timeline || 'Timeline', filled: !!timeline },
+  { name: t.additionalMessage || 'Message', filled: !!customMessage }];
+
+
+  const requiredFilled = requiredFields.filter((f) => f.filled).length;
+  const optionalFilled = optionalFields.filter((f) => f.filled).length;
   const totalRequired = requiredFields.length;
   const totalOptional = optionalFields.length;
-  
+
   // Progress: required fields = 60%, optional fields = 40%
-  const requiredProgress = (requiredFilled / totalRequired) * 60;
-  const optionalProgress = (optionalFilled / totalOptional) * 40;
+  const requiredProgress = requiredFilled / totalRequired * 60;
+  const optionalProgress = optionalFilled / totalOptional * 40;
   const totalProgress = Math.round(requiredProgress + optionalProgress);
-  
-  const missingRequired = requiredFields.filter(f => !f.filled);
+
+  const missingRequired = requiredFields.filter((f) => !f.filled);
   const isFormValid = missingRequired.length === 0;
 
   return (
@@ -574,17 +574,17 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
         <Progress value={totalProgress} className="h-1.5" />
         
         {/* Status indicator - compact */}
-        {!isFormValid ? (
-          <div className="flex items-center gap-1 text-[8px] text-amber-600">
+        {!isFormValid ?
+        <div className="flex items-center gap-1 text-[8px] text-amber-600">
             <AlertCircle className="h-2.5 w-2.5 shrink-0" />
-            <span>{t.requiredFields || 'Required'}: {missingRequired.map(f => f.name).join(', ')}</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-1 text-[8px] text-green-600">
+            <span>{t.requiredFields || 'Required'}: {missingRequired.map((f) => f.name).join(', ')}</span>
+          </div> :
+
+        <div className="flex items-center gap-1 text-[8px] text-green-600">
             <Check className="h-2.5 w-2.5 shrink-0" />
             <span>{t.readyToSend || 'Ready to send!'}</span>
           </div>
-        )}
+        }
       </div>
 
       {/* Inquiry Type - Slim */}
@@ -595,21 +595,21 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {Object.entries(t.types).map(([key, label]) => (
-              <SelectItem key={key} value={key} className="text-xs py-1.5">
+            {Object.entries(t.types).map(([key, label]) =>
+            <SelectItem key={key} value={key} className="text-xs py-1.5">
                 {label as string}
               </SelectItem>
-            ))}
+            )}
           </SelectContent>
         </Select>
-        {inquiryType === 'other' && (
-          <Input
-            value={customInquiryType}
-            onChange={(e) => setCustomInquiryType(e.target.value)}
-            placeholder={t.otherPlaceholder}
-            className="h-7 text-xs mt-1"
-          />
-        )}
+        {inquiryType === 'other' &&
+        <Input
+          value={customInquiryType}
+          onChange={(e) => setCustomInquiryType(e.target.value)}
+          placeholder={t.otherPlaceholder}
+          className="h-7 text-xs mt-1" />
+
+        }
       </div>
 
       {/* Contact Info Section - Slim 2-column grid */}
@@ -627,11 +627,11 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
               onChange={(e) => setUserName(e.target.value)}
               placeholder="John Doe"
               className={`h-7 text-xs pr-6 ${validateName(userName) ? 'border-green-500/50' : ''}`}
-              disabled={isLoggedIn && !!userName}
-            />
-            {validateName(userName) && (
-              <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-green-500" />
-            )}
+              disabled={isLoggedIn && !!userName} />
+
+            {validateName(userName) &&
+            <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-green-500" />
+            }
           </div>
         </div>
         
@@ -648,15 +648,15 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
               onChange={(e) => setUserEmail(e.target.value)}
               placeholder="email@example.com"
               className={`h-7 text-xs pr-6 ${userEmail && validateEmail(userEmail) ? 'border-green-500/50' : userEmail && !validateEmail(userEmail) ? 'border-destructive/50' : ''}`}
-              disabled={isLoggedIn && !!userEmail}
-            />
+              disabled={isLoggedIn && !!userEmail} />
+
             {userEmail && (
-              validateEmail(userEmail) ? (
-                <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-green-500" />
-              ) : (
-                <AlertCircle className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-destructive" />
-              )
-            )}
+            validateEmail(userEmail) ?
+            <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-green-500" /> :
+
+            <AlertCircle className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-destructive" />)
+
+            }
           </div>
         </div>
       </div>
@@ -671,8 +671,8 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
           value={userPhone}
           onChange={setUserPhone}
           placeholder="812 3456 7890"
-          disabled={false}
-        />
+          disabled={false} />
+
       </div>
 
       
@@ -690,30 +690,30 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
           onChange={(e) => setCustomMessage(e.target.value)}
           placeholder={t.messagePlaceholder}
           rows={2}
-          className="text-xs resize-none min-h-[48px]"
-        />
+          className="text-xs resize-none min-h-[48px]" />
+
       </div>
 
       {/* Submit Button - Compact */}
       <Button
         onClick={onSubmit}
         disabled={!validateName(userName) || !validatePhoneNumber(userPhone).isValid || isSending}
-        className="w-full bg-green-500 hover:bg-green-600 disabled:bg-muted text-white gap-1.5 h-8 text-xs font-semibold active:scale-[0.98] transition-transform"
-      >
-        {isSending ? (
-          <>
+        className="w-full bg-green-500 hover:bg-green-600 disabled:bg-muted text-white gap-1.5 h-8 text-xs font-semibold active:scale-[0.98] transition-transform">
+
+        {isSending ?
+        <>
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
             {t.sending || 'Opening...'}
-          </>
-        ) : (
-          <>
+          </> :
+
+        <>
             <Send className="h-3.5 w-3.5" />
             {t.sendMessage}
           </>
-        )}
+        }
       </Button>
-    </div>
-  );
+    </div>);
+
 };
 
 // Phone Input with Validation Component
@@ -732,47 +732,47 @@ const PhoneInputWithValidation: React.FC<PhoneInputProps> = ({
 }) => {
   const validation = useMemo(() => validatePhoneNumber(value), [value]);
   const [selectedCountry, setSelectedCountry] = useState<string>('ID');
-  
+
   const countryList = [
-    { code: 'ID', name: 'Indonesia', flag: '🇮🇩', dialCode: '+62' },
-    { code: 'MY', name: 'Malaysia', flag: '🇲🇾', dialCode: '+60' },
-    { code: 'SG', name: 'Singapore', flag: '🇸🇬', dialCode: '+65' },
-    { code: 'US', name: 'United States', flag: '🇺🇸', dialCode: '+1' },
-    { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', dialCode: '+44' },
-    { code: 'AU', name: 'Australia', flag: '🇦🇺', dialCode: '+61' },
-    { code: 'JP', name: 'Japan', flag: '🇯🇵', dialCode: '+81' },
-    { code: 'KR', name: 'South Korea', flag: '🇰🇷', dialCode: '+82' },
-    { code: 'AE', name: 'UAE', flag: '🇦🇪', dialCode: '+971' },
-    { code: 'SA', name: 'Saudi Arabia', flag: '🇸🇦', dialCode: '+966' },
-    { code: 'DE', name: 'Germany', flag: '🇩🇪', dialCode: '+49' },
-    { code: 'NL', name: 'Netherlands', flag: '🇳🇱', dialCode: '+31' },
-    { code: 'TW', name: 'Taiwan', flag: '🇹🇼', dialCode: '+886' },
-    { code: 'HK', name: 'Hong Kong', flag: '🇭🇰', dialCode: '+852' },
-    { code: 'TH', name: 'Thailand', flag: '🇹🇭', dialCode: '+66' },
-    { code: 'PH', name: 'Philippines', flag: '🇵🇭', dialCode: '+63' },
-    { code: 'VN', name: 'Vietnam', flag: '🇻🇳', dialCode: '+84' },
-    { code: 'IN', name: 'India', flag: '🇮🇳', dialCode: '+91' },
-    { code: 'CN', name: 'China', flag: '🇨🇳', dialCode: '+86' },
-    { code: 'FR', name: 'France', flag: '🇫🇷', dialCode: '+33' },
-    { code: 'CA', name: 'Canada', flag: '🇨🇦', dialCode: '+1' },
-    { code: 'NZ', name: 'New Zealand', flag: '🇳🇿', dialCode: '+64' },
-    { code: 'QA', name: 'Qatar', flag: '🇶🇦', dialCode: '+974' },
-    { code: 'KW', name: 'Kuwait', flag: '🇰🇼', dialCode: '+965' },
-    { code: 'BN', name: 'Brunei', flag: '🇧🇳', dialCode: '+673' },
-  ];
-  
-  const currentCountry = countryList.find(c => c.code === selectedCountry) || countryList[0];
-  
+  { code: 'ID', name: 'Indonesia', flag: '🇮🇩', dialCode: '+62' },
+  { code: 'MY', name: 'Malaysia', flag: '🇲🇾', dialCode: '+60' },
+  { code: 'SG', name: 'Singapore', flag: '🇸🇬', dialCode: '+65' },
+  { code: 'US', name: 'United States', flag: '🇺🇸', dialCode: '+1' },
+  { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', dialCode: '+44' },
+  { code: 'AU', name: 'Australia', flag: '🇦🇺', dialCode: '+61' },
+  { code: 'JP', name: 'Japan', flag: '🇯🇵', dialCode: '+81' },
+  { code: 'KR', name: 'South Korea', flag: '🇰🇷', dialCode: '+82' },
+  { code: 'AE', name: 'UAE', flag: '🇦🇪', dialCode: '+971' },
+  { code: 'SA', name: 'Saudi Arabia', flag: '🇸🇦', dialCode: '+966' },
+  { code: 'DE', name: 'Germany', flag: '🇩🇪', dialCode: '+49' },
+  { code: 'NL', name: 'Netherlands', flag: '🇳🇱', dialCode: '+31' },
+  { code: 'TW', name: 'Taiwan', flag: '🇹🇼', dialCode: '+886' },
+  { code: 'HK', name: 'Hong Kong', flag: '🇭🇰', dialCode: '+852' },
+  { code: 'TH', name: 'Thailand', flag: '🇹🇭', dialCode: '+66' },
+  { code: 'PH', name: 'Philippines', flag: '🇵🇭', dialCode: '+63' },
+  { code: 'VN', name: 'Vietnam', flag: '🇻🇳', dialCode: '+84' },
+  { code: 'IN', name: 'India', flag: '🇮🇳', dialCode: '+91' },
+  { code: 'CN', name: 'China', flag: '🇨🇳', dialCode: '+86' },
+  { code: 'FR', name: 'France', flag: '🇫🇷', dialCode: '+33' },
+  { code: 'CA', name: 'Canada', flag: '🇨🇦', dialCode: '+1' },
+  { code: 'NZ', name: 'New Zealand', flag: '🇳🇿', dialCode: '+64' },
+  { code: 'QA', name: 'Qatar', flag: '🇶🇦', dialCode: '+974' },
+  { code: 'KW', name: 'Kuwait', flag: '🇰🇼', dialCode: '+965' },
+  { code: 'BN', name: 'Brunei', flag: '🇧🇳', dialCode: '+673' }];
+
+
+  const currentCountry = countryList.find((c) => c.code === selectedCountry) || countryList[0];
+
   const handleCountrySelect = (code: string) => {
     setSelectedCountry(code);
-    const country = countryList.find(c => c.code === code);
+    const country = countryList.find((c) => c.code === code);
     if (country) {
       // Replace existing dial code or add new one
       const cleanValue = value.replace(/^\+\d+\s*/, '');
       onChange(`${country.dialCode} ${cleanValue}`);
     }
   };
-  
+
   return (
     <div className="space-y-1">
       {/* Country Selector + Phone Input - compact inline row */}
@@ -787,15 +787,15 @@ const PhoneInputWithValidation: React.FC<PhoneInputProps> = ({
             </SelectValue>
           </SelectTrigger>
           <SelectContent className="max-h-[240px]">
-            {countryList.map((country) => (
-              <SelectItem key={country.code} value={country.code} className="text-xs py-1">
+            {countryList.map((country) =>
+            <SelectItem key={country.code} value={country.code} className="text-xs py-1">
                 <span className="flex items-center gap-1.5">
                   <span className="text-sm">{country.flag}</span>
                   <span className="font-medium truncate max-w-[100px]">{country.name}</span>
                   <span className="text-muted-foreground text-[10px] font-mono">{country.dialCode}</span>
                 </span>
               </SelectItem>
-            ))}
+            )}
           </SelectContent>
         </Select>
         
@@ -807,34 +807,34 @@ const PhoneInputWithValidation: React.FC<PhoneInputProps> = ({
             placeholder={placeholder}
             className={`h-7 text-xs pr-7 ${validation.isValid ? 'border-green-500/50' : value.length > 3 ? 'border-destructive/50' : ''}`}
             disabled={disabled}
-            type="tel"
-          />
-          {value && (
-            <div className="absolute right-1.5 top-1/2 -translate-y-1/2">
-              {validation.isValid ? (
-                <Check className="h-3 w-3 text-green-500" />
-              ) : value.length > 3 ? (
-                <AlertCircle className="h-3 w-3 text-destructive" />
-              ) : null}
+            type="tel" />
+
+          {value &&
+          <div className="absolute right-1.5 top-1/2 -translate-y-1/2">
+              {validation.isValid ?
+            <Check className="h-3 w-3 text-green-500" /> :
+            value.length > 3 ?
+            <AlertCircle className="h-3 w-3 text-destructive" /> :
+            null}
             </div>
-          )}
+          }
         </div>
       </div>
       
       {/* Validation feedback - compact */}
-      {validation.isValid && validation.country ? (
-        <div className="flex items-center gap-1 text-[8px] text-green-600">
+      {validation.isValid && validation.country ?
+      <div className="flex items-center gap-1 text-[8px] text-green-600">
           <Check className="h-2.5 w-2.5 shrink-0" />
           <span>{validation.country.flag} {validation.country.name} ({validation.country.dialCode})</span>
-        </div>
-      ) : value.length > 5 && !validation.isValid ? (
-        <p className="text-[8px] text-destructive flex items-center gap-1">
+        </div> :
+      value.length > 5 && !validation.isValid ?
+      <p className="text-[8px] text-destructive flex items-center gap-1">
           <AlertCircle className="h-2.5 w-2.5" />
           Invalid format
-        </p>
-      ) : null}
-    </div>
-  );
+        </p> :
+      null}
+    </div>);
+
 };
 
 export default WhatsAppInquiryButton;
