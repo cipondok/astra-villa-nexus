@@ -21,6 +21,7 @@ import AstraTokenSettingsWrapper from './settings/AstraTokenSettingsWrapper';
 import BrandingSettings from './settings/BrandingSettings';
 import WelcomeScreenSettings from './settings/WelcomeScreenSettings';
 import WebsiteDesignSettings from './settings/WebsiteDesignSettings';
+import HeroSliderSettings from './settings/HeroSliderSettings';
 import LoadingPage from '../LoadingPage';
 
 const SystemSettings = () => {
@@ -77,6 +78,7 @@ const SystemSettings = () => {
           <TabsList className="inline-flex h-8 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
             <TabsTrigger value="general" className="text-xs h-6 px-3">General & SEO</TabsTrigger>
             <TabsTrigger value="website-design" className="text-xs h-6 px-3">Website Design</TabsTrigger>
+            <TabsTrigger value="hero-slider" className="text-xs h-6 px-3">Hero Slider</TabsTrigger>
             <TabsTrigger value="branding" className="text-xs h-6 px-3">Branding</TabsTrigger>
             <TabsTrigger value="welcome-screen" className="text-xs h-6 px-3">Welcome Screen</TabsTrigger>
             <TabsTrigger value="security" className="text-xs h-6 px-3">Security</TabsTrigger>
@@ -102,6 +104,10 @@ const SystemSettings = () => {
 
         <TabsContent value="website-design" className="space-y-4">
           <WebsiteDesignSettings />
+        </TabsContent>
+
+        <TabsContent value="hero-slider" className="space-y-4">
+          <HeroSliderSettings />
         </TabsContent>
 
         <TabsContent value="branding" className="space-y-4">
