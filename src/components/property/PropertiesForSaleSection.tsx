@@ -147,48 +147,50 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                 </div>
               </div>
 
-              {/* Content - Rumah123 Style */}
+              {/* Content */}
               <div className="p-2.5 space-y-1.5">
                 {/* Price */}
                 <div className="space-y-0">
                   <div className="flex items-baseline gap-0.5">
-                    <span className="text-sm font-bold text-accent">{priceInfo.main}</span>
+                    <span className="text-sm sm:text-base font-extrabold text-accent tracking-tight">{priceInfo.main}</span>
                     {priceInfo.suffix && (
-                      <span className="text-xs font-medium text-accent/80">{priceInfo.suffix}</span>
+                      <span className="text-[10px] sm:text-xs font-bold text-accent/70">{priceInfo.suffix}</span>
                     )}
                   </div>
-                  <p className="text-[9px] text-muted-foreground">{formatMonthly(property.price)}</p>
+                  <p className="text-[9px] text-muted-foreground/80 font-medium">≈ {formatMonthly(property.price)}</p>
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[11px] font-medium text-foreground line-clamp-2 leading-snug group-hover:text-accent transition-colors">
+                <h3 className="text-[11px] font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-accent transition-colors">
                   {property.title}
                 </h3>
 
                 {/* Location */}
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-accent/70" />
-                  <span className="text-[10px] line-clamp-1">{getLocation(property)}</span>
+                <div className="flex items-center gap-1">
+                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-accent" />
+                  <span className="text-[10px] text-muted-foreground font-medium line-clamp-1">{getLocation(property)}</span>
                 </div>
 
-                {/* Specs */}
-                <div className="flex items-center gap-2 pt-1 border-t border-border/50">
+                {/* Specs - KT/KM/LB */}
+                <div className="flex items-center flex-wrap gap-1.5 pt-1 border-t border-border/30">
                   {property.bedrooms && property.bedrooms > 0 && (
-                    <div className="flex items-center gap-0.5">
-                      <Bed className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-[10px] text-foreground font-medium">{property.bedrooms}</span>
+                    <div className="flex items-center gap-0.5 bg-accent/5 dark:bg-accent/10 rounded px-1.5 py-0.5">
+                      <Bed className="h-2.5 w-2.5 text-accent" />
+                      <span className="text-[10px] text-foreground font-bold">{property.bedrooms}</span>
+                      <span className="text-[8px] text-muted-foreground font-medium">KT</span>
                     </div>
                   )}
                   {property.bathrooms && property.bathrooms > 0 && (
-                    <div className="flex items-center gap-0.5">
-                      <Bath className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-[10px] text-foreground font-medium">{property.bathrooms}</span>
+                    <div className="flex items-center gap-0.5 bg-accent/5 dark:bg-accent/10 rounded px-1.5 py-0.5">
+                      <Bath className="h-2.5 w-2.5 text-accent" />
+                      <span className="text-[10px] text-foreground font-bold">{property.bathrooms}</span>
+                      <span className="text-[8px] text-muted-foreground font-medium">KM</span>
                     </div>
                   )}
                   {property.area_sqm && (
-                    <div className="flex items-center gap-0.5">
-                      <Maximize className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-[10px] text-foreground font-medium">{property.area_sqm}m²</span>
+                    <div className="flex items-center gap-0.5 bg-accent/5 dark:bg-accent/10 rounded px-1.5 py-0.5">
+                      <span className="text-[8px] text-accent font-bold">LB</span>
+                      <span className="text-[10px] text-foreground font-bold">{property.area_sqm}m²</span>
                     </div>
                   )}
                 </div>

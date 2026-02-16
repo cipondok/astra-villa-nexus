@@ -189,70 +189,69 @@ const Rumah123PropertyCard = ({
         </div>
       </div>
 
-      {/* Content Section - Rumah123 Style */}
+      {/* Content Section */}
       <div className="p-3 space-y-2">
         {/* Price Section */}
         <div className="space-y-0.5">
           <div className="flex items-baseline gap-1">
-            <span className="text-base sm:text-lg font-bold text-primary">
+            <span className="text-lg sm:text-xl font-extrabold text-primary tracking-tight">
               {priceInfo.main}
             </span>
             {priceInfo.suffix && (
-              <span className="text-xs sm:text-sm font-medium text-primary/80">
+              <span className="text-xs sm:text-sm font-bold text-primary/70">
                 {priceInfo.suffix}
               </span>
             )}
           </div>
           {property.listing_type === "sale" && (
-            <p className="text-[10px] sm:text-[11px] text-muted-foreground">
-              {formatMonthlyPayment(property.price)}
+            <p className="text-[10px] sm:text-[11px] text-muted-foreground/80 font-medium">
+              ≈ {formatMonthlyPayment(property.price)}
             </p>
           )}
           {property.listing_type === "rent" && (
-            <p className="text-[10px] sm:text-[11px] text-muted-foreground">
-              {language === "id" ? "per bulan" : "per month"}
+            <p className="text-[10px] sm:text-[11px] text-primary/60 font-semibold">
+              / {language === "id" ? "bulan" : "month"}
             </p>
           )}
         </div>
 
         {/* Title */}
-        <h3 className="text-xs sm:text-sm font-medium text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+        <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
           {property.title}
         </h3>
 
         {/* Location */}
-        <div className="flex items-center gap-1 text-muted-foreground">
-          <MapPin className="h-3 w-3 flex-shrink-0 text-primary/70" />
-          <span className="text-[11px] sm:text-xs line-clamp-1">{getLocation()}</span>
+        <div className="flex items-center gap-1.5">
+          <MapPin className="h-3 w-3 flex-shrink-0 text-primary" />
+          <span className="text-[11px] sm:text-xs text-muted-foreground font-medium line-clamp-1">{getLocation()}</span>
         </div>
 
-        {/* Property Specs - Rumah123 Style (LT/LB) */}
-        <div className="flex items-center gap-3 pt-1 border-t border-border/50">
+        {/* Property Specs - KT/KM/LT/LB Style */}
+        <div className="flex items-center flex-wrap gap-2 pt-1.5 border-t border-border/30">
           {property.bedrooms !== undefined && property.bedrooms > 0 && (
-            <div className="flex items-center gap-1">
-              <Bed className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-xs text-foreground font-medium">{property.bedrooms}</span>
+            <div className="flex items-center gap-1 bg-primary/5 dark:bg-primary/10 rounded-md px-1.5 py-0.5">
+              <Bed className="h-3 w-3 text-primary" />
+              <span className="text-[10px] text-foreground font-bold">{property.bedrooms}</span>
+              <span className="text-[9px] text-muted-foreground font-medium">KT</span>
             </div>
           )}
           {property.bathrooms !== undefined && property.bathrooms > 0 && (
-            <div className="flex items-center gap-1">
-              <Bath className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-xs text-foreground font-medium">{property.bathrooms}</span>
+            <div className="flex items-center gap-1 bg-primary/5 dark:bg-primary/10 rounded-md px-1.5 py-0.5">
+              <Bath className="h-3 w-3 text-primary" />
+              <span className="text-[10px] text-foreground font-bold">{property.bathrooms}</span>
+              <span className="text-[9px] text-muted-foreground font-medium">KM</span>
             </div>
           )}
           {property.land_area && (
-            <div className="flex items-center gap-1">
-              <span className="text-[10px] text-muted-foreground">LT :</span>
-              <span className="text-xs text-foreground font-medium">{property.land_area} m²</span>
+            <div className="flex items-center gap-1 bg-accent/5 dark:bg-accent/10 rounded-md px-1.5 py-0.5">
+              <span className="text-[9px] text-accent font-bold">LT</span>
+              <span className="text-[10px] text-foreground font-bold">{property.land_area}m²</span>
             </div>
           )}
           {property.area_sqm && (
-            <div className="flex items-center gap-1">
-              <span className="text-[10px] text-muted-foreground">
-                {property.land_area ? "LB :" : ""}
-              </span>
-              <Maximize className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-xs text-foreground font-medium">{property.area_sqm} m²</span>
+            <div className="flex items-center gap-1 bg-accent/5 dark:bg-accent/10 rounded-md px-1.5 py-0.5">
+              <span className="text-[9px] text-accent font-bold">LB</span>
+              <span className="text-[10px] text-foreground font-bold">{property.area_sqm}m²</span>
             </div>
           )}
         </div>
