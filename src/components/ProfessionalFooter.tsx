@@ -175,9 +175,9 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         dark:border-[hsl(210,40%,20%)] dark:from-[hsl(210,55%,8%)] dark:via-[hsl(200,50%,10%)] dark:to-[hsl(210,45%,6%)]
         shadow-[0_-8px_30px_-10px_hsl(200,70%,50%/0.25)] dark:shadow-[0_-10px_40px_-15px_rgba(0,10,20,0.5)]"
     >
-      {/* Row 1: Logo left */}
-      <div className="flex items-center mb-4">
-        <div className="mr-auto">
+      {/* Logo - centered top */}
+      <div className="flex justify-center mb-4">
+        <div className="opacity-70 mix-blend-luminosity dark:mix-blend-screen dark:opacity-60">
           <AnimatedLogo src={footerLogoUrl} size="lg" />
         </div>
       </div>
