@@ -3345,160 +3345,128 @@ const AstraSearchPanel = ({
       {/* Advanced Filters Modal (mobile, tablet and desktop) */}
       {showAdvancedFilters && createPortal(
         <>
-          {/* Invisible click-away layer - no background blocking */}
+          {/* Google-style: subtle scrim overlay */}
           <div 
-            className="fixed inset-0 z-[99998]" 
+            className="fixed inset-0 z-[99998] bg-black/20 transition-opacity" 
             onClick={() => setShowAdvancedFilters(false)}
           />
-          {/* Floating popup - 90% transparent glassmorphic slim style with scroll containment */}
+          {/* Google-style clean filter panel */}
           <div 
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
             onTouchStart={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
             className={cn(
-              "fixed top-20 right-2 md:right-4 z-[99999] rounded-2xl shadow-2xl flex flex-col",
-              "bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150",
-              "border border-white/30 dark:border-white/20 ring-1 ring-white/20",
+              "fixed z-[99999] rounded-xl shadow-xl flex flex-col",
+              "bg-background border border-border",
               "touch-none select-none",
-              isMobile ? "max-h-[80vh] w-[calc(100vw-1rem)]" : "max-h-[60vh] w-[380px]"
+              isMobile 
+                ? "inset-x-2 top-16 bottom-4" 
+                : "top-16 right-4 w-[420px] max-h-[calc(100vh-5rem)]"
             )}
             style={{ 
-              animation: 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+              animation: 'scaleIn 0.15s cubic-bezier(0.2, 0, 0, 1)',
               transformOrigin: 'top right',
               overscrollBehavior: 'contain',
-              contain: 'layout style paint'
             }}
           >
-            {/* Slim Header */}
-            <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/20 shrink-0">
+            {/* Google-style Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
+              <h3 className="text-sm font-semibold text-foreground">Filters</h3>
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-                  <SlidersHorizontal className="h-2.5 w-2.5 text-white" />
-                </div>
-                <h4 className="text-[11px] font-bold text-gray-900 dark:text-white">Filters</h4>
-                {getActiveFiltersCount() > 0 && (
-                  <Badge className="h-4 px-1.5 text-[9px] bg-emerald-500 text-white border-0 font-bold">
-                    {getActiveFiltersCount()}
-                  </Badge>
-                )}
-              </div>
-              <div className="flex items-center gap-1">
                 {getActiveFiltersCount() > 0 && (
                   <button
                     onClick={clearAllFilters}
-                    className="text-[9px] font-medium text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded hover:bg-red-500/10 active:scale-95"
+                    className="text-xs font-medium text-primary hover:underline"
                   >
-                    Clear
+                    Reset all
                   </button>
                 )}
                 <button 
                   onClick={() => setShowAdvancedFilters(false)} 
-                  className="h-6 w-6 flex items-center justify-center hover:bg-white/20 dark:hover:bg-white/10 rounded-full text-gray-600 dark:text-white/70 active:scale-95"
+                  className="h-8 w-8 flex items-center justify-center hover:bg-muted rounded-full text-muted-foreground transition-colors"
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             </div>
-              
-            {/* Active Selections - Slim */}
+
+            {/* Google-style Active Filter Pills */}
             {getActiveFiltersCount() > 0 && (
-              <div className="px-2 py-1.5 border-b border-white/10 shrink-0">
-                <div className="flex flex-wrap gap-1">
+              <div className="px-4 py-2 border-b border-border shrink-0">
+                <div className="flex flex-wrap gap-1.5">
                   {filters.listingType && (
-                    <Badge className="h-5 px-2 text-[9px] gap-1 bg-emerald-500/90 text-white border-0 font-medium">
+                    <span className="inline-flex items-center gap-1 h-7 px-3 rounded-full bg-primary/10 text-primary text-xs font-medium">
                       {filters.listingType === 'sale' ? 'Buy' : filters.listingType === 'rent' ? 'Rent' : 'All'}
-                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('listingType', '')} />
-                    </Badge>
+                      <X className="h-3 w-3 cursor-pointer hover:text-primary/70" onClick={() => handleFilterChange('listingType', '')} />
+                    </span>
                   )}
                   {filters.propertyType && (
-                    <Badge className="h-5 px-2 text-[9px] gap-1 bg-blue-500/90 text-white border-0 font-medium">
+                    <span className="inline-flex items-center gap-1 h-7 px-3 rounded-full bg-primary/10 text-primary text-xs font-medium">
                       {filters.propertyType}
-                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('propertyType', '')} />
-                    </Badge>
+                      <X className="h-3 w-3 cursor-pointer hover:text-primary/70" onClick={() => handleFilterChange('propertyType', '')} />
+                    </span>
                   )}
                   {filters.state && filters.state !== 'all' && (
-                    <Badge className="h-5 px-2 text-[9px] gap-1 bg-purple-500/90 text-white border-0 font-medium">
-                      {filters.state}
-                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('state', 'all')} />
-                    </Badge>
+                    <span className="inline-flex items-center gap-1 h-7 px-3 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                      {provinces.find(p => p.code === filters.state)?.name || filters.state}
+                      <X className="h-3 w-3 cursor-pointer hover:text-primary/70" onClick={() => handleFilterChange('state', 'all')} />
+                    </span>
                   )}
                   {filters.bedrooms && (
-                    <Badge className="h-5 px-2 text-[9px] gap-1 bg-orange-500/90 text-white border-0 font-medium">
-                      {filters.bedrooms}BR
-                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('bedrooms', '')} />
-                    </Badge>
+                    <span className="inline-flex items-center gap-1 h-7 px-3 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                      {filters.bedrooms} BR
+                      <X className="h-3 w-3 cursor-pointer hover:text-primary/70" onClick={() => handleFilterChange('bedrooms', '')} />
+                    </span>
+                  )}
+                  {(filters.minPrice > 0 || filters.maxPrice > 0) && (
+                    <span className="inline-flex items-center gap-1 h-7 px-3 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                      Price set
+                      <X className="h-3 w-3 cursor-pointer hover:text-primary/70" onClick={() => { handleFilterChange('minPrice', 0); handleFilterChange('maxPrice', 0); setPriceRange([0, currentFilters.maxPrice]); }} />
+                    </span>
                   )}
                 </div>
               </div>
             )}
 
-            {/* Content - Scrollable with scroll containment */}
+            {/* Content - Scrollable */}
             <ScrollArea 
               className="flex-1 min-h-0" 
               style={{ overscrollBehavior: 'contain', touchAction: 'pan-y' }}
             >
-              <div className="p-2 space-y-2 touch-pan-y">
+              <div className="p-4 space-y-1 touch-pan-y">
                 
-                {/* Listing Type - Slim Touch Cards with touch optimization */}
-                <div className="space-y-1.5">
-                  <h4 className="text-[10px] font-bold text-gray-900 dark:text-white uppercase tracking-wide px-1">Listing Type</h4>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    <button 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleFilterChange('listingType', '');
-                        setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
-                      }} 
-                      className={cn(
-                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-colors duration-150 active:scale-95 touch-manipulation select-none",
-                        filters.listingType === '' 
-                          ? "bg-primary text-white shadow-lg ring-2 ring-primary/50" 
-                          : "bg-white/20 dark:bg-white/10 text-gray-800 dark:text-white/90 hover:bg-white/30 dark:hover:bg-white/15"
-                      )}
-                    >
-                      <Layers className="h-3.5 w-3.5" />
-                      <span className="text-[10px] font-semibold">All</span>
-                    </button>
-                    <button 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleFilterChange('listingType', 'sale');
-                        setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
-                      }} 
-                      className={cn(
-                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-colors duration-150 active:scale-95 touch-manipulation select-none",
-                        filters.listingType === 'sale' 
-                          ? "bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-500/50" 
-                          : "bg-white/20 dark:bg-white/10 text-gray-800 dark:text-white/90 hover:bg-white/30 dark:hover:bg-white/15"
-                      )}
-                    >
-                      <DollarSign className="h-3.5 w-3.5" />
-                      <span className="text-[10px] font-semibold">Buy</span>
-                    </button>
-                    <button 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleFilterChange('listingType', 'rent');
-                        setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
-                      }} 
-                      className={cn(
-                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-colors duration-150 active:scale-95 touch-manipulation select-none",
-                        filters.listingType === 'rent' 
-                          ? "bg-blue-500 text-white shadow-lg ring-2 ring-blue-500/50" 
-                          : "bg-white/20 dark:bg-white/10 text-gray-800 dark:text-white/90 hover:bg-white/30 dark:hover:bg-white/15"
-                      )}
-                    >
-                      <Key className="h-3.5 w-3.5" />
-                      <span className="text-[10px] font-semibold">Rent</span>
-                    </button>
+                {/* Listing Type - Google-style segmented control */}
+                <div className="pb-3 border-b border-border">
+                  <h4 className="text-xs font-medium text-muted-foreground mb-2">Listing Type</h4>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { value: '', label: 'All', icon: Layers },
+                      { value: 'sale', label: 'Buy', icon: DollarSign },
+                      { value: 'rent', label: 'Rent', icon: Key },
+                    ].map(({ value, label, icon: Icon }) => (
+                      <button 
+                        key={value}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleFilterChange('listingType', value);
+                        }} 
+                        className={cn(
+                          "h-10 flex items-center justify-center gap-2 rounded-lg text-sm font-medium transition-all active:scale-95 touch-manipulation",
+                          filters.listingType === value 
+                            ? "bg-primary text-primary-foreground shadow-sm" 
+                            : "bg-muted/50 text-foreground hover:bg-muted"
+                        )}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
-                {/* Property Type - Slim Grid with stable layout */}
+                {/* Property Type - Google-style clean grid */}
                 <Collapsible
                   open={openSections.propertyType}
                   onOpenChange={(open) => setOpenSections(prev => ({ 
@@ -3509,56 +3477,44 @@ const AstraSearchPanel = ({
                     propertySpecs: false,
                     amenities: false
                   }))}
-                  className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
-                    <button className="w-full flex items-center justify-between h-8 px-2 hover:bg-white/20 dark:hover:bg-white/10 rounded-lg transition-colors active:scale-[0.98] touch-manipulation">
-                      <span className="text-[11px] font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
-                        <Home className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                    <button className="w-full flex items-center justify-between h-11 text-sm font-medium text-foreground hover:bg-muted/50 rounded-lg px-2 transition-colors touch-manipulation">
+                      <span className="flex items-center gap-2">
+                        <Home className="h-4 w-4 text-muted-foreground" />
                         Property Type
-                        {filters.propertyType && <Badge className="ml-1 h-4 px-1.5 text-[9px] bg-blue-500 text-white border-0">{filters.propertyType}</Badge>}
+                        {filters.propertyType && <span className="text-xs text-primary font-semibold ml-1">· {filters.propertyType}</span>}
                       </span>
-                      {openSections.propertyType ? <ChevronUp className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" /> : <ChevronDown className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" />}
+                      {openSections.propertyType ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
                     </button>
                   </CollapsibleTrigger>
-                  <CollapsibleContent 
-                    className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up"
-                    style={{ willChange: 'height' }}
-                  >
-                    <div className="pt-1.5 pb-1">
-                      <div className="grid grid-cols-3 gap-2">
+                  <CollapsibleContent className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+                    <div className="pb-3 border-b border-border">
+                      <div className="grid grid-cols-3 gap-2 px-1">
                         {[
-                          { type: 'House', icon: Home, color: 'blue' },
-                          { type: 'Apartment', icon: Building, color: 'purple' },
-                          { type: 'Villa', icon: Home, color: 'emerald' },
-                          { type: 'Land', icon: LandPlot, color: 'amber' },
-                          { type: 'Office', icon: Briefcase, color: 'indigo' },
-                          { type: 'Shop', icon: ShoppingBag, color: 'pink' }
-                        ].map(({ type, icon: Icon, color }) => (
+                          { type: 'House', icon: Home },
+                          { type: 'Apartment', icon: Building },
+                          { type: 'Villa', icon: Home },
+                          { type: 'Land', icon: LandPlot },
+                          { type: 'Office', icon: Briefcase },
+                          { type: 'Shop', icon: ShoppingBag }
+                        ].map(({ type, icon: Icon }) => (
                           <button 
                             key={type}
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
                               handleFilterChange('propertyType', filters.propertyType === type ? '' : type);
-                              if (filters.propertyType !== type) {
-                                setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: false, location: true, priceRange: false, propertySpecs: false, amenities: false })), 150);
-                              } else {
-                                setOpenSections(prev => ({ ...prev, propertyType: false }));
-                              }
                             }}
                             className={cn(
-                              "h-12 flex flex-col items-center justify-center gap-0.5 rounded-xl transition-all duration-150 active:scale-95 touch-manipulation select-none",
+                              "h-11 flex items-center justify-center gap-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 touch-manipulation border",
                               filters.propertyType === type 
-                                ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg ring-2 ring-blue-400/50" 
-                                : "bg-white/30 dark:bg-white/10 text-gray-800 dark:text-white/80 hover:bg-white/50 dark:hover:bg-white/20 border border-white/30 dark:border-white/10"
+                                ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                                : "bg-background text-foreground border-border hover:border-primary/50 hover:bg-muted/50"
                             )}
                           >
-                            <Icon className={cn(
-                              "h-4 w-4",
-                              filters.propertyType === type ? "text-white" : `text-${color}-600 dark:text-${color}-400`
-                            )} />
-                            <span className="text-[10px] font-bold">{type}</span>
+                            <Icon className="h-3.5 w-3.5" />
+                            {type}
                           </button>
                         ))}
                       </div>
@@ -3566,7 +3522,7 @@ const AstraSearchPanel = ({
                   </CollapsibleContent>
                 </Collapsible>
 
-                {/* Location - Slim Collapsible */}
+                {/* Location - Google-style */}
                 <Collapsible
                   open={openSections.location}
                   onOpenChange={(open) => {
@@ -3588,159 +3544,153 @@ const AstraSearchPanel = ({
                       }
                     }
                   }}
-                  className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
-                    <button className="w-full flex items-center justify-between h-8 px-2 hover:bg-white/20 dark:hover:bg-white/10 rounded-lg transition-colors touch-manipulation active:scale-[0.98]">
-                      <span className="text-[11px] font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
-                        <MapPin className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+                    <button className="w-full flex items-center justify-between h-11 text-sm font-medium text-foreground hover:bg-muted/50 rounded-lg px-2 transition-colors touch-manipulation">
+                      <span className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
                         Location
-                        {(filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') ? (
-                          <Badge className="ml-1 h-4 px-1.5 text-[9px] bg-purple-500 text-white border-0">
-                            {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
-                          </Badge>
-                        ) : null}
+                        {(filters.state && filters.state !== 'all') && (
+                          <span className="text-xs text-primary font-semibold ml-1">· {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length} selected</span>
+                        )}
                       </span>
-                      {openSections.location ? <ChevronUp className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" /> : <ChevronDown className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" />}
+                      {openSections.location ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
                     </button>
                   </CollapsibleTrigger>
-                  <CollapsibleContent 
-                    className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up"
-                    style={{ willChange: 'height' }}
-                  >
-                    <div className="pt-1 pb-1">
-                    {/* Province/City/Area Tabs - Slim */}
-                    <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full">
-                      <TabsList className="w-full grid grid-cols-3 h-7 rounded-lg bg-white/20 dark:bg-white/10 p-0.5 gap-0.5">
-                        <TabsTrigger
-                          value="province"
-                          className="text-[9px] font-semibold rounded-sm text-foreground bg-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
-                        >
-                          Province
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="city"
-                          disabled={!filters.state || filters.state === "all"}
-                          className="text-[9px] font-semibold rounded-sm text-foreground bg-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                        >
-                          City
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="area"
-                          disabled={!filters.city || filters.city === "all"}
-                          className="text-[9px] font-semibold rounded-sm text-foreground bg-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                        >
-                          Area
-                        </TabsTrigger>
-                      </TabsList>
+                  <CollapsibleContent className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+                    <div className="pb-3 border-b border-border">
+                      <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full">
+                        <TabsList className="w-full grid grid-cols-3 h-9 rounded-lg bg-muted p-1">
+                          <TabsTrigger value="province" className="text-xs font-medium rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                            Province
+                          </TabsTrigger>
+                          <TabsTrigger value="city" disabled={!filters.state || filters.state === "all"} className="text-xs font-medium rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm disabled:opacity-40">
+                            City
+                          </TabsTrigger>
+                          <TabsTrigger value="area" disabled={!filters.city || filters.city === "all"} className="text-xs font-medium rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm disabled:opacity-40">
+                            Area
+                          </TabsTrigger>
+                        </TabsList>
 
-                      <TabsContent value="province" className="mt-1.5">
-                        <Input
-                          value={provinceSearch}
-                          onChange={(e) => setProvinceSearch(e.target.value)}
-                          placeholder="Search province..."
-                          className="h-6 text-[10px] rounded-md bg-background/50 mb-1"
-                        />
-                        <ScrollArea className="h-28 border border-border/30 rounded-md bg-transparent">
-                          <div className="space-y-0.5 p-1">
-                            <Button
-                              variant={!filters.state || filters.state === 'all' ? 'default' : 'ghost'}
-                              className="w-full justify-start text-[10px] h-6 rounded-sm"
-                              onClick={() => handleFilterChange('state', 'all')}
-                            >
-                              Any Province
-                            </Button>
-                            {filteredProvinces.map(province => (
-                              <Button
-                                key={province.code}
-                                variant={filters.state === province.code ? 'default' : 'ghost'}
-                                className="w-full justify-start text-[10px] h-6 rounded-sm"
-                                onClick={() => {
-                                  handleFilterChange('state', province.code);
-                                  setTimeout(() => setLocationActiveTab('city'), 150);
-                                }}
+                        <TabsContent value="province" className="mt-2">
+                          <Input
+                            value={provinceSearch}
+                            onChange={(e) => setProvinceSearch(e.target.value)}
+                            placeholder="Search province..."
+                            className="h-8 text-xs rounded-lg bg-muted/50 mb-2"
+                          />
+                          <ScrollArea className="h-32 rounded-lg border border-border bg-background">
+                            <div className="p-1 space-y-0.5">
+                              <button
+                                onClick={() => handleFilterChange('state', 'all')}
+                                className={cn(
+                                  "w-full text-left px-3 py-2 text-xs rounded-md transition-colors",
+                                  (!filters.state || filters.state === 'all') ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-foreground"
+                                )}
                               >
-                                {province.name}
-                              </Button>
-                            ))}
-                          </div>
-                        </ScrollArea>
-                      </TabsContent>
+                                Any Province
+                              </button>
+                              {filteredProvinces.map(province => (
+                                <button
+                                  key={province.code}
+                                  onClick={() => {
+                                    handleFilterChange('state', province.code);
+                                    setTimeout(() => setLocationActiveTab('city'), 150);
+                                  }}
+                                  className={cn(
+                                    "w-full text-left px-3 py-2 text-xs rounded-md transition-colors",
+                                    filters.state === province.code ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-foreground"
+                                  )}
+                                >
+                                  {province.name}
+                                </button>
+                              ))}
+                            </div>
+                          </ScrollArea>
+                        </TabsContent>
 
-                      <TabsContent value="city" className="mt-1.5">
-                        <Input
-                          value={citySearch}
-                          onChange={(e) => setCitySearch(e.target.value)}
-                          placeholder="Search city..."
-                          className="h-6 text-[10px] rounded-md bg-background/50 mb-1"
-                        />
-                        <ScrollArea className="h-28 border border-border/30 rounded-md bg-transparent">
-                          <div className="space-y-0.5 p-1">
-                            <Button
-                              variant={!filters.city || filters.city === 'all' ? 'default' : 'ghost'}
-                              className="w-full justify-start text-[10px] h-6 rounded-sm"
-                              onClick={() => handleFilterChange('city', 'all')}
-                            >
-                              Any City
-                            </Button>
-                            {filteredCities.map(city => (
-                              <Button
-                                key={city.code}
-                                variant={filters.city === city.code ? 'default' : 'ghost'}
-                                className="w-full justify-start text-[10px] h-6 rounded-sm"
-                                onClick={() => {
-                                  handleFilterChange('city', city.code);
-                                  setTimeout(() => setLocationActiveTab('area'), 150);
-                                }}
+                        <TabsContent value="city" className="mt-2">
+                          <Input
+                            value={citySearch}
+                            onChange={(e) => setCitySearch(e.target.value)}
+                            placeholder="Search city..."
+                            className="h-8 text-xs rounded-lg bg-muted/50 mb-2"
+                          />
+                          <ScrollArea className="h-32 rounded-lg border border-border bg-background">
+                            <div className="p-1 space-y-0.5">
+                              <button
+                                onClick={() => handleFilterChange('city', 'all')}
+                                className={cn(
+                                  "w-full text-left px-3 py-2 text-xs rounded-md transition-colors",
+                                  (!filters.city || filters.city === 'all') ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-foreground"
+                                )}
                               >
-                                {city.type} {city.name}
-                              </Button>
-                            ))}
-                          </div>
-                        </ScrollArea>
-                      </TabsContent>
+                                Any City
+                              </button>
+                              {filteredCities.map(city => (
+                                <button
+                                  key={city.code}
+                                  onClick={() => {
+                                    handleFilterChange('city', city.code);
+                                    setTimeout(() => setLocationActiveTab('area'), 150);
+                                  }}
+                                  className={cn(
+                                    "w-full text-left px-3 py-2 text-xs rounded-md transition-colors",
+                                    filters.city === city.code ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-foreground"
+                                  )}
+                                >
+                                  {city.type} {city.name}
+                                </button>
+                              ))}
+                            </div>
+                          </ScrollArea>
+                        </TabsContent>
 
-                      <TabsContent value="area" className="mt-1.5">
-                        <Input
-                          value={areaSearch}
-                          onChange={(e) => setAreaSearch(e.target.value)}
-                          placeholder="Search area..."
-                          className="h-6 text-[10px] rounded-md bg-background/50 mb-1"
-                        />
-                        <ScrollArea className="h-28 border border-border/30 rounded-md bg-transparent">
-                          <div className="space-y-0.5 p-1">
-                            <Button
-                              variant={!filters.area || filters.area === 'all' ? 'default' : 'ghost'}
-                              className="w-full justify-start text-[10px] h-6 rounded-sm"
-                              onClick={() => {
-                                handleFilterChange('area', 'all');
-                                setTimeout(() => setOpenSections(prev => ({ ...prev, location: false, priceRange: true })), 150);
-                              }}
-                            >
-                              Any Area
-                            </Button>
-                            {filteredAreas.map(area => (
-                              <Button
-                                key={area.code}
-                                variant={filters.area === area.code ? 'default' : 'ghost'}
-                                className="w-full justify-start text-[10px] h-6 rounded-sm"
+                        <TabsContent value="area" className="mt-2">
+                          <Input
+                            value={areaSearch}
+                            onChange={(e) => setAreaSearch(e.target.value)}
+                            placeholder="Search area..."
+                            className="h-8 text-xs rounded-lg bg-muted/50 mb-2"
+                          />
+                          <ScrollArea className="h-32 rounded-lg border border-border bg-background">
+                            <div className="p-1 space-y-0.5">
+                              <button
                                 onClick={() => {
-                                  handleFilterChange('area', area.code);
+                                  handleFilterChange('area', 'all');
                                   setTimeout(() => setOpenSections(prev => ({ ...prev, location: false, priceRange: true })), 150);
                                 }}
+                                className={cn(
+                                  "w-full text-left px-3 py-2 text-xs rounded-md transition-colors",
+                                  (!filters.area || filters.area === 'all') ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-foreground"
+                                )}
                               >
-                                {area.name}
-                              </Button>
-                            ))}
-                          </div>
-                        </ScrollArea>
-                      </TabsContent>
-                    </Tabs>
+                                Any Area
+                              </button>
+                              {filteredAreas.map(area => (
+                                <button
+                                  key={area.code}
+                                  onClick={() => {
+                                    handleFilterChange('area', area.code);
+                                    setTimeout(() => setOpenSections(prev => ({ ...prev, location: false, priceRange: true })), 150);
+                                  }}
+                                  className={cn(
+                                    "w-full text-left px-3 py-2 text-xs rounded-md transition-colors",
+                                    filters.area === area.code ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-foreground"
+                                  )}
+                                >
+                                  {area.name}
+                                </button>
+                              ))}
+                            </div>
+                          </ScrollArea>
+                        </TabsContent>
+                      </Tabs>
                     </div>
                   </CollapsibleContent>
                 </Collapsible>
 
-                {/* Price Range - Slim Collapsible */}
+                {/* Price Range - Google-style */}
                 <Collapsible
                   open={openSections.priceRange}
                   onOpenChange={(open) => setOpenSections(prev => ({ 
@@ -3751,61 +3701,57 @@ const AstraSearchPanel = ({
                     propertySpecs: false,
                     amenities: false
                   }))}
-                  className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-accent/30 rounded-md">
-                      <Label className="text-[11px] font-bold text-foreground flex items-center gap-1 cursor-pointer">
-                        <DollarSign className="h-3 w-3 text-primary" />
+                    <button className="w-full flex items-center justify-between h-11 text-sm font-medium text-foreground hover:bg-muted/50 rounded-lg px-2 transition-colors touch-manipulation">
+                      <span className="flex items-center gap-2">
+                        <DollarSign className="h-4 w-4 text-muted-foreground" />
                         Price
                         {(priceRange[0] > 0 || priceRange[1] < currentFilters.maxPrice) && (
-                          <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[9px] bg-primary/10">
-                            {activeTab === 'rent' ? `${priceRange[0]}-${priceRange[1]}jt` : `${priceRange[0] >= 1000 ? (priceRange[0] / 1000).toFixed(1) : priceRange[0]}M-${priceRange[1] >= 1000 ? (priceRange[1] / 1000).toFixed(1) : priceRange[1]}M`}
-                          </Badge>
+                          <span className="text-xs text-primary font-semibold ml-1">
+                            · {activeTab === 'rent' ? `${priceRange[0]}-${priceRange[1]}jt` : `${priceRange[0] >= 1000 ? (priceRange[0] / 1000).toFixed(1) : priceRange[0]}M-${priceRange[1] >= 1000 ? (priceRange[1] / 1000).toFixed(1) : priceRange[1]}M`}
+                          </span>
                         )}
-                      </Label>
-                      {openSections.priceRange ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                    </Button>
+                      </span>
+                      {openSections.priceRange ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+                    </button>
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-2 pt-1 px-1">
-                    <Slider 
-                      value={priceRange} 
-                      onValueChange={(value) => {
-                        setPriceRange(value);
-                        handleFilterChange('minPrice', value[0] * (activeTab === 'rent' ? 1000000 : 1000000000));
-                        handleFilterChange('maxPrice', value[1] * (activeTab === 'rent' ? 1000000 : 1000000000));
-                      }} 
-                      min={0} 
-                      max={currentFilters.maxPrice} 
-                      step={currentFilters.priceStep} 
-                      className="w-full" 
-                    />
-                    <div className="flex items-center justify-between text-[10px]">
-                      <span className="text-muted-foreground font-medium">
-                        {activeTab === 'rent' ? `${priceRange[0]}jt` : priceRange[0] >= 1000 ? `${(priceRange[0] / 1000).toFixed(1)}M` : `${priceRange[0]}jt`}
-                      </span>
-                      <span className="text-muted-foreground font-medium">
-                        {activeTab === 'rent' ? (priceRange[1] >= currentFilters.maxPrice ? 'Any' : `${priceRange[1]}jt`) : (priceRange[1] >= currentFilters.maxPrice ? 'Any' : priceRange[1] >= 1000 ? `${(priceRange[1] / 1000).toFixed(1)}M` : `${priceRange[1]}jt`)}
-                      </span>
+                  <CollapsibleContent className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+                    <div className="pb-3 border-b border-border space-y-3 px-1">
+                      <Slider 
+                        value={priceRange} 
+                        onValueChange={(value) => {
+                          setPriceRange(value);
+                          handleFilterChange('minPrice', value[0] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                          handleFilterChange('maxPrice', value[1] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                        }} 
+                        min={0} 
+                        max={currentFilters.maxPrice} 
+                        step={currentFilters.priceStep} 
+                        className="w-full" 
+                      />
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>
+                          {activeTab === 'rent' ? `${priceRange[0]}jt` : priceRange[0] >= 1000 ? `${(priceRange[0] / 1000).toFixed(1)}M` : `${priceRange[0]}jt`}
+                        </span>
+                        <span>
+                          {activeTab === 'rent' ? (priceRange[1] >= currentFilters.maxPrice ? 'Any' : `${priceRange[1]}jt`) : (priceRange[1] >= currentFilters.maxPrice ? 'Any' : priceRange[1] >= 1000 ? `${(priceRange[1] / 1000).toFixed(1)}M` : `${priceRange[1]}jt`)}
+                        </span>
+                      </div>
                     </div>
                   </CollapsibleContent>
                 </Collapsible>
 
                 {/* Database-driven filters by category */}
                 {filtersLoading && (
-                  <div className="space-y-3 animate-pulse">
-                    <div className="h-9 bg-muted/50 rounded-lg" />
-                    <div className="h-24 bg-muted/30 rounded-lg" />
-                    <div className="h-9 bg-muted/50 rounded-lg" />
-                    <div className="h-28 bg-muted/30 rounded-lg" />
-                    <div className="h-9 bg-muted/50 rounded-lg" />
-                    <div className="h-20 bg-muted/30 rounded-lg" />
+                  <div className="space-y-3 animate-pulse py-2">
+                    <div className="h-10 bg-muted rounded-lg" />
+                    <div className="h-10 bg-muted rounded-lg" />
+                    <div className="h-10 bg-muted rounded-lg" />
                   </div>
                 )}
                 
-                {/* Show database-driven filters for all modes */}
                 {!filtersLoading && currentDbFilters.length > 0 && currentDbFilters.map((category) => {
-                  // Skip categories we're handling specially (location, price)
                   if (['location', 'price', 'search'].includes(category.name)) return null;
                   
                   const CategoryIcon = getCategoryIcon(category.name);
@@ -3826,104 +3772,92 @@ const AstraSearchPanel = ({
                           [category.name]: open
                         }));
                       }}
-                      className="space-y-2"
                     >
                       <CollapsibleTrigger asChild>
-                        <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
-                          <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <div className="flex items-center gap-1.5">
-                                    <CategoryIcon className="h-3.5 w-3.5 text-primary" />
-                                  </div>
-                                </TooltipTrigger>
-                                <TooltipContent side="right" className="max-w-[300px]">
-                                  <p className="text-xs">{getCategoryTooltip(category)}</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            <span>{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</span>
+                        <button className="w-full flex items-center justify-between h-11 text-sm font-medium text-foreground hover:bg-muted/50 rounded-lg px-2 transition-colors touch-manipulation">
+                          <span className="flex items-center gap-2">
+                            <CategoryIcon className="h-4 w-4 text-muted-foreground" />
+                            {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
                             {activeCount > 0 && (
-                              <Badge variant="default" className="ml-1 h-5 px-2 text-xs font-bold">
-                                {activeCount}
-                              </Badge>
+                              <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold">{activeCount}</span>
                             )}
-                          </Label>
+                          </span>
                           <div className="flex items-center gap-1.5">
                             {activeCount > 0 && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  clearCategoryFilters(category);
-                                }}
-                                className="h-6 px-1.5 text-xs text-muted-foreground hover:text-foreground"
+                              <button
+                                onClick={(e) => { e.stopPropagation(); clearCategoryFilters(category); }}
+                                className="text-xs text-primary hover:underline"
                               >
                                 Clear
-                              </Button>
+                              </button>
                             )}
-                            {openSections[category.name] ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                            {openSections[category.name] ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
                           </div>
-                        </Button>
+                        </button>
                       </CollapsibleTrigger>
-                      <CollapsibleContent className="space-y-2">
-                        <div className="grid grid-cols-1 gap-2">
-                          {category.options.map((filter: any) => renderDatabaseFilter(filter))}
+                      <CollapsibleContent className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+                        <div className="pb-3 border-b border-border px-1">
+                          <div className="grid grid-cols-1 gap-1.5">
+                            {category.options.map((filter: any) => renderDatabaseFilter(filter))}
+                          </div>
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
                   );
                 })}
 
-                {/* Bedrooms - Fallback if no database filters */}
+                {/* Bedrooms - Fallback */}
                 {!filtersLoading && filters.listingType && currentDbFilters.length === 0 && (
                   <>
-                    <div className="space-y-2">
-                      <Label className="text-sm font-bold text-foreground flex items-center gap-2">
-                        <Bed className="h-4 w-4 text-primary" />
+                    <div className="pb-3 border-b border-border">
+                      <h4 className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-2">
+                        <Bed className="h-4 w-4" />
                         Bedrooms
-                      </Label>
+                      </h4>
                       <div className="grid grid-cols-6 gap-2">
                         {['1', '2', '3', '4', '5', '5+'].map(bed => (
-                          <Button 
+                          <button 
                             key={bed} 
-                            variant={filters.bedrooms === bed ? "default" : "outline"} 
-                            size="sm" 
                             onClick={() => handleFilterChange('bedrooms', filters.bedrooms === bed ? '' : bed)} 
-                            className={cn("h-10 text-xs font-semibold rounded-lg", filters.bedrooms === bed && "shadow-md ring-2 ring-primary/20")}
+                            className={cn(
+                              "h-9 text-xs font-medium rounded-lg border transition-all active:scale-95",
+                              filters.bedrooms === bed 
+                                ? "bg-primary text-primary-foreground border-primary" 
+                                : "bg-background text-foreground border-border hover:border-primary/50"
+                            )}
                           >
                             {bed}
-                          </Button>
+                          </button>
                         ))}
                       </div>
                     </div>
 
-
-                    <div className="space-y-2">
-                      <Label className="text-sm font-bold text-foreground flex items-center gap-2">
-                        <Bath className="h-4 w-4 text-primary" />
+                    <div className="pb-3 border-b border-border">
+                      <h4 className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-2">
+                        <Bath className="h-4 w-4" />
                         Bathrooms
-                      </Label>
+                      </h4>
                       <div className="grid grid-cols-6 gap-2">
                         {['1', '2', '3', '4', '5', '5+'].map(bath => (
-                          <Button 
+                          <button 
                             key={bath} 
-                            variant={filters.bathrooms === bath ? "default" : "outline"} 
-                            size="sm" 
                             onClick={() => handleFilterChange('bathrooms', filters.bathrooms === bath ? '' : bath)} 
-                            className={cn("h-10 text-xs font-semibold rounded-lg", filters.bathrooms === bath && "shadow-md ring-2 ring-primary/20")}
+                            className={cn(
+                              "h-9 text-xs font-medium rounded-lg border transition-all active:scale-95",
+                              filters.bathrooms === bath 
+                                ? "bg-primary text-primary-foreground border-primary" 
+                                : "bg-background text-foreground border-border hover:border-primary/50"
+                            )}
                           >
                             {bath}
-                          </Button>
+                          </button>
                         ))}
                       </div>
                     </div>
                   </>
                 )}
 
-                {/* Area/Size Filter - Only show when listing type selected */}
+                {/* Area/Size - Google-style */}
                 {filters.listingType && (
                   <Collapsible
                     open={openSections.propertySpecs}
@@ -3935,74 +3869,75 @@ const AstraSearchPanel = ({
                       priceRange: false,
                       amenities: false
                     }))}
-                    className="space-y-2"
                   >
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
-                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
-                          <Square className="h-3.5 w-3.5 text-primary" />
+                      <button className="w-full flex items-center justify-between h-11 text-sm font-medium text-foreground hover:bg-muted/50 rounded-lg px-2 transition-colors touch-manipulation">
+                        <span className="flex items-center gap-2">
+                          <Square className="h-4 w-4 text-muted-foreground" />
                           Area/Size
                           {(filters.minArea || filters.maxArea) && (
-                            <Badge variant="secondary" className="ml-1.5 h-5 px-2 text-xs">
-                              {filters.minArea || 0}-{filters.maxArea || '∞'} sqm
-                            </Badge>
+                            <span className="text-xs text-primary font-semibold ml-1">· {filters.minArea || 0}-{filters.maxArea || '∞'} sqm</span>
                           )}
-                        </Label>
-                        {openSections.propertySpecs ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                      </Button>
+                        </span>
+                        {openSections.propertySpecs ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+                      </button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="space-y-2 pt-1">
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="space-y-1">
-                          <Label className="text-xs text-muted-foreground">Min (sqm)</Label>
-                          <Input 
-                            type="number" 
-                            placeholder="0"
-                            value={filters.minArea}
-                            onChange={(e) => handleFilterChange('minArea', e.target.value)}
-                            className="h-8 text-xs rounded-lg"
-                          />
+                    <CollapsibleContent className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+                      <div className="pb-3 border-b border-border space-y-2 px-1">
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Min (sqm)</Label>
+                            <Input 
+                              type="number" 
+                              placeholder="0"
+                              value={filters.minArea}
+                              onChange={(e) => handleFilterChange('minArea', e.target.value)}
+                              className="h-9 text-xs rounded-lg"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Max (sqm)</Label>
+                            <Input 
+                              type="number" 
+                              placeholder="∞"
+                              value={filters.maxArea}
+                              onChange={(e) => handleFilterChange('maxArea', e.target.value)}
+                              className="h-9 text-xs rounded-lg"
+                            />
+                          </div>
                         </div>
-                        <div className="space-y-1">
-                          <Label className="text-xs text-muted-foreground">Max (sqm)</Label>
-                          <Input 
-                            type="number" 
-                            placeholder="∞"
-                            value={filters.maxArea}
-                            onChange={(e) => handleFilterChange('maxArea', e.target.value)}
-                            className="h-8 text-xs rounded-lg"
-                          />
+                        <div className="grid grid-cols-5 gap-1.5">
+                          {[
+                            { label: '< 50', min: '', max: '50' },
+                            { label: '50-100', min: '50', max: '100' },
+                            { label: '100-200', min: '100', max: '200' },
+                            { label: '200-500', min: '200', max: '500' },
+                            { label: '500+', min: '500', max: '' }
+                          ].map(range => (
+                            <button 
+                              key={range.label}
+                              onClick={() => {
+                                handleFilterChange('minArea', range.min);
+                                handleFilterChange('maxArea', range.max);
+                                setTimeout(() => setOpenSections(prev => ({ ...prev, propertySpecs: false, amenities: true, propertyType: false, location: false, priceRange: false })), 150);
+                              }}
+                              className={cn(
+                                "h-8 text-xs font-medium rounded-lg border transition-all active:scale-95",
+                                (filters.minArea === range.min && filters.maxArea === range.max)
+                                  ? "bg-primary text-primary-foreground border-primary"
+                                  : "bg-background text-foreground border-border hover:border-primary/50"
+                              )}
+                            >
+                              {range.label}
+                            </button>
+                          ))}
                         </div>
-                      </div>
-                      <div className="grid grid-cols-5 gap-1.5">
-                        {[
-                          { label: '< 50', min: '', max: '50' },
-                          { label: '50-100', min: '50', max: '100' },
-                          { label: '100-200', min: '100', max: '200' },
-                          { label: '200-500', min: '200', max: '500' },
-                          { label: '500+', min: '500', max: '' }
-                        ].map(range => (
-                          <Button 
-                            key={range.label}
-                            variant={(filters.minArea === range.min && filters.maxArea === range.max) ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => {
-                              handleFilterChange('minArea', range.min);
-                              handleFilterChange('maxArea', range.max);
-                              // Auto-open amenities after selecting area size
-                              setTimeout(() => setOpenSections(prev => ({ ...prev, propertySpecs: false, amenities: true, propertyType: false, location: false, priceRange: false })), 150);
-                            }}
-                            className="h-8 text-xs font-semibold rounded-lg"
-                          >
-                            {range.label}
-                          </Button>
-                        ))}
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
                 )}
 
-                {/* Amenities Filter - Only show when listing type selected */}
+                {/* Amenities - Google-style chips */}
                 {filters.listingType && (
                   <Collapsible
                     open={openSections.amenities}
@@ -4014,84 +3949,81 @@ const AstraSearchPanel = ({
                       priceRange: false,
                       propertySpecs: false
                     }))}
-                    className="space-y-2"
                   >
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
-                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
-                          <Star className="h-3.5 w-3.5 text-primary" />
+                      <button className="w-full flex items-center justify-between h-11 text-sm font-medium text-foreground hover:bg-muted/50 rounded-lg px-2 transition-colors touch-manipulation">
+                        <span className="flex items-center gap-2">
+                          <Star className="h-4 w-4 text-muted-foreground" />
                           Amenities
                           {filters.features.length > 0 && (
-                            <Badge variant="secondary" className="ml-1.5 h-5 px-2 text-xs">
-                              {filters.features.length}
-                            </Badge>
+                            <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold">{filters.features.length}</span>
                           )}
-                        </Label>
-                        {openSections.amenities ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                      </Button>
+                        </span>
+                        {openSections.amenities ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+                      </button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="space-y-2">
-                      <div className="flex flex-wrap gap-1.5">
-                        {[
-                          { value: 'pool', label: '🏊 Pool', icon: Droplets },
-                          { value: 'gym', label: '💪 Gym', icon: Users },
-                          { value: 'parking', label: '🚗 Parking', icon: Car },
-                          { value: 'security', label: '🛡️ Security', icon: Shield },
-                          { value: 'wifi', label: '📶 WiFi', icon: Wifi },
-                          { value: 'ac', label: '❄️ AC', icon: Wind },
-                          { value: 'garden', label: '🌳 Garden', icon: Layers },
-                          { value: 'balcony', label: '🏡 Balcony', icon: Home }
-                        ].map(amenity => {
-                          const isSelected = filters.features.includes(amenity.value);
-                          return (
-                            <Badge 
-                              key={amenity.value}
-                              variant={isSelected ? "default" : "outline"}
-                              className={cn(
-                                "cursor-pointer h-7 px-2.5 text-xs font-medium rounded-lg hover:bg-primary/10 transition-colors",
-                                isSelected && "shadow-md ring-1 ring-primary/30"
-                              )}
-                              onClick={() => {
-                                setFilters(prev => ({
-                                  ...prev,
-                                  features: isSelected 
-                                    ? prev.features.filter(f => f !== amenity.value)
-                                    : [...prev.features, amenity.value]
-                                }));
-                              }}
-                            >
-                              {amenity.label}
-                            </Badge>
-                          );
-                        })}
+                    <CollapsibleContent className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+                      <div className="pb-3 border-b border-border px-1">
+                        <div className="flex flex-wrap gap-2">
+                          {[
+                            { value: 'pool', label: '🏊 Pool' },
+                            { value: 'gym', label: '💪 Gym' },
+                            { value: 'parking', label: '🚗 Parking' },
+                            { value: 'security', label: '🛡️ Security' },
+                            { value: 'wifi', label: '📶 WiFi' },
+                            { value: 'ac', label: '❄️ AC' },
+                            { value: 'garden', label: '🌳 Garden' },
+                            { value: 'balcony', label: '🏡 Balcony' }
+                          ].map(amenity => {
+                            const isSelected = filters.features.includes(amenity.value);
+                            return (
+                              <button
+                                key={amenity.value}
+                                onClick={() => {
+                                  setFilters(prev => ({
+                                    ...prev,
+                                    features: isSelected 
+                                      ? prev.features.filter(f => f !== amenity.value)
+                                      : [...prev.features, amenity.value]
+                                  }));
+                                }}
+                                className={cn(
+                                  "h-8 px-3 rounded-full text-xs font-medium border transition-all active:scale-95",
+                                  isSelected
+                                    ? "bg-primary text-primary-foreground border-primary"
+                                    : "bg-background text-foreground border-border hover:border-primary/50"
+                                )}
+                              >
+                                {amenity.label}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
                 )}
-
-                {/* Clear All - Slim */}
-                <button 
-                  onClick={clearAllFilters} 
-                  className="w-full h-8 text-[10px] font-semibold text-red-600 dark:text-red-400 hover:bg-red-500/10 border border-red-500/30 rounded-lg transition-all active:scale-95"
-                >
-                  <X className="h-3 w-3 mr-1 inline" />
-                  Clear All
-                </button>
               </div>
             </ScrollArea>
 
-            {/* Footer - Slim */}
-            <div className="border-t border-white/20 px-2 py-2 shrink-0">
+            {/* Google-style Footer */}
+            <div className="border-t border-border px-4 py-3 shrink-0 flex items-center gap-3">
+              <button 
+                onClick={clearAllFilters} 
+                className="flex-1 h-10 text-sm font-medium text-foreground border border-border rounded-lg hover:bg-muted transition-colors active:scale-[0.98]"
+              >
+                Clear all
+              </button>
               <Button 
                 onClick={() => {
                   handleSearch();
                   setShowAdvancedFilters(false);
                 }} 
-                className="w-full h-9 text-[11px] font-bold shadow-lg rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white transition-all active:scale-[0.98]" 
+                className="flex-1 h-10 text-sm font-semibold rounded-lg"
                 size="sm"
               >
-                <Search className="h-3.5 w-3.5 mr-1.5" />
-                Apply Filters
+                <Search className="h-4 w-4 mr-2" />
+                Show results
               </Button>
             </div>
           </div>
