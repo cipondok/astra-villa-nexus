@@ -1,4 +1,5 @@
-import { useState, useEffect, lazy, Suspense, useRef, useMemo } from "react";
+import { useState, useEffect, lazy, Suspense, useRef, useMemo, useCallback } from "react";
+import { useHeroSliderConfig } from "@/hooks/useHeroSliderConfig";
 import { useQuery } from "@tanstack/react-query";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -80,6 +81,7 @@ const Index = () => {
   } as const;
   const t = copy[language];
   const { user, profile, loading } = useAuth();
+  const { data: heroConfig } = useHeroSliderConfig();
   const navigate = useNavigate();
   const { isMobile, isTablet, deviceInfo } = useIsMobile();
   const [searchResults, setSearchResults] = useState<BaseProperty[]>([]);
@@ -495,20 +497,74 @@ const Index = () => {
         
           {/* Hero Search Section - Modern Clean Design */}
         <section className="relative w-full min-h-[380px] sm:min-h-[440px] md:min-h-[500px] lg:h-screen lg:min-h-[580px]" id="hero-section">
-            {/* Sky Blue Gradient Background */}
+            {/* Hero Background - Driven by admin config */}
           <div className="absolute inset-0 z-0">
-            {/* Light mode: vibrant sky blue gradient / Dark mode: deep ocean gradient */}
-            <div className="w-full h-full bg-gradient-to-b from-[hsl(200,100%,55%)] via-[hsl(195,95%,60%)] to-[hsl(200,100%,70%)] dark:from-[hsl(210,55%,12%)] dark:via-[hsl(200,50%,18%)] dark:to-[hsl(210,55%,10%)]" />
-            {/* Decorative wave shapes */}
+            {heroConfig?.backgroundImage ? (
+              <img
+                src={heroConfig.backgroundImage}
+                alt="Hero background"
+                className="w-full h-full object-cover"
+                style={{
+                  filter: `brightness(${(heroConfig?.imageBrightness ?? 110) / 100}) saturate(${(heroConfig?.imageSaturation ?? 110) / 100}) blur(${heroConfig?.imageBlur ?? 0}px)`,
+                }}
+              />
+            ) : (
+              <div
+                className="w-full h-full bg-gradient-to-b from-[hsl(200,100%,55%)] via-[hsl(195,95%,60%)] to-[hsl(200,100%,70%)] dark:from-[hsl(210,55%,12%)] dark:via-[hsl(200,50%,18%)] dark:to-[hsl(210,55%,10%)]"
+                style={{
+                  filter: `brightness(${(heroConfig?.imageBrightness ?? 110) / 100}) saturate(${(heroConfig?.imageSaturation ?? 110) / 100})`,
+                }}
+              />
+            )}
+            {/* Bottom fade */}
             <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
-            {/* Subtle cloud-like overlay */}
+            {/* Gradient overlay from admin */}
+            {(heroConfig?.enableGradientOverlay ?? true) && (
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40" style={{ opacity: (heroConfig?.gradientOpacity ?? 40) / 100 }} />
+            )}
+            {/* Primary tint from admin */}
+            {(heroConfig?.enablePrimaryTint ?? true) && (
+              <div className="absolute inset-0 bg-primary/10" style={{ opacity: (heroConfig?.primaryTintOpacity ?? 5) / 100 }} />
+            )}
+            {/* Cloud overlay */}
             <div className="absolute inset-0 opacity-20 dark:opacity-10" style={{ backgroundImage: 'radial-gradient(ellipse at 20% 50%, white 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, white 0%, transparent 50%)' }} />
-            {/* Dark mode accent glow */}
+            {/* Dark mode glow */}
             <div className="hidden dark:block absolute inset-0 opacity-15" style={{ backgroundImage: 'radial-gradient(ellipse at 50% 60%, hsl(200,100%,50%) 0%, transparent 60%)' }} />
-            {/* Sparkle/star decorations */}
-            <div className="absolute top-[15%] left-[10%] w-2 h-2 bg-white rounded-full animate-pulse opacity-60 dark:opacity-30" />
-            <div className="absolute top-[25%] right-[15%] w-1.5 h-1.5 bg-white rounded-full animate-pulse opacity-40 dark:opacity-20" style={{ animationDelay: '0.5s' }} />
-            <div className="absolute top-[10%] right-[30%] w-1 h-1 bg-white rounded-full animate-pulse opacity-50 dark:opacity-25" style={{ animationDelay: '1s' }} />
+            {/* Floating particles from admin */}
+            {heroConfig?.enableParticles && (
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {Array.from({ length: heroConfig.particleCount }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
+                    style={{
+                      top: `${Math.random() * 100}%`,
+                      left: `${Math.random() * 100}%`,
+                      opacity: 0.3 + Math.random() * 0.4,
+                      animationDelay: `${Math.random() * 3}s`,
+                      animationDuration: `${2 + Math.random() * 3}s`,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+            {/* Glow effect from admin */}
+            {heroConfig?.enableGlowEffect && (
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  backgroundImage: `radial-gradient(ellipse at 50% 50%, hsl(var(--primary) / ${(heroConfig.glowIntensity ?? 20) / 100}) 0%, transparent 60%)`,
+                }}
+              />
+            )}
+            {/* Floating decorative elements from admin */}
+            {heroConfig?.enableFloatingElements && (
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute top-[15%] left-[10%] w-2 h-2 bg-white rounded-full animate-pulse opacity-60" />
+                <div className="absolute top-[25%] right-[15%] w-1.5 h-1.5 bg-white rounded-full animate-pulse opacity-40" style={{ animationDelay: '0.5s' }} />
+                <div className="absolute top-[10%] right-[30%] w-1 h-1 bg-white rounded-full animate-pulse opacity-50" style={{ animationDelay: '1s' }} />
+              </div>
+            )}
           </div>
           
           {/* Content */}
