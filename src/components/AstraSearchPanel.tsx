@@ -3357,8 +3357,8 @@ const AstraSearchPanel = ({
             onTouchStart={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
             className={cn(
-              "fixed z-[99999] rounded-xl shadow-xl flex flex-col",
-              "bg-background border border-border",
+              "fixed z-[99999] rounded-2xl shadow-2xl shadow-primary/30 flex flex-col",
+              "glass-popup backdrop-blur-2xl border-primary/20",
               "touch-none select-none",
               isMobile 
                 ? "inset-x-2 top-16 bottom-4" 
@@ -3371,7 +3371,7 @@ const AstraSearchPanel = ({
             }}
           >
             {/* Google-style Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-primary/10 shrink-0">
               <h3 className="text-sm font-semibold text-foreground">Filters</h3>
               <div className="flex items-center gap-2">
                 {getActiveFiltersCount() > 0 && (
@@ -3393,7 +3393,7 @@ const AstraSearchPanel = ({
 
             {/* Google-style Active Filter Pills */}
             {getActiveFiltersCount() > 0 && (
-              <div className="px-4 py-2 border-b border-border shrink-0">
+              <div className="px-4 py-2 border-b border-primary/10 shrink-0">
                 <div className="flex flex-wrap gap-1.5">
                   {filters.listingType && (
                     <span className="inline-flex items-center gap-1 h-7 px-3 rounded-full bg-primary/10 text-primary text-xs font-medium">
@@ -3430,9 +3430,9 @@ const AstraSearchPanel = ({
             )}
 
             {/* Content - Scrollable */}
-            <ScrollArea 
-              className="flex-1 min-h-0" 
-              style={{ overscrollBehavior: 'contain', touchAction: 'pan-y' }}
+            <div 
+              className="flex-1 min-h-0 overflow-y-auto overscroll-contain filter-scroll" 
+              style={{ touchAction: 'pan-y', scrollbarWidth: 'thin', scrollbarColor: 'hsl(var(--primary) / 0.3) transparent' }}
             >
               <div className="p-4 space-y-1 touch-pan-y">
                 
@@ -4004,10 +4004,10 @@ const AstraSearchPanel = ({
                   </Collapsible>
                 )}
               </div>
-            </ScrollArea>
+            </div>
 
-            {/* Google-style Footer */}
-            <div className="border-t border-border px-4 py-3 shrink-0 flex items-center gap-3">
+            {/* Footer */}
+            <div className="border-t border-primary/10 px-4 py-3 shrink-0 flex items-center gap-3">
               <button 
                 onClick={clearAllFilters} 
                 className="flex-1 h-10 text-sm font-medium text-foreground border border-border rounded-lg hover:bg-muted transition-colors active:scale-[0.98]"
