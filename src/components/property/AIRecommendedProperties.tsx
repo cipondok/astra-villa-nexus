@@ -217,7 +217,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     return (
       <div
         onClick={() => onPropertyClick(property)}
-        className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px] cursor-pointer group/card bg-card rounded-lg border border-border/50 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 overflow-hidden"
+        className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px] cursor-pointer group/card rounded-lg border border-white/20 shadow-lg shadow-black/5 bg-gradient-to-br from-white/15 via-white/5 to-transparent backdrop-blur-xl hover:shadow-xl hover:border-white/30 hover:from-white/20 transition-all duration-300 overflow-hidden"
       >
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
