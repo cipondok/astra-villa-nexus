@@ -271,44 +271,58 @@ function getSeoRating(score: number): string {
 }
 
 async function analyzeBatch(supabase: any, apiKey: string | undefined, body: any) {
-  const { limit = 50, offset = 0, filter = 'unanalyzed' } = body;
+  const { limit = 10, filter = 'unanalyzed' } = body;
+  const batchSize = Math.min(limit, 10); // Cap at 10 per invocation to stay within worker limits
 
-  let query = supabase.from('properties').select('id').order('created_at', { ascending: false });
-  
+  let propertyIds: string[] = [];
+
   if (filter === 'unanalyzed') {
-    const { data: analyzed } = await supabase.from('property_seo_analysis').select('property_id');
-    const analyzedIds = (analyzed || []).map((a: any) => a.property_id);
-    if (analyzedIds.length > 0) {
-      query = query.not('id', 'in', `(${analyzedIds.join(',')})`);
+    // Use a small paginated RPC-free approach: fetch a page of properties,
+    // then check which ones already have analysis, and pick the ones that don't.
+    const pageSize = batchSize * 5; // Fetch more candidates to find enough unanalyzed
+    const { data: candidates } = await supabase
+      .from('properties')
+      .select('id')
+      .order('created_at', { ascending: false })
+      .limit(pageSize);
+
+    if (candidates?.length) {
+      const candidateIds = candidates.map((c: any) => c.id);
+      const { data: alreadyAnalyzed } = await supabase
+        .from('property_seo_analysis')
+        .select('property_id')
+        .in('property_id', candidateIds);
+
+      const analyzedSet = new Set((alreadyAnalyzed || []).map((a: any) => a.property_id));
+      propertyIds = candidateIds.filter((id: string) => !analyzedSet.has(id)).slice(0, batchSize);
     }
   } else if (filter === 'weak') {
     const { data: weak } = await supabase
       .from('property_seo_analysis')
       .select('property_id')
-      .lt('seo_score', 50);
-    const weakIds = (weak || []).map((w: any) => w.property_id);
-    if (weakIds.length === 0) return jsonResponse({ success: true, analyzed: 0, message: 'No weak listings found' });
-    query = query.in('id', weakIds);
+      .lt('seo_score', 50)
+      .order('seo_score', { ascending: true })
+      .limit(batchSize);
+    propertyIds = (weak || []).map((w: any) => w.property_id);
   }
 
-  const { data: properties } = await query.range(offset, offset + limit - 1);
-  if (!properties?.length) return jsonResponse({ success: true, analyzed: 0, message: 'No properties to analyze' });
+  if (!propertyIds.length) return jsonResponse({ success: true, analyzed: 0, message: 'No properties to analyze' });
 
   let analyzed = 0;
   const errors: string[] = [];
-  for (const prop of properties) {
+  for (const id of propertyIds) {
     try {
-      await analyzeProperty(supabase, apiKey, { propertyId: prop.id });
+      await analyzeProperty(supabase, apiKey, { propertyId: id });
       analyzed++;
-      if (apiKey) await new Promise(r => setTimeout(r, 300));
+      if (apiKey) await new Promise(r => setTimeout(r, 200));
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
-      console.error(`Failed to analyze ${prop.id}:`, msg);
-      errors.push(prop.id);
+      console.error(`Failed to analyze ${id}:`, msg);
+      errors.push(id);
     }
   }
 
-  return jsonResponse({ success: true, analyzed, total: properties.length, errors: errors.length > 0 ? errors : undefined });
+  return jsonResponse({ success: true, analyzed, total: propertyIds.length, errors: errors.length > 0 ? errors : undefined });
 }
 
 async function getKeywordSuggestions(supabase: any, apiKey: string | undefined, body: any) {
