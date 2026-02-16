@@ -345,7 +345,7 @@ const PropertyImageManager = () => {
     setAiCheckingUrl(null);
   };
 
-  // Regenerate broken image using AI
+  // Regenerate broken image using AI — auto-deletes broken + applies new image
   const handleRegenerateImage = async (brokenUrl: string, property: any) => {
     setRegenerating(brokenUrl);
     try {
@@ -362,18 +362,24 @@ const PropertyImageManager = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       
-      showSuccess("Image Regenerated", "AI generated a new image to replace the broken one");
-      queryClient.invalidateQueries({ queryKey: ["admin-property-images"] });
-      queryClient.invalidateQueries({ queryKey: ["simple-properties"] });
-      
-      // Update selected property in state
+      // Immediately update local state so new image shows without refresh
       const currentImages = getImages(property);
       const updatedImages = currentImages.map(img => img === brokenUrl ? data.newImageUrl : img);
       const newThumb = property.thumbnail_url === brokenUrl ? data.newImageUrl : property.thumbnail_url;
-      setSelectedProperty({ ...property, images: updatedImages, thumbnail_url: newThumb });
+      const updatedProperty = { ...property, images: updatedImages, thumbnail_url: newThumb };
+      setSelectedProperty(updatedProperty);
       
-      // Clear health result for old URL
+      // Clear stale health/AI results for the old broken URL
       clearResults();
+      setAiResults(prev => {
+        const next = { ...prev };
+        delete next[brokenUrl];
+        return next;
+      });
+
+      showSuccess("Image Replaced", "Broken image deleted & replaced with AI-generated photo");
+      queryClient.invalidateQueries({ queryKey: ["admin-property-images"] });
+      queryClient.invalidateQueries({ queryKey: ["simple-properties"] });
     } catch (err: any) {
       showError("Regeneration Failed", err.message);
     } finally {
