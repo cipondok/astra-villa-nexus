@@ -42,6 +42,52 @@ export interface SeoTrendKeyword {
   source: string;
 }
 
+export interface ContentOptimization {
+  optimized_title: string;
+  optimized_description: string;
+  meta_title: string;
+  meta_description: string;
+  focus_keywords: string[];
+  secondary_keywords: string[];
+  hashtags: string[];
+  content_score: number;
+  word_count_recommendation: number;
+  readability_tips: string[];
+  schema_suggestions: string[];
+  propertyId: string;
+  currentTitle: string;
+}
+
+export interface CompetitorInsights {
+  market_saturation: string;
+  avg_keyword_density: number;
+  top_performing_keywords: string[];
+  keyword_gaps: string[];
+  price_positioning: string;
+  recommendations: string[];
+  difficulty_score: number;
+}
+
+export interface CompetitorData {
+  id: string;
+  title: string;
+  location: string;
+  price: number;
+  property_type: string;
+  seo_score: number | null;
+  seo_rating: string;
+  keywords: string[];
+}
+
+export interface SerpPreview {
+  title: string;
+  description: string;
+  url: string;
+  type: string;
+  keywords?: string[];
+  score?: number;
+}
+
 export function usePropertySeoAnalyses(options?: { limit?: number; filter?: string }) {
   const { limit = 50, filter } = options || {};
   return useQuery({
@@ -144,6 +190,7 @@ export function useAnalyzeProperty() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['property-seo-analyses'] });
+      qc.invalidateQueries({ queryKey: ['property-seo-analysis'] });
       qc.invalidateQueries({ queryKey: ['seo-intelligence-stats'] });
       toast.success('Property SEO analysis complete');
     },
@@ -186,5 +233,66 @@ export function useAutoOptimize() {
       toast.success(`Auto-optimized ${data.optimized} weak listings`);
     },
     onError: (e) => toast.error('Auto-optimize failed: ' + e.message),
+  });
+}
+
+// NEW: Apply SEO-optimized title/description to a property
+export function useApplySeo() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (propertyId: string) => {
+      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
+        body: { action: 'apply-seo', propertyId },
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['property-seo-analyses'] });
+      toast.success('SEO applied to property listing!');
+    },
+    onError: (e) => toast.error('Apply failed: ' + e.message),
+  });
+}
+
+// NEW: AI content optimization for a property
+export function useContentOptimize() {
+  return useMutation({
+    mutationFn: async (propertyId: string) => {
+      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
+        body: { action: 'content-optimize', propertyId },
+      });
+      if (error) throw error;
+      return data as ContentOptimization;
+    },
+    onError: (e) => toast.error('Content optimization failed: ' + e.message),
+  });
+}
+
+// NEW: Competitor analysis
+export function useCompetitorAnalysis() {
+  return useMutation({
+    mutationFn: async (params: { location?: string; propertyType?: string }) => {
+      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
+        body: { action: 'competitor-analysis', ...params },
+      });
+      if (error) throw error;
+      return data as { competitors: CompetitorData[]; insights: CompetitorInsights | null };
+    },
+    onError: (e) => toast.error('Competitor analysis failed: ' + e.message),
+  });
+}
+
+// NEW: SERP preview
+export function useSerpPreview() {
+  return useMutation({
+    mutationFn: async (propertyId: string) => {
+      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
+        body: { action: 'generate-serp-preview', propertyId },
+      });
+      if (error) throw error;
+      return data as { current: SerpPreview; optimized: SerpPreview; improvements: any };
+    },
+    onError: (e) => toast.error('SERP preview failed: ' + e.message),
   });
 }
