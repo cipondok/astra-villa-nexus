@@ -173,6 +173,7 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Check admin_users table first, then fall back to user_roles table
     const { data: adminData } = await supabase
       .from('admin_users')
       .select('id')
@@ -180,8 +181,19 @@ serve(async (req) => {
       .maybeSingle();
 
     if (!adminData) {
-      return new Response(JSON.stringify({ error: 'Admin access required' }),
-        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      // Fallback: check user_roles table for admin/super_admin role
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('is_active', true)
+        .in('role', ['admin', 'super_admin'])
+        .maybeSingle();
+
+      if (!roleData) {
+        return new Response(JSON.stringify({ error: 'Admin access required' }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
     }
 
     const { province, skipExisting, offset = 0 } = await req.json();
