@@ -487,7 +487,7 @@ const Index = () => {
       {/* Network Status Indicator */}
       <NetworkStatusIndicator onStatusChange={setIsOnline} />
 
-      {/* Sticky Header Search - appears on scroll */}
+      {/* Sticky Header Search - appears only when main panel scrolls out */}
       <StickyHeaderSearch 
         onSearch={handleStickySearch}
         initialQuery={quickSearch}

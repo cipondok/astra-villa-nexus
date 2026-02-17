@@ -2478,7 +2478,7 @@ const AstraSearchPanel = ({
     );
   }
   return <div className="w-full max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1800px] 3xl:max-w-[2000px] mx-auto transition-all duration-500">
-    <div className={cn("sticky z-[999] transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-[48px] w-full px-0")}>
+    <div className={cn("relative z-[999] transition-all duration-500", isMobile ? "px-1 py-2" : "w-full px-0")}>
       {/* Transparent Full-Width Container */}
       <div className="relative bg-transparent overflow-visible rounded-none border-b border-white/10 dark:border-white/5">
         {/* Subtle top shine line */}
