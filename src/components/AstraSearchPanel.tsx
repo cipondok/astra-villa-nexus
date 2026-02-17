@@ -2658,7 +2658,7 @@ const AstraSearchPanel = ({
               {showSuggestions && (
                 <div
                   ref={suggestionsRef}
-                  className="absolute top-full left-0 right-0 mt-0.5 bg-white/95 dark:bg-card/95 backdrop-blur-2xl border border-border/40 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[100001] max-h-80 overflow-y-auto"
+                  className="absolute top-full left-0 right-0 mt-0.5 bg-white dark:bg-card/95 backdrop-blur-2xl border border-border/40 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[100001] max-h-80 overflow-y-auto"
                 >
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
@@ -2692,9 +2692,10 @@ const AstraSearchPanel = ({
                                 setShowSuggestions(false);
                                 handleSearch();
                               }} 
-                              className={cn(
-                                "w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground rounded-lg transition-all duration-200 flex items-center gap-2",
-                                highlightedIndex === flatIdx ? "bg-primary/20 scale-[1.02]" : "hover:bg-primary/10 hover:scale-105"
+                               className={cn(
+                                "w-full text-left px-2 py-1.5 text-[11px] font-bold rounded-lg transition-all duration-200 flex items-center gap-2",
+                                "text-foreground hover:text-primary-foreground",
+                                highlightedIndex === flatIdx ? "bg-primary/20 text-primary scale-[1.02]" : "hover:bg-primary hover:text-primary-foreground hover:scale-105"
                               )}
                             >
                               <Clock className="h-2.5 w-2.5 text-muted-foreground" />
@@ -2731,8 +2732,9 @@ const AstraSearchPanel = ({
                                 handleSearch();
                               }} 
                               className={cn(
-                                "w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground rounded-lg transition-colors flex items-center gap-2",
-                                highlightedIndex === flatIdx ? "bg-purple-500/20" : "hover:bg-purple-500/10"
+                                "w-full text-left px-2 py-1.5 text-[11px] font-bold rounded-lg transition-colors flex items-center gap-2",
+                                "text-foreground hover:text-primary-foreground",
+                                highlightedIndex === flatIdx ? "bg-primary/20 text-primary" : "hover:bg-primary hover:text-primary-foreground"
                               )}
                             >
                               <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
@@ -2765,8 +2767,9 @@ const AstraSearchPanel = ({
                               setShowSuggestions(false);
                               handleSearch();
                             }} className={cn(
-                              "w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground rounded-lg transition-colors flex items-center justify-between",
-                              highlightedIndex === flatIdx ? "bg-green-500/20" : "hover:bg-green-500/10"
+                              "w-full text-left px-2 py-1.5 text-[11px] font-bold rounded-lg transition-colors flex items-center justify-between",
+                              "text-foreground hover:text-primary-foreground",
+                              highlightedIndex === flatIdx ? "bg-primary/20 text-primary" : "hover:bg-primary hover:text-primary-foreground"
                             )}>
                               <span>{trend}</span>
                               {getDisplayCount(trend) > 0 && (
@@ -2799,7 +2802,7 @@ const AstraSearchPanel = ({
                               setShowSuggestions(false);
                               handleSearch();
                             }}
-                            className="w-full text-left px-2 py-2 text-[11px] text-foreground hover:bg-primary/10 rounded-lg transition-colors flex items-center gap-2"
+                            className="w-full text-left px-2 py-2 text-[11px] text-foreground hover:bg-primary hover:text-primary-foreground rounded-lg transition-colors flex items-center gap-2"
                           >
                             <Home className="h-3 w-3 text-primary shrink-0" />
                             <div className="flex-1 min-w-0">
@@ -2845,8 +2848,8 @@ const AstraSearchPanel = ({
                             className={cn(
                               "px-2.5 py-1 text-[10px] font-semibold rounded-full border transition-all duration-200",
                               highlightedIndex === flatIdx
-                                ? "bg-primary/20 border-primary/40 text-foreground scale-105"
-                                : "bg-card/80 border-border/50 text-foreground hover:bg-primary/10 hover:border-primary/30 hover:scale-105"
+                                ? "bg-primary text-primary-foreground border-primary/40 scale-105"
+                                : "bg-card/80 border-border/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary/30 hover:scale-105"
                             )}
                           >
                             {cat.label}
@@ -2890,7 +2893,7 @@ const AstraSearchPanel = ({
               </TooltipProvider>
               
               <PopoverContent 
-                className="w-56 bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150 border border-white/30 dark:border-white/20 rounded-2xl shadow-2xl z-[99999] p-3 ring-1 ring-white/20" 
+                className="w-56 bg-yellow-400/95 dark:bg-yellow-500/90 backdrop-blur-2xl backdrop-saturate-150 border border-yellow-500/50 dark:border-yellow-400/30 rounded-2xl shadow-[0_8px_32px_rgba(250,200,0,0.3)] dark:shadow-[0_8px_32px_rgba(250,200,0,0.15)] z-[99999] p-3 ring-1 ring-yellow-500/30" 
                 align="start"
                 sideOffset={8}
               >
@@ -2908,10 +2911,9 @@ const AstraSearchPanel = ({
                           }}
                           className={cn(
                             "flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-all",
-                            "hover:bg-primary/10",
                             filters.propertyType === type.value 
-                              ? "bg-primary text-primary-foreground" 
-                              : "bg-muted/50 text-foreground"
+                              ? "bg-primary text-primary-foreground shadow-md" 
+                              : "bg-black/10 dark:bg-black/20 text-foreground hover:bg-primary hover:text-primary-foreground"
                           )}
                         >
                           <IconComponent className="h-3 w-3" />
@@ -2979,7 +2981,7 @@ const AstraSearchPanel = ({
                 </TooltipProvider>
                 
                 <PopoverContent 
-                  className="w-64 bg-transparent border-2 border-border/50 rounded-2xl shadow-2xl z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
+                  className="w-64 bg-yellow-400/95 dark:bg-yellow-500/90 backdrop-blur-2xl border-2 border-yellow-500/50 dark:border-yellow-400/30 rounded-2xl shadow-[0_8px_32px_rgba(250,200,0,0.3)] dark:shadow-[0_8px_32px_rgba(250,200,0,0.15)] z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
                   align="start"
                   sideOffset={8} 
                   avoidCollisions={true} 
