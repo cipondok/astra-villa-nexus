@@ -180,7 +180,7 @@ const PropertySlideshow = () => {
               className="flex-shrink-0 w-[200px] md:w-[220px] lg:w-[240px] group/card cursor-pointer"
             >
               {/* Rumah123-Style Card */}
-              <div className="rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-300 overflow-hidden">
+              <div className="rounded-lg bg-card/70 backdrop-blur-md border border-primary/10 dark:border-primary/15 shadow-[0_2px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.1)] hover:border-primary/25 transition-all duration-300 overflow-hidden">
                 {/* Image */}
                 <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                   <img
@@ -215,58 +215,62 @@ const PropertySlideshow = () => {
                   )}
 
                   {/* Hover Eye */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 bg-black/10">
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 bg-black/10 dark:bg-black/20">
                     <div className="h-8 w-8 rounded-full bg-card/95 backdrop-blur-sm flex items-center justify-center shadow-lg">
                       <Eye className="h-4 w-4 text-primary" />
                     </div>
                   </div>
                 </div>
 
-                {/* Content - Rumah123 Style */}
-                <div className="relative p-2.5 space-y-1 bg-gradient-to-br from-white/25 via-white/10 to-white/5 backdrop-blur-xl before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/8 before:via-transparent before:to-accent/8 before:opacity-70 before:rounded-b-lg after:absolute after:inset-0 after:bg-gradient-to-bl after:from-rose-400/5 after:via-transparent after:to-cyan-400/6 after:opacity-60 after:rounded-b-lg border-t border-white/20">
+                {/* Content */}
+                <div className="p-2.5 space-y-1.5">
                   {/* Price */}
-                  <div className="flex items-baseline gap-1 flex-wrap">
-                    <span className="text-sm font-bold text-primary">{priceInfo.main}</span>
-                    {priceInfo.suffix && (
-                      <span className="text-xs font-medium text-primary/80">{priceInfo.suffix}</span>
-                    )}
-                    {isRent && (
-                      <span className="text-[9px] text-muted-foreground">/bln</span>
-                    )}
+                  <div className="border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
+                    <div className="flex items-baseline gap-1 flex-wrap">
+                      <span className="text-sm font-black text-primary tracking-tight">{priceInfo.main}</span>
+                      {priceInfo.suffix && (
+                        <span className="text-xs font-extrabold text-primary/70">{priceInfo.suffix}</span>
+                      )}
+                      {isRent && (
+                        <span className="text-[9px] text-primary/60 font-bold">/bln</span>
+                      )}
+                    </div>
                     {!isRent && (
-                      <span className="text-[9px] text-muted-foreground">≈ {formatMonthly(property.price)}</span>
+                      <p className="text-[9px] text-muted-foreground/70 font-medium">≈ {formatMonthly(property.price)}</p>
                     )}
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-[11px] font-medium text-foreground line-clamp-1 leading-snug group-hover/card:text-primary transition-colors truncate">
+                  <h3 className="text-[11px] font-semibold text-foreground line-clamp-1 leading-snug group-hover/card:text-primary transition-colors">
                     {property.title}
                   </h3>
 
                   {/* Location */}
-                  <div className="flex items-center gap-1 text-muted-foreground">
+                  <div className="flex items-center gap-1 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
                     <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-primary/70" />
-                    <span className="text-[10px] line-clamp-1">{getLocation(property)}</span>
+                    <span className="text-[10px] text-foreground/70 font-medium line-clamp-1">{getLocation(property)}</span>
                   </div>
 
-                  {/* Specs - Rumah123 Style */}
-                  <div className="flex items-center gap-2 pt-1 border-t border-border/50">
+                  {/* Specs */}
+                  <div className="flex items-center gap-2 pt-1.5 border-t border-primary/10">
                     {property.bedrooms > 0 && (
-                      <div className="flex items-center gap-0.5">
-                        <Bed className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-[10px] text-foreground font-medium">{property.bedrooms}</span>
+                      <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                        <Bed className="h-3 w-3 text-primary/60" />
+                        <span className="text-[10px] text-foreground/80 font-bold">{property.bedrooms}</span>
+                        <span className="text-[8px] text-muted-foreground/70 font-semibold">KT</span>
                       </div>
                     )}
                     {property.bathrooms > 0 && (
-                      <div className="flex items-center gap-0.5">
-                        <Bath className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-[10px] text-foreground font-medium">{property.bathrooms}</span>
+                      <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                        <Bath className="h-3 w-3 text-primary/60" />
+                        <span className="text-[10px] text-foreground/80 font-bold">{property.bathrooms}</span>
+                        <span className="text-[8px] text-muted-foreground/70 font-semibold">KM</span>
                       </div>
                     )}
                     {property.area_sqm > 0 && (
-                      <div className="flex items-center gap-0.5">
-                        <Maximize className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-[10px] text-foreground font-medium">{property.area_sqm}m²</span>
+                      <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                        <span className="text-[8px] text-primary/60 font-bold">LB</span>
+                        <span className="text-[10px] text-foreground/80 font-bold">{property.area_sqm}m²</span>
                       </div>
                     )}
                   </div>
