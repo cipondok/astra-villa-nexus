@@ -2392,7 +2392,7 @@ const AstraSearchPanel = ({
       <div className="relative bg-transparent overflow-visible rounded-none border-b border-white/10 dark:border-white/5">
         {/* Subtle top shine line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/20 pointer-events-none" />
-        <div className={cn("relative space-y-1.5 overflow-visible bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl border border-white/20 rounded-xl before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/10 before:via-transparent before:to-accent/10 before:opacity-60 before:rounded-xl after:absolute after:inset-0 after:bg-gradient-to-bl after:from-rose-500/5 after:via-transparent after:to-cyan-500/8 after:opacity-50 after:rounded-xl shadow-lg shadow-black/5", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
+        <div className={cn("relative space-y-1.5 overflow-visible bg-[hsl(48,100%,52%,0.9)] backdrop-blur-xl border border-white/20 rounded-xl shadow-lg shadow-black/5", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
           
           {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
           <div className="flex justify-center">
