@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Home, MapPin, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import Rumah123PropertyCard from "@/components/property/Rumah123PropertyCard";
+import ASTRAVillaPropertyCard from "@/components/property/ASTRAVillaPropertyCard";
 import { motion } from "framer-motion";
 
 interface SimilarPropertiesProps {
@@ -194,7 +194,7 @@ const SimilarProperties = ({ currentProperty, limit = 6 }: SimilarPropertiesProp
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
-                <Rumah123PropertyCard
+                <ASTRAVillaPropertyCard
                   property={property}
                   language="en"
                   isSaved={false}

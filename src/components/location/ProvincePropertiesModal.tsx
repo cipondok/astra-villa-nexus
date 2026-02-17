@@ -5,7 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { MapPin, Building2, ExternalLink, Loader2, Home, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import Rumah123PropertyCard from '@/components/property/Rumah123PropertyCard';
+import ASTRAVillaPropertyCard from '@/components/property/ASTRAVillaPropertyCard';
 import { motion } from 'framer-motion';
 import { useScrollLock } from '@/hooks/useScrollLock';
 
@@ -189,7 +189,7 @@ const ProvincePropertiesModal = ({ isOpen, onClose, provinceName }: ProvinceProp
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
                   >
-                    <Rumah123PropertyCard
+                    <ASTRAVillaPropertyCard
                       property={property}
                       language="id"
                       isSaved={false}
