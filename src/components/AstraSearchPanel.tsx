@@ -2571,8 +2571,8 @@ const AstraSearchPanel = ({
                   ref={suggestionsRef}
                   className={cn(
                     isMobile
-                      ? "absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
-                      : "fixed bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
+                      ? "absolute top-full left-0 right-0 mt-0.5 bg-transparent border-none rounded-xl z-[100001] max-h-80 overflow-y-auto"
+                      : "fixed bg-transparent border-none rounded-xl z-[100001] max-h-80 overflow-y-auto"
                   )}
                   style={
                     isMobile
@@ -2614,7 +2614,7 @@ const AstraSearchPanel = ({
                               setShowSuggestions(false);
                               handleSearch();
                             }} 
-                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-all duration-500 flex items-center gap-2 hover:scale-105"
+                            className="w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground hover:bg-primary/10 rounded-lg transition-all duration-500 flex items-center gap-2 hover:scale-105"
                           >
                             <Clock className="h-2.5 w-2.5 text-muted-foreground" />
                             {term}
@@ -2646,7 +2646,7 @@ const AstraSearchPanel = ({
                               setShowSuggestions(false);
                               handleSearch();
                             }} 
-                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-purple-500/10 rounded-lg transition-colors flex items-center gap-2"
+                            className="w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground hover:bg-purple-500/10 rounded-lg transition-colors flex items-center gap-2"
                           >
                             <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
                             {location}
@@ -2673,7 +2673,7 @@ const AstraSearchPanel = ({
                     setSearchQuery(trend);
                     setShowSuggestions(false);
                     handleSearch();
-                  }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-between">
+                  }} className="w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-between">
                             <span>{trend}</span>
                             {getDisplayCount(trend) > 0 && (
                               <span className="text-[8px] text-muted-foreground">
