@@ -62,6 +62,7 @@ const AstraSearchPanel = ({
   } | null>(null);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [showLocationButtons, setShowLocationButtons] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
@@ -340,7 +341,43 @@ const AstraSearchPanel = ({
   
   const hasSuggestions = filteredSuggestions.recent.length > 0 || 
                         filteredSuggestions.trending.length > 0 ||
-                        filteredSuggestions.locations.length > 0;
+                        filteredSuggestions.locations.length > 0 ||
+                        searchQuery.length === 0; // Show popular categories when empty
+
+  const popularCategories = useMemo(() => language === 'id' ? [
+    { label: '🏡 Villa', query: 'Villa' },
+    { label: '🏢 Apartemen', query: 'Apartment' },
+    { label: '🏠 Rumah', query: 'Rumah' },
+    { label: '🏘️ Townhouse', query: 'Townhouse' },
+    { label: '🏗️ Tanah', query: 'Land' },
+    { label: '🏬 Kantor', query: 'Office' },
+    { label: '🌊 Beachfront', query: 'Beachfront' },
+    { label: '🏔️ Mountain View', query: 'Mountain' },
+  ] : [
+    { label: '🏡 Villa', query: 'Villa' },
+    { label: '🏢 Apartment', query: 'Apartment' },
+    { label: '🏠 House', query: 'House' },
+    { label: '🏘️ Townhouse', query: 'Townhouse' },
+    { label: '🏗️ Land', query: 'Land' },
+    { label: '🏬 Office', query: 'Office' },
+    { label: '🌊 Beachfront', query: 'Beachfront' },
+    { label: '🏔️ Mountain View', query: 'Mountain' },
+  ], [language]);
+
+  // Build flat list of all suggestion items for keyboard navigation
+  const allSuggestionItems = useMemo(() => {
+    const items: { type: string; value: string }[] = [];
+    filteredSuggestions.recent.forEach(t => items.push({ type: 'recent', value: t }));
+    filteredSuggestions.locations.forEach(l => items.push({ type: 'location', value: l }));
+    filteredSuggestions.trending.forEach(t => items.push({ type: 'trending', value: t }));
+    if (!searchQuery) popularCategories.forEach(c => items.push({ type: 'category', value: c.query }));
+    return items;
+  }, [filteredSuggestions, searchQuery, popularCategories]);
+
+  // Reset highlighted index when suggestions change
+  useEffect(() => {
+    setHighlightedIndex(-1);
+  }, [allSuggestionItems.length]);
 
   // Fetch provinces on component mount
   useEffect(() => {
@@ -2502,9 +2539,28 @@ const AstraSearchPanel = ({
                 onChange={e => handleSearchChange(e.target.value)} 
                 onFocus={() => {
                   setShowSuggestions(true);
-                  // Ensure dropdown position is computed immediately on focus (desktop + mobile)
                   requestAnimationFrame(() => updateSuggestionsPosition());
-                }} 
+                }}
+                onKeyDown={(e) => {
+                  if (!showSuggestions || allSuggestionItems.length === 0) return;
+                  if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    setHighlightedIndex(prev => (prev + 1) % allSuggestionItems.length);
+                  } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    setHighlightedIndex(prev => prev <= 0 ? allSuggestionItems.length - 1 : prev - 1);
+                  } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+                    e.preventDefault();
+                    const item = allSuggestionItems[highlightedIndex];
+                    setSearchQuery(item.value);
+                    setShowSuggestions(false);
+                    setHighlightedIndex(-1);
+                    handleSearch();
+                  } else if (e.key === 'Escape') {
+                    setShowSuggestions(false);
+                    setHighlightedIndex(-1);
+                  }
+                }}
                 className={cn(
                   "border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/30 rounded-xl transition-all duration-500 shadow-md font-medium hover:border-primary/60 hover:shadow-primary/20",
                   "text-gray-900 dark:text-white placeholder:text-gray-600 dark:placeholder:text-gray-400",
@@ -2565,6 +2621,14 @@ const AstraSearchPanel = ({
                   </div>}
               </div>
               
+              {/* Dark Overlay when suggestions open */}
+              {showSuggestions && hasSuggestions && (
+                <div 
+                  className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[99999] transition-opacity duration-300"
+                  onClick={() => { setShowSuggestions(false); setHighlightedIndex(-1); }}
+                />
+              )}
+
               {/* Smart Suggestions Dropdown */}
               {showSuggestions && hasSuggestions && (
                 <div
@@ -2603,28 +2667,34 @@ const AstraSearchPanel = ({
                         </button>
                       </div>
                       <div className="space-y-0.5">
-                        {filteredSuggestions.recent.map((term, i) => (
-                          <button 
-                            key={i} 
-                            type="button" 
-                            onClick={e => {
-                              e.stopPropagation();
-                              trackSuggestionClick(term);
-                              setSearchQuery(term);
-                              setShowSuggestions(false);
-                              handleSearch();
-                            }} 
-                            className="w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground hover:bg-primary/10 rounded-lg transition-all duration-500 flex items-center gap-2 hover:scale-105"
-                          >
-                            <Clock className="h-2.5 w-2.5 text-muted-foreground" />
-                            {term}
-                            {getDisplayCount(term) > 0 && (
-                              <span className="ml-auto text-[8px] text-muted-foreground">
-                                {getDisplayCount(term)}x
-                              </span>
-                            )}
-                          </button>
-                        ))}
+                        {filteredSuggestions.recent.map((term, i) => {
+                          const flatIdx = i;
+                          return (
+                            <button 
+                              key={i} 
+                              type="button" 
+                              onClick={e => {
+                                e.stopPropagation();
+                                trackSuggestionClick(term);
+                                setSearchQuery(term);
+                                setShowSuggestions(false);
+                                handleSearch();
+                              }} 
+                              className={cn(
+                                "w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground rounded-lg transition-all duration-200 flex items-center gap-2",
+                                highlightedIndex === flatIdx ? "bg-primary/20 scale-[1.02]" : "hover:bg-primary/10 hover:scale-105"
+                              )}
+                            >
+                              <Clock className="h-2.5 w-2.5 text-muted-foreground" />
+                              {term}
+                              {getDisplayCount(term) > 0 && (
+                                <span className="ml-auto text-[8px] text-muted-foreground">
+                                  {getDisplayCount(term)}x
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>}
                   
@@ -2635,54 +2705,101 @@ const AstraSearchPanel = ({
                         Locations
                       </div>
                       <div className="space-y-0.5">
-                        {filteredSuggestions.locations.map((location, i) => (
-                          <button 
-                            key={i} 
-                            type="button" 
-                            onClick={e => {
-                              e.stopPropagation();
-                              trackSuggestionClick(location);
-                              setSearchQuery(location);
-                              setShowSuggestions(false);
-                              handleSearch();
-                            }} 
-                            className="w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground hover:bg-purple-500/10 rounded-lg transition-colors flex items-center gap-2"
-                          >
-                            <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
-                            {location}
-                            {getDisplayCount(location) > 0 && (
-                              <span className="ml-auto text-[8px] text-muted-foreground">
-                                {getDisplayCount(location)}x
-                              </span>
-                            )}
-                          </button>
-                        ))}
+                        {filteredSuggestions.locations.map((location, i) => {
+                          const flatIdx = filteredSuggestions.recent.length + i;
+                          return (
+                            <button 
+                              key={i} 
+                              type="button" 
+                              onClick={e => {
+                                e.stopPropagation();
+                                trackSuggestionClick(location);
+                                setSearchQuery(location);
+                                setShowSuggestions(false);
+                                handleSearch();
+                              }} 
+                              className={cn(
+                                "w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground rounded-lg transition-colors flex items-center gap-2",
+                                highlightedIndex === flatIdx ? "bg-purple-500/20" : "hover:bg-purple-500/10"
+                              )}
+                            >
+                              <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
+                              {location}
+                              {getDisplayCount(location) > 0 && (
+                                <span className="ml-auto text-[8px] text-muted-foreground">
+                                  {getDisplayCount(location)}x
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>}
                   
                   {/* Trending */}
-                  {filteredSuggestions.trending.length > 0 && <div className="p-2">
+                  {filteredSuggestions.trending.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
                         <TrendingUp className="h-2.5 w-2.5 text-green-500" />
                         Trending
                       </div>
                       <div className="space-y-0.5">
-                        {filteredSuggestions.trending.map((trend, i) => <button key={i} type="button" onClick={e => {
-                    e.stopPropagation();
-                    trackSuggestionClick(trend);
-                    setSearchQuery(trend);
-                    setShowSuggestions(false);
-                    handleSearch();
-                  }} className="w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-between">
-                            <span>{trend}</span>
-                            {getDisplayCount(trend) > 0 && (
-                              <span className="text-[8px] text-muted-foreground">
-                                {getDisplayCount(trend)}x
-                              </span>
-                            )}
-                          </button>)}
+                        {filteredSuggestions.trending.map((trend, i) => {
+                          const flatIdx = filteredSuggestions.recent.length + filteredSuggestions.locations.length + i;
+                          return (
+                            <button key={i} type="button" onClick={e => {
+                              e.stopPropagation();
+                              trackSuggestionClick(trend);
+                              setSearchQuery(trend);
+                              setShowSuggestions(false);
+                              handleSearch();
+                            }} className={cn(
+                              "w-full text-left px-2 py-1.5 text-[11px] font-bold text-foreground rounded-lg transition-colors flex items-center justify-between",
+                              highlightedIndex === flatIdx ? "bg-green-500/20" : "hover:bg-green-500/10"
+                            )}>
+                              <span>{trend}</span>
+                              {getDisplayCount(trend) > 0 && (
+                                <span className="text-[8px] text-muted-foreground">
+                                  {getDisplayCount(trend)}x
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>}
+
+                  {/* Popular Categories */}
+                  {!searchQuery && <div className="p-2">
+                    <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-2">
+                      <span>🔥</span>
+                      {language === 'id' ? 'Kategori Populer' : 'Popular Categories'}
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {popularCategories.map((cat, i) => {
+                        const flatIdx = filteredSuggestions.recent.length + filteredSuggestions.locations.length + filteredSuggestions.trending.length + i;
+                        return (
+                          <button
+                            key={cat.query}
+                            type="button"
+                            onClick={e => {
+                              e.stopPropagation();
+                              setSearchQuery(cat.query);
+                              setShowSuggestions(false);
+                              handleSearch();
+                            }}
+                            className={cn(
+                              "px-2.5 py-1 text-[10px] font-semibold rounded-full border transition-all duration-200",
+                              highlightedIndex === flatIdx
+                                ? "bg-primary/20 border-primary/40 text-foreground scale-105"
+                                : "bg-card/80 border-border/50 text-foreground hover:bg-primary/10 hover:border-primary/30 hover:scale-105"
+                            )}
+                          >
+                            {cat.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>}
                 </div>
               )}
             </div>
