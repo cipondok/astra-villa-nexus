@@ -89,6 +89,29 @@ const AstraSearchPanel = ({
   const [provinceSearch, setProvinceSearch] = useState('');
   const [citySearch, setCitySearch] = useState('');
   const [areaSearch, setAreaSearch] = useState('');
+  const [suggestionIndex, setSuggestionIndex] = useState(0);
+
+  const searchSuggestions = useMemo(() => language === 'id' ? [
+    "Cari villa di Bali...",
+    "Apartemen dekat MRT Jakarta...",
+    "Rumah 3 kamar tidur di Bandung...",
+    "Properti investasi di Lombok...",
+    "Kos-kosan dekat kampus...",
+  ] : [
+    "Search villas in Bali...",
+    "Apartments near MRT Jakarta...",
+    "3 bedroom house in Bandung...",
+    "Investment property in Lombok...",
+    "Beachfront villa in Seminyak...",
+  ], [language]);
+
+  useEffect(() => {
+    if (searchQuery) return;
+    const interval = setInterval(() => {
+      setSuggestionIndex(prev => (prev + 1) % searchSuggestions.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [searchQuery, searchSuggestions.length]);
 
   // Load recent search terms and click analytics from localStorage
   useEffect(() => {
@@ -2071,7 +2094,7 @@ const AstraSearchPanel = ({
             />
             <Input
               type="search"
-              placeholder={currentText.searchPlaceholder}
+              placeholder={searchQuery ? '' : searchSuggestions[suggestionIndex]}
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
               onFocus={(e) => {
@@ -2474,7 +2497,7 @@ const AstraSearchPanel = ({
               )} />
               <Input 
                 type="search"
-                placeholder={currentText.searchPlaceholder} 
+                placeholder={searchQuery ? '' : searchSuggestions[suggestionIndex]} 
                 value={searchQuery} 
                 onChange={e => handleSearchChange(e.target.value)} 
                 onFocus={() => {
