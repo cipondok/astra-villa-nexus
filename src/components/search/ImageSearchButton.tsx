@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Camera, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
 
 interface ImageSearchButtonProps {
   onImageSelected: (base64Image: string) => void;
@@ -184,32 +184,27 @@ export const ImageSearchButton = ({
       )}
       
       {!hasImage && !previewUrl ? (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isSearching}
-                className="p-1 flex items-center justify-center transition-colors disabled:opacity-50 relative"
-              >
-                <Camera className="h-5 w-5 text-pink-700 dark:text-pink-400" />
-                {showPulse && (
-                  <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
-                  </span>
-                )}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-              <p className="text-[10px] font-medium">Image Search</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={isSearching}
+          className="p-1 flex items-center justify-center transition-colors disabled:opacity-50 relative group"
+          title="Image Search"
+        >
+          <Camera className="h-5 w-5 text-primary dark:text-primary" />
+          {showPulse && (
+            <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+          )}
+          <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+            Image Search
+          </span>
+        </button>
       ) : (
         <div className="flex items-center gap-1">
           {previewUrl && (
-            <div className="relative h-7 w-7 rounded-md overflow-hidden border border-purple-500 shadow-sm">
+            <div className="relative h-7 w-7 rounded-md overflow-hidden border border-primary/50 shadow-sm">
               <img 
                 src={previewUrl} 
                 alt="Search" 
@@ -218,45 +213,35 @@ export const ImageSearchButton = ({
             </div>
           )}
           
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={isSearching}
-                  className="p-1 flex items-center justify-center transition-colors disabled:opacity-50"
-                >
-                  {isSearching ? (
-                    <Loader2 className="h-5 w-5 text-pink-700 dark:text-pink-400 animate-spin" />
-                  ) : (
-                    <Camera className="h-5 w-5 text-pink-700 dark:text-pink-400" />
-                  )}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                <p className="text-[10px] font-medium">{isSearching ? "Searching..." : "Change Image"}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isSearching}
+            className="p-1 flex items-center justify-center transition-colors disabled:opacity-50 relative group"
+            title={isSearching ? "Searching..." : "Change Image"}
+          >
+            {isSearching ? (
+              <Loader2 className="h-5 w-5 text-primary animate-spin" />
+            ) : (
+              <Camera className="h-5 w-5 text-primary" />
+            )}
+            <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+              {isSearching ? "Searching..." : "Change Image"}
+            </span>
+          </button>
           
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={handleClear}
-                  disabled={isSearching}
-                  className="p-0 h-7 w-7 flex items-center justify-center rounded-md text-destructive hover:bg-destructive/10 transition-all disabled:opacity-50"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                <p className="text-[10px] font-medium">Clear</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <button
+            type="button"
+            onClick={handleClear}
+            disabled={isSearching}
+            className="p-0 h-7 w-7 flex items-center justify-center rounded-md text-destructive hover:bg-destructive/10 transition-all disabled:opacity-50 relative group"
+            title="Clear"
+          >
+            <X className="h-3.5 w-3.5" />
+            <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+              Clear
+            </span>
+          </button>
         </div>
       )}
     </div>
