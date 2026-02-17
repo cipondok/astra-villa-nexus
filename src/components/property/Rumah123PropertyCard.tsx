@@ -193,7 +193,7 @@ const Rumah123PropertyCard = ({
       <div className="p-3 space-y-2">
         {/* Price Section */}
         <div className="border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-3 py-2">
-          <div className="flex items-baseline gap-1.5">
+          <div className="flex items-baseline gap-1.5 flex-wrap">
             <span className="text-xl sm:text-2xl font-black text-primary tracking-tight leading-none">
               {priceInfo.main}
             </span>
@@ -207,12 +207,12 @@ const Rumah123PropertyCard = ({
                 / {language === "id" ? "bln" : "mo"}
               </span>
             )}
+            {property.listing_type === "sale" && (
+              <span className="text-[10px] sm:text-[11px] text-muted-foreground/60 font-medium bg-muted/40 rounded-full px-1.5 py-px">
+                ≈ {formatMonthlyPayment(property.price)}
+              </span>
+            )}
           </div>
-          {property.listing_type === "sale" && (
-            <p className="text-[10px] sm:text-[11px] text-muted-foreground/70 font-medium mt-0.5">
-              ≈ {formatMonthlyPayment(property.price)}
-            </p>
-          )}
         </div>
 
         {/* Title */}

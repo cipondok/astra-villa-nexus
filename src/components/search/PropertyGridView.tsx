@@ -173,10 +173,10 @@ const PropertyGridView = ({
                     <span className="text-[11px] sm:text-sm font-extrabold text-primary/70">{priceInfo.suffix}</span>
                   )}
                   {isRent && <span className="text-[10px] text-primary/50 font-bold">/bln</span>}
+                  {!isRent && (
+                    <span className="text-[9px] sm:text-[10px] text-muted-foreground/60 font-medium bg-muted/40 rounded-full px-1.5 py-px">≈ {formatMonthlyPayment(property.price)}</span>
+                  )}
                 </div>
-                {!isRent && (
-                  <p className="text-[9px] sm:text-[10px] text-muted-foreground/70 font-medium mt-0.5">≈ {formatMonthlyPayment(property.price)}</p>
-                )}
               </div>
 
               {/* Title */}

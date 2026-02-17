@@ -234,10 +234,10 @@ const PropertySlideshow = () => {
                       {isRent && (
                         <span className="text-[9px] text-primary/60 font-bold">/bln</span>
                       )}
+                      {!isRent && (
+                        <span className="text-[9px] text-muted-foreground/60 font-medium bg-muted/40 rounded-full px-1.5 py-px">≈ {formatMonthly(property.price)}</span>
+                      )}
                     </div>
-                    {!isRent && (
-                      <p className="text-[9px] text-muted-foreground/70 font-medium">≈ {formatMonthly(property.price)}</p>
-                    )}
                   </div>
 
                   {/* Title */}
