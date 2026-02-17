@@ -2571,8 +2571,8 @@ const AstraSearchPanel = ({
                   ref={suggestionsRef}
                   className={cn(
                     isMobile
-                      ? "absolute top-full left-0 right-0 mt-0.5 bg-transparent border-none rounded-xl z-[100001] max-h-80 overflow-y-auto"
-                      : "fixed bg-transparent border-none rounded-xl z-[100001] max-h-80 overflow-y-auto"
+                      ? "absolute top-full left-0 right-0 mt-0.5 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
+                      : "fixed bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
                   )}
                   style={
                     isMobile
