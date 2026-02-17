@@ -2559,9 +2559,9 @@ const AstraSearchPanel = ({
           <div className={cn("flex overflow-visible", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
             <div ref={anchorRef} className="flex-1 relative z-[100001]">
               <Search className={cn(
-                "absolute left-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none transition-all duration-500", 
-                isMobile ? "h-3 w-3 left-2" : "h-4 w-4",
-                searchQuery && "animate-pulse"
+                "absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/70 pointer-events-none transition-all duration-300", 
+                isMobile ? "h-3.5 w-3.5 left-2.5" : "h-4 w-4 left-3.5",
+                searchQuery && "text-primary animate-pulse"
               )} />
               <Input 
                 type="search"
@@ -2593,15 +2593,17 @@ const AstraSearchPanel = ({
                   }
                 }}
                 className={cn(
-                  "border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/30 rounded-xl transition-all duration-500 shadow-md font-medium hover:border-primary/60 hover:shadow-primary/20",
-                  "text-gray-900 dark:text-white placeholder:text-gray-600 dark:placeholder:text-gray-400",
-                  // Fully transparent input background
-                  isMobile ? "pl-8 pr-16 h-8 text-xs bg-transparent" : "pl-10 pr-28 h-9 text-sm bg-transparent"
+                  "w-full bg-white/90 dark:bg-white/10 border border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all duration-300 shadow-sm font-medium",
+                  "text-foreground placeholder:text-muted-foreground/60",
+                  isMobile ? "pl-8 pr-24 h-10 text-xs" : "pl-11 pr-32 h-11 text-sm"
                 )} 
               />
               
-              {/* Location Options and Image Search Inside Input */}
-              <div className={cn("absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center", isMobile ? "gap-0.5" : "gap-1")}>
+              {/* Action buttons inside input - right side */}
+              <div className={cn(
+                "absolute right-1.5 top-1/2 transform -translate-y-1/2 flex items-center bg-white/60 dark:bg-white/5 rounded-lg border border-primary/10",
+                isMobile ? "gap-0 px-0.5 py-0.5" : "gap-0.5 px-1 py-0.5"
+              )}>
                 <ImageSearchButton
                   onImageSelected={handleImageSearch}
                   onClear={handleClearImageSearch}
@@ -2610,11 +2612,12 @@ const AstraSearchPanel = ({
                   enablePaste={true}
                   className="shrink-0"
                 />
+                <div className="w-px h-4 bg-border/50" />
                 <TooltipProvider delayDuration={100}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className="p-1 flex items-center justify-center transition-colors">
-                        <MapPin className="h-5 w-5 text-orange-700 dark:text-orange-400" />
+                      <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className={cn("flex items-center justify-center rounded-md hover:bg-primary/10 transition-colors", isMobile ? "p-1" : "p-1.5")}>
+                        <MapPin className={cn("text-orange-600 dark:text-orange-400", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
                       </button>
                     </TooltipTrigger>
                     <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
@@ -2622,13 +2625,12 @@ const AstraSearchPanel = ({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
+                <div className="w-px h-4 bg-border/50" />
                 <TooltipProvider delayDuration={100}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1 flex items-center justify-center transition-colors" disabled={isGettingLocation}>
-                        {isGettingLocation ? <div className="flex flex-col items-center justify-center">
-                            <div className="animate-spin h-4 w-4 border-2 border-cyan-700 rounded-full border-t-transparent" />
-                          </div> : <svg className="h-5 w-5 text-cyan-700 dark:text-cyan-400" viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className={cn("flex items-center justify-center rounded-md hover:bg-primary/10 transition-colors", isMobile ? "p-1" : "p-1.5")} disabled={isGettingLocation}>
+                        {isGettingLocation ? <div className="animate-spin h-3.5 w-3.5 border-2 border-cyan-600 rounded-full border-t-transparent" /> : <svg className={cn("text-cyan-600 dark:text-cyan-400", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="12" cy="12" r="3" />
                             <path d="M12 2v3" />
                             <path d="M12 19v3" />
@@ -2642,15 +2644,15 @@ const AstraSearchPanel = ({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                
-                {/* 🔒 FIXED: Loading overlay for geolocation - Better UX */}
-                {isGettingLocation && <div className="absolute inset-0 glass-effect flex items-center justify-center rounded-xl z-10 backdrop-blur-sm border border-primary/20">
-                    <div className="flex items-center gap-2 text-xs font-medium">
-                      <div className="animate-spin h-4 w-4 border-2 border-primary rounded-full border-t-transparent" />
-                      <span className="text-primary">{currentText.gettingLocation}</span>
-                    </div>
-                  </div>}
               </div>
+              
+              {/* Geolocation loading overlay */}
+              {isGettingLocation && <div className="absolute inset-0 bg-white/50 dark:bg-black/30 backdrop-blur-sm flex items-center justify-center rounded-xl z-10 border border-primary/20">
+                  <div className="flex items-center gap-2 text-xs font-medium">
+                    <div className="animate-spin h-4 w-4 border-2 border-primary rounded-full border-t-transparent" />
+                    <span className="text-primary">{currentText.gettingLocation}</span>
+                  </div>
+                </div>}
               
               {/* Smart Suggestions Dropdown */}
               {showSuggestions && (
