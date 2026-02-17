@@ -2613,37 +2613,36 @@ const AstraSearchPanel = ({
                   className="shrink-0"
                 />
                 <div className="w-px h-4 bg-border/50" />
-                <TooltipProvider delayDuration={100}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className={cn("flex items-center justify-center rounded-md hover:bg-primary/10 transition-colors", isMobile ? "p-1" : "p-1.5")}>
-                        <MapPin className={cn("text-orange-600 dark:text-orange-400", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                      <p className="text-[10px] font-medium">Map View</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <button 
+                  onClick={() => window.location.href = '/location'} 
+                  aria-label={currentText.location} 
+                  className={cn("flex items-center justify-center rounded-md hover:bg-primary/10 transition-colors relative group", isMobile ? "p-1" : "p-1.5")}
+                  title="Map View"
+                >
+                  <MapPin className={cn("text-primary", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
+                  <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+                    Map View
+                  </span>
+                </button>
                 <div className="w-px h-4 bg-border/50" />
-                <TooltipProvider delayDuration={100}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className={cn("flex items-center justify-center rounded-md hover:bg-primary/10 transition-colors", isMobile ? "p-1" : "p-1.5")} disabled={isGettingLocation}>
-                        {isGettingLocation ? <div className="animate-spin h-3.5 w-3.5 border-2 border-cyan-600 rounded-full border-t-transparent" /> : <svg className={cn("text-cyan-600 dark:text-cyan-400", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="3" />
-                            <path d="M12 2v3" />
-                            <path d="M12 19v3" />
-                            <path d="M2 12h3" />
-                            <path d="M19 12h3" />
-                          </svg>}
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                      <p className="text-[10px] font-medium">{isGettingLocation ? "Getting Location..." : "Near Me"}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <button 
+                  onClick={() => toggleSearchType('nearby')} 
+                  aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} 
+                  className={cn("flex items-center justify-center rounded-md hover:bg-primary/10 transition-colors relative group", isMobile ? "p-1" : "p-1.5")} 
+                  disabled={isGettingLocation}
+                  title={isGettingLocation ? "Getting Location..." : "Near Me"}
+                >
+                  {isGettingLocation ? <div className="animate-spin h-3.5 w-3.5 border-2 border-primary rounded-full border-t-transparent" /> : <svg className={cn("text-primary", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="3" />
+                      <path d="M12 2v3" />
+                      <path d="M12 19v3" />
+                      <path d="M2 12h3" />
+                      <path d="M19 12h3" />
+                    </svg>}
+                  <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+                    {isGettingLocation ? "Getting Location..." : "Near Me"}
+                  </span>
+                </button>
               </div>
               
               {/* Geolocation loading overlay */}
