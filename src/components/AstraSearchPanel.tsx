@@ -85,6 +85,8 @@ const AstraSearchPanel = ({
   const [currentSearchImage, setCurrentSearchImage] = useState<string | null>(null);
   const [recentSearchTerms, setRecentSearchTerms] = useState<string[]>([]);
   const [suggestionClicks, setSuggestionClicks] = useState<Record<string, { count: number; timestamps: number[] }>>({});
+  const [liveResults, setLiveResults] = useState<{ id: string; title: string; location: string; price: number; type: string }[]>([]);
+  const [isLiveSearching, setIsLiveSearching] = useState(false);
   
   // Location search state
   const [provinceSearch, setProvinceSearch] = useState('');
@@ -1734,6 +1736,35 @@ const AstraSearchPanel = ({
       onLiveSearch(debouncedSearchQuery);
     }
   }, [debouncedSearchQuery, onLiveSearch]);
+
+  // Live search from database
+  useEffect(() => {
+    if (!debouncedSearchQuery || debouncedSearchQuery.length < 2) {
+      setLiveResults([]);
+      return;
+    }
+    let cancelled = false;
+    setIsLiveSearching(true);
+    const fetchLive = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('properties')
+          .select('id, title, location, price, property_type')
+          .or(`title.ilike.%${debouncedSearchQuery}%,location.ilike.%${debouncedSearchQuery}%,property_type.ilike.%${debouncedSearchQuery}%`)
+          .limit(5);
+        if (!cancelled && !error && data) {
+          setLiveResults(data.map(p => ({ id: p.id, title: p.title || '', location: p.location || '', price: p.price || 0, type: p.property_type || '' })));
+        }
+      } catch (e) {
+        console.error('Live search error:', e);
+      } finally {
+        if (!cancelled) setIsLiveSearching(false);
+      }
+    };
+    fetchLive();
+    return () => { cancelled = true; };
+  }, [debouncedSearchQuery]);
+
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
   }, []);
@@ -2746,6 +2777,49 @@ const AstraSearchPanel = ({
                         })}
                       </div>
                     </div>}
+
+                  {/* Live Search Results */}
+                  {searchQuery && (liveResults.length > 0 || isLiveSearching) && (
+                    <div className="p-2 border-b border-border/50">
+                      <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
+                        <Sparkles className="h-2.5 w-2.5 text-primary" />
+                        {language === 'id' ? 'Hasil Pencarian' : 'Live Results'}
+                        {isLiveSearching && <div className="ml-1 h-2 w-2 rounded-full bg-primary animate-pulse" />}
+                      </div>
+                      <div className="space-y-0.5">
+                        {liveResults.map((result) => (
+                          <button
+                            key={result.id}
+                            type="button"
+                            onClick={e => {
+                              e.stopPropagation();
+                              setSearchQuery(result.title);
+                              setShowSuggestions(false);
+                              handleSearch();
+                            }}
+                            className="w-full text-left px-2 py-2 text-[11px] text-foreground hover:bg-primary/10 rounded-lg transition-colors flex items-center gap-2"
+                          >
+                            <Home className="h-3 w-3 text-primary shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="font-bold truncate">{result.title}</div>
+                              <div className="flex items-center gap-1 text-[9px] text-muted-foreground">
+                                <MapPin className="h-2 w-2" />
+                                <span className="truncate">{result.location}</span>
+                                <span className="ml-auto font-semibold text-primary">
+                                  Rp {(result.price / 1000000).toFixed(0)} Jt
+                                </span>
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                        {isLiveSearching && liveResults.length === 0 && (
+                          <div className="text-center py-2 text-[10px] text-muted-foreground">
+                            {language === 'id' ? 'Mencari...' : 'Searching...'}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Popular Categories */}
                   {!searchQuery && <div className="p-2">
