@@ -2892,8 +2892,8 @@ const AstraSearchPanel = ({
                 </Tooltip>
               </TooltipProvider>
               
-              <PopoverContent 
-                className="w-56 bg-yellow-400/95 dark:bg-yellow-500/90 backdrop-blur-2xl backdrop-saturate-150 border border-yellow-500/50 dark:border-yellow-400/30 rounded-2xl shadow-[0_8px_32px_rgba(250,200,0,0.3)] dark:shadow-[0_8px_32px_rgba(250,200,0,0.15)] z-[99999] p-3 ring-1 ring-yellow-500/30" 
+               <PopoverContent 
+                className="w-56 bg-card/95 dark:bg-card/90 backdrop-blur-2xl backdrop-saturate-150 border border-primary/20 dark:border-primary/15 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[99999] p-3 ring-1 ring-primary/10" 
                 align="start"
                 sideOffset={8}
               >
@@ -2910,10 +2910,10 @@ const AstraSearchPanel = ({
                             setIsPropertyTypeOpen(false);
                           }}
                           className={cn(
-                            "flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-all",
+                            "flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-all border",
                             filters.propertyType === type.value 
-                              ? "bg-primary text-primary-foreground shadow-md" 
-                              : "bg-black/10 dark:bg-black/20 text-foreground hover:bg-primary hover:text-primary-foreground"
+                              ? "bg-primary text-primary-foreground border-primary/50 shadow-md" 
+                              : "bg-primary/5 dark:bg-primary/10 text-foreground border-primary/15 hover:bg-primary hover:text-primary-foreground hover:border-primary/50"
                           )}
                         >
                           <IconComponent className="h-3 w-3" />
@@ -2981,7 +2981,7 @@ const AstraSearchPanel = ({
                 </TooltipProvider>
                 
                 <PopoverContent 
-                  className="w-64 bg-yellow-400/95 dark:bg-yellow-500/90 backdrop-blur-2xl border-2 border-yellow-500/50 dark:border-yellow-400/30 rounded-2xl shadow-[0_8px_32px_rgba(250,200,0,0.3)] dark:shadow-[0_8px_32px_rgba(250,200,0,0.15)] z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
+                  className="w-64 bg-card/95 dark:bg-card/90 backdrop-blur-2xl border border-primary/20 dark:border-primary/15 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
                   align="start"
                   sideOffset={8} 
                   avoidCollisions={true} 
@@ -2996,10 +2996,10 @@ const AstraSearchPanel = ({
                   }}
                 >
                   <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full overscroll-contain">
-                    <TabsList className="w-full grid grid-cols-3 h-9 rounded-xl bg-black/30 dark:bg-black/40 p-1 backdrop-blur-xl border border-white/15">
+                    <TabsList className="w-full grid grid-cols-3 h-9 rounded-xl bg-muted/80 dark:bg-muted/50 p-1 border border-primary/15">
                       <TabsTrigger
                         value="province"
-                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30"
+                        className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
@@ -3012,7 +3012,7 @@ const AstraSearchPanel = ({
                       <TabsTrigger
                         value="city"
                         disabled={!filters.state || filters.state === "all"}
-                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30 disabled:opacity-40"
+                        className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm disabled:opacity-40"
                         onClick={(e) => {
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
@@ -3025,7 +3025,7 @@ const AstraSearchPanel = ({
                       <TabsTrigger
                         value="area"
                         disabled={!filters.city || filters.city === "all"}
-                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30 disabled:opacity-40"
+                        className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm disabled:opacity-40"
                         onClick={(e) => {
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
