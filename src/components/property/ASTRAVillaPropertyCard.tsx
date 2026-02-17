@@ -64,9 +64,9 @@ const ASTRAVillaPropertyCard = ({
     // Estimate monthly payment (rough KPR calculation)
     const monthlyEstimate = numPrice * 0.006; // ~0.6% monthly
     if (monthlyEstimate >= 1000000) {
-      return `Rp ${(monthlyEstimate / 1000000).toFixed(0)} Jutaan/bulan`;
+      return `Rp ${(monthlyEstimate / 1000000).toFixed(1)} Juta/PB`;
     }
-    return `Rp ${(monthlyEstimate / 1000).toFixed(0)} Ribuan/bulan`;
+    return `Rp ${(monthlyEstimate / 1000).toFixed(0)} Ribu/PB`;
   };
 
   const getListingLabel = (type?: string) => {

@@ -62,9 +62,9 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
   const formatMonthly = (price: number) => {
     const monthly = price * 0.006;
     if (monthly >= 1000000) {
-      return `Rp ${(monthly / 1000000).toFixed(0)} Jutaan/bulan`;
+      return `Rp ${(monthly / 1000000).toFixed(1)} Juta/PB`;
     }
-    return `Rp ${(monthly / 1000).toFixed(0)} Ribuan/bulan`;
+    return `Rp ${(monthly / 1000).toFixed(0)} Ribu/PB`;
   };
 
   const getLocation = (property: any) => {
