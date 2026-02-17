@@ -2656,7 +2656,7 @@ const AstraSearchPanel = ({
               {showSuggestions && (
                 <div
                   ref={suggestionsRef}
-                  className="absolute top-full left-0 right-0 mt-0.5 bg-white/70 dark:bg-card/70 backdrop-blur-2xl border border-white/30 dark:border-white/10 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] z-[100001] max-h-80 overflow-y-auto"
+                  className="absolute top-full left-0 right-0 mt-0.5 bg-white/95 dark:bg-card/95 backdrop-blur-2xl border border-border/40 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[100001] max-h-80 overflow-y-auto"
                 >
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
