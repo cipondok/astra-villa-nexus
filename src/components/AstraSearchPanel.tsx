@@ -2864,33 +2864,29 @@ const AstraSearchPanel = ({
 
             {/* Property Type Button */}
             <Popover open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen}>
-              <TooltipProvider delayDuration={100}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <button 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          const currentScroll = window.scrollY;
-                          setIsPropertyTypeOpen(!isPropertyTypeOpen);
-                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
-                        }}
-                        className="p-1 flex items-center justify-center transition-colors relative"
-                      >
-                        <Building className="h-5 w-5 text-blue-700 dark:text-blue-400" />
-                        {filters.propertyType && filters.propertyType !== 'all' && (
-                          <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-blue-500 text-white min-w-[14px] text-center">
-                            1
-                          </span>
-                        )}
-                      </button>
-                    </PopoverTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                    <p className="text-[10px] font-medium">Property Type</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <PopoverTrigger asChild>
+                <button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const currentScroll = window.scrollY;
+                    setIsPropertyTypeOpen(!isPropertyTypeOpen);
+                    requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                  }}
+                  className="p-1 flex items-center justify-center transition-colors relative group"
+                  title="Property Type"
+                >
+                  <Building className="h-5 w-5 text-primary dark:text-primary" />
+                  {filters.propertyType && filters.propertyType !== 'all' && (
+                    <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
+                      1
+                    </span>
+                  )}
+                  {/* Custom tooltip */}
+                  <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+                    Property Type
+                  </span>
+                </button>
+              </PopoverTrigger>
               
                <PopoverContent 
                 className="w-56 bg-card/95 dark:bg-card/90 backdrop-blur-2xl backdrop-saturate-150 border border-primary/20 dark:border-primary/15 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[99999] p-3 ring-1 ring-primary/10" 
@@ -2951,34 +2947,30 @@ const AstraSearchPanel = ({
                   }
                 }
               }}>
-                <TooltipProvider delayDuration={100}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <button 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            const currentScroll = window.scrollY;
-                            setIsLocationOpen(!isLocationOpen);
-                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
-                          }}
-                          onTouchStart={(e) => e.stopPropagation()}
-                          className="p-1 flex items-center justify-center transition-colors relative"
-                        >
-                          <MapPin className="h-5 w-5 text-purple-700 dark:text-purple-400" />
-                          {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
-                            <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-purple-500 text-white min-w-[14px] text-center">
-                              {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
-                            </span>
-                          )}
-                        </button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                      <p className="text-[10px] font-medium">Manual Location</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <PopoverTrigger asChild>
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const currentScroll = window.scrollY;
+                      setIsLocationOpen(!isLocationOpen);
+                      requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                    }}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    className="p-1 flex items-center justify-center transition-colors relative group"
+                    title="Location"
+                  >
+                    <MapPin className="h-5 w-5 text-primary dark:text-primary" />
+                    {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
+                      <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
+                        {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
+                      </span>
+                    )}
+                    {/* Custom tooltip */}
+                    <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+                      Location
+                    </span>
+                  </button>
+                </PopoverTrigger>
                 
                 <PopoverContent 
                   className="w-64 bg-card/95 dark:bg-card/90 backdrop-blur-2xl border border-primary/20 dark:border-primary/15 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
@@ -3276,28 +3268,24 @@ const AstraSearchPanel = ({
               </Popover>}
 
             {/* All Filters Button - Icon only with tooltip */}
-            <TooltipProvider delayDuration={100}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => {
-                      setShowAdvancedFilters(true);
-                    }} 
-                    className="p-1 flex items-center justify-center transition-colors relative"
-                  >
-                    <SlidersHorizontal className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
-                    {getActiveFiltersCount() > 0 && (
-                      <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-emerald-500 text-white min-w-[14px] text-center">
-                        {getActiveFiltersCount()}
-                      </span>
-                    )}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
-                  <p className="text-[10px] font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <button
+              onClick={() => {
+                setShowAdvancedFilters(true);
+              }} 
+              className="p-1 flex items-center justify-center transition-colors relative group"
+              title="Filters"
+            >
+              <SlidersHorizontal className="h-5 w-5 text-primary dark:text-primary" />
+              {getActiveFiltersCount() > 0 && (
+                <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-primary text-primary-foreground min-w-[14px] text-center">
+                  {getActiveFiltersCount()}
+                </span>
+              )}
+              {/* Custom tooltip */}
+              <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+                Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}
+              </span>
+            </button>
             
             {/* Search Button - Original Style with Gradient Border Effect */}
             <div className="relative group p-[1.5px] rounded-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-gradient-x transition-all duration-500 hover:shadow-lg hover:shadow-primary/30">
