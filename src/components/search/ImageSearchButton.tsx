@@ -197,7 +197,7 @@ export const ImageSearchButton = ({
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
           )}
-          <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+          <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground text-background border border-foreground/20 shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
             Image Search
           </span>
         </button>
@@ -225,7 +225,7 @@ export const ImageSearchButton = ({
             ) : (
               <Camera className="h-5 w-5 text-primary" />
             )}
-            <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+            <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground text-background border border-foreground/20 shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
               {isSearching ? "Searching..." : "Change Image"}
             </span>
           </button>
@@ -238,7 +238,7 @@ export const ImageSearchButton = ({
             title="Clear"
           >
             <X className="h-3.5 w-3.5" />
-            <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+            <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground text-background border border-foreground/20 shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
               Clear
             </span>
           </button>

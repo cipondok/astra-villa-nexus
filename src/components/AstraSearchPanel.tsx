@@ -2483,7 +2483,7 @@ const AstraSearchPanel = ({
       <div className="relative bg-transparent overflow-visible rounded-none border-b border-white/10 dark:border-white/5">
         {/* Subtle top shine line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/20 pointer-events-none" />
-        <div className={cn("relative space-y-1.5 overflow-visible bg-yellow-400 dark:bg-card/95 backdrop-blur-xl border border-yellow-500/50 dark:border-border/50 rounded-xl shadow-[0_8px_32px_rgba(250,200,0,0.3)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
+        <div className={cn("relative space-y-1.5 overflow-visible bg-card/90 dark:bg-card/95 backdrop-blur-xl border border-border/60 dark:border-border/50 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
           
           {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
           <div className="flex justify-center">
@@ -2620,7 +2620,7 @@ const AstraSearchPanel = ({
                   title="Map View"
                 >
                   <MapPin className={cn("text-primary", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
-                  <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+                  <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground text-background border border-foreground/20 shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
                     Map View
                   </span>
                 </button>
@@ -2639,7 +2639,7 @@ const AstraSearchPanel = ({
                       <path d="M2 12h3" />
                       <path d="M19 12h3" />
                     </svg>}
-                  <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+                  <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground text-background border border-foreground/20 shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
                     {isGettingLocation ? "Getting Location..." : "Near Me"}
                   </span>
                 </button>
@@ -2881,7 +2881,7 @@ const AstraSearchPanel = ({
                     </span>
                   )}
                   {/* Custom tooltip */}
-                  <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+                  <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground text-background border border-foreground/20 shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
                     Property Type
                   </span>
                 </button>
@@ -2965,7 +2965,7 @@ const AstraSearchPanel = ({
                       </span>
                     )}
                     {/* Custom tooltip */}
-                    <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+                    <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground text-background border border-foreground/20 shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
                       Location
                     </span>
                   </button>
@@ -3281,7 +3281,7 @@ const AstraSearchPanel = ({
                 </span>
               )}
               {/* Custom tooltip */}
-              <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
+              <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground text-background border border-foreground/20 shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
                 Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}
               </span>
             </button>
