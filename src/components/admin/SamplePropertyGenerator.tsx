@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { suppressSessionCheck } from "@/hooks/useSessionMonitor";
@@ -10,8 +10,9 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon, StopCircle, ChevronsUpDown, Check, Play, Pause, RotateCcw, Zap } from "lucide-react";
+import { Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon, StopCircle, ChevronsUpDown, Check, Play, Pause, RotateCcw, Zap, ChevronDown, ChevronUp, MousePointerClick } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PROPERTY_TYPES = ['house', 'apartment', 'villa', 'land', 'commercial', 'townhouse', 'warehouse', 'kost'];
@@ -64,6 +65,10 @@ const SamplePropertyGenerator = () => {
   const [autoTotalProvinces, setAutoTotalProvinces] = useState(0);
   const autoRunningRef = useRef(false);
 
+  // Smart selection
+  const [showProvinceList, setShowProvinceList] = useState(false);
+  const [smartSelectedProvinces, setSmartSelectedProvinces] = useState<string[]>([]);
+
   const handleProvinceSelect = (province: string) => {
     setSelectedProvince(province);
     localStorage.setItem('spg_last_province', province);
@@ -94,8 +99,22 @@ const SamplePropertyGenerator = () => {
     },
   });
 
-  const doneProvinces = provinces.filter(p => (provincePropertyCounts[p] || 0) > 0);
-  const remainingProvinces = provinces.filter(p => !(provincePropertyCounts[p] || 0));
+  const doneProvinces = useMemo(() => provinces.filter(p => (provincePropertyCounts[p] || 0) > 0), [provinces, provincePropertyCounts]);
+  const remainingProvinces = useMemo(() => provinces.filter(p => !(provincePropertyCounts[p] || 0)), [provinces, provincePropertyCounts]);
+
+  // Merge saved completed provinces with DB-detected ones for accurate status
+  const allCompletedProvinces = useMemo(() => {
+    const set = new Set(doneProvinces);
+    if (autoRunState?.completedProvinces) {
+      autoRunState.completedProvinces.forEach(p => set.add(p));
+    }
+    return Array.from(set).sort();
+  }, [doneProvinces, autoRunState]);
+
+  const actualRemainingProvinces = useMemo(() => {
+    const completedSet = new Set(allCompletedProvinces);
+    return provinces.filter(p => !completedSet.has(p));
+  }, [provinces, allCompletedProvinces]);
 
   const { data: kelurahanCount = 0 } = useQuery({
     queryKey: ["kelurahan-count", selectedProvince],
@@ -129,7 +148,6 @@ const SamplePropertyGenerator = () => {
 
   const totalExpected = kelurahanCount * PROPERTY_TYPES.length;
 
-  // Get kelurahan count for a specific province
   const getKelurahanCount = async (province: string): Promise<number> => {
     const { data, error } = await supabase
       .from("locations")
@@ -207,7 +225,6 @@ const SamplePropertyGenerator = () => {
         totals.processed += data.batchProcessed || 0;
         onProgress({ ...totals });
 
-        // Save state for resume
         if (onSaveState) onSaveState(data.nextOffset ?? offset + 5, totals);
 
         hasMore = data.hasMore;
@@ -258,8 +275,8 @@ const SamplePropertyGenerator = () => {
     }
   };
 
-  // Auto-run: process all remaining provinces
-  const startAutoRun = useCallback(async (resumeState?: AutoRunState | null) => {
+  // Auto-run: process provinces (with smart selection support)
+  const startAutoRun = useCallback(async (resumeState?: AutoRunState | null, smartQueue?: string[]) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.access_token) {
       toast.error("You must be logged in.");
@@ -280,16 +297,22 @@ const SamplePropertyGenerator = () => {
     let currentProv = "";
 
     if (resumeState) {
-      // Resume from saved state
-      queue = resumeState.provincesQueue;
+      // Resume from saved state — skip already completed, start from where we left off
+      queue = resumeState.provincesQueue.filter(p => !allCompletedProvinces.includes(p) || p === resumeState.currentProvince);
       completedList = resumeState.completedProvinces;
       globalTotals = { created: resumeState.totalCreated, skipped: resumeState.totalSkipped, errors: resumeState.totalErrors };
       currentProv = resumeState.currentProvince;
       startOffset = resumeState.currentOffset;
       toast.info(`Resuming from ${currentProv} (offset ${startOffset}), ${queue.length} provinces left`);
+    } else if (smartQueue && smartQueue.length > 0) {
+      // Smart selection — use user-picked provinces
+      queue = [...smartQueue];
+      completedList = [];
+      currentProv = queue[0];
+      toast.info(`Smart run: ${queue.length} selected provinces`);
     } else {
-      // Fresh start - get remaining provinces
-      queue = [...remainingProvinces];
+      // Fresh start — only truly remaining provinces (skip DB-completed ones)
+      queue = [...actualRemainingProvinces];
       completedList = [];
       if (queue.length === 0) {
         toast.info("All provinces already have properties!");
@@ -304,7 +327,6 @@ const SamplePropertyGenerator = () => {
 
     setAutoTotalProvinces(queue.length + completedList.length);
 
-    // Process each province
     let idx = resumeState ? completedList.length : 0;
 
     while (queue.length > 0 && !cancelRef.current) {
@@ -345,7 +367,6 @@ const SamplePropertyGenerator = () => {
       );
 
       if (provResult.cancelled) {
-        // Save paused state for resume
         const pausedState: AutoRunState = {
           isAutoMode: true,
           completedProvinces: completedList,
@@ -364,7 +385,6 @@ const SamplePropertyGenerator = () => {
         break;
       }
 
-      // Province completed
       globalTotals.created += provResult.created;
       globalTotals.skipped += provResult.skipped;
       globalTotals.errors += provResult.errors;
@@ -375,7 +395,6 @@ const SamplePropertyGenerator = () => {
       currentProv = queue[0] || "";
       idx++;
 
-      // Refresh counts after each province
       refetchCounts();
       toast.success(`✓ ${province} done (${provResult.created} created). ${queue.length} provinces left.`);
     }
@@ -385,23 +404,42 @@ const SamplePropertyGenerator = () => {
     setIsRunning(false);
 
     if (!cancelRef.current) {
-      // All done
       clearAutoRunState();
       setAutoRunState(null);
+      setSmartSelectedProvinces([]);
       setResult({ ...globalTotals, allDone: true });
       toast.success(`🎉 Auto-run complete! ${globalTotals.created} total properties created across ${completedList.length} provinces.`);
       refetchCounts();
     }
-  }, [remainingProvinces, refetchCounts]);
+  }, [actualRemainingProvinces, allCompletedProvinces, refetchCounts]);
 
   const handleAutoRun = () => startAutoRun(null);
   const handleResumeAutoRun = () => startAutoRun(autoRunState);
+  const handleSmartRun = () => {
+    if (smartSelectedProvinces.length === 0) {
+      toast.error("Select at least one province for smart run.");
+      return;
+    }
+    startAutoRun(null, smartSelectedProvinces);
+  };
   const handleClearAutoState = () => {
     clearAutoRunState();
     setAutoRunState(null);
     setIsAutoMode(false);
+    setSmartSelectedProvinces([]);
     toast.info("Auto-run state cleared.");
   };
+
+  const toggleSmartProvince = (province: string) => {
+    setSmartSelectedProvinces(prev =>
+      prev.includes(province)
+        ? prev.filter(p => p !== province)
+        : [...prev, province]
+    );
+  };
+
+  const selectAllRemaining = () => setSmartSelectedProvinces([...actualRemainingProvinces]);
+  const clearSmartSelection = () => setSmartSelectedProvinces([]);
 
   const progressPercent = progress.total > 0 ? Math.round((progress.processed / progress.total) * 100) : 0;
   const hasSavedState = !!autoRunState && autoRunState.provincesQueue.length > 0;
@@ -430,15 +468,15 @@ const SamplePropertyGenerator = () => {
             <div className="flex items-center gap-1.5">
               <Badge variant="outline" className="text-[10px] gap-1 border-green-500/30 text-green-600">
                 <CheckCircle className="h-3 w-3" />
-                {doneProvinces.length} done
+                {allCompletedProvinces.length} done
               </Badge>
               <Badge variant="outline" className="text-[10px] gap-1 border-orange-500/30 text-orange-500">
-                {remainingProvinces.length} remaining
+                {actualRemainingProvinces.length} remaining
               </Badge>
             </div>
           </div>
           <CardDescription className="text-xs">
-            Automatically generate properties for all remaining provinces one by one. Progress is saved — you can pause and resume anytime.
+            Progress is saved — auto-run resumes from where you left off. Use Smart Selection to pick specific provinces.
           </CardDescription>
         </CardHeader>
         <CardContent className="px-4 pb-4 pt-0 space-y-3">
@@ -469,7 +507,6 @@ const SamplePropertyGenerator = () => {
                   <p className="text-[9px] text-muted-foreground">Errors</p>
                 </div>
               </div>
-              {/* Completed provinces list */}
               {autoRunState!.completedProvinces.length > 0 && (
                 <div className="text-[10px] text-muted-foreground">
                   <span className="font-medium">Done: </span>
@@ -509,7 +546,6 @@ const SamplePropertyGenerator = () => {
                   Pause
                 </Button>
               </div>
-              {/* Overall province progress */}
               <div className="space-y-1">
                 <div className="flex justify-between text-[10px] text-muted-foreground">
                   <span>Overall provinces</span>
@@ -517,7 +553,6 @@ const SamplePropertyGenerator = () => {
                 </div>
                 <Progress value={(autoProvinceIndex / autoTotalProvinces) * 100} className="h-1.5" />
               </div>
-              {/* Current province batch progress */}
               <div className="space-y-1">
                 <div className="flex justify-between text-[10px] text-muted-foreground">
                   <span>Current province batches</span>
@@ -533,18 +568,124 @@ const SamplePropertyGenerator = () => {
             </div>
           )}
 
-          {/* Start button */}
+          {/* Province Status & Smart Selection */}
+          {!isRunning && (
+            <div className="space-y-2">
+              <button
+                onClick={() => setShowProvinceList(!showProvinceList)}
+                className="flex items-center gap-2 w-full text-left text-xs font-semibold text-foreground/80 hover:text-foreground transition-colors"
+              >
+                <MousePointerClick className="h-3.5 w-3.5 text-primary" />
+                <span>Province Status & Smart Selection</span>
+                <Badge variant="secondary" className="text-[9px] px-1.5 py-0 h-4 ml-1">
+                  {smartSelectedProvinces.length > 0 ? `${smartSelectedProvinces.length} selected` : "click to expand"}
+                </Badge>
+                {showProvinceList ? <ChevronUp className="h-3.5 w-3.5 ml-auto" /> : <ChevronDown className="h-3.5 w-3.5 ml-auto" />}
+              </button>
+
+              {showProvinceList && (
+                <div className="space-y-2 border rounded-lg p-3 bg-background/50">
+                  {/* Quick actions */}
+                  <div className="flex items-center gap-2 pb-2 border-b">
+                    <Button size="sm" variant="outline" className="h-6 text-[10px] px-2" onClick={selectAllRemaining} disabled={actualRemainingProvinces.length === 0}>
+                      Select All Remaining
+                    </Button>
+                    <Button size="sm" variant="ghost" className="h-6 text-[10px] px-2" onClick={clearSmartSelection} disabled={smartSelectedProvinces.length === 0}>
+                      Clear Selection
+                    </Button>
+                    <span className="text-[10px] text-muted-foreground ml-auto">
+                      {smartSelectedProvinces.length}/{actualRemainingProvinces.length} selected
+                    </span>
+                  </div>
+
+                  {/* Remaining provinces */}
+                  {actualRemainingProvinces.length > 0 && (
+                    <div>
+                      <p className="text-[10px] font-semibold text-orange-500 mb-1.5 uppercase tracking-wider">
+                        Remaining ({actualRemainingProvinces.length})
+                      </p>
+                      <ScrollArea className="max-h-40">
+                        <div className="grid grid-cols-2 gap-1">
+                          {actualRemainingProvinces.map(p => (
+                            <button
+                              key={p}
+                              onClick={() => toggleSmartProvince(p)}
+                              className={cn(
+                                "flex items-center gap-1.5 text-[11px] px-2 py-1.5 rounded-md border transition-all text-left",
+                                smartSelectedProvinces.includes(p)
+                                  ? "border-primary bg-primary/10 text-primary font-medium"
+                                  : "border-border/50 hover:border-primary/40 hover:bg-muted/50 text-foreground/80"
+                              )}
+                            >
+                              <div className={cn(
+                                "w-3.5 h-3.5 rounded-sm border flex items-center justify-center shrink-0",
+                                smartSelectedProvinces.includes(p)
+                                  ? "border-primary bg-primary text-primary-foreground"
+                                  : "border-muted-foreground/30"
+                              )}>
+                                {smartSelectedProvinces.includes(p) && <Check className="h-2.5 w-2.5" />}
+                              </div>
+                              <span className="truncate">{p}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </ScrollArea>
+                    </div>
+                  )}
+
+                  {/* Completed provinces */}
+                  {allCompletedProvinces.length > 0 && (
+                    <div>
+                      <p className="text-[10px] font-semibold text-green-600 mb-1.5 uppercase tracking-wider">
+                        Completed ({allCompletedProvinces.length})
+                      </p>
+                      <ScrollArea className="max-h-32">
+                        <div className="grid grid-cols-2 gap-1">
+                          {allCompletedProvinces.map(p => (
+                            <div
+                              key={p}
+                              className="flex items-center gap-1.5 text-[11px] px-2 py-1.5 rounded-md border border-green-500/20 bg-green-500/5 text-green-700 dark:text-green-400"
+                            >
+                              <CheckCircle className="h-3 w-3 shrink-0" />
+                              <span className="truncate">{p}</span>
+                              <span className="ml-auto text-[9px] text-green-600/60 shrink-0">
+                                {provincePropertyCounts[p] || "✓"}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </ScrollArea>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Start / Smart Run buttons */}
           {!isRunning && !hasSavedState && (
-            <Button
-              className="w-full gap-2 h-9 text-sm"
-              disabled={isRunning || remainingProvinces.length === 0}
-              onClick={handleAutoRun}
-            >
-              <Zap className="h-4 w-4" />
-              {remainingProvinces.length === 0
-                ? "All Provinces Complete!"
-                : `Auto-Generate ${remainingProvinces.length} Remaining Provinces`}
-            </Button>
+            <div className="flex gap-2">
+              {smartSelectedProvinces.length > 0 ? (
+                <Button
+                  className="flex-1 gap-2 h-9 text-sm"
+                  onClick={handleSmartRun}
+                >
+                  <MousePointerClick className="h-4 w-4" />
+                  Smart Run {smartSelectedProvinces.length} Selected
+                </Button>
+              ) : (
+                <Button
+                  className="flex-1 gap-2 h-9 text-sm"
+                  disabled={isRunning || actualRemainingProvinces.length === 0}
+                  onClick={handleAutoRun}
+                >
+                  <Zap className="h-4 w-4" />
+                  {actualRemainingProvinces.length === 0
+                    ? "All Provinces Complete!"
+                    : `Auto-Generate ${actualRemainingProvinces.length} Remaining Provinces`}
+                </Button>
+              )}
+            </div>
           )}
         </CardContent>
       </Card>
@@ -579,9 +720,9 @@ const SamplePropertyGenerator = () => {
                 <CommandInput placeholder="Search province..." />
                 <CommandList className="max-h-64">
                   <CommandEmpty>No province found.</CommandEmpty>
-                  {remainingProvinces.length > 0 && (
-                    <CommandGroup heading={`Remaining (${remainingProvinces.length})`}>
-                      {remainingProvinces.map((p) => (
+                  {actualRemainingProvinces.length > 0 && (
+                    <CommandGroup heading={`Remaining (${actualRemainingProvinces.length})`}>
+                      {actualRemainingProvinces.map((p) => (
                         <CommandItem key={p} value={p} onSelect={() => handleProvinceSelect(p)} className="text-sm">
                           <Check className={cn("mr-2 h-3.5 w-3.5", selectedProvince === p ? "opacity-100" : "opacity-0")} />
                           <span className="flex-1">{p}</span>
@@ -590,14 +731,14 @@ const SamplePropertyGenerator = () => {
                       ))}
                     </CommandGroup>
                   )}
-                  {doneProvinces.length > 0 && (
-                    <CommandGroup heading={`Done (${doneProvinces.length})`}>
-                      {doneProvinces.map((p) => (
+                  {allCompletedProvinces.length > 0 && (
+                    <CommandGroup heading={`Done (${allCompletedProvinces.length})`}>
+                      {allCompletedProvinces.map((p) => (
                         <CommandItem key={p} value={p} onSelect={() => handleProvinceSelect(p)} className="text-sm">
                           <Check className={cn("mr-2 h-3.5 w-3.5", selectedProvince === p ? "opacity-100" : "opacity-0")} />
                           <span className="flex-1">{p}</span>
                           <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-green-500/30 text-green-600 ml-2">
-                            {provincePropertyCounts[p]} props
+                            {provincePropertyCounts[p] || "✓"} props
                           </Badge>
                         </CommandItem>
                       ))}
