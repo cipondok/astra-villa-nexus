@@ -46,9 +46,9 @@ const PropertyGridView = ({
   const formatMonthlyPayment = (price: number) => {
     const monthlyEstimate = price * 0.006;
     if (monthlyEstimate >= 1000000) {
-      return `Rp ${(monthlyEstimate / 1000000).toFixed(0)} Jutaan/bulan`;
+      return `Rp ${(monthlyEstimate / 1000000).toFixed(1)} Juta/PB`;
     }
-    return `Rp ${(monthlyEstimate / 1000).toFixed(0)} Ribuan/bulan`;
+    return `Rp ${(monthlyEstimate / 1000).toFixed(0)} Ribu/PB`;
   };
 
   const getImageUrl = (property: BaseProperty) => {
