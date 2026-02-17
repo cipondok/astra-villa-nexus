@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { cn } from "@/lib/utils";
 
-interface Rumah123PropertyCardProps {
+interface ASTRAVillaPropertyCardProps {
   property: {
     id: string | number;
     title: string;
@@ -33,14 +33,14 @@ interface Rumah123PropertyCardProps {
   className?: string;
 }
 
-const Rumah123PropertyCard = ({
+const ASTRAVillaPropertyCard = ({
   property,
   language = "id",
   isSaved = false,
   onSave,
   onView,
   className,
-}: Rumah123PropertyCardProps) => {
+}: ASTRAVillaPropertyCardProps) => {
   const [isLiked, setIsLiked] = useState(isSaved);
   const [imageError, setImageError] = useState(false);
   const navigate = useNavigate();
@@ -260,4 +260,4 @@ const Rumah123PropertyCard = ({
   );
 };
 
-export default Rumah123PropertyCard;
+export default ASTRAVillaPropertyCard;
