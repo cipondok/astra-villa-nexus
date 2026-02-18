@@ -413,7 +413,16 @@ const SamplePropertyGenerator = () => {
     }
   }, [actualRemainingProvinces, allCompletedProvinces, refetchCounts]);
 
-  const handleAutoRun = () => startAutoRun(null);
+  const handleAutoRun = () => {
+    // Always resume from saved state if available — never restart from scratch
+    const saved = loadAutoRunState();
+    if (saved && saved.provincesQueue.length > 0) {
+      toast.info("Resuming from saved progress...");
+      startAutoRun(saved);
+    } else {
+      startAutoRun(null);
+    }
+  };
   const handleResumeAutoRun = () => startAutoRun(autoRunState);
   const handleSmartRun = () => {
     if (smartSelectedProvinces.length === 0) {
