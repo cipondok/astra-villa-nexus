@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 const PROPERTY_TYPES = ['house', 'apartment', 'villa', 'land', 'commercial', 'townhouse', 'warehouse', 'kost'];
 
 const AUTO_RUN_STORAGE_KEY = 'spg_auto_run_state';
+const DONE_PROVINCES_KEY = 'spg_done_provinces';
 
 interface AutoRunState {
   isAutoMode: boolean;
@@ -45,6 +46,28 @@ const saveAutoRunState = (state: AutoRunState) => {
 
 const clearAutoRunState = () => {
   try { localStorage.removeItem(AUTO_RUN_STORAGE_KEY); } catch {}
+};
+
+// Persistent record of fully-processed provinces (survives auto-run reset)
+const loadDoneProvinces = (): string[] => {
+  try {
+    const stored = localStorage.getItem(DONE_PROVINCES_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch { return []; }
+};
+
+const saveDoneProvince = (province: string) => {
+  try {
+    const list = loadDoneProvinces();
+    if (!list.includes(province)) {
+      list.push(province);
+      localStorage.setItem(DONE_PROVINCES_KEY, JSON.stringify(list));
+    }
+  } catch {}
+};
+
+const clearDoneProvinces = () => {
+  try { localStorage.removeItem(DONE_PROVINCES_KEY); } catch {}
 };
 
 const SamplePropertyGenerator = () => {
@@ -103,13 +126,17 @@ const SamplePropertyGenerator = () => {
   const remainingProvinces = useMemo(() => provinces.filter(p => !(provincePropertyCounts[p] || 0)), [provinces, provincePropertyCounts]);
 
   // Merge saved completed provinces with DB-detected ones for accurate status
+  // Persistent done provinces (survives reset)
+  const [persistedDoneProvinces, setPersistedDoneProvinces] = useState<string[]>(() => loadDoneProvinces());
+
   const allCompletedProvinces = useMemo(() => {
     const set = new Set(doneProvinces);
+    persistedDoneProvinces.forEach(p => set.add(p));
     if (autoRunState?.completedProvinces) {
       autoRunState.completedProvinces.forEach(p => set.add(p));
     }
     return Array.from(set).sort();
-  }, [doneProvinces, autoRunState]);
+  }, [doneProvinces, autoRunState, persistedDoneProvinces]);
 
   const actualRemainingProvinces = useMemo(() => {
     const completedSet = new Set(allCompletedProvinces);
@@ -390,6 +417,8 @@ const SamplePropertyGenerator = () => {
       globalTotals.errors += provResult.errors;
 
       completedList.push(province);
+      saveDoneProvince(province); // Persist even after reset
+      setPersistedDoneProvinces(prev => prev.includes(province) ? prev : [...prev, province]);
       queue.shift();
       startOffset = 0;
       currentProv = queue[0] || "";
@@ -433,10 +462,12 @@ const SamplePropertyGenerator = () => {
   };
   const handleClearAutoState = () => {
     clearAutoRunState();
+    clearDoneProvinces();
     setAutoRunState(null);
+    setPersistedDoneProvinces([]);
     setIsAutoMode(false);
     setSmartSelectedProvinces([]);
-    toast.info("Auto-run state cleared.");
+    toast.info("Auto-run state and history cleared.");
   };
 
   const toggleSmartProvince = (province: string) => {
