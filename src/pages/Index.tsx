@@ -47,6 +47,7 @@ const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatur
 const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
+const PartnerLogosMarquee = lazy(() => import("@/components/home/PartnerLogosMarquee"));
 const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSearchesWidget").then(m => ({ default: m.TrendingSearchesWidget })));
 const InvestorPathSelector = lazy(() => import("@/components/home/InvestorPathSelector"));
 const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
@@ -835,6 +836,11 @@ const Index = () => {
                     <MarketplaceServices />
                   </Suspense>
                 </div>
+
+                {/* Partner Logos Marquee */}
+                <Suspense fallback={null}>
+                  <PartnerLogosMarquee />
+                </Suspense>
               </>
             )}
           </div>
