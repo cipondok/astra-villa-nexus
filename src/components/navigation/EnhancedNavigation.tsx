@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, Shield, Headphones, Glasses } from "lucide-react";
+import { Menu, X, LogOut, Shield, Headphones, Glasses, MapPin } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useQuery } from "@tanstack/react-query";
@@ -115,9 +115,10 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
   const currentText = text[language];
 
   const navItems = [
-    { name: currentText.home, path: "/" },
+    { name: currentText.home, path: "/", icon: undefined },
+    { name: language === 'en' ? 'Location' : 'Lokasi', path: "/location", icon: MapPin },
     { name: language === 'en' ? 'VR Tour' : 'Tur VR', path: "/vr-tour", icon: Glasses },
-    { name: currentText.about, path: "/about" },
+    { name: currentText.about, path: "/about", icon: undefined },
   ];
 
   const handleSignOut = async () => {
@@ -151,8 +152,10 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
               <Link
                 key={item.name}
                 to={item.path}
-                className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
+                title={item.name}
+                className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
               >
+                {item.icon && <item.icon className="h-3.5 w-3.5" />}
                 {item.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-200 group-hover:w-full"></span>
               </Link>
@@ -171,6 +174,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
               variant="ghost"
               size="sm"
               onClick={onLanguageToggle}
+              title={language === 'en' ? 'Switch to Indonesian' : 'Ganti ke Bahasa Inggris'}
               className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 transition-all duration-200 h-8 px-2.5 text-xs md:h-9 md:px-3 md:text-sm"
             >
               {currentText.language}
@@ -184,6 +188,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     onClick={handleAdminClick}
                     variant="ghost"
                     size="sm"
+                    title={currentText.admin}
                     className="bg-ios-red/10 hover:bg-ios-red/20 text-ios-red hover:text-ios-red border-ios-red/30 hover:border-ios-red/50 transition-all duration-300 h-8 px-2.5 md:h-9 md:px-3"
                   >
                     <Shield className="h-3.5 w-3.5 md:h-4 md:w-4 md:mr-2" />
@@ -196,6 +201,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     onClick={() => navigate('/dashboard/customer-service')}
                     variant="default"
                     size="sm"
+                    title="Customer Service Dashboard"
                     className="bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm h-8 px-2.5 text-xs md:h-9 md:px-4 md:text-sm"
                   >
                     <Headphones className="h-3.5 w-3.5 md:h-4 md:w-4 md:mr-2" />
@@ -208,6 +214,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                   onClick={handleSignOut}
                   variant="ghost"
                   size="sm"
+                  title={currentText.signOut}
                   className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 transition-all duration-200 h-8 px-2.5 md:h-9 md:px-3"
                 >
                   <LogOut className="h-3.5 w-3.5 md:h-4 md:w-4 md:mr-2" />
@@ -233,6 +240,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsOpen(!isOpen)}
+                title={isOpen ? (language === 'en' ? 'Close menu' : 'Tutup menu') : (language === 'en' ? 'Open menu' : 'Buka menu')}
                 className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 h-8 w-8 p-0 md:h-9 md:w-9"
               >
                 {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -254,8 +262,10 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
               <button
                 key={item.name}
                 onClick={() => handleNavClick(item.path)}
-                className="block w-full text-left text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
+                title={item.name}
+                className="flex items-center gap-2 w-full text-left text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
               >
+                {item.icon && <item.icon className="h-4 w-4" />}
                 {item.name}
               </button>
             ))}
