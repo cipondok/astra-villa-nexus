@@ -77,10 +77,10 @@ const SecurityManagement = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Security Alerts</p>
+              <p className="text-sm font-medium text-muted-foreground">Security Alerts</p>
                 <p className="text-2xl font-bold">3</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-500" />
+              <AlertTriangle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -89,10 +89,10 @@ const SecurityManagement = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Blocked IPs</p>
+                <p className="text-sm font-medium text-muted-foreground">Blocked IPs</p>
                 <p className="text-2xl font-bold">127</p>
               </div>
-              <Ban className="h-8 w-8 text-orange-500" />
+              <Ban className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -101,10 +101,10 @@ const SecurityManagement = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Failed Logins</p>
+                <p className="text-sm font-medium text-muted-foreground">Failed Logins</p>
                 <p className="text-2xl font-bold">45</p>
               </div>
-              <Lock className="h-8 w-8 text-yellow-500" />
+              <Lock className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -113,10 +113,10 @@ const SecurityManagement = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Security Score</p>
+                <p className="text-sm font-medium text-muted-foreground">Security Score</p>
                 <p className="text-2xl font-bold">85%</p>
               </div>
-              <Shield className="h-8 w-8 text-green-500" />
+              <Shield className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -133,14 +133,14 @@ const SecurityManagement = () => {
                 <div key={index} className="flex items-center justify-between p-3 border rounded">
                   <div className="flex items-center gap-3">
                     {result.status === 'pass' ? 
-                      <CheckCircle className="h-5 w-5 text-green-500" /> :
+                      <CheckCircle className="h-5 w-5 text-chart-1" /> :
                       result.status === 'warning' ?
-                      <AlertTriangle className="h-5 w-5 text-yellow-500" /> :
-                      <XCircle className="h-5 w-5 text-red-500" />
+                      <AlertTriangle className="h-5 w-5 text-chart-3" /> :
+                      <XCircle className="h-5 w-5 text-destructive" />
                     }
                     <div>
                       <div className="font-medium">{result.type}</div>
-                      <div className="text-sm text-gray-500">{result.message}</div>
+                      <div className="text-sm text-muted-foreground">{result.message}</div>
                     </div>
                   </div>
                   <Badge variant={
