@@ -340,30 +340,30 @@ const ProjectMapVisualization = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed': return <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />;
-      case 'in-progress': return <Play className="h-3.5 w-3.5 text-blue-500" />;
+      case 'completed': return <CheckCircle2 className="h-3.5 w-3.5 text-chart-1" />;
+      case 'in-progress': return <Play className="h-3.5 w-3.5 text-chart-2" />;
       case 'pending': return <CircleDashed className="h-3.5 w-3.5 text-muted-foreground" />;
-      case 'blocked': return <Pause className="h-3.5 w-3.5 text-red-500" />;
+      case 'blocked': return <Pause className="h-3.5 w-3.5 text-destructive" />;
       default: return <CircleDashed className="h-3.5 w-3.5" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-500/10 text-green-600 border-green-500/30';
-      case 'in-progress': return 'bg-blue-500/10 text-blue-600 border-blue-500/30';
+      case 'completed': return 'bg-chart-1/10 text-chart-1 border-chart-1/30';
+      case 'in-progress': return 'bg-chart-2/10 text-chart-2 border-chart-2/30';
       case 'pending': return 'bg-muted/50 text-muted-foreground border-border';
-      case 'blocked': return 'bg-red-500/10 text-red-600 border-red-500/30';
+      case 'blocked': return 'bg-destructive/10 text-destructive border-destructive/30';
       default: return 'bg-muted';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-500/10 text-red-600';
-      case 'high': return 'bg-orange-500/10 text-orange-600';
-      case 'medium': return 'bg-yellow-500/10 text-yellow-600';
-      case 'low': return 'bg-green-500/10 text-green-600';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      case 'high': return 'bg-chart-4/10 text-chart-4';
+      case 'medium': return 'bg-chart-3/10 text-chart-3';
+      case 'low': return 'bg-chart-1/10 text-chart-1';
       default: return 'bg-muted';
     }
   };
@@ -378,7 +378,7 @@ const ProjectMapVisualization = () => {
   const phaseData = developmentPhases.map(p => ({
     name: p.phase.split(' ')[0],
     progress: p.progress,
-    fill: p.status === 'completed' ? 'hsl(142, 76%, 36%)' : p.status === 'in-progress' ? 'hsl(217, 91%, 60%)' : 'hsl(var(--muted))'
+    fill: p.status === 'completed' ? 'hsl(var(--chart-1))' : p.status === 'in-progress' ? 'hsl(var(--chart-2))' : 'hsl(var(--muted))'
   }));
 
   return (
@@ -396,7 +396,7 @@ const ProjectMapVisualization = () => {
               </div>
               <div className="flex items-center flex-wrap gap-1 text-[10px] text-muted-foreground mt-1">
                 <span>Development progress • Updated {formatDistanceToNow(lastAutoUpdate, { addSuffix: true })}</span>
-                <Badge variant="outline" className="text-[8px] h-4 px-1 bg-green-500/10 text-green-600 border-green-500/30">
+                <Badge variant="outline" className="text-[8px] h-4 px-1 bg-chart-1/10 text-chart-1 border-chart-1/30">
                   <span className="animate-pulse mr-1">●</span> Live
                 </Badge>
                 <Button variant="ghost" size="sm" onClick={() => refetch()} disabled={isFetching} className="h-5 px-1.5">
@@ -508,7 +508,7 @@ const ProjectMapVisualization = () => {
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center gap-2">
-                <Target className="h-4 w-4 text-orange-500" />
+                <Target className="h-4 w-4 text-chart-4" />
                 <CardTitle className="text-sm">Priority Actions</CardTitle>
               </div>
             </CardHeader>
@@ -575,7 +575,7 @@ const ProjectMapVisualization = () => {
                       {module.tasks.map((task, tidx) => (
                         <div key={tidx} className="flex items-center gap-1.5 text-[10px]">
                           {task.done ? (
-                            <CheckCircle2 className="h-3 w-3 text-green-500 shrink-0" />
+                            <CheckCircle2 className="h-3 w-3 text-chart-1 shrink-0" />
                           ) : (
                             <CircleDashed className="h-3 w-3 text-muted-foreground shrink-0" />
                           )}
@@ -613,7 +613,7 @@ const ProjectMapVisualization = () => {
                       {category.items.map((item, iidx) => (
                         <div key={iidx} className="flex items-center gap-2 text-xs">
                           {item.done ? (
-                            <CheckCircle2 className="h-3.5 w-3.5 text-green-500 shrink-0" />
+                            <CheckCircle2 className="h-3.5 w-3.5 text-chart-1 shrink-0" />
                           ) : (
                             <CircleDashed className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                           )}
