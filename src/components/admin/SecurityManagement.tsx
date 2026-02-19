@@ -64,7 +64,7 @@ const SecurityManagement = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Security Management</h2>
-          <p className="text-gray-600">Security monitoring, logs, and threat detection</p>
+          <p className="text-muted-foreground">Security monitoring, logs, and threat detection</p>
         </div>
         <Button onClick={runSecurityScan} disabled={isScanning}>
           <Shield className="h-4 w-4 mr-2" />
@@ -222,22 +222,22 @@ const SecurityManagement = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="p-4 border rounded-lg">
+                <div className="p-4 border border-border rounded-lg">
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="font-medium">Block Suspicious IPs</div>
-                      <div className="text-sm text-gray-500">Automatically block IPs with suspicious activity</div>
+                      <div className="text-sm text-muted-foreground">Automatically block IPs with suspicious activity</div>
                     </div>
-                    <Badge className="bg-green-100 text-green-800">Active</Badge>
+                    <Badge className="bg-chart-1/20 text-chart-1">Active</Badge>
                   </div>
                 </div>
-                <div className="p-4 border rounded-lg">
+                <div className="p-4 border border-border rounded-lg">
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="font-medium">Rate Limiting</div>
-                      <div className="text-sm text-gray-500">Limit requests per IP address</div>
+                      <div className="text-sm text-muted-foreground">Limit requests per IP address</div>
                     </div>
-                    <Badge className="bg-green-100 text-green-800">Active</Badge>
+                    <Badge className="bg-chart-1/20 text-chart-1">Active</Badge>
                   </div>
                 </div>
               </div>
@@ -252,9 +252,9 @@ const SecurityManagement = () => {
             </CardHeader>
             <CardContent>
               <div className="text-center py-8">
-                <Shield className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+                <Shield className="h-16 w-16 mx-auto text-muted-foreground/40 mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Advanced Threat Detection</h3>
-                <p className="text-gray-600 mb-4">AI-powered threat detection and prevention</p>
+                <p className="text-muted-foreground mb-4">AI-powered threat detection and prevention</p>
                 <Button onClick={runSecurityScan} disabled={isScanning}>
                   {isScanning ? 'Analyzing...' : 'Run Threat Analysis'}
                 </Button>
@@ -272,19 +272,19 @@ const SecurityManagement = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span>Two-Factor Authentication</span>
-                  <Badge className="bg-green-100 text-green-800">Enabled</Badge>
+                  <Badge className="bg-chart-1/20 text-chart-1">Enabled</Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Password Policy</span>
-                  <Badge className="bg-green-100 text-green-800">Strong</Badge>
+                  <Badge className="bg-chart-1/20 text-chart-1">Strong</Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Session Timeout</span>
-                  <Badge className="bg-blue-100 text-blue-800">30 minutes</Badge>
+                  <Badge className="bg-chart-2/20 text-chart-2">30 minutes</Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>IP Whitelist</span>
-                  <Badge className="bg-gray-100 text-gray-800">Disabled</Badge>
+                  <Badge variant="outline">Disabled</Badge>
                 </div>
               </div>
             </CardContent>
