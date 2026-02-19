@@ -470,9 +470,9 @@ const CreateServiceForm = () => {
                       disabled={!serviceData.sub_category_id}
                       className="border-2 hover:border-primary/50 transition-colors"
                     />
-                    <div className="flex items-center space-x-2 text-green-600 bg-green-50 p-2 rounded">
-                      <div className="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center">
-                        <span className="text-white text-xs">✓</span>
+                    <div className="flex items-center space-x-2 text-chart-1 bg-chart-1/10 p-2 rounded">
+                      <div className="w-4 h-4 rounded-full bg-chart-1 flex items-center justify-center">
+                        <span className="text-primary-foreground text-xs">✓</span>
                       </div>
                       <span className="text-sm font-medium">Admin approval automatic</span>
                     </div>
@@ -664,29 +664,29 @@ const CreateServiceForm = () => {
       </div>
 
       {/* Optional Service Items & Pricing */}
-      <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-l-4 border-l-blue-500">
+      <Card className="p-6 bg-primary/5 border-l-4 border-l-primary">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <Label className="text-lg font-semibold text-blue-900">Service Items & Pricing</Label>
-              <p className="text-sm text-blue-700 mt-1">
+              <Label className="text-lg font-semibold text-foreground">Service Items & Pricing</Label>
+              <p className="text-sm text-muted-foreground mt-1">
                 Optional: Add specific pricing items for this service. If skipped, vendors can add their own pricing later.
               </p>
             </div>
-            <Button type="button" variant="outline" size="sm" onClick={addServiceItem} className="border-blue-200 text-blue-700 hover:bg-blue-100">
+            <Button type="button" variant="outline" size="sm" onClick={addServiceItem} className="border-primary/30 text-primary hover:bg-primary/10">
               <Plus className="h-4 w-4 mr-1" />
               Add Pricing Item
             </Button>
           </div>
           
-          <div className="bg-blue-100/50 p-3 rounded-lg border border-blue-200">
+          <div className="bg-primary/10 p-3 rounded-lg border border-primary/20">
             <div className="flex items-start space-x-3">
-              <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center mt-0.5">
-                <span className="text-white text-xs">i</span>
+              <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center mt-0.5">
+                <span className="text-primary-foreground text-xs">i</span>
               </div>
-              <div className="text-sm text-blue-800">
+              <div className="text-sm text-foreground">
                 <p className="font-medium">Service Items are Optional</p>
-                <p>You can create the service without pricing items. Vendors can add their own pricing structure later through their dashboard.</p>
+                <p className="text-muted-foreground">You can create the service without pricing items. Vendors can add their own pricing structure later through their dashboard.</p>
               </div>
             </div>
           </div>
@@ -694,16 +694,16 @@ const CreateServiceForm = () => {
           {serviceItems.length > 0 && serviceItems[0].item_name && (
             <div className="space-y-3">
               {serviceItems.map((item, index) => (
-                <Card key={index} className="p-4 bg-white border border-blue-200">
+                <Card key={index} className="p-4 bg-background border border-border">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-medium text-blue-900">Pricing Item {index + 1}</h4>
+                      <h4 className="font-medium text-foreground">Pricing Item {index + 1}</h4>
                       <Button 
                         type="button" 
                         variant="ghost" 
                         size="sm"
                         onClick={() => removeServiceItem(index)}
-                        className="text-red-500 hover:bg-red-50"
+                        className="text-destructive hover:bg-destructive/10"
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -1081,9 +1081,9 @@ const AdminVendorServiceManagement = () => {
         <TabsContent value="pending">
           <div className="grid gap-4">
             {services?.filter(s => !s.is_active).map((service) => (
-              <Card key={service.id} className="border-orange-200">
+              <Card key={service.id} className="border-chart-4/30">
                 <CardHeader>
-                  <CardTitle className="text-lg text-orange-800">{service.service_name}</CardTitle>
+                  <CardTitle className="text-lg text-chart-4">{service.service_name}</CardTitle>
                   <CardDescription>Pending approval from {service.vendor_business_profiles?.business_name}</CardDescription>
                 </CardHeader>
                 <CardContent>
