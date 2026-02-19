@@ -90,33 +90,24 @@ export const useProvincePropertyCounts = () => {
   return useQuery({
     queryKey: ['province-property-counts'],
     queryFn: async (): Promise<Record<string, number>> => {
-      const { data, error } = await supabase
-        .from('properties')
-        .select('location, city, state')
-        .eq('status', 'active')
-        .eq('approval_status', 'approved');
+      // Use RPC to bypass the 1000-row limit and aggregate server-side
+      const { data, error } = await supabase.rpc('get_province_property_counts');
 
       if (error) throw error;
 
-      // Aggregate counts by province - prefer state field (most accurate)
+      // Build a map: province name → count
+      // The state column stores province names directly (e.g. "Jawa Barat")
       const counts: Record<string, number> = {};
-      
-      data?.forEach((property) => {
-        const province = getProvinceFromLocation(
-          property.location || '', 
-          property.city || undefined, 
-          property.state || undefined
-        );
-        if (province && province !== 'Lainnya') {
-          counts[province] = (counts[province] || 0) + 1;
-        } else if (province === 'Lainnya') {
-          counts['Lainnya'] = (counts['Lainnya'] || 0) + 1;
+      (data || []).forEach((row: { province: string; property_count: number }) => {
+        if (row.province) {
+          // Direct province name (from state column)
+          counts[row.province] = Number(row.property_count);
         }
       });
 
       return counts;
     },
-    staleTime: 2 * 60 * 1000, // 2 minutes for fresher data
+    staleTime: 2 * 60 * 1000,
   });
 };
 
