@@ -169,9 +169,9 @@ const AdminKYCReview = () => {
     };
 
     const colors: Record<string, string> = {
-      verified: 'text-green-600',
-      pending: 'text-yellow-600',
-      rejected: 'text-red-600'
+      verified: 'text-chart-1',
+      pending: 'text-chart-3',
+      rejected: 'text-destructive'
     };
 
     return (
@@ -184,13 +184,13 @@ const AdminKYCReview = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'verified':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-chart-1" />;
       case 'rejected':
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       case 'pending':
-        return <Clock className="h-4 w-4 text-yellow-600" />;
+        return <Clock className="h-4 w-4 text-chart-3" />;
       default:
-        return <Clock className="h-4 w-4 text-gray-400" />;
+        return <Clock className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -270,7 +270,7 @@ const AdminKYCReview = () => {
             </div>
             <div className="flex items-center gap-4">
               <div className="text-center">
-                <div className="text-lg font-bold text-yellow-600">
+                <div className="text-lg font-bold text-chart-3">
                   {(documentVerifications?.filter(doc => doc.verification_status === 'pending').length || 0) +
                    (bpjsVerifications?.filter(bpjs => bpjs.verification_status === 'pending').length || 0)}
                 </div>
@@ -399,14 +399,14 @@ const AdminKYCReview = () => {
                               <DropdownMenuContent>
                                 <DropdownMenuItem
                                   onClick={() => quickStatusUpdate(verification, 'verified', 'document')}
-                                  className="text-green-600"
+                                  className="text-chart-1"
                                 >
                                   <CheckCircle className="h-4 w-4 mr-2" />
                                   Quick Approve
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() => quickStatusUpdate(verification, 'rejected', 'document')}
-                                  className="text-red-600"
+                                  className="text-destructive"
                                 >
                                   <XCircle className="h-4 w-4 mr-2" />
                                   Quick Reject
@@ -494,14 +494,14 @@ const AdminKYCReview = () => {
                             <DropdownMenuContent>
                               <DropdownMenuItem
                                 onClick={() => quickStatusUpdate(verification, 'verified', 'bpjs')}
-                                className="text-green-600"
+                                className="text-chart-1"
                               >
                                 <CheckCircle className="h-4 w-4 mr-2" />
                                 Approve
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 onClick={() => quickStatusUpdate(verification, 'rejected', 'bpjs')}
-                                className="text-red-600"
+                                className="text-destructive"
                               >
                                 <XCircle className="h-4 w-4 mr-2" />
                                 Reject
