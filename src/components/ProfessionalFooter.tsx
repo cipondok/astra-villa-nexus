@@ -1,8 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Rocket, Instagram, Youtube, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, PhoneCall, MapPin, Glasses, UserCheck } from "lucide-react";
+import { Instagram, Youtube, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, PhoneCall, MapPin, Glasses, UserCheck, Facebook, Twitter, Music2 } from "lucide-react";
 import AnimatedLogo from "@/components/AnimatedLogo";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
+import { useSocialMediaSettings } from "@/hooks/useSocialMediaSettings";
 
 interface ProfessionalFooterProps {
   language: "en" | "id";
@@ -133,6 +134,7 @@ const Dock = ({ items }: { items: DockItem[] }) => {
 
 const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const { logoUrl: footerLogoUrl } = useBrandingLogo('footerLogo');
+  const { settings } = useSocialMediaSettings();
 
   const currentText = language === "en" ? {
     company: "Astra Villa",
@@ -167,12 +169,20 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     { to: "/contact", label: currentText.contactUs, icon: PhoneCall },
   ];
 
-  const socialIcons = [
-    { icon: '𝕏', label: 'Twitter' },
-    { icon: 'ⓕ', label: 'Facebook' },
-    { icon: <Instagram className="w-4 h-4" />, label: 'Instagram' },
-    { icon: <Youtube className="w-4 h-4" />, label: 'YouTube' },
-  ];
+  const allSocialLinks = [
+    { url: settings.facebookUrl, icon: <Facebook className="w-4 h-4" />, label: 'Facebook' },
+    { url: settings.twitterUrl, icon: <Twitter className="w-4 h-4" />, label: 'Twitter / X' },
+    { url: settings.instagramUrl, icon: <Instagram className="w-4 h-4" />, label: 'Instagram' },
+    { url: settings.tiktokUrl, icon: <Music2 className="w-4 h-4" />, label: 'TikTok' },
+    { url: settings.youtubeUrl, icon: <Youtube className="w-4 h-4" />, label: 'YouTube' },
+    { url: settings.whatsappNumber, icon: <span className="text-sm font-bold">W</span>, label: 'WhatsApp', isPhone: true },
+  ].filter(l => l.url);
+
+  const getSocialHref = (link: typeof allSocialLinks[0]) => {
+    if (!link.url) return '#';
+    if ((link as any).isPhone) return `https://wa.me/${link.url.replace(/\D/g, '')}`;
+    return link.url.startsWith('http') ? link.url : `https://${link.url}`;
+  };
 
   return (
     <footer
@@ -194,14 +204,17 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       {/* Row 2: Social + Copyright - centered */}
       <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
         <div className="flex items-center gap-2">
-          {socialIcons.map((s, i) => (
+          {allSocialLinks.map((s, i) => (
             <a
               key={i}
-              href="#"
+              href={getSocialHref(s)}
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:scale-110 transition-transform inline-flex items-center justify-center w-8 h-8 rounded-full shadow-sm
                 bg-[hsl(200,60%,90%)] border border-[hsl(200,50%,70%)] text-[hsl(210,50%,25%)]
                 dark:bg-[hsl(210,40%,15%)] dark:border-[hsl(200,40%,30%)] dark:text-[hsl(200,30%,70%)]"
               aria-label={s.label}
+              title={s.label}
             >
               {s.icon}
             </a>
