@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
-import { decode as base64Decode } from "https://deno.land/std@0.168.0/encoding/base64url.ts";
 
 const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -152,48 +151,32 @@ serve(async (req) => {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    
-    // Decode JWT payload manually to extract user ID
-    // (getUser/getClaims fail with "missing sub claim" on this project)
-    let userId: string;
-    try {
-      const parts = token.split('.');
-      if (parts.length !== 3) throw new Error('Invalid JWT format');
-      const payloadBytes = base64Decode(parts[1]);
-      const payload = JSON.parse(new TextDecoder().decode(payloadBytes));
-      if (!payload.sub || typeof payload.sub !== 'string') throw new Error('Missing sub claim in JWT');
-      // Check expiry
-      if (payload.exp && payload.exp * 1000 < Date.now()) throw new Error('Token expired');
-      userId = payload.sub;
-    } catch (e) {
-      console.error('JWT decode error:', e.message);
-      return new Response(JSON.stringify({ error: 'Invalid token', details: e.message }),
+
+    // Use service role client for admin operations
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // Verify the user token and get user ID
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) {
+      console.error('Auth error:', userError?.message);
+      return new Response(JSON.stringify({ error: 'Invalid or expired token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const userId = user.id;
 
     // Check admin_users table first, then fall back to user_roles table
-    const { data: adminData } = await supabase
-      .from('admin_users')
-      .select('id')
-      .eq('user_id', userId)
-      .maybeSingle();
+    const [{ data: adminData }, { data: roleData }] = await Promise.all([
+      supabase.from('admin_users').select('id').eq('user_id', userId).maybeSingle(),
+      supabase.from('user_roles').select('id').eq('user_id', userId).eq('is_active', true).in('role', ['admin', 'super_admin']).maybeSingle(),
+    ]);
 
-    if (!adminData) {
-      // Fallback: check user_roles table for admin/super_admin role
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('is_active', true)
-        .in('role', ['admin', 'super_admin'])
-        .maybeSingle();
-
-      if (!roleData) {
-        return new Response(JSON.stringify({ error: 'Admin access required' }),
-          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-      }
+    if (!adminData && !roleData) {
+      console.error('Admin check failed for user:', userId);
+      return new Response(JSON.stringify({ error: 'Admin access required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     const { province, skipExisting, offset = 0 } = await req.json();
