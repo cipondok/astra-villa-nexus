@@ -186,6 +186,12 @@ const SamplePropertyGenerator = () => {
     return new Set((data || []).map(d => d.subdistrict_name)).size;
   };
 
+  // Re-read persisted done provinces from localStorage (avoids stale state)
+  const getPersistedDone = (): Set<string> => {
+    const list = loadDoneProvinces();
+    return new Set(list);
+  };
+
   // Core batch runner for a single province
   const runProvinceGeneration = async (
     province: string,
@@ -277,6 +283,11 @@ const SamplePropertyGenerator = () => {
 
   // Single province generation (manual mode)
   const handleGenerate = async () => {
+    if (!selectedProvince) {
+      toast.error("Please select a province first.");
+      return;
+    }
+
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.access_token) {
       toast.error("You must be logged in to generate properties.");
@@ -285,21 +296,25 @@ const SamplePropertyGenerator = () => {
 
     suppressSessionCheck(true);
     cancelRef.current = false;
+    setIsAutoMode(false);
     setIsRunning(true);
     setResult(null);
 
-    const result = await runProvinceGeneration(selectedProvince, 0, (p) => setProgress(p));
+    const provResult = await runProvinceGeneration(selectedProvince, 0, (p) => setProgress(p));
 
     suppressSessionCheck(false);
     setIsRunning(false);
-    setResult(result);
-    refetchCounts();
+    setResult(provResult);
 
-    if (result.cancelled) {
-      toast.info("Generation paused/cancelled");
+    // Mark as done in persistent storage
+    if (!provResult.cancelled) {
+      saveDoneProvince(selectedProvince);
+      setPersistedDoneProvinces(prev => prev.includes(selectedProvince) ? prev : [...prev, selectedProvince]);
+      toast.success(`Done! Created ${provResult.created} properties for ${selectedProvince}`);
     } else {
-      toast.success(`Done! Created ${result.created} properties for ${selectedProvince}`);
+      toast.info("Generation paused/cancelled");
     }
+    refetchCounts();
   };
 
   // Auto-run: process provinces (with smart selection support)
@@ -317,6 +332,10 @@ const SamplePropertyGenerator = () => {
     setIsAutoMode(true);
     setResult(null);
 
+    // Always re-read persisted done provinces from localStorage at call-time
+    // to avoid stale React state after page reload / logout
+    const doneLive = getPersistedDone();
+
     let queue: string[];
     let completedList: string[];
     let globalTotals = { created: 0, skipped: 0, errors: 0 };
@@ -325,7 +344,7 @@ const SamplePropertyGenerator = () => {
 
     if (resumeState) {
       // Resume from saved state — skip already completed, start from where we left off
-      queue = resumeState.provincesQueue.filter(p => !allCompletedProvinces.includes(p) || p === resumeState.currentProvince);
+      queue = resumeState.provincesQueue.filter(p => !doneLive.has(p) || p === resumeState.currentProvince);
       completedList = resumeState.completedProvinces;
       globalTotals = { created: resumeState.totalCreated, skipped: resumeState.totalSkipped, errors: resumeState.totalErrors };
       currentProv = resumeState.currentProvince;
@@ -333,23 +352,31 @@ const SamplePropertyGenerator = () => {
       toast.info(`Resuming from ${currentProv} (offset ${startOffset}), ${queue.length} provinces left`);
     } else if (smartQueue && smartQueue.length > 0) {
       // Smart selection — use user-picked provinces
-      queue = [...smartQueue];
-      completedList = [];
-      currentProv = queue[0];
-      toast.info(`Smart run: ${queue.length} selected provinces`);
-    } else {
-      // Fresh start — only truly remaining provinces (skip DB-completed ones)
-      queue = [...actualRemainingProvinces];
+      queue = smartQueue.filter(p => !doneLive.has(p));
       completedList = [];
       if (queue.length === 0) {
-        toast.info("All provinces already have properties!");
+        toast.info("All selected provinces are already done!");
         suppressSessionCheck(false);
         setIsRunning(false);
         setIsAutoMode(false);
         return;
       }
       currentProv = queue[0];
-      toast.info(`Starting auto-run for ${queue.length} remaining provinces`);
+      toast.info(`Smart run: ${queue.length} selected provinces`);
+    } else {
+      // Fresh start — filter using LIVE localStorage + DB data
+      const allDoneNow = new Set([...doneLive, ...doneProvinces]);
+      queue = provinces.filter(p => !allDoneNow.has(p));
+      completedList = [];
+      if (queue.length === 0) {
+        toast.info("All provinces already done! Click Reset to re-run.");
+        suppressSessionCheck(false);
+        setIsRunning(false);
+        setIsAutoMode(false);
+        return;
+      }
+      currentProv = queue[0];
+      toast.info(`Starting auto-run for ${queue.length} remaining provinces (skipping ${allDoneNow.size} done)`);
     }
 
     setAutoTotalProvinces(queue.length + completedList.length);
@@ -440,7 +467,7 @@ const SamplePropertyGenerator = () => {
       toast.success(`🎉 Auto-run complete! ${globalTotals.created} total properties created across ${completedList.length} provinces.`);
       refetchCounts();
     }
-  }, [actualRemainingProvinces, allCompletedProvinces, refetchCounts]);
+  }, [provinces, doneProvinces, refetchCounts]);
 
   const handleAutoRun = () => {
     // Always resume from saved state if available — never restart from scratch
@@ -755,10 +782,10 @@ const SamplePropertyGenerator = () => {
                 <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-popover border border-border shadow-lg z-50" align="start">
+            <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-popover border border-border shadow-lg z-[200]" align="start" sideOffset={4}>
               <Command>
                 <CommandInput placeholder="Search province..." />
-                <CommandList className="max-h-64">
+                <CommandList className="max-h-[300px] overflow-y-auto">
                   <CommandEmpty>No province found.</CommandEmpty>
                   {actualRemainingProvinces.length > 0 && (
                     <CommandGroup heading={`Remaining (${actualRemainingProvinces.length})`}>
