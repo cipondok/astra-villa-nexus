@@ -174,11 +174,11 @@ const BookingManagement: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; className: string }> = {
-      pending: { variant: 'secondary', className: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/30' },
-      confirmed: { variant: 'default', className: 'bg-blue-500/10 text-blue-600 border-blue-500/30' },
-      completed: { variant: 'default', className: 'bg-green-500/10 text-green-600 border-green-500/30' },
-      cancelled: { variant: 'destructive', className: 'bg-red-500/10 text-red-600 border-red-500/30' },
-      no_show: { variant: 'outline', className: 'bg-gray-500/10 text-gray-600 border-gray-500/30' },
+      pending: { variant: 'secondary', className: 'bg-chart-3/10 text-chart-3 border-chart-3/30' },
+      confirmed: { variant: 'default', className: 'bg-chart-2/10 text-chart-2 border-chart-2/30' },
+      completed: { variant: 'default', className: 'bg-chart-1/10 text-chart-1 border-chart-1/30' },
+      cancelled: { variant: 'destructive', className: 'bg-destructive/10 text-destructive border-destructive/30' },
+      no_show: { variant: 'outline', className: 'bg-muted text-muted-foreground border-border' },
     };
     const config = variants[status] || variants.pending;
     return <Badge variant={config.variant} className={config.className}>{status}</Badge>;
@@ -224,28 +224,28 @@ const BookingManagement: React.FC = () => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-yellow-500" />
+            <Clock className="h-4 w-4 text-chart-3" />
             <span className="text-xs text-muted-foreground">Pending</span>
           </div>
           <p className="text-xl font-bold mt-1">{stats?.pending || 0}</p>
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <CheckCircle className="h-4 w-4 text-blue-500" />
+            <CheckCircle className="h-4 w-4 text-chart-2" />
             <span className="text-xs text-muted-foreground">Confirmed</span>
           </div>
           <p className="text-xl font-bold mt-1">{stats?.confirmed || 0}</p>
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <CheckCircle className="h-4 w-4 text-green-500" />
+            <CheckCircle className="h-4 w-4 text-chart-1" />
             <span className="text-xs text-muted-foreground">Completed</span>
           </div>
           <p className="text-xl font-bold mt-1">{stats?.completed || 0}</p>
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <XCircle className="h-4 w-4 text-red-500" />
+            <XCircle className="h-4 w-4 text-destructive" />
             <span className="text-xs text-muted-foreground">Cancelled</span>
           </div>
           <p className="text-xl font-bold mt-1">{stats?.cancelled || 0}</p>
@@ -385,23 +385,23 @@ const BookingManagement: React.FC = () => {
                               {booking.status === 'pending' && (
                                 <>
                                   <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'confirmed' })} className="text-[11px]">
-                                    <CheckCircle className="h-3 w-3 mr-2 text-blue-500" />
+                                    <CheckCircle className="h-3 w-3 mr-2 text-chart-2" />
                                     Confirm
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'cancelled' })} className="text-[11px]">
-                                    <XCircle className="h-3 w-3 mr-2 text-red-500" />
+                                    <XCircle className="h-3 w-3 mr-2 text-destructive" />
                                     Cancel
                                   </DropdownMenuItem>
                                 </>
                               )}
                               {booking.status === 'confirmed' && (
                                 <>
-                                  <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'completed' })} className="text-[11px]">
-                                    <CheckCircle className="h-3 w-3 mr-2 text-green-500" />
+                                   <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'completed' })} className="text-[11px]">
+                                    <CheckCircle className="h-3 w-3 mr-2 text-chart-1" />
                                     Complete
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'no_show' })} className="text-[11px]">
-                                    <AlertCircle className="h-3 w-3 mr-2 text-gray-500" />
+                                    <AlertCircle className="h-3 w-3 mr-2 text-muted-foreground" />
                                     No Show
                                   </DropdownMenuItem>
                                 </>
@@ -611,7 +611,7 @@ const BookingManagement: React.FC = () => {
               {selectedBooking.cancellation_reason && (
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Cancellation Reason</p>
-                  <p className="text-sm p-2 rounded bg-red-50 text-red-700">{selectedBooking.cancellation_reason}</p>
+                  <p className="text-sm p-2 rounded bg-destructive/10 text-destructive">{selectedBooking.cancellation_reason}</p>
                 </div>
               )}
             </div>
