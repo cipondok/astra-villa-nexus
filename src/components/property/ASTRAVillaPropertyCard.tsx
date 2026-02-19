@@ -114,10 +114,21 @@ const ASTRAVillaPropertyCard = ({
   const ListingIcon = getListingIcon(property.listing_type);
   const imageCount = property.images?.length || 1;
 
+  const isRent = property.listing_type === "rent";
+  const accentFrom = isRent ? "from-blue-500" : "from-emerald-500";
+  const accentTo = isRent ? "to-cyan-500" : "to-teal-500";
+  const accentText = isRent ? "text-blue-600 dark:text-blue-400" : "text-emerald-600 dark:text-emerald-400";
+  const accentBorder = isRent ? "border-blue-400/20" : "border-emerald-400/20";
+  const accentBg = isRent ? "from-blue-500/10 to-cyan-500/10" : "from-emerald-500/10 to-teal-500/10";
+  const hoverShadow = isRent ? "hover:shadow-blue-500/10" : "hover:shadow-emerald-500/10";
+  const eyeColor = isRent ? "ring-blue-400/40" : "ring-emerald-400/40";
+  const eyeIconColor = isRent ? "text-blue-600" : "text-emerald-600";
+
   return (
     <Card
       className={cn(
-        "group relative overflow-hidden rounded-lg bg-card/70 backdrop-blur-md border border-primary/10 dark:border-primary/15 shadow-[0_2px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.1)] hover:border-primary/25 transition-all duration-300 cursor-pointer",
+        "group relative overflow-hidden rounded-xl bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 cursor-pointer",
+        hoverShadow,
         className
       )}
       onClick={handleClick}
@@ -127,32 +138,24 @@ const ASTRAVillaPropertyCard = ({
         <img
           src={getImageUrl()}
           alt={property.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           loading="lazy"
           onError={() => setImageError(true)}
         />
 
-        {/* Top Row - Listing Type & Property Type */}
-        <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
-          <Badge
-            className={cn(
-              "flex items-center gap-1 px-2 py-1 text-[11px] font-semibold rounded-md shadow-sm",
-              property.listing_type === "rent"
-                ? "bg-primary text-primary-foreground"
-                : "bg-accent text-accent-foreground"
-            )}
-          >
-            <ListingIcon className="h-3 w-3" />
-            {getListingLabel(property.listing_type)}
-          </Badge>
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-          <Badge className="flex items-center gap-1 bg-card/90 backdrop-blur-sm text-foreground text-[11px] px-2 py-1 rounded-md shadow-sm border border-border/50">
-            <Building className="h-3 w-3" />
-            {property.property_type
-              ? property.property_type.charAt(0).toUpperCase() +
-                property.property_type.slice(1).toLowerCase()
-              : "Property"}
-          </Badge>
+        {/* Top Row */}
+        <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between">
+          <span className={cn("flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gradient-to-r text-white shadow-sm", accentFrom, accentTo)}>
+            <ListingIcon className="h-2 w-2" />
+            {getListingLabel(property.listing_type)}
+          </span>
+          <span className="flex items-center gap-0.5 bg-black/40 backdrop-blur-sm text-white/90 text-[9px] px-1.5 py-0.5 rounded-full border border-white/20">
+            <Building className="h-2 w-2" />
+            {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : "Property"}
+          </span>
         </div>
 
         {/* Heart Button */}
@@ -160,98 +163,85 @@ const ASTRAVillaPropertyCard = ({
           variant="ghost"
           size="icon"
           className={cn(
-            "absolute top-10 right-2 h-7 w-7 rounded-full bg-card/90 backdrop-blur-sm hover:bg-card shadow-sm border border-border/50",
-            isLiked && "bg-destructive/10 border-destructive/30"
+            "absolute top-8 right-1.5 h-6 w-6 rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border border-white/20",
+            isLiked && "bg-red-500/40 border-red-400/40"
           )}
           onClick={handleLike}
         >
-          <Heart
-            className={cn(
-              "h-3.5 w-3.5",
-              isLiked ? "fill-destructive text-destructive" : "text-muted-foreground"
-            )}
-          />
+          <Heart className={cn("h-3 w-3", isLiked ? "fill-red-400 text-red-400" : "text-white/80")} />
         </Button>
 
         {/* Image Count Badge */}
         {imageCount > 1 && (
-          <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[10px] px-2 py-1 rounded">
-            <Camera className="h-3 w-3" />
+          <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 bg-black/50 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded-full border border-white/20">
+            <Camera className="h-2 w-2" />
             <span>{imageCount}</span>
           </div>
         )}
 
         {/* View Icon on Hover */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/10 dark:bg-black/20">
-          <div className="h-10 w-10 rounded-full bg-card/95 backdrop-blur-sm flex items-center justify-center shadow-lg">
-            <Eye className="h-5 w-5 text-primary" />
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className={cn("h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg ring-2", eyeColor)}>
+            <Eye className={cn("h-4 w-4", eyeIconColor)} />
           </div>
         </div>
       </div>
 
       {/* Content Section */}
-      <div className="p-3 space-y-2">
+      <div className="p-2.5 space-y-1.5">
         {/* Price Section */}
-        <div className="border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-3 py-2">
-          <div className="flex items-baseline gap-1.5 flex-wrap">
-            <span className="text-xl sm:text-2xl font-black text-primary tracking-tight leading-none">
-              {priceInfo.main}
-            </span>
-            {priceInfo.suffix && (
-              <span className="text-sm sm:text-base font-extrabold text-primary/70">
-                {priceInfo.suffix}
-              </span>
-            )}
-            {property.listing_type === "rent" && (
-              <span className="text-[11px] text-primary/60 font-bold">
-                / {language === "id" ? "bln" : "mo"}
-              </span>
-            )}
-            {property.listing_type === "sale" && (
-              <span className="text-[10px] sm:text-[11px] text-muted-foreground/60 font-medium bg-muted/40 rounded-full px-1.5 py-px">
-                ≈ {formatMonthlyPayment(property.price)}
-              </span>
-            )}
-          </div>
+        <div className={cn("flex items-baseline gap-1 rounded-lg px-2 py-1.5 border flex-wrap bg-gradient-to-r", accentBg, accentBorder)}>
+          <span className={cn("text-base font-black bg-gradient-to-r bg-clip-text text-transparent leading-none tracking-tight", accentFrom, accentTo)}>
+            {priceInfo.main}
+          </span>
+          {priceInfo.suffix && (
+            <span className={cn("text-[11px] font-extrabold opacity-70", accentText)}>{priceInfo.suffix}</span>
+          )}
+          {isRent && (
+            <span className="text-[9px] text-blue-500/60 font-bold ml-auto">/{language === "id" ? "bln" : "mo"}</span>
+          )}
+          {!isRent && (
+            <span className="text-[9px] text-muted-foreground/60 font-medium bg-muted/40 rounded-full px-1 ml-auto">≈ {formatMonthlyPayment(property.price)}</span>
+          )}
         </div>
 
         {/* Title */}
-        <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+        <h3 className={cn("text-[11px] font-semibold text-foreground line-clamp-2 leading-snug transition-colors group-hover:", accentText)}>
           {property.title}
         </h3>
 
         {/* Location */}
-        <div className="flex items-center gap-1.5 bg-primary/5 dark:bg-primary/10 rounded px-2 py-1">
-          <MapPin className="h-3 w-3 flex-shrink-0 text-primary/70" />
-          <span className="text-[11px] sm:text-xs text-foreground/70 font-medium line-clamp-1">{getLocation()}</span>
+        <div className={cn("flex items-center gap-1 rounded-lg border px-1.5 py-0.5 bg-gradient-to-r", accentBg, accentBorder)}>
+          <MapPin className={cn("h-2.5 w-2.5 flex-shrink-0", accentText)} />
+          <span className="text-[10px] text-foreground/70 font-medium line-clamp-1">{getLocation()}</span>
         </div>
 
-        {/* Property Specs - KT/KM/LT/LB Style */}
-        <div className="flex items-center flex-wrap gap-2.5 pt-2 border-t border-primary/10">
+        {/* Specs */}
+        <div className="flex items-center flex-wrap gap-1 pt-1 border-t border-white/10 dark:border-white/5">
           {property.bedrooms !== undefined && property.bedrooms > 0 && (
-            <div className="flex items-center gap-1.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-2.5 py-1">
-              <Bed className="h-3.5 w-3.5 text-primary/60" />
-              <span className="text-xs text-foreground/80 font-bold">{property.bedrooms}</span>
-              <span className="text-[10px] text-muted-foreground/70 font-semibold">KT</span>
+            <div className="flex items-center gap-0.5 bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-400/20 rounded-md px-1.5 py-0.5">
+              <Bed className="h-2.5 w-2.5 text-violet-600 dark:text-violet-400" />
+              <span className="text-[10px] font-bold text-foreground/80">{property.bedrooms}</span>
+              <span className="text-[8px] text-muted-foreground font-semibold">KT</span>
             </div>
           )}
           {property.bathrooms !== undefined && property.bathrooms > 0 && (
-            <div className="flex items-center gap-1.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-2.5 py-1">
-              <Bath className="h-3.5 w-3.5 text-primary/60" />
-              <span className="text-xs text-foreground/80 font-bold">{property.bathrooms}</span>
-              <span className="text-[10px] text-muted-foreground/70 font-semibold">KM</span>
+            <div className="flex items-center gap-0.5 bg-gradient-to-br from-sky-500/10 to-blue-500/10 border border-sky-400/20 rounded-md px-1.5 py-0.5">
+              <Bath className="h-2.5 w-2.5 text-sky-600 dark:text-sky-400" />
+              <span className="text-[10px] font-bold text-foreground/80">{property.bathrooms}</span>
+              <span className="text-[8px] text-muted-foreground font-semibold">KM</span>
             </div>
           )}
           {property.land_area && (
-            <div className="flex items-center gap-1.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-2.5 py-1">
-              <span className="text-[10px] text-primary/60 font-bold">LT</span>
-              <span className="text-xs text-foreground/80 font-bold">{property.land_area}m²</span>
+            <div className="flex items-center gap-0.5 bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-400/20 rounded-md px-1.5 py-0.5">
+              <span className="text-[8px] text-amber-600 dark:text-amber-400 font-bold">LT</span>
+              <span className="text-[10px] font-bold text-foreground/80">{property.land_area}m²</span>
             </div>
           )}
           {property.area_sqm && (
-            <div className="flex items-center gap-1.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-2.5 py-1">
-              <span className="text-[10px] text-primary/60 font-bold">LB</span>
-              <span className="text-xs text-foreground/80 font-bold">{property.area_sqm}m²</span>
+            <div className="flex items-center gap-0.5 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-400/20 rounded-md px-1.5 py-0.5">
+              <Maximize className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400" />
+              <span className="text-[10px] font-bold text-foreground/80">{property.area_sqm}m²</span>
             </div>
           )}
         </div>
