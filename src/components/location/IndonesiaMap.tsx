@@ -463,16 +463,15 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
             if (count < 100) return null; // Show markers for provinces with 100+ properties
             const displayCount = count >= 1000 ? `${(count / 1000).toFixed(count >= 10000 ? 0 : 1)}K` : count.toString();
             const isLarge = count >= 5000;
-            const scale = isLarge ? 1.3 : 1.0;
-            // Classic teardrop: circle r=10 centered at (0,0), tail points down
-            const r = 10 * scale;
-            const tailY = 22 * scale;
-            const badgeR = isLarge ? 8 : 6.5;
-            const fontSize = isLarge ? '8px' : '6.5px';
-            
+            // Bigger sizes
+            const r = isLarge ? 18 : 14;
+            const tailY = isLarge ? 38 : 30;
+            const countFontSize = isLarge ? '9px' : '7.5px';
+            const iconScale = isLarge ? 0.055 : 0.044;
+
             return (
               <Marker key={name} coordinates={coords}>
-                <g 
+                <g
                   className="cursor-pointer"
                   onClick={() => handleProvinceClick(name)}
                   style={{ pointerEvents: 'all' }}
@@ -480,18 +479,18 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
                 >
                   {/* Ground shadow */}
                   <ellipse
-                    cx={1}
-                    cy={tailY + 2}
-                    rx={r * 0.55}
-                    ry={3 * scale}
-                    fill="rgba(0,0,0,0.22)"
+                    cx={1.5}
+                    cy={tailY + 3}
+                    rx={r * 0.5}
+                    ry={4}
+                    fill="rgba(0,0,0,0.25)"
                   />
                   {/* Pin teardrop tail */}
                   <path
-                    d={`M ${-r * 0.45} ${r * 0.75} Q 0 ${tailY + 1} ${r * 0.45} ${r * 0.75}`}
-                    fill="hsl(0, 85%, 48%)"
+                    d={`M ${-r * 0.42} ${r * 0.78} Q 0 ${tailY + 2} ${r * 0.42} ${r * 0.78}`}
+                    fill="hsl(0, 85%, 45%)"
                     stroke="white"
-                    strokeWidth={1.5}
+                    strokeWidth={2}
                     strokeLinejoin="round"
                   />
                   {/* Pin circle body */}
@@ -499,51 +498,41 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
                     cx={0}
                     cy={0}
                     r={r}
-                    fill="hsl(0, 85%, 48%)"
+                    fill="hsl(0, 85%, 45%)"
                     stroke="white"
-                    strokeWidth={1.8}
+                    strokeWidth={2.2}
                   />
-                  {/* Inner shine highlight */}
+                  {/* Shine highlight */}
                   <circle
-                    cx={-r * 0.28}
-                    cy={-r * 0.3}
-                    r={r * 0.28}
-                    fill="rgba(255,255,255,0.28)"
+                    cx={-r * 0.3}
+                    cy={-r * 0.32}
+                    r={r * 0.3}
+                    fill="rgba(255,255,255,0.25)"
                   />
-                  {/* Home icon inside pin */}
-                  <g transform={`translate(0, 0.5) scale(${scale * 0.038})`}>
-                    <path
-                      d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"
-                      fill="white"
-                      transform="translate(-12,-12)"
-                    />
-                  </g>
-                  {/* Count badge below pin */}
-                  <rect
-                    x={-badgeR * 1.6}
-                    y={tailY - badgeR * 1.1}
-                    width={badgeR * 3.2}
-                    height={badgeR * 1.9}
-                    rx={badgeR * 0.9}
-                    fill="hsl(0, 85%, 42%)"
-                    stroke="white"
-                    strokeWidth={1.2}
-                  />
+                  {/* Count text ON TOP (upper half of circle) */}
                   <text
                     textAnchor="middle"
                     x={0}
-                    y={tailY - badgeR * 0.05}
+                    y={-r * 0.08}
                     style={{
                       fontFamily: 'system-ui, sans-serif',
-                      fontSize,
-                      fontWeight: '800',
+                      fontSize: countFontSize,
+                      fontWeight: '900',
                       fill: 'white',
                       pointerEvents: 'none',
-                      letterSpacing: '0.03em',
+                      letterSpacing: '0.04em',
                     }}
                   >
                     {displayCount}
                   </text>
+                  {/* Small home icon below count text */}
+                  <g transform={`translate(0, ${r * 0.35}) scale(${iconScale})`}>
+                    <path
+                      d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"
+                      fill="rgba(255,255,255,0.75)"
+                      transform="translate(-12,-12)"
+                    />
+                  </g>
                 </g>
               </Marker>
             );
