@@ -25,10 +25,10 @@ const BillingManagement = () => {
   ];
 
   const stats = [
-    { label: 'Monthly Revenue', value: billingData.monthlyRevenue, icon: DollarSign, color: 'text-emerald-400', badge: '+15%', badgeColor: 'border-emerald-500/50 text-emerald-400' },
-    { label: 'Total Users', value: billingData.totalUsers.toLocaleString(), icon: Users, color: 'text-blue-400', badge: 'Active', badgeColor: 'border-blue-500/50 text-blue-400' },
-    { label: 'Subscriptions', value: billingData.activeSubscriptions.toLocaleString(), icon: CreditCard, color: 'text-purple-400', badge: 'Paid', badgeColor: 'border-purple-500/50 text-purple-400' },
-    { label: 'Pending', value: billingData.pendingPayments, icon: Receipt, color: 'text-orange-400', badge: 'Action', badgeColor: 'border-orange-500/50 text-orange-400' }
+    { label: 'Monthly Revenue', value: billingData.monthlyRevenue, icon: DollarSign, color: 'text-chart-1', badge: '+15%', badgeColor: 'border-chart-1/50 text-chart-1' },
+    { label: 'Total Users', value: billingData.totalUsers.toLocaleString(), icon: Users, color: 'text-chart-2', badge: 'Active', badgeColor: 'border-chart-2/50 text-chart-2' },
+    { label: 'Subscriptions', value: billingData.activeSubscriptions.toLocaleString(), icon: CreditCard, color: 'text-primary', badge: 'Paid', badgeColor: 'border-primary/50 text-primary' },
+    { label: 'Pending', value: billingData.pendingPayments, icon: Receipt, color: 'text-chart-3', badge: 'Action', badgeColor: 'border-chart-3/50 text-chart-3' }
   ];
 
   return (
@@ -70,7 +70,7 @@ const BillingManagement = () => {
 
           {/* Quick Overview */}
           <div className="grid grid-cols-2 gap-3">
-            <Card className="bg-card/50 border-border/50 border-l-2 border-l-emerald-500">
+            <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-1">
               <CardHeader className="py-2 px-3">
                 <CardTitle className="text-xs text-foreground flex items-center gap-2">
                   <TrendingUp className="h-3.5 w-3.5" />
@@ -91,7 +91,7 @@ const BillingManagement = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card/50 border-border/50 border-l-2 border-l-blue-500">
+            <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-2">
               <CardHeader className="py-2 px-3">
                 <CardTitle className="text-xs text-foreground flex items-center gap-2">
                   <CreditCard className="h-3.5 w-3.5" />
@@ -101,9 +101,9 @@ const BillingManagement = () => {
               <CardContent className="px-3 pb-3">
                 <div className="space-y-2">
                   {[
-                    { plan: 'Enterprise', pct: 45, color: 'bg-purple-500' },
-                    { plan: 'Premium', pct: 35, color: 'bg-blue-500' },
-                    { plan: 'Basic', pct: 20, color: 'bg-emerald-500' }
+                    { plan: 'Enterprise', pct: 45, color: 'bg-primary' },
+                    { plan: 'Premium', pct: 35, color: 'bg-chart-2' },
+                    { plan: 'Basic', pct: 20, color: 'bg-chart-1' }
                   ].map((item) => (
                     <div key={item.plan} className="space-y-1">
                       <div className="flex justify-between text-[10px]">
@@ -122,7 +122,7 @@ const BillingManagement = () => {
         </TabsContent>
 
         <TabsContent value="subscriptions" className="mt-3">
-          <Card className="bg-card/50 border-border/50 border-l-2 border-l-purple-500">
+          <Card className="bg-card/50 border-border/50 border-l-2 border-l-primary">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs text-foreground">Subscription Plans</CardTitle>
             </CardHeader>
@@ -164,7 +164,7 @@ const BillingManagement = () => {
         </TabsContent>
 
         <TabsContent value="transactions" className="mt-3">
-          <Card className="bg-card/50 border-border/50 border-l-2 border-l-cyan-500">
+          <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-2">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs text-foreground">Recent Transactions</CardTitle>
             </CardHeader>
@@ -196,7 +196,7 @@ const BillingManagement = () => {
         </TabsContent>
 
         <TabsContent value="settings" className="mt-3">
-          <Card className="bg-card/50 border-border/50 border-l-2 border-l-orange-500">
+          <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-3">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs text-foreground">Billing Settings</CardTitle>
             </CardHeader>
