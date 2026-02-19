@@ -85,7 +85,8 @@ const ProjectMapVisualization = () => {
         { name: 'Email/password auth', done: true },
         { name: 'Session management', done: true },
         { name: 'RLS policies', done: true },
-        { name: 'Password reset flow', done: true }
+        { name: 'Password reset flow', done: true },
+        { name: 'Account lockout protection', done: true }
       ]
     },
     {
@@ -105,7 +106,7 @@ const ProjectMapVisualization = () => {
     {
       name: 'Property System',
       icon: Building2,
-      progress: 95,
+      progress: 98,
       status: 'completed',
       priority: 'critical',
       tasks: [
@@ -114,6 +115,7 @@ const ProjectMapVisualization = () => {
         { name: 'Property details', done: true },
         { name: 'Image gallery', done: true },
         { name: 'Property reviews', done: true },
+        { name: 'Sample property generator', done: true },
         { name: '3D views integration', done: false }
       ]
     },
@@ -148,7 +150,7 @@ const ProjectMapVisualization = () => {
     {
       name: 'Vendor Platform',
       icon: Server,
-      progress: 92,
+      progress: 95,
       status: 'completed',
       priority: 'high',
       tasks: [
@@ -176,7 +178,7 @@ const ProjectMapVisualization = () => {
     {
       name: 'Admin Dashboard',
       icon: Settings,
-      progress: 98,
+      progress: 100,
       status: 'completed',
       priority: 'high',
       tasks: [
@@ -185,7 +187,8 @@ const ProjectMapVisualization = () => {
         { name: 'Content management', done: true },
         { name: 'Booking management', done: true },
         { name: 'Analytics views', done: true },
-        { name: 'System settings', done: true }
+        { name: 'System settings', done: true },
+        { name: 'Project progress report', done: true }
       ]
     },
     {
@@ -205,53 +208,73 @@ const ProjectMapVisualization = () => {
     {
       name: 'AI Features',
       icon: MessageSquare,
-      progress: 85,
+      progress: 88,
       status: 'in-progress',
       priority: 'medium',
       tasks: [
         { name: 'AI chatbot', done: true },
         { name: 'Property recommendations', done: true },
         { name: 'Smart search', done: true },
+        { name: 'AI image search', done: true },
         { name: 'Voice commands', done: false }
       ]
     },
     {
       name: 'Communication',
       icon: Bell,
-      progress: 90,
+      progress: 92,
       status: 'completed',
       priority: 'high',
       tasks: [
         { name: 'Email notifications', done: true },
         { name: 'In-app notifications', done: true },
         { name: 'Live chat', done: true },
+        { name: 'WhatsApp integration', done: true },
         { name: 'SMS integration', done: false }
       ]
     },
     {
       name: 'Mobile Optimization',
       icon: Smartphone,
-      progress: 90,
+      progress: 95,
       status: 'completed',
       priority: 'high',
       tasks: [
         { name: 'Responsive design', done: true },
         { name: 'Touch gestures', done: true },
         { name: 'PWA support', done: true },
+        { name: 'Mobile footer nav', done: true },
         { name: 'Offline mode', done: false }
       ]
     },
     {
       name: 'Analytics & Reporting',
       icon: BarChart3,
-      progress: 88,
-      status: 'in-progress',
+      progress: 92,
+      status: 'completed',
       priority: 'medium',
       tasks: [
         { name: 'Traffic analytics', done: true },
         { name: 'User behavior', done: true },
         { name: 'Property insights', done: true },
+        { name: 'Acquisition analytics', done: true },
         { name: 'Export reports', done: false }
+      ]
+    },
+    {
+      name: 'Partnerships & Acquisition',
+      icon: Globe,
+      progress: 90,
+      status: 'completed',
+      priority: 'medium',
+      tasks: [
+        { name: 'Bank partnerships', done: true },
+        { name: 'Corporate partnerships', done: true },
+        { name: 'University partnerships', done: true },
+        { name: 'Influencer campaigns', done: true },
+        { name: 'Partner logos marquee', done: true },
+        { name: 'Referral system', done: true },
+        { name: 'SEO content management', done: false }
       ]
     }
   ];
@@ -260,10 +283,10 @@ const ProjectMapVisualization = () => {
   const developmentPhases = [
     { phase: 'Foundation', progress: 100, status: 'completed', weeks: '1-4' },
     { phase: 'Core Features', progress: 100, status: 'completed', weeks: '5-12' },
-    { phase: 'Advanced Features', progress: 85, status: 'in-progress', weeks: '13-20' },
-    { phase: 'Testing & QA', progress: 60, status: 'in-progress', weeks: '21-24' },
-    { phase: 'Launch Prep', progress: 40, status: 'pending', weeks: '25-26' },
-    { phase: 'Post-Launch', progress: 0, status: 'pending', weeks: '27+' }
+    { phase: 'Advanced Features', progress: 92, status: 'in-progress', weeks: '13-20' },
+    { phase: 'Testing & QA', progress: 65, status: 'in-progress', weeks: '21-24' },
+    { phase: 'Launch Prep', progress: 45, status: 'in-progress', weeks: '25-26' },
+    { phase: 'Post-Launch', progress: 10, status: 'pending', weeks: '27+' }
   ];
 
   // Pre-launch checklist
@@ -273,28 +296,30 @@ const ProjectMapVisualization = () => {
       { name: 'API rate limiting', done: true },
       { name: 'SQL injection prevention', done: true },
       { name: 'XSS protection', done: true },
-      { name: 'HTTPS enforced', done: true }
+      { name: 'HTTPS enforced', done: true },
+      { name: 'Account lockout system', done: true }
     ]},
     { category: 'Performance', items: [
       { name: 'Image optimization', done: true },
-      { name: 'Code splitting', done: true },
-      { name: 'Lazy loading', done: true },
+      { name: 'Code splitting & lazy loading', done: true },
+      { name: 'Connection speed detection', done: true },
       { name: 'CDN configured', done: false },
       { name: 'Caching strategy', done: false }
     ]},
     { category: 'Testing', items: [
       { name: 'Unit tests', done: false },
       { name: 'E2E tests', done: false },
-      { name: 'Cross-browser testing', done: false },
+      { name: 'Cross-browser testing', done: true },
       { name: 'Mobile testing', done: true },
       { name: 'Load testing', done: false }
     ]},
     { category: 'Operations', items: [
-      { name: 'Error monitoring', done: true },
+      { name: 'Error monitoring & logs', done: true },
       { name: 'Backup strategy', done: true },
-      { name: 'Domain configured', done: false },
+      { name: 'Domain configured', done: true },
       { name: 'SSL certificate', done: true },
-      { name: 'Analytics setup', done: true }
+      { name: 'Analytics setup', done: true },
+      { name: 'Sample data seeded (31 provinces)', done: true }
     ]}
   ];
 
