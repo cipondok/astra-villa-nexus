@@ -2,16 +2,18 @@ import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   Home, Phone, Mail, MapPin, Facebook, Instagram, 
-  MessageCircle, Building2, Glasses, Youtube
+  MessageCircle, Building2, Glasses, Youtube, Twitter, Linkedin, Send
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
+import { useSocialMediaSettings } from '@/hooks/useSocialMediaSettings';
 
 const MobileFooter = () => {
   const { isMobile } = useIsMobile();
   const { language } = useLanguage();
   const navigate = useNavigate();
+  const { settings } = useSocialMediaSettings();
 
   if (!isMobile) return null;
 
@@ -52,6 +54,7 @@ const MobileFooter = () => {
     alignItems: 'center',
     justifyContent: 'center',
     color: '#0c404e',
+    flexShrink: 0,
   });
 
   const dotColors = [
@@ -61,6 +64,23 @@ const MobileFooter = () => {
     'rgba(210,235,220,0.8)',
     'rgba(255,210,160,0.7)',
   ];
+
+  // Build dynamic social links from admin settings
+  const socialLinks = [
+    { url: settings.facebookUrl, Icon: Facebook, label: 'Facebook', bg: 'rgba(190,230,250,0.6)' },
+    { url: settings.instagramUrl, Icon: Instagram, label: 'Instagram', bg: 'rgba(255,220,200,0.6)' },
+    { url: settings.twitterUrl, Icon: Twitter, label: 'Twitter / X', bg: 'rgba(200,230,255,0.6)' },
+    { url: settings.youtubeUrl, Icon: Youtube, label: 'YouTube', bg: 'rgba(255,200,200,0.6)' },
+    { url: settings.linkedinUrl, Icon: Linkedin, label: 'LinkedIn', bg: 'rgba(180,220,255,0.6)' },
+    { url: settings.whatsappNumber, Icon: MessageCircle, label: 'WhatsApp', bg: 'rgba(200,255,210,0.6)', isPhone: true },
+    { url: settings.telegramUrl, Icon: Send, label: 'Telegram', bg: 'rgba(190,240,255,0.6)' },
+  ].filter(l => l.url);
+
+  const getHref = (link: typeof socialLinks[0]) => {
+    if (!link.url) return '#';
+    if (link.isPhone) return `https://wa.me/${link.url.replace(/\D/g, '')}`;
+    return link.url.startsWith('http') ? link.url : `https://${link.url}`;
+  };
 
   return (
     <footer style={footerStyle}>
@@ -76,7 +96,9 @@ const MobileFooter = () => {
           <button
             key={link.path}
             onClick={() => navigate(link.path)}
-            className="flex flex-col items-center gap-0.5 text-[10px] transition-opacity hover:opacity-70"
+            title={link.label}
+            aria-label={link.label}
+            className="flex flex-col items-center gap-0.5 text-[10px] transition-opacity hover:opacity-70 active:scale-95"
             style={{ color: '#0c4455' }}
           >
             <link.icon className="h-3.5 w-3.5" />
@@ -93,7 +115,8 @@ const MobileFooter = () => {
             className="h-7 w-7 p-0 rounded-full"
             style={socialIconStyle('rgba(255,240,180,0.7)')}
             onClick={() => window.open('tel:+6285716008080')}
-            aria-label="Call"
+            aria-label="Call us"
+            title="Call us"
           >
             <Phone className="h-3.5 w-3.5" style={{ color: '#0c404e' }} />
           </Button>
@@ -102,19 +125,28 @@ const MobileFooter = () => {
             className="h-7 w-7 p-0 rounded-full"
             style={socialIconStyle('rgba(190,230,250,0.6)')}
             onClick={() => window.open('mailto:info@astravilla.com')}
-            aria-label="Email"
+            aria-label="Email us"
+            title="Email us"
           >
             <Mail className="h-3.5 w-3.5" style={{ color: '#0c404e' }} />
           </Button>
         </div>
 
-        <div className="flex items-center gap-1.5">
-          <a href="https://facebook.com" style={socialIconStyle('rgba(190,230,250,0.6)')} className="hover:opacity-80 transition-opacity" aria-label="Facebook">
-            <Facebook className="h-3.5 w-3.5" />
-          </a>
-          <a href="https://instagram.com" style={socialIconStyle('rgba(255,240,180,0.7)')} className="hover:opacity-80 transition-opacity" aria-label="Instagram">
-            <Instagram className="h-3.5 w-3.5" />
-          </a>
+        <div className="flex items-center gap-1.5 flex-wrap justify-end">
+          {socialLinks.map((link) => (
+            <a
+              key={link.label}
+              href={getHref(link)}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={socialIconStyle(link.bg)}
+              className="hover:opacity-80 transition-opacity active:scale-95"
+              aria-label={link.label}
+              title={link.label}
+            >
+              <link.Icon className="h-3.5 w-3.5" />
+            </a>
+          ))}
           <span className="text-[9px] pl-1" style={{ color: '#083945', fontWeight: 450 }}>© 2026</span>
         </div>
       </div>

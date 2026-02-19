@@ -19,6 +19,7 @@ import PropertyFilterSettings from './settings/PropertyFilterSettings';
 import CentralizedFilterManager from './CentralizedFilterManager';
 import AstraTokenSettingsWrapper from './settings/AstraTokenSettingsWrapper';
 import BrandingSettings from './settings/BrandingSettings';
+import SocialMediaSettings from './settings/SocialMediaSettings';
 import WelcomeScreenSettings from './settings/WelcomeScreenSettings';
 import WebsiteDesignSettings from './settings/WebsiteDesignSettings';
 import HeroSliderSettings from './settings/HeroSliderSettings';
@@ -80,6 +81,7 @@ const SystemSettings = () => {
             <TabsTrigger value="website-design" className="text-xs h-6 px-3">Website Design</TabsTrigger>
             <TabsTrigger value="hero-slider" className="text-xs h-6 px-3">Hero Slider</TabsTrigger>
             <TabsTrigger value="branding" className="text-xs h-6 px-3">Branding</TabsTrigger>
+            <TabsTrigger value="social-media" className="text-xs h-6 px-3">Social Media</TabsTrigger>
             <TabsTrigger value="welcome-screen" className="text-xs h-6 px-3">Welcome Screen</TabsTrigger>
             <TabsTrigger value="security" className="text-xs h-6 px-3">Security</TabsTrigger>
             <TabsTrigger value="notifications" className="text-xs h-6 px-3">Notifications</TabsTrigger>
@@ -117,6 +119,10 @@ const SystemSettings = () => {
             onInputChange={handleInputChange}
             onSave={saveSettings}
           />
+        </TabsContent>
+
+        <TabsContent value="social-media" className="space-y-4">
+          <SocialMediaSettings />
         </TabsContent>
 
         <TabsContent value="welcome-screen" className="space-y-4">
