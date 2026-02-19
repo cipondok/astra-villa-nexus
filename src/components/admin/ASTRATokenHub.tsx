@@ -275,7 +275,7 @@ const ASTRATokenHub = () => {
     switch (status) {
       case 'connected':
         return (
-          <Badge className="bg-green-100 text-green-800 border-green-200">
+          <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/30">
             <CheckCircle className="h-3 w-3 mr-1" />
             Connected
           </Badge>
@@ -283,7 +283,7 @@ const ASTRATokenHub = () => {
       case 'testing':
       case 'checking':
         return (
-          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+          <Badge className="bg-primary/10 text-primary border-primary/30">
             <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
             {status === 'testing' ? 'Testing...' : 'Checking...'}
           </Badge>
@@ -331,7 +331,7 @@ const ASTRATokenHub = () => {
 
       {/* API Status Alert */}
       {(analytics.apiStatus === 'disconnected' || lastTestResult) && (
-        <Alert className={`${connectionStatus === 'connected' ? 'border-green-500 bg-green-50 dark:bg-green-950' : 'border-orange-500 bg-orange-50 dark:bg-orange-950'}`}>
+        <Alert className={connectionStatus === 'connected' ? 'border-chart-1/50 bg-chart-1/10' : 'border-chart-4/50 bg-chart-4/10'}>
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription className="text-xs">
             {lastTestResult || 'ASTRA Token API is not configured. Please configure the API in Settings tab first.'}
