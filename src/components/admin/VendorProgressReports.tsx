@@ -200,7 +200,7 @@ const VendorProgressReports = () => {
                 <p className="text-sm text-muted-foreground">Total Vendors</p>
                 <p className="text-2xl font-bold">{totalVendors}</p>
               </div>
-              <Users className="h-8 w-8 text-blue-600" />
+              <Users className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -212,7 +212,7 @@ const VendorProgressReports = () => {
                 <p className="text-sm text-muted-foreground">Active Progress</p>
                 <p className="text-2xl font-bold">{activeVendors}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-green-600" />
+              <TrendingUp className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -224,7 +224,7 @@ const VendorProgressReports = () => {
                 <p className="text-sm text-muted-foreground">Completed</p>
                 <p className="text-2xl font-bold">{completedVendors}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-emerald-600" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -236,7 +236,7 @@ const VendorProgressReports = () => {
                 <p className="text-sm text-muted-foreground">Avg Progress</p>
                 <p className="text-2xl font-bold">{Math.round(avgProgress)}%</p>
               </div>
-              <Clock className="h-8 w-8 text-orange-600" />
+              <Clock className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -294,10 +294,10 @@ const VendorProgressReports = () => {
                     
                     {/* Progress Stage Indicator */}
                     <Alert className={
-                      progressStage === 'excellent' ? 'border-green-500 bg-green-50 dark:bg-green-950' :
-                      progressStage === 'good' ? 'border-blue-500 bg-blue-50 dark:bg-blue-950' :
-                      progressStage === 'fair' ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950' :
-                      'border-orange-500 bg-orange-50 dark:bg-orange-950'
+                      progressStage === 'excellent' ? 'border-chart-1/50 bg-chart-1/10' :
+                      progressStage === 'good' ? 'border-primary/50 bg-primary/10' :
+                      progressStage === 'fair' ? 'border-chart-3/50 bg-chart-3/10' :
+                      'border-chart-4/50 bg-chart-4/10'
                     }>
                       <AlertCircle className="h-4 w-4" />
                       <AlertDescription>
@@ -319,22 +319,22 @@ const VendorProgressReports = () => {
                     {nextLevel && (
                       <div>
                         <p className="text-xs text-muted-foreground mb-1">Tasks Remaining</p>
-                        <p className="text-xl font-bold text-orange-600">{Math.max(0, tasksRemaining)}</p>
+                        <p className="text-xl font-bold text-chart-4">{Math.max(0, tasksRemaining)}</p>
                       </div>
                     )}
                   </div>
 
                   {/* Next Level Guide */}
                   {nextLevel && !vendor.level_achieved_at && (
-                    <div className="space-y-3 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-                      <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+                    <div className="space-y-3 p-4 bg-primary/5 rounded-lg border border-primary/20">
+                      <div className="flex items-center gap-2 text-primary">
                         <ArrowRight className="h-5 w-5" />
                         <h5 className="font-semibold">Next Level: {nextLevel.level_name}</h5>
                       </div>
                       
                       <div className="space-y-2 text-sm">
                         <div className="flex items-start gap-2">
-                          <CheckCircle className="h-4 w-4 mt-0.5 text-blue-600" />
+                          <CheckCircle className="h-4 w-4 mt-0.5 text-primary" />
                           <div>
                             <p className="font-medium">Complete {tasksRemaining} more tasks</p>
                             <p className="text-xs text-muted-foreground">Current: {vendor.completed_tasks} / {nextLevel.tasks_required}</p>
@@ -343,7 +343,7 @@ const VendorProgressReports = () => {
                         
                         {nextLevel.min_rating > 0 && (
                           <div className="flex items-start gap-2">
-                            <CheckCircle className="h-4 w-4 mt-0.5 text-blue-600" />
+                            <CheckCircle className="h-4 w-4 mt-0.5 text-primary" />
                             <div>
                               <p className="font-medium">Maintain rating of {nextLevel.min_rating}+</p>
                               <p className="text-xs text-muted-foreground">Provide excellent service quality</p>
@@ -353,7 +353,7 @@ const VendorProgressReports = () => {
                         
                         {nextLevel.min_completed_bookings > 0 && (
                           <div className="flex items-start gap-2">
-                            <CheckCircle className="h-4 w-4 mt-0.5 text-blue-600" />
+                            <CheckCircle className="h-4 w-4 mt-0.5 text-primary" />
                             <div>
                               <p className="font-medium">Complete {nextLevel.min_completed_bookings} bookings</p>
                               <p className="text-xs text-muted-foreground">Build your portfolio and experience</p>
@@ -363,7 +363,7 @@ const VendorProgressReports = () => {
 
                         {nextLevel.requirements && (
                           <div className="flex items-start gap-2">
-                            <Home className="h-4 w-4 mt-0.5 text-blue-600" />
+                            <Home className="h-4 w-4 mt-0.5 text-primary" />
                             <div>
                               <p className="font-medium">Property Requirements</p>
                               <p className="text-xs text-muted-foreground">
@@ -376,8 +376,8 @@ const VendorProgressReports = () => {
 
                       {/* Benefits Preview */}
                       {nextLevel.benefits && (
-                        <div className="mt-3 pt-3 border-t border-blue-200 dark:border-blue-800">
-                          <p className="text-xs font-medium text-blue-700 dark:text-blue-300 mb-2">Level Benefits:</p>
+                        <div className="mt-3 pt-3 border-t border-primary/20">
+                          <p className="text-xs font-medium text-primary mb-2">Level Benefits:</p>
                           <div className="flex flex-wrap gap-2">
                             {nextLevel.benefits.commission && (
                               <Badge variant="secondary" className="text-xs">
@@ -397,7 +397,7 @@ const VendorProgressReports = () => {
 
                   {/* Completion Message */}
                   {vendor.level_achieved_at && (
-                    <Alert className="border-green-500 bg-green-50 dark:bg-green-950">
+                    <Alert className="border-chart-1/50 bg-chart-1/10">
                       <Award className="h-4 w-4" />
                       <AlertDescription>
                         <strong>Level Completed!</strong> Achieved on {new Date(vendor.level_achieved_at).toLocaleDateString()}
