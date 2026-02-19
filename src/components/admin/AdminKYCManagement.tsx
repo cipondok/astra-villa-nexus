@@ -119,19 +119,19 @@ const AdminKYCManagement = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'approved':
-        return <CheckCircle className="h-3 w-3 text-green-600" />;
+        return <CheckCircle className="h-3 w-3 text-chart-1" />;
       case 'rejected':
-        return <XCircle className="h-3 w-3 text-red-600" />;
+        return <XCircle className="h-3 w-3 text-destructive" />;
       default:
-        return <Clock className="h-3 w-3 text-yellow-600" />;
+        return <Clock className="h-3 w-3 text-chart-3" />;
     }
   };
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
-      pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
-      approved: "bg-green-100 text-green-700 border-green-200",
-      rejected: "bg-red-100 text-red-700 border-red-200"
+      pending: "bg-chart-3/10 text-chart-3 border-chart-3/30",
+      approved: "bg-chart-1/10 text-chart-1 border-chart-1/30",
+      rejected: "bg-destructive/10 text-destructive border-destructive/30"
     };
     return (
       <Badge variant="outline" className={`text-[10px] ${styles[status] || styles.pending}`}>
@@ -147,15 +147,15 @@ const AdminKYCManagement = () => {
   return (
     <div className="space-y-4">
       {/* Professional Header */}
-      <div className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-500/10 via-green-500/5 to-transparent rounded-xl border border-emerald-200/50">
+      <div className="flex items-center justify-between p-4 bg-primary/5 rounded-xl border border-border">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-emerald-500/10 rounded-lg">
-            <Shield className="h-5 w-5 text-emerald-600" />
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <Shield className="h-5 w-5 text-primary" />
           </div>
           <div>
             <h2 className="text-lg font-semibold flex items-center gap-2">
               KYC Verification Management
-              <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px]">
+              <Badge variant="outline" className="bg-chart-3/10 text-chart-3 border-chart-3/30 text-[10px]">
                 {pendingCount} Pending
               </Badge>
             </h2>
@@ -166,57 +166,57 @@ const AdminKYCManagement = () => {
 
       {/* Compact Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Total</p>
-                <p className="text-xl font-bold text-blue-700">{kycSubmissions?.length || 0}</p>
+                <p className="text-xl font-bold text-primary">{kycSubmissions?.length || 0}</p>
               </div>
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <FileText className="h-4 w-4 text-blue-600" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <FileText className="h-4 w-4 text-primary" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-yellow-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Pending</p>
-                <p className="text-xl font-bold text-yellow-700">{pendingCount}</p>
+                <p className="text-xl font-bold text-chart-3">{pendingCount}</p>
               </div>
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <Clock className="h-4 w-4 text-yellow-600" />
+              <div className="p-2 bg-chart-3/10 rounded-lg">
+                <Clock className="h-4 w-4 text-chart-3" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-green-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Approved</p>
-                <p className="text-xl font-bold text-green-700">{approvedCount}</p>
+                <p className="text-xl font-bold text-chart-1">{approvedCount}</p>
               </div>
-              <div className="p-2 bg-green-100 rounded-lg">
-                <CheckCircle className="h-4 w-4 text-green-600" />
+              <div className="p-2 bg-chart-1/10 rounded-lg">
+                <CheckCircle className="h-4 w-4 text-chart-1" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-red-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Rejected</p>
-                <p className="text-xl font-bold text-red-700">{rejectedCount}</p>
+                <p className="text-xl font-bold text-destructive">{rejectedCount}</p>
               </div>
-              <div className="p-2 bg-red-100 rounded-lg">
-                <XCircle className="h-4 w-4 text-red-600" />
+              <div className="p-2 bg-destructive/10 rounded-lg">
+                <XCircle className="h-4 w-4 text-destructive" />
               </div>
             </div>
           </CardContent>
@@ -225,9 +225,9 @@ const AdminKYCManagement = () => {
 
       {/* KYC Table */}
       <Card className="border-0 shadow-sm">
-        <CardHeader className="pb-3 bg-gradient-to-r from-emerald-50 to-transparent">
+        <CardHeader className="pb-3">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <CreditCard className="h-4 w-4 text-emerald-600" />
+            <CreditCard className="h-4 w-4 text-primary" />
             KYC Submissions
           </CardTitle>
           <CardDescription className="text-xs">Click review to verify vendor identity documents</CardDescription>
@@ -311,7 +311,7 @@ const AdminKYCManagement = () => {
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-emerald-600" />
+              <Shield className="h-5 w-5 text-primary" />
               KYC Verification Review
             </DialogTitle>
             <DialogDescription>
@@ -422,7 +422,7 @@ const AdminKYCManagement = () => {
             <Button 
               onClick={handleUpdateKYC}
               disabled={updateKYCMutation.isPending || !reviewStatus}
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className=""
             >
               <MessageSquare className="h-4 w-4 mr-2" />
               Update Verification

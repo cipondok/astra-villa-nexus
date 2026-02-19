@@ -41,9 +41,9 @@ const KYCReviewSystem = () => {
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
-      pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
-      approved: "bg-green-100 text-green-700 border-green-200",
-      rejected: "bg-red-100 text-red-700 border-red-200"
+      pending: "bg-chart-3/10 text-chart-3 border-chart-3/30",
+      approved: "bg-chart-1/10 text-chart-1 border-chart-1/30",
+      rejected: "bg-destructive/10 text-destructive border-destructive/30"
     };
     const icons: Record<string, React.ReactNode> = {
       pending: <Clock className="w-3 h-3 mr-1" />,
@@ -63,15 +63,15 @@ const KYCReviewSystem = () => {
   return (
     <div className="space-y-4">
       {/* Professional Header */}
-      <div className="flex items-center justify-between p-4 bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent rounded-xl border border-indigo-200/50">
+      <div className="flex items-center justify-between p-4 bg-primary/5 rounded-xl border border-border">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-indigo-500/10 rounded-lg">
-            <Shield className="h-5 w-5 text-indigo-600" />
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <Shield className="h-5 w-5 text-primary" />
           </div>
           <div>
             <h2 className="text-lg font-semibold flex items-center gap-2">
               KYC Review System
-              <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 text-[10px]">
+              <Badge variant="outline" className="bg-chart-3/10 text-chart-3 border-chart-3/30 text-[10px]">
                 {kycApplications.pending.length} Pending
               </Badge>
             </h2>
@@ -82,57 +82,57 @@ const KYCReviewSystem = () => {
 
       {/* Compact Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-yellow-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Pending</p>
-                <p className="text-xl font-bold text-yellow-700">{kycApplications.pending.length}</p>
+                <p className="text-xl font-bold text-chart-3">{kycApplications.pending.length}</p>
               </div>
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <Clock className="h-4 w-4 text-yellow-600" />
+              <div className="p-2 bg-chart-3/10 rounded-lg">
+                <Clock className="h-4 w-4 text-chart-3" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-green-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Approved</p>
-                <p className="text-xl font-bold text-green-700">{kycApplications.approved.length}</p>
+                <p className="text-xl font-bold text-chart-1">{kycApplications.approved.length}</p>
               </div>
-              <div className="p-2 bg-green-100 rounded-lg">
-                <CheckCircle className="h-4 w-4 text-green-600" />
+              <div className="p-2 bg-chart-1/10 rounded-lg">
+                <CheckCircle className="h-4 w-4 text-chart-1" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-red-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Rejected</p>
-                <p className="text-xl font-bold text-red-700">{kycApplications.rejected.length}</p>
+                <p className="text-xl font-bold text-destructive">{kycApplications.rejected.length}</p>
               </div>
-              <div className="p-2 bg-red-100 rounded-lg">
-                <XCircle className="h-4 w-4 text-red-600" />
+              <div className="p-2 bg-destructive/10 rounded-lg">
+                <XCircle className="h-4 w-4 text-destructive" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Total</p>
-                <p className="text-xl font-bold text-blue-700">{totalApplications}</p>
+                <p className="text-xl font-bold text-primary">{totalApplications}</p>
               </div>
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Users className="h-4 w-4 text-blue-600" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Users className="h-4 w-4 text-primary" />
               </div>
             </div>
           </CardContent>
@@ -141,9 +141,9 @@ const KYCReviewSystem = () => {
 
       {/* Applications Card */}
       <Card className="border-0 shadow-sm">
-        <CardHeader className="pb-3 bg-gradient-to-r from-indigo-50 to-transparent">
+        <CardHeader className="pb-3">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <FileText className="h-4 w-4 text-indigo-600" />
+            <FileText className="h-4 w-4 text-primary" />
             KYC Applications
           </CardTitle>
           <div className="flex flex-col sm:flex-row gap-3 mt-3">
@@ -170,15 +170,15 @@ const KYCReviewSystem = () => {
         <CardContent className="pt-3">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
             <TabsList className="h-9 p-1 bg-muted/50">
-              <TabsTrigger value="pending" className="text-xs h-7 px-3 data-[state=active]:bg-yellow-100 data-[state=active]:text-yellow-700">
+              <TabsTrigger value="pending" className="text-xs h-7 px-3">
                 <Clock className="h-3 w-3 mr-1" />
                 Pending ({kycApplications.pending.length})
               </TabsTrigger>
-              <TabsTrigger value="approved" className="text-xs h-7 px-3 data-[state=active]:bg-green-100 data-[state=active]:text-green-700">
+              <TabsTrigger value="approved" className="text-xs h-7 px-3">
                 <CheckCircle className="h-3 w-3 mr-1" />
                 Approved ({kycApplications.approved.length})
               </TabsTrigger>
-              <TabsTrigger value="rejected" className="text-xs h-7 px-3 data-[state=active]:bg-red-100 data-[state=active]:text-red-700">
+              <TabsTrigger value="rejected" className="text-xs h-7 px-3">
                 <XCircle className="h-3 w-3 mr-1" />
                 Rejected ({kycApplications.rejected.length})
               </TabsTrigger>
@@ -206,7 +206,7 @@ const KYCReviewSystem = () => {
                       size="sm" 
                       variant="outline"
                       onClick={() => handleApprove(application.id, application.name)}
-                      className="h-7 text-xs bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+                      className="h-7 text-xs text-chart-1 border-chart-1/30 hover:bg-chart-1/10"
                     >
                       <CheckCircle className="w-3 h-3 mr-1" />
                       Approve
@@ -215,7 +215,7 @@ const KYCReviewSystem = () => {
                       size="sm" 
                       variant="outline"
                       onClick={() => handleReject(application.id, application.name)}
-                      className="h-7 text-xs bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
+                      className="h-7 text-xs text-destructive border-destructive/30 hover:bg-destructive/10"
                     >
                       <XCircle className="w-3 h-3 mr-1" />
                       Reject
@@ -272,7 +272,7 @@ const KYCReviewSystem = () => {
                     </div>
                   </div>
                   <div className="flex gap-2 mt-2 sm:mt-0">
-                    <Button size="sm" variant="outline" className="h-7 text-xs bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100">
+                    <Button size="sm" variant="outline" className="h-7 text-xs text-chart-3 border-chart-3/30 hover:bg-chart-3/10">
                       <AlertCircle className="w-3 h-3 mr-1" />
                       Review Again
                     </Button>

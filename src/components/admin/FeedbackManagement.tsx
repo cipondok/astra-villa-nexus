@@ -95,30 +95,30 @@ const FeedbackManagement = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'resolved':
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Resolved</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/30"><CheckCircle className="h-3 w-3 mr-1" />Resolved</Badge>;
       case 'in_progress':
-        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" />In Progress</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/30"><Clock className="h-3 w-3 mr-1" />In Progress</Badge>;
       case 'rejected':
         return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Rejected</Badge>;
       default:
-        return <Badge variant="outline" className="border-orange-500 text-orange-500">Pending</Badge>;
+        return <Badge variant="outline" className="border-chart-4/50 text-chart-4">Pending</Badge>;
     }
   };
 
   const getPriorityBadge = (priority: string) => {
-    const colors = {
-      high: "bg-red-500",
-      medium: "bg-yellow-500",
-      low: "bg-green-500"
+    const colors: Record<string, string> = {
+      high: "bg-destructive/10 text-destructive border-destructive/30",
+      medium: "bg-chart-3/10 text-chart-3 border-chart-3/30",
+      low: "bg-chart-1/10 text-chart-1 border-chart-1/30"
     };
-    return <Badge className={colors[priority] || colors.medium}>{priority?.toUpperCase()}</Badge>;
+    return <Badge variant="outline" className={colors[priority] || colors.medium}>{priority?.toUpperCase()}</Badge>;
   };
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}`}
+        className={`h-4 w-4 ${i < rating ? 'fill-chart-3 text-chart-3' : 'text-muted-foreground'}`}
       />
     ));
   };
@@ -131,12 +131,12 @@ const FeedbackManagement = () => {
   
   if (!profile || !hasAccess) {
     return (
-      <Card className="bg-white/10 backdrop-blur-md border-white/20">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-white">Access Denied</CardTitle>
+          <CardTitle>Access Denied</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-300">You do not have permission to view this page. Please contact an administrator.</p>
+          <p className="text-muted-foreground">You do not have permission to view this page. Please contact an administrator.</p>
         </CardContent>
       </Card>
     );
@@ -150,99 +150,88 @@ const FeedbackManagement = () => {
       
       <MajorTopicsDashboard />
 
-      <Card className="bg-white/10 backdrop-blur-md border-white/20">
+      <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-white">
+          <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
             Feedback & Comments Management
           </CardTitle>
-          <CardDescription className="text-gray-300">
+          <CardDescription>
             Review and respond to user feedback and comments
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {/* Filter Controls */}
             <div className="flex gap-4">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-48 bg-white/10 border-white/20 text-white">
+                <SelectTrigger className="w-48">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-700">
-                  <SelectItem value="all" className="text-white">All Feedback</SelectItem>
-                  <SelectItem value="pending" className="text-white">Pending</SelectItem>
-                  <SelectItem value="in_progress" className="text-white">In Progress</SelectItem>
-                  <SelectItem value="resolved" className="text-white">Resolved</SelectItem>
-                  <SelectItem value="rejected" className="text-white">Rejected</SelectItem>
+                <SelectContent>
+                  <SelectItem value="all">All Feedback</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
+                  <SelectItem value="resolved">Resolved</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Feedback Table */}
-            <div className="border border-white/20 rounded-lg bg-white/5">
+            <div className="border border-border rounded-lg">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-white/20">
-                    <TableHead className="text-gray-300">User</TableHead>
-                    <TableHead className="text-gray-300">Type</TableHead>
-                    <TableHead className="text-gray-300">Rating</TableHead>
-                    <TableHead className="text-gray-300">Priority</TableHead>
-                    <TableHead className="text-gray-300">Status</TableHead>
-                    <TableHead className="text-gray-300">Date</TableHead>
-                    <TableHead className="text-gray-300">Actions</TableHead>
+                  <TableRow>
+                    <TableHead>User</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Rating</TableHead>
+                    <TableHead>Priority</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center py-8 text-gray-300">
+                      <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                         Loading feedback...
                       </TableCell>
                     </TableRow>
                   ) : feedback?.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center py-8 text-gray-300">
+                      <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                         No feedback found
                       </TableCell>
                     </TableRow>
                   ) : (
                     feedback?.map((item) => (
-                      <TableRow key={item.id} className="border-white/20">
-                        <TableCell className="text-white">
+                      <TableRow key={item.id}>
+                        <TableCell>
                           <div className="text-sm">
-                            <div>{item.profiles?.full_name || 'Anonymous'}</div>
-                            <div className="text-gray-400">{item.profiles?.email || 'N/A'}</div>
+                            <div className="font-medium">{item.profiles?.full_name || 'Anonymous'}</div>
+                            <div className="text-muted-foreground">{item.profiles?.email || 'N/A'}</div>
                           </div>
                         </TableCell>
-                        <TableCell className="text-gray-300 capitalize">
+                        <TableCell className="capitalize text-muted-foreground">
                           {item.feedback_type}
                         </TableCell>
                         <TableCell>
                           {item.rating ? (
                             <div className="flex items-center gap-1">
                               {renderStars(item.rating)}
-                              <span className="text-gray-300 text-sm ml-1">({item.rating})</span>
+                              <span className="text-muted-foreground text-sm ml-1">({item.rating})</span>
                             </div>
                           ) : (
-                            <span className="text-gray-400">N/A</span>
+                            <span className="text-muted-foreground">N/A</span>
                           )}
                         </TableCell>
-                        <TableCell>
-                          {getPriorityBadge(item.priority)}
-                        </TableCell>
-                        <TableCell>
-                          {getStatusBadge(item.status)}
-                        </TableCell>
-                        <TableCell className="text-gray-300">
+                        <TableCell>{getPriorityBadge(item.priority)}</TableCell>
+                        <TableCell>{getStatusBadge(item.status)}</TableCell>
+                        <TableCell className="text-muted-foreground">
                           {new Date(item.created_at).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleViewDetails(item)}
-                            className="border-gray-600 text-gray-300 hover:bg-white/10"
-                          >
+                          <Button size="sm" variant="outline" onClick={() => handleViewDetails(item)}>
                             <Eye className="h-4 w-4 mr-1" />
                             View
                           </Button>
@@ -259,78 +248,58 @@ const FeedbackManagement = () => {
 
       {/* Detail Dialog */}
       <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
-        <DialogContent className="max-w-2xl bg-gray-900/95 backdrop-blur-md border-gray-700">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-white">Feedback Details</DialogTitle>
-            <DialogDescription className="text-gray-300">
-              Review and respond to user feedback
-            </DialogDescription>
+            <DialogTitle>Feedback Details</DialogTitle>
+            <DialogDescription>Review and respond to user feedback</DialogDescription>
           </DialogHeader>
           {selectedFeedback && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <label className="text-gray-300 font-medium">User:</label>
-                  <p className="text-white">{selectedFeedback.profiles?.full_name || 'Anonymous'}</p>
+                  <label className="text-muted-foreground font-medium">User:</label>
+                  <p className="font-medium">{selectedFeedback.profiles?.full_name || 'Anonymous'}</p>
                 </div>
                 <div>
-                  <label className="text-gray-300 font-medium">Type:</label>
-                  <p className="text-white capitalize">{selectedFeedback.feedback_type}</p>
+                  <label className="text-muted-foreground font-medium">Type:</label>
+                  <p className="capitalize font-medium">{selectedFeedback.feedback_type}</p>
                 </div>
                 <div>
-                  <label className="text-gray-300 font-medium">Rating:</label>
+                  <label className="text-muted-foreground font-medium">Rating:</label>
                   <div className="flex items-center gap-1">
-                    {selectedFeedback.rating ? renderStars(selectedFeedback.rating) : <span className="text-gray-400">N/A</span>}
+                    {selectedFeedback.rating ? renderStars(selectedFeedback.rating) : <span className="text-muted-foreground">N/A</span>}
                   </div>
                 </div>
                 <div>
-                  <label className="text-gray-300 font-medium">Priority:</label>
+                  <label className="text-muted-foreground font-medium">Priority:</label>
                   {getPriorityBadge(selectedFeedback.priority)}
                 </div>
               </div>
               <div>
-                <label className="text-gray-300 font-medium">Content:</label>
-                <p className="text-white bg-gray-800 p-3 rounded mt-2">{selectedFeedback.content}</p>
+                <label className="text-muted-foreground font-medium">Content:</label>
+                <p className="bg-muted/50 p-3 rounded mt-2 text-sm">{selectedFeedback.content}</p>
               </div>
               <div>
-                <label className="text-gray-300 font-medium">Admin Response:</label>
+                <label className="text-muted-foreground font-medium">Admin Response:</label>
                 <Textarea
                   value={response}
                   onChange={(e) => setResponse(e.target.value)}
                   placeholder="Enter your response..."
-                  className="mt-2 bg-gray-800 border-gray-700 text-white"
+                  className="mt-2"
                   rows={3}
                 />
               </div>
             </div>
           )}
           <DialogFooter className="gap-2">
-            <Button 
-              variant="outline" 
-              onClick={() => setShowDetailDialog(false)}
-              className="border-gray-600 text-gray-300"
-            >
-              Cancel
-            </Button>
-            <Button 
-              variant="destructive" 
-              onClick={() => handleStatusUpdate('rejected')}
-              disabled={updateFeedbackMutation.isPending}
-            >
+            <Button variant="outline" onClick={() => setShowDetailDialog(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => handleStatusUpdate('rejected')} disabled={updateFeedbackMutation.isPending}>
               Reject
             </Button>
-            <Button 
-              onClick={() => handleStatusUpdate('in_progress')}
-              disabled={updateFeedbackMutation.isPending}
-              className="bg-yellow-600 hover:bg-yellow-700"
-            >
+            <Button variant="secondary" onClick={() => handleStatusUpdate('in_progress')} disabled={updateFeedbackMutation.isPending}>
               Mark In Progress
             </Button>
-            <Button 
-              onClick={() => handleStatusUpdate('resolved')}
-              disabled={updateFeedbackMutation.isPending}
-              className="bg-green-600 hover:bg-green-700"
-            >
+            <Button onClick={() => handleStatusUpdate('resolved')} disabled={updateFeedbackMutation.isPending}>
               Mark Resolved
             </Button>
           </DialogFooter>
