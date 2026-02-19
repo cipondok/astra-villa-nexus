@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Building2, Home, TrendingUp, Search, Filter, ChevronRight, ArrowLeft, Loader2, Navigation2 } from 'lucide-react';
+import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { IndonesiaMap, Province } from '@/components/location/IndonesiaMap';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -137,9 +139,16 @@ const LocationMap = () => {
     setIsModalOpen(false);
   };
 
+  const { language, setLanguage } = useLanguage();
+  const toggleLanguage = () => setLanguage(language === 'en' ? 'id' : 'en');
+
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-6">
+      <EnhancedNavigation
+        language={language}
+        onLanguageToggle={toggleLanguage}
+      />
+      <main className="container mx-auto px-4 py-6 pt-16 sm:pt-20">
         {/* Header - Rumah123 Style */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
