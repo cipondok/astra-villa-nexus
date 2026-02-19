@@ -139,11 +139,11 @@ const PaymentSystemStatus = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'success':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-chart-1" />;
       case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+        return <AlertTriangle className="h-4 w-4 text-chart-3" />;
       case 'error':
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       default:
         return null;
     }
@@ -152,9 +152,9 @@ const PaymentSystemStatus = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'success':
-        return <Badge variant="default" className="bg-green-100 text-green-800">OK</Badge>;
+        return <Badge variant="default" className="bg-chart-1/10 text-chart-1 border-chart-1/30">OK</Badge>;
       case 'warning':
-        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Warning</Badge>;
+        return <Badge variant="secondary" className="bg-chart-3/10 text-chart-3 border-chart-3/30">Warning</Badge>;
       case 'error':
         return <Badge variant="destructive">Error</Badge>;
       default:
@@ -194,21 +194,21 @@ const PaymentSystemStatus = () => {
         <div className="flex items-center gap-2 p-3 rounded-lg border">
           {hasErrors ? (
             <>
-              <XCircle className="h-5 w-5 text-red-500" />
-              <span className="font-medium text-red-700">Critical Issues Found</span>
+              <XCircle className="h-5 w-5 text-destructive" />
+              <span className="font-medium text-destructive">Critical Issues Found</span>
               <Badge variant="destructive">Needs Attention</Badge>
             </>
           ) : hasWarnings ? (
             <>
-              <AlertTriangle className="h-5 w-5 text-yellow-500" />
-              <span className="font-medium text-yellow-700">Minor Issues Found</span>
-              <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Review Required</Badge>
+              <AlertTriangle className="h-5 w-5 text-chart-3" />
+              <span className="font-medium text-chart-3">Minor Issues Found</span>
+              <Badge variant="secondary" className="bg-chart-3/10 text-chart-3 border-chart-3/30">Review Required</Badge>
             </>
           ) : (
             <>
-              <CheckCircle className="h-5 w-5 text-green-500" />
-              <span className="font-medium text-green-700">All Systems Operational</span>
-              <Badge variant="default" className="bg-green-100 text-green-800">Healthy</Badge>
+              <CheckCircle className="h-5 w-5 text-chart-1" />
+              <span className="font-medium text-chart-1">All Systems Operational</span>
+              <Badge variant="default" className="bg-chart-1/10 text-chart-1 border-chart-1/30">Healthy</Badge>
             </>
           )}
         </div>
@@ -237,9 +237,9 @@ const PaymentSystemStatus = () => {
 
         {/* Action Items */}
         {hasErrors && (
-          <div className="p-3 rounded-lg bg-red-50 border border-red-200">
-            <h4 className="font-medium text-red-800 mb-2">Required Actions:</h4>
-            <ul className="text-sm text-red-700 space-y-1">
+          <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/30">
+            <h4 className="font-medium text-destructive mb-2">Required Actions:</h4>
+            <ul className="text-sm text-destructive/80 space-y-1">
               {checks
                 .filter(check => check.status === 'error')
                 .map((check, index) => (
