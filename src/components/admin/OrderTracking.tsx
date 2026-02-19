@@ -138,7 +138,7 @@ const OrderTracking = () => {
           </div>
 
           {/* Orders Table */}
-          <div className="border rounded-lg">
+          <div className="border border-border rounded-lg">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -265,7 +265,7 @@ const OrderTracking = () => {
                               {order.order_data && (
                                 <div>
                                   <h4 className="font-medium mb-2">Order Data</h4>
-                                  <pre className="text-xs bg-gray-100 p-3 rounded overflow-auto max-h-40">
+                                  <pre className="text-xs bg-muted p-3 rounded overflow-auto max-h-40 text-foreground">
                                     {JSON.stringify(order.order_data, null, 2)}
                                   </pre>
                                 </div>

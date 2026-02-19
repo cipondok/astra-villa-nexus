@@ -171,7 +171,7 @@ const PaymentSettings = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-green-500" />
+              <TrendingUp className="h-4 w-4 text-chart-1" />
               <span className="text-sm font-medium">Total Revenue</span>
             </div>
             <div className="text-2xl font-bold mt-2">
@@ -186,7 +186,7 @@ const PaymentSettings = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-500" />
+              <CheckCircle className="h-4 w-4 text-chart-1" />
               <span className="text-sm font-medium">Successful Payments</span>
             </div>
             <div className="text-2xl font-bold mt-2">{paymentStats.successfulPayments}</div>
@@ -198,7 +198,7 @@ const PaymentSettings = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Banknote className="h-4 w-4 text-blue-500" />
+              <Banknote className="h-4 w-4 text-chart-2" />
               <span className="text-sm font-medium">Pending Payouts</span>
             </div>
             <div className="text-2xl font-bold mt-2">
