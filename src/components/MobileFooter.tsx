@@ -2,7 +2,7 @@ import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   Home, Phone, Mail, MapPin, Facebook, Instagram, 
-  MessageCircle, Building2, Glasses, Youtube, Twitter, Linkedin, Send, Music2
+  MessageCircle, Building2, Glasses, Youtube, Twitter, Music2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -65,16 +65,13 @@ const MobileFooter = () => {
     'rgba(255,210,160,0.7)',
   ];
 
-  // Build dynamic social links from admin settings
   const socialLinks = [
     { url: settings.facebookUrl, Icon: Facebook, label: 'Facebook', bg: 'rgba(190,230,250,0.6)' },
     { url: settings.instagramUrl, Icon: Instagram, label: 'Instagram', bg: 'rgba(255,220,200,0.6)' },
     { url: settings.twitterUrl, Icon: Twitter, label: 'Twitter / X', bg: 'rgba(200,230,255,0.6)' },
     { url: settings.tiktokUrl, Icon: Music2, label: 'TikTok', bg: 'rgba(230,230,230,0.6)' },
     { url: settings.youtubeUrl, Icon: Youtube, label: 'YouTube', bg: 'rgba(255,200,200,0.6)' },
-    { url: settings.linkedinUrl, Icon: Linkedin, label: 'LinkedIn', bg: 'rgba(180,220,255,0.6)' },
     { url: settings.whatsappNumber, Icon: MessageCircle, label: 'WhatsApp', bg: 'rgba(200,255,210,0.6)', isPhone: true },
-    { url: settings.telegramUrl, Icon: Send, label: 'Telegram', bg: 'rgba(190,240,255,0.6)' },
   ].filter(l => l.url);
 
   const getHref = (link: typeof socialLinks[0]) => {
@@ -85,13 +82,8 @@ const MobileFooter = () => {
 
   return (
     <footer style={footerStyle}>
-      {/* Nav links */}
       <nav className="flex items-center justify-between gap-1 px-2 py-1.5 mb-2"
-        style={{
-          background: 'rgba(255,255,255,0.1)',
-          borderRadius: '40px',
-          border: '1px solid rgba(255,245,180,0.3)',
-        }}
+        style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '40px', border: '1px solid rgba(255,245,180,0.3)' }}
       >
         {navLinks.map(link => (
           <button
@@ -108,7 +100,6 @@ const MobileFooter = () => {
         ))}
       </nav>
 
-      {/* Actions + Social row */}
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-1.5">
           <Button
@@ -116,8 +107,7 @@ const MobileFooter = () => {
             className="h-7 w-7 p-0 rounded-full"
             style={socialIconStyle('rgba(255,240,180,0.7)')}
             onClick={() => window.open('tel:+6285716008080')}
-            aria-label="Call us"
-            title="Call us"
+            aria-label="Call us" title="Call us"
           >
             <Phone className="h-3.5 w-3.5" style={{ color: '#0c404e' }} />
           </Button>
@@ -126,8 +116,7 @@ const MobileFooter = () => {
             className="h-7 w-7 p-0 rounded-full"
             style={socialIconStyle('rgba(190,230,250,0.6)')}
             onClick={() => window.open('mailto:info@astravilla.com')}
-            aria-label="Email us"
-            title="Email us"
+            aria-label="Email us" title="Email us"
           >
             <Mail className="h-3.5 w-3.5" style={{ color: '#0c404e' }} />
           </Button>
@@ -152,7 +141,6 @@ const MobileFooter = () => {
         </div>
       </div>
 
-      {/* Glass dots */}
       <div className="flex justify-center gap-2 mt-2">
         {dotColors.map((bg, i) => (
           <div key={i} className="w-2 h-2 rounded-full" style={{ background: bg, boxShadow: 'inset 0 1px 3px white' }} />

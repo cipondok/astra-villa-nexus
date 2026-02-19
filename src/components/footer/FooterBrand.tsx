@@ -1,5 +1,5 @@
 
-import { Shield, Star, Facebook, Twitter, Instagram, Linkedin, Youtube, MessageCircle, Send, Sparkles, Music2 } from "lucide-react";
+import { Shield, Star, Facebook, Twitter, Instagram, Youtube, MessageCircle, Sparkles, Music2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSocialMediaSettings } from "@/hooks/useSocialMediaSettings";
 
@@ -34,15 +34,13 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
     { url: settings.twitterUrl, icon: Twitter, label: 'Twitter / X', colorClass: 'from-sky-400/20 to-sky-500/10 hover:from-sky-400/30 hover:to-sky-500/20 border-sky-400/30 hover:border-sky-400/50', iconColor: 'text-sky-400' },
     { url: settings.instagramUrl, icon: Instagram, label: 'Instagram', colorClass: 'from-pink-500/20 to-purple-500/10 hover:from-pink-500/30 hover:to-purple-500/20 border-pink-500/30 hover:border-pink-500/50', iconColor: 'text-pink-500' },
     { url: settings.tiktokUrl, icon: Music2, label: 'TikTok', colorClass: 'from-foreground/10 to-foreground/5 hover:from-foreground/20 hover:to-foreground/10 border-foreground/20 hover:border-foreground/40', iconColor: 'text-foreground' },
-    { url: settings.linkedinUrl, icon: Linkedin, label: 'LinkedIn', colorClass: 'from-blue-600/20 to-blue-700/10 hover:from-blue-600/30 hover:to-blue-700/20 border-blue-600/30 hover:border-blue-600/50', iconColor: 'text-blue-600' },
     { url: settings.youtubeUrl, icon: Youtube, label: 'YouTube', colorClass: 'from-red-500/20 to-red-600/10 hover:from-red-500/30 hover:to-red-600/20 border-red-500/30 hover:border-red-500/50', iconColor: 'text-red-500' },
     { url: settings.whatsappNumber, icon: MessageCircle, label: 'WhatsApp', colorClass: 'from-green-500/20 to-green-600/10 hover:from-green-500/30 hover:to-green-600/20 border-green-500/30 hover:border-green-500/50', iconColor: 'text-green-500', isPhone: true },
-    { url: settings.telegramUrl, icon: Send, label: 'Telegram', colorClass: 'from-sky-500/20 to-sky-600/10 hover:from-sky-500/30 hover:to-sky-600/20 border-sky-500/30 hover:border-sky-500/50', iconColor: 'text-sky-500' },
   ];
 
   const getHref = (link: typeof socialLinks[0]) => {
     if (!link.url) return undefined;
-    if (link.isPhone) return `https://wa.me/${link.url.replace(/\D/g, '')}`;
+    if ((link as any).isPhone) return `https://wa.me/${link.url.replace(/\D/g, '')}`;
     return link.url.startsWith('http') ? link.url : `https://${link.url}`;
   };
 
@@ -50,7 +48,6 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Brand Header */}
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <div className="p-2 bg-gradient-to-br from-primary to-primary/80 rounded-lg">
@@ -60,21 +57,15 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
             {currentText.company}
           </h3>
         </div>
-        <p className="text-muted-foreground text-sm leading-relaxed">
-          {currentText.description}
-        </p>
-        <p className="text-primary font-medium text-sm">
-          {currentText.tagline}
-        </p>
+        <p className="text-muted-foreground text-sm leading-relaxed">{currentText.description}</p>
+        <p className="text-primary font-medium text-sm">{currentText.tagline}</p>
       </div>
-      
-      {/* Trust Indicators */}
+
       <div className="space-y-4">
         <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border/30">
           <Shield className="h-5 w-5 text-green-500 flex-shrink-0" />
           <span className="text-xs text-foreground font-medium">{currentText.trustedBy}</span>
         </div>
-        
         <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-border/30">
           <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => (
@@ -85,25 +76,15 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
           <span className="text-xs text-muted-foreground">(12,543 reviews)</span>
         </div>
       </div>
-      
-      {/* Social Links */}
+
       {visibleLinks.length > 0 && (
         <div className="space-y-3">
-          <h4 className="font-semibold text-foreground text-sm">
-            {currentText.followUs}
-          </h4>
+          <h4 className="font-semibold text-foreground text-sm">{currentText.followUs}</h4>
           <div className="flex flex-wrap gap-2">
             {visibleLinks.map((link) => {
               const href = getHref(link);
               return (
-                <a
-                  key={link.label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={link.label}
-                  aria-label={link.label}
-                >
+                <a key={link.label} href={href} target="_blank" rel="noopener noreferrer" title={link.label} aria-label={link.label}>
                   <Button
                     variant="ghost"
                     size="icon"

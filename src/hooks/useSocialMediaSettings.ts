@@ -8,10 +8,8 @@ interface SocialMediaSettings {
   facebookUrl: string;
   twitterUrl: string;
   instagramUrl: string;
-  linkedinUrl: string;
   youtubeUrl: string;
   whatsappNumber: string;
-  telegramUrl: string;
   tiktokUrl: string;
 }
 
@@ -19,10 +17,8 @@ const defaultSocialSettings: SocialMediaSettings = {
   facebookUrl: '',
   twitterUrl: '',
   instagramUrl: '',
-  linkedinUrl: '',
   youtubeUrl: '',
   whatsappNumber: '',
-  telegramUrl: '',
   tiktokUrl: '',
 };
 
@@ -37,10 +33,9 @@ export const useSocialMediaSettings = () => {
         .from('system_settings')
         .select('key, value')
         .in('key', [
-          'facebookUrl', 'twitterUrl', 'instagramUrl', 
-          'linkedinUrl', 'youtubeUrl', 'whatsappNumber', 'telegramUrl', 'tiktokUrl'
+          'facebookUrl', 'twitterUrl', 'instagramUrl',
+          'youtubeUrl', 'whatsappNumber', 'tiktokUrl'
         ]);
-      
       if (error) throw error;
       return data;
     },
@@ -59,7 +54,7 @@ export const useSocialMediaSettings = () => {
       const { error } = await supabase
         .from('system_settings')
         .upsert(updates, { onConflict: 'key' });
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -76,13 +71,11 @@ export const useSocialMediaSettings = () => {
   useEffect(() => {
     if (socialData) {
       const loadedSettings = { ...defaultSocialSettings };
-      
       socialData.forEach((setting) => {
         if (setting.key in loadedSettings) {
           (loadedSettings as any)[setting.key] = setting.value || '';
         }
       });
-      
       setSettings(loadedSettings);
     }
   }, [socialData]);
