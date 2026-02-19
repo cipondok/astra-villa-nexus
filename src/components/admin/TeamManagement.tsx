@@ -152,34 +152,34 @@ const TeamManagement = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-500';
-      case 'onboarding': return 'bg-blue-500';
-      case 'on_leave': return 'bg-yellow-500';
-      case 'inactive': return 'bg-gray-500';
-      default: return 'bg-gray-400';
+      case 'active': return 'bg-chart-1';
+      case 'onboarding': return 'bg-chart-2';
+      case 'on_leave': return 'bg-chart-3';
+      case 'inactive': return 'bg-muted-foreground';
+      default: return 'bg-muted-foreground';
     }
   };
 
   const getTierColor = (tier: string) => {
     switch (tier) {
-      case 'platinum': return 'bg-purple-500';
-      case 'gold': return 'bg-yellow-500';
-      case 'silver': return 'bg-gray-400';
-      default: return 'bg-orange-700';
+      case 'platinum': return 'bg-primary/80 text-primary-foreground';
+      case 'gold': return 'bg-chart-3/80 text-background';
+      case 'silver': return 'bg-muted-foreground/80 text-background';
+      default: return 'bg-chart-4/80 text-background';
     }
   };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-lg border border-indigo-200/50 dark:border-indigo-800/50">
-        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-          <Users className="h-5 w-5 text-white" />
+      <div className="flex items-center gap-3 p-4 bg-primary/5 rounded-lg border border-border">
+        <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+          <Users className="h-5 w-5 text-primary" />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-bold">Remote-First Team Management</h2>
-            <Badge className="bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 text-xs">Platform</Badge>
+            <Badge className="bg-primary/20 text-primary text-xs">Platform</Badge>
           </div>
           <p className="text-sm text-muted-foreground">Manage core team, moderators, local experts, AI specialists, and partnerships</p>
         </div>
@@ -191,11 +191,11 @@ const TeamManagement = () => {
 
       {/* Overview Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <Card className="border-blue-200/50 dark:border-blue-800/30">
+        <Card className="border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                <Code className="h-5 w-5 text-blue-600" />
+              <div className="w-10 h-10 bg-chart-2/20 rounded-lg flex items-center justify-center">
+                <Code className="h-5 w-5 text-chart-2" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{coreTeam.length}</p>
@@ -205,11 +205,11 @@ const TeamManagement = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-green-200/50 dark:border-green-800/30">
+        <Card className="border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                <MessageSquare className="h-5 w-5 text-green-600" />
+              <div className="w-10 h-10 bg-chart-1/20 rounded-lg flex items-center justify-center">
+                <MessageSquare className="h-5 w-5 text-chart-1" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{activeModerators}</p>
@@ -219,11 +219,11 @@ const TeamManagement = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-orange-200/50 dark:border-orange-800/30">
+        <Card className="border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                <MapPin className="h-5 w-5 text-orange-600" />
+              <div className="w-10 h-10 bg-chart-3/20 rounded-lg flex items-center justify-center">
+                <MapPin className="h-5 w-5 text-chart-3" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{activeExperts}</p>
@@ -233,11 +233,11 @@ const TeamManagement = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-purple-200/50 dark:border-purple-800/30">
+        <Card className="border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                <Brain className="h-5 w-5 text-purple-600" />
+              <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                <Brain className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{activeAISpecialists}</p>
@@ -247,11 +247,11 @@ const TeamManagement = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-pink-200/50 dark:border-pink-800/30">
+        <Card className="border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
-                <Handshake className="h-5 w-5 text-pink-600" />
+              <div className="w-10 h-10 bg-chart-4/20 rounded-lg flex items-center justify-center">
+                <Handshake className="h-5 w-5 text-chart-4" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{activePartnerManagers}</p>
@@ -339,7 +339,7 @@ const TeamManagement = () => {
                             <div className="flex items-center gap-2">
                               <p className="font-medium truncate">{member.full_name}</p>
                               {member.is_team_lead && (
-                                <Badge className="bg-yellow-500/20 text-yellow-700 text-[10px]">Lead</Badge>
+                                <Badge className="bg-chart-3/20 text-chart-3 text-[10px]">Lead</Badge>
                               )}
                             </div>
                             <p className="text-sm text-muted-foreground">{member.job_title}</p>
@@ -376,7 +376,7 @@ const TeamManagement = () => {
                   <CardTitle className="text-base">Community Moderators (50+ Contractors)</CardTitle>
                   <CardDescription className="text-xs">Forums, reviews, chat, social media moderation</CardDescription>
                 </div>
-                <Badge className="bg-green-500/20 text-green-700">{activeModerators} Active</Badge>
+                <Badge className="bg-chart-1/20 text-chart-1">{activeModerators} Active</Badge>
               </div>
             </CardHeader>
             <CardContent>
@@ -409,7 +409,7 @@ const TeamManagement = () => {
                               <p className="text-sm font-medium truncate">{displayName}</p>
                               <div className="flex items-center gap-1">
                                 <Badge variant="outline" className="text-[9px]">{mod.role}</Badge>
-                                <div className={`w-1.5 h-1.5 rounded-full ${mod.is_active ? 'bg-green-500' : 'bg-gray-400'}`} />
+                                <div className={`w-1.5 h-1.5 rounded-full ${mod.is_active ? 'bg-chart-1' : 'bg-muted-foreground'}`} />
                               </div>
                             </div>
                           </div>
@@ -493,7 +493,7 @@ const TeamManagement = () => {
                                 <MapPin className="h-3 w-3" />
                                 {expert.city}
                               </Badge>
-                              <Badge className={`text-[10px] text-white ${getTierColor(expert.commission_tier)}`}>
+                              <Badge className={`text-[10px] ${getTierColor(expert.commission_tier)}`}>
                                 {expert.commission_tier}
                               </Badge>
                             </div>
@@ -540,7 +540,7 @@ const TeamManagement = () => {
                   <CardTitle className="text-base">AI Training Specialists</CardTitle>
                   <CardDescription className="text-xs">Data labeling, annotation, and model training</CardDescription>
                 </div>
-                <Badge className="bg-purple-500/20 text-purple-700">{activeAISpecialists} Active</Badge>
+                <Badge className="bg-primary/20 text-primary">{activeAISpecialists} Active</Badge>
               </div>
             </CardHeader>
             <CardContent>
@@ -562,8 +562,8 @@ const TeamManagement = () => {
                     <Card key={specialist.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                            <Brain className="h-5 w-5 text-purple-600" />
+                          <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                            <Brain className="h-5 w-5 text-primary" />
                           </div>
                           <div className="flex-1">
                             <p className="font-medium">{specialist.full_name}</p>
@@ -605,7 +605,7 @@ const TeamManagement = () => {
                   <CardTitle className="text-base">Partnership Managers</CardTitle>
                   <CardDescription className="text-xs">Industry relationships and strategic alliances</CardDescription>
                 </div>
-                <Badge className="bg-pink-500/20 text-pink-700">{activePartnerManagers} Active</Badge>
+                <Badge className="bg-chart-4/20 text-chart-4">{activePartnerManagers} Active</Badge>
               </div>
             </CardHeader>
             <CardContent>
@@ -657,7 +657,7 @@ const TeamManagement = () => {
                         </div>
                         <div className="mt-3 flex items-center justify-between text-xs">
                           <span className="text-muted-foreground">Revenue Generated</span>
-                          <span className="font-medium text-green-600">
+                          <span className="font-medium text-chart-1">
                             Rp {(manager.revenue_generated || 0).toLocaleString()}
                           </span>
                         </div>
@@ -679,7 +679,7 @@ const TeamManagement = () => {
                   <CardTitle className="text-base">Hiring Pipeline</CardTitle>
                   <CardDescription className="text-xs">Open positions across all team types</CardDescription>
                 </div>
-                <Badge className="bg-blue-500/20 text-blue-700">{totalOpenPositions} Open Positions</Badge>
+                <Badge className="bg-chart-2/20 text-chart-2">{totalOpenPositions} Open Positions</Badge>
               </div>
             </CardHeader>
             <CardContent>
@@ -690,17 +690,17 @@ const TeamManagement = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                            position.position_type === 'core' ? 'bg-blue-500/20' :
-                            position.position_type === 'moderator' ? 'bg-green-500/20' :
-                            position.position_type === 'local_expert' ? 'bg-orange-500/20' :
-                            position.position_type === 'ai_specialist' ? 'bg-purple-500/20' :
-                            'bg-pink-500/20'
+                            position.position_type === 'core' ? 'bg-chart-2/20' :
+                            position.position_type === 'moderator' ? 'bg-chart-1/20' :
+                            position.position_type === 'local_expert' ? 'bg-chart-3/20' :
+                            position.position_type === 'ai_specialist' ? 'bg-primary/20' :
+                            'bg-chart-4/20'
                           }`}>
-                            {position.position_type === 'core' ? <Code className="h-5 w-5 text-blue-600" /> :
-                             position.position_type === 'moderator' ? <MessageSquare className="h-5 w-5 text-green-600" /> :
-                             position.position_type === 'local_expert' ? <MapPin className="h-5 w-5 text-orange-600" /> :
-                             position.position_type === 'ai_specialist' ? <Brain className="h-5 w-5 text-purple-600" /> :
-                             <Handshake className="h-5 w-5 text-pink-600" />}
+                           {position.position_type === 'core' ? <Code className="h-5 w-5 text-chart-2" /> :
+                             position.position_type === 'moderator' ? <MessageSquare className="h-5 w-5 text-chart-1" /> :
+                             position.position_type === 'local_expert' ? <MapPin className="h-5 w-5 text-chart-3" /> :
+                             position.position_type === 'ai_specialist' ? <Brain className="h-5 w-5 text-primary" /> :
+                             <Handshake className="h-5 w-5 text-chart-4" />}
                           </div>
                           <div>
                             <p className="font-medium">{position.job_title}</p>
@@ -744,7 +744,7 @@ const TeamManagement = () => {
       </Tabs>
 
       {/* Capacity Targets */}
-      <Card className="border-indigo-200/50 dark:border-indigo-800/30">
+      <Card className="border-border">
         <CardHeader className="pb-3">
           <CardTitle className="text-sm flex items-center gap-2">
             <Target className="h-4 w-4" />
