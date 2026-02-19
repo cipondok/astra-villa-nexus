@@ -84,7 +84,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
         const filteredData = (data || []).filter(property => 
           property.title?.trim() &&
           property.price > 0 &&
-          (property.images?.length > 0 || property.thumbnail_url)
+          (property.images?.length > 0 || property.image_urls?.length > 0 || property.thumbnail_url)
         ).map(property => {
           const ownerData = Array.isArray(property.owner) ? property.owner[0] : property.owner;
           return {

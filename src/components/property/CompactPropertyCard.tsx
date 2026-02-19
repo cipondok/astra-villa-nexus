@@ -145,7 +145,7 @@ const CompactPropertyCard = ({
   };
 
   const getImageUrl = () => {
-    return getPropertyImage(property.images, property.thumbnail_url);
+    return getPropertyImage(property.images, property.thumbnail_url, (property as any).image_urls);
   };
 
   const handleViewDetails = (e?: React.MouseEvent) => {
@@ -204,6 +204,7 @@ const CompactPropertyCard = ({
             alt={property.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
+            onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }}
           />
 
           {/* Gradient Overlay */}
