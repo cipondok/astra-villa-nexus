@@ -12,6 +12,7 @@ interface SocialMediaSettings {
   youtubeUrl: string;
   whatsappNumber: string;
   telegramUrl: string;
+  tiktokUrl: string;
 }
 
 const defaultSocialSettings: SocialMediaSettings = {
@@ -22,6 +23,7 @@ const defaultSocialSettings: SocialMediaSettings = {
   youtubeUrl: '',
   whatsappNumber: '',
   telegramUrl: '',
+  tiktokUrl: '',
 };
 
 export const useSocialMediaSettings = () => {
@@ -36,7 +38,7 @@ export const useSocialMediaSettings = () => {
         .select('key, value')
         .in('key', [
           'facebookUrl', 'twitterUrl', 'instagramUrl', 
-          'linkedinUrl', 'youtubeUrl', 'whatsappNumber', 'telegramUrl'
+          'linkedinUrl', 'youtubeUrl', 'whatsappNumber', 'telegramUrl', 'tiktokUrl'
         ]);
       
       if (error) throw error;
@@ -48,19 +50,17 @@ export const useSocialMediaSettings = () => {
     mutationFn: async (newSettings: Partial<SocialMediaSettings>) => {
       const updates = Object.entries(newSettings).map(([key, value]) => ({
         key,
-        value,
+        value: value ?? '',
         category: 'social_media',
         description: `Social media setting for ${key}`,
         is_public: true,
       }));
 
-      for (const update of updates) {
-        const { error } = await supabase
-          .from('system_settings')
-          .upsert(update);
-        
-        if (error) throw error;
-      }
+      const { error } = await supabase
+        .from('system_settings')
+        .upsert(updates, { onConflict: 'key' });
+      
+      if (error) throw error;
     },
     onSuccess: () => {
       toast.success('Social media settings saved successfully!');

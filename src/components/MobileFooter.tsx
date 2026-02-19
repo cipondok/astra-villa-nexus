@@ -2,7 +2,7 @@ import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   Home, Phone, Mail, MapPin, Facebook, Instagram, 
-  MessageCircle, Building2, Glasses, Youtube, Twitter, Linkedin, Send
+  MessageCircle, Building2, Glasses, Youtube, Twitter, Linkedin, Send, Music2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -70,6 +70,7 @@ const MobileFooter = () => {
     { url: settings.facebookUrl, Icon: Facebook, label: 'Facebook', bg: 'rgba(190,230,250,0.6)' },
     { url: settings.instagramUrl, Icon: Instagram, label: 'Instagram', bg: 'rgba(255,220,200,0.6)' },
     { url: settings.twitterUrl, Icon: Twitter, label: 'Twitter / X', bg: 'rgba(200,230,255,0.6)' },
+    { url: settings.tiktokUrl, Icon: Music2, label: 'TikTok', bg: 'rgba(230,230,230,0.6)' },
     { url: settings.youtubeUrl, Icon: Youtube, label: 'YouTube', bg: 'rgba(255,200,200,0.6)' },
     { url: settings.linkedinUrl, Icon: Linkedin, label: 'LinkedIn', bg: 'rgba(180,220,255,0.6)' },
     { url: settings.whatsappNumber, Icon: MessageCircle, label: 'WhatsApp', bg: 'rgba(200,255,210,0.6)', isPhone: true },
