@@ -262,8 +262,8 @@ const SEOManagement = () => {
 
   const getPositionChangeIcon = (change: number | null) => {
     if (!change || change === 0) return <Minus className="h-3 w-3 text-muted-foreground" />;
-    if (change > 0) return <ArrowUp className="h-3 w-3 text-green-500" />;
-    return <ArrowDown className="h-3 w-3 text-red-500" />;
+    if (change > 0) return <ArrowUp className="h-3 w-3 text-chart-1" />;
+    return <ArrowDown className="h-3 w-3 text-destructive" />;
   };
 
   return (
@@ -332,11 +332,11 @@ const SEOManagement = () => {
         <Card className="bg-card border border-border rounded-[6px]">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-[6px] bg-green-500/10 flex items-center justify-center">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+              <div className="h-10 w-10 rounded-[6px] bg-chart-1/10 flex items-center justify-center">
+                <CheckCircle className="h-5 w-5 text-chart-1" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-500">{publishedPages}</p>
+                <p className="text-2xl font-bold text-chart-1">{publishedPages}</p>
                 <p className="text-xs text-muted-foreground">Published</p>
               </div>
             </div>
@@ -345,11 +345,11 @@ const SEOManagement = () => {
         <Card className="bg-card border border-border rounded-[6px]">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-[6px] bg-amber-500/10 flex items-center justify-center">
-                <Target className="h-5 w-5 text-amber-500" />
+              <div className="h-10 w-10 rounded-[6px] bg-chart-3/10 flex items-center justify-center">
+                <Target className="h-5 w-5 text-chart-3" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-amber-500">{avgSeoScore}</p>
+                <p className="text-2xl font-bold text-chart-3">{avgSeoScore}</p>
                 <p className="text-xs text-muted-foreground">Avg SEO Score</p>
               </div>
             </div>
@@ -358,11 +358,11 @@ const SEOManagement = () => {
         <Card className="bg-card border border-border rounded-[6px]">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-[6px] bg-blue-500/10 flex items-center justify-center">
-                <Eye className="h-5 w-5 text-blue-500" />
+              <div className="h-10 w-10 rounded-[6px] bg-chart-2/10 flex items-center justify-center">
+                <Eye className="h-5 w-5 text-chart-2" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-blue-500">{totalViews.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-chart-2">{totalViews.toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground">Total Views</p>
               </div>
             </div>
@@ -624,16 +624,16 @@ const SEOManagement = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="p-4 bg-amber-500/10 rounded-[6px] text-center">
-                  <p className="text-2xl font-bold text-amber-500">{queueStats?.pending || 0}</p>
+                <div className="p-4 bg-chart-3/10 rounded-[6px] text-center">
+                  <p className="text-2xl font-bold text-chart-3">{queueStats?.pending || 0}</p>
                   <p className="text-xs text-muted-foreground">Pending</p>
                 </div>
-                <div className="p-4 bg-blue-500/10 rounded-[6px] text-center">
-                  <p className="text-2xl font-bold text-blue-500">{queueStats?.processing || 0}</p>
+                <div className="p-4 bg-chart-2/10 rounded-[6px] text-center">
+                  <p className="text-2xl font-bold text-chart-2">{queueStats?.processing || 0}</p>
                   <p className="text-xs text-muted-foreground">Processing</p>
                 </div>
-                <div className="p-4 bg-green-500/10 rounded-[6px] text-center">
-                  <p className="text-2xl font-bold text-green-500">{queueStats?.completed || 0}</p>
+                <div className="p-4 bg-chart-1/10 rounded-[6px] text-center">
+                  <p className="text-2xl font-bold text-chart-1">{queueStats?.completed || 0}</p>
                   <p className="text-xs text-muted-foreground">Completed</p>
                 </div>
               </div>

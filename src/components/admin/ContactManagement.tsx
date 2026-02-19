@@ -90,19 +90,19 @@ const ContactManagement = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'resolved':
-        return <Badge className="bg-green-500">Resolved</Badge>;
+        return <Badge className="bg-chart-1/20 text-chart-1 border-chart-1/30">Resolved</Badge>;
       case 'in_progress':
-        return <Badge className="bg-yellow-500">In Progress</Badge>;
+        return <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">In Progress</Badge>;
       default:
-        return <Badge variant="outline" className="border-orange-500 text-orange-500">Pending</Badge>;
+        return <Badge variant="outline" className="border-chart-4/50 text-chart-4">Pending</Badge>;
     }
   };
 
   const getPriorityBadge = (priority: string) => {
-    const colors = {
-      high: "bg-red-500",
-      medium: "bg-yellow-500",
-      low: "bg-green-500"
+    const colors: Record<string, string> = {
+      high: "bg-destructive/20 text-destructive border-destructive/30",
+      medium: "bg-chart-3/20 text-chart-3 border-chart-3/30",
+      low: "bg-chart-1/20 text-chart-1 border-chart-1/30"
     };
     return <Badge className={colors[priority] || colors.medium}>{priority?.toUpperCase()}</Badge>;
   };
@@ -138,12 +138,12 @@ const ContactManagement = () => {
   
   if (!profile || !hasAccess) {
     return (
-      <Card className="bg-white/10 backdrop-blur-md border-white/20">
+      <Card className="bg-card/50 backdrop-blur-md border-border">
         <CardHeader>
-          <CardTitle className="text-white">Access Denied</CardTitle>
+          <CardTitle className="text-foreground">Access Denied</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-300">You do not have permission to view this page. Please contact an administrator.</p>
+          <p className="text-muted-foreground">You do not have permission to view this page. Please contact an administrator.</p>
         </CardContent>
       </Card>
     );
@@ -193,7 +193,7 @@ const ContactManagement = () => {
               <Card className="bg-card border-border">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-orange-500" />
+                    <Clock className="h-4 w-4 text-chart-4" />
                     <span className="text-sm text-muted-foreground">Pending</span>
                   </div>
                   <p className="text-2xl font-bold mt-2">
@@ -204,7 +204,7 @@ const ContactManagement = () => {
               <Card className="bg-card border-border">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Reply className="h-4 w-4 text-yellow-500" />
+                    <Reply className="h-4 w-4 text-chart-3" />
                     <span className="text-sm text-muted-foreground">In Progress</span>
                   </div>
                   <p className="text-2xl font-bold mt-2">
@@ -215,7 +215,7 @@ const ContactManagement = () => {
               <Card className="bg-card border-border">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <MessageCircle className="h-4 w-4 text-green-500" />
+                    <MessageCircle className="h-4 w-4 text-chart-1" />
                     <span className="text-sm text-muted-foreground">Resolved</span>
                   </div>
                   <p className="text-2xl font-bold mt-2">
@@ -226,7 +226,7 @@ const ContactManagement = () => {
               <Card className="bg-card border-border">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-blue-500" />
+                    <Mail className="h-4 w-4 text-primary" />
                     <span className="text-sm text-muted-foreground">Total</span>
                   </div>
                   <p className="text-2xl font-bold mt-2">
@@ -416,14 +416,14 @@ const ContactManagement = () => {
                 {selectedContact.admin_response && (
                   <div className="flex gap-3 justify-end">
                     <div className="flex-1 max-w-[85%] text-right">
-                       <div className="bg-green-600 dark:bg-green-800 inline-block p-3 rounded-lg rounded-br-none text-left">
-                         <p className="text-white text-sm">{selectedContact.admin_response}</p>
+                       <div className="bg-primary inline-block p-3 rounded-lg rounded-br-none text-left">
+                         <p className="text-primary-foreground text-sm">{selectedContact.admin_response}</p>
                        </div>
                        <p className="text-xs text-muted-foreground mt-1">
                          Replied by {selectedContact.responded_by || 'Admin'} • {selectedContact.responded_at ? new Date(selectedContact.responded_at).toLocaleString() : 'Recently'}
                        </p>
                     </div>
-                     <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm shrink-0">
                        A
                      </div>
                   </div>
