@@ -24556,6 +24556,13 @@ export type Database = {
           view_count: number
         }[]
       }
+      get_province_property_counts: {
+        Args: never
+        Returns: {
+          property_count: number
+          province: string
+        }[]
+      }
       get_public_category_names: {
         Args: never
         Returns: {
