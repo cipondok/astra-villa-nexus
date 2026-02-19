@@ -49,9 +49,15 @@ const locationToProvince: Record<string, string> = {
 };
 
 const getProvinceFromLocation = (location: string, city?: string, state?: string): string => {
-  // Check state first (most accurate)
+  // Check state first (most accurate) - state column often IS the province name
   if (state) {
-    const lowerState = state.toLowerCase();
+    const lowerState = state.toLowerCase().trim();
+    // Direct province name match (state column often stores province names directly)
+    const directMatch = Object.values(locationToProvince).find(
+      p => p.toLowerCase() === lowerState
+    );
+    if (directMatch) return directMatch;
+    // Lookup by alias
     if (locationToProvince[lowerState]) {
       return locationToProvince[lowerState];
     }
@@ -59,13 +65,13 @@ const getProvinceFromLocation = (location: string, city?: string, state?: string
   
   // Check city
   if (city) {
-    const lowerCity = city.toLowerCase();
+    const lowerCity = city.toLowerCase().trim();
     if (locationToProvince[lowerCity]) {
       return locationToProvince[lowerCity];
     }
   }
   
-  // Check location string
+  // Check location string parts
   const lowerLocation = location.toLowerCase();
   for (const [key, province] of Object.entries(locationToProvince)) {
     if (lowerLocation.includes(key)) {
@@ -86,27 +92,31 @@ export const useProvincePropertyCounts = () => {
     queryFn: async (): Promise<Record<string, number>> => {
       const { data, error } = await supabase
         .from('properties')
-        .select('location, city, state');
+        .select('location, city, state')
+        .eq('status', 'active')
+        .eq('approval_status', 'approved');
 
       if (error) throw error;
 
-      // Aggregate counts by province
+      // Aggregate counts by province - prefer state field (most accurate)
       const counts: Record<string, number> = {};
       
       data?.forEach((property) => {
-        if (property.location || property.city || property.state) {
-          const province = getProvinceFromLocation(
-            property.location || '', 
-            property.city || undefined, 
-            property.state || undefined
-          );
+        const province = getProvinceFromLocation(
+          property.location || '', 
+          property.city || undefined, 
+          property.state || undefined
+        );
+        if (province && province !== 'Lainnya') {
           counts[province] = (counts[province] || 0) + 1;
+        } else if (province === 'Lainnya') {
+          counts['Lainnya'] = (counts['Lainnya'] || 0) + 1;
         }
       });
 
       return counts;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 2 * 60 * 1000, // 2 minutes for fresher data
   });
 };
 
@@ -116,11 +126,13 @@ export const useTotalPropertyCount = () => {
     queryFn: async (): Promise<number> => {
       const { count, error } = await supabase
         .from('properties')
-        .select('*', { count: 'exact', head: true });
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'active')
+        .eq('approval_status', 'approved');
 
       if (error) throw error;
       return count || 0;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
   });
 };
