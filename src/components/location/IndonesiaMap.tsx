@@ -463,8 +463,10 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
             if (count < 100) return null; // Show markers for provinces with 100+ properties
             const displayCount = count >= 1000 ? `${(count / 1000).toFixed(count >= 10000 ? 0 : 1)}K` : count.toString();
             const isLarge = count >= 5000;
-            const rx = isLarge ? 20 : 16;
-            const ry = isLarge ? 13 : 10;
+            // Pin dimensions: taller pin shape
+            const pinW = isLarge ? 52 : 42;
+            const pinH = isLarge ? 62 : 50;
+            const fontSize = isLarge ? '12px' : '10px';
             
             return (
               <Marker key={name} coordinates={coords}>
@@ -472,28 +474,43 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
                   className="cursor-pointer"
                   onClick={() => handleProvinceClick(name)}
                   style={{ pointerEvents: 'all' }}
+                  transform={`translate(${-pinW / 2}, ${-pinH})`}
                 >
-                  {/* Shadow for depth */}
-                  <ellipse 
-                    cx={1} 
-                    cy={1.5} 
-                    rx={rx} 
-                    ry={ry} 
-                    fill="rgba(0,0,0,0.25)"
+                  {/* Drop shadow */}
+                  <ellipse
+                    cx={pinW / 2 + 1.5}
+                    cy={pinH + 3}
+                    rx={pinW * 0.28}
+                    ry={4}
+                    fill="rgba(0,0,0,0.28)"
                   />
-                  {/* Pill background */}
-                  <ellipse 
-                    cx={0} 
-                    cy={0} 
-                    rx={rx} 
-                    ry={ry} 
-                    fill={isDark ? 'hsl(25, 90%, 45%)' : 'hsl(25, 85%, 52%)'} 
+                  {/* Pin body - rounded rect top */}
+                  <rect
+                    x={0}
+                    y={0}
+                    width={pinW}
+                    height={pinH * 0.72}
+                    rx={pinW / 2}
+                    ry={pinW / 2}
+                    fill="hsl(0, 85%, 52%)"
                     stroke="white"
-                    strokeWidth={1.2}
-                    opacity={0.97}
+                    strokeWidth={2}
                   />
-                  {/* MapPin icon (drawn as SVG path) */}
-                  <g transform={`translate(${-(rx - 5)}, -4) scale(0.35)`}>
+                  {/* Pin tail triangle */}
+                  <polygon
+                    points={`${pinW * 0.3},${pinH * 0.68} ${pinW * 0.7},${pinH * 0.68} ${pinW / 2},${pinH}`}
+                    fill="hsl(0, 85%, 52%)"
+                    stroke="white"
+                    strokeWidth={2}
+                    strokeLinejoin="round"
+                  />
+                  {/* Cover triangle join seam */}
+                  <polygon
+                    points={`${pinW * 0.32},${pinH * 0.62} ${pinW * 0.68},${pinH * 0.62} ${pinW / 2},${pinH - 2}`}
+                    fill="hsl(0, 85%, 52%)"
+                  />
+                  {/* MapPin icon at top of pin */}
+                  <g transform={`translate(${pinW / 2 - 5}, ${pinH * 0.12}) scale(0.42)`}>
                     <path
                       d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
                       fill="white"
@@ -503,14 +520,15 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
                   {/* Count text */}
                   <text
                     textAnchor="middle"
-                    y={3}
-                    x={4}
+                    x={pinW / 2}
+                    y={pinH * 0.56}
                     style={{
                       fontFamily: 'system-ui, sans-serif',
-                      fontSize: isLarge ? '9px' : '7.5px',
-                      fontWeight: 'bold',
+                      fontSize,
+                      fontWeight: '800',
                       fill: 'white',
                       pointerEvents: 'none',
+                      letterSpacing: '0.02em',
                     }}
                   >
                     {displayCount}
