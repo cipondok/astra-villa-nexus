@@ -460,9 +460,11 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
           {/* Property count markers on provinces */}
           {Object.entries(provinceCoordinates).map(([name, coords]) => {
             const count = provincePropertyCounts[name] || 0;
-            if (count < 500) return null; // Only show markers for provinces with 500+ properties
+            if (count < 100) return null; // Show markers for provinces with 100+ properties
             const displayCount = count >= 1000 ? `${(count / 1000).toFixed(count >= 10000 ? 0 : 1)}K` : count.toString();
             const isLarge = count >= 5000;
+            const rx = isLarge ? 20 : 16;
+            const ry = isLarge ? 13 : 10;
             
             return (
               <Marker key={name} coordinates={coords}>
@@ -471,24 +473,41 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
                   onClick={() => handleProvinceClick(name)}
                   style={{ pointerEvents: 'all' }}
                 >
-                  {/* Pin marker shape - larger */}
+                  {/* Shadow for depth */}
+                  <ellipse 
+                    cx={1} 
+                    cy={1.5} 
+                    rx={rx} 
+                    ry={ry} 
+                    fill="rgba(0,0,0,0.25)"
+                  />
+                  {/* Pill background */}
                   <ellipse 
                     cx={0} 
                     cy={0} 
-                    rx={isLarge ? 14 : 10} 
-                    ry={isLarge ? 9 : 7} 
-                    fill={isDark ? 'hsl(25, 90%, 50%)' : 'hsl(25, 85%, 55%)'} 
-                    stroke={isDark ? 'hsl(25, 90%, 70%)' : 'hsl(25, 85%, 40%)'}
-                    strokeWidth={0.8}
-                    opacity={0.95}
+                    rx={rx} 
+                    ry={ry} 
+                    fill={isDark ? 'hsl(25, 90%, 45%)' : 'hsl(25, 85%, 52%)'} 
+                    stroke="white"
+                    strokeWidth={1.2}
+                    opacity={0.97}
                   />
-                  {/* Count text - larger */}
+                  {/* MapPin icon (drawn as SVG path) */}
+                  <g transform={`translate(${-(rx - 5)}, -4) scale(0.35)`}>
+                    <path
+                      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                      fill="white"
+                      opacity={0.9}
+                    />
+                  </g>
+                  {/* Count text */}
                   <text
                     textAnchor="middle"
-                    y={2}
+                    y={3}
+                    x={4}
                     style={{
                       fontFamily: 'system-ui, sans-serif',
-                      fontSize: isLarge ? '7px' : '6px',
+                      fontSize: isLarge ? '9px' : '7.5px',
                       fontWeight: 'bold',
                       fill: 'white',
                       pointerEvents: 'none',
