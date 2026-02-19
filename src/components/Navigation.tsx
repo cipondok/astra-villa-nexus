@@ -160,31 +160,36 @@ const Navigation = () => {
       icon: Building, 
       label: currentText.buyProperties, 
       path: '/dijual',
-      color: 'text-green-600 dark:text-green-400'
+      color: 'text-emerald-700 dark:text-emerald-400',
+      bg: 'bg-emerald-500/10 dark:bg-emerald-500/10 border-emerald-500/30 dark:border-emerald-400/20 hover:bg-emerald-500/20 hover:border-emerald-500/50 hover:shadow-emerald-500/20'
     },
     { 
       icon: Key, 
       label: currentText.rentProperties, 
       path: '/disewa',
-      color: 'text-blue-600 dark:text-blue-400'
+      color: 'text-blue-700 dark:text-blue-400',
+      bg: 'bg-blue-500/10 dark:bg-blue-500/10 border-blue-500/30 dark:border-blue-400/20 hover:bg-blue-500/20 hover:border-blue-500/50 hover:shadow-blue-500/20'
     },
     { 
       icon: Rocket, 
       label: currentText.preLaunch, 
       path: '/pre-launching',
-      color: 'text-purple-600 dark:text-purple-400'
+      color: 'text-violet-700 dark:text-violet-400',
+      bg: 'bg-violet-500/10 dark:bg-violet-500/10 border-violet-500/30 dark:border-violet-400/20 hover:bg-violet-500/20 hover:border-violet-500/50 hover:shadow-violet-500/20'
     },
     { 
       icon: Hammer, 
       label: currentText.newProjects, 
       path: '/new-projects',
-      color: 'text-orange-600 dark:text-orange-400'
+      color: 'text-orange-700 dark:text-orange-400',
+      bg: 'bg-orange-500/10 dark:bg-orange-500/10 border-orange-500/30 dark:border-orange-400/20 hover:bg-orange-500/20 hover:border-orange-500/50 hover:shadow-orange-500/20'
     },
     { 
       icon: Box, 
       label: 'VR Tours', 
       path: '/vr-tour',
-      color: 'text-indigo-600 dark:text-indigo-400'
+      color: 'text-indigo-700 dark:text-indigo-400',
+      bg: 'bg-indigo-500/10 dark:bg-indigo-500/10 border-indigo-500/30 dark:border-indigo-400/20 hover:bg-indigo-500/20 hover:border-indigo-500/50 hover:shadow-indigo-500/20'
     }
   ];
 
@@ -251,10 +256,10 @@ const Navigation = () => {
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className="w-9 h-9 p-0 rounded-xl backdrop-blur-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500"
+                    className={`w-9 h-9 p-0 rounded-xl backdrop-blur-xl border hover:scale-110 hover:shadow-lg transition-all duration-500 ${item.bg}`}
                     onClick={() => navigate(item.path)}
                   >
-                    <item.icon className="h-4 w-4 text-primary transition-all duration-500" />
+                    <item.icon className={`h-4 w-4 transition-all duration-500 ${item.color}`} />
                   </Button>
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 glass-popup text-foreground text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap pointer-events-none z-[10001] shadow-2xl shadow-primary/30 border border-primary/30">
                     {item.label}
@@ -267,10 +272,10 @@ const Navigation = () => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="w-9 h-9 p-0 rounded-xl backdrop-blur-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500"
+                  className="w-9 h-9 p-0 rounded-xl backdrop-blur-xl bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 hover:border-cyan-500/50 hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/20 dark:bg-cyan-500/10 dark:border-cyan-400/20 transition-all duration-500"
                   onClick={() => navigate('/services')}
                 >
-                  <Settings2 className="h-4 w-4 text-primary transition-all duration-500" />
+                  <Settings2 className="h-4 w-4 text-cyan-700 dark:text-cyan-400 transition-all duration-500" />
                 </Button>
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 glass-popup text-foreground text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap pointer-events-none z-[10001] shadow-2xl shadow-primary/30 border border-primary/30">
                   {currentText.services}
@@ -282,9 +287,9 @@ const Navigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate('/add-property')}
-                className="h-9 px-3 text-sm font-medium rounded-xl backdrop-blur-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500"
+                className="h-9 px-3 text-sm font-medium rounded-xl backdrop-blur-xl bg-rose-500/10 border border-rose-500/30 hover:bg-rose-500/20 hover:border-rose-500/50 hover:scale-110 hover:shadow-lg hover:shadow-rose-500/20 dark:bg-rose-500/10 dark:border-rose-400/20 transition-all duration-500"
               >
-                <Plus className="h-4 w-4 xl:mr-1.5 text-primary transition-all duration-500" />
+                <Plus className="h-4 w-4 xl:mr-1.5 text-rose-700 dark:text-rose-400 transition-all duration-500" />
                 <span className="hidden xl:inline text-xs text-foreground/80">Add Property</span>
               </Button>
 
@@ -293,9 +298,9 @@ const Navigation = () => {
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className="h-9 px-3 text-sm font-medium rounded-xl backdrop-blur-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500"
+                    className="h-9 px-3 text-sm font-medium rounded-xl backdrop-blur-xl bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 hover:border-amber-500/50 hover:scale-110 hover:shadow-lg hover:shadow-amber-500/20 dark:bg-amber-500/10 dark:border-amber-400/20 transition-all duration-500"
                   >
-                    <TrendingUp className="h-4 w-4 xl:mr-1.5 text-primary transition-all duration-500" />
+                    <TrendingUp className="h-4 w-4 xl:mr-1.5 text-amber-700 dark:text-amber-400 transition-all duration-500" />
                     <span className="hidden xl:inline text-xs text-foreground/80">Investment</span>
                     <ChevronDown className="h-3 w-3 ml-1 hidden xl:inline text-foreground/60 transition-transform duration-500" />
                   </Button>
