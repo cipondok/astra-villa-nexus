@@ -13,6 +13,7 @@ import { BaseProperty } from "@/types/property";
 import VerificationBadge from '@/components/ui/VerificationBadge';
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
 import SocialProofWidget from "./SocialProofWidget";
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 
 interface PropertyCardProps {
   id: string;
@@ -25,6 +26,8 @@ interface PropertyCardProps {
   area_sqm?: number;
   listing_type: string;
   images?: string[];
+  image_urls?: string[];
+  thumbnail_url?: string;
   development_status?: string;
   three_d_model_url?: string;
   virtual_tour_url?: string;
@@ -60,6 +63,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   area_sqm,
   listing_type,
   images,
+  image_urls,
+  thumbnail_url,
   development_status = 'completed',
   three_d_model_url,
   virtual_tour_url,
@@ -77,6 +82,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   const [showRatingModal, setShowRatingModal] = useState(false);
 
   const { aggregate } = usePropertyRatings(id);
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {
@@ -159,17 +165,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       >
         {/* Image Container */}
         <div className="relative aspect-[4/3] overflow-hidden">
-          {images && images.length > 0 ? (
-            <img
-              src={images[0]}
-              alt={title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-          ) : (
-            <div className="w-full h-full bg-muted flex items-center justify-center">
-              <span className="text-muted-foreground text-sm">No image</span>
-            </div>
-          )}
+          <img
+            src={getPropertyImage(images, thumbnail_url, image_urls)}
+            alt={title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }}
+          />
           
           {/* Save Button */}
           <button 

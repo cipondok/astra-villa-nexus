@@ -20,6 +20,8 @@ interface Property {
   area_sqm: number;
   property_type: string;
   listing_type: string;
+  images?: string[];
+  thumbnail_url?: string;
   image_urls?: string[];
   description?: string;
   property_features?: any;
@@ -176,9 +178,10 @@ const EnhancedPropertyCard = ({
         {/* Image Section */}
         <div className="relative aspect-[4/3] overflow-hidden">
           <img
-            src={getPropertyImage(undefined, undefined, property.image_urls) || (property.image_urls?.[currentImageIndex])}
+            src={getPropertyImage(property.images, property.thumbnail_url, property.image_urls)}
             alt={property.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }}
           />
 
           {/* Property Type Badge - Top Left Corner */}
