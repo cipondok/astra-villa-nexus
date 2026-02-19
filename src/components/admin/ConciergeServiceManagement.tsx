@@ -121,21 +121,21 @@ const ConciergeServiceManagement = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-500/20 text-green-700';
-      case 'in_progress': return 'bg-blue-500/20 text-blue-700';
-      case 'confirmed': return 'bg-purple-500/20 text-purple-700';
-      case 'proposal_sent': case 'negotiating': return 'bg-yellow-500/20 text-yellow-700';
-      case 'inquiry': case 'consultation': return 'bg-orange-500/20 text-orange-700';
-      case 'cancelled': return 'bg-red-500/20 text-red-700';
-      default: return 'bg-gray-500/20 text-gray-700';
+      case 'completed': return 'bg-chart-1/20 text-chart-1';
+      case 'in_progress': return 'bg-primary/20 text-primary';
+      case 'confirmed': return 'bg-chart-2/20 text-chart-2';
+      case 'proposal_sent': case 'negotiating': return 'bg-chart-3/20 text-chart-3';
+      case 'inquiry': case 'consultation': return 'bg-chart-4/20 text-chart-4';
+      case 'cancelled': return 'bg-destructive/20 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getPackageTier = (tier: string) => {
     switch (tier) {
-      case 'luxury': return <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white gap-1"><Crown className="h-3 w-3" /> Luxury</Badge>;
-      case 'premium': return <Badge className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white gap-1"><Star className="h-3 w-3" /> Premium</Badge>;
-      case 'essential': return <Badge className="bg-green-500/20 text-green-700">Essential</Badge>;
+      case 'luxury': return <Badge className="bg-gradient-to-r from-chart-2 to-chart-5 text-primary-foreground gap-1"><Crown className="h-3 w-3" /> Luxury</Badge>;
+      case 'premium': return <Badge className="bg-gradient-to-r from-primary to-chart-2 text-primary-foreground gap-1"><Star className="h-3 w-3" /> Premium</Badge>;
+      case 'essential': return <Badge className="bg-chart-1/20 text-chart-1">Essential</Badge>;
       default: return <Badge variant="outline">{tier}</Badge>;
     }
   };
@@ -176,11 +176,11 @@ const ConciergeServiceManagement = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-        <Card className="border-blue-200/50">
+        <Card className="border-primary/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                <Package className="h-5 w-5 text-blue-600" />
+              <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                <Package className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{activeRequests}</p>
@@ -190,11 +190,11 @@ const ConciergeServiceManagement = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-green-200/50">
+        <Card className="border-chart-1/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                <CheckCircle className="h-5 w-5 text-green-600" />
+              <div className="w-10 h-10 bg-chart-1/20 rounded-lg flex items-center justify-center">
+                <CheckCircle className="h-5 w-5 text-chart-1" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{completedRequests}</p>
@@ -204,11 +204,11 @@ const ConciergeServiceManagement = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-purple-200/50">
+        <Card className="border-chart-2/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-purple-600" />
+              <div className="w-10 h-10 bg-chart-2/20 rounded-lg flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-chart-2" />
               </div>
               <div>
                 <p className="text-2xl font-bold">${(totalRevenue / 1000000).toFixed(1)}M</p>
@@ -218,11 +218,11 @@ const ConciergeServiceManagement = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-yellow-200/50">
+        <Card className="border-chart-3/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-                <Star className="h-5 w-5 text-yellow-600" />
+              <div className="w-10 h-10 bg-chart-3/20 rounded-lg flex items-center justify-center">
+                <Star className="h-5 w-5 text-chart-3" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{avgSatisfaction.toFixed(1)}</p>
@@ -232,11 +232,11 @@ const ConciergeServiceManagement = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-cyan-200/50">
+        <Card className="border-chart-5/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-                <UserCheck className="h-5 w-5 text-cyan-600" />
+              <div className="w-10 h-10 bg-chart-5/20 rounded-lg flex items-center justify-center">
+                <UserCheck className="h-5 w-5 text-chart-5" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{availableTeam}</p>
@@ -246,11 +246,11 @@ const ConciergeServiceManagement = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-orange-200/50">
+        <Card className="border-chart-4/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                <Building2 className="h-5 w-5 text-orange-600" />
+              <div className="w-10 h-10 bg-chart-4/20 rounded-lg flex items-center justify-center">
+                <Building2 className="h-5 w-5 text-chart-4" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{vendors.length}</p>
@@ -352,7 +352,7 @@ const ConciergeServiceManagement = () => {
                           <div className="flex flex-col items-end gap-2">
                             <Badge className={getStatusColor(request.status)}>{request.status.replace('_', ' ')}</Badge>
                             {request.commission_amount && (
-                              <span className="text-sm font-semibold text-green-600">
+                              <span className="text-sm font-semibold text-chart-1">
                                 ${(request.commission_amount / 1000000).toFixed(1)}M
                               </span>
                             )}
@@ -400,11 +400,11 @@ const ConciergeServiceManagement = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {packages.map((pkg: any) => (
               <Card key={pkg.id} className={`relative overflow-hidden ${
-                pkg.package_tier === 'luxury' ? 'border-purple-300 dark:border-purple-700' :
-                pkg.package_tier === 'premium' ? 'border-blue-300 dark:border-blue-700' : ''
+                pkg.package_tier === 'luxury' ? 'border-chart-2/50 dark:border-chart-2/30' :
+                pkg.package_tier === 'premium' ? 'border-primary/50 dark:border-primary/30' : ''
               }`}>
                 {pkg.featured && (
-                  <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-3 py-1 rounded-bl-lg">
+                  <div className="absolute top-0 right-0 bg-gradient-to-r from-chart-2 to-chart-5 text-primary-foreground text-xs px-3 py-1 rounded-bl-lg">
                     Most Popular
                   </div>
                 )}
@@ -429,9 +429,9 @@ const ConciergeServiceManagement = () => {
                       {pkg.included_services && Object.entries(pkg.included_services).map(([key, value]: [string, any]) => (
                         <div key={key} className="flex items-center gap-2 text-sm">
                           {value ? (
-                            <CheckCircle className="h-4 w-4 text-green-500" />
+                            <CheckCircle className="h-4 w-4 text-chart-1" />
                           ) : (
-                            <div className="h-4 w-4 rounded-full border-2 border-gray-300" />
+                            <div className="h-4 w-4 rounded-full border-2 border-border" />
                           )}
                           <span className={value ? '' : 'text-muted-foreground'}>
                             {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
@@ -488,7 +488,7 @@ const ConciergeServiceManagement = () => {
                             <h4 className="font-semibold">{member.full_name}</h4>
                             <Badge variant="outline" className="text-[10px]">{member.role.replace('_', ' ')}</Badge>
                           </div>
-                          <div className={`w-3 h-3 rounded-full ${member.is_available ? 'bg-green-500' : 'bg-gray-400'}`} />
+                          <div className={`w-3 h-3 rounded-full ${member.is_available ? 'bg-chart-1' : 'bg-muted-foreground'}`} />
                         </div>
                         <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
                           <div>
@@ -498,7 +498,7 @@ const ConciergeServiceManagement = () => {
                           <div>
                             <p className="text-muted-foreground">Rating</p>
                             <p className="font-medium flex items-center gap-1">
-                              <Star className="h-3 w-3 text-yellow-500" />
+                              <Star className="h-3 w-3 text-chart-3" />
                               {member.avg_satisfaction_rating?.toFixed(1) || 'N/A'}
                             </p>
                           </div>
@@ -555,7 +555,7 @@ const ConciergeServiceManagement = () => {
                             <p className="text-sm text-muted-foreground">{vendor.vendor_type.replace('_', ' ')}</p>
                           </div>
                           {vendor.is_preferred && (
-                            <Badge className="bg-yellow-500/20 text-yellow-700">
+                            <Badge className="bg-chart-3/20 text-chart-3">
                               <Award className="h-3 w-3 mr-1" />
                               Preferred
                             </Badge>
