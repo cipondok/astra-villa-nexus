@@ -50,23 +50,23 @@ interface UserWithRole extends UserProfile {
 }
 
 const roleConfig: Record<UserRole, { label: string; color: string; icon: React.ReactNode }> = {
-  super_admin: { label: 'Super Admin', color: 'bg-red-500 text-white', icon: <Shield className="h-3 w-3" /> },
-  admin: { label: 'Admin', color: 'bg-orange-500 text-white', icon: <Shield className="h-3 w-3" /> },
-  agent: { label: 'Agent', color: 'bg-blue-500 text-white', icon: <Building className="h-3 w-3" /> },
-  vendor: { label: 'Vendor', color: 'bg-purple-500 text-white', icon: <Star className="h-3 w-3" /> },
-  property_owner: { label: 'Property Owner', color: 'bg-green-500 text-white', icon: <Building className="h-3 w-3" /> },
-  customer_service: { label: 'CS', color: 'bg-cyan-500 text-white', icon: <Users className="h-3 w-3" /> },
-  general_user: { label: 'User', color: 'bg-slate-500 text-white', icon: <Users className="h-3 w-3" /> },
+  super_admin: { label: 'Super Admin', color: 'bg-destructive text-destructive-foreground', icon: <Shield className="h-3 w-3" /> },
+  admin: { label: 'Admin', color: 'bg-chart-4 text-background', icon: <Shield className="h-3 w-3" /> },
+  agent: { label: 'Agent', color: 'bg-chart-2 text-background', icon: <Building className="h-3 w-3" /> },
+  vendor: { label: 'Vendor', color: 'bg-primary text-primary-foreground', icon: <Star className="h-3 w-3" /> },
+  property_owner: { label: 'Property Owner', color: 'bg-chart-1 text-background', icon: <Building className="h-3 w-3" /> },
+  customer_service: { label: 'CS', color: 'bg-secondary text-secondary-foreground', icon: <Users className="h-3 w-3" /> },
+  general_user: { label: 'User', color: 'bg-muted text-muted-foreground', icon: <Users className="h-3 w-3" /> },
 };
 
 const getLevelIcon = (levelName: string) => {
   const membership = getMembershipFromUserLevel(levelName);
   switch (membership) {
-    case 'diamond': return <Gem className="h-3.5 w-3.5 text-sky-500" />;
-    case 'platinum': return <Sparkles className="h-3.5 w-3.5 text-cyan-500" />;
-    case 'gold': return <Crown className="h-3.5 w-3.5 text-yellow-500" />;
-    case 'vip': return <Star className="h-3.5 w-3.5 text-purple-500" />;
-    case 'verified': return <Shield className="h-3.5 w-3.5 text-blue-500" />;
+    case 'diamond': return <Gem className="h-3.5 w-3.5 text-chart-2" />;
+    case 'platinum': return <Sparkles className="h-3.5 w-3.5 text-primary" />;
+    case 'gold': return <Crown className="h-3.5 w-3.5 text-chart-3" />;
+    case 'vip': return <Star className="h-3.5 w-3.5 text-chart-4" />;
+    case 'verified': return <Shield className="h-3.5 w-3.5 text-chart-1" />;
     default: return <Users className="h-3.5 w-3.5 text-muted-foreground" />;
   }
 };
@@ -270,9 +270,9 @@ const UserManagement = () => {
       return <Badge variant="destructive" className="text-[10px] px-1.5 py-0">Suspended</Badge>;
     }
     const statusColors: Record<string, string> = {
-      approved: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-      pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-      rejected: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+      approved: 'bg-chart-1/10 text-chart-1 border-chart-1/30',
+      pending: 'bg-chart-3/10 text-chart-3 border-chart-3/30',
+      rejected: 'bg-destructive/10 text-destructive border-destructive/30',
     };
     return (
       <Badge className={`text-[10px] px-1.5 py-0 ${statusColors[user.verification_status] || statusColors.pending}`}>
@@ -284,16 +284,16 @@ const UserManagement = () => {
   return (
     <div className="space-y-3 p-1 md:p-0">
       {/* Professional Header */}
-      <div className="bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-pink-500/20 rounded-lg border border-indigo-200/50 dark:border-indigo-800/50 p-3">
+      <div className="bg-primary/5 rounded-lg border border-border p-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
-              <Users className="h-4 w-4 text-white" />
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Users className="h-4 w-4 text-primary" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-sm font-bold text-foreground">User Management</h2>
-                <Badge className="bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700 text-[9px] px-1.5 py-0 h-4">
+                <Badge className="bg-primary/10 text-primary border-primary/30 text-[9px] px-1.5 py-0 h-4">
                   <Activity className="h-2.5 w-2.5 mr-0.5" />
                   {stats.total} Users
                 </Badge>
@@ -301,7 +301,7 @@ const UserManagement = () => {
               <p className="text-[10px] text-muted-foreground">Manage users, roles, levels & permissions</p>
             </div>
           </div>
-          <Button size="sm" className="h-7 text-[10px] px-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white">
+          <Button size="sm" className="h-7 text-[10px] px-2">
             <UserPlus className="h-3 w-3 mr-1" />
             Add User
           </Button>
@@ -311,18 +311,18 @@ const UserManagement = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-4 md:grid-cols-8 gap-1.5">
         {[
-          { label: 'Total', value: stats.total, icon: <Users className="h-3 w-3" />, color: 'blue', borderColor: 'border-blue-200 dark:border-blue-800', bgColor: 'bg-blue-50/50 dark:bg-blue-900/20' },
-          { label: 'Active', value: stats.active, icon: <CheckCircle className="h-3 w-3" />, color: 'green', borderColor: 'border-green-200 dark:border-green-800', bgColor: 'bg-green-50/50 dark:bg-green-900/20' },
-          { label: 'Suspended', value: stats.suspended, icon: <Ban className="h-3 w-3" />, color: 'red', borderColor: 'border-red-200 dark:border-red-800', bgColor: 'bg-red-50/50 dark:bg-red-900/20' },
-          { label: 'Pending', value: stats.pending, icon: <Clock className="h-3 w-3" />, color: 'yellow', borderColor: 'border-yellow-200 dark:border-yellow-800', bgColor: 'bg-yellow-50/50 dark:bg-yellow-900/20' },
-          { label: 'Admins', value: stats.admins, icon: <Shield className="h-3 w-3" />, color: 'orange', borderColor: 'border-orange-200 dark:border-orange-800', bgColor: 'bg-orange-50/50 dark:bg-orange-900/20' },
-          { label: 'Agents', value: stats.agents, icon: <Building className="h-3 w-3" />, color: 'cyan', borderColor: 'border-cyan-200 dark:border-cyan-800', bgColor: 'bg-cyan-50/50 dark:bg-cyan-900/20' },
-          { label: 'Vendors', value: stats.vendors, icon: <Star className="h-3 w-3" />, color: 'purple', borderColor: 'border-purple-200 dark:border-purple-800', bgColor: 'bg-purple-50/50 dark:bg-purple-900/20' },
-          { label: 'Owners', value: stats.owners, icon: <Building className="h-3 w-3" />, color: 'emerald', borderColor: 'border-emerald-200 dark:border-emerald-800', bgColor: 'bg-emerald-50/50 dark:bg-emerald-900/20' },
+          { label: 'Total', value: stats.total, icon: <Users className="h-3 w-3 text-primary" /> },
+          { label: 'Active', value: stats.active, icon: <CheckCircle className="h-3 w-3 text-chart-1" /> },
+          { label: 'Suspended', value: stats.suspended, icon: <Ban className="h-3 w-3 text-destructive" /> },
+          { label: 'Pending', value: stats.pending, icon: <Clock className="h-3 w-3 text-chart-3" /> },
+          { label: 'Admins', value: stats.admins, icon: <Shield className="h-3 w-3 text-chart-4" /> },
+          { label: 'Agents', value: stats.agents, icon: <Building className="h-3 w-3 text-chart-2" /> },
+          { label: 'Vendors', value: stats.vendors, icon: <Star className="h-3 w-3 text-primary" /> },
+          { label: 'Owners', value: stats.owners, icon: <Building className="h-3 w-3 text-chart-1" /> },
         ].map((stat) => (
-          <Card key={stat.label} className={`p-2 ${stat.borderColor} ${stat.bgColor}`}>
+          <Card key={stat.label} className="p-2">
             <div className="flex items-center gap-1">
-              <span className={`text-${stat.color}-600`}>{stat.icon}</span>
+              {stat.icon}
               <div>
                 <p className="text-[9px] text-muted-foreground">{stat.label}</p>
                 <p className="text-sm font-bold">{stat.value}</p>
@@ -333,7 +333,7 @@ const UserManagement = () => {
       </div>
 
       {/* Filters */}
-      <Card className="p-2 border-indigo-200/50 dark:border-indigo-800/50">
+      <Card className="p-2">
         <div className="flex flex-wrap gap-1.5">
           <div className="relative flex-1 min-w-[180px]">
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
@@ -370,11 +370,11 @@ const UserManagement = () => {
       </Card>
 
       {/* Users Table */}
-      <Card className="border-indigo-200/50 dark:border-indigo-800/50">
+      <Card>
         <CardHeader className="py-2 px-3">
           <CardTitle className="text-xs font-medium flex items-center justify-between">
             <span className="flex items-center gap-1.5">
-              <Users className="h-3.5 w-3.5 text-indigo-600" />
+              <Users className="h-3.5 w-3.5 text-primary" />
               Users ({filteredUsers.length})
             </span>
           </CardTitle>
@@ -402,7 +402,7 @@ const UserManagement = () => {
                     <TableRow key={user.id} className="text-xs">
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-xs font-medium">
+                          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
                             {user.full_name?.charAt(0) || user.email.charAt(0).toUpperCase()}
                           </div>
                           <div className="min-w-0">
@@ -470,7 +470,7 @@ const UserManagement = () => {
                             <Button 
                               size="icon" 
                               variant="ghost" 
-                              className="h-6 w-6 text-green-600"
+                              className="h-6 w-6 text-chart-1"
                               onClick={() => unsuspendUserMutation.mutate(user.id)}
                               disabled={unsuspendUserMutation.isPending}
                             >
