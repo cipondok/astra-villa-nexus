@@ -394,15 +394,15 @@ const ProjectMapVisualization = () => {
                   Project Roadmap & Status
                 </h1>
               </div>
-              <p className="text-[10px] text-muted-foreground mt-1">
-                Development progress • Updated {formatDistanceToNow(lastAutoUpdate, { addSuffix: true })}
-                <Badge variant="outline" className="ml-2 text-[8px] h-4 px-1 bg-green-500/10 text-green-600 border-green-500/30">
+              <div className="flex items-center flex-wrap gap-1 text-[10px] text-muted-foreground mt-1">
+                <span>Development progress • Updated {formatDistanceToNow(lastAutoUpdate, { addSuffix: true })}</span>
+                <Badge variant="outline" className="text-[8px] h-4 px-1 bg-green-500/10 text-green-600 border-green-500/30">
                   <span className="animate-pulse mr-1">●</span> Live
                 </Badge>
-                <Button variant="ghost" size="sm" onClick={() => refetch()} disabled={isFetching} className="h-5 px-1.5 ml-1">
+                <Button variant="ghost" size="sm" onClick={() => refetch()} disabled={isFetching} className="h-5 px-1.5">
                   <RefreshCw className={`h-3 w-3 ${isFetching ? 'animate-spin' : ''}`} />
                 </Button>
-              </p>
+              </div>
             </div>
             
             <div className="flex items-center gap-3">
