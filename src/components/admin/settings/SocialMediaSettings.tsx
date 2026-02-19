@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Facebook, Twitter, Instagram, Linkedin, Youtube, MessageCircle, Send, Save, Globe } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Youtube, MessageCircle, Send, Save, Globe, Music2 } from 'lucide-react';
 import { useSocialMediaSettings } from '@/hooks/useSocialMediaSettings';
 
 const fields = [
@@ -28,6 +28,13 @@ const fields = [
     icon: Instagram,
     placeholder: 'https://instagram.com/yourprofile',
     color: 'text-pink-500',
+  },
+  {
+    key: 'tiktokUrl' as const,
+    label: 'TikTok URL',
+    icon: Music2,
+    placeholder: 'https://tiktok.com/@yourusername',
+    color: 'text-foreground',
   },
   {
     key: 'linkedinUrl' as const,
