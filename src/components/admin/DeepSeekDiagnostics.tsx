@@ -432,7 +432,7 @@ const DeepSeekDiagnostics = () => {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-blue-500" />
+                  <FileText className="h-5 w-5 text-primary" />
                   System Health Report
                 </div>
                 <div className="flex items-center gap-2">
@@ -452,30 +452,30 @@ const DeepSeekDiagnostics = () => {
                 <div className="space-y-3">
                   <h4 className="font-medium">Detected Issues ({diagnosticReport.issues.length})</h4>
                   {diagnosticReport.issues.length === 0 ? (
-                    <div className="flex items-center gap-2 text-green-600">
+                    <div className="flex items-center gap-2 text-chart-1">
                       <CheckCircle className="h-4 w-4" />
                       No critical issues detected
                     </div>
                   ) : (
                     diagnosticReport.issues.map((issue) => (
                       <Card key={issue.id} className={`border-l-4 ${
-                        issue.severity === 'critical' ? 'border-l-red-500' :
-                        issue.severity === 'warning' ? 'border-l-yellow-500' : 'border-l-blue-500'
+                        issue.severity === 'critical' ? 'border-l-destructive' :
+                        issue.severity === 'warning' ? 'border-l-chart-3' : 'border-l-primary'
                       }`}>
                         <CardContent className="py-4">
                           <div className="flex items-start justify-between">
                             <div className="space-y-2 flex-1">
                               <div className="flex items-center gap-2">
                                 <AlertTriangle className={`h-4 w-4 ${
-                                  issue.severity === 'critical' ? 'text-red-500' :
-                                  issue.severity === 'warning' ? 'text-yellow-500' : 'text-blue-500'
+                                  issue.severity === 'critical' ? 'text-destructive' :
+                                  issue.severity === 'warning' ? 'text-chart-3' : 'text-primary'
                                 }`} />
                                 <span className="font-medium">{issue.title}</span>
                                 <Badge variant="outline" className="text-xs">
                                   {issue.category}
                                 </Badge>
                                 {issue.isFixed && (
-                                  <Badge variant="default" className="text-xs bg-green-100 text-green-700">
+                                  <Badge variant="default" className="text-xs bg-chart-1/10 text-chart-1">
                                     Fixed
                                   </Badge>
                                 )}
@@ -521,7 +521,7 @@ const DeepSeekDiagnostics = () => {
                     <ul className="space-y-1">
                       {diagnosticReport.recommendations.map((rec, index) => (
                         <li key={index} className="text-sm flex items-start gap-2">
-                          <Lightbulb className="h-3 w-3 text-yellow-500 mt-0.5 flex-shrink-0" />
+                          <Lightbulb className="h-3 w-3 text-chart-3 mt-0.5 flex-shrink-0" />
                           {rec}
                         </li>
                       ))}
@@ -556,7 +556,7 @@ const DeepSeekDiagnostics = () => {
                   onClick={() => runAnalysis(predefinedPrompts.system_health, 'diagnostics')}>
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm">
-                  <TrendingUp className="h-4 w-4 text-green-500" />
+                   <TrendingUp className="h-4 w-4 text-chart-1" />
                   System Health Analysis
                 </CardTitle>
               </CardHeader>
@@ -571,7 +571,7 @@ const DeepSeekDiagnostics = () => {
                   onClick={() => runAnalysis(predefinedPrompts.code_review, 'code-analysis')}>
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm">
-                  <Code className="h-4 w-4 text-blue-500" />
+                  <Code className="h-4 w-4 text-primary" />
                   Code Review & Architecture
                 </CardTitle>
               </CardHeader>
@@ -586,7 +586,7 @@ const DeepSeekDiagnostics = () => {
                   onClick={() => runAnalysis(predefinedPrompts.security_audit, 'security')}>
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm">
-                  <Shield className="h-4 w-4 text-red-500" />
+                  <Shield className="h-4 w-4 text-destructive" />
                   Security Audit
                 </CardTitle>
               </CardHeader>
@@ -601,7 +601,7 @@ const DeepSeekDiagnostics = () => {
                   onClick={() => runAnalysis(predefinedPrompts.performance_optimization, 'performance')}>
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm">
-                  <Zap className="h-4 w-4 text-yellow-500" />
+                  <Zap className="h-4 w-4 text-chart-3" />
                   Performance Optimization
                 </CardTitle>
               </CardHeader>
@@ -616,7 +616,7 @@ const DeepSeekDiagnostics = () => {
                   onClick={() => runAnalysis(predefinedPrompts.business_logic_review, 'business')}>
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm">
-                  <Lightbulb className="h-4 w-4 text-purple-500" />
+                  <Lightbulb className="h-4 w-4 text-chart-2" />
                   Business Logic Review
                 </CardTitle>
               </CardHeader>
@@ -633,7 +633,7 @@ const DeepSeekDiagnostics = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Search className="h-5 w-5 text-blue-500" />
+                <Search className="h-5 w-5 text-primary" />
                 Custom Analysis Prompt
               </CardTitle>
             </CardHeader>
