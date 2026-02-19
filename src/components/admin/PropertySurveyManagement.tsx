@@ -21,7 +21,6 @@ const PropertySurveyManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch survey bookings using the secure function
   const { data: surveys, isLoading, error } = useSurveyBookings();
 
   const updateSurveyMutation = useMutation({
@@ -30,7 +29,6 @@ const PropertySurveyManagement = () => {
         .from('property_survey_bookings')
         .update({ status, updated_at: new Date().toISOString() })
         .eq('id', id);
-      
       if (error) throw error;
     },
     onSuccess: () => {
@@ -58,21 +56,21 @@ const PropertySurveyManagement = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Confirmed</Badge>;
+        return <Badge className="bg-chart-1/20 text-chart-1 border-chart-1/30"><CheckCircle className="h-3 w-3 mr-1" />Confirmed</Badge>;
       case 'completed':
-        return <Badge className="bg-blue-500"><CheckCircle className="h-3 w-3 mr-1" />Completed</Badge>;
+        return <Badge className="bg-chart-2/20 text-chart-2 border-chart-2/30"><CheckCircle className="h-3 w-3 mr-1" />Completed</Badge>;
       case 'cancelled':
         return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Cancelled</Badge>;
       default:
-        return <Badge variant="outline" className="border-yellow-500 text-yellow-500"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge variant="outline" className="border-chart-3/50 text-chart-3"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
     }
   };
 
   const getSurveyTypeBadge = (type: string) => {
-    const colors = {
-      viewing: "bg-blue-500",
-      inspection: "bg-purple-500",
-      valuation: "bg-green-500"
+    const colors: Record<string, string> = {
+      viewing: "bg-chart-2/20 text-chart-2",
+      inspection: "bg-primary/20 text-primary",
+      valuation: "bg-chart-1/20 text-chart-1"
     };
     return <Badge className={colors[type] || colors.viewing}>{type?.toUpperCase()}</Badge>;
   };
@@ -84,34 +82,33 @@ const PropertySurveyManagement = () => {
     survey.property_location?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
-  // Show access level indicator
   const hasRestrictedAccess = surveys?.some(survey => !survey.has_full_access);
 
   return (
     <div className="space-y-6">
       {/* Security Notice */}
       {hasRestrictedAccess && (
-        <Card className="bg-yellow-500/10 border-yellow-500/30">
+        <Card className="bg-chart-3/10 border-chart-3/30">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 text-yellow-400">
+            <div className="flex items-center gap-2 text-chart-3">
               <Shield className="h-4 w-4" />
               <span className="text-sm font-medium">Security Notice</span>
             </div>
-            <p className="text-yellow-300 text-sm mt-1">
+            <p className="text-chart-3/80 text-sm mt-1">
               Some customer information is masked for privacy protection. You only see full details for properties you own/manage.
             </p>
           </CardContent>
         </Card>
       )}
 
-      <Card className="bg-white/10 backdrop-blur-md border-white/20">
+      <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-white">
+          <CardTitle className="flex items-center gap-2 text-foreground">
             <Calendar className="h-5 w-5" />
             Property Survey Booking System
-            {hasRestrictedAccess && <Shield className="h-4 w-4 text-yellow-400" />}
+            {hasRestrictedAccess && <Shield className="h-4 w-4 text-chart-3" />}
           </CardTitle>
-          <CardDescription className="text-gray-300">
+          <CardDescription className="text-muted-foreground">
             Manage property viewing and survey appointments with privacy protection
           </CardDescription>
         </CardHeader>
@@ -123,52 +120,52 @@ const PropertySurveyManagement = () => {
                 placeholder="Search by customer name, email, or property..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                className="bg-background border-input"
               />
             </div>
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="bg-white/5 border-white/20">
+              <Card className="bg-card border-border">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-yellow-400" />
-                    <span className="text-sm text-gray-300">Pending</span>
+                    <Clock className="h-4 w-4 text-chart-3" />
+                    <span className="text-sm text-muted-foreground">Pending</span>
                   </div>
-                  <p className="text-2xl font-bold text-white mt-2">
+                  <p className="text-2xl font-bold text-foreground mt-2">
                     {surveys?.filter(s => s.status === 'pending').length || 0}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-white/5 border-white/20">
+              <Card className="bg-card border-border">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-400" />
-                    <span className="text-sm text-gray-300">Confirmed</span>
+                    <CheckCircle className="h-4 w-4 text-chart-1" />
+                    <span className="text-sm text-muted-foreground">Confirmed</span>
                   </div>
-                  <p className="text-2xl font-bold text-white mt-2">
+                  <p className="text-2xl font-bold text-foreground mt-2">
                     {surveys?.filter(s => s.status === 'confirmed').length || 0}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-white/5 border-white/20">
+              <Card className="bg-card border-border">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-blue-400" />
-                    <span className="text-sm text-gray-300">Completed</span>
+                    <Calendar className="h-4 w-4 text-chart-2" />
+                    <span className="text-sm text-muted-foreground">Completed</span>
                   </div>
-                  <p className="text-2xl font-bold text-white mt-2">
+                  <p className="text-2xl font-bold text-foreground mt-2">
                     {surveys?.filter(s => s.status === 'completed').length || 0}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-white/5 border-white/20">
+              <Card className="bg-card border-border">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-purple-400" />
-                    <span className="text-sm text-gray-300">Today</span>
+                    <MapPin className="h-4 w-4 text-primary" />
+                    <span className="text-sm text-muted-foreground">Today</span>
                   </div>
-                  <p className="text-2xl font-bold text-white mt-2">
+                  <p className="text-2xl font-bold text-foreground mt-2">
                     {surveys?.filter(s => new Date(s.preferred_date).toDateString() === new Date().toDateString()).length || 0}
                   </p>
                 </CardContent>
@@ -176,55 +173,55 @@ const PropertySurveyManagement = () => {
             </div>
 
             {/* Surveys Table */}
-            <div className="border border-white/20 rounded-lg bg-white/5">
+            <div className="border border-border rounded-lg bg-card">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-white/20">
-                    <TableHead className="text-gray-300">Customer</TableHead>
-                    <TableHead className="text-gray-300">Property</TableHead>
-                    <TableHead className="text-gray-300">Type</TableHead>
-                    <TableHead className="text-gray-300">Date & Time</TableHead>
-                    <TableHead className="text-gray-300">Status</TableHead>
-                    <TableHead className="text-gray-300">Actions</TableHead>
+                  <TableRow className="border-border">
+                    <TableHead className="text-muted-foreground">Customer</TableHead>
+                    <TableHead className="text-muted-foreground">Property</TableHead>
+                    <TableHead className="text-muted-foreground">Type</TableHead>
+                    <TableHead className="text-muted-foreground">Date & Time</TableHead>
+                    <TableHead className="text-muted-foreground">Status</TableHead>
+                    <TableHead className="text-muted-foreground">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-gray-300">
+                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                         Loading surveys...
                       </TableCell>
                     </TableRow>
                   ) : error ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-red-400">
+                      <TableCell colSpan={6} className="text-center py-8 text-destructive">
                         Error loading bookings: {error?.message || "Please check database functions"}
                       </TableCell>
                     </TableRow>
                   ) : filteredSurveys.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-gray-300">
+                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                         No survey bookings found
                       </TableCell>
                     </TableRow>
                   ) : (
                     filteredSurveys.map((survey) => (
-                      <TableRow key={survey.id} className="border-white/20">
-                         <TableCell className="text-white">
-                           <div className="text-sm">
-                             <div className="font-medium flex items-center gap-2">
-                               <User className="h-3 w-3" />
-                               {survey.customer_name}
-                               {!survey.has_full_access && <Shield className="h-3 w-3 text-yellow-400" />}
-                             </div>
-                             <div className="text-gray-400">{survey.customer_email}</div>
-                             <div className="text-gray-400">{survey.customer_phone}</div>
-                           </div>
-                         </TableCell>
-                        <TableCell className="text-gray-300">
+                      <TableRow key={survey.id} className="border-border">
+                        <TableCell className="text-foreground">
                           <div className="text-sm">
-                            <div className="font-medium">{survey.property_title}</div>
-                            <div className="text-gray-400 flex items-center gap-1">
+                            <div className="font-medium flex items-center gap-2">
+                              <User className="h-3 w-3" />
+                              {survey.customer_name}
+                              {!survey.has_full_access && <Shield className="h-3 w-3 text-chart-3" />}
+                            </div>
+                            <div className="text-muted-foreground">{survey.customer_email}</div>
+                            <div className="text-muted-foreground">{survey.customer_phone}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          <div className="text-sm">
+                            <div className="font-medium text-foreground">{survey.property_title}</div>
+                            <div className="text-muted-foreground flex items-center gap-1">
                               <MapPin className="h-3 w-3" />
                               {survey.property_location}
                             </div>
@@ -233,13 +230,13 @@ const PropertySurveyManagement = () => {
                         <TableCell>
                           {getSurveyTypeBadge(survey.survey_type)}
                         </TableCell>
-                        <TableCell className="text-gray-300">
+                        <TableCell className="text-muted-foreground">
                           <div className="text-sm">
                             <div className="flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
                               {new Date(survey.preferred_date).toLocaleDateString()}
                             </div>
-                            <div className="flex items-center gap-1 text-gray-400">
+                            <div className="flex items-center gap-1 text-muted-foreground">
                               <Clock className="h-3 w-3" />
                               {survey.preferred_time}
                             </div>
@@ -253,7 +250,6 @@ const PropertySurveyManagement = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleViewDetails(survey)}
-                            className="border-gray-600 text-gray-300 hover:bg-white/10"
                           >
                             <Eye className="h-4 w-4 mr-1" />
                             View
@@ -271,10 +267,10 @@ const PropertySurveyManagement = () => {
 
       {/* Detail Dialog */}
       <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
-        <DialogContent className="max-w-2xl bg-gray-900/95 backdrop-blur-md border-gray-700">
+        <DialogContent className="max-w-2xl bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-white">Survey Booking Details</DialogTitle>
-            <DialogDescription className="text-gray-300">
+            <DialogTitle className="text-foreground">Survey Booking Details</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
               Review and manage property survey appointment
             </DialogDescription>
           </DialogHeader>
@@ -282,48 +278,48 @@ const PropertySurveyManagement = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <Label className="text-gray-300 font-medium">Customer Name:</Label>
-                  <p className="text-white">{selectedSurvey.customer_name}</p>
+                  <Label className="text-muted-foreground font-medium">Customer Name:</Label>
+                  <p className="text-foreground">{selectedSurvey.customer_name}</p>
                 </div>
                 <div>
-                  <Label className="text-gray-300 font-medium">Email:</Label>
-                  <p className="text-white">{selectedSurvey.customer_email}</p>
+                  <Label className="text-muted-foreground font-medium">Email:</Label>
+                  <p className="text-foreground">{selectedSurvey.customer_email}</p>
                 </div>
                 <div>
-                  <Label className="text-gray-300 font-medium">Phone:</Label>
-                  <p className="text-white">{selectedSurvey.customer_phone}</p>
+                  <Label className="text-muted-foreground font-medium">Phone:</Label>
+                  <p className="text-foreground">{selectedSurvey.customer_phone}</p>
                 </div>
                 <div>
-                  <Label className="text-gray-300 font-medium">Survey Type:</Label>
+                  <Label className="text-muted-foreground font-medium">Survey Type:</Label>
                   {getSurveyTypeBadge(selectedSurvey.survey_type)}
                 </div>
                 <div>
-                  <Label className="text-gray-300 font-medium">Preferred Date:</Label>
-                  <p className="text-white">{new Date(selectedSurvey.preferred_date).toLocaleDateString()}</p>
+                  <Label className="text-muted-foreground font-medium">Preferred Date:</Label>
+                  <p className="text-foreground">{new Date(selectedSurvey.preferred_date).toLocaleDateString()}</p>
                 </div>
                 <div>
-                  <Label className="text-gray-300 font-medium">Preferred Time:</Label>
-                  <p className="text-white">{selectedSurvey.preferred_time}</p>
+                  <Label className="text-muted-foreground font-medium">Preferred Time:</Label>
+                  <p className="text-foreground">{selectedSurvey.preferred_time}</p>
                 </div>
               </div>
               <div>
-                <Label className="text-gray-300 font-medium">Property:</Label>
-                <p className="text-white">{selectedSurvey.property_title}</p>
-                <p className="text-gray-400 text-sm">{selectedSurvey.property_location}</p>
+                <Label className="text-muted-foreground font-medium">Property:</Label>
+                <p className="text-foreground">{selectedSurvey.property_title}</p>
+                <p className="text-muted-foreground text-sm">{selectedSurvey.property_location}</p>
               </div>
               <div>
-                <Label className="text-gray-300 font-medium">Notes:</Label>
-                <p className="text-white bg-gray-800 p-3 rounded mt-2">
+                <Label className="text-muted-foreground font-medium">Notes:</Label>
+                <p className="text-foreground bg-muted p-3 rounded mt-2">
                   {selectedSurvey.message || 'No additional notes provided'}
                 </p>
               </div>
               {!selectedSurvey.has_full_access && (
-                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
-                  <div className="flex items-center gap-2 text-yellow-400">
+                <div className="bg-chart-3/10 border border-chart-3/30 rounded-lg p-3">
+                  <div className="flex items-center gap-2 text-chart-3">
                     <AlertTriangle className="h-4 w-4" />
                     <span className="text-sm font-medium">Privacy Protected</span>
                   </div>
-                  <p className="text-yellow-300 text-sm mt-1">
+                  <p className="text-chart-3/80 text-sm mt-1">
                     Some customer information is masked for privacy protection.
                   </p>
                 </div>
@@ -331,31 +327,30 @@ const PropertySurveyManagement = () => {
             </div>
           )}
           <DialogFooter className="gap-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setShowDetailDialog(false)}
-              className="border-gray-600 text-gray-300"
             >
               Close
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={() => handleStatusUpdate('cancelled')}
               disabled={updateSurveyMutation.isPending}
             >
               Cancel Survey
             </Button>
-            <Button 
+            <Button
               onClick={() => handleStatusUpdate('confirmed')}
               disabled={updateSurveyMutation.isPending}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-chart-1 hover:bg-chart-1/90 text-white"
             >
               Confirm
             </Button>
-            <Button 
+            <Button
               onClick={() => handleStatusUpdate('completed')}
               disabled={updateSurveyMutation.isPending}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-chart-2 hover:bg-chart-2/90 text-white"
             >
               Mark Completed
             </Button>
