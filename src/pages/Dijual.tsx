@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -317,6 +318,12 @@ const Dijual = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEOHead
+        title="Properti Dijual di Indonesia"
+        description="Temukan rumah, villa, apartemen, dan properti dijual di seluruh Indonesia. Harga terbaik, pilihan terlengkap di ASTRA Villa Realty."
+        keywords="properti dijual, rumah dijual, villa dijual, apartemen dijual, jual beli properti Indonesia"
+        jsonLd={seoSchemas.breadcrumb([{ name: 'Beranda', url: '/' }, { name: 'Properti Dijual', url: '/dijual' }])}
+      />
       {/* Clean Header with Primary Blue */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
         <div className="px-3 sm:px-4 py-3 sm:py-4">

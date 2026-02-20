@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { SEOHead, seoSchemas } from '@/components/SEOHead';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -452,6 +453,33 @@ const PropertyDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20">
+      {property && (
+        <SEOHead
+          title={property.title}
+          description={property.description?.slice(0, 155)}
+          ogImage={property.images?.[0] || property.image_urls?.[0]}
+          ogType="product"
+          jsonLd={[
+            seoSchemas.breadcrumb([
+              { name: 'Beranda', url: '/' },
+              { name: 'Properti', url: '/properties' },
+              { name: property.title, url: `/properties/${property.id}` },
+            ]),
+            seoSchemas.property({
+              title: property.title,
+              description: property.description || '',
+              price: property.price,
+              city: property.city || '',
+              state: property.province || '',
+              images: property.images,
+              bedrooms: property.bedrooms,
+              bathrooms: property.bathrooms,
+              areaSqm: property.area_sqm,
+              url: `https://astra-villa-realty.lovable.app/properties/${property.id}`,
+            }),
+          ]}
+        />
+      )}
       {/* Agent/Developer Header - Glassy Style with Membership Badge */}
       {property?.posted_by && (
         <div className="relative bg-gradient-to-r from-primary/8 via-accent/5 to-secondary/8 backdrop-blur-md border-b border-primary/10 shadow-sm">

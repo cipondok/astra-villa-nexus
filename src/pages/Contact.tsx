@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -123,6 +124,11 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Hubungi Kami"
+        description="Hubungi tim ASTRA Villa Realty untuk pertanyaan properti, kerjasama, atau bantuan. Kami siap membantu Anda 24/7."
+        keywords="kontak ASTRA Villa, hubungi agen properti, customer service properti Indonesia"
+      />
       <EnhancedNavigation
         language={language}
         onLanguageToggle={toggleLanguage}
