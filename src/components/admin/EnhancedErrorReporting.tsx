@@ -166,19 +166,19 @@ const EnhancedErrorReporting = () => {
   };
 
   const getHealthColor = (score: number) => {
-    if (score >= 90) return 'text-green-600 bg-green-50';
-    if (score >= 70) return 'text-yellow-600 bg-yellow-50';
-    if (score >= 50) return 'text-orange-600 bg-orange-50';
-    return 'text-red-600 bg-red-50';
+    if (score >= 90) return 'text-chart-1 bg-chart-1/10';
+    if (score >= 70) return 'text-chart-3 bg-chart-3/10';
+    if (score >= 50) return 'text-chart-4 bg-chart-4/10';
+    return 'text-destructive bg-destructive/10';
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-blue-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive';
+      case 'high': return 'bg-chart-4';
+      case 'medium': return 'bg-chart-3';
+      case 'low': return 'bg-chart-2';
+      default: return 'bg-muted-foreground';
     }
   };
 
@@ -187,14 +187,14 @@ const EnhancedErrorReporting = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="p-2 rounded-lg bg-red-100 dark:bg-red-900/20">
-            <Shield className="h-6 w-6 text-red-600 dark:text-red-400" />
+          <div className="p-2 rounded-lg bg-destructive/10">
+            <Shield className="h-6 w-6 text-destructive" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            <h1 className="text-2xl font-bold text-foreground">
               Advanced Error Reporting System
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-muted-foreground">
               Real-time monitoring and detailed error analysis
             </p>
           </div>
@@ -222,13 +222,13 @@ const EnhancedErrorReporting = () => {
 
       {/* System Health Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100/50">
+        <Card className="border-l-4 border-l-chart-2">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-600">System Health</p>
+                <p className="text-sm font-medium text-chart-2">System Health</p>
                 <div className="flex items-center space-x-2 mt-1">
-                  <p className="text-2xl font-bold text-blue-900">
+                  <p className="text-2xl font-bold text-foreground">
                     {errorSummary?.healthScore || 0}%
                   </p>
                   <Progress 
@@ -237,49 +237,49 @@ const EnhancedErrorReporting = () => {
                   />
                 </div>
               </div>
-              <Activity className="h-8 w-8 text-blue-500/60" />
+              <Activity className="h-8 w-8 text-chart-2/60" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-red-50 to-red-100/50">
+        <Card className="border-l-4 border-l-destructive">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-red-600">Critical Issues</p>
-                <p className="text-2xl font-bold text-red-900">
+                <p className="text-sm font-medium text-destructive">Critical Issues</p>
+                <p className="text-2xl font-bold text-foreground">
                   {errorSummary?.criticalErrors || 0}
                 </p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-500/60" />
+              <AlertTriangle className="h-8 w-8 text-destructive/60" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-orange-50 to-orange-100/50">
+        <Card className="border-l-4 border-l-chart-4">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-orange-600">Recent (24h)</p>
-                <p className="text-2xl font-bold text-orange-900">
+                <p className="text-sm font-medium text-chart-4">Recent (24h)</p>
+                <p className="text-2xl font-bold text-foreground">
                   {errorSummary?.recentErrors || 0}
                 </p>
               </div>
-              <Clock className="h-8 w-8 text-orange-500/60" />
+              <Clock className="h-8 w-8 text-chart-4/60" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-purple-50 to-purple-100/50">
+        <Card className="border-l-4 border-l-chart-5">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-purple-600">Runtime Errors</p>
-                <p className="text-2xl font-bold text-purple-900">
+                <p className="text-sm font-medium text-chart-5">Runtime Errors</p>
+                <p className="text-2xl font-bold text-foreground">
                   {runtimeErrors.filter(e => !e.resolved).length}
                 </p>
               </div>
-              <Zap className="h-8 w-8 text-purple-500/60" />
+              <Zap className="h-8 w-8 text-chart-5/60" />
             </div>
           </CardContent>
         </Card>
@@ -287,9 +287,9 @@ const EnhancedErrorReporting = () => {
 
       {/* Live Runtime Errors Alert */}
       {runtimeErrors.filter(e => !e.resolved).length > 0 && (
-        <Alert className="border-red-200 bg-red-50">
-          <AlertTriangle className="h-4 w-4 text-red-600" />
-          <AlertDescription className="text-red-800">
+        <Alert className="border-destructive/30 bg-destructive/10">
+          <AlertTriangle className="h-4 w-4 text-destructive" />
+          <AlertDescription className="text-destructive">
             <strong>{runtimeErrors.filter(e => !e.resolved).length} active runtime errors</strong> detected. 
             Check the Runtime Errors tab for detailed information.
           </AlertDescription>
@@ -360,32 +360,32 @@ const EnhancedErrorReporting = () => {
             <CardContent>
               {runtimeErrors.length === 0 ? (
                 <div className="text-center py-8">
-                  <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-2" />
-                  <p className="text-gray-500">No runtime errors detected</p>
+                  <CheckCircle className="h-12 w-12 text-chart-1 mx-auto mb-2" />
+                  <p className="text-muted-foreground">No runtime errors detected</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {runtimeErrors.map((error) => (
                     <div 
                       key={error.id} 
-                      className={`p-4 border rounded-lg ${error.resolved ? 'bg-gray-50' : 'bg-red-50 border-red-200'}`}
+                      className={`p-4 border rounded-lg ${error.resolved ? 'bg-muted/30' : 'bg-destructive/5 border-destructive/20'}`}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <div className={`w-2 h-2 rounded-full ${getSeverityColor(error.severity)}`} />
                             <Badge variant="outline">{error.severity}</Badge>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-muted-foreground">
                               {new Date(error.timestamp).toLocaleString()}
                             </span>
                           </div>
-                          <p className="font-mono text-sm text-gray-800 mb-2">
+                          <p className="font-mono text-sm text-foreground mb-2">
                             {error.message}
                           </p>
                           {error.stack && (
-                            <details className="text-xs text-gray-600">
+                            <details className="text-xs text-muted-foreground">
                               <summary className="cursor-pointer">Stack trace</summary>
-                              <pre className="mt-2 bg-gray-100 p-2 rounded overflow-x-auto">
+                              <pre className="mt-2 bg-muted p-2 rounded overflow-x-auto">
                                 {error.stack}
                               </pre>
                             </details>

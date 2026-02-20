@@ -35,10 +35,10 @@ export const PROPERTY_TYPE_LABELS: Record<string, string> = {
 };
 
 export const PROPERTY_TYPE_COLORS: Record<string, string> = {
-  villa: 'bg-blue-500/10 text-blue-700 dark:text-blue-400',
-  house: 'bg-green-500/10 text-green-700 dark:text-green-400',
-  apartment: 'bg-purple-500/10 text-purple-700 dark:text-purple-400',
-  land: 'bg-amber-500/10 text-amber-700 dark:text-amber-400',
-  commercial: 'bg-red-500/10 text-red-700 dark:text-red-400',
-  townhouse: 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-400',
+  villa: 'bg-chart-2/10 text-chart-2',
+  house: 'bg-chart-1/10 text-chart-1',
+  apartment: 'bg-chart-4/10 text-chart-4',
+  land: 'bg-chart-3/10 text-chart-3',
+  commercial: 'bg-destructive/10 text-destructive',
+  townhouse: 'bg-chart-5/10 text-chart-5',
 };

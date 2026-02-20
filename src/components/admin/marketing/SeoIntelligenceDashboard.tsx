@@ -216,10 +216,10 @@ const SeoIntelligenceDashboard = () => {
           <CardContent>
             <div className="grid grid-cols-4 gap-4">
               {[
-                { label: 'Excellent (80+)', count: stats.excellent, color: 'bg-green-500', pct: (stats.excellent / stats.analyzedCount) * 100 },
-                { label: 'Good (60-79)', count: stats.good, color: 'bg-blue-500', pct: (stats.good / stats.analyzedCount) * 100 },
-                { label: 'Needs Work (40-59)', count: stats.needsImprovement, color: 'bg-amber-500', pct: (stats.needsImprovement / stats.analyzedCount) * 100 },
-                { label: 'Poor (<40)', count: stats.poor, color: 'bg-red-500', pct: (stats.poor / stats.analyzedCount) * 100 },
+                { label: 'Excellent (80+)', count: stats.excellent, color: 'bg-chart-1', pct: (stats.excellent / stats.analyzedCount) * 100 },
+                { label: 'Good (60-79)', count: stats.good, color: 'bg-chart-2', pct: (stats.good / stats.analyzedCount) * 100 },
+                { label: 'Needs Work (40-59)', count: stats.needsImprovement, color: 'bg-chart-3', pct: (stats.needsImprovement / stats.analyzedCount) * 100 },
+                { label: 'Poor (<40)', count: stats.poor, color: 'bg-destructive', pct: (stats.poor / stats.analyzedCount) * 100 },
               ].map((d) => (
                 <div key={d.label} className="text-center">
                   <div className="text-lg font-bold">{d.count}</div>

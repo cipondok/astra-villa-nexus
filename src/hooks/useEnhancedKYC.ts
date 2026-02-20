@@ -193,10 +193,10 @@ export function useEnhancedKYC() {
 
   const getKYCLevelColor = useCallback((level: VerificationType | 'none'): string => {
     switch (level) {
-      case 'basic': return 'bg-blue-100 text-blue-700';
-      case 'standard': return 'bg-green-100 text-green-700';
-      case 'enhanced': return 'bg-purple-100 text-purple-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'basic': return 'bg-chart-2/10 text-chart-2';
+      case 'standard': return 'bg-chart-1/10 text-chart-1';
+      case 'enhanced': return 'bg-chart-4/10 text-chart-4';
+      default: return 'bg-muted text-muted-foreground';
     }
   }, []);
 
