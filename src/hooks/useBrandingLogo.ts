@@ -36,7 +36,8 @@ export const useBrandingLogo = (logoKey: string, fallbackUrl: string = astraLogo
 
       return null;
     },
-    staleTime: 60_000,
+    staleTime: 30 * 60 * 1000,  // 30 min - logo almost never changes
+    gcTime: 60 * 60 * 1000,      // 1 hour in memory
     refetchOnWindowFocus: false,
   });
 

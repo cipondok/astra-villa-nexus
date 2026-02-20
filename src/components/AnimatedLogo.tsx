@@ -1,6 +1,16 @@
 import React from "react";
 import fallbackLogo from "@/assets/astra-logo.png";
 
+// Preconnect hint for logo loading - emitted once globally
+if (typeof document !== 'undefined' && !document.querySelector('link[rel="preload"][as="image"][data-logo]')) {
+  const preload = document.createElement('link');
+  preload.rel = 'preload';
+  preload.as = 'image';
+  preload.href = fallbackLogo;
+  preload.setAttribute('data-logo', '1');
+  document.head.appendChild(preload);
+}
+
 interface AnimatedLogoProps {
   className?: string;
   size?: "sm" | "md" | "lg";
