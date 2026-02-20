@@ -104,20 +104,20 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
   const getLevelIcon = (levelName: string) => {
     const level = getMembershipFromUserLevel(levelName);
     switch (level) {
-      case 'diamond': return <Gem className="h-4 w-4 text-cyan-400" />;
-      case 'platinum': return <Crown className="h-4 w-4 text-purple-400" />;
-      case 'gold': return <Award className="h-4 w-4 text-yellow-400" />;
-      default: return <Award className="h-4 w-4 text-gray-400" />;
+      case 'diamond': return <Gem className="h-4 w-4 text-chart-2" />;
+      case 'platinum': return <Crown className="h-4 w-4 text-chart-4" />;
+      case 'gold': return <Award className="h-4 w-4 text-chart-3" />;
+      default: return <Award className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-500/10 via-cyan-500/10 to-pink-500/10 rounded-lg border border-purple-200/50 dark:border-purple-800/50">
+      <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg border border-primary/20">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-cyan-600 rounded-lg flex items-center justify-center">
-            <Crown className="h-4 w-4 text-white" />
+          <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+            <Crown className="h-4 w-4 text-primary" />
           </div>
           <div>
             <h2 className="text-sm font-bold">VIP Analytics Dashboard</h2>
@@ -151,10 +151,10 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
           </div>
         </div>
 
-        <div className="p-2 rounded-lg border bg-cyan-50/50 dark:bg-cyan-950/20 border-cyan-200/50 dark:border-cyan-800/30">
+        <div className="p-2 rounded-lg border bg-chart-2/5 border-chart-2/20">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-cyan-500/20 rounded flex items-center justify-center">
-              <Gem className="h-3 w-3 text-cyan-500" />
+            <div className="w-6 h-6 bg-chart-2/10 rounded flex items-center justify-center">
+              <Gem className="h-3 w-3 text-chart-2" />
             </div>
             <div>
               <div className="text-lg font-bold">
@@ -165,10 +165,10 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
           </div>
         </div>
 
-        <div className="p-2 rounded-lg border bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 dark:border-purple-800/30">
+        <div className="p-2 rounded-lg border bg-chart-4/5 border-chart-4/20">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
-              <Crown className="h-3 w-3 text-purple-500" />
+            <div className="w-6 h-6 bg-chart-4/10 rounded flex items-center justify-center">
+              <Crown className="h-3 w-3 text-chart-4" />
             </div>
             <div>
               <div className="text-lg font-bold">
@@ -182,10 +182,10 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* VIP Distribution */}
-        <Card className="border-purple-200/50 dark:border-purple-800/30">
+        <Card>
           <CardHeader className="p-3 pb-2">
             <CardTitle className="text-xs flex items-center gap-2">
-              <TrendingUp className="h-3 w-3 text-purple-600" />
+              <TrendingUp className="h-3 w-3 text-primary" />
               VIP Level Distribution
             </CardTitle>
           </CardHeader>
@@ -201,7 +201,10 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
                 {distribution.map((item) => {
                   const percentage = totalVIPUsers ? (item.count / totalVIPUsers) * 100 : 0;
                   const membership = getMembershipFromUserLevel(item.level_name);
-                  const config = getMembershipConfig(membership);
+                  
+                  const barColor = membership === 'diamond' ? 'hsl(var(--chart-2))' :
+                    membership === 'platinum' ? 'hsl(var(--chart-4))' :
+                    membership === 'gold' ? 'hsl(var(--chart-3))' : 'hsl(var(--muted-foreground))';
                   
                   return (
                     <div key={item.level_name} className="space-y-1">
@@ -215,13 +218,7 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
                       <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                         <div 
                           className="h-full rounded-full transition-all duration-500"
-                          style={{ 
-                            width: `${percentage}%`,
-                            backgroundColor: config.color.replace('text-', '').includes('cyan') ? '#22d3ee' :
-                              config.color.includes('purple') ? '#a855f7' :
-                              config.color.includes('yellow') ? '#eab308' :
-                              config.color.includes('gray') ? '#9ca3af' : '#3b82f6'
-                          }}
+                          style={{ width: `${percentage}%`, backgroundColor: barColor }}
                         />
                       </div>
                     </div>
@@ -235,10 +232,10 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
         </Card>
 
         {/* Recent Activity */}
-        <Card className="border-cyan-200/50 dark:border-cyan-800/30">
+        <Card>
           <CardHeader className="p-3 pb-2">
             <CardTitle className="text-xs flex items-center gap-2">
-              <ArrowUpCircle className="h-3 w-3 text-cyan-600" />
+              <ArrowUpCircle className="h-3 w-3 text-chart-2" />
               Recent VIP Members
             </CardTitle>
           </CardHeader>
