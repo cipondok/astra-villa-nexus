@@ -55,7 +55,7 @@ const BusinessIntelligenceDashboard = () => {
     { category: 'Unsatisfied', count: 7, percentage: 2 }
   ];
 
-  const COLORS = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444'];
+  const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--destructive))'];
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -118,11 +118,11 @@ const BusinessIntelligenceDashboard = () => {
                     <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
                     <p className="text-2xl font-bold">{formatIDR(328000000)}</p>
                     <div className="flex items-center gap-1 mt-1">
-                      <TrendingUp className="h-3 w-3 text-green-500" />
-                      <span className="text-xs text-green-600">+23.5%</span>
+                      <TrendingUp className="h-3 w-3 text-chart-1" />
+                      <span className="text-xs text-chart-1">+23.5%</span>
                     </div>
                   </div>
-                  <DollarSign className="h-8 w-8 text-green-500" />
+                  <DollarSign className="h-8 w-8 text-chart-1" />
                 </div>
               </CardContent>
             </Card>
@@ -133,11 +133,11 @@ const BusinessIntelligenceDashboard = () => {
                     <p className="text-sm font-medium text-muted-foreground">Total Profit</p>
                     <p className="text-2xl font-bold">{formatIDR(96000000)}</p>
                     <div className="flex items-center gap-1 mt-1">
-                      <TrendingUp className="h-3 w-3 text-green-500" />
-                      <span className="text-xs text-green-600">+18.2%</span>
+                      <TrendingUp className="h-3 w-3 text-chart-1" />
+                      <span className="text-xs text-chart-1">+18.2%</span>
                     </div>
                   </div>
-                  <Target className="h-8 w-8 text-blue-500" />
+                  <Target className="h-8 w-8 text-chart-2" />
                 </div>
               </CardContent>
             </Card>
@@ -148,11 +148,11 @@ const BusinessIntelligenceDashboard = () => {
                     <p className="text-sm font-medium text-muted-foreground">Properties Sold</p>
                     <p className="text-2xl font-bold">116</p>
                     <div className="flex items-center gap-1 mt-1">
-                      <TrendingUp className="h-3 w-3 text-green-500" />
-                      <span className="text-xs text-green-600">+15.8%</span>
+                      <TrendingUp className="h-3 w-3 text-chart-1" />
+                      <span className="text-xs text-chart-1">+15.8%</span>
                     </div>
                   </div>
-                  <Activity className="h-8 w-8 text-purple-500" />
+                  <Activity className="h-8 w-8 text-chart-4" />
                 </div>
               </CardContent>
             </Card>
@@ -169,8 +169,8 @@ const BusinessIntelligenceDashboard = () => {
                   <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip formatter={(value) => [formatIDR(Number(value) * 1000000), '']} />
-                  <Area type="monotone" dataKey="revenue" stackId="1" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.6} name="Revenue" />
-                  <Area type="monotone" dataKey="profit" stackId="2" stroke="#10B981" fill="#10B981" fillOpacity={0.6} name="Profit" />
+                  <Area type="monotone" dataKey="revenue" stackId="1" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2))" fillOpacity={0.6} name="Revenue" />
+                  <Area type="monotone" dataKey="profit" stackId="2" stroke="hsl(var(--chart-1))" fill="hsl(var(--chart-1))" fillOpacity={0.6} name="Profit" />
                 </AreaChart>
               </ResponsiveContainer>
             </CardContent>
@@ -186,7 +186,7 @@ const BusinessIntelligenceDashboard = () => {
             <CardContent>
               <div className="space-y-4">
                 {marketInsights.map((area) => (
-                  <div key={area.area} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div key={area.area} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                     <div>
                       <h3 className="font-semibold">{area.area}</h3>
                       <p className="text-sm text-muted-foreground">{area.volume} properties</p>
@@ -194,8 +194,8 @@ const BusinessIntelligenceDashboard = () => {
                     <div className="text-right">
                       <p className="font-bold">{formatIDR(area.avgPrice * 15000)}</p>
                       <div className="flex items-center gap-1">
-                        <TrendingUp className="h-3 w-3 text-green-500" />
-                        <span className="text-xs text-green-600">+{area.growth}%</span>
+                        <TrendingUp className="h-3 w-3 text-chart-1" />
+                        <span className="text-xs text-chart-1">+{area.growth}%</span>
                       </div>
                     </div>
                   </div>
@@ -214,7 +214,7 @@ const BusinessIntelligenceDashboard = () => {
             <CardContent>
               <div className="space-y-4">
                 {vendorPerformance.map((vendor) => (
-                  <div key={vendor.name} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div key={vendor.name} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                     <div>
                       <h3 className="font-semibold">{vendor.name}</h3>
                       <div className="flex items-center gap-2 mt-1">
@@ -222,7 +222,7 @@ const BusinessIntelligenceDashboard = () => {
                           Score: {vendor.score}
                         </Badge>
                         <div className="flex items-center gap-1">
-                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                          <Star className="h-3 w-3 fill-chart-3 text-chart-3" />
                           <span className="text-xs">{vendor.satisfaction}</span>
                         </div>
                       </div>
@@ -254,7 +254,6 @@ const BusinessIntelligenceDashboard = () => {
                       cy="50%"
                       labelLine={false}
                       outerRadius={80}
-                      fill="#8884d8"
                       dataKey="count"
                       label={({ category, percentage }) => `${category}: ${percentage}%`}
                     >
@@ -276,16 +275,16 @@ const BusinessIntelligenceDashboard = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span>Net Promoter Score (NPS)</span>
-                    <Badge variant="default" className="bg-green-500">+72</Badge>
+                    <Badge className="bg-chart-1/10 text-chart-1">+72</Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Customer Retention Rate</span>
-                    <Badge variant="default" className="bg-blue-500">94.5%</Badge>
+                    <Badge className="bg-chart-2/10 text-chart-2">94.5%</Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Average Rating</span>
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-4 w-4 fill-chart-3 text-chart-3" />
                       <span className="font-semibold">4.7/5</span>
                     </div>
                   </div>
