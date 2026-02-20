@@ -21,6 +21,8 @@ import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import { useQueryLoadingIntegration } from '@/hooks/useQueryLoadingIntegration';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
+import MaintenancePage from '@/pages/MaintenancePage';
 
 // Lazy load all non-critical shell components — reduces initial parse time
 const Navigation = lazy(() => import('@/components/Navigation'));
@@ -122,6 +124,33 @@ const PageLoader = () => (
   </div>
 );
 
+// Hook to check maintenance mode status from DB
+const useMaintenanceMode = () => {
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [maintenanceMessage, setMaintenanceMessage] = useState('');
+
+  useEffect(() => {
+    const check = async () => {
+      try {
+        const { supabase } = await import('@/integrations/supabase/client');
+        const { data } = await supabase
+          .from('system_settings')
+          .select('key, value')
+          .in('key', ['maintenanceMode', 'maintenanceMessage']);
+        const map: Record<string, string> = {};
+        data?.forEach((r) => { map[r.key] = String(r.value ?? ''); });
+        setMaintenanceMode(map.maintenanceMode === 'true');
+        setMaintenanceMessage(map.maintenanceMessage || '');
+      } catch {
+        // silent — don't block app on settings error
+      }
+    };
+    check();
+  }, []);
+
+  return { maintenanceMode, maintenanceMessage };
+};
+
 const AppContent = () => {
   useCLSMonitor(process.env.NODE_ENV === 'development');
   useScrollRestore(true);
@@ -132,6 +161,13 @@ const AppContent = () => {
   const { language } = useLanguage();
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings'].includes(location.pathname);
   const { isMobile } = useIsMobile();
+  const { isAdmin } = useAdminCheck();
+  const { maintenanceMode, maintenanceMessage } = useMaintenanceMode();
+
+  // Block non-admins when maintenance mode is on (admin routes stay accessible)
+  if (maintenanceMode && !isAdmin && !isAdminRoute) {
+    return <MaintenancePage message={maintenanceMessage} />;
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -334,8 +370,6 @@ function App() {
 
         return () => clearTimeout(timer);
       } catch (error) {
-        console.error('Error checking welcome screen setting:', error);
-
         // On error, show welcome screen briefly then proceed
         const timer = setTimeout(async () => {
           setIsLoading(false);
