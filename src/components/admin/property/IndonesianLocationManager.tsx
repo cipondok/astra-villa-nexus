@@ -587,7 +587,7 @@ const IndonesianLocationManager = () => {
               ) : syncProgress?.hasError ? (
                 <AlertCircle className="h-5 w-5 text-destructive" />
               ) : (
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
+                <CheckCircle2 className="h-5 w-5 text-chart-1" />
               )}
               Sinkronisasi Lokasi Indonesia
             </DialogTitle>
@@ -632,11 +632,11 @@ const IndonesianLocationManager = () => {
             {syncProgress && (syncProgress.stats.inserted > 0 || syncProgress.stats.updated > 0) && (
               <div className="flex gap-4 justify-center py-2">
                 <div className="flex items-center gap-2">
-                  <Database className="h-4 w-4 text-green-500" />
+                  <Database className="h-4 w-4 text-chart-1" />
                   <span className="text-sm"><strong>{syncProgress.stats.inserted}</strong> disimpan</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <RefreshCw className="h-4 w-4 text-blue-500" />
+                  <RefreshCw className="h-4 w-4 text-chart-2" />
                   <span className="text-sm"><strong>{syncProgress.stats.updated}</strong> diperbarui</span>
                 </div>
                 {syncProgress.stats.errors > 0 && (
