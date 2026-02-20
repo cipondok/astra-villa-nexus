@@ -92,26 +92,26 @@ const SystemStatusChecker = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'healthy':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-chart-1" />;
       case 'warning':
-        return <AlertCircle className="h-5 w-5 text-yellow-500" />;
+        return <AlertCircle className="h-5 w-5 text-chart-3" />;
       case 'error':
-        return <XCircle className="h-5 w-5 text-red-500" />;
+        return <XCircle className="h-5 w-5 text-destructive" />;
       default:
-        return <AlertCircle className="h-5 w-5 text-gray-500" />;
+        return <AlertCircle className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'healthy':
-        return 'bg-green-100 text-green-800';
+        return 'bg-chart-1/10 text-chart-1';
       case 'warning':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-chart-3/10 text-chart-3';
       case 'error':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -147,19 +147,19 @@ const SystemStatusChecker = () => {
             <Badge className={getStatusColor(overallStatus)}>
               System {overallStatus.toUpperCase()}
             </Badge>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-muted-foreground">
               Last checked: {checks[0]?.lastChecked.toLocaleTimeString() || 'Never'}
             </span>
           </div>
           
           <div className="space-y-3">
             {checks.map((check) => (
-              <div key={check.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div key={check.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                 <div className="flex items-center gap-3">
                   {getStatusIcon(check.status)}
                   <div>
                     <div className="font-medium">{check.name}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-sm text-muted-foreground">
                       {check.message}
                     </div>
                   </div>
