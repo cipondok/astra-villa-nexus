@@ -389,13 +389,12 @@ const Navigation = () => {
               {pastHero && isHomePage && (
                 <form onSubmit={handleHeaderSearch} className="flex items-center gap-1">
                   <div className="relative">
-                    <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
                     <Input
                       type="text"
                       value={headerSearchQuery}
                       onChange={(e) => setHeaderSearchQuery(e.target.value)}
                       placeholder="Search..."
-                      className="pl-7 sm:pl-8 pr-2 h-7 sm:h-8 w-24 sm:w-32 lg:w-44 xl:w-56 text-[11px] sm:text-xs bg-muted/30 dark:bg-muted/20 border-border/40 rounded-lg focus:bg-background focus:w-36 sm:focus:w-44 lg:focus:w-56 transition-all duration-300"
+                      className="px-3 h-7 sm:h-8 w-24 sm:w-32 lg:w-44 xl:w-56 text-[11px] sm:text-xs bg-muted/30 dark:bg-muted/20 border-border/40 rounded-lg focus:bg-background focus:w-36 sm:focus:w-44 lg:focus:w-56 transition-all duration-300"
                     />
                   </div>
                   <Button type="submit" size="sm" className="h-7 sm:h-8 w-7 sm:w-8 p-0 rounded-lg bg-primary hover:bg-primary/90 shrink-0">
