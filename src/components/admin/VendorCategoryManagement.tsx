@@ -34,14 +34,14 @@ const VendorCategoryManagement = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-indigo-500/10 via-blue-500/10 to-cyan-500/10 rounded-lg border border-indigo-200/50 dark:border-indigo-800/50">
-        <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center">
-          <FolderTree className="h-4 w-4 text-white" />
+      <div className="flex items-center gap-3 p-3 bg-primary/5 rounded-lg border border-border">
+        <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+          <FolderTree className="h-4 w-4 text-primary" />
         </div>
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold">Vendor Category Management</h2>
-            <Badge className="bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 text-[9px] px-1.5 py-0 h-4">Hierarchy</Badge>
+            <Badge className="bg-primary/20 text-primary text-[9px] px-1.5 py-0 h-4">Hierarchy</Badge>
           </div>
           <p className="text-[10px] text-muted-foreground">Manage vendor service categories</p>
         </div>
@@ -49,42 +49,42 @@ const VendorCategoryManagement = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-3 gap-2">
-        <Card className="border-blue-200/50 dark:border-blue-800/30">
+        <Card className="border-border/50">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
-                <FolderTree className="h-3 w-3 text-blue-600" />
+              <div className="w-6 h-6 bg-primary/20 rounded flex items-center justify-center">
+                <FolderTree className="h-3 w-3 text-primary" />
               </div>
               <div>
-                <div className="text-sm font-bold text-blue-600">{stats?.serviceCategories || 0}</div>
+                <div className="text-sm font-bold text-primary">{stats?.serviceCategories || 0}</div>
                 <div className="text-[9px] text-muted-foreground">Categories</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-green-200/50 dark:border-green-800/30">
+        <Card className="border-border/50">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
-                <Tag className="h-3 w-3 text-green-600" />
+              <div className="w-6 h-6 bg-chart-1/20 rounded flex items-center justify-center">
+                <Tag className="h-3 w-3 text-chart-1" />
               </div>
               <div>
-                <div className="text-sm font-bold text-green-600">{stats?.serviceNames || 0}</div>
+                <div className="text-sm font-bold text-chart-1">{stats?.serviceNames || 0}</div>
                 <div className="text-[9px] text-muted-foreground">Services</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-purple-200/50 dark:border-purple-800/30">
+        <Card className="border-border/50">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
-                <Layers className="h-3 w-3 text-purple-600" />
+              <div className="w-6 h-6 bg-chart-2/20 rounded flex items-center justify-center">
+                <Layers className="h-3 w-3 text-chart-2" />
               </div>
               <div>
-                <div className="text-sm font-bold text-purple-600">{stats?.subcategories || 0}</div>
+                <div className="text-sm font-bold text-chart-2">{stats?.subcategories || 0}</div>
                 <div className="text-[9px] text-muted-foreground">Subcats</div>
               </div>
             </div>
@@ -95,19 +95,19 @@ const VendorCategoryManagement = () => {
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
         <TabsList className="grid w-full grid-cols-4 h-8 p-0.5 bg-muted/50">
-          <TabsTrigger value="tree-view" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-indigo-500/20 data-[state=active]:text-indigo-700 dark:data-[state=active]:text-indigo-400">
+          <TabsTrigger value="tree-view" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             <FolderTree className="h-3 w-3" />
             Tree
           </TabsTrigger>
-          <TabsTrigger value="service-categories" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-700 dark:data-[state=active]:text-blue-400">
+          <TabsTrigger value="service-categories" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-chart-2/20 data-[state=active]:text-chart-2">
             <List className="h-3 w-3" />
             Main
           </TabsTrigger>
-          <TabsTrigger value="subcategories" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">
+          <TabsTrigger value="subcategories" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-chart-4/20 data-[state=active]:text-chart-4">
             <Layers className="h-3 w-3" />
             Sub
           </TabsTrigger>
-          <TabsTrigger value="service-names" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-700 dark:data-[state=active]:text-green-400">
+          <TabsTrigger value="service-names" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-chart-1/20 data-[state=active]:text-chart-1">
             <Tag className="h-3 w-3" />
             Names
           </TabsTrigger>

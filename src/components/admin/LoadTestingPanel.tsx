@@ -100,10 +100,10 @@ const LoadTestingPanel = () => {
   };
 
   const getPerformanceStatus = (avgResponseTime: number) => {
-    if (avgResponseTime < 100) return { label: 'Excellent', color: 'text-green-500', bg: 'bg-green-500/10' };
-    if (avgResponseTime < 300) return { label: 'Good', color: 'text-blue-500', bg: 'bg-blue-500/10' };
-    if (avgResponseTime < 500) return { label: 'Fair', color: 'text-yellow-500', bg: 'bg-yellow-500/10' };
-    return { label: 'Poor', color: 'text-red-500', bg: 'bg-red-500/10' };
+    if (avgResponseTime < 100) return { label: 'Excellent', color: 'text-chart-1', bg: 'bg-chart-1/10' };
+    if (avgResponseTime < 300) return { label: 'Good', color: 'text-chart-2', bg: 'bg-chart-2/10' };
+    if (avgResponseTime < 500) return { label: 'Fair', color: 'text-chart-3', bg: 'bg-chart-3/10' };
+    return { label: 'Poor', color: 'text-destructive', bg: 'bg-destructive/10' };
   };
 
   return (
@@ -233,7 +233,7 @@ const LoadTestingPanel = () => {
                         <p className="text-sm text-muted-foreground">Total Requests</p>
                         <p className="text-2xl font-bold">{testResult.totalRequests}</p>
                       </div>
-                      <Activity className="h-8 w-8 text-blue-500" />
+                      <Activity className="h-8 w-8 text-chart-2" />
                     </div>
                   </CardContent>
                 </Card>
@@ -245,7 +245,7 @@ const LoadTestingPanel = () => {
                         <p className="text-sm text-muted-foreground">Avg Response</p>
                         <p className="text-2xl font-bold">{testResult.averageResponseTime}ms</p>
                       </div>
-                      <Clock className="h-8 w-8 text-green-500" />
+                      <Clock className="h-8 w-8 text-chart-1" />
                     </div>
                   </CardContent>
                 </Card>
@@ -257,7 +257,7 @@ const LoadTestingPanel = () => {
                         <p className="text-sm text-muted-foreground">Requests/sec</p>
                         <p className="text-2xl font-bold">{testResult.requestsPerSecond}</p>
                       </div>
-                      <TrendingUp className="h-8 w-8 text-purple-500" />
+                      <TrendingUp className="h-8 w-8 text-primary" />
                     </div>
                   </CardContent>
                 </Card>
@@ -270,9 +270,9 @@ const LoadTestingPanel = () => {
                         <p className="text-2xl font-bold">{testResult.errorRate}%</p>
                       </div>
                       {testResult.errorRate === 0 ? (
-                        <CheckCircle className="h-8 w-8 text-green-500" />
+                        <CheckCircle className="h-8 w-8 text-chart-1" />
                       ) : (
-                        <AlertTriangle className="h-8 w-8 text-red-500" />
+                        <AlertTriangle className="h-8 w-8 text-destructive" />
                       )}
                     </div>
                   </CardContent>
@@ -351,11 +351,11 @@ const LoadTestingPanel = () => {
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Successful</p>
-                        <p className="text-lg font-semibold text-green-500">{testResult.successfulRequests}</p>
+                        <p className="text-lg font-semibold text-chart-1">{testResult.successfulRequests}</p>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Failed</p>
-                        <p className="text-lg font-semibold text-red-500">{testResult.failedRequests}</p>
+                        <p className="text-lg font-semibold text-destructive">{testResult.failedRequests}</p>
                       </div>
                     </div>
                   </div>
