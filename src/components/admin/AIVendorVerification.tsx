@@ -82,18 +82,18 @@ const AIVendorVerification = () => {
 
   const getStatusColor = (status: string) => {
     const colors = {
-      pending: "bg-yellow-100 text-yellow-800",
-      verified: "bg-green-100 text-green-800",
-      rejected: "bg-red-100 text-red-800",
-      flagged: "bg-orange-100 text-orange-800"
+      pending: "bg-chart-3/10 text-chart-3 border-chart-3/20",
+      verified: "bg-chart-1/10 text-chart-1 border-chart-1/20",
+      rejected: "bg-destructive/10 text-destructive border-destructive/20",
+      flagged: "bg-chart-4/10 text-chart-4 border-chart-4/20"
     };
-    return colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800";
+    return colors[status as keyof typeof colors] || "bg-muted text-muted-foreground";
   };
 
   const getTrustScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600";
-    return "text-red-600";
+    if (score >= 80) return "text-chart-1";
+    if (score >= 60) return "text-chart-3";
+    return "text-destructive";
   };
 
   const handleVerify = (vendor: any) => {
@@ -142,7 +142,7 @@ const AIVendorVerification = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Verifications</p>
                 <p className="text-2xl font-bold">{verifications?.length || 0}</p>
               </div>
-              <ShieldCheck className="h-8 w-8 text-blue-600" />
+              <ShieldCheck className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -152,11 +152,11 @@ const AIVendorVerification = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Verified</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-chart-1">
                   {verifications?.filter(v => v.verification_status === 'verified').length || 0}
                 </p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -166,11 +166,11 @@ const AIVendorVerification = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Pending</p>
-                <p className="text-2xl font-bold text-yellow-600">
+                <p className="text-2xl font-bold text-chart-3">
                   {verifications?.filter(v => v.verification_status === 'pending').length || 0}
                 </p>
               </div>
-              <Activity className="h-8 w-8 text-yellow-600" />
+              <Activity className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -180,11 +180,11 @@ const AIVendorVerification = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Flagged</p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-2xl font-bold text-destructive">
                   {verifications?.filter(v => v.verification_status === 'flagged').length || 0}
                 </p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-600" />
+              <AlertTriangle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -241,7 +241,7 @@ const AIVendorVerification = () => {
                 </div>
 
                 {verification.verification_notes && (
-                  <div className="mt-3 p-2 bg-gray-50 rounded">
+                  <div className="mt-3 p-2 bg-muted rounded">
                     <Label className="text-sm font-medium">Notes:</Label>
                     <p className="text-sm text-muted-foreground">{verification.verification_notes}</p>
                   </div>
@@ -295,7 +295,7 @@ const AIVendorVerification = () => {
                     <Camera className="h-4 w-4" />
                     Biometric Verification
                   </Label>
-                  <div className="p-3 bg-gray-50 rounded mt-2">
+                  <div className="p-3 bg-muted rounded mt-2">
                     <pre className="text-xs">{JSON.stringify(selectedVendor.biometric_verification, null, 2)}</pre>
                   </div>
                 </div>
@@ -308,7 +308,7 @@ const AIVendorVerification = () => {
                     <FileText className="h-4 w-4" />
                     Document Verification
                   </Label>
-                  <div className="p-3 bg-gray-50 rounded mt-2">
+                  <div className="p-3 bg-muted rounded mt-2">
                     <pre className="text-xs">{JSON.stringify(selectedVendor.document_verification, null, 2)}</pre>
                   </div>
                 </div>

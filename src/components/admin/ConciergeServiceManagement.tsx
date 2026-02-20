@@ -154,21 +154,21 @@ const ConciergeServiceManagement = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-orange-500/10 rounded-lg border border-purple-200/50 dark:border-purple-800/50">
-        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
-          <Crown className="h-6 w-6 text-white" />
+      <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-primary/10 via-accent/10 to-chart-4/10 rounded-lg border border-primary/20">
+        <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center">
+          <Crown className="h-6 w-6 text-primary-foreground" />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-bold">Concierge Service</h2>
-            <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white gap-1">
+            <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground gap-1">
               <Sparkles className="h-3 w-3" />
               2% Commission
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">White-glove property services vs traditional 5-6%</p>
         </div>
-        <Button className="gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+        <Button className="gap-2 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground">
           <Users className="h-4 w-4" />
           Assign Concierge
         </Button>
@@ -569,7 +569,7 @@ const ConciergeServiceManagement = () => {
                           <div>
                             <p className="text-muted-foreground">Rating</p>
                             <p className="font-medium flex items-center gap-1">
-                              <Star className="h-3 w-3 text-yellow-500" />
+                              <Star className="h-3 w-3 text-chart-3" />
                               {vendor.avg_rating?.toFixed(1) || 'N/A'}
                             </p>
                           </div>
@@ -628,19 +628,19 @@ const ConciergeServiceManagement = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-6">
-                  <div className="text-4xl font-bold text-green-600">
+                  <div className="text-4xl font-bold text-chart-1">
                     ${((totalRevenue * 2.5) / 1000000).toFixed(1)}M
                   </div>
                   <p className="text-muted-foreground mt-2">Saved by clients vs 5% traditional commission</p>
                   <div className="mt-4 flex items-center justify-center gap-4 text-sm">
                     <div>
                       <p className="text-muted-foreground">Our Rate</p>
-                      <p className="font-bold text-green-600">2%</p>
+                      <p className="font-bold text-chart-1">2%</p>
                     </div>
                     <div className="text-muted-foreground">vs</div>
                     <div>
                       <p className="text-muted-foreground">Traditional</p>
-                      <p className="font-bold text-red-600">5-6%</p>
+                      <p className="font-bold text-destructive">5-6%</p>
                     </div>
                   </div>
                 </div>

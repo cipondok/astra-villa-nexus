@@ -377,11 +377,11 @@ const MortgageManagement: React.FC = () => {
       case 'pending':
         return <Badge variant="secondary"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
       case 'contacted':
-        return <Badge variant="outline" className="text-blue-600"><Phone className="h-3 w-3 mr-1" />Contacted</Badge>;
+        return <Badge variant="outline" className="text-chart-2"><Phone className="h-3 w-3 mr-1" />Contacted</Badge>;
       case 'processing':
-        return <Badge variant="outline" className="text-yellow-600">Processing</Badge>;
+        return <Badge variant="outline" className="text-chart-3">Processing</Badge>;
       case 'approved':
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
+        return <Badge className="bg-chart-1 text-chart-1-foreground"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
       case 'rejected':
         return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Rejected</Badge>;
       default:
@@ -450,7 +450,7 @@ const MortgageManagement: React.FC = () => {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{stats?.pendingInquiries || 0}</div>
+            <div className="text-2xl font-bold text-chart-3">{stats?.pendingInquiries || 0}</div>
           </CardContent>
         </Card>
       </div>
@@ -532,7 +532,7 @@ const MortgageManagement: React.FC = () => {
                                   {bankRates.length} rates
                                 </Button>
                                 {lowestRate && (
-                                  <span className="text-sm text-green-600">
+                                  <span className="text-sm text-chart-1">
                                     from {lowestRate}%
                                   </span>
                                 )}
