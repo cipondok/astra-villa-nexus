@@ -26,34 +26,73 @@ export default defineConfig(({ mode }) => ({
   },
   optimizeDeps: {
     include: ['@vladmandic/face-api'],
+    // Exclude heavy blockchain/web3 libs from pre-bundling to reduce memory
+    exclude: ['three', '@react-three/fiber', '@react-three/drei'],
   },
   build: {
+    // Use esbuild for minification - much lower memory than terser
+    minify: 'esbuild',
+    // Limit parallel file ops to reduce peak memory usage
     rollupOptions: {
+      maxParallelFileOps: 2,
       output: {
-        manualChunks: {
-          // Core React vendor chunk
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          // UI library chunk
-          'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs', '@radix-ui/react-select', '@radix-ui/react-tooltip', 'lucide-react'],
-          // Data & state chunk
-          'vendor-query': ['@tanstack/react-query', 'zustand'],
-          // Charts chunk (heavy)
-          'vendor-charts': ['recharts'],
-          // Animation chunk
-          'vendor-motion': ['framer-motion'],
-          // Supabase chunk
-          'vendor-supabase': ['@supabase/supabase-js'],
-          // 3D/Heavy libs - separate to avoid blocking main bundle
-          'vendor-3d': ['three', '@react-three/fiber', '@react-three/drei'],
+        // More granular chunks reduce peak memory during bundling
+        manualChunks(id) {
+          // Core React
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/') || id.includes('node_modules/react-router-dom/')) {
+            return 'vendor-react';
+          }
+          // Supabase
+          if (id.includes('node_modules/@supabase/')) {
+            return 'vendor-supabase';
+          }
+          // Charts
+          if (id.includes('node_modules/recharts/')) {
+            return 'vendor-charts';
+          }
+          // 3D (heavy - isolate completely)
+          if (id.includes('node_modules/three/') || id.includes('node_modules/@react-three/')) {
+            return 'vendor-3d';
+          }
+          // Animation
+          if (id.includes('node_modules/framer-motion/')) {
+            return 'vendor-motion';
+          }
+          // State & query
+          if (id.includes('node_modules/@tanstack/') || id.includes('node_modules/zustand/')) {
+            return 'vendor-query';
+          }
+          // Web3 / blockchain (very heavy - isolate)
+          if (id.includes('node_modules/wagmi/') || id.includes('node_modules/@wagmi/') || id.includes('node_modules/viem/') || id.includes('node_modules/@reown/') || id.includes('node_modules/@web3modal/') || id.includes('node_modules/@coinbase/') || id.includes('node_modules/porto/')) {
+            return 'vendor-web3';
+          }
+          // Radix UI
+          if (id.includes('node_modules/@radix-ui/')) {
+            return 'vendor-ui';
+          }
+          // Lucide icons
+          if (id.includes('node_modules/lucide-react/')) {
+            return 'vendor-icons';
+          }
+          // AI / ML (very heavy)
+          if (id.includes('node_modules/@tensorflow/') || id.includes('node_modules/@huggingface/') || id.includes('node_modules/@vladmandic/') || id.includes('node_modules/tesseract')) {
+            return 'vendor-ai';
+          }
+          // Mapbox
+          if (id.includes('node_modules/mapbox-gl/') || id.includes('node_modules/@mapbox/')) {
+            return 'vendor-maps';
+          }
         },
       },
     },
-    // Increase chunk size warning limit - admin has many large components
-    chunkSizeWarningLimit: 1000,
+    // Increase chunk size warning limit
+    chunkSizeWarningLimit: 1500,
     // Enable CSS code splitting
     cssCodeSplit: true,
     // Target modern browsers for smaller output
     target: 'es2020',
+    // Reduce sourcemap generation to save memory
+    sourcemap: false,
   },
 }));
 
