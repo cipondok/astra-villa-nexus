@@ -45,8 +45,8 @@ const AutomationPlatformManagement: React.FC = () => {
       id: 'onboarding',
       name: 'User Onboarding',
       icon: Users,
-      color: 'text-blue-500',
-      bgColor: 'bg-blue-500/10',
+      color: 'text-chart-2',
+      bgColor: 'bg-chart-2/10',
       target: '1,000+/day',
       current: todayStats.usersOnboarded,
       status: 'active',
@@ -57,8 +57,8 @@ const AutomationPlatformManagement: React.FC = () => {
       id: 'listings',
       name: 'Listing Processing',
       icon: Building2,
-      color: 'text-green-500',
-      bgColor: 'bg-green-500/10',
+      color: 'text-chart-1',
+      bgColor: 'bg-chart-1/10',
       target: '5,000+/week',
       current: todayStats.listingsProcessed,
       status: 'active',
@@ -69,8 +69,8 @@ const AutomationPlatformManagement: React.FC = () => {
       id: 'messaging',
       name: 'Message Handling',
       icon: MessageCircle,
-      color: 'text-purple-500',
-      bgColor: 'bg-purple-500/10',
+      color: 'text-chart-4',
+      bgColor: 'bg-chart-4/10',
       target: '10,000+/day',
       current: todayStats.messagesHandled,
       status: 'active',
@@ -81,8 +81,8 @@ const AutomationPlatformManagement: React.FC = () => {
       id: 'reports',
       name: 'Report Generation',
       icon: FileText,
-      color: 'text-amber-500',
-      bgColor: 'bg-amber-500/10',
+      color: 'text-chart-3',
+      bgColor: 'bg-chart-3/10',
       target: '100+/day',
       current: todayStats.reportsGenerated,
       status: 'active',
@@ -93,8 +93,8 @@ const AutomationPlatformManagement: React.FC = () => {
       id: 'partners',
       name: 'Partner Management',
       icon: Handshake,
-      color: 'text-cyan-500',
-      bgColor: 'bg-cyan-500/10',
+      color: 'text-primary',
+      bgColor: 'bg-primary/10',
       target: '500+ active',
       current: todayStats.partnerActions,
       status: 'active',
@@ -254,19 +254,19 @@ const AutomationPlatformManagement: React.FC = () => {
               </CardHeader>
               <CardContent className="grid grid-cols-2 gap-3">
                 <Button variant="outline" className="h-auto py-4 flex-col gap-2">
-                  <Play className="h-5 w-5 text-green-500" />
+                  <Play className="h-5 w-5 text-chart-1" />
                   <span>Run All Pending</span>
                 </Button>
                 <Button variant="outline" className="h-auto py-4 flex-col gap-2">
-                  <Pause className="h-5 w-5 text-amber-500" />
+                  <Pause className="h-5 w-5 text-chart-3" />
                   <span>Pause Queue</span>
                 </Button>
                 <Button variant="outline" className="h-auto py-4 flex-col gap-2">
-                  <RefreshCw className="h-5 w-5 text-blue-500" />
+                  <RefreshCw className="h-5 w-5 text-primary" />
                   <span>Retry Failed</span>
                 </Button>
                 <Button variant="outline" className="h-auto py-4 flex-col gap-2">
-                  <BarChart3 className="h-5 w-5 text-purple-500" />
+                  <BarChart3 className="h-5 w-5 text-chart-4" />
                   <span>Generate Report</span>
                 </Button>
               </CardContent>
@@ -280,23 +280,23 @@ const AutomationPlatformManagement: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="p-4 rounded-xl bg-green-500/10 text-center">
-                  <CheckCircle2 className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                <div className="p-4 rounded-xl bg-chart-1/10 text-center">
+                  <CheckCircle2 className="h-8 w-8 text-chart-1 mx-auto mb-2" />
                   <div className="text-lg font-semibold">99.9%</div>
                   <div className="text-xs text-muted-foreground">Uptime</div>
                 </div>
-                <div className="p-4 rounded-xl bg-blue-500/10 text-center">
-                  <Timer className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+                <div className="p-4 rounded-xl bg-primary/10 text-center">
+                  <Timer className="h-8 w-8 text-primary mx-auto mb-2" />
                   <div className="text-lg font-semibold">45ms</div>
                   <div className="text-xs text-muted-foreground">Avg Latency</div>
                 </div>
-                <div className="p-4 rounded-xl bg-purple-500/10 text-center">
-                  <Activity className="h-8 w-8 text-purple-500 mx-auto mb-2" />
+                <div className="p-4 rounded-xl bg-chart-4/10 text-center">
+                  <Activity className="h-8 w-8 text-chart-4 mx-auto mb-2" />
                   <div className="text-lg font-semibold">24.5K</div>
                   <div className="text-xs text-muted-foreground">Tasks Today</div>
                 </div>
-                <div className="p-4 rounded-xl bg-amber-500/10 text-center">
-                  <AlertCircle className="h-8 w-8 text-amber-500 mx-auto mb-2" />
+                <div className="p-4 rounded-xl bg-chart-3/10 text-center">
+                  <AlertCircle className="h-8 w-8 text-chart-3 mx-auto mb-2" />
                   <div className="text-lg font-semibold">3</div>
                   <div className="text-xs text-muted-foreground">Pending Issues</div>
                 </div>
@@ -396,7 +396,7 @@ const AutomationPlatformManagement: React.FC = () => {
                       <TableCell>{formatNumber(bot.interactions)}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <span className="text-amber-500">★</span>
+                          <span className="text-chart-3">★</span>
                           {bot.satisfaction}
                         </div>
                       </TableCell>
@@ -527,13 +527,13 @@ const AutomationPlatformManagement: React.FC = () => {
                     <div className="flex items-center gap-4">
                       <div className={cn(
                         "p-2 rounded-lg",
-                        task.status === 'processing' && "bg-blue-500/10",
-                        task.status === 'pending' && "bg-amber-500/10",
-                        task.status === 'completed' && "bg-green-500/10"
+                        task.status === 'processing' && "bg-primary/10",
+                        task.status === 'pending' && "bg-chart-3/10",
+                        task.status === 'completed' && "bg-chart-1/10"
                       )}>
-                        {task.status === 'processing' && <RefreshCw className="h-5 w-5 text-blue-500 animate-spin" />}
-                        {task.status === 'pending' && <Clock className="h-5 w-5 text-amber-500" />}
-                        {task.status === 'completed' && <CheckCircle2 className="h-5 w-5 text-green-500" />}
+                        {task.status === 'processing' && <RefreshCw className="h-5 w-5 text-primary animate-spin" />}
+                        {task.status === 'pending' && <Clock className="h-5 w-5 text-chart-3" />}
+                        {task.status === 'completed' && <CheckCircle2 className="h-5 w-5 text-chart-1" />}
                       </div>
                       <div>
                         <div className="font-medium capitalize">{task.type.replace('_', ' ')}</div>

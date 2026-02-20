@@ -71,38 +71,38 @@ const IdentityVerificationPanel = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'verified':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-chart-1" />;
       case 'rejected':
-        return <X className="h-4 w-4 text-red-500" />;
+        return <X className="h-4 w-4 text-destructive" />;
       case 'pending':
-        return <Clock className="h-4 w-4 text-yellow-500" />;
+        return <Clock className="h-4 w-4 text-chart-3" />;
       default:
-        return <AlertTriangle className="h-4 w-4 text-gray-500" />;
+        return <AlertTriangle className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'verified':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-chart-1/10 text-chart-1 border-chart-1/20';
       case 'rejected':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-chart-3/10 text-chart-3 border-chart-3/20';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
   if (!isAdminUser) {
     return (
-      <Card className="border-red-200 bg-red-50">
+      <Card className="border-destructive/30 bg-destructive/5">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-red-700">
+          <CardTitle className="flex items-center gap-2 text-destructive">
             <Shield className="h-5 w-5" />
             Access Denied
           </CardTitle>
-          <CardDescription className="text-red-600">
+          <CardDescription className="text-destructive/80">
             This panel requires administrator privileges. Identity verification data is highly restricted for security.
           </CardDescription>
         </CardHeader>
@@ -112,13 +112,13 @@ const IdentityVerificationPanel = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="border-amber-200 bg-amber-50">
+      <Card className="border-chart-3/30 bg-chart-3/5">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-amber-700">
+          <CardTitle className="flex items-center gap-2 text-chart-3">
             <Shield className="h-5 w-5" />
             Identity Verification Management
           </CardTitle>
-          <CardDescription className="text-amber-600">
+          <CardDescription className="text-chart-3/80">
             Ultra-secure panel for managing identity verification documents. All access is logged and monitored.
           </CardDescription>
         </CardHeader>
@@ -163,15 +163,15 @@ const IdentityVerificationPanel = () => {
                   </div>
                   <div>
                     <p className="text-sm font-medium">Verified</p>
-                    <p className="text-2xl font-bold text-green-600">{verificationSummary.verified_documents}</p>
+                    <p className="text-2xl font-bold text-chart-1">{verificationSummary.verified_documents}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium">Pending</p>
-                    <p className="text-2xl font-bold text-yellow-600">{verificationSummary.pending_documents}</p>
+                    <p className="text-2xl font-bold text-chart-3">{verificationSummary.pending_documents}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium">Rejected</p>
-                    <p className="text-2xl font-bold text-red-600">{verificationSummary.rejected_documents}</p>
+                    <p className="text-2xl font-bold text-destructive">{verificationSummary.rejected_documents}</p>
                   </div>
                 </div>
                 
@@ -228,19 +228,19 @@ const IdentityVerificationPanel = () => {
                 <SelectContent>
                   <SelectItem value="verified">
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4 text-chart-1" />
                       Verified
                     </div>
                   </SelectItem>
                   <SelectItem value="rejected">
                     <div className="flex items-center gap-2">
-                      <X className="h-4 w-4 text-red-500" />
+                      <X className="h-4 w-4 text-destructive" />
                       Rejected
                     </div>
                   </SelectItem>
                   <SelectItem value="pending">
                     <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-yellow-500" />
+                      <Clock className="h-4 w-4 text-chart-3" />
                       Pending
                     </div>
                   </SelectItem>
@@ -272,13 +272,13 @@ const IdentityVerificationPanel = () => {
         </Card>
       </div>
 
-      <Card className="border-blue-200 bg-blue-50">
+      <Card className="border-primary/30 bg-primary/5">
         <CardContent className="pt-6">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-blue-600 mt-0.5" />
+            <AlertTriangle className="h-5 w-5 text-primary mt-0.5" />
             <div className="space-y-1">
-              <p className="text-sm font-medium text-blue-900">Security Notice</p>
-              <p className="text-sm text-blue-700">
+              <p className="text-sm font-medium text-foreground">Security Notice</p>
+              <p className="text-sm text-muted-foreground">
                 All access to identity verification data is logged with high security ratings. 
                 Direct database access is blocked - only use these secure functions. 
                 Sensitive data like document numbers are automatically masked.
