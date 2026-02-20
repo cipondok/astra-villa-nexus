@@ -50,12 +50,12 @@ import { useRefundDispute, Dispute, DisputeMessage } from '@/hooks/useRefundDisp
 import { useAuth } from '@/contexts/AuthContext';
 
 const statusColors: Record<string, string> = {
-  open: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-  under_review: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-  resolved_buyer: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
-  resolved_seller: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
-  escalated: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-  closed: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
+  open: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+  under_review: 'bg-primary/10 text-primary border-primary/20',
+  resolved_buyer: 'bg-chart-1/10 text-chart-1 border-chart-1/20',
+  resolved_seller: 'bg-chart-2/10 text-chart-2 border-chart-2/20',
+  escalated: 'bg-destructive/10 text-destructive border-destructive/20',
+  closed: 'bg-muted text-muted-foreground border-border',
 };
 
 const categoryIcons: Record<string, React.ElementType> = {
@@ -153,8 +153,8 @@ export const DisputeManagement: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-amber-500/10">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
+            <div className="p-2 rounded-lg bg-chart-3/10">
+              <AlertTriangle className="h-4 w-4 text-chart-3" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Open</p>
@@ -164,8 +164,8 @@ export const DisputeManagement: React.FC = () => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-blue-500/10">
-              <Clock className="h-4 w-4 text-blue-500" />
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Clock className="h-4 w-4 text-primary" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Under Review</p>
@@ -175,8 +175,8 @@ export const DisputeManagement: React.FC = () => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-red-500/10">
-              <Shield className="h-4 w-4 text-red-500" />
+            <div className="p-2 rounded-lg bg-destructive/10">
+              <Shield className="h-4 w-4 text-destructive" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Escalated</p>
@@ -186,8 +186,8 @@ export const DisputeManagement: React.FC = () => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-emerald-500/10">
-              <CheckCircle className="h-4 w-4 text-emerald-500" />
+            <div className="p-2 rounded-lg bg-chart-1/10">
+              <CheckCircle className="h-4 w-4 text-chart-1" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Resolved</p>
@@ -261,14 +261,14 @@ export const DisputeManagement: React.FC = () => {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-3">
                       <div className={`p-2 rounded-lg ${
-                        dispute.category === 'fraud' ? 'bg-red-500/10' :
-                        dispute.category === 'billing' ? 'bg-blue-500/10' :
-                        'bg-amber-500/10'
+                        dispute.category === 'fraud' ? 'bg-destructive/10' :
+                        dispute.category === 'billing' ? 'bg-primary/10' :
+                        'bg-chart-3/10'
                       }`}>
                         <CategoryIcon className={`h-5 w-5 ${
-                          dispute.category === 'fraud' ? 'text-red-500' :
-                          dispute.category === 'billing' ? 'text-blue-500' :
-                          'text-amber-500'
+                          dispute.category === 'fraud' ? 'text-destructive' :
+                          dispute.category === 'billing' ? 'text-primary' :
+                          'text-chart-3'
                         }`} />
                       </div>
                       <div>
@@ -361,8 +361,8 @@ export const DisputeManagement: React.FC = () => {
                 )}
 
                 {selectedDispute.resolution && (
-                  <div className="mt-3 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                    <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
+                  <div className="mt-3 p-3 rounded-lg bg-chart-1/10 border border-chart-1/20">
+                    <p className="text-sm font-medium text-chart-1">
                       Resolution
                     </p>
                     <p className="text-sm mt-1">{selectedDispute.resolution}</p>
@@ -390,8 +390,8 @@ export const DisputeManagement: React.FC = () => {
                           <Avatar className="h-8 w-8">
                             <AvatarFallback className={
                               msg.sender_type === 'admin' ? 'bg-primary/10 text-primary' :
-                              msg.sender_type === 'seller' ? 'bg-purple-500/10 text-purple-500' :
-                              'bg-blue-500/10 text-blue-500'
+                              msg.sender_type === 'seller' ? 'bg-chart-2/10 text-chart-2' :
+                              'bg-chart-4/10 text-chart-4'
                             }>
                               <SenderIcon className="h-4 w-4" />
                             </AvatarFallback>

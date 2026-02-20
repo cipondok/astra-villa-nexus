@@ -43,11 +43,11 @@ import { formatDistanceToNow } from 'date-fns';
 import { useRefundDispute, RefundRequest } from '@/hooks/useRefundDispute';
 
 const statusColors: Record<string, string> = {
-  pending: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-  approved: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-  processing: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
-  completed: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
-  rejected: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  pending: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+  approved: 'bg-primary/10 text-primary border-primary/20',
+  processing: 'bg-chart-2/10 text-chart-2 border-chart-2/20',
+  completed: 'bg-chart-1/10 text-chart-1 border-chart-1/20',
+  rejected: 'bg-destructive/10 text-destructive border-destructive/20',
 };
 
 const categoryLabels: Record<string, string> = {
@@ -109,8 +109,8 @@ export const RefundManagement: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-amber-500/10">
-              <Clock className="h-4 w-4 text-amber-500" />
+            <div className="p-2 rounded-lg bg-chart-3/10">
+              <Clock className="h-4 w-4 text-chart-3" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Pending</p>
@@ -120,8 +120,8 @@ export const RefundManagement: React.FC = () => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-purple-500/10">
-              <RotateCcw className="h-4 w-4 text-purple-500" />
+            <div className="p-2 rounded-lg bg-chart-2/10">
+              <RotateCcw className="h-4 w-4 text-chart-2" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Processing</p>
@@ -131,8 +131,8 @@ export const RefundManagement: React.FC = () => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-emerald-500/10">
-              <CheckCircle className="h-4 w-4 text-emerald-500" />
+            <div className="p-2 rounded-lg bg-chart-1/10">
+              <CheckCircle className="h-4 w-4 text-chart-1" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Completed</p>
@@ -142,8 +142,8 @@ export const RefundManagement: React.FC = () => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-red-500/10">
-              <DollarSign className="h-4 w-4 text-red-500" />
+            <div className="p-2 rounded-lg bg-destructive/10">
+              <DollarSign className="h-4 w-4 text-destructive" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Pending Amount</p>

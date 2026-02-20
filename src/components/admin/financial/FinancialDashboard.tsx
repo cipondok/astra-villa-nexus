@@ -279,7 +279,7 @@ export const FinancialDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatIDR(metrics.totalRevenue)}</div>
-            <div className="flex items-center text-xs text-emerald-600 mt-1">
+            <div className="flex items-center text-xs text-chart-1 mt-1">
               <ArrowUpRight className="h-3 w-3 mr-1" />
               +{metrics.revenueGrowth}% from last month
             </div>
@@ -357,23 +357,23 @@ export const FinancialDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-amber-500/10 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-chart-3/10 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-amber-600" />
+                  <Clock className="h-5 w-5 text-chart-3" />
                   <span className="font-medium">Pending Payouts</span>
                 </div>
                 <span className="font-bold">{formatIDR(metrics.pendingPayouts)}</span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-emerald-500/10 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-chart-1/10 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                  <CheckCircle2 className="h-5 w-5 text-chart-1" />
                   <span className="font-medium">Completed Payouts</span>
                 </div>
                 <span className="font-bold">{formatIDR(metrics.completedPayouts)}</span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-red-500/10 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-destructive/10 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-red-600" />
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
                   <span className="font-medium">Open Disputes</span>
                 </div>
                 <span className="font-bold">{metrics.openDisputes}</span>

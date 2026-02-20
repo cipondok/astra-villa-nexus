@@ -46,11 +46,11 @@ import { useInvoiceSystem, Invoice } from '@/hooks/useInvoiceSystem';
 import { toast } from 'sonner';
 
 const statusColors: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
-  pending: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-  paid: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
-  cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-  refunded: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
+  draft: 'bg-muted text-muted-foreground border-border',
+  pending: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+  paid: 'bg-chart-1/10 text-chart-1 border-chart-1/20',
+  cancelled: 'bg-destructive/10 text-destructive border-destructive/20',
+  refunded: 'bg-chart-2/10 text-chart-2 border-chart-2/20',
 };
 
 export const InvoiceManagement: React.FC = () => {
@@ -111,8 +111,8 @@ export const InvoiceManagement: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-blue-500/10">
-              <FileText className="h-4 w-4 text-blue-500" />
+            <div className="p-2 rounded-lg bg-primary/10">
+              <FileText className="h-4 w-4 text-primary" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Total Invoices</p>
@@ -122,8 +122,8 @@ export const InvoiceManagement: React.FC = () => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-amber-500/10">
-              <Clock className="h-4 w-4 text-amber-500" />
+            <div className="p-2 rounded-lg bg-chart-3/10">
+              <Clock className="h-4 w-4 text-chart-3" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Pending</p>
