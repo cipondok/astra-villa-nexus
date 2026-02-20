@@ -60,27 +60,27 @@ const RealTimeSystemHealth = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'healthy': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'warning': return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      case 'critical': return <XCircle className="h-4 w-4 text-red-500" />;
+      case 'healthy': return <CheckCircle className="h-4 w-4 text-chart-1" />;
+      case 'warning': return <AlertTriangle className="h-4 w-4 text-chart-3" />;
+      case 'critical': return <XCircle className="h-4 w-4 text-destructive" />;
       default: return <Activity className="h-4 w-4" />;
     }
   };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'up': return <TrendingUp className="h-3 w-3 text-red-500" />;
-      case 'down': return <TrendingUp className="h-3 w-3 text-green-500 rotate-180" />;
-      default: return <div className="h-3 w-3 bg-gray-400 rounded-full" />;
+      case 'up': return <TrendingUp className="h-3 w-3 text-destructive" />;
+      case 'down': return <TrendingUp className="h-3 w-3 text-chart-1 rotate-180" />;
+      default: return <div className="h-3 w-3 bg-muted-foreground rounded-full" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'text-green-600';
-      case 'warning': return 'text-yellow-600';
-      case 'critical': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'healthy': return 'text-chart-1';
+      case 'warning': return 'text-chart-3';
+      case 'critical': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -94,7 +94,7 @@ const RealTimeSystemHealth = () => {
   return (
     <div className="space-y-6">
       {/* Overall Health Card */}
-      <Card className={`border-2 ${overallHealth > 80 ? 'border-green-200 bg-green-50' : overallHealth > 60 ? 'border-yellow-200 bg-yellow-50' : 'border-red-200 bg-red-50'}`}>
+      <Card className={`border-2 ${overallHealth > 80 ? 'border-chart-1/30 bg-chart-1/5' : overallHealth > 60 ? 'border-chart-3/30 bg-chart-3/5' : 'border-destructive/30 bg-destructive/5'}`}>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -124,24 +124,24 @@ const RealTimeSystemHealth = () => {
       </Card>
 
       {/* Database Connection Status */}
-      <Card className={`border-2 ${isConnected ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+      <Card className={`border-2 ${isConnected ? 'border-chart-1/30 bg-chart-1/5' : 'border-destructive/30 bg-destructive/5'}`}>
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-full ${isConnected ? 'bg-green-100' : 'bg-red-100'}`}>
-                <Database className={`h-5 w-5 ${isConnected ? 'text-green-600' : 'text-red-600'}`} />
+              <div className={`p-2 rounded-full ${isConnected ? 'bg-chart-1/10' : 'bg-destructive/10'}`}>
+                <Database className={`h-5 w-5 ${isConnected ? 'text-chart-1' : 'text-destructive'}`} />
               </div>
               <div>
-                <h3 className={`font-semibold ${isConnected ? 'text-green-700' : 'text-red-700'}`}>
+                <h3 className={`font-semibold ${isConnected ? 'text-chart-1' : 'text-destructive'}`}>
                   Database Connection
                 </h3>
-                <p className={`text-sm ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
+                <p className={`text-sm ${isConnected ? 'text-chart-1' : 'text-destructive'}`}>
                   Status: {connectionStatus} • {isConnected ? 'All systems operational' : 'Connection issues detected'}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Wifi className={`h-4 w-4 ${isConnected ? 'text-green-500' : 'text-red-500'}`} />
+              <Wifi className={`h-4 w-4 ${isConnected ? 'text-chart-1' : 'text-destructive'}`} />
               <Badge variant={isConnected ? 'default' : 'destructive'}>
                 {isConnected ? 'Connected' : 'Disconnected'}
               </Badge>
@@ -189,7 +189,7 @@ const RealTimeSystemHealth = () => {
             <CardTitle className="text-sm font-medium">Active Users</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-bold text-primary">
               {metrics.activeUsers}
             </div>
             <div className="text-xs text-muted-foreground mt-1">
@@ -203,7 +203,7 @@ const RealTimeSystemHealth = () => {
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-chart-1">
               {metrics.totalUsers}
             </div>
             <div className="text-xs text-muted-foreground mt-1">
@@ -217,7 +217,7 @@ const RealTimeSystemHealth = () => {
             <CardTitle className="text-sm font-medium">Properties</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-600">
+            <div className="text-2xl font-bold text-chart-2">
               {metrics.totalProperties}
             </div>
             <div className="text-xs text-muted-foreground mt-1">
@@ -231,7 +231,7 @@ const RealTimeSystemHealth = () => {
             <CardTitle className="text-sm font-medium">Pending Alerts</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-2xl font-bold text-destructive">
               {metrics.pendingAlerts}
             </div>
             <div className="text-xs text-muted-foreground mt-1">

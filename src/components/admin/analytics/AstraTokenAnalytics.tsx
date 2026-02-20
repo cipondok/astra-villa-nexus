@@ -96,7 +96,7 @@ const AstraTokenAnalytics: React.FC = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-blue-500" />
+              <Users className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium">Active Users</span>
             </div>
             <p className="text-2xl font-bold mt-2">
@@ -109,7 +109,7 @@ const AstraTokenAnalytics: React.FC = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-green-500" />
+              <Calendar className="h-4 w-4 text-chart-1" />
               <span className="text-sm font-medium">Daily Check-ins</span>
             </div>
             <p className="text-2xl font-bold mt-2">
@@ -122,7 +122,7 @@ const AstraTokenAnalytics: React.FC = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-orange-500" />
+              <TrendingUp className="h-4 w-4 text-chart-4" />
               <span className="text-sm font-medium">Transfers</span>
             </div>
             <p className="text-2xl font-bold mt-2">
@@ -138,7 +138,7 @@ const AstraTokenAnalytics: React.FC = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Crown className="h-4 w-4 text-yellow-500" />
+              <Crown className="h-4 w-4 text-chart-3" />
               Top Token Holders
             </CardTitle>
           </CardHeader>
@@ -182,7 +182,7 @@ const AstraTokenAnalytics: React.FC = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Activity className="h-4 w-4 text-green-500" />
+              <Activity className="h-4 w-4 text-chart-1" />
               Recent Check-ins
             </CardTitle>
           </CardHeader>
@@ -211,7 +211,7 @@ const AstraTokenAnalytics: React.FC = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-green-600">+{checkin.tokens_earned || 0}</p>
+                      <p className="font-bold text-chart-1">+{checkin.tokens_earned || 0}</p>
                       <p className="text-xs text-muted-foreground">tokens</p>
                     </div>
                   </div>
@@ -229,10 +229,10 @@ const AstraTokenAnalytics: React.FC = () => {
 
       {/* Regular Active Users */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-purple-500" />
-            Regular Active Users
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-chart-2" />
+              Regular Active Users
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -274,23 +274,23 @@ const AstraTokenAnalytics: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-muted/50 rounded-lg">
-              <h4 className="font-medium mb-2">Welcome Bonuses Claimed</h4>
-              <p className="text-2xl font-bold text-blue-600">{stats.welcomeBonusesClaimed || '0'}</p>
-              <p className="text-sm text-muted-foreground">Total users</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <h4 className="font-medium mb-2">Welcome Bonuses Claimed</h4>
+                <p className="text-2xl font-bold text-primary">{stats.welcomeBonusesClaimed || '0'}</p>
+                <p className="text-sm text-muted-foreground">Total users</p>
+              </div>
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <h4 className="font-medium mb-2">Total Transfers</h4>
+                <p className="text-2xl font-bold text-chart-2">{stats.totalTransfers || '0'}</p>
+                <p className="text-sm text-muted-foreground">All time</p>
+              </div>
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <h4 className="font-medium mb-2">Average Balance</h4>
+                <p className="text-2xl font-bold text-chart-4">{Math.round(stats.averageBalance || 0).toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">Per active user</p>
+              </div>
             </div>
-            <div className="p-4 bg-muted/50 rounded-lg">
-              <h4 className="font-medium mb-2">Total Transfers</h4>
-              <p className="text-2xl font-bold text-purple-600">{stats.totalTransfers || '0'}</p>
-              <p className="text-sm text-muted-foreground">All time</p>
-            </div>
-            <div className="p-4 bg-muted/50 rounded-lg">
-              <h4 className="font-medium mb-2">Average Balance</h4>
-              <p className="text-2xl font-bold text-orange-600">{Math.round(stats.averageBalance || 0).toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">Per active user</p>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>
