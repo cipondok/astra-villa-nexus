@@ -190,6 +190,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         border-[hsl(200,60%,75%)] bg-gradient-to-br from-[hsl(200,85%,72%)] via-[hsl(200,90%,80%)] to-[hsl(195,80%,68%)]
         dark:border-[hsl(210,40%,20%)] dark:from-[hsl(210,55%,8%)] dark:via-[hsl(200,50%,10%)] dark:to-[hsl(210,45%,6%)]
         shadow-[0_-8px_30px_-10px_hsl(200,70%,50%/0.25)] dark:shadow-[0_-10px_40px_-15px_rgba(0,10,20,0.5)]"
+      style={{ contain: 'layout', minHeight: '120px' }}
     >
       {/* Logo + Dock */}
       <div className="flex flex-col md:flex-row items-center md:items-end gap-4 mb-4">

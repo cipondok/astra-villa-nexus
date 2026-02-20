@@ -506,8 +506,11 @@ const Index = () => {
         
         {/* Hero Banner Section - Full Width Image */}
         <section className="relative w-full" id="hero-section" style={{ contain: 'layout' }}>
-          {/* Hero Banner Image - explicit aspect ratio prevents CLS */}
-          <div className="w-full overflow-visible" style={{ aspectRatio: '1920/600' }}>
+          {/* Hero Banner Image - explicit width/height & aspect-ratio prevents CLS */}
+          <div
+            className="w-full overflow-hidden"
+            style={{ aspectRatio: '1920/600', minHeight: '200px' }}
+          >
             <img 
               src={astraHeroBanner} 
               alt="Astra Villa - Indonesia's Smart Property Platform" 
@@ -516,6 +519,7 @@ const Index = () => {
               decoding="sync"
               width={1920}
               height={600}
+              style={{ display: 'block' }}
             />
           </div>
           
@@ -644,10 +648,10 @@ const Index = () => {
         )}
 
         {/* AI Tools & Features */}
-        <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-muted/60 via-muted/40 to-muted/20 dark:from-card/80 dark:via-card/60 dark:to-card/40">
+        <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-muted/60 via-muted/40 to-muted/20 dark:from-card/80 dark:via-card/60 dark:to-card/40" style={{ contain: 'layout', minHeight: '120px' }}>
           <div className="w-full">
             <Suspense fallback={
-              <div className="flex gap-2 justify-center py-3">
+              <div className="flex gap-2 justify-center py-3" style={{ minHeight: '96px' }}>
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="flex-shrink-0 w-14 md:w-18 animate-pulse">
                     <div className="h-10 md:h-14 bg-muted rounded-lg mb-1" />
@@ -662,10 +666,10 @@ const Index = () => {
         </div>
 
         {/* Global Investment Platform */}
-        <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-[hsl(210,80%,65%)] to-[hsl(210,70%,70%)] dark:from-[hsl(210,35%,24%)] dark:to-[hsl(210,30%,18%)]">
+        <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-[hsl(210,80%,65%)] to-[hsl(210,70%,70%)] dark:from-[hsl(210,35%,24%)] dark:to-[hsl(210,30%,18%)]" style={{ contain: 'layout', minHeight: '80px' }}>
           <div className="w-full">
             <Suspense fallback={
-              <div className="flex gap-3 justify-center py-3">
+              <div className="flex gap-3 justify-center py-3" style={{ minHeight: '64px' }}>
                 <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />
                 <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />
                 <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 import villaCommunityDaylight from "@/assets/villa-community-daylight.jpg";
 
@@ -9,24 +9,14 @@ interface HomeIntroSliderProps {
 }
 
 const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language = 'en', children }) => {
-  const [isDesktop, setIsDesktop] = useState<boolean>(() => typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : false);
-
-  // Track desktop breakpoint
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 768px)');
-    const onChange = () => setIsDesktop(mq.matches);
-    mq.addEventListener('change', onChange);
-    onChange();
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
 
   return (
     <section
       className={cn(
         "relative w-full overflow-hidden bg-background",
-        "h-screen min-h-[600px]", // Full viewport height
         className
       )}
+      style={{ minHeight: '600px', height: '100dvh', contain: 'layout' }}
       aria-label="Premium Villa Community Hero"
     >
       {/* Villa Community Background (Daylight) */}
@@ -35,6 +25,9 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
           src={villaCommunityDaylight} 
           alt="Luxury villa community with pools and gardens - Premium real estate" 
           className="w-full h-full object-cover brightness-110 saturate-110"
+          width={1920}
+          height={1080}
+          style={{ display: 'block' }}
         />
         {/* Light gradient overlays for clean professional look */}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />

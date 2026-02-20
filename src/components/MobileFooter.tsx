@@ -11,9 +11,8 @@ const MobileFooter = () => {
   const { isMobile } = useIsMobile();
   const { settings } = useSocialMediaSettings();
 
-  // Only show on mobile, and only shows social/contact links
-  // (primary navigation is handled by MobileFirstNavigation bottom bar)
-  if (!isMobile) return null;
+  // Render nothing on desktop — but use visibility rather than early return
+  // to avoid layout shift from conditional mount
 
   const footerStyle: React.CSSProperties = {
     width: '100%',
@@ -73,6 +72,8 @@ const MobileFooter = () => {
     if (link.isPhone) return `https://wa.me/${link.url.replace(/\D/g, '')}`;
     return link.url.startsWith('http') ? link.url : `https://${link.url}`;
   };
+
+  if (!isMobile) return null;
 
   return (
     <footer style={footerStyle}>
