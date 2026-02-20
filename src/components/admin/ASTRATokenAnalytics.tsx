@@ -226,10 +226,10 @@ const ASTRATokenAnalytics = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card/50 border-border/50 border-l-4 border-l-destructive">
+            <Card className="bg-card/50 border-border/50 border-l-4 border-l-chart-2">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 py-2 px-3">
                 <CardTitle className="text-[10px] font-medium text-muted-foreground">Active Users</CardTitle>
-                <TrendingUp className="h-3.5 w-3.5 text-destructive" />
+                <TrendingUp className="h-3.5 w-3.5 text-chart-2" />
               </CardHeader>
               <CardContent className="px-3 pb-2 pt-0">
                 <div className="text-lg font-bold text-foreground">

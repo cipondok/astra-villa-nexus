@@ -169,10 +169,10 @@ const RealTimeTransactionMonitor = () => {
 
   const getActivityIcon = (status: RecentActivity['status']) => {
     switch (status) {
-      case 'success': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'warning': return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      case 'error': return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      default: return <Zap className="h-4 w-4 text-blue-500" />;
+      case 'success': return <CheckCircle className="h-4 w-4 text-chart-1" />;
+      case 'warning': return <AlertTriangle className="h-4 w-4 text-chart-3" />;
+      case 'error': return <AlertTriangle className="h-4 w-4 text-destructive" />;
+      default: return <Zap className="h-4 w-4 text-chart-2" />;
     }
   };
 
@@ -193,9 +193,9 @@ const RealTimeTransactionMonitor = () => {
             </div>
             <Badge 
               variant={isConnected ? "default" : "destructive"}
-              className={`flex items-center gap-1.5 text-xs h-6 px-2 ${isConnected ? 'bg-green-500' : ''}`}
+              className={`flex items-center gap-1.5 text-xs h-6 px-2 ${isConnected ? 'bg-chart-1' : ''}`}
             >
-              <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-white animate-pulse' : 'bg-white'}`} />
+              <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-background animate-pulse' : 'bg-background'}`} />
               {t.liveIndicator}
             </Badge>
           </div>
@@ -204,9 +204,9 @@ const RealTimeTransactionMonitor = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
-        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border-blue-200 dark:border-blue-800">
+        <Card className="border-l-4 border-l-chart-2">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
+            <div className="flex items-center gap-1.5 text-chart-2">
               <Zap className="h-4 w-4" />
               <span className="text-xs">{t.activeTransactions}</span>
             </div>
@@ -214,9 +214,9 @@ const RealTimeTransactionMonitor = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-500/10 to-green-600/10 border-green-200 dark:border-green-800">
+        <Card className="border-l-4 border-l-chart-1">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1.5 text-green-600 dark:text-green-400">
+            <div className="flex items-center gap-1.5 text-chart-1">
               <DollarSign className="h-4 w-4" />
               <span className="text-xs">{t.todayRevenue}</span>
             </div>
@@ -224,9 +224,9 @@ const RealTimeTransactionMonitor = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border-purple-200 dark:border-purple-800">
+        <Card className="border-l-4 border-l-primary">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1.5 text-purple-600 dark:text-purple-400">
+            <div className="flex items-center gap-1.5 text-primary">
               <TrendingUp className="h-4 w-4" />
               <span className="text-xs">{t.todayTransactions}</span>
             </div>
@@ -234,9 +234,9 @@ const RealTimeTransactionMonitor = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 border-yellow-200 dark:border-yellow-800">
+        <Card className="border-l-4 border-l-chart-3">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1.5 text-yellow-600 dark:text-yellow-400">
+            <div className="flex items-center gap-1.5 text-chart-3">
               <Clock className="h-4 w-4" />
               <span className="text-xs">{t.pendingPayments}</span>
             </div>
@@ -244,9 +244,9 @@ const RealTimeTransactionMonitor = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 border-emerald-200 dark:border-emerald-800">
+        <Card className="border-l-4 border-l-chart-1">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+            <div className="flex items-center gap-1.5 text-chart-1">
               <CheckCircle className="h-4 w-4" />
               <span className="text-xs">{t.completedToday}</span>
             </div>
@@ -254,9 +254,9 @@ const RealTimeTransactionMonitor = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border-orange-200 dark:border-orange-800">
+        <Card className="border-l-4 border-l-chart-4">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400">
+            <div className="flex items-center gap-1.5 text-chart-4">
               <Clock className="h-4 w-4" />
               <span className="text-xs">{t.avgProcessingTime}</span>
             </div>
@@ -264,9 +264,9 @@ const RealTimeTransactionMonitor = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-indigo-500/10 to-indigo-600/10 border-indigo-200 dark:border-indigo-800">
+        <Card className="border-l-4 border-l-secondary">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
+            <div className="flex items-center gap-1.5 text-secondary-foreground">
               <TrendingUp className="h-4 w-4" />
               <span className="text-xs">{t.conversionRate}</span>
             </div>

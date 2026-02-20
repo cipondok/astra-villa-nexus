@@ -124,15 +124,15 @@ const AutomationFeaturesDashboard = () => {
       case 'active':
       case 'connected':
       case 'completed':
-        return 'bg-green-500';
+        return 'bg-chart-1 text-background';
       case 'paused':
       case 'in progress':
-        return 'bg-yellow-500';
+        return 'bg-chart-3 text-background';
       case 'disconnected':
       case 'failed':
-        return 'bg-red-500';
+        return 'bg-destructive text-destructive-foreground';
       default:
-        return 'bg-gray-500';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -178,7 +178,7 @@ const AutomationFeaturesDashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   {workflowAutomation.map((workflow) => (
-                    <div key={workflow.name} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div key={workflow.name} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-semibold">{workflow.name}</h3>
@@ -227,7 +227,7 @@ const AutomationFeaturesDashboard = () => {
             <CardContent>
               <div className="space-y-4">
                 {smartNotifications.map((notification) => (
-                  <div key={notification.type} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div key={notification.type} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-semibold">{notification.type}</h3>
@@ -267,7 +267,7 @@ const AutomationFeaturesDashboard = () => {
             <CardContent>
               <div className="space-y-4">
                 {bulkOperations.map((operation) => (
-                  <div key={operation.operation} className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div key={operation.operation} className="p-4 bg-muted/30 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-semibold">{operation.operation}</h3>
                       <Badge className={getStatusColor(operation.status)}>
@@ -279,9 +279,9 @@ const AutomationFeaturesDashboard = () => {
                         <span>Progress</span>
                         <span>{operation.progress}%</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-muted rounded-full h-2">
                         <div 
-                          className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                          className="bg-primary h-2 rounded-full transition-all duration-300" 
                           style={{ width: `${operation.progress}%` }}
                         />
                       </div>
@@ -316,7 +316,7 @@ const AutomationFeaturesDashboard = () => {
             <CardContent>
               <div className="space-y-4">
                 {integrations.map((integration) => (
-                  <div key={integration.name} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div key={integration.name} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-semibold">{integration.name}</h3>
