@@ -29,6 +29,7 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { NetworkStatusIndicator } from "@/components/NetworkStatusIndicator";
 import { UserProfileHeader } from "@/components/user/UserProfileHeader";
 import { StickyHeaderSearch } from "@/components/search/StickyHeaderSearch";
+import LazyRender from "@/components/LazyRender";
 
 
 // Lazy load heavy components for better performance
@@ -650,25 +651,27 @@ const Index = () => {
         {/* AI Tools & Features */}
         <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-muted/60 via-muted/40 to-muted/20 dark:from-card/80 dark:via-card/60 dark:to-card/40" style={{ contain: 'layout', minHeight: '120px' }}>
           <div className="w-full">
-            <Suspense fallback={
+            <LazyRender minHeight="96px" rootMargin="400px" fallback={
               <div className="flex gap-2 justify-center py-3" style={{ minHeight: '96px' }}>
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="flex-shrink-0 w-14 md:w-18 animate-pulse">
-                    <div className="h-10 md:h-14 bg-muted rounded-lg mb-1" />
-                    <div className="h-2 bg-muted rounded w-full" />
-                  </div>
-                ))}
+                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
+                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
+                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
+                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
+                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
+                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
+                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
+                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
               </div>
             }>
               <AstraVillaFeatures />
-            </Suspense>
+            </LazyRender>
           </div>
         </div>
 
         {/* Global Investment Platform */}
         <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-[hsl(210,80%,65%)] to-[hsl(210,70%,70%)] dark:from-[hsl(210,35%,24%)] dark:to-[hsl(210,30%,18%)]" style={{ contain: 'layout', minHeight: '80px' }}>
           <div className="w-full">
-            <Suspense fallback={
+            <LazyRender minHeight="64px" rootMargin="400px" fallback={
               <div className="flex gap-3 justify-center py-3" style={{ minHeight: '64px' }}>
                 <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />
                 <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />
@@ -676,7 +679,7 @@ const Index = () => {
               </div>
             }>
               <InvestorPathSelector />
-            </Suspense>
+            </LazyRender>
           </div>
         </div>
 
@@ -795,8 +798,8 @@ const Index = () => {
               <>
                 {/* AI Recommended Properties */}
                 <div className="mb-4">
-                  <Suspense fallback={
-                    <div className="bg-primary/10 dark:bg-primary/5 rounded-xl shadow-sm border border-primary/15 dark:border-primary/10 p-4">
+                  <LazyRender minHeight="320px" fallback={
+                    <div className="bg-primary/10 dark:bg-primary/5 rounded-xl shadow-sm border border-primary/15 dark:border-primary/10 p-4" style={{ minHeight: '320px' }}>
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 bg-primary/20 rounded-lg animate-pulse" />
                         <div className="flex-1">
@@ -805,57 +808,53 @@ const Index = () => {
                         </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {[...Array(3)].map((_, i) => (
-                          <div key={i} className="animate-pulse">
-                            <div className="bg-muted h-44 rounded-lg mb-2" />
-                            <div className="bg-muted h-4 rounded w-3/4 mb-1.5" />
-                            <div className="bg-muted h-3 rounded w-1/2" />
-                          </div>
-                        ))}
+                        <div className="animate-pulse"><div className="bg-muted h-44 rounded-lg mb-2" /><div className="bg-muted h-4 rounded w-3/4 mb-1.5" /></div>
+                        <div className="animate-pulse"><div className="bg-muted h-44 rounded-lg mb-2" /><div className="bg-muted h-4 rounded w-3/4 mb-1.5" /></div>
+                        <div className="animate-pulse"><div className="bg-muted h-44 rounded-lg mb-2" /><div className="bg-muted h-4 rounded w-3/4 mb-1.5" /></div>
                       </div>
                     </div>
                   }>
                     <AIRecommendedProperties onPropertyClick={handlePropertyClick} />
-                  </Suspense>
+                  </LazyRender>
                 </div>
 
                 {/* Trending Searches */}
                 <div className="mb-4">
-                  <Suspense fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
+                  <LazyRender minHeight="192px" fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
                     <TrendingSearchesWidget 
                       onSearchClick={(trendFilters) => {
                         setFilters(prev => ({ ...prev, ...trendFilters }));
                         setHasSearched(true);
                       }}
                     />
-                  </Suspense>
+                  </LazyRender>
                 </div>
 
                 {/* Properties for Sale */}
                 <div id="sale-section" className="mb-4">
-                  <Suspense fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
+                  <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
-                  </Suspense>
+                  </LazyRender>
                 </div>
 
                 {/* Properties for Rent */}
                 <div id="rent-section" className="mb-4">
-                  <Suspense fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
+                  <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
-                  </Suspense>
+                  </LazyRender>
                 </div>
 
                 {/* Marketplace Services */}
                 <div id="marketplace-services-section" className="mt-6">
-                  <Suspense fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
+                  <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <MarketplaceServices />
-                  </Suspense>
+                  </LazyRender>
                 </div>
 
                 {/* Partner Logos Marquee */}
-                <Suspense fallback={null}>
+                <LazyRender minHeight="80px" fallback={null}>
                   <PartnerLogosMarquee />
-                </Suspense>
+                </LazyRender>
               </>
             )}
           </div>

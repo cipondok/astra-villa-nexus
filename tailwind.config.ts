@@ -350,7 +350,11 @@ const config: Config = {
             opacity: "0.15",
             transform: "translateX(-50%) scale(0.85)"
           }
-        }
+        },
+        "marquee": {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -380,6 +384,7 @@ const config: Config = {
         "pulse-glow": "pulse-glow 2.5s ease-in-out infinite",
         "logo-3d-float": "logo-3d-float 4s ease-in-out infinite",
         "logo-shadow": "logo-shadow 4s ease-in-out infinite",
+        "marquee": "marquee 30s linear infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',
