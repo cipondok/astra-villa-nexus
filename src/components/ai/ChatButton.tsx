@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import UnreadBadge from "./UnreadBadge";
 import { Icons } from "@/components/icons";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, forwardRef } from "react";
 import { useChatbotLogo } from "@/hooks/useChatbotLogo";
 import {
   ContextMenu,
@@ -195,118 +195,120 @@ const ChatButton = ({
     setIsDragging(false);
   };
 
+  const buttonContent = (
+    <motion.button
+      drag={isDragging}
+      dragMomentum={false}
+      dragElastic={0}
+      onDragEnd={handleDragEnd}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
+      whileTap={{ scale: 0.95 }}
+      animate={{
+        opacity: isButtonActive ? 1 : 0.5,
+        scale: isButtonActive ? 1 : 0.95,
+      }}
+      transition={{ 
+        duration: 0.4,
+        ease: "easeOut"
+      }}
+      className={cn("group", baseStyles, getVariantStyles(), className)}
+      style={{
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        display: 'block',
+        visibility: 'visible',
+      }}
+      aria-label={isDragging ? "Dragging chat button" : "Open AI chat assistant (long press to reposition, right-click for options)"}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+    >
+      <div className={cn(
+        "h-full w-full rounded-full flex items-center justify-center",
+        "transition-all duration-500",
+        "bg-gradient-to-br from-primary/10 via-transparent to-accent/10",
+        "border border-primary/20"
+      )}>
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={showScrollArrow ? 'arrow' : 'bot'}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ 
+                scale: 1, 
+                opacity: isButtonActive ? 1 : 0.6 
+              }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ 
+                duration: 0.15,
+                ease: "easeOut"
+              }}
+            >
+              {showScrollArrow ? (
+                <ArrowUp className={cn(
+                  "h-7 w-7 transition-colors duration-300",
+                  isButtonActive ? "text-foreground" : "text-foreground/60"
+                )} aria-hidden="true" />
+              ) : (
+                <img 
+                  src={chatbotLogoUrl}
+                  alt="AI Assistant"
+                  className={cn(
+                    "h-[40px] w-[40px] object-contain transition-all duration-500 rounded-lg",
+                    isButtonActive 
+                      ? "drop-shadow-[0_0_8px_hsla(var(--primary),0.5)]" 
+                      : "opacity-70",
+                    !isDragging && isButtonActive && "hover:rotate-12"
+                  )}
+                  style={{ background: 'transparent' }}
+                  aria-hidden="true" 
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
+          <GripVertical
+            className={cn(
+              "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity duration-300",
+              isDragging ? "opacity-100 text-gold-primary" : "opacity-0 group-hover:opacity-60"
+            )} 
+            aria-hidden="true"
+          />
+        </div>
+        {unreadCount > 0 && <UnreadBadge count={unreadCount} />}
+      </div>
+      
+      <motion.div
+        className="absolute inset-0 rounded-full pointer-events-none border-2 border-primary/30"
+        animate={{
+          boxShadow: isButtonActive 
+            ? [
+                "0 0 0 0 hsla(var(--primary), 0)",
+                "0 0 0 8px hsla(var(--primary), 0.15)",
+                "0 0 0 0 hsla(var(--primary), 0)"
+              ]
+            : "0 0 0 0 hsla(var(--primary), 0)"
+        }}
+        transition={{
+          duration: 2,
+          repeat: isButtonActive ? Infinity : 0,
+          ease: "easeInOut"
+        }}
+      />
+    </motion.button>
+  );
+
   return (
     <ContextMenu>
-      <ContextMenuTrigger asChild>
-        <motion.button
-          drag={isDragging}
-          dragMomentum={false}
-          dragElastic={0}
-          onDragEnd={handleDragEnd}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseLeave}
-          onMouseEnter={handleMouseEnter}
-          whileTap={{ scale: 0.95 }}
-          animate={{
-            opacity: isButtonActive ? 1 : 0.5,
-            scale: isButtonActive ? 1 : 0.95,
-          }}
-          transition={{ 
-            duration: 0.4,
-            ease: "easeOut"
-          }}
-          className={cn("group", baseStyles, getVariantStyles(), className)}
-          style={{
-            left: `${position.x}px`,
-            top: `${position.y}px`,
-            display: 'block',
-            visibility: 'visible',
-          }}
-          aria-label={isDragging ? "Dragging chat button" : "Open AI chat assistant (long press to reposition, right-click for options)"}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              onClick();
-            }
-          }}
-        >
-          <div className={cn(
-            "h-full w-full rounded-full flex items-center justify-center",
-            "transition-all duration-500",
-            "bg-gradient-to-br from-primary/10 via-transparent to-accent/10",
-            "border border-primary/20"
-          )}>
-            <div className="relative">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={showScrollArrow ? 'arrow' : 'bot'}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ 
-                    scale: 1, 
-                    opacity: isButtonActive ? 1 : 0.6 
-                  }}
-                  exit={{ scale: 0.8, opacity: 0 }}
-                  transition={{ 
-                    duration: 0.15,
-                    ease: "easeOut"
-                  }}
-                >
-                  {showScrollArrow ? (
-                    <ArrowUp className={cn(
-                      "h-7 w-7 transition-colors duration-300",
-                      isButtonActive ? "text-foreground" : "text-foreground/60"
-                    )} aria-hidden="true" />
-                  ) : (
-                    <img 
-                      src={chatbotLogoUrl}
-                      alt="AI Assistant"
-                      className={cn(
-                        "h-[40px] w-[40px] object-contain transition-all duration-500 rounded-lg",
-                        isButtonActive 
-                          ? "drop-shadow-[0_0_8px_hsla(var(--primary),0.5)]" 
-                          : "opacity-70",
-                        !isDragging && isButtonActive && "hover:rotate-12"
-                      )}
-                      style={{ background: 'transparent' }}
-                      aria-hidden="true" 
-                    />
-                  )}
-                </motion.div>
-              </AnimatePresence>
-              {/* Drag handle indicator - shows on hover */}
-              <GripVertical
-                className={cn(
-                  "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity duration-300",
-                  isDragging ? "opacity-100 text-gold-primary" : "opacity-0 group-hover:opacity-60"
-                )} 
-                aria-hidden="true"
-              />
-            </div>
-            {unreadCount > 0 && <UnreadBadge count={unreadCount} />}
-          </div>
-          
-          {/* Glow ring effect when active */}
-          <motion.div
-            className="absolute inset-0 rounded-full pointer-events-none border-2 border-primary/30"
-            animate={{
-              boxShadow: isButtonActive 
-                ? [
-                    "0 0 0 0 hsla(var(--primary), 0)",
-                    "0 0 0 8px hsla(var(--primary), 0.15)",
-                    "0 0 0 0 hsla(var(--primary), 0)"
-                  ]
-                : "0 0 0 0 hsla(var(--primary), 0)"
-            }}
-            transition={{
-              duration: 2,
-              repeat: isButtonActive ? Infinity : 0,
-              ease: "easeInOut"
-            }}
-          />
-        </motion.button>
+      <ContextMenuTrigger>
+        {buttonContent}
       </ContextMenuTrigger>
       
       <ContextMenuContent className="w-56 glass-popup">
