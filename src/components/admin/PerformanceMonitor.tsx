@@ -120,15 +120,15 @@ export function PerformanceMonitor({ metrics, onRefresh }: PerformanceMonitorPro
   ];
 
   const getStatusColor = (value: number, thresholds: { good: number; warning: number }) => {
-    if (value <= thresholds.good) return 'text-green-600';
-    if (value <= thresholds.warning) return 'text-yellow-600';
-    return 'text-red-600';
+    if (value <= thresholds.good) return 'text-chart-1';
+    if (value <= thresholds.warning) return 'text-chart-3';
+    return 'text-destructive';
   };
 
   const getProgressColor = (value: number, thresholds: { good: number; warning: number }) => {
-    if (value <= thresholds.good) return 'bg-green-500';
-    if (value <= thresholds.warning) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (value <= thresholds.good) return 'bg-chart-1';
+    if (value <= thresholds.warning) return 'bg-chart-3';
+    return 'bg-destructive';
   };
 
   return (
@@ -253,7 +253,7 @@ export function PerformanceMonitor({ metrics, onRefresh }: PerformanceMonitorPro
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-chart-1">
               {systemMetrics?.uptime}%
             </div>
             <p className="text-xs text-muted-foreground">
@@ -399,9 +399,9 @@ interface AlgorithmMetricProps {
 
 function AlgorithmMetric({ name, responseTime, successRate, status }: AlgorithmMetricProps) {
   const statusColors = {
-    healthy: 'text-green-600',
-    warning: 'text-yellow-600',
-    critical: 'text-red-600'
+    healthy: 'text-chart-1',
+    warning: 'text-chart-3',
+    critical: 'text-destructive'
   };
 
   const statusIcons = {
@@ -436,15 +436,15 @@ interface AlertCardProps {
 
 function AlertCard({ alert }: AlertCardProps) {
   const alertColors = {
-    critical: 'border-red-500 bg-red-50',
-    warning: 'border-yellow-500 bg-yellow-50',
-    info: 'border-blue-500 bg-blue-50'
+    critical: 'border-destructive bg-destructive/5',
+    warning: 'border-chart-3 bg-chart-3/5',
+    info: 'border-chart-2 bg-chart-2/5'
   };
 
   const alertIcons = {
-    critical: <XCircle className="h-4 w-4 text-red-600" />,
-    warning: <AlertTriangle className="h-4 w-4 text-yellow-600" />,
-    info: <CheckCircle className="h-4 w-4 text-blue-600" />
+    critical: <XCircle className="h-4 w-4 text-destructive" />,
+    warning: <AlertTriangle className="h-4 w-4 text-chart-3" />,
+    info: <CheckCircle className="h-4 w-4 text-chart-2" />
   };
 
   return (
