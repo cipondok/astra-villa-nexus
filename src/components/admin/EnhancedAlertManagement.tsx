@@ -172,7 +172,7 @@ const EnhancedAlertManagement = () => {
 
         {/* Bulk Actions */}
         {selectedAlerts.length > 0 && (
-          <div className="flex gap-2 mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <div className="flex gap-2 mb-4 p-3 bg-muted/40 rounded-lg border border-border/50">
             <span className="text-sm font-medium">
               {selectedAlerts.length} alert(s) selected
             </span>
