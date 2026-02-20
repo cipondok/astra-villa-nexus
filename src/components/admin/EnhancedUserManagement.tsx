@@ -295,14 +295,14 @@ const EnhancedUserManagement = () => {
       return <Badge variant="destructive">SUSPENDED</Badge>;
     }
     
-    const colors = {
-      approved: "bg-green-100 text-green-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      rejected: "bg-red-100 text-red-800"
+    const colors: Record<string, string> = {
+      approved: "bg-chart-1/10 text-chart-1 border-chart-1/30",
+      pending: "bg-chart-3/10 text-chart-3 border-chart-3/30",
+      rejected: "bg-destructive/10 text-destructive border-destructive/30"
     };
     
     return (
-      <Badge className={colors[user.verification_status as keyof typeof colors] || colors.pending}>
+      <Badge className={colors[user.verification_status] || colors.pending}>
         {user.verification_status.toUpperCase()}
       </Badge>
     );
@@ -310,23 +310,23 @@ const EnhancedUserManagement = () => {
 
   const getRiskBadge = (riskScore: number) => {
     if (riskScore >= 80) return <Badge variant="destructive">High Risk</Badge>;
-    if (riskScore >= 40) return <Badge className="bg-yellow-100 text-yellow-800">Medium Risk</Badge>;
-    return <Badge className="bg-green-100 text-green-800">Low Risk</Badge>;
+    if (riskScore >= 40) return <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/30">Medium Risk</Badge>;
+    return <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/30">Low Risk</Badge>;
   };
 
   return (
     <div className="space-y-3 p-1 md:p-0">
       {/* Professional Header */}
-      <div className="bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-pink-500/20 rounded-lg border border-indigo-200/50 dark:border-indigo-800/50 p-3">
+      <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
-              <Shield className="h-4 w-4 text-white" />
+            <div className="p-2 rounded-lg bg-primary text-primary-foreground shadow-lg">
+              <Shield className="h-4 w-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-sm font-bold text-foreground">User Management</h2>
-                <Badge className="bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700 text-[9px] px-1.5 py-0 h-4">
+                <Badge className="bg-primary/20 text-primary border-primary/30 text-[9px] px-1.5 py-0 h-4">
                   {filteredUsers.length} Users
                 </Badge>
               </div>
@@ -335,7 +335,7 @@ const EnhancedUserManagement = () => {
           </div>
           <Dialog>
             <DialogTrigger asChild>
-              <Button size="sm" className="h-7 text-[10px] px-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white">
+              <Button size="sm" className="h-7 text-[10px] px-2">
                 <UserPlus className="h-3 w-3 mr-1" />
                 Add User
               </Button>
@@ -345,7 +345,7 @@ const EnhancedUserManagement = () => {
       </div>
 
       {/* Filters */}
-      <Card className="border-indigo-200/50 dark:border-indigo-800/50">
+      <Card className="border-border/50">
         <CardContent className="p-2">
           <div className="flex flex-wrap gap-1.5">
             <div className="flex-1 min-w-[180px]">
