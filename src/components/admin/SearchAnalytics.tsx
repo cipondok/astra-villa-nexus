@@ -75,7 +75,7 @@ export function SearchAnalytics({ metrics }: SearchAnalyticsProps) {
     }
   };
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+  const COLORS = ['hsl(var(--chart-2))', 'hsl(var(--chart-1))', 'hsl(var(--chart-3))', 'hsl(var(--destructive))', 'hsl(var(--chart-4))'];
 
   const mockSearchInsights: SearchInsight[] = [
     { query: 'apartment jakarta', count: 1250, avgResponseTime: 285, successRate: 92, clickThroughRate: 78, trend: 'up' },
@@ -199,9 +199,9 @@ export function SearchAnalytics({ metrics }: SearchAnalyticsProps) {
                 <YAxis yAxisId="right" orientation="right" />
                 <Tooltip />
                 <Legend />
-                <Bar yAxisId="left" dataKey="searches" fill="#8884d8" name="Search Volume" />
-                <Line yAxisId="right" type="monotone" dataKey="success" stroke="#82ca9d" name="Success Rate %" />
-                <Line yAxisId="right" type="monotone" dataKey="avgTime" stroke="#ffc658" name="Avg Time (ms)" />
+                <Bar yAxisId="left" dataKey="searches" fill="hsl(var(--chart-2))" name="Search Volume" />
+                <Line yAxisId="right" type="monotone" dataKey="success" stroke="hsl(var(--chart-1))" name="Success Rate %" />
+                <Line yAxisId="right" type="monotone" dataKey="avgTime" stroke="hsl(var(--chart-3))" name="Avg Time (ms)" />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -262,7 +262,7 @@ export function SearchAnalytics({ metrics }: SearchAnalyticsProps) {
                 <XAxis dataKey="filterName" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="usageCount" fill="#8884d8" />
+                <Bar dataKey="usageCount" fill="hsl(var(--chart-2))" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
