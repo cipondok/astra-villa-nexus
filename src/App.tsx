@@ -38,8 +38,10 @@ import { DailyLoginReward } from '@/components/gamification';
 // Critical pages - load immediately
 import Index from '@/pages/Index';
 import Search from '@/pages/Search';
-import Auth from '@/pages/Auth';
 import ErrorPage from '@/pages/ErrorPage';
+
+// Auth is not critical for first paint - lazy load it
+const Auth = lazy(() => import('@/pages/Auth'));
 
 // Route guards
 import VendorOnlyRoute from '@/components/VendorOnlyRoute';

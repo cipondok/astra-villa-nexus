@@ -415,8 +415,8 @@ const Index = () => {
     },
     retry: 1,
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
+    gcTime: 30 * 60 * 1000,    // Keep in cache for 30 minutes
   });
 
 
@@ -497,23 +497,23 @@ const Index = () => {
       {/* Content Layer - full width edge-to-edge */}
       <div className="relative z-10 min-h-screen pb-20 md:pb-4">
         
-          {/* Hero Banner Section - Full Width Image */}
-        <section className="relative w-full" id="hero-section">
-          {/* Hero Banner Image */}
-          <div className="w-full overflow-visible">
+        {/* Hero Banner Section - Full Width Image */}
+        <section className="relative w-full" id="hero-section" style={{ contain: 'layout' }}>
+          {/* Hero Banner Image - explicit aspect ratio prevents CLS */}
+          <div className="w-full overflow-visible" style={{ aspectRatio: '1920/600' }}>
             <img 
               src={astraHeroBanner} 
               alt="Astra Villa - Indonesia's Smart Property Platform" 
-              className="w-full h-auto object-contain"
+              className="w-full h-full object-cover"
               fetchPriority="high"
-              decoding="async"
+              decoding="sync"
               width={1920}
               height={600}
             />
           </div>
           
-          {/* Bottom gradient fade into next section */}
-          <div className="absolute bottom-0 left-0 right-0 h-8 sm:h-12 bg-gradient-to-t from-[hsl(210,100%,45%)] dark:from-[hsl(210,55%,12%)] to-transparent pointer-events-none" />
+          {/* Bottom gradient fade into next section - using CSS var to prevent CLS */}
+          <div className="absolute bottom-0 left-0 right-0 h-8 sm:h-12 bg-gradient-to-t from-primary dark:from-primary to-transparent pointer-events-none" />
         </section>
 
         {/* Search Section - Blue themed */}
