@@ -38,7 +38,7 @@ const SystemSettings = () => {
     createBackup 
   } = useBackupSettings();
 
-  console.log('SystemSettings rendering, loading:', loading, 'settings:', settings);
+  
 
   // Handle URL tab parameter for direct token settings access
   const [activeTab, setActiveTab] = React.useState('general');
@@ -47,7 +47,6 @@ const SystemSettings = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const tab = urlParams.get('tab');
     if (tab) {
-      console.log('Setting SystemSettings active tab from URL:', tab);
       setActiveTab(tab);
     }
   }, []);

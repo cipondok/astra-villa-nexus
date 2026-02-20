@@ -247,8 +247,6 @@ const ErrorReportingSystem = () => {
     setIsViewModalOpen(true);
   };
 
-  console.log('ErrorReportingSystem render - isSuperAdmin:', isSuperAdmin, 'user email:', user?.email);
-
   if (!isSuperAdmin) {
     return (
       <Card className="border-destructive/20">

@@ -50,8 +50,6 @@ const VendorDiagnostics = () => {
   const { data: vendorStatuses, isLoading } = useQuery({
     queryKey: ['vendor-diagnostics', refreshKey],
     queryFn: async () => {
-      console.log('Fetching vendor diagnostics data...');
-      
       // Get vendor business profiles with activity data
       const { data: profiles, error: profilesError } = await supabase
         .from('vendor_business_profiles')
@@ -60,12 +58,7 @@ const VendorDiagnostics = () => {
           vendor:profiles!vendor_id (full_name, email)
         `);
 
-      console.log('Vendor profiles:', profiles, 'Error:', profilesError);
-
-      if (profilesError) {
-        console.error('Profiles error:', profilesError);
-        throw profilesError;
-      }
+      if (profilesError) throw profilesError;
 
       // Get services count for each vendor
       const { data: services, error: servicesError } = await supabase
@@ -73,16 +66,10 @@ const VendorDiagnostics = () => {
         .select('vendor_id, id')
         .eq('is_active', true);
 
-      console.log('Vendor services:', services, 'Error:', servicesError);
-
-      if (servicesError) {
-        console.error('Services error:', servicesError);
-        throw servicesError;
-      }
+      if (servicesError) throw servicesError;
 
       // If no data, return sample data for demonstration
       if (!profiles || profiles.length === 0) {
-        console.log('No vendor profiles found, returning sample data');
         return [
           {
             id: 'sample-1',
@@ -151,22 +138,14 @@ const VendorDiagnostics = () => {
   const { data: systemHealth } = useQuery({
     queryKey: ['vendor-system-health', refreshKey],
     queryFn: async () => {
-      console.log('Fetching system health data...');
-      
       const { data, error } = await supabase
         .from('vendor_business_profiles')
         .select('is_active, rating, total_reviews');
       
-      console.log('System health data:', data, 'Error:', error);
-      
-      if (error) {
-        console.error('System health error:', error);
-        throw error;
-      }
+      if (error) throw error;
       
       // If no data, return sample data
       if (!data || data.length === 0) {
-        console.log('No system health data, returning defaults');
         return {
           total: 3,
           active: 2,
@@ -260,7 +239,7 @@ const VendorDiagnostics = () => {
                 <p className="text-sm text-muted-foreground">System Health</p>
                 <p className="text-2xl font-bold">{systemHealth?.healthScore || 0}%</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-green-600" />
+              <TrendingUp className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -272,7 +251,7 @@ const VendorDiagnostics = () => {
                 <p className="text-sm text-muted-foreground">Active Vendors</p>
                 <p className="text-2xl font-bold">{systemHealth?.active || 0}</p>
               </div>
-              <Users className="h-8 w-8 text-blue-600" />
+              <Users className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -284,7 +263,7 @@ const VendorDiagnostics = () => {
                 <p className="text-sm text-muted-foreground">Avg Rating</p>
                 <p className="text-2xl font-bold">{(systemHealth?.avgRating || 0).toFixed(1)}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-emerald-600" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -296,7 +275,7 @@ const VendorDiagnostics = () => {
                 <p className="text-sm text-muted-foreground">Total Reviews</p>
                 <p className="text-2xl font-bold">{systemHealth?.totalReviews || 0}</p>
               </div>
-              <Activity className="h-8 w-8 text-purple-600" />
+              <Activity className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
