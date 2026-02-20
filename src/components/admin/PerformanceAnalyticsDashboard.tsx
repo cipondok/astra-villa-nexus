@@ -154,12 +154,12 @@ const PerformanceAnalyticsDashboard = () => {
     value: value as number
   }));
 
-  const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+  const COLORS = ['hsl(var(--chart-2))', 'hsl(var(--chart-1))', 'hsl(var(--chart-3))', 'hsl(var(--destructive))', 'hsl(var(--chart-4))'];
 
   if (metricsLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         <span className="ml-2">Loading performance data...</span>
       </div>
     );
@@ -170,7 +170,7 @@ const PerformanceAnalyticsDashboard = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <AlertTriangle className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
+          <AlertTriangle className="h-8 w-8 text-chart-3 mx-auto mb-2" />
           <p className="text-muted-foreground">Failed to load performance data</p>
           <Button onClick={handleRefresh} className="mt-2">
             Try Again
@@ -217,76 +217,76 @@ const PerformanceAnalyticsDashboard = () => {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20">
+        <Card className="bg-chart-2/5 border-chart-2/20">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Users</p>
+                <p className="text-sm font-medium text-chart-2">Total Users</p>
                 <p className="text-2xl font-bold">{kpis.totalUsers.toLocaleString()}</p>
                 <div className="flex items-center gap-1 mt-1">
                   {kpis.growth >= 0 ? (
-                    <TrendingUp className="h-3 w-3 text-green-500" />
+                    <TrendingUp className="h-3 w-3 text-chart-1" />
                   ) : (
-                    <TrendingDown className="h-3 w-3 text-red-500" />
+                    <TrendingDown className="h-3 w-3 text-destructive" />
                   )}
-                  <span className={`text-xs ${kpis.growth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <span className={`text-xs ${kpis.growth >= 0 ? 'text-chart-1' : 'text-destructive'}`}>
                     {Math.abs(kpis.growth).toFixed(1)}%
                   </span>
                 </div>
               </div>
-              <Users className="h-8 w-8 text-blue-500" />
+              <Users className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20">
+        <Card className="bg-chart-1/5 border-chart-1/20">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-green-600 dark:text-green-400">Page Views</p>
+                <p className="text-sm font-medium text-chart-1">Page Views</p>
                 <p className="text-2xl font-bold">{kpis.pageViews.toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {((kpis.pageViews) / (kpis.uniqueUsers || 1)).toFixed(1)} per user
                 </p>
               </div>
-              <Eye className="h-8 w-8 text-green-500" />
+              <Eye className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20">
+        <Card className="bg-chart-3/5 border-chart-3/20">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Avg Session</p>
+                <p className="text-sm font-medium text-chart-3">Avg Session</p>
                 <p className="text-2xl font-bold">{Math.round(kpis.avgSessionDuration)}s</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Session duration
                 </p>
               </div>
-              <Clock className="h-8 w-8 text-orange-500" />
+              <Clock className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
+        <Card className="bg-chart-4/5 border-chart-4/20">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Bounce Rate</p>
+                <p className="text-sm font-medium text-chart-4">Bounce Rate</p>
                 <p className="text-2xl font-bold">{kpis.bounceRate.toFixed(1)}%</p>
                 <div className="flex items-center gap-1 mt-1">
                   {kpis.bounceRate < 50 ? (
-                    <CheckCircle2 className="h-3 w-3 text-green-500" />
+                    <CheckCircle2 className="h-3 w-3 text-chart-1" />
                   ) : (
-                    <AlertTriangle className="h-3 w-3 text-yellow-500" />
+                    <AlertTriangle className="h-3 w-3 text-chart-3" />
                   )}
                   <span className="text-xs text-muted-foreground">
                     {kpis.bounceRate < 50 ? 'Good' : 'Needs attention'}
                   </span>
                 </div>
               </div>
-              <Zap className="h-8 w-8 text-purple-500" />
+              <Zap className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -318,8 +318,8 @@ const PerformanceAnalyticsDashboard = () => {
                     type="monotone" 
                     dataKey="users" 
                     stackId="1"
-                    stroke="#3B82F6" 
-                    fill="#3B82F6" 
+                    stroke="hsl(var(--chart-2))" 
+                    fill="hsl(var(--chart-2))" 
                     fillOpacity={0.6}
                     name="Total Users"
                   />
@@ -327,8 +327,8 @@ const PerformanceAnalyticsDashboard = () => {
                     type="monotone" 
                     dataKey="sessions" 
                     stackId="2"
-                    stroke="#10B981" 
-                    fill="#10B981" 
+                    stroke="hsl(var(--chart-1))" 
+                    fill="hsl(var(--chart-1))" 
                     fillOpacity={0.6}
                     name="Sessions"
                   />
@@ -356,7 +356,7 @@ const PerformanceAnalyticsDashboard = () => {
                     yAxisId="left"
                     type="monotone" 
                     dataKey="pageViews" 
-                    stroke="#3B82F6" 
+                    stroke="hsl(var(--chart-2))" 
                     strokeWidth={2}
                     name="Page Views"
                   />
@@ -364,7 +364,7 @@ const PerformanceAnalyticsDashboard = () => {
                     yAxisId="right"
                     type="monotone" 
                     dataKey="bounceRate" 
-                    stroke="#EF4444" 
+                    stroke="hsl(var(--destructive))" 
                     strokeWidth={2}
                     name="Bounce Rate (%)"
                   />
@@ -412,7 +412,7 @@ const PerformanceAnalyticsDashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   {deviceChartData.map((device, index) => (
-                    <div key={device.name} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div key={device.name} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                       <div className="flex items-center gap-3">
                         <div 
                           className="w-4 h-4 rounded-full" 
@@ -447,13 +447,13 @@ const PerformanceAnalyticsDashboard = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span>Performance Score</span>
-                    <Badge variant="default" className="bg-green-500">
+                    <Badge className="bg-chart-1/10 text-chart-1">
                       {Math.round(85 + Math.random() * 10)}%
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Uptime</span>
-                    <Badge variant="default" className="bg-green-500">
+                    <Badge className="bg-chart-1/10 text-chart-1">
                       99.9%
                     </Badge>
                   </div>
@@ -484,7 +484,7 @@ const PerformanceAnalyticsDashboard = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span>Query Performance</span>
-                    <Badge variant="default" className="bg-blue-500">
+                    <Badge className="bg-chart-2/10 text-chart-2">
                       Good
                     </Badge>
                   </div>
@@ -496,7 +496,7 @@ const PerformanceAnalyticsDashboard = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Cache Hit Rate</span>
-                    <Badge variant="default" className="bg-green-500">
+                    <Badge className="bg-chart-1/10 text-chart-1">
                       {Math.round(92 + Math.random() * 6)}%
                     </Badge>
                   </div>
