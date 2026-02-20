@@ -200,10 +200,6 @@ const APIConfiguration = () => {
     setTestResults(null);
     
     try {
-      console.log('🧪 Testing ASTRA API connection...');
-      console.log('📍 Base URL:', config.baseUrl);
-      console.log('🔑 API Key (masked):', config.apiKey.substring(0, 15) + '...');
-
       const testUrl = `${config.baseUrl}/health`;
       
       // Try different authentication methods
