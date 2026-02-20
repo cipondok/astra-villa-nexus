@@ -1,5 +1,6 @@
 
-import { useState } from "react";
+import { useState, useRef, useMemo } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -64,7 +65,171 @@ interface SessionTracking {
   last_activity: string;
 }
 
+// Row height for the virtual table (px)
+const ROW_HEIGHT = 44;
+
+interface VirtualUserTableProps {
+  users: EnhancedUser[];
+  userLevels?: { id: string; name: string }[];
+  onSuspend: (user: EnhancedUser) => void;
+  onUnsuspend: (id: string) => void;
+  onSecurityView: (id: string) => void;
+  onRoleChange: (userId: string, role: UserRole) => void;
+  onLevelChange: (userId: string, levelId: string) => void;
+  onVerificationChange: (userId: string, status: string) => void;
+  unsuspendPending: boolean;
+}
+
+const VirtualUserTable = ({
+  users, userLevels, onSuspend, onUnsuspend, onSecurityView,
+  onRoleChange, onLevelChange, onVerificationChange, unsuspendPending
+}: VirtualUserTableProps) => {
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const rowVirtualizer = useVirtualizer({
+    count: users.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => ROW_HEIGHT,
+    overscan: 10,
+  });
+
+  if (users.length === 0) {
+    return (
+      <div className="text-center py-8 text-[10px] text-muted-foreground">No users match the current filters.</div>
+    );
+  }
+
+  return (
+    <div className="text-[10px]">
+      {/* Fixed header */}
+      <table className="w-full table-fixed text-[10px]">
+        <colgroup>
+          <col className="w-[28%]" />
+          <col className="w-[14%]" />
+          <col className="w-[12%]" />
+          <col className="w-[16%]" />
+          <col className="w-[14%]" />
+          <col className="w-[16%]" />
+        </colgroup>
+        <thead>
+          <tr className="bg-muted/30 border-b border-border/50">
+            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">User</th>
+            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Role</th>
+            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Level</th>
+            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Status</th>
+            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Created</th>
+            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Actions</th>
+          </tr>
+        </thead>
+      </table>
+
+      {/* Virtualized scrollable body */}
+      <div ref={parentRef} className="overflow-auto" style={{ height: Math.min(users.length * ROW_HEIGHT, 480) }}>
+        <div style={{ height: rowVirtualizer.getTotalSize(), position: 'relative' }}>
+          <table className="w-full table-fixed text-[10px]">
+            <colgroup>
+              <col className="w-[28%]" />
+              <col className="w-[14%]" />
+              <col className="w-[12%]" />
+              <col className="w-[16%]" />
+              <col className="w-[14%]" />
+              <col className="w-[16%]" />
+            </colgroup>
+            <tbody>
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const u = users[virtualRow.index];
+                return (
+                  <tr
+                    key={u.id}
+                    className="hover:bg-muted/20 border-b border-border/20"
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: `${ROW_HEIGHT}px`,
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                  >
+                    <td className="py-1.5 px-2">
+                      <div>
+                        <div className="text-[10px] font-medium truncate max-w-[120px]">{u.full_name || 'No Name'}</div>
+                        <div className="text-[9px] text-muted-foreground truncate max-w-[120px]">{u.email}</div>
+                        {u.is_suspended && <div className="text-[8px] text-destructive">Suspended</div>}
+                      </div>
+                    </td>
+                    <td className="py-1.5 px-2">
+                      <Select value={u.role || 'general_user'} onValueChange={(role: UserRole) => onRoleChange(u.id, role)}>
+                        <SelectTrigger className="w-[80px] h-5 text-[9px]"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="general_user" className="text-[10px]">User</SelectItem>
+                          <SelectItem value="property_owner" className="text-[10px]">Owner</SelectItem>
+                          <SelectItem value="agent" className="text-[10px]">Agent</SelectItem>
+                          <SelectItem value="vendor" className="text-[10px]">Vendor</SelectItem>
+                          <SelectItem value="customer_service" className="text-[10px]">CS</SelectItem>
+                          <SelectItem value="admin" className="text-[10px]">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </td>
+                    <td className="py-1.5 px-2">
+                      {u.user_levels ? (
+                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4">{u.user_levels.name}</Badge>
+                      ) : (
+                        <Select value={u.user_level_id || ""} onValueChange={(v) => onLevelChange(u.id, v)}>
+                          <SelectTrigger className="w-[70px] h-5 text-[9px]"><SelectValue placeholder="--" /></SelectTrigger>
+                          <SelectContent>
+                            {userLevels?.map((level) => (
+                              <SelectItem key={level.id} value={level.id} className="text-[10px]">{level.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </td>
+                    <td className="py-1.5 px-2">
+                      <Select value={u.verification_status || 'pending'} onValueChange={(s) => onVerificationChange(u.id, s)}>
+                        <SelectTrigger className="w-[90px] h-5 text-[9px]"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pending" className="text-[10px]">Pending</SelectItem>
+                          <SelectItem value="verified" className="text-[10px]">Verified</SelectItem>
+                          <SelectItem value="approved" className="text-[10px]">Approved</SelectItem>
+                          <SelectItem value="rejected" className="text-[10px]">Rejected</SelectItem>
+                          <SelectItem value="suspended" className="text-[10px]">Suspended</SelectItem>
+                          <SelectItem value="unverified" className="text-[10px]">Unverified</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </td>
+                    <td className="py-1.5 px-2 text-[9px] text-muted-foreground">
+                      {new Date(u.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="py-1.5 px-2">
+                      <div className="flex gap-1">
+                        <Button size="icon" variant="ghost" className="h-5 w-5" onClick={() => onSecurityView(u.id)}>
+                          <Monitor className="h-3 w-3" />
+                        </Button>
+                        {u.is_suspended ? (
+                          <Button size="icon" variant="ghost" className="h-5 w-5 text-chart-1" onClick={() => onUnsuspend(u.id)} disabled={unsuspendPending}>
+                            <UserCheck className="h-3 w-3" />
+                          </Button>
+                        ) : (
+                          <Button size="icon" variant="ghost" className="h-5 w-5 text-destructive" onClick={() => onSuspend(u)}>
+                            <Ban className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const EnhancedUserManagement = () => {
+
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -448,125 +613,17 @@ const EnhancedUserManagement = () => {
           {isLoading ? (
             <div className="text-center py-6 text-[10px] text-muted-foreground">Loading users...</div>
           ) : (
-            <Table className="text-[10px]">
-              <TableHeader>
-                <TableRow className="bg-muted/30">
-                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">User</TableHead>
-                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">Role</TableHead>
-                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">Level</TableHead>
-                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">Status</TableHead>
-                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">Created</TableHead>
-                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredUsers.map((user) => (
-                  <TableRow key={user.id} className="hover:bg-muted/20">
-                    <TableCell className="py-1.5 px-2">
-                      <div>
-                        <div className="text-[10px] font-medium truncate max-w-[120px]">{user.full_name || 'No Name'}</div>
-                        <div className="text-[9px] text-muted-foreground truncate max-w-[120px]">{user.email}</div>
-                        {user.is_suspended && (
-                          <div className="text-[8px] text-red-600 truncate">Suspended</div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-1.5 px-2">
-                      <Select 
-                        value={user.role || 'general_user'} 
-                        onValueChange={(role: UserRole) => updateUserRoleMutation.mutate({ userId: user.id, role })}
-                      >
-                        <SelectTrigger className="w-[80px] h-5 text-[9px]">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="general_user" className="text-[10px]">User</SelectItem>
-                          <SelectItem value="property_owner" className="text-[10px]">Owner</SelectItem>
-                          <SelectItem value="agent" className="text-[10px]">Agent</SelectItem>
-                          <SelectItem value="vendor" className="text-[10px]">Vendor</SelectItem>
-                          <SelectItem value="customer_service" className="text-[10px]">CS</SelectItem>
-                          <SelectItem value="admin" className="text-[10px]">Admin</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                    <TableCell className="py-1.5 px-2">
-                      {user.user_levels ? (
-                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4">
-                          {user.user_levels.name}
-                        </Badge>
-                      ) : (
-                        <Select 
-                          value={user.user_level_id || ""} 
-                          onValueChange={(value) => updateUserLevelMutation.mutate({ userId: user.id, levelId: value })}
-                        >
-                          <SelectTrigger className="w-[70px] h-5 text-[9px]">
-                            <SelectValue placeholder="--" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {userLevels?.map((level) => (
-                              <SelectItem key={level.id} value={level.id} className="text-[10px]">{level.name}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    </TableCell>
-                    <TableCell className="py-1.5 px-2">
-                      <Select
-                        value={user.verification_status || 'pending'}
-                        onValueChange={(status) => updateVerificationStatusMutation.mutate({ userId: user.id, status })}
-                      >
-                        <SelectTrigger className="w-[90px] h-5 text-[9px]">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="pending" className="text-[10px]">Pending</SelectItem>
-                          <SelectItem value="verified" className="text-[10px]">Verified</SelectItem>
-                          <SelectItem value="approved" className="text-[10px]">Approved</SelectItem>
-                          <SelectItem value="rejected" className="text-[10px]">Rejected</SelectItem>
-                          <SelectItem value="suspended" className="text-[10px]">Suspended</SelectItem>
-                          <SelectItem value="unverified" className="text-[10px]">Unverified</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                    <TableCell className="py-1.5 px-2 text-[9px] text-muted-foreground">
-                      {new Date(user.created_at).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className="py-1.5 px-2">
-                      <div className="flex gap-1">
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-5 w-5"
-                          onClick={() => setSecurityModalUser(user.id)}
-                        >
-                          <Monitor className="h-3 w-3" />
-                        </Button>
-                        {user.is_suspended ? (
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-5 w-5 text-green-600"
-                            onClick={() => unsuspendUserMutation.mutate(user.id)}
-                            disabled={unsuspendUserMutation.isPending}
-                          >
-                            <UserCheck className="h-3 w-3" />
-                          </Button>
-                        ) : (
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-5 w-5 text-red-600"
-                            onClick={() => setSelectedUser(user)}
-                          >
-                            <Ban className="h-3 w-3" />
-                          </Button>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <VirtualUserTable
+              users={filteredUsers}
+              userLevels={userLevels}
+              onSuspend={setSelectedUser}
+              onUnsuspend={(id) => unsuspendUserMutation.mutate(id)}
+              onSecurityView={setSecurityModalUser}
+              onRoleChange={(userId, role) => updateUserRoleMutation.mutate({ userId, role })}
+              onLevelChange={(userId, levelId) => updateUserLevelMutation.mutate({ userId, levelId })}
+              onVerificationChange={(userId, status) => updateVerificationStatusMutation.mutate({ userId, status })}
+              unsuspendPending={unsuspendUserMutation.isPending}
+            />
           )}
         </CardContent>
       </Card>
