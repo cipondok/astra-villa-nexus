@@ -1,7 +1,6 @@
-import { useRef, useMemo } from "react";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { Building2, Landmark, GraduationCap } from "lucide-react";
 
 interface Partner {
@@ -42,7 +41,7 @@ const FALLBACK_PARTNERS: Partner[] = [
 ];
 
 export default function PartnerLogosMarquee() {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  
 
   const { data: partners = [] } = useQuery<Partner[]>({
     queryKey: ["partner-logos-marquee"],
@@ -80,53 +79,47 @@ export default function PartnerLogosMarquee() {
   // Use real data if available, else show fallback placeholders
   const displayPartners = partners.length > 0 ? partners : FALLBACK_PARTNERS;
 
-  // Triple items for seamless loop
-  const tripled = useMemo(
-    () => [...displayPartners, ...displayPartners, ...displayPartners],
+  // Duplicate once for seamless CSS marquee loop (2x instead of 3x = fewer DOM nodes)
+  const doubled = useMemo(
+    () => [...displayPartners, ...displayPartners],
     [displayPartners]
   );
 
-  useAutoHorizontalScroll(scrollRef as React.RefObject<HTMLElement>, {
-    speed: 0.6,
-    direction: "rtl",
-    pauseOnHover: true,
-    loopMode: "seamless",
-  });
-
   return (
-    <section className="w-full py-6 mt-4">
+    <section className="w-full py-6 mt-4 overflow-hidden">
       <p className="text-center text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
         Trusted Partners
       </p>
 
-      <div
-        ref={scrollRef}
-        className="flex gap-5 overflow-hidden px-4"
-        style={{ scrollbarWidth: "none" }}
-      >
-        {tripled.map((p, i) => {
-          const Icon = typeIcon[p.type];
-          return (
-            <div
-              key={`${p.name}-${i}`}
-              className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full border backdrop-blur-sm select-none ${typeBadgeStyle[p.type]}`}
-            >
-              {p.logo_url ? (
-                <img
-                  src={p.logo_url}
-                  alt={p.name}
-                  className="h-5 w-5 object-contain rounded"
-                  loading="lazy"
-                />
-              ) : (
-                <Icon className="h-3.5 w-3.5 shrink-0" />
-              )}
-              <span className="text-xs font-semibold whitespace-nowrap">
-                {p.name}
-              </span>
-            </div>
-          );
-        })}
+      <div className="relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+        <div
+          className="flex gap-5 animate-marquee"
+          style={{ willChange: 'transform' }}
+        >
+          {doubled.map((p, i) => {
+            const Icon = typeIcon[p.type];
+            return (
+              <div
+                key={`${p.name}-${i}`}
+                className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full border backdrop-blur-sm select-none ${typeBadgeStyle[p.type]}`}
+              >
+                {p.logo_url ? (
+                  <img
+                    src={p.logo_url}
+                    alt={p.name}
+                    className="h-5 w-5 object-contain rounded"
+                    loading="lazy"
+                  />
+                ) : (
+                  <Icon className="h-3.5 w-3.5 shrink-0" />
+                )}
+                <span className="text-xs font-semibold whitespace-nowrap">
+                  {p.name}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
