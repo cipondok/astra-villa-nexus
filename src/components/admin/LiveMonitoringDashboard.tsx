@@ -232,12 +232,12 @@ const LiveMonitoringDashboard = () => {
 
   const getActivityIcon = (type: ActivityEvent['type']) => {
     switch (type) {
-      case 'login': return <ArrowUpRight className="h-3 w-3 text-green-500" />;
-      case 'logout': return <ArrowDownRight className="h-3 w-3 text-orange-500" />;
-      case 'pageview': return <Eye className="h-3 w-3 text-blue-500" />;
-      case 'action': return <MousePointer className="h-3 w-3 text-purple-500" />;
-      case 'error': return <XCircle className="h-3 w-3 text-red-500" />;
-      case 'transaction': return <Zap className="h-3 w-3 text-yellow-500" />;
+      case 'login': return <ArrowUpRight className="h-3 w-3 text-chart-1" />;
+      case 'logout': return <ArrowDownRight className="h-3 w-3 text-chart-3" />;
+      case 'pageview': return <Eye className="h-3 w-3 text-chart-2" />;
+      case 'action': return <MousePointer className="h-3 w-3 text-primary" />;
+      case 'error': return <XCircle className="h-3 w-3 text-destructive" />;
+      case 'transaction': return <Zap className="h-3 w-3 text-chart-4" />;
       default: return <Activity className="h-3 w-3" />;
     }
   };
@@ -269,8 +269,8 @@ const LiveMonitoringDashboard = () => {
           </div>
           {trend && (
             <Badge variant="outline" className={`text-[8px] px-1 ${
-              trend === 'up' ? 'text-green-500 border-green-500/30' :
-              trend === 'down' ? 'text-red-500 border-red-500/30' :
+              trend === 'up' ? 'text-chart-1 border-chart-1/30' :
+              trend === 'down' ? 'text-destructive border-destructive/30' :
               'text-muted-foreground'
             }`}>
               {trend === 'up' ? <TrendingUp className="h-2 w-2 mr-0.5" /> :
@@ -306,13 +306,13 @@ const LiveMonitoringDashboard = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-lg bg-gradient-to-r from-primary/10 via-accent/5 to-secondary/10 border border-border/40">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-lg bg-muted/20 border border-border/40">
         <div className="flex items-center gap-3">
-          <div className={`p-2.5 rounded-xl ${isConnected ? 'bg-green-500/20' : 'bg-red-500/20'} animate-pulse`}>
+          <div className={`p-2.5 rounded-xl ${isConnected ? 'bg-chart-1/20' : 'bg-destructive/20'} animate-pulse`}>
             {isConnected ? (
-              <Radio className="h-5 w-5 text-green-500" />
+              <Radio className="h-5 w-5 text-chart-1" />
             ) : (
-              <WifiOff className="h-5 w-5 text-red-500" />
+              <WifiOff className="h-5 w-5 text-destructive" />
             )}
           </div>
           <div>
@@ -383,7 +383,7 @@ const LiveMonitoringDashboard = () => {
           title="Online Now" 
           value={totalOnline}
           icon={Radio} 
-          color="green-500"
+          color="chart-1"
         />
         <StatCard 
           title="Activities (24h)" 
@@ -402,20 +402,20 @@ const LiveMonitoringDashboard = () => {
           subValue={stats.openTickets > 0 ? `${stats.openTickets} open` : undefined}
           icon={Ticket} 
           trend={stats.openTickets > 5 ? 'up' : 'stable'}
-          color="orange-500"
+          color="chart-3"
         />
         <StatCard 
           title="Reviews" 
           value={stats.totalReviews}
           subValue={stats.avgRating > 0 ? `${stats.avgRating}★ avg` : undefined}
           icon={Star} 
-          color="yellow-500"
+          color="chart-4"
         />
         <StatCard 
           title="User Feedback" 
           value={stats.totalFeedback}
           icon={ThumbsUp} 
-          color="blue-500"
+          color="chart-2"
         />
         <StatCard 
           title="Unread Alerts" 
@@ -423,7 +423,7 @@ const LiveMonitoringDashboard = () => {
           subValue={stats.criticalAlerts > 0 ? `${stats.criticalAlerts} critical` : undefined}
           icon={Bell} 
           trend={stats.unreadAlerts > 10 ? 'up' : 'stable'}
-          color="red-500"
+          color="destructive"
         />
         <StatCard 
           title="CPU Usage" 
@@ -494,8 +494,8 @@ const LiveMonitoringDashboard = () => {
                     <p className="text-xs text-muted-foreground">Properties</p>
                     <Badge className="mt-1 text-[9px]" variant="outline">{stats.activeProperties} active</Badge>
                   </div>
-                  <div className="text-center p-3 rounded-lg bg-green-500/5 border border-green-500/20">
-                    <Zap className="h-6 w-6 mx-auto text-green-500 mb-2" />
+                  <div className="text-center p-3 rounded-lg bg-chart-1/5 border border-chart-1/20">
+                    <Zap className="h-6 w-6 mx-auto text-chart-1 mb-2" />
                     <p className="text-2xl font-bold">{stats.totalServices}</p>
                     <p className="text-xs text-muted-foreground">Services</p>
                     <Badge className="mt-1 text-[9px]" variant="outline">{stats.activeServices} active</Badge>
@@ -505,30 +505,30 @@ const LiveMonitoringDashboard = () => {
                 <Separator />
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                    <Activity className="h-5 w-5 text-blue-500" />
-                    <div>
+                <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                    <Activity className="h-5 w-5 text-chart-2" />
+                  <div>
                       <p className="text-sm font-semibold">{stats.activities24h}</p>
                       <p className="text-[10px] text-muted-foreground">Activities (24h)</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                    <Ticket className="h-5 w-5 text-orange-500" />
-                    <div>
+                    <Ticket className="h-5 w-5 text-chart-3" />
+                  <div>
                       <p className="text-sm font-semibold">{stats.openTickets}/{stats.totalTickets}</p>
                       <p className="text-[10px] text-muted-foreground">Open Tickets</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                    <Star className="h-5 w-5 text-yellow-500" />
-                    <div>
+                    <Star className="h-5 w-5 text-chart-4" />
+                  <div>
                       <p className="text-sm font-semibold">{stats.totalReviews}</p>
                       <p className="text-[10px] text-muted-foreground">Reviews ({stats.avgRating}★)</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                    <ThumbsUp className="h-5 w-5 text-green-500" />
-                    <div>
+                    <ThumbsUp className="h-5 w-5 text-chart-1" />
+                  <div>
                       <p className="text-sm font-semibold">{stats.totalFeedback}</p>
                       <p className="text-[10px] text-muted-foreground">Feedback</p>
                     </div>
@@ -541,12 +541,12 @@ const LiveMonitoringDashboard = () => {
             <Card>
               <CardHeader className="py-3">
                 <CardTitle className="text-sm flex items-center gap-2">
-                  <Bell className="h-4 w-4 text-orange-500" />
+                  <Bell className="h-4 w-4 text-chart-3" />
                   Alerts & Status
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className={`p-3 rounded-lg ${stats.unreadAlerts > 0 ? 'bg-red-500/10 border border-red-500/20' : 'bg-green-500/10 border border-green-500/20'}`}>
+                <div className={`p-3 rounded-lg ${stats.unreadAlerts > 0 ? 'bg-destructive/10 border border-destructive/20' : 'bg-chart-1/10 border border-chart-1/20'}`}>
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium">Unread Alerts</span>
                     <Badge variant={stats.unreadAlerts > 0 ? 'destructive' : 'default'} className="text-[9px]">
@@ -554,14 +554,14 @@ const LiveMonitoringDashboard = () => {
                     </Badge>
                   </div>
                   {stats.criticalAlerts > 0 && (
-                    <p className="text-[10px] text-red-500 mt-1">{stats.criticalAlerts} critical alerts require attention</p>
+                    <p className="text-[10px] text-destructive mt-1">{stats.criticalAlerts} critical alerts require attention</p>
                   )}
                 </div>
                 
                 <div className="p-3 rounded-lg bg-muted/30 border border-border/30">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-medium">System Health</span>
-                    <Badge variant="outline" className="text-[9px] text-green-500">Healthy</Badge>
+                    <Badge variant="outline" className="text-[9px] text-chart-1">Healthy</Badge>
                   </div>
                   <Progress value={95} className="h-1.5" />
                 </div>
@@ -569,26 +569,26 @@ const LiveMonitoringDashboard = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="flex items-center gap-1.5">
-                      <Radio className={`h-3 w-3 ${isConnected ? 'text-green-500' : 'text-red-500'}`} />
+                      <Radio className={`h-3 w-3 ${isConnected ? 'text-chart-1' : 'text-destructive'}`} />
                       Realtime Connection
                     </span>
-                    <span className={isConnected ? 'text-green-500' : 'text-red-500'}>
+                    <span className={isConnected ? 'text-chart-1' : 'text-destructive'}>
                       {isConnected ? 'Connected' : 'Disconnected'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="flex items-center gap-1.5">
-                      <Database className="h-3 w-3 text-blue-500" />
+                      <Database className="h-3 w-3 text-chart-2" />
                       Database
                     </span>
-                    <span className="text-green-500">Online</span>
+                    <span className="text-chart-1">Online</span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="flex items-center gap-1.5">
-                      <Zap className="h-3 w-3 text-yellow-500" />
+                      <Zap className="h-3 w-3 text-chart-4" />
                       Edge Functions
                     </span>
-                    <span className="text-green-500">Active</span>
+                    <span className="text-chart-1">Active</span>
                   </div>
                 </div>
               </CardContent>
@@ -628,7 +628,7 @@ const LiveMonitoringDashboard = () => {
                                     {user.full_name?.charAt(0) || user.email?.charAt(0) || '?'}
                                   </AvatarFallback>
                                 </Avatar>
-                                <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 bg-green-500 rounded-full border-2 border-background" />
+                                <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 bg-chart-1 rounded-full border-2 border-background" />
                               </div>
                               <div>
                                 <p className="text-xs font-medium">{user.full_name || user.email}</p>
@@ -663,7 +663,7 @@ const LiveMonitoringDashboard = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h4 className="text-xs font-medium text-green-600 mb-2 flex items-center gap-1">
+                  <h4 className="text-xs font-medium text-chart-1 mb-2 flex items-center gap-1">
                     <ArrowUpRight className="h-3 w-3" /> Recent Joins
                   </h4>
                   <ScrollArea className="h-[100px]">
@@ -671,7 +671,7 @@ const LiveMonitoringDashboard = () => {
                       <div className="space-y-1">
                         {recentJoins.slice(0, 5).map((user, i) => (
                           <div key={i} className="text-[10px] text-muted-foreground flex items-center gap-2">
-                            <span className="w-2 h-2 bg-green-500 rounded-full" />
+                            <span className="w-2 h-2 bg-chart-1 rounded-full" />
                             {user.full_name || user.email}
                           </div>
                         ))}
@@ -685,7 +685,7 @@ const LiveMonitoringDashboard = () => {
                 <Separator />
 
                 <div>
-                  <h4 className="text-xs font-medium text-orange-600 mb-2 flex items-center gap-1">
+                  <h4 className="text-xs font-medium text-chart-3 mb-2 flex items-center gap-1">
                     <ArrowDownRight className="h-3 w-3" /> Recent Leaves
                   </h4>
                   <ScrollArea className="h-[100px]">
@@ -693,7 +693,7 @@ const LiveMonitoringDashboard = () => {
                       <div className="space-y-1">
                         {recentLeaves.slice(0, 5).map((user, i) => (
                           <div key={i} className="text-[10px] text-muted-foreground flex items-center gap-2">
-                            <span className="w-2 h-2 bg-orange-500 rounded-full" />
+                            <span className="w-2 h-2 bg-chart-3 rounded-full" />
                             {user.full_name || user.email}
                           </div>
                         ))}
@@ -833,19 +833,19 @@ const LiveMonitoringDashboard = () => {
               { name: 'Authentication', status: 'healthy', latency: '34ms', icon: Shield },
             ].map((service) => (
               <Card key={service.name} className={`border-l-4 ${
-                service.status === 'healthy' ? 'border-l-green-500' : 
-                service.status === 'degraded' ? 'border-l-yellow-500' : 'border-l-red-500'
+                service.status === 'healthy' ? 'border-l-chart-1' : 
+                service.status === 'degraded' ? 'border-l-chart-3' : 'border-l-destructive'
               }`}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg ${
-                        service.status === 'healthy' ? 'bg-green-500/10' : 
-                        service.status === 'degraded' ? 'bg-yellow-500/10' : 'bg-red-500/10'
+                        service.status === 'healthy' ? 'bg-chart-1/10' : 
+                        service.status === 'degraded' ? 'bg-chart-3/10' : 'bg-destructive/10'
                       }`}>
                         <service.icon className={`h-4 w-4 ${
-                          service.status === 'healthy' ? 'text-green-500' : 
-                          service.status === 'degraded' ? 'text-yellow-500' : 'text-red-500'
+                          service.status === 'healthy' ? 'text-chart-1' : 
+                          service.status === 'degraded' ? 'text-chart-3' : 'text-destructive'
                         }`} />
                       </div>
                       <div>

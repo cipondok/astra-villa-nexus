@@ -209,14 +209,14 @@ const SecurityMonitoringDashboard = () => {
 
   const getStatusBadge = (success: boolean, blocked: boolean) => {
     if (blocked) return <Badge variant="destructive">Blocked</Badge>;
-    if (success) return <Badge variant="default" className="bg-green-500">Success</Badge>;
+    if (success) return <Badge className="bg-chart-1/10 text-chart-1 border border-chart-1/30">Success</Badge>;
     return <Badge variant="destructive">Failed</Badge>;
   };
 
   const getRiskBadge = (riskScore: number) => {
     if (riskScore >= 80) return <Badge variant="destructive">High Risk</Badge>;
-    if (riskScore >= 50) return <Badge variant="outline" className="border-orange-500 text-orange-500">Medium Risk</Badge>;
-    return <Badge variant="outline" className="border-green-500 text-green-500">Low Risk</Badge>;
+    if (riskScore >= 50) return <Badge variant="outline" className="border-chart-3/50 text-chart-3">Medium Risk</Badge>;
+    return <Badge variant="outline" className="border-chart-1/50 text-chart-1">Low Risk</Badge>;
   };
 
   const filteredAttempts = loginAttempts.filter(attempt => {
@@ -363,7 +363,7 @@ const SecurityMonitoringDashboard = () => {
               </div>
               <div className="flex items-center gap-2">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
                     placeholder="Search by email..."
                     value={searchEmail}
@@ -372,7 +372,7 @@ const SecurityMonitoringDashboard = () => {
                   />
                 </div>
                 <div className="relative">
-                  <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
                     placeholder="Search by IP..."
                     value={searchIP}
@@ -406,10 +406,10 @@ const SecurityMonitoringDashboard = () => {
                     <TableCell>
                       {getStatusBadge(attempt.success, attempt.blocked_by_rate_limit)}
                     </TableCell>
-                    <TableCell className="text-sm text-gray-500">
+                    <TableCell className="text-sm text-muted-foreground">
                       {attempt.failure_reason || '-'}
                     </TableCell>
-                    <TableCell className="text-sm text-gray-500 max-w-xs truncate">
+                    <TableCell className="text-sm text-muted-foreground max-w-xs truncate">
                       {attempt.user_agent}
                     </TableCell>
                   </TableRow>
@@ -417,7 +417,7 @@ const SecurityMonitoringDashboard = () => {
               </TableBody>
             </Table>
             {filteredAttempts.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-muted-foreground">
                 No login attempts found for the selected time period.
               </div>
             )}
@@ -457,10 +457,10 @@ const SecurityMonitoringDashboard = () => {
                     <TableCell>{lockout.failed_attempts}</TableCell>
                     <TableCell className="font-mono">{String(lockout.locked_by_ip || 'N/A')}</TableCell>
                     <TableCell>
-                      {lockout.is_active ? (
+          {lockout.is_active ? (
                         <Badge variant="destructive">Locked</Badge>
                       ) : (
-                        <Badge variant="outline" className="border-green-500 text-green-500">Unlocked</Badge>
+                        <Badge variant="outline" className="border-chart-1/50 text-chart-1">Unlocked</Badge>
                       )}
                     </TableCell>
                     <TableCell>
@@ -480,7 +480,7 @@ const SecurityMonitoringDashboard = () => {
               </TableBody>
             </Table>
             {accountLockouts.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-muted-foreground">
                 No account lockouts found for the selected time period.
               </div>
             )}
@@ -526,7 +526,7 @@ const SecurityMonitoringDashboard = () => {
                         <Badge variant="outline">No</Badge>
                       )}
                     </TableCell>
-                    <TableCell className="text-sm text-gray-500">
+                    <TableCell className="text-sm text-muted-foreground">
                       {JSON.stringify(log.metadata)}
                     </TableCell>
                   </TableRow>
@@ -534,7 +534,7 @@ const SecurityMonitoringDashboard = () => {
               </TableBody>
             </Table>
             {securityLogs.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-muted-foreground">
                 No security events found for the selected time period.
               </div>
             )}

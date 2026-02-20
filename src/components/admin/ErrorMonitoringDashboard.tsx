@@ -139,10 +139,10 @@ export default function ErrorMonitoringDashboard() {
 
   const getSeverityBadge = (severity: string) => {
     const variants: Record<string, string> = {
-      low: 'bg-blue-100 text-blue-800',
-      medium: 'bg-yellow-100 text-yellow-800',
-      high: 'bg-orange-100 text-orange-800',
-      critical: 'bg-red-100 text-red-800'
+      low: 'bg-chart-2/10 text-chart-2 border-chart-2/30',
+      medium: 'bg-chart-3/10 text-chart-3 border-chart-3/30',
+      high: 'bg-chart-4/10 text-chart-4 border-chart-4/30',
+      critical: 'bg-destructive/10 text-destructive border-destructive/30'
     };
 
     const icons: Record<string, any> = {
@@ -155,7 +155,7 @@ export default function ErrorMonitoringDashboard() {
     const Icon = icons[severity] || AlertTriangle;
 
     return (
-      <Badge className={variants[severity] || 'bg-gray-100 text-gray-800'}>
+      <Badge className={variants[severity] || 'bg-muted text-muted-foreground'}>
         <Icon className="h-3 w-3 mr-1" />
         {severity.toUpperCase()}
       </Badge>
@@ -169,7 +169,7 @@ export default function ErrorMonitoringDashboard() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>New Errors</CardDescription>
-            <CardTitle className="text-3xl font-bold text-red-600">
+            <CardTitle className="text-3xl font-bold text-destructive">
               {stats?.new || 0}
             </CardTitle>
           </CardHeader>
@@ -178,7 +178,7 @@ export default function ErrorMonitoringDashboard() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Critical Errors</CardDescription>
-            <CardTitle className="text-3xl font-bold text-orange-600">
+            <CardTitle className="text-3xl font-bold text-chart-4">
               {stats?.critical || 0}
             </CardTitle>
           </CardHeader>
@@ -187,7 +187,7 @@ export default function ErrorMonitoringDashboard() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Last 24 Hours</CardDescription>
-            <CardTitle className="text-3xl font-bold text-blue-600">
+            <CardTitle className="text-3xl font-bold text-chart-2">
               {stats?.today || 0}
             </CardTitle>
           </CardHeader>
@@ -209,7 +209,7 @@ export default function ErrorMonitoringDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-red-600" />
+                <AlertTriangle className="h-5 w-5 text-destructive" />
                 Error Monitoring Dashboard
               </CardTitle>
               <CardDescription>
@@ -340,7 +340,7 @@ export default function ErrorMonitoringDashboard() {
             </div>
           ) : (
             <div className="text-center py-8 text-muted-foreground">
-              <CheckCircle2 className="h-12 w-12 mx-auto mb-2 text-green-500" />
+              <CheckCircle2 className="h-12 w-12 mx-auto mb-2 text-chart-1" />
               <p>No errors found</p>
             </div>
           )}
