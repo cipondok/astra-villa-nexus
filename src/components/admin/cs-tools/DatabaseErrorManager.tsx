@@ -494,11 +494,11 @@ WHERE NOT EXISTS (
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-muted-foreground">Total Errors</p>
-                        <p className="text-2xl font-bold text-red-600">
+                        <p className="text-2xl font-bold text-destructive">
                           {errors.filter(e => !e.is_resolved).length}
                         </p>
                       </div>
-                      <XCircle className="h-8 w-8 text-red-500" />
+                      <XCircle className="h-8 w-8 text-destructive/60" />
                     </div>
                   </CardContent>
                 </Card>
@@ -508,11 +508,11 @@ WHERE NOT EXISTS (
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-muted-foreground">Resolved</p>
-                        <p className="text-2xl font-bold text-green-600">
+                        <p className="text-2xl font-bold text-chart-1">
                           {errors.filter(e => e.is_resolved).length}
                         </p>
                       </div>
-                      <CheckCircle className="h-8 w-8 text-green-500" />
+                      <CheckCircle className="h-8 w-8 text-chart-1/60" />
                     </div>
                   </CardContent>
                 </Card>
@@ -522,11 +522,11 @@ WHERE NOT EXISTS (
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-muted-foreground">Critical</p>
-                        <p className="text-2xl font-bold text-orange-600">
+                        <p className="text-2xl font-bold text-chart-4">
                           {errors.filter(e => e.error_severity === "ERROR" && !e.is_resolved).length}
                         </p>
                       </div>
-                      <AlertTriangle className="h-8 w-8 text-orange-500" />
+                      <AlertTriangle className="h-8 w-8 text-chart-4/60" />
                     </div>
                   </CardContent>
                 </Card>
@@ -536,9 +536,9 @@ WHERE NOT EXISTS (
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-muted-foreground">Auto-Fixed</p>
-                        <p className="text-2xl font-bold text-blue-600">12</p>
+                        <p className="text-2xl font-bold text-chart-2">12</p>
                       </div>
-                      <Zap className="h-8 w-8 text-blue-500" />
+                      <Zap className="h-8 w-8 text-chart-2/60" />
                     </div>
                   </CardContent>
                 </Card>
@@ -616,8 +616,8 @@ WHERE NOT EXISTS (
               ) : (
                 <Card>
                   <CardContent className="p-8 text-center">
-                    <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-green-600 mb-2">
+                    <CheckCircle className="h-12 w-12 text-chart-1 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-chart-1 mb-2">
                       🎉 All Database Errors Resolved!
                     </h3>
                     <p className="text-muted-foreground mb-4">
@@ -650,7 +650,7 @@ WHERE NOT EXISTS (
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-lg font-bold text-red-600">{pattern.count}</p>
+                          <p className="text-lg font-bold text-destructive">{pattern.count}</p>
                           <p className="text-xs text-muted-foreground">occurrences</p>
                           <p className="text-xs text-muted-foreground">{pattern.lastOccurrence}</p>
                         </div>
@@ -675,8 +675,8 @@ WHERE NOT EXISTS (
                       <div className="flex justify-between items-center">
                         <span className="text-sm">Today</span>
                         <div className="flex items-center gap-2">
-                          <div className="w-24 bg-red-200 h-2 rounded">
-                            <div className="w-3/4 bg-red-500 h-2 rounded"></div>
+                          <div className="w-24 bg-destructive/20 h-2 rounded">
+                            <div className="w-3/4 bg-destructive h-2 rounded"></div>
                           </div>
                           <span className="text-sm font-semibold">23</span>
                         </div>
@@ -684,8 +684,8 @@ WHERE NOT EXISTS (
                       <div className="flex justify-between items-center">
                         <span className="text-sm">This Week</span>
                         <div className="flex items-center gap-2">
-                          <div className="w-24 bg-red-200 h-2 rounded">
-                            <div className="w-1/2 bg-red-500 h-2 rounded"></div>
+                          <div className="w-24 bg-destructive/20 h-2 rounded">
+                            <div className="w-1/2 bg-destructive h-2 rounded"></div>
                           </div>
                           <span className="text-sm font-semibold">89</span>
                         </div>
@@ -693,8 +693,8 @@ WHERE NOT EXISTS (
                       <div className="flex justify-between items-center">
                         <span className="text-sm">This Month</span>
                         <div className="flex items-center gap-2">
-                          <div className="w-24 bg-red-200 h-2 rounded">
-                            <div className="w-full bg-red-500 h-2 rounded"></div>
+                          <div className="w-24 bg-destructive/20 h-2 rounded">
+                            <div className="w-full bg-destructive h-2 rounded"></div>
                           </div>
                           <span className="text-sm font-semibold">342</span>
                         </div>
@@ -718,15 +718,15 @@ WHERE NOT EXISTS (
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm">Auto-Resolution Rate</span>
-                        <span className="font-semibold text-green-600">68%</span>
+                        <span className="font-semibold text-chart-1">68%</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm">Manual Intervention</span>
-                        <span className="font-semibold text-orange-600">32%</span>
+                        <span className="font-semibold text-chart-4">32%</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm">Success Rate</span>
-                        <span className="font-semibold text-green-600">94%</span>
+                        <span className="font-semibold text-chart-1">94%</span>
                       </div>
                     </div>
                   </CardContent>

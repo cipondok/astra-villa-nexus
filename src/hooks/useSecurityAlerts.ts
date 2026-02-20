@@ -141,13 +141,13 @@ export const useSecurityAlerts = () => {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case 'critical':
-        return 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950';
+        return 'text-destructive bg-destructive/10';
       case 'high':
-        return 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950';
+        return 'text-chart-4 bg-chart-4/10';
       case 'medium':
-        return 'text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950';
+        return 'text-chart-3 bg-chart-3/10';
       default:
-        return 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950';
+        return 'text-chart-2 bg-chart-2/10';
     }
   };
 

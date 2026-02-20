@@ -75,16 +75,16 @@ interface Dispute {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  completed: 'bg-emerald-500',
-  pending: 'bg-amber-500',
-  processing: 'bg-blue-500',
-  failed: 'bg-red-500',
-  cancelled: 'bg-gray-500',
-  open: 'bg-amber-500',
-  under_review: 'bg-blue-500',
-  resolved_buyer_favor: 'bg-emerald-500',
-  resolved_seller_favor: 'bg-emerald-500',
-  closed: 'bg-gray-500'
+  completed: 'bg-chart-1',
+  pending: 'bg-chart-3',
+  processing: 'bg-chart-2',
+  failed: 'bg-destructive',
+  cancelled: 'bg-muted-foreground',
+  open: 'bg-chart-3',
+  under_review: 'bg-chart-2',
+  resolved_buyer_favor: 'bg-chart-1',
+  resolved_seller_favor: 'bg-chart-1',
+  closed: 'bg-muted-foreground'
 };
 
 const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];

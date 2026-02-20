@@ -188,7 +188,7 @@ const AuthRegistrationSettings = () => {
                     <div>
                       <div className="text-xs font-medium flex items-center gap-1.5">
                         {item.label}
-                        {item.badge && <Badge variant="outline" className="text-[9px] px-1 py-0 bg-green-500/10 text-green-600 border-green-300">{item.badge}</Badge>}
+                        {item.badge && <Badge variant="outline" className="text-[9px] px-1 py-0 bg-chart-1/10 text-chart-1 border-chart-1/30">{item.badge}</Badge>}
                       </div>
                       <p className="text-[10px] text-muted-foreground">{item.desc}</p>
                     </div>
@@ -255,9 +255,9 @@ const AuthRegistrationSettings = () => {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
-                <Gift className="h-4 w-4 text-yellow-500" />
+                <Gift className="h-4 w-4 text-chart-3" />
                 Signup Reward Configuration
-                <Badge className="text-[9px] bg-yellow-500/20 text-yellow-700 border-yellow-300">Active</Badge>
+                <Badge className="text-[9px] bg-chart-3/20 text-chart-3 border-chart-3/30">Active</Badge>
               </CardTitle>
               <CardDescription className="text-xs">Configure rewards given to new users upon registration</CardDescription>
             </CardHeader>
@@ -383,7 +383,7 @@ const AuthRegistrationSettings = () => {
         <TabsContent value="whatsapp" className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2"><Phone className="h-4 w-4 text-green-600" />WhatsApp Login Settings</CardTitle>
+              <CardTitle className="text-sm flex items-center gap-2"><Phone className="h-4 w-4 text-chart-1" />WhatsApp Login Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-1.5">
@@ -407,12 +407,12 @@ const AuthRegistrationSettings = () => {
                 <Label className="text-xs">Welcome Message</Label>
                 <Textarea className="text-xs min-h-[60px]" value={settings.whatsappWelcomeMessage} onChange={e => update('whatsappWelcomeMessage', e.target.value)} />
               </div>
-              <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+              <div className="p-3 rounded-lg bg-chart-3/10 border border-chart-3/20">
                 <div className="flex items-start gap-2">
-                  <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5" />
+                  <AlertTriangle className="h-4 w-4 text-chart-3 mt-0.5" />
                   <div>
-                    <p className="text-xs font-medium text-yellow-700">Supabase Phone Auth Required</p>
-                    <p className="text-[10px] text-yellow-600">WhatsApp login uses Supabase phone authentication. Make sure phone auth is enabled in your Supabase dashboard under Authentication → Providers.</p>
+                    <p className="text-xs font-medium text-foreground">Supabase Phone Auth Required</p>
+                    <p className="text-[10px] text-muted-foreground">WhatsApp login uses Supabase phone authentication. Make sure phone auth is enabled in your Supabase dashboard under Authentication → Providers.</p>
                   </div>
                 </div>
               </div>
@@ -432,12 +432,12 @@ const AuthRegistrationSettings = () => {
                 <Label className="text-xs">Google One-Tap Sign In</Label>
                 <Switch checked={settings.googleOneTapEnabled} onCheckedChange={v => update('googleOneTapEnabled', v)} />
               </div>
-              <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+              <div className="p-3 rounded-lg bg-chart-2/10 border border-chart-2/20">
                 <div className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-blue-600 mt-0.5" />
+                  <CheckCircle className="h-4 w-4 text-chart-2 mt-0.5" />
                   <div>
-                    <p className="text-xs font-medium text-blue-700">Google OAuth Status: {settings.googleClientConfigured ? 'Configured ✓' : 'Not Configured'}</p>
-                    <p className="text-[10px] text-blue-600">Manage OAuth credentials in your Supabase dashboard → Authentication → Providers</p>
+                    <p className="text-xs font-medium text-foreground">Google OAuth Status: {settings.googleClientConfigured ? 'Configured ✓' : 'Not Configured'}</p>
+                    <p className="text-[10px] text-muted-foreground">Manage OAuth credentials in your Supabase dashboard → Authentication → Providers</p>
                   </div>
                 </div>
               </div>

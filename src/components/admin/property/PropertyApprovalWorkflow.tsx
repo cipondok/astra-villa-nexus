@@ -196,10 +196,10 @@ const PropertyApprovalWorkflow = () => {
 
   const getPriorityBadge = (priority: string) => {
     const colors = {
-      low: 'bg-green-100 text-green-800',
-      medium: 'bg-yellow-100 text-yellow-800',
-      high: 'bg-orange-100 text-orange-800',
-      urgent: 'bg-red-100 text-red-800'
+      low: 'bg-chart-1/10 text-chart-1',
+      medium: 'bg-chart-3/10 text-chart-3',
+      high: 'bg-chart-4/10 text-chart-4',
+      urgent: 'bg-destructive/10 text-destructive'
     };
     
     return (
@@ -268,23 +268,23 @@ const PropertyApprovalWorkflow = () => {
           {/* Stats Overview */}
           <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
             <Card className="p-4">
-              <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
+              <div className="text-2xl font-bold text-chart-2">{stats.total}</div>
               <div className="text-sm text-muted-foreground">Total Submissions</div>
             </Card>
             <Card className="p-4">
-              <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
+              <div className="text-2xl font-bold text-chart-3">{stats.pending}</div>
               <div className="text-sm text-muted-foreground">Pending</div>
             </Card>
             <Card className="p-4">
-              <div className="text-2xl font-bold text-orange-600">{stats.under_review}</div>
+              <div className="text-2xl font-bold text-chart-4">{stats.under_review}</div>
               <div className="text-sm text-muted-foreground">Under Review</div>
             </Card>
             <Card className="p-4">
-              <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
+              <div className="text-2xl font-bold text-chart-1">{stats.approved}</div>
               <div className="text-sm text-muted-foreground">Approved</div>
             </Card>
             <Card className="p-4">
-              <div className="text-2xl font-bold text-red-600">{stats.rejected}</div>
+              <div className="text-2xl font-bold text-destructive">{stats.rejected}</div>
               <div className="text-sm text-muted-foreground">Rejected</div>
             </Card>
             <Card className="p-4">
@@ -481,9 +481,9 @@ const PropertyApprovalWorkflow = () => {
                         <div key={key} className="flex items-center justify-between p-3 border rounded-lg">
                           <span className="capitalize">{key.replace('_', ' ')}</span>
                           {value ? (
-                            <CheckCircle className="h-5 w-5 text-green-500" />
+                            <CheckCircle className="h-5 w-5 text-chart-1" />
                           ) : (
-                            <XCircle className="h-5 w-5 text-red-500" />
+                            <XCircle className="h-5 w-5 text-destructive" />
                           )}
                         </div>
                       ))}

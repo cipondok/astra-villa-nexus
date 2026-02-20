@@ -19,10 +19,10 @@ import {
 } from "lucide-react";
 
 const ROLE_CONFIG = {
-  user: { label: "Users", icon: Users, color: "text-blue-500" },
-  agent: { label: "Agents", icon: UserCheck, color: "text-emerald-500" },
-  property_owner: { label: "Property Owners", icon: Building2, color: "text-amber-500" },
-  vendor: { label: "Vendors", icon: Store, color: "text-purple-500" },
+  user: { label: "Users", icon: Users, color: "text-chart-2" },
+  agent: { label: "Agents", icon: UserCheck, color: "text-chart-1" },
+  property_owner: { label: "Property Owners", icon: Building2, color: "text-chart-3" },
+  vendor: { label: "Vendors", icon: Store, color: "text-chart-4" },
 };
 
 const STEP_ICONS: Record<string, React.ElementType> = {
@@ -40,11 +40,11 @@ const STEP_ICONS: Record<string, React.ElementType> = {
 };
 
 const TIER_ICONS: Record<string, { icon: React.ElementType; color: string }> = {
-  verified: { icon: CheckCircle2, color: "text-blue-500" },
-  vip: { icon: Star, color: "text-purple-500" },
-  gold: { icon: Award, color: "text-yellow-500" },
-  platinum: { icon: Gem, color: "text-cyan-500" },
-  diamond: { icon: Crown, color: "text-sky-500" },
+  verified: { icon: CheckCircle2, color: "text-chart-2" },
+  vip: { icon: Star, color: "text-chart-4" },
+  gold: { icon: Award, color: "text-chart-3" },
+  platinum: { icon: Gem, color: "text-chart-5" },
+  diamond: { icon: Crown, color: "text-primary" },
 };
 
 interface VerificationStep {
@@ -270,7 +270,7 @@ const VerificationSystemSettings = () => {
                             <Badge variant="destructive" className="text-[8px] h-4 px-1">Required</Badge>
                           )}
                           {step.auto_approve && (
-                            <Badge className="text-[8px] h-4 px-1 bg-emerald-500/20 text-emerald-700 border-emerald-300">
+                            <Badge className="text-[8px] h-4 px-1 bg-chart-1/20 text-chart-1 border-chart-1/30">
                               <Zap className="h-2.5 w-2.5 mr-0.5" />Auto
                             </Badge>
                           )}
@@ -408,7 +408,7 @@ const VerificationSystemSettings = () => {
           <Card>
             <CardHeader className="p-3 pb-2">
               <CardTitle className="text-xs flex items-center gap-2">
-                <Zap className="h-4 w-4 text-amber-500" />
+                <Zap className="h-4 w-4 text-chart-3" />
                 Auto-Approve Configuration
               </CardTitle>
               <CardDescription className="text-[10px]">
@@ -457,11 +457,11 @@ const VerificationSystemSettings = () => {
           </Card>
 
           {/* Summary */}
-          <Card className="border-amber-200 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-800">
+          <Card className="border-chart-3/30 bg-chart-3/5">
             <CardContent className="p-3">
               <div className="flex items-start gap-2">
-                <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
-                <div className="text-[10px] text-amber-800 dark:text-amber-300 space-y-1">
+                <AlertTriangle className="h-4 w-4 text-chart-3 shrink-0 mt-0.5" />
+                <div className="text-[10px] text-foreground space-y-1">
                   <p className="font-semibold">Auto-Approve Security Notice</p>
                   <p>Auto-approved steps bypass manual admin review. Only enable for low-risk steps like email verification. High-risk steps (ID upload, video call) should require manual review.</p>
                 </div>

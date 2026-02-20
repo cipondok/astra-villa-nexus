@@ -237,10 +237,10 @@ export const useNotificationAnalytics = (timeRange: '7d' | '30d' | '90d' = '30d'
     const { clickRate, deliveryRate } = analytics.overview;
     const score = (clickRate * 0.6) + (deliveryRate * 0.4);
     
-    if (score >= 70) return { score, rating: 'Excellent', color: 'text-emerald-500' };
-    if (score >= 50) return { score, rating: 'Good', color: 'text-blue-500' };
-    if (score >= 30) return { score, rating: 'Average', color: 'text-amber-500' };
-    return { score, rating: 'Needs Improvement', color: 'text-red-500' };
+    if (score >= 70) return { score, rating: 'Excellent', color: 'text-chart-1' };
+    if (score >= 50) return { score, rating: 'Good', color: 'text-chart-2' };
+    if (score >= 30) return { score, rating: 'Average', color: 'text-chart-3' };
+    return { score, rating: 'Needs Improvement', color: 'text-destructive' };
   }, [analytics]);
 
   return {

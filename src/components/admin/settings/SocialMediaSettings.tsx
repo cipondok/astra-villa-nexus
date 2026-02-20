@@ -8,12 +8,12 @@ import { Facebook, Twitter, Instagram, Youtube, MessageCircle, Save, Globe, Musi
 import { useSocialMediaSettings } from '@/hooks/useSocialMediaSettings';
 
 const fields = [
-  { key: 'facebookUrl' as const, label: 'Facebook URL', icon: Facebook, placeholder: 'https://facebook.com/yourpage', color: 'text-blue-500' },
-  { key: 'twitterUrl' as const, label: 'Twitter / X URL', icon: Twitter, placeholder: 'https://twitter.com/yourhandle', color: 'text-sky-400' },
-  { key: 'instagramUrl' as const, label: 'Instagram URL', icon: Instagram, placeholder: 'https://instagram.com/yourprofile', color: 'text-pink-500' },
+  { key: 'facebookUrl' as const, label: 'Facebook URL', icon: Facebook, placeholder: 'https://facebook.com/yourpage', color: 'text-chart-2' },
+  { key: 'twitterUrl' as const, label: 'Twitter / X URL', icon: Twitter, placeholder: 'https://twitter.com/yourhandle', color: 'text-chart-2' },
+  { key: 'instagramUrl' as const, label: 'Instagram URL', icon: Instagram, placeholder: 'https://instagram.com/yourprofile', color: 'text-chart-5' },
   { key: 'tiktokUrl' as const, label: 'TikTok URL', icon: Music2, placeholder: 'https://tiktok.com/@yourusername', color: 'text-foreground' },
-  { key: 'youtubeUrl' as const, label: 'YouTube URL', icon: Youtube, placeholder: 'https://youtube.com/@yourchannel', color: 'text-red-500' },
-  { key: 'whatsappNumber' as const, label: 'WhatsApp Number', icon: MessageCircle, placeholder: '+6285716008080', color: 'text-green-500' },
+  { key: 'youtubeUrl' as const, label: 'YouTube URL', icon: Youtube, placeholder: 'https://youtube.com/@yourchannel', color: 'text-destructive' },
+  { key: 'whatsappNumber' as const, label: 'WhatsApp Number', icon: MessageCircle, placeholder: '+6285716008080', color: 'text-chart-1' },
 ];
 
 const SocialMediaSettings = () => {

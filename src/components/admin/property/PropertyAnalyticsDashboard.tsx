@@ -88,11 +88,11 @@ const PropertyAnalyticsDashboard = () => {
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'view': return <Eye className="h-4 w-4 text-blue-500" />;
-      case 'inquiry': return <MessageSquare className="h-4 w-4 text-green-500" />;
-      case 'share': return <Share className="h-4 w-4 text-purple-500" />;
-      case 'favorite': return <Heart className="h-4 w-4 text-red-500" />;
-      default: return <Eye className="h-4 w-4 text-gray-500" />;
+      case 'view': return <Eye className="h-4 w-4 text-chart-2" />;
+      case 'inquiry': return <MessageSquare className="h-4 w-4 text-chart-1" />;
+      case 'share': return <Share className="h-4 w-4 text-chart-4" />;
+      case 'favorite': return <Heart className="h-4 w-4 text-destructive" />;
+      default: return <Eye className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -160,11 +160,11 @@ const PropertyAnalyticsDashboard = () => {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2">
-                      <Building className="h-4 w-4 text-blue-500" />
+                      <Building className="h-4 w-4 text-chart-2" />
                       <span className="text-sm font-medium">Total Properties</span>
                     </div>
                     <div className="text-2xl font-bold mt-2">{performanceMetrics.total_properties.toLocaleString()}</div>
-                    <div className="text-sm text-green-600 flex items-center gap-1 mt-1">
+                    <div className="text-sm text-chart-1 flex items-center gap-1 mt-1">
                       <TrendingUp className="h-3 w-3" />
                       +12% from last month
                     </div>
@@ -173,11 +173,11 @@ const PropertyAnalyticsDashboard = () => {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2">
-                      <Eye className="h-4 w-4 text-purple-500" />
+                      <Eye className="h-4 w-4 text-chart-4" />
                       <span className="text-sm font-medium">Total Views</span>
                     </div>
                     <div className="text-2xl font-bold mt-2">{performanceMetrics.total_views.toLocaleString()}</div>
-                    <div className="text-sm text-green-600 flex items-center gap-1 mt-1">
+                    <div className="text-sm text-chart-1 flex items-center gap-1 mt-1">
                       <TrendingUp className="h-3 w-3" />
                       +8% from last month
                     </div>
@@ -186,11 +186,11 @@ const PropertyAnalyticsDashboard = () => {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2">
-                      <MessageSquare className="h-4 w-4 text-green-500" />
+                      <MessageSquare className="h-4 w-4 text-chart-1" />
                       <span className="text-sm font-medium">Inquiries</span>
                     </div>
                     <div className="text-2xl font-bold mt-2">{performanceMetrics.total_inquiries.toLocaleString()}</div>
-                    <div className="text-sm text-green-600 flex items-center gap-1 mt-1">
+                    <div className="text-sm text-chart-1 flex items-center gap-1 mt-1">
                       <TrendingUp className="h-3 w-3" />
                       +15% from last month
                     </div>
@@ -199,11 +199,11 @@ const PropertyAnalyticsDashboard = () => {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2">
-                      <Target className="h-4 w-4 text-orange-500" />
+                      <Target className="h-4 w-4 text-chart-3" />
                       <span className="text-sm font-medium">Conversion Rate</span>
                     </div>
                     <div className="text-2xl font-bold mt-2">{performanceMetrics.conversion_rate}%</div>
-                    <div className="text-sm text-red-600 flex items-center gap-1 mt-1">
+                    <div className="text-sm text-destructive flex items-center gap-1 mt-1">
                       <TrendingDown className="h-3 w-3" />
                       -0.2% from last month
                     </div>
@@ -303,7 +303,7 @@ const PropertyAnalyticsDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold">{formatCurrency(performanceMetrics.avg_price)}</div>
-                    <div className="text-sm text-green-600 flex items-center gap-1 mt-2">
+                    <div className="text-sm text-chart-1 flex items-center gap-1 mt-2">
                       <TrendingUp className="h-3 w-3" />
                       +5.2% from last quarter
                     </div>
@@ -315,7 +315,7 @@ const PropertyAnalyticsDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold">{performanceMetrics.sold_this_month}</div>
-                    <div className="text-sm text-green-600 flex items-center gap-1 mt-2">
+                    <div className="text-sm text-chart-1 flex items-center gap-1 mt-2">
                       <TrendingUp className="h-3 w-3" />
                       +18% from last month
                     </div>
@@ -525,8 +525,8 @@ const PropertyAnalyticsDashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <Card className="p-4 cursor-pointer hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <BarChart3 className="h-5 w-5 text-blue-600" />
+                    <div className="p-2 bg-chart-2/10 rounded-lg">
+                      <BarChart3 className="h-5 w-5 text-chart-2" />
                     </div>
                     <div>
                       <h4 className="font-medium">Monthly Performance</h4>
@@ -541,8 +541,8 @@ const PropertyAnalyticsDashboard = () => {
 
                 <Card className="p-4 cursor-pointer hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-green-100 rounded-lg">
-                      <TrendingUp className="h-5 w-5 text-green-600" />
+                    <div className="p-2 bg-chart-1/10 rounded-lg">
+                      <TrendingUp className="h-5 w-5 text-chart-1" />
                     </div>
                     <div>
                       <h4 className="font-medium">Growth Analysis</h4>
@@ -557,8 +557,8 @@ const PropertyAnalyticsDashboard = () => {
 
                 <Card className="p-4 cursor-pointer hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <MapPin className="h-5 w-5 text-purple-600" />
+                    <div className="p-2 bg-chart-4/10 rounded-lg">
+                      <MapPin className="h-5 w-5 text-chart-4" />
                     </div>
                     <div>
                       <h4 className="font-medium">Location Insights</h4>
@@ -573,8 +573,8 @@ const PropertyAnalyticsDashboard = () => {
 
                 <Card className="p-4 cursor-pointer hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-orange-100 rounded-lg">
-                      <Users className="h-5 w-5 text-orange-600" />
+                    <div className="p-2 bg-chart-3/10 rounded-lg">
+                      <Users className="h-5 w-5 text-chart-3" />
                     </div>
                     <div>
                       <h4 className="font-medium">User Behavior</h4>
@@ -589,8 +589,8 @@ const PropertyAnalyticsDashboard = () => {
 
                 <Card className="p-4 cursor-pointer hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-red-100 rounded-lg">
-                      <DollarSign className="h-5 w-5 text-red-600" />
+                    <div className="p-2 bg-destructive/10 rounded-lg">
+                      <DollarSign className="h-5 w-5 text-destructive" />
                     </div>
                     <div>
                       <h4 className="font-medium">Revenue Report</h4>
@@ -605,8 +605,8 @@ const PropertyAnalyticsDashboard = () => {
 
                 <Card className="p-4 cursor-pointer hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-teal-100 rounded-lg">
-                      <Calendar className="h-5 w-5 text-teal-600" />
+                    <div className="p-2 bg-chart-5/10 rounded-lg">
+                      <Calendar className="h-5 w-5 text-chart-5" />
                     </div>
                     <div>
                       <h4 className="font-medium">Custom Report</h4>
