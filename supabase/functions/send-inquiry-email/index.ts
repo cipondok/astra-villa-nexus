@@ -1,13 +1,23 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+interface SMTPConfig {
+  host: string;
+  port: string;
+  username: string;
+  password: string;
+  encryption: 'none' | 'tls' | 'ssl';
+  fromName: string;
+  fromEmail: string;
+  isEnabled: boolean;
+}
 
 // Validation schema
 const emailSchema = z.object({
@@ -18,7 +28,7 @@ const emailSchema = z.object({
   message: z.string().max(5000).optional().default('')
 });
 
-// Simple HTML sanitizer — strips all tags without needing jsdom/DOMPurify
+// Simple HTML sanitizer
 function sanitizeText(input: string): string {
   return input
     .replace(/&/g, '&amp;')
@@ -26,6 +36,29 @@ function sanitizeText(input: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+async function getSmtpConfig(): Promise<SMTPConfig | null> {
+  try {
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const { data } = await supabase
+      .from('system_settings')
+      .select('value')
+      .eq('category', 'smtp')
+      .eq('key', 'config')
+      .maybeSingle();
+
+    if (data?.value && typeof data.value === 'object') {
+      return data.value as SMTPConfig;
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 serve(async (req) => {
@@ -36,14 +69,15 @@ serve(async (req) => {
   try {
     const rawData = await req.json();
     const validated = emailSchema.parse(rawData);
-    
+
     const { customer_email, customer_name, inquiry_type, message } = validated;
-    
+
     // Sanitize all user inputs
     const safeName = sanitizeText(customer_name);
     const safeMessage = message ? sanitizeText(message) : '';
+    const safeInquiryType = sanitizeText(inquiry_type || 'inquiry');
 
-    const subject = `We received your ${sanitizeText(inquiry_type || 'inquiry')}!`;
+    const subject = `Kami menerima ${safeInquiryType} Anda!`;
     const html = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 24px; background: #fff;">
         <div style="border-top: 4px solid #B8860B; padding-top: 24px;">
@@ -61,30 +95,62 @@ serve(async (req) => {
       </div>
     `;
 
-    // Use verified domain sender in production; fall back to Resend sandbox for dev
-    const fromAddress = Deno.env.get("EMAIL_FROM_ADDRESS") || "ASTRA Villa <onboarding@resend.dev>";
+    // Load SMTP config from database
+    const smtp = await getSmtpConfig();
 
-    const emailResponse = await resend.emails.send({
-      from: fromAddress,
-      to: [customer_email],
-      subject,
-      html,
+    if (!smtp || !smtp.isEnabled || !smtp.host || !smtp.username || !smtp.password) {
+      console.warn("SMTP not configured or disabled — skipping email send");
+      return new Response(
+        JSON.stringify({ success: true, warning: "SMTP not configured, email not sent" }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const port = parseInt(smtp.port || '587');
+    const useTLS = smtp.encryption === 'tls' || smtp.encryption === 'ssl';
+
+    const fromAddress = smtp.fromEmail || smtp.username;
+    const fromName = smtp.fromName || 'ASTRA Villa Realty';
+
+    const client = new SMTPClient({
+      connection: {
+        hostname: smtp.host,
+        port,
+        tls: useTLS,
+        auth: {
+          username: smtp.username,
+          password: smtp.password,
+        },
+      },
     });
 
-    return new Response(JSON.stringify({ success: true, emailResponse }), {
+    try {
+      await client.send({
+        from: `${fromName} <${fromAddress}>`,
+        to: customer_email,
+        subject,
+        html,
+      });
+    } finally {
+      await client.close();
+    }
+
+    console.log(`Inquiry email sent to ${customer_email} via SMTP`);
+
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: any) {
     console.error("Error in send-inquiry-email:", error);
-    
+
     if (error.name === 'ZodError') {
       return new Response(
         JSON.stringify({ error: "Validation failed", details: error.errors }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
-    
+
     return new Response(
       JSON.stringify({ error: error?.message || "Internal Server Error" }),
       { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
