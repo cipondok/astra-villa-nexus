@@ -205,12 +205,12 @@ const WebTrafficAnalytics = () => {
   const totalPageViews = dailyStats?.reduce((sum, day) => sum + (day.total_page_views || 0), 0) || 0;
   const totalSearches = dailyStats?.reduce((sum, day) => sum + (day.total_searches || 0), 0) || 0;
 
-  const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'];
+  const COLORS = ['hsl(var(--chart-2))', 'hsl(var(--chart-1))', 'hsl(var(--chart-3))', 'hsl(var(--destructive))', 'hsl(var(--chart-4))', 'hsl(var(--primary))'];
 
   if (dailyLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -218,10 +218,10 @@ const WebTrafficAnalytics = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-500/10 via-cyan-500/10 to-teal-500/10 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
+      <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg border border-primary/20">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center">
-            <TrendingUp className="h-4 w-4 text-white" />
+          <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+            <TrendingUp className="h-4 w-4 text-primary" />
           </div>
           <div>
             <h2 className="text-sm font-bold">Web Traffic Analytics</h2>
@@ -242,10 +242,10 @@ const WebTrafficAnalytics = () => {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-        <div className="p-2 rounded-lg border bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50 dark:border-blue-800/30">
+        <div className="p-2 rounded-lg border bg-chart-2/5 border-chart-2/20">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
-              <Users className="h-3 w-3 text-blue-600" />
+            <div className="w-6 h-6 bg-chart-2/10 rounded flex items-center justify-center">
+              <Users className="h-3 w-3 text-chart-2" />
             </div>
             <div>
               <div className="text-sm font-bold text-foreground">{totalVisitors.toLocaleString()}</div>
@@ -254,10 +254,10 @@ const WebTrafficAnalytics = () => {
           </div>
         </div>
         
-        <div className="p-2 rounded-lg border bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/30">
+        <div className="p-2 rounded-lg border bg-chart-1/5 border-chart-1/20">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
-              <Globe className="h-3 w-3 text-green-600" />
+            <div className="w-6 h-6 bg-chart-1/10 rounded flex items-center justify-center">
+              <Globe className="h-3 w-3 text-chart-1" />
             </div>
             <div>
               <div className="text-sm font-bold text-foreground">{uniqueVisitors.toLocaleString()}</div>
@@ -266,10 +266,10 @@ const WebTrafficAnalytics = () => {
           </div>
         </div>
         
-        <div className="p-2 rounded-lg border bg-yellow-50/50 dark:bg-yellow-950/20 border-yellow-200/50 dark:border-yellow-800/30">
+        <div className="p-2 rounded-lg border bg-chart-3/5 border-chart-3/20">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-yellow-500/20 rounded flex items-center justify-center">
-              <Eye className="h-3 w-3 text-yellow-600" />
+            <div className="w-6 h-6 bg-chart-3/10 rounded flex items-center justify-center">
+              <Eye className="h-3 w-3 text-chart-3" />
             </div>
             <div>
               <div className="text-sm font-bold text-foreground">{totalPageViews.toLocaleString()}</div>
@@ -278,10 +278,10 @@ const WebTrafficAnalytics = () => {
           </div>
         </div>
         
-        <div className="p-2 rounded-lg border bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 dark:border-purple-800/30">
+        <div className="p-2 rounded-lg border bg-chart-4/5 border-chart-4/20">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
-              <Search className="h-3 w-3 text-purple-600" />
+            <div className="w-6 h-6 bg-chart-4/10 rounded flex items-center justify-center">
+              <Search className="h-3 w-3 text-chart-4" />
             </div>
             <div>
               <div className="text-sm font-bold text-foreground">{totalSearches.toLocaleString()}</div>
@@ -292,10 +292,10 @@ const WebTrafficAnalytics = () => {
       </div>
 
       {/* Traffic Trends Chart */}
-      <Card className="border-blue-200/50 dark:border-blue-800/30">
+      <Card>
         <CardHeader className="p-3 pb-2">
           <CardTitle className="text-xs flex items-center gap-2">
-            <TrendingUp className="h-3 w-3 text-blue-600" />
+            <TrendingUp className="h-3 w-3 text-primary" />
             Traffic Trends
           </CardTitle>
         </CardHeader>
@@ -306,24 +306,8 @@ const WebTrafficAnalytics = () => {
               <XAxis dataKey="date" tick={{ fontSize: 9 }} />
               <YAxis tick={{ fontSize: 9 }} />
               <Tooltip contentStyle={{ fontSize: '10px' }} />
-              <Area 
-                type="monotone" 
-                dataKey="total_visitors" 
-                stackId="1"
-                stroke="#3B82F6" 
-                fill="#3B82F6" 
-                fillOpacity={0.6}
-                name="Total Visitors"
-              />
-              <Area 
-                type="monotone" 
-                dataKey="unique_visitors" 
-                stackId="2"
-                stroke="#10B981" 
-                fill="#10B981" 
-                fillOpacity={0.6}
-                name="Unique Visitors"
-              />
+              <Area type="monotone" dataKey="total_visitors" stackId="1" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2))" fillOpacity={0.6} name="Total Visitors" />
+              <Area type="monotone" dataKey="unique_visitors" stackId="2" stroke="hsl(var(--chart-1))" fill="hsl(var(--chart-1))" fillOpacity={0.6} name="Unique Visitors" />
             </AreaChart>
           </ResponsiveContainer>
         </CardContent>
@@ -332,10 +316,10 @@ const WebTrafficAnalytics = () => {
       {/* Search Analytics and Device Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Top Search Keywords */}
-        <Card className="border-purple-200/50 dark:border-purple-800/30">
+        <Card>
           <CardHeader className="p-3 pb-2">
             <CardTitle className="text-xs flex items-center gap-2">
-              <Search className="h-3 w-3 text-purple-600" />
+              <Search className="h-3 w-3 text-chart-4" />
               Top Search Keywords
             </CardTitle>
           </CardHeader>
@@ -344,14 +328,10 @@ const WebTrafficAnalytics = () => {
               {topKeywords?.map((item: any, index) => (
                 <div key={index} className="flex items-center justify-between p-1.5 bg-muted/30 rounded">
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-[8px] h-4 px-1">
-                      #{index + 1}
-                    </Badge>
+                    <Badge variant="outline" className="text-[8px] h-4 px-1">#{index + 1}</Badge>
                     <span className="text-[10px] font-medium">{item.keyword}</span>
                   </div>
-                  <span className="text-[9px] text-muted-foreground">
-                    {item.count} searches
-                  </span>
+                  <span className="text-[9px] text-muted-foreground">{item.count} searches</span>
                 </div>
               ))}
             </div>
@@ -359,26 +339,17 @@ const WebTrafficAnalytics = () => {
         </Card>
 
         {/* Device Analytics */}
-        <Card className="border-cyan-200/50 dark:border-cyan-800/30">
+        <Card>
           <CardHeader className="p-3 pb-2">
             <CardTitle className="text-xs flex items-center gap-2">
-              <Monitor className="h-3 w-3 text-cyan-600" />
+              <Monitor className="h-3 w-3 text-chart-2" />
               Device Analytics
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3 pt-0">
             <ResponsiveContainer width="100%" height={180}>
               <PieChart>
-                <Pie
-                  data={deviceStats}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={60}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
+                <Pie data={deviceStats} cx="50%" cy="50%" labelLine={false} outerRadius={60} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
                   {deviceStats?.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
@@ -391,10 +362,10 @@ const WebTrafficAnalytics = () => {
       </div>
 
       {/* Top Pages */}
-      <Card className="border-green-200/50 dark:border-green-800/30">
+      <Card>
         <CardHeader className="p-3 pb-2">
           <CardTitle className="text-xs flex items-center gap-2">
-            <MousePointer className="h-3 w-3 text-green-600" />
+            <MousePointer className="h-3 w-3 text-chart-1" />
             Most Visited Pages
           </CardTitle>
         </CardHeader>
@@ -405,17 +376,17 @@ const WebTrafficAnalytics = () => {
               <XAxis type="number" tick={{ fontSize: 9 }} />
               <YAxis dataKey="path" type="category" width={80} tick={{ fontSize: 8 }} />
               <Tooltip contentStyle={{ fontSize: '10px' }} />
-              <Bar dataKey="views" fill="#3B82F6" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="views" fill="hsl(var(--chart-2))" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
       </Card>
 
       {/* Page Views vs Searches */}
-      <Card className="border-indigo-200/50 dark:border-indigo-800/30">
+      <Card>
         <CardHeader className="p-3 pb-2">
           <CardTitle className="text-xs flex items-center gap-2">
-            <Eye className="h-3 w-3 text-indigo-600" />
+            <Eye className="h-3 w-3 text-primary" />
             Page Views vs Searches
           </CardTitle>
         </CardHeader>
@@ -426,20 +397,8 @@ const WebTrafficAnalytics = () => {
               <XAxis dataKey="date" tick={{ fontSize: 9 }} />
               <YAxis tick={{ fontSize: 9 }} />
               <Tooltip contentStyle={{ fontSize: '10px' }} />
-              <Line 
-                type="monotone" 
-                dataKey="total_page_views" 
-                stroke="#3B82F6" 
-                strokeWidth={2}
-                name="Page Views"
-              />
-              <Line 
-                type="monotone" 
-                dataKey="total_searches" 
-                stroke="#10B981" 
-                strokeWidth={2}
-                name="Searches"
-              />
+              <Line type="monotone" dataKey="total_page_views" stroke="hsl(var(--chart-2))" strokeWidth={2} name="Page Views" />
+              <Line type="monotone" dataKey="total_searches" stroke="hsl(var(--chart-1))" strokeWidth={2} name="Searches" />
             </LineChart>
           </ResponsiveContainer>
         </CardContent>

@@ -349,8 +349,8 @@ const VisitorAnalytics = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
         <Card className="p-2">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-blue-500/10">
-              <Eye className="h-3.5 w-3.5 text-blue-500" />
+            <div className="p-1.5 rounded-md bg-chart-2/10">
+              <Eye className="h-3.5 w-3.5 text-chart-2" />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">Total Visits</p>
@@ -360,8 +360,8 @@ const VisitorAnalytics = () => {
         </Card>
         <Card className="p-2">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-green-500/10">
-              <Users className="h-3.5 w-3.5 text-green-500" />
+            <div className="p-1.5 rounded-md bg-chart-1/10">
+              <Users className="h-3.5 w-3.5 text-chart-1" />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">Unique Visitors</p>
@@ -371,8 +371,8 @@ const VisitorAnalytics = () => {
         </Card>
         <Card className="p-2">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-red-500/10">
-              <Ban className="h-3.5 w-3.5 text-red-500" />
+            <div className="p-1.5 rounded-md bg-destructive/10">
+              <Ban className="h-3.5 w-3.5 text-destructive" />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">Blocked IPs</p>
@@ -382,8 +382,8 @@ const VisitorAnalytics = () => {
         </Card>
         <Card className="p-2">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-orange-500/10">
-              <Flag className="h-3.5 w-3.5 text-orange-500" />
+            <div className="p-1.5 rounded-md bg-chart-3/10">
+              <Flag className="h-3.5 w-3.5 text-chart-3" />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">Blocked Countries</p>
@@ -393,8 +393,8 @@ const VisitorAnalytics = () => {
         </Card>
         <Card className="p-2">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-purple-500/10">
-              <Clock className="h-3.5 w-3.5 text-purple-500" />
+            <div className="p-1.5 rounded-md bg-chart-4/10">
+              <Clock className="h-3.5 w-3.5 text-chart-4" />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">Avg Duration</p>
@@ -404,8 +404,8 @@ const VisitorAnalytics = () => {
         </Card>
         <Card className="p-2">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-yellow-500/10">
-              <TrendingUp className="h-3.5 w-3.5 text-yellow-500" />
+            <div className="p-1.5 rounded-md bg-primary/10">
+              <TrendingUp className="h-3.5 w-3.5 text-primary" />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">Bounce Rate</p>
@@ -557,7 +557,7 @@ const VisitorAnalytics = () => {
                               className="h-5 w-5 p-0"
                               onClick={() => quickBlockIP(visitor.ip_address!)}
                             >
-                              <Ban className="h-3 w-3 text-red-500" />
+                              <Ban className="h-3 w-3 text-destructive" />
                             </Button>
                           )}
                         </TableCell>
@@ -668,8 +668,8 @@ const VisitorAnalytics = () => {
                       className="text-xs mt-1 min-h-[60px]"
                     />
                   </div>
-                  <div className="bg-yellow-500/10 border border-yellow-500/20 rounded p-2">
-                    <p className="text-[10px] text-yellow-700 dark:text-yellow-400">
+                  <div className="bg-chart-3/10 border border-chart-3/20 rounded p-2">
+                    <p className="text-[10px] text-chart-3">
                       <AlertTriangle className="h-3 w-3 inline mr-1" />
                       Blocking a country will prevent all visitors from that region from accessing the website.
                     </p>
@@ -730,7 +730,7 @@ const VisitorAnalytics = () => {
                           <Button 
                             size="sm" 
                             variant="ghost" 
-                            className="h-5 w-5 p-0 text-red-500"
+                            className="h-5 w-5 p-0 text-destructive"
                             onClick={() => handleDeleteCountryBlock(block.id)}
                           >
                             <Ban className="h-3 w-3" />
