@@ -178,21 +178,21 @@ const EnhancedAdminDashboard = () => {
       case 'critical': 
       case 'report':
       case 'security': 
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       case 'customer_complaint':
       case 'warning': 
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+        return <AlertTriangle className="h-4 w-4 text-chart-3" />;
       default: 
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-chart-1" />;
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'high': return 'bg-destructive/10 text-destructive';
+      case 'medium': return 'bg-chart-3/10 text-chart-3';
+      case 'low': return 'bg-chart-2/10 text-chart-2';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -200,24 +200,24 @@ const EnhancedAdminDashboard = () => {
     switch (error_type) {
       case 'JavaScript': 
       case '500': 
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+        return 'bg-destructive/10 text-destructive';
       case '404': 
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+        return 'bg-chart-3/10 text-chart-3';
       default: 
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+        return 'bg-chart-2/10 text-chart-2';
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-foreground">
               Enhanced Admin Dashboard
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-muted-foreground mt-1">
               Complete system monitoring and control center
             </p>
           </div>
@@ -247,9 +247,9 @@ const EnhancedAdminDashboard = () => {
 
         {/* Real-time Alerts */}
         {alerts.filter(alert => alert.priority === 'high' || alert.urgency_level >= 4).length > 0 && (
-          <Alert className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950">
-            <AlertTriangle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800 dark:text-red-200">
+          <Alert className="border-destructive/30 bg-destructive/5">
+            <AlertTriangle className="h-4 w-4 text-destructive" />
+            <AlertDescription className="text-destructive">
               {alerts.filter(alert => alert.priority === 'high' || alert.urgency_level >= 4).length} critical alerts require immediate attention
             </AlertDescription>
           </Alert>
@@ -257,50 +257,50 @@ const EnhancedAdminDashboard = () => {
 
         {/* Compact Micro Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0">
+          <Card className="border-l-4 border-l-primary bg-primary/5">
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-medium opacity-90">Users</p>
-                  <p className="text-xl font-bold">{systemStats.totalUsers.toLocaleString()}</p>
+                  <p className="text-xs font-medium text-muted-foreground">Users</p>
+                  <p className="text-xl font-bold text-foreground">{systemStats.totalUsers.toLocaleString()}</p>
                 </div>
-                <Users className="h-6 w-6 opacity-80" />
+                <Users className="h-6 w-6 text-primary" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0">
+          <Card className="border-l-4 border-l-chart-1 bg-chart-1/5">
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-medium opacity-90">Health</p>
-                  <p className="text-xl font-bold">{systemStats.databaseHealth}%</p>
+                  <p className="text-xs font-medium text-muted-foreground">Health</p>
+                  <p className="text-xl font-bold text-foreground">{systemStats.databaseHealth}%</p>
                 </div>
-                <Activity className="h-6 w-6 opacity-80" />
+                <Activity className="h-6 w-6 text-chart-1" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white border-0">
+          <Card className="border-l-4 border-l-destructive bg-destructive/5">
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-medium opacity-90">Errors</p>
-                  <p className="text-xl font-bold">{systemStats.totalErrors}</p>
+                  <p className="text-xs font-medium text-muted-foreground">Errors</p>
+                  <p className="text-xl font-bold text-foreground">{systemStats.totalErrors}</p>
                 </div>
-                <AlertTriangle className="h-6 w-6 opacity-80" />
+                <AlertTriangle className="h-6 w-6 text-destructive" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0">
+          <Card className="border-l-4 border-l-chart-4 bg-chart-4/5">
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-medium opacity-90">Security</p>
-                  <p className="text-xl font-bold">{systemStats.securityScore}%</p>
+                  <p className="text-xs font-medium text-muted-foreground">Security</p>
+                  <p className="text-xl font-bold text-foreground">{systemStats.securityScore}%</p>
                 </div>
-                <Shield className="h-6 w-6 opacity-80" />
+                <Shield className="h-6 w-6 text-chart-4" />
               </div>
             </CardContent>
           </Card>
@@ -365,28 +365,28 @@ const EnhancedAdminDashboard = () => {
                 </CardHeader>
                  <CardContent className="space-y-3">
                    {alertsLoading ? (
-                     <div className="text-center py-4 text-gray-500">Loading alerts...</div>
+                     <div className="text-center py-4 text-muted-foreground">Loading alerts...</div>
                    ) : alerts.length === 0 ? (
-                     <div className="text-center py-4 text-gray-500">No alerts at this time</div>
+                     <div className="text-center py-4 text-muted-foreground">No alerts at this time</div>
                    ) : (
                      alerts.slice(0, 5).map((alert) => (
                        <div 
                          key={alert.id} 
-                         className="flex items-start gap-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                         className="flex items-start gap-3 p-3 rounded-lg border cursor-pointer hover:bg-muted/50 transition-colors"
                          onClick={() => setSelectedAlert(alert)}
                        >
                          {getAlertIcon(alert.type)}
                          <div className="flex-1 min-w-0">
                            <div className="flex items-center gap-2 mb-1">
-                             <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                             <p className="text-sm font-medium text-foreground truncate">
                                {alert.title || alert.message}
                              </p>
                              <Badge className={getPriorityColor(alert.priority)}>{alert.priority}</Badge>
                              {alert.action_required && <Badge variant="destructive">Action Required</Badge>}
                            </div>
-                           <p className="text-xs text-gray-500 dark:text-gray-400">
-                             {new Date(alert.created_at).toLocaleString()} • {alert.alert_category}
-                           </p>
+                           <p className="text-xs text-muted-foreground">
+                              {new Date(alert.created_at).toLocaleString()} • {alert.alert_category}
+                            </p>
                          </div>
                          <Button variant="outline" size="sm" className="opacity-70 hover:opacity-100">
                            <Eye className="h-3 w-3" />
@@ -421,14 +421,14 @@ const EnhancedAdminDashboard = () => {
                     </div>
                     <Progress value={systemStats.securityScore} className="h-2" />
                   </div>
-                  <div className="grid grid-cols-2 gap-4 pt-4">
-                    <div className="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                      <div className="text-lg font-semibold">{systemStats.responseTime}</div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">Response Time</div>
-                    </div>
-                    <div className="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                      <div className="text-lg font-semibold">{systemStats.systemUptime}</div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">Uptime</div>
+                   <div className="grid grid-cols-2 gap-4 pt-4">
+                    <div className="text-center p-3 rounded-lg bg-muted/40">
+                       <div className="text-lg font-semibold text-foreground">{systemStats.responseTime}</div>
+                       <div className="text-xs text-muted-foreground">Response Time</div>
+                     </div>
+                     <div className="text-center p-3 rounded-lg bg-muted/40">
+                       <div className="text-lg font-semibold text-foreground">{systemStats.systemUptime}</div>
+                       <div className="text-xs text-muted-foreground">Uptime</div>
                     </div>
                   </div>
                 </CardContent>
@@ -447,20 +447,20 @@ const EnhancedAdminDashboard = () => {
                <CardContent>
                  <div className="space-y-3">
                    {eventsLoading ? (
-                     <div className="text-center py-4 text-gray-500">Loading events...</div>
+                     <div className="text-center py-4 text-muted-foreground">Loading events...</div>
                    ) : recentEvents.length === 0 ? (
-                     <div className="text-center py-4 text-gray-500">No recent events</div>
+                     <div className="text-center py-4 text-muted-foreground">No recent events</div>
                    ) : (
                      recentEvents.map((event) => (
-                       <div key={event.id} className="flex items-center justify-between p-3 rounded-lg border cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800">
+                       <div key={event.id} className="flex items-center justify-between p-3 rounded-lg border cursor-pointer hover:bg-muted/50">
                          <div className="flex items-center gap-3">
                            <Badge className={getErrorLevelColor(event.error_type)}>{event.error_type}</Badge>
                            <div className="min-w-0 flex-1">
                              <p className="text-sm font-medium truncate">{event.error_page || 'System'}</p>
-                             <p className="text-xs text-gray-600 dark:text-gray-400 truncate">{event.error_page || event.user_agent}</p>
+                             <p className="text-xs text-muted-foreground truncate">{event.error_page || event.user_agent}</p>
                            </div>
                          </div>
-                         <div className="text-xs text-gray-500">
+                         <div className="text-xs text-muted-foreground">
                            {new Date(event.created_at).toLocaleTimeString()}
                          </div>
                        </div>
@@ -601,13 +601,13 @@ const EnhancedAdminDashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium">Alert Title</label>
-                    <p className="text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded">
+                    <p className="text-sm bg-muted p-2 rounded">
                       {selectedAlert.title}
                     </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium">Category</label>
-                    <p className="text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded">
+                    <p className="text-sm bg-muted p-2 rounded">
                       {selectedAlert.alert_category}
                     </p>
                   </div>
@@ -619,39 +619,39 @@ const EnhancedAdminDashboard = () => {
                   </div>
                   <div>
                     <label className="text-sm font-medium">Urgency Level</label>
-                    <p className="text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded">
+                    <p className="text-sm bg-muted p-2 rounded">
                       {selectedAlert.urgency_level}/5
                     </p>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium">Message</label>
-                  <p className="text-sm bg-gray-100 dark:bg-gray-800 p-3 rounded whitespace-pre-wrap">
-                    {selectedAlert.message}
-                  </p>
-                </div>
+                   <label className="text-sm font-medium">Message</label>
+                   <p className="text-sm bg-muted p-3 rounded whitespace-pre-wrap">
+                     {selectedAlert.message}
+                   </p>
+                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium">Created At</label>
-                    <p className="text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded flex items-center gap-2">
+                    <p className="text-sm bg-muted p-2 rounded flex items-center gap-2">
                       <Clock className="h-3 w-3" />
                       {new Date(selectedAlert.created_at).toLocaleString()}
                     </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium">Action Required</label>
-                    <p className="text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded">
+                    <p className="text-sm bg-muted p-2 rounded">
                       {selectedAlert.action_required ? 'Yes' : 'No'}
                     </p>
                   </div>
                 </div>
 
-                {selectedAlert.reference_type && selectedAlert.reference_id && (
+                 {selectedAlert.reference_type && selectedAlert.reference_id && (
                   <div>
                     <label className="text-sm font-medium">Reference</label>
-                    <p className="text-sm bg-blue-50 border border-blue-200 p-2 rounded font-mono">
+                    <p className="text-sm bg-primary/5 border border-primary/20 p-2 rounded font-mono text-foreground">
                       {selectedAlert.reference_type}: {selectedAlert.reference_id}
                     </p>
                   </div>
@@ -660,7 +660,7 @@ const EnhancedAdminDashboard = () => {
                 {selectedAlert.metadata && (
                   <div>
                     <label className="text-sm font-medium">Additional Details</label>
-                    <pre className="text-xs bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto">
+                    <pre className="text-xs bg-muted text-foreground p-3 rounded overflow-x-auto font-mono">
                       {JSON.stringify(selectedAlert.metadata, null, 2)}
                     </pre>
                   </div>
