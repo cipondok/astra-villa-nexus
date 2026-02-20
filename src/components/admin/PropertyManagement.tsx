@@ -333,15 +333,15 @@ const PropertyManagement = () => {
   return (
     <div className="space-y-3 p-1 md:p-0">
       {/* Professional Header */}
-      <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 dark:from-emerald-500/20 dark:via-teal-500/20 dark:to-cyan-500/20 rounded-lg border border-emerald-200/50 dark:border-emerald-800/50 p-3">
+      <div className="bg-primary/5 rounded-lg border border-border p-3">
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
-            <Building className="h-4 w-4 text-white" />
+          <div className="p-2 rounded-lg bg-primary/10">
+            <Building className="h-4 w-4 text-primary" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-bold text-foreground">Property Management</h2>
-              <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 text-[9px] px-1.5 py-0 h-4">
+              <Badge className="bg-primary/10 text-primary border-primary/30 text-[9px] px-1.5 py-0 h-4">
                 <TrendingUp className="h-2.5 w-2.5 mr-0.5" />
                 {allProperties.length} Properties
               </Badge>
@@ -352,36 +352,36 @@ const PropertyManagement = () => {
       </div>
 
       <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-3">
-        <TabsList className="h-7 p-0.5 bg-emerald-100/50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 grid w-full grid-cols-8">
-          <TabsTrigger value="properties" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+        <TabsList className="h-7 p-0.5 bg-muted/20 border border-border/40 grid w-full grid-cols-8">
+          <TabsTrigger value="properties" className="text-[9px] h-6 px-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <Building className="h-3 w-3 mr-0.5" />
             Properties
           </TabsTrigger>
-          <TabsTrigger value="locations" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+          <TabsTrigger value="locations" className="text-[9px] h-6 px-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <Location className="h-3 w-3 mr-0.5" />
             Locations
           </TabsTrigger>
-          <TabsTrigger value="categories" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+          <TabsTrigger value="categories" className="text-[9px] h-6 px-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <Building2 className="h-3 w-3 mr-0.5" />
             Categories
           </TabsTrigger>
-          <TabsTrigger value="approval" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+          <TabsTrigger value="approval" className="text-[9px] h-6 px-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <FileCheck className="h-3 w-3 mr-0.5" />
             Approval
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+          <TabsTrigger value="analytics" className="text-[9px] h-6 px-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <BarChart3 className="h-3 w-3 mr-0.5" />
             Analytics
           </TabsTrigger>
-          <TabsTrigger value="search-filters" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+          <TabsTrigger value="search-filters" className="text-[9px] h-6 px-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <Filter className="h-3 w-3 mr-0.5" />
             Filters
           </TabsTrigger>
-          <TabsTrigger value="watermark" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+          <TabsTrigger value="watermark" className="text-[9px] h-6 px-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <Droplets className="h-3 w-3 mr-0.5" />
             Watermark
           </TabsTrigger>
-          <TabsTrigger value="settings" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+          <TabsTrigger value="settings" className="text-[9px] h-6 px-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <Settings className="h-3 w-3 mr-0.5" />
             Settings
           </TabsTrigger>
@@ -403,7 +403,7 @@ const PropertyManagement = () => {
                   </Button>
                   <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                     <DialogTrigger asChild>
-                      <Button size="sm" className="h-6 text-[10px] px-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white">
+                      <Button size="sm" className="h-6 text-[10px] px-2">
                         <Plus className="h-3 w-3 mr-1" />
                         Add Property
                       </Button>
@@ -574,7 +574,7 @@ const PropertyManagement = () => {
                 <CardContent className="space-y-4">
                   {/* Search Bar */}
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input
                       placeholder="Search by title, location, or description..."
                       value={searchTerm}
@@ -708,7 +708,7 @@ const PropertyManagement = () => {
                                 {property.owner?.email}
                               </div>
                               {property.agent && (
-                                <div className="text-xs text-blue-600">
+                                <div className="text-xs text-chart-2">
                                   Agent: {property.agent.full_name}
                                 </div>
                               )}
@@ -720,7 +720,7 @@ const PropertyManagement = () => {
                               <div className="text-xs text-muted-foreground capitalize">
                                 {property.development_status?.replace('_', ' ') || 'Completed'}
                               </div>
-                              <div className="text-sm font-medium text-green-600">
+                              <div className="text-sm font-medium text-chart-1">
                                 {property.price ? formatIDR(property.price) : 'Price not set'}
                               </div>
                               <div className="text-xs text-muted-foreground capitalize">
@@ -830,7 +830,7 @@ const PropertyManagement = () => {
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                     
-                    <div className="text-sm text-gray-500 ml-4">
+                    <div className="text-sm text-muted-foreground ml-4">
                       Showing {startIndex + 1}-{Math.min(endIndex, allProperties.length)} of {allProperties.length}
                     </div>
                   </div>
@@ -873,8 +873,8 @@ const PropertyManagement = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <Card className="p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Image className="h-5 w-5 text-blue-600" />
+                    <div className="p-2 bg-chart-2/10 rounded-lg">
+                      <Image className="h-5 w-5 text-chart-2" />
                     </div>
                     <div>
                       <h3 className="font-medium">Image Management</h3>
@@ -895,8 +895,8 @@ const PropertyManagement = () => {
 
                 <Card className="p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-green-100 rounded-lg">
-                      <Star className="h-5 w-5 text-green-600" />
+                    <div className="p-2 bg-chart-1/10 rounded-lg">
+                      <Star className="h-5 w-5 text-chart-1" />
                     </div>
                     <div>
                       <h3 className="font-medium">Reviews & Ratings</h3>
@@ -917,8 +917,8 @@ const PropertyManagement = () => {
 
                 <Card className="p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <MessageSquare className="h-5 w-5 text-purple-600" />
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <MessageSquare className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <h3 className="font-medium">Inquiry Management</h3>
