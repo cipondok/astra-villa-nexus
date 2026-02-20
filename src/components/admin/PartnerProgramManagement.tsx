@@ -193,7 +193,7 @@ const PartnerProgramManagement = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-purple-500/5 rounded-xl border border-border/30 px-4 py-3">
+      <div className="flex items-center justify-between bg-primary/5 rounded-xl border border-border/30 px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10">
             <Building2 className="h-5 w-5 text-primary" />
@@ -214,7 +214,7 @@ const PartnerProgramManagement = () => {
         <Card>
           <CardContent className="p-3">
             <div className="flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-blue-500" />
+              <Building2 className="h-4 w-4 text-chart-2" />
               <span className="text-xs text-muted-foreground">Total Partners</span>
             </div>
             <p className="text-xl font-bold mt-1">{stats.totalPartners}</p>
@@ -223,7 +223,7 @@ const PartnerProgramManagement = () => {
         <Card>
           <CardContent className="p-3">
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-500" />
+              <CheckCircle className="h-4 w-4 text-chart-1" />
               <span className="text-xs text-muted-foreground">Active</span>
             </div>
             <p className="text-xl font-bold mt-1">{stats.activePartners}</p>
@@ -232,7 +232,7 @@ const PartnerProgramManagement = () => {
         <Card>
           <CardContent className="p-3">
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-purple-500" />
+              <Users className="h-4 w-4 text-primary" />
               <span className="text-xs text-muted-foreground">Referrals</span>
             </div>
             <p className="text-xl font-bold mt-1">{stats.totalReferrals}</p>
@@ -241,7 +241,7 @@ const PartnerProgramManagement = () => {
         <Card>
           <CardContent className="p-3">
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-amber-500" />
+              <TrendingUp className="h-4 w-4 text-chart-3" />
               <span className="text-xs text-muted-foreground">Total Paid</span>
             </div>
             <p className="text-lg font-bold mt-1">{formatIDR(stats.totalEarnings)}</p>
@@ -250,7 +250,7 @@ const PartnerProgramManagement = () => {
         <Card>
           <CardContent className="p-3">
             <div className="flex items-center gap-2">
-              <Wallet className="h-4 w-4 text-red-500" />
+              <Wallet className="h-4 w-4 text-destructive" />
               <span className="text-xs text-muted-foreground">Pending</span>
             </div>
             <p className="text-lg font-bold mt-1">{formatIDR(stats.pendingPayouts)}</p>
@@ -504,7 +504,7 @@ const PartnerProgramManagement = () => {
                         </div>
                         <div className="text-right">
                           <p className="text-sm font-medium">{totalReferrals} referrals</p>
-                          <p className="text-xs text-green-600">{formatIDR(totalEarnings)}</p>
+                          <p className="text-xs text-chart-1">{formatIDR(totalEarnings)}</p>
                         </div>
                       </div>
                     );
@@ -535,7 +535,7 @@ const PartnerProgramManagement = () => {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Pending Payouts</span>
-                    <span className="text-lg font-bold text-amber-600">{formatIDR(stats.pendingPayouts)}</span>
+                    <span className="text-lg font-bold text-chart-3">{formatIDR(stats.pendingPayouts)}</span>
                   </div>
                 </div>
               </CardContent>
