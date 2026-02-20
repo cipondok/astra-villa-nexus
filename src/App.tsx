@@ -20,7 +20,7 @@ import InitialLoadingScreen from '@/components/ui/InitialLoadingScreen';
 import { DesignSystemProvider } from '@/components/DesignSystemProvider';
 import CookieSystem from '@/components/cookies/CookieSystem';
 const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAIChatWidget'));
-import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
+const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
@@ -39,9 +39,6 @@ import { DailyLoginReward } from '@/components/gamification';
 import Index from '@/pages/Index';
 import Search from '@/pages/Search';
 import Auth from '@/pages/Auth';
-import PropertyDetail from '@/pages/PropertyDetail';
-import Dijual from '@/pages/Dijual';
-import Disewa from '@/pages/Disewa';
 import ErrorPage from '@/pages/ErrorPage';
 
 // Route guards
@@ -50,6 +47,9 @@ import AgentOnlyRoute from '@/components/AgentOnlyRoute';
 import PropertyOwnerOnlyRoute from '@/components/PropertyOwnerOnlyRoute';
 
 // Lazy load heavy pages for better initial load performance
+const PropertyDetail = lazy(() => import('@/pages/PropertyDetail'));
+const Dijual = lazy(() => import('@/pages/Dijual'));
+const Disewa = lazy(() => import('@/pages/Disewa'));
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
@@ -250,10 +250,12 @@ const AppContent = () => {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,      // 10 min - reduce unnecessary refetches
+      gcTime: 30 * 60 * 1000,          // 30 min - keep cache longer
       refetchOnWindowFocus: false,
-      retry: false,
+      refetchOnReconnect: 'always',
+      retry: 1,
+      retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
     },
   },
 });
@@ -367,8 +369,10 @@ function App() {
                             <Toaster />
                             <Sonner />
                             <CookieSystem />
-                            <ResponsiveAIChatWidget />
-                            <WhatsAppInquiryButton variant="floating" defaultType="general" />
+                            <Suspense fallback={null}>
+                              <ResponsiveAIChatWidget />
+                              <WhatsAppInquiryButton variant="floating" defaultType="general" />
+                            </Suspense>
                             <LoadingProgressPopup />
                             <SessionExpirationHandler />
                             <AuthNotificationHandler />

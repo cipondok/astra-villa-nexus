@@ -26,7 +26,10 @@ const AnimatedLogo = ({
       <img
         src={src || fallbackLogo}
         alt={alt}
-        loading="eager"
+        loading="lazy"
+        decoding="async"
+        width={120}
+        height={48}
         className={`${sizeClasses[size]} w-auto object-contain`}
         onError={(e) => {
           // Fallback if the configured URL is invalid / blocked / not public

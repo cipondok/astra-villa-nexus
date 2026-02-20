@@ -505,6 +505,10 @@ const Index = () => {
               src={astraHeroBanner} 
               alt="Astra Villa - Indonesia's Smart Property Platform" 
               className="w-full h-auto object-contain"
+              fetchPriority="high"
+              decoding="async"
+              width={1920}
+              height={600}
             />
           </div>
           
@@ -694,7 +698,7 @@ const Index = () => {
                         )}
                       </p>
                     </div>
-                    <Suspense fallback={<div className="animate-pulse h-8 w-32 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                    <Suspense fallback={<div className="animate-pulse h-8 w-32 bg-muted rounded-lg" />}>
                       <PropertyViewModeToggle 
                         viewMode={viewMode} 
                         onViewModeChange={(mode) => setViewMode(mode)} 
