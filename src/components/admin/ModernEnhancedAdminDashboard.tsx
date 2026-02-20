@@ -48,7 +48,7 @@ const ModernEnhancedAdminDashboard = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('admin_alerts')
-        .select('*')
+        .select('id, title, message, priority, created_at')
         .eq('is_read', false)
         .order('created_at', { ascending: false })
         .limit(5);
@@ -56,7 +56,8 @@ const ModernEnhancedAdminDashboard = () => {
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
+    staleTime: 60 * 1000,
+    refetchInterval: 60000, // Reduced from 30s to 60s
   });
 
   // Mark notification as read
@@ -123,8 +124,8 @@ const ModernEnhancedAdminDashboard = () => {
                       title="Notifications"
                     >
                       <Bell className="h-4 w-4" />
-                      {unreadCount > 0 && (
-                        <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-destructive rounded-full flex items-center justify-center text-[9px] text-white font-bold animate-pulse">
+                        {unreadCount > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-destructive rounded-full flex items-center justify-center text-[9px] text-destructive-foreground font-bold animate-pulse">
                           {unreadCount}
                         </span>
                       )}
