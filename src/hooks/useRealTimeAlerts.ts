@@ -46,8 +46,6 @@ export const useRealTimeAlerts = () => {
       if (error) {
         console.error('Error creating alert:', error);
       } else {
-        console.log('Alert created:', alertData.title);
-        // Invalidate queries to refresh UI
         queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
         queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
       }
@@ -257,7 +255,6 @@ export const useRealTimeAlerts = () => {
   useEffect(() => {
     if (!user || profile?.role !== 'admin') return;
 
-    console.log('Setting up comprehensive real-time alert monitoring...');
     setIsMonitoring(true);
 
     // Listen for new user registrations - just refresh queries
@@ -272,8 +269,6 @@ export const useRealTimeAlerts = () => {
           table: 'profiles'
         },
         (payload) => {
-          console.log('New user registration detected:', payload.new);
-          // Refresh alert queries - the DB trigger creates the alert
           queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
           queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
           toast.info('New User Registration!', {
@@ -295,7 +290,6 @@ export const useRealTimeAlerts = () => {
           table: 'properties'
         },
         (payload) => {
-          console.log('New property listing detected:', payload.new);
           queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
           queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
           toast.info('New Property Listed!', {
@@ -317,7 +311,6 @@ export const useRealTimeAlerts = () => {
           table: 'profiles'
         },
         (payload) => {
-          console.log('Profile update detected:', payload.new);
           queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
           queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
         }
@@ -335,7 +328,6 @@ export const useRealTimeAlerts = () => {
           table: 'customer_complaints'
         },
         (payload) => {
-          console.log('New customer complaint detected:', payload.new);
           handleCustomerComplaint(payload.new);
           toast.error('New customer complaint received!', {
             description: `Priority: ${payload.new.priority}`
@@ -355,7 +347,6 @@ export const useRealTimeAlerts = () => {
           table: 'inquiries'
         },
         (payload) => {
-          console.log('New inquiry detected:', payload.new);
           handleInquiry(payload.new);
           toast.info('New inquiry received!', {
             description: payload.new.subject
@@ -375,7 +366,6 @@ export const useRealTimeAlerts = () => {
           table: 'system_reports'
         },
         (payload) => {
-          console.log('New system report detected:', payload.new);
           handleSystemReport(payload.new);
           toast.warning('New system report filed!', {
             description: `Report type: ${payload.new.report_type}`
@@ -395,7 +385,6 @@ export const useRealTimeAlerts = () => {
           table: 'vendor_services'
         },
         (payload) => {
-          console.log('New vendor service detected:', payload.new);
           handleVendorService(payload.new);
         }
       )
@@ -412,7 +401,6 @@ export const useRealTimeAlerts = () => {
           table: 'user_login_alerts'
         },
         (payload) => {
-          console.log('Security alert detected:', payload.new);
           createAlert({
             title: '🔒 Security Alert',
             message: `Security alert: ${payload.new.alert_type}\n\n${payload.new.message}`,
@@ -449,7 +437,6 @@ export const useRealTimeAlerts = () => {
           table: 'feedback_monitoring'
         },
         (payload) => {
-          console.log('New feedback/contact submission detected:', payload.new);
           handleFeedbackSubmission(payload.new);
           const isPartnerApp = payload.new.content?.includes('Partner Network Application');
           toast.info(isPartnerApp ? 'New Partner Application!' : 'New Contact Submission!', {
@@ -470,7 +457,6 @@ export const useRealTimeAlerts = () => {
           table: 'error_logs'
         },
         (payload) => {
-          console.log('Error log detected:', payload.new);
           handleErrorLog(payload.new);
           const severity = payload.new.severity || 'low';
           if (severity !== 'low') {
@@ -483,7 +469,6 @@ export const useRealTimeAlerts = () => {
       .subscribe();
 
     return () => {
-      console.log('Cleaning up real-time alert monitoring...');
       supabase.removeChannel(profilesChannel);
       supabase.removeChannel(propertiesChannel);
       supabase.removeChannel(profileUpdatesChannel);

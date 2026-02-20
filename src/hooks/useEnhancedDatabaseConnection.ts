@@ -290,7 +290,6 @@ export const useEnhancedDatabaseConnection = () => {
     setConnectionStatus('retry');
     
     try {
-      console.log('🔄 Retrying database connection...');
       const result = await checkConnection();
       setLastChecked(new Date());
       

@@ -118,14 +118,14 @@ const TransactionAuditTrail = () => {
   );
 
   const getActionBadge = (action: string) => {
-    const variants: Record<string, { variant: "default" | "secondary" | "outline"; color: string }> = {
-      created: { variant: "default", color: "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300" },
-      status_change: { variant: "secondary", color: "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300" },
-      payment_status_change: { variant: "outline", color: "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300" },
-      updated: { variant: "secondary", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300" }
+    const colors: Record<string, string> = {
+      created: 'bg-chart-1/10 text-chart-1 border-chart-1/30',
+      status_change: 'bg-chart-2/10 text-chart-2 border-chart-2/30',
+      payment_status_change: 'bg-chart-4/10 text-chart-4 border-chart-4/30',
+      updated: 'bg-chart-3/10 text-chart-3 border-chart-3/30'
     };
-    const config = variants[action] || variants.updated;
-    return <Badge className={config.color}>{action.replace('_', ' ')}</Badge>;
+    const color = colors[action] || colors.updated;
+    return <Badge className={color}>{action.replace('_', ' ')}</Badge>;
   };
 
   const formatTimestamp = (timestamp: string) => {
