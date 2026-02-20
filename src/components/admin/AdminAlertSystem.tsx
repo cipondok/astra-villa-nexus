@@ -568,13 +568,13 @@ const AdminAlertSystem = () => {
 
   const getAlertColor = (type: string, priority: string) => {
     if (priority === 'high' || priority === 'critical') return 'text-destructive';
-    if (type === 'error' || type === 'warning' || type === 'system_error') return 'text-orange-500';
-    if (type === 'success') return 'text-green-500';
-    if (type === 'profile_update') return 'text-amber-500';
-    if (type === 'property_listing') return 'text-emerald-500';
-    if (type === 'user_registration') return 'text-blue-500';
+    if (type === 'error' || type === 'warning' || type === 'system_error') return 'text-chart-3';
+    if (type === 'success') return 'text-chart-1';
+    if (type === 'profile_update') return 'text-chart-3';
+    if (type === 'property_listing') return 'text-chart-1';
+    if (type === 'user_registration') return 'text-chart-2';
     if (type === 'kyc_verification' || type === 'company_verification') return 'text-primary';
-    return 'text-blue-500';
+    return 'text-chart-2';
   };
 
   const getPriorityVariant = (priority: string) => {
@@ -612,12 +612,12 @@ const AdminAlertSystem = () => {
             <Card className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={handleShowPropertiesDetails}>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
-                  <div>
+                <div>
                     <p className="text-sm font-medium text-muted-foreground">New Properties Today</p>
-                    <p className="text-2xl font-bold text-green-600">{todayPropertiesCount}</p>
+                    <p className="text-2xl font-bold text-chart-1">{todayPropertiesCount}</p>
                     <p className="text-xs text-muted-foreground">Click to view details</p>
                   </div>
-                  <Building2 className="h-8 w-8 text-green-500" />
+                  <Building2 className="h-8 w-8 text-chart-1" />
                 </div>
               </CardContent>
             </Card>
@@ -627,10 +627,10 @@ const AdminAlertSystem = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">New Users Today</p>
-                    <p className="text-2xl font-bold text-blue-600">{todayUsersCount}</p>
+                    <p className="text-2xl font-bold text-chart-2">{todayUsersCount}</p>
                     <p className="text-xs text-muted-foreground">Click to view details</p>
                   </div>
-                  <UserPlus className="h-8 w-8 text-blue-500" />
+                  <UserPlus className="h-8 w-8 text-chart-2" />
                 </div>
               </CardContent>
             </Card>
@@ -652,7 +652,7 @@ const AdminAlertSystem = () => {
                     <div
                       key={alert.id}
                       className={`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
-                        !alert.is_read ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800' : ''
+                        !alert.is_read ? 'bg-primary/5 border-primary/20' : ''
                       }`}
                       onClick={() => handleViewAlert(alert)}
                     >
@@ -672,7 +672,7 @@ const AdminAlertSystem = () => {
                               </Badge>
                             )}
                             {!alert.is_read && (
-                              <Badge variant="default" className="text-xs bg-blue-500">
+                              <Badge variant="default" className="text-xs bg-chart-2 text-chart-2-foreground">
                                 New
                               </Badge>
                             )}
@@ -745,7 +745,7 @@ const AdminAlertSystem = () => {
                   </Badge>
                 )}
                 {!selectedAlert.action_required && selectedAlert.metadata?.resolution && (
-                  <Badge variant="default" className={selectedAlert.metadata.resolution === 'approved' ? 'bg-green-500' : 'bg-orange-500'}>
+                  <Badge variant="default" className={selectedAlert.metadata.resolution === 'approved' ? 'bg-chart-1 text-chart-1-foreground' : 'bg-chart-3 text-chart-3-foreground'}>
                     {selectedAlert.metadata.resolution === 'approved' ? 'Approved' : 'Denied'}
                   </Badge>
                 )}
@@ -873,7 +873,7 @@ const AdminAlertSystem = () => {
                             <span className="font-medium capitalize">{field.replace(/_/g, ' ')}:</span>{' '}
                             <span className="text-destructive line-through">{vals?.old || '(empty)'}</span>
                             {' → '}
-                            <span className="text-green-600 dark:text-green-400">{vals?.new || '(empty)'}</span>
+                            <span className="text-chart-1">{vals?.new || '(empty)'}</span>
                           </div>
                         ))}
                       </div>
@@ -960,7 +960,7 @@ const AdminAlertSystem = () => {
                       {isProcessing ? 'Processing...' : 'Deny'}
                     </Button>
                     <Button variant="default" onClick={handleApproveVerification} disabled={isProcessing}
-                      className="bg-green-600 hover:bg-green-700">
+                      className="bg-chart-1 text-chart-1-foreground hover:bg-chart-1/90">
                       <CheckCircle className="h-4 w-4 mr-2" />
                       {isProcessing ? 'Processing...' : 'Approve'}
                     </Button>
@@ -976,7 +976,7 @@ const AdminAlertSystem = () => {
                       {isProcessing ? 'Processing...' : 'Revert Changes'}
                     </Button>
                     <Button variant="default" onClick={handleApproveProfileUpdate} disabled={isProcessing}
-                      className="bg-green-600 hover:bg-green-700">
+                      className="bg-chart-1 text-chart-1-foreground hover:bg-chart-1/90">
                       <CheckCircle className="h-4 w-4 mr-2" />
                       {isProcessing ? 'Processing...' : 'Approve Changes'}
                     </Button>
@@ -992,7 +992,7 @@ const AdminAlertSystem = () => {
                       {isProcessing ? 'Processing...' : 'Reject Listing'}
                     </Button>
                     <Button variant="default" onClick={handleApproveProperty} disabled={isProcessing}
-                      className="bg-green-600 hover:bg-green-700">
+                      className="bg-chart-1 text-chart-1-foreground hover:bg-chart-1/90">
                       <CheckCircle className="h-4 w-4 mr-2" />
                       {isProcessing ? 'Processing...' : 'Approve Listing'}
                     </Button>
