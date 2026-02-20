@@ -43,19 +43,19 @@ export const useAdvancedAuthSecurity = () => {
     return btoa(fingerprint).substring(0, 32);
   }, []);
 
-  // Get user's IP and location
+  // Get user's approximate IP info via a privacy-safe lookup (no demo key)
   const getUserInfo = useCallback(async () => {
     try {
-      const response = await fetch('https://api.ipapi.com/api/check?access_key=demo');
+      // Use ipinfo.io free tier (no key required for basic info, no sensitive data leaked)
+      const response = await fetch('https://ipinfo.io/json', { signal: AbortSignal.timeout(3000) });
+      if (!response.ok) throw new Error('IP lookup failed');
       const data = await response.json();
       return {
         ip: data.ip || '127.0.0.1',
         location: {
-          country: data.country_name,
-          region: data.region_name,
+          country: data.country,
+          region: data.region,
           city: data.city,
-          latitude: data.latitude,
-          longitude: data.longitude
         }
       };
     } catch {
@@ -129,9 +129,8 @@ export const useAdvancedAuthSecurity = () => {
       }
 
       return { isBlocked: false };
-    } catch (error) {
-      console.error('Security check failed:', error);
-      return { isBlocked: false }; // Allow login if security check fails
+    } catch {
+      return { isBlocked: false }; // Fail open so login isn't permanently broken
     }
   }, [getUserInfo]);
 
@@ -196,8 +195,8 @@ export const useAdvancedAuthSecurity = () => {
         setCaptchaRequired(false);
         setProgressiveDelay(0);
       }
-    } catch (error) {
-      console.error('Failed to log login attempt:', error);
+    } catch {
+      // Silently swallow — login attempt logging is best-effort
     }
   }, [getUserInfo, toast]);
 
@@ -282,7 +281,6 @@ export const useAdvancedAuthSecurity = () => {
 
       return { success: true, data };
     } catch (error: any) {
-      console.error('Secure login failed:', error);
       return { success: false, error };
     } finally {
       setIsProcessing(false);

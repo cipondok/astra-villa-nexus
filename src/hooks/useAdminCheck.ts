@@ -10,9 +10,7 @@ export const useAdminCheck = () => {
   const { data: isAdmin, isLoading } = useQuery({
     queryKey: ['admin-check', user?.id],
     queryFn: async () => {
-      // Validate UUID before making query
       if (!user?.id || !isValidUUID(user.id)) {
-        console.warn('Invalid or missing user ID for admin check');
         return false;
       }
 
@@ -24,7 +22,6 @@ export const useAdminCheck = () => {
         .in('role', ['admin', 'super_admin']);
       
       if (error) {
-        console.error('Admin check error:', error);
         return false;
       }
 
