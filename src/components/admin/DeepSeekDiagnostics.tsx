@@ -389,9 +389,9 @@ const DeepSeekDiagnostics = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Brain className="h-6 w-6 text-purple-500" />
+          <Brain className="h-6 w-6 text-primary" />
           <h2 className="text-2xl font-bold">DeepSeek AI Diagnostics & Auto-Fix</h2>
-          <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+          <Badge variant="secondary" className="bg-primary/10 text-primary">
             AI-Powered Analysis
           </Badge>
         </div>
@@ -688,7 +688,7 @@ const DeepSeekDiagnostics = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-sm">
-                  <Database className="h-4 w-4 text-blue-500" />
+                  <Database className="h-4 w-4 text-chart-2" />
                   Database Status
                 </CardTitle>
               </CardHeader>
@@ -711,11 +711,11 @@ const DeepSeekDiagnostics = () => {
                       {diagnostics.results.slice(0, 3).map((result, index) => (
                         <div key={index} className="flex items-center gap-2">
                           {result.status === 'pass' ? (
-                            <CheckCircle className="h-3 w-3 text-green-500" />
+                            <CheckCircle className="h-3 w-3 text-chart-1" />
                           ) : result.status === 'warning' ? (
-                            <AlertTriangle className="h-3 w-3 text-yellow-500" />
+                            <AlertTriangle className="h-3 w-3 text-chart-3" />
                           ) : (
-                            <AlertTriangle className="h-3 w-3 text-red-500" />
+                            <AlertTriangle className="h-3 w-3 text-destructive" />
                           )}
                           <span>{result.test}</span>
                         </div>
@@ -730,7 +730,7 @@ const DeepSeekDiagnostics = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-sm">
-                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                  <AlertTriangle className="h-4 w-4 text-chart-3" />
                   Error Monitor
                 </CardTitle>
               </CardHeader>
@@ -754,7 +754,7 @@ const DeepSeekDiagnostics = () => {
                       </Button>
                     </>
                   ) : (
-                    <div className="flex items-center gap-2 text-green-600">
+                    <div className="flex items-center gap-2 text-chart-1">
                       <CheckCircle className="h-4 w-4" />
                       <span className="text-sm">No active errors</span>
                     </div>
@@ -767,7 +767,7 @@ const DeepSeekDiagnostics = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-sm">
-                  <TrendingUp className="h-4 w-4 text-green-500" />
+                  <TrendingUp className="h-4 w-4 text-chart-1" />
                   System Metrics
                 </CardTitle>
               </CardHeader>
@@ -799,7 +799,7 @@ const DeepSeekDiagnostics = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-sm">
-                  <Zap className="h-4 w-4 text-purple-500" />
+                  <Zap className="h-4 w-4 text-primary" />
                   Quick Actions
                 </CardTitle>
               </CardHeader>
@@ -844,7 +844,7 @@ const DeepSeekDiagnostics = () => {
         <Card>
           <CardContent className="py-8">
             <div className="flex flex-col items-center justify-center space-y-4">
-              <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <p className="text-muted-foreground">DeepSeek AI is analyzing your project...</p>
             </div>
           </CardContent>
@@ -855,7 +855,7 @@ const DeepSeekDiagnostics = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-500" />
+              <CheckCircle className="h-5 w-5 text-chart-1" />
               Analysis Results
             </CardTitle>
             <div className="flex items-center gap-2">
