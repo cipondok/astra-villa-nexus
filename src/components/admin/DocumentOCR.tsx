@@ -320,7 +320,7 @@ export const DocumentOCR: React.FC<DocumentOCRProps> = ({
         {ocrResult && (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-500" />
+              <CheckCircle className="w-5 h-5 text-chart-1" />
               <h3 className="font-semibold">Extraction Results</h3>
               <Badge variant="secondary">
                 {Math.round(ocrResult.confidence)}% confidence

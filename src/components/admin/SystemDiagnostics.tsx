@@ -173,14 +173,14 @@ const SystemDiagnostics = () => {
       case 'healthy':
       case 'connected':
       case 'Connected':
-        return 'text-green-500';
+        return 'text-chart-1';
       case 'warning':
-        return 'text-yellow-500';
+        return 'text-chart-3';
       case 'error':
       case 'Error':
-        return 'text-red-500';
+        return 'text-destructive';
       default:
-        return 'text-gray-500';
+        return 'text-muted-foreground';
     }
   };
 
@@ -189,12 +189,12 @@ const SystemDiagnostics = () => {
       case 'healthy':
       case 'connected':
       case 'Connected':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-chart-1" />;
       case 'error':
       case 'Error':
-        return <XCircle className="h-5 w-5 text-red-500" />;
+        return <XCircle className="h-5 w-5 text-destructive" />;
       default:
-        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+        return <AlertTriangle className="h-5 w-5 text-chart-3" />;
     }
   };
 
@@ -214,7 +214,7 @@ const SystemDiagnostics = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold flex items-center gap-2">
-          <Monitor className="h-6 w-6 text-blue-500" />
+          <Monitor className="h-6 w-6 text-primary" />
           System Diagnostics
         </h2>
         <Button
@@ -241,7 +241,7 @@ const SystemDiagnostics = () => {
                   </span>
                 </div>
               </div>
-              <Server className="h-8 w-8 text-blue-500" />
+              <Server className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -258,7 +258,7 @@ const SystemDiagnostics = () => {
                   </span>
                 </div>
               </div>
-              <Database className="h-8 w-8 text-green-500" />
+              <Database className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -273,13 +273,13 @@ const SystemDiagnostics = () => {
                     {systemHealth?.response_time || 0}ms
                   </span>
                   {(systemHealth?.response_time || 0) < 200 ? (
-                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    <TrendingUp className="h-4 w-4 text-chart-1" />
                   ) : (
-                    <TrendingDown className="h-4 w-4 text-red-500" />
+                    <TrendingDown className="h-4 w-4 text-destructive" />
                   )}
                 </div>
               </div>
-              <Zap className="h-8 w-8 text-yellow-500" />
+              <Zap className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -291,10 +291,10 @@ const SystemDiagnostics = () => {
                 <p className="text-sm font-medium text-muted-foreground">Uptime</p>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-2xl font-bold">{systemMetrics.uptime}</span>
-                  <Clock className="h-4 w-4 text-blue-500" />
+                  <Clock className="h-4 w-4 text-chart-2" />
                 </div>
               </div>
-              <Activity className="h-8 w-8 text-purple-500" />
+              <Activity className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -305,7 +305,7 @@ const SystemDiagnostics = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm">
-              <Cpu className="h-4 w-4 text-orange-500" />
+              <Cpu className="h-4 w-4 text-chart-3" />
               CPU Usage
             </CardTitle>
           </CardHeader>
@@ -326,7 +326,7 @@ const SystemDiagnostics = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm">
-              <Activity className="h-4 w-4 text-blue-500" />
+              <Activity className="h-4 w-4 text-chart-2" />
               Memory Usage
             </CardTitle>
           </CardHeader>
@@ -347,7 +347,7 @@ const SystemDiagnostics = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm">
-              <HardDrive className="h-4 w-4 text-green-500" />
+              <HardDrive className="h-4 w-4 text-chart-1" />
               Disk Usage
             </CardTitle>
           </CardHeader>
@@ -370,7 +370,7 @@ const SystemDiagnostics = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-blue-500" />
+            <TrendingUp className="h-5 w-5 text-primary" />
             Performance Metrics (Last 10 Minutes)
           </CardTitle>
         </CardHeader>
@@ -385,21 +385,21 @@ const SystemDiagnostics = () => {
                 <Line 
                   type="monotone" 
                   dataKey="response_time" 
-                  stroke="#3b82f6" 
+                  stroke="hsl(var(--chart-2))" 
                   strokeWidth={2} 
                   name="Response Time (ms)"
                 />
                 <Line 
                   type="monotone" 
                   dataKey="cpu_usage" 
-                  stroke="#f59e0b" 
+                  stroke="hsl(var(--chart-3))" 
                   strokeWidth={2} 
                   name="CPU Usage (%)"
                 />
                 <Line 
                   type="monotone" 
                   dataKey="memory_usage" 
-                  stroke="#10b981" 
+                  stroke="hsl(var(--chart-1))" 
                   strokeWidth={2} 
                   name="Memory Usage (%)"
                 />
@@ -413,7 +413,7 @@ const SystemDiagnostics = () => {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-red-500" />
+            <AlertTriangle className="h-5 w-5 text-destructive" />
             Recent Database Errors ({databaseErrors.length})
           </CardTitle>
           <Button
@@ -429,7 +429,7 @@ const SystemDiagnostics = () => {
         <CardContent>
           {databaseErrors.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-500" />
+              <CheckCircle className="h-12 w-12 mx-auto mb-4 text-chart-1" />
               No database errors found
             </div>
           ) : (
@@ -460,9 +460,9 @@ const SystemDiagnostics = () => {
                     </div>
                     <div className="flex items-center">
                       {error.is_resolved ? (
-                        <CheckCircle className="h-5 w-5 text-green-500" />
+                        <CheckCircle className="h-5 w-5 text-chart-1" />
                       ) : (
-                        <XCircle className="h-5 w-5 text-red-500" />
+                        <XCircle className="h-5 w-5 text-destructive" />
                       )}
                     </div>
                   </div>
@@ -478,7 +478,7 @@ const SystemDiagnostics = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Wifi className="h-5 w-5 text-blue-500" />
+              <Wifi className="h-5 w-5 text-chart-2" />
               Network Status
             </CardTitle>
           </CardHeader>
@@ -510,7 +510,7 @@ const SystemDiagnostics = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5 text-green-500" />
+              <Database className="h-5 w-5 text-chart-1" />
               Database Health
             </CardTitle>
           </CardHeader>
@@ -518,19 +518,19 @@ const SystemDiagnostics = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Connection Pool</span>
-                <Badge variant="outline" className="text-green-600">
+                <Badge variant="outline" className="text-chart-1 border-chart-1/30">
                   Healthy
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Query Performance</span>
-                <Badge variant="outline" className="text-blue-600">
+                <Badge variant="outline" className="text-chart-2 border-chart-2/30">
                   Optimal
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Error Rate</span>
-                <span className="text-sm font-bold text-green-600">0.01%</span>
+                <span className="text-sm font-bold text-chart-1">0.01%</span>
               </div>
             </div>
           </CardContent>

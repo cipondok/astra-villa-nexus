@@ -249,26 +249,26 @@ const VendorFunctionGenerator = () => {
 
   const getComplexityBadge = (complexity: string) => {
     const variants = {
-      simple: "bg-green-100 text-green-800",
-      medium: "bg-yellow-100 text-yellow-800", 
-      complex: "bg-red-100 text-red-800"
+      simple: "bg-chart-1/10 text-chart-1",
+      medium: "bg-chart-3/10 text-chart-3", 
+      complex: "bg-destructive/10 text-destructive"
     };
     return <Badge className={variants[complexity as keyof typeof variants]}>{complexity.toUpperCase()}</Badge>;
   };
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      'Analytics': 'text-blue-600',
-      'Automation': 'text-purple-600',
-      'Security': 'text-red-600',
-      'Payment': 'text-green-600',
-      'Communication': 'text-orange-600',
-      'Quality Control': 'text-pink-600',
-      'Operations': 'text-indigo-600',
-      'Logistics': 'text-teal-600',
-      'Compliance': 'text-cyan-600'
+      'Analytics': 'text-chart-2',
+      'Automation': 'text-primary',
+      'Security': 'text-destructive',
+      'Payment': 'text-chart-1',
+      'Communication': 'text-chart-3',
+      'Quality Control': 'text-chart-4',
+      'Operations': 'text-chart-2',
+      'Logistics': 'text-chart-1',
+      'Compliance': 'text-primary'
     };
-    return colors[category] || 'text-gray-600';
+    return colors[category] || 'text-muted-foreground';
   };
 
   const generateFunction = async (functionTemplate: FunctionTemplate) => {
@@ -307,14 +307,14 @@ const VendorFunctionGenerator = () => {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Code className="h-5 w-5 text-blue-500" />
+            <Code className="h-5 w-5 text-primary" />
             Vendor Function Generator
           </h3>
           <p className="text-sm text-muted-foreground">
             Create and integrate new functions into the vendor management system
           </p>
         </div>
-        <Badge variant="outline" className="text-green-600 border-green-200">
+        <Badge variant="outline" className="text-chart-1 border-chart-1/30">
           12 Ready Templates
         </Badge>
       </div>
@@ -357,7 +357,7 @@ const VendorFunctionGenerator = () => {
                                     {getComplexityBadge(func.complexity)}
                                   </div>
                                   <p className="text-xs text-muted-foreground">{func.description}</p>
-                                  <p className="text-xs text-blue-600 italic">{func.example}</p>
+                                  <p className="text-xs text-chart-2 italic">{func.example}</p>
                                   <div className="flex flex-wrap gap-1">
                                     {func.requirements.slice(0, 2).map((req, idx) => (
                                       <Badge key={idx} variant="outline" className="text-xs px-1 py-0">
@@ -522,7 +522,7 @@ const VendorFunctionGenerator = () => {
                                         href={func.deployment_url} 
                                         target="_blank" 
                                         rel="noopener noreferrer"
-                                        className="text-blue-600 hover:underline text-sm"
+                                        className="text-primary hover:underline text-sm"
                                       >
                                         {func.deployment_url}
                                       </a>

@@ -185,11 +185,11 @@ const VendorCategoryChangeRequests = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Badge variant="outline" className="text-yellow-600"><Clock className="h-3 w-3 mr-1" />Menunggu</Badge>;
+        return <Badge variant="outline" className="text-chart-3 border-chart-3/30"><Clock className="h-3 w-3 mr-1" />Menunggu</Badge>;
       case 'approved':
-        return <Badge variant="outline" className="text-green-600"><CheckCircle className="h-3 w-3 mr-1" />Disetujui</Badge>;
+        return <Badge variant="outline" className="text-chart-1 border-chart-1/30"><CheckCircle className="h-3 w-3 mr-1" />Disetujui</Badge>;
       case 'rejected':
-        return <Badge variant="outline" className="text-red-600"><XCircle className="h-3 w-3 mr-1" />Ditolak</Badge>;
+        return <Badge variant="outline" className="text-destructive border-destructive/30"><XCircle className="h-3 w-3 mr-1" />Ditolak</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -256,7 +256,7 @@ const VendorCategoryChangeRequests = () => {
                     {request.admin_notes && (
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">Catatan Admin:</p>
-                        <p className="text-sm text-blue-700">{request.admin_notes}</p>
+                        <p className="text-sm text-chart-2">{request.admin_notes}</p>
                       </div>
                     )}
 
@@ -267,7 +267,7 @@ const VendorCategoryChangeRequests = () => {
                             <Button 
                               size="sm" 
                               onClick={() => setSelectedRequest(request)}
-                              className="bg-green-600 hover:bg-green-700"
+                              className="bg-chart-1 hover:bg-chart-1/90 text-background"
                             >
                               <Unlock className="h-4 w-4 mr-2" />
                               Proses Permintaan
@@ -321,7 +321,7 @@ const VendorCategoryChangeRequests = () => {
                                 <Button
                                   onClick={handleApprove}
                                   disabled={approveRequestMutation.isPending}
-                                  className="bg-green-600 hover:bg-green-700"
+                                  className="bg-chart-1 hover:bg-chart-1/90 text-background"
                                 >
                                   <CheckCircle className="h-4 w-4 mr-2" />
                                   Setujui
