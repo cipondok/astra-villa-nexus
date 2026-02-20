@@ -26,25 +26,25 @@ const AlertConfigurationTab = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-blue-600">8</div>
+            <div className="text-2xl font-bold text-primary">8</div>
             <p className="text-xs text-muted-foreground">Active Categories</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-green-600">12</div>
+            <div className="text-2xl font-bold text-chart-1">12</div>
             <p className="text-xs text-muted-foreground">Alert Rules</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-orange-600">3</div>
+            <div className="text-2xl font-bold text-chart-4">3</div>
             <p className="text-xs text-muted-foreground">High Priority Types</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-purple-600">24/7</div>
+            <div className="text-2xl font-bold text-chart-2">24/7</div>
             <p className="text-xs text-muted-foreground">Monitoring Status</p>
           </CardContent>
         </Card>

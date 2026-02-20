@@ -351,7 +351,7 @@ const PaymentGatewaySettings = () => {
               {isTesting === 'midtrans' ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               ) : connectionStatus.midtrans ? (
-                <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                <CheckCircle2 className="h-4 w-4 mr-2 text-chart-1" />
               ) : (
                 <AlertCircle className="h-4 w-4 mr-2" />
               )}
@@ -446,7 +446,7 @@ const PaymentGatewaySettings = () => {
               {isTesting === 'paypal' ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               ) : connectionStatus.paypal ? (
-                <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                <CheckCircle2 className="h-4 w-4 mr-2 text-chart-1" />
               ) : (
                 <AlertCircle className="h-4 w-4 mr-2" />
               )}
