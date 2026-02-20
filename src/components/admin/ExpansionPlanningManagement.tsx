@@ -148,32 +148,32 @@ const ExpansionPlanningManagement = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-500';
-      case 'planning': return 'bg-blue-500';
-      case 'completed': return 'bg-purple-500';
-      case 'paused': return 'bg-yellow-500';
-      case 'launching': return 'bg-orange-500';
-      case 'mature': return 'bg-emerald-500';
+      case 'active': return 'bg-chart-1';
+      case 'planning': return 'bg-chart-2';
+      case 'completed': return 'bg-chart-5';
+      case 'paused': return 'bg-chart-3';
+      case 'launching': return 'bg-chart-3';
+      case 'mature': return 'bg-chart-1';
       default: return 'bg-muted';
     }
   };
 
   const getThreatColor = (level: string | null) => {
     switch (level) {
-      case 'critical': return 'text-red-600 bg-red-100';
-      case 'high': return 'text-orange-600 bg-orange-100';
-      case 'medium': return 'text-yellow-600 bg-yellow-100';
-      case 'low': return 'text-green-600 bg-green-100';
+      case 'critical': return 'text-destructive bg-destructive/10';
+      case 'high': return 'text-chart-3 bg-chart-3/10';
+      case 'medium': return 'text-chart-4 bg-chart-4/10';
+      case 'low': return 'text-chart-1 bg-chart-1/10';
       default: return 'text-muted-foreground bg-muted';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'text-red-600';
-      case 'high': return 'text-orange-600';
-      case 'medium': return 'text-yellow-600';
-      case 'low': return 'text-green-600';
+      case 'critical': return 'text-destructive';
+      case 'high': return 'text-chart-3';
+      case 'medium': return 'text-chart-4';
+      case 'low': return 'text-chart-1';
       default: return 'text-muted-foreground';
     }
   };
@@ -793,7 +793,7 @@ const ExpansionPlanningManagement = () => {
                       <TableCell className="text-right">{formatCurrency(Number(phase.total_budget))}</TableCell>
                       <TableCell className="text-right">~${Math.round(Number(phase.total_budget) / 16000).toLocaleString()}</TableCell>
                       <TableCell className="text-right">{formatCurrency(Number(phase.spent_budget))}</TableCell>
-                      <TableCell className="text-right text-green-600">
+                      <TableCell className="text-right text-chart-1">
                         {formatCurrency(Number(phase.total_budget) - Number(phase.spent_budget))}
                       </TableCell>
                     </TableRow>
@@ -804,7 +804,7 @@ const ExpansionPlanningManagement = () => {
                     <TableCell className="text-right">{formatCurrency(totalBudget)}</TableCell>
                     <TableCell className="text-right">~${Math.round(totalBudget / 16000).toLocaleString()}</TableCell>
                     <TableCell className="text-right">{formatCurrency(totalSpent)}</TableCell>
-                    <TableCell className="text-right text-green-600">
+                    <TableCell className="text-right text-chart-1">
                       {formatCurrency(totalBudget - totalSpent)}
                     </TableCell>
                   </TableRow>

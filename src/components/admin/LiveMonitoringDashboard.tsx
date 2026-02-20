@@ -260,12 +260,25 @@ const LiveMonitoringDashboard = () => {
     trendValue?: string;
     color?: string;
     progress?: number;
-  }) => (
+  }) => {
+    const colorMap: Record<string, { bg: string; text: string }> = {
+      primary: { bg: 'bg-primary/10', text: 'text-primary' },
+      accent: { bg: 'bg-accent/10', text: 'text-accent' },
+      secondary: { bg: 'bg-secondary/10', text: 'text-secondary' },
+      'chart-1': { bg: 'bg-chart-1/10', text: 'text-chart-1' },
+      'chart-2': { bg: 'bg-chart-2/10', text: 'text-chart-2' },
+      'chart-3': { bg: 'bg-chart-3/10', text: 'text-chart-3' },
+      'chart-4': { bg: 'bg-chart-4/10', text: 'text-chart-4' },
+      'chart-5': { bg: 'bg-chart-5/10', text: 'text-chart-5' },
+      destructive: { bg: 'bg-destructive/10', text: 'text-destructive' },
+    };
+    const { bg, text } = colorMap[color] ?? colorMap['primary'];
+    return (
     <Card className="bg-card/50 hover:bg-card/80 transition-colors border-border/50">
       <CardContent className="p-3">
         <div className="flex items-center justify-between mb-1">
-          <div className={`p-1.5 rounded-lg bg-${color}/10`}>
-            <Icon className={`h-4 w-4 text-${color}`} />
+          <div className={`p-1.5 rounded-lg ${bg}`}>
+            <Icon className={`h-4 w-4 ${text}`} />
           </div>
           {trend && (
             <Badge variant="outline" className={`text-[8px] px-1 ${
@@ -289,7 +302,8 @@ const LiveMonitoringDashboard = () => {
         )}
       </CardContent>
     </Card>
-  );
+    );
+  };
 
   const handleRefreshAll = async () => {
     await Promise.all([

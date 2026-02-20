@@ -200,11 +200,11 @@ const PropertyDisplaySettings = () => {
       </div>
 
       {/* Connection Status Warning */}
-      <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-2">
+      <div className="bg-chart-3/10 border border-chart-3/30 rounded-lg p-2">
         <div className="flex items-center gap-2">
-          <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
+          <AlertCircle className="h-3.5 w-3.5 text-chart-3" />
           <div>
-            <p className="text-[10px] font-medium text-amber-600 dark:text-amber-400">Database Connection Status</p>
+            <p className="text-[10px] font-medium text-chart-3">Database Connection Status</p>
             <p className="text-[9px] text-muted-foreground">
               If saving takes too long, there might be connection issues.
             </p>
