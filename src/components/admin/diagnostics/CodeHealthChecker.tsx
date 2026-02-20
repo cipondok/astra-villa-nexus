@@ -37,20 +37,20 @@ export const CodeHealthChecker = ({ issues, healthScore }: CodeHealthCheckerProp
   const getIssueIcon = (type: string) => {
     switch (type) {
       case 'error':
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+        return <AlertTriangle className="h-4 w-4 text-chart-3" />;
       default:
-        return <CheckCircle className="h-4 w-4 text-blue-500" />;
+        return <CheckCircle className="h-4 w-4 text-chart-2" />;
     }
   };
 
   const getSeverityBadge = (severity: string) => {
     const colors = {
-      critical: 'bg-red-500/10 text-red-500 border-red-500/20',
-      high: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
-      medium: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
-      low: 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+      critical: 'bg-destructive/10 text-destructive border-destructive/20',
+      high: 'bg-chart-4/10 text-chart-4 border-chart-4/20',
+      medium: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+      low: 'bg-chart-2/10 text-chart-2 border-chart-2/20'
     };
     return <Badge className={colors[severity as keyof typeof colors]}>{severity.toUpperCase()}</Badge>;
   };
@@ -69,9 +69,9 @@ export const CodeHealthChecker = ({ issues, healthScore }: CodeHealthCheckerProp
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Overall Code Health</span>
             <span className={`text-2xl font-bold ${
-              healthScore >= 80 ? 'text-green-500' : 
-              healthScore >= 60 ? 'text-yellow-500' : 
-              'text-red-500'
+              healthScore >= 80 ? 'text-chart-1' : 
+              healthScore >= 60 ? 'text-chart-3' : 
+              'text-destructive'
             }`}>
               {healthScore}%
             </span>
@@ -81,20 +81,20 @@ export const CodeHealthChecker = ({ issues, healthScore }: CodeHealthCheckerProp
 
         {/* Issue Summary */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-            <div className="text-2xl font-bold text-red-500">{criticalIssues.length}</div>
+          <div className="p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+            <div className="text-2xl font-bold text-destructive">{criticalIssues.length}</div>
             <div className="text-xs text-muted-foreground">Critical Issues</div>
           </div>
-          <div className="p-3 rounded-lg bg-orange-500/5 border border-orange-500/20">
-            <div className="text-2xl font-bold text-orange-500">{highIssues.length}</div>
+          <div className="p-3 rounded-lg bg-chart-4/5 border border-chart-4/20">
+            <div className="text-2xl font-bold text-chart-4">{highIssues.length}</div>
             <div className="text-xs text-muted-foreground">High Priority</div>
           </div>
-          <div className="p-3 rounded-lg bg-yellow-500/5 border border-yellow-500/20">
-            <div className="text-2xl font-bold text-yellow-500">{mediumIssues.length}</div>
+          <div className="p-3 rounded-lg bg-chart-3/5 border border-chart-3/20">
+            <div className="text-2xl font-bold text-chart-3">{mediumIssues.length}</div>
             <div className="text-xs text-muted-foreground">Medium Issues</div>
           </div>
-          <div className="p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
-            <div className="text-2xl font-bold text-blue-500">{lowIssues.length}</div>
+          <div className="p-3 rounded-lg bg-chart-2/5 border border-chart-2/20">
+            <div className="text-2xl font-bold text-chart-2">{lowIssues.length}</div>
             <div className="text-xs text-muted-foreground">Low Priority</div>
           </div>
         </div>
@@ -119,7 +119,7 @@ export const CodeHealthChecker = ({ issues, healthScore }: CodeHealthCheckerProp
                         {issue.file}{issue.line ? `:${issue.line}` : ''}
                       </div>
                       {issue.suggestion && (
-                        <div className="text-xs text-blue-600 dark:text-blue-400 mt-2 flex items-start gap-1">
+                        <div className="text-xs text-chart-2 mt-2 flex items-start gap-1">
                           <Zap className="h-3 w-3 mt-0.5" />
                           <span>{issue.suggestion}</span>
                         </div>
@@ -131,9 +131,9 @@ export const CodeHealthChecker = ({ issues, healthScore }: CodeHealthCheckerProp
             ))}
           </div>
         ) : (
-          <Alert className="border-green-500/20 bg-green-500/5">
-            <CheckCircle className="h-4 w-4 text-green-500" />
-            <AlertDescription className="text-green-600 dark:text-green-400">
+          <Alert className="border-chart-1/20 bg-chart-1/5">
+            <CheckCircle className="h-4 w-4 text-chart-1" />
+            <AlertDescription className="text-chart-1">
               No code issues detected! Your code is healthy.
             </AlertDescription>
           </Alert>

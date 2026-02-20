@@ -41,19 +41,19 @@ export const ErrorLogViewer = ({
 
   const getSeverityBadge = (severity: string) => {
     const colors: Record<string, string> = {
-      critical: 'bg-red-500/10 text-red-500 border-red-500/20',
-      high: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
-      medium: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
-      low: 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+      critical: 'bg-destructive/10 text-destructive border-destructive/20',
+      high: 'bg-chart-4/10 text-chart-4 border-chart-4/20',
+      medium: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+      low: 'bg-chart-2/10 text-chart-2 border-chart-2/20'
     };
     return <Badge className={colors[severity] || colors.medium}>{severity.toUpperCase()}</Badge>;
   };
 
   const getStatusBadge = (status: string) => {
     const colors: Record<string, string> = {
-      new: 'bg-blue-500/10 text-blue-500',
-      investigating: 'bg-yellow-500/10 text-yellow-500',
-      resolved: 'bg-green-500/10 text-green-500'
+      new: 'bg-chart-2/10 text-chart-2',
+      investigating: 'bg-chart-3/10 text-chart-3',
+      resolved: 'bg-chart-1/10 text-chart-1'
     };
     return <Badge variant="outline" className={colors[status] || colors.new}>{status}</Badge>;
   };
@@ -139,10 +139,10 @@ export const ErrorLogViewer = ({
           {['critical', 'high', 'medium', 'low'].map(severity => {
             const count = logs.filter(l => l.severity === severity && l.status !== 'resolved').length;
             const colors: Record<string, string> = {
-              critical: 'text-red-500 bg-red-500/5 border-red-500/20',
-              high: 'text-orange-500 bg-orange-500/5 border-orange-500/20',
-              medium: 'text-yellow-500 bg-yellow-500/5 border-yellow-500/20',
-              low: 'text-blue-500 bg-blue-500/5 border-blue-500/20'
+              critical: 'text-destructive bg-destructive/5 border-destructive/20',
+              high: 'text-chart-4 bg-chart-4/5 border-chart-4/20',
+              medium: 'text-chart-3 bg-chart-3/5 border-chart-3/20',
+              low: 'text-chart-2 bg-chart-2/5 border-chart-2/20'
             };
             return (
               <div key={severity} className={`p-2 rounded-lg border ${colors[severity]}`}>
@@ -247,9 +247,9 @@ export const ErrorLogViewer = ({
             ))}
           </div>
         ) : (
-          <Alert className="border-green-500/20 bg-green-500/5">
-            <CheckCircle className="h-4 w-4 text-green-500" />
-            <AlertDescription className="text-green-600 dark:text-green-400 text-xs">
+          <Alert className="border-chart-1/20 bg-chart-1/5">
+            <CheckCircle className="h-4 w-4 text-chart-1" />
+            <AlertDescription className="text-chart-1 text-xs">
               No errors logged! System is running smoothly.
             </AlertDescription>
           </Alert>

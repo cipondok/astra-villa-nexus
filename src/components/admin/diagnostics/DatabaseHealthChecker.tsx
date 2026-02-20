@@ -45,11 +45,11 @@ export const DatabaseHealthChecker = ({
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'healthy':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-chart-1" />;
       case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+        return <AlertTriangle className="h-4 w-4 text-chart-3" />;
       case 'error':
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       default:
         return null;
     }
@@ -57,9 +57,9 @@ export const DatabaseHealthChecker = ({
 
   const getConnectionBadge = () => {
     const colors = {
-      connected: 'bg-green-500/10 text-green-500',
-      slow: 'bg-yellow-500/10 text-yellow-500',
-      disconnected: 'bg-red-500/10 text-red-500'
+      connected: 'bg-chart-1/10 text-chart-1',
+      slow: 'bg-chart-3/10 text-chart-3',
+      disconnected: 'bg-destructive/10 text-destructive'
     };
     return (
       <Badge className={colors[connectionStatus]}>
@@ -82,9 +82,9 @@ export const DatabaseHealthChecker = ({
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Database Health</span>
             <span className={`text-2xl font-bold ${
-              overallHealth >= 80 ? 'text-green-500' : 
-              overallHealth >= 60 ? 'text-yellow-500' : 
-              'text-red-500'
+              overallHealth >= 80 ? 'text-chart-1' : 
+              overallHealth >= 60 ? 'text-chart-3' : 
+              'text-destructive'
             }`}>
               {overallHealth}%
             </span>
@@ -103,20 +103,20 @@ export const DatabaseHealthChecker = ({
 
         {/* Database Metrics */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
-            <div className="text-2xl font-bold text-blue-500">{queryPerformance}ms</div>
+          <div className="p-3 rounded-lg bg-chart-2/5 border border-chart-2/20">
+            <div className="text-2xl font-bold text-chart-2">{queryPerformance}ms</div>
             <div className="text-xs text-muted-foreground">Avg Query Time</div>
           </div>
-          <div className="p-3 rounded-lg bg-purple-500/5 border border-purple-500/20">
-            <div className="text-2xl font-bold text-purple-500">{activeConnections}</div>
+          <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
+            <div className="text-2xl font-bold text-primary">{activeConnections}</div>
             <div className="text-xs text-muted-foreground">Active Connections</div>
           </div>
-          <div className="p-3 rounded-lg bg-cyan-500/5 border border-cyan-500/20">
-            <div className="text-2xl font-bold text-cyan-500">{totalTables}</div>
+          <div className="p-3 rounded-lg bg-chart-4/5 border border-chart-4/20">
+            <div className="text-2xl font-bold text-chart-4">{totalTables}</div>
             <div className="text-xs text-muted-foreground">Total Tables</div>
           </div>
-          <div className="p-3 rounded-lg bg-green-500/5 border border-green-500/20">
-            <div className="text-2xl font-bold text-green-500">{rlsEnabled}/{totalTables}</div>
+          <div className="p-3 rounded-lg bg-chart-1/5 border border-chart-1/20">
+            <div className="text-2xl font-bold text-chart-1">{rlsEnabled}/{totalTables}</div>
             <div className="text-xs text-muted-foreground">RLS Enabled</div>
           </div>
         </div>
@@ -126,9 +126,9 @@ export const DatabaseHealthChecker = ({
           <div className="flex items-center justify-between text-sm font-medium">
             <span>Health Checks</span>
             <div className="flex items-center gap-2">
-              <Badge className="bg-green-500/10 text-green-500">{healthyChecks.length}</Badge>
-              <Badge className="bg-yellow-500/10 text-yellow-500">{warningChecks.length}</Badge>
-              <Badge className="bg-red-500/10 text-red-500">{errorChecks.length}</Badge>
+              <Badge className="bg-chart-1/10 text-chart-1">{healthyChecks.length}</Badge>
+              <Badge className="bg-chart-3/10 text-chart-3">{warningChecks.length}</Badge>
+              <Badge className="bg-destructive/10 text-destructive">{errorChecks.length}</Badge>
             </div>
           </div>
           
