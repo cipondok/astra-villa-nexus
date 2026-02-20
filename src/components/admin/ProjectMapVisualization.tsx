@@ -419,12 +419,12 @@ const ProjectMapVisualization = () => {
           {/* Quick Stats */}
           <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
             {[
-              { icon: CheckCircle2, label: 'Completed', value: projectModules.filter(m => m.status === 'completed').length, color: 'text-green-500' },
-              { icon: Play, label: 'In Progress', value: projectModules.filter(m => m.status === 'in-progress').length, color: 'text-blue-500' },
-              { icon: Target, label: 'Modules', value: projectModules.length, color: 'text-purple-500' },
-              { icon: Users, label: 'Users', value: realtimeStats.totalUsers, color: 'text-orange-500' },
+              { icon: CheckCircle2, label: 'Completed', value: projectModules.filter(m => m.status === 'completed').length, color: 'text-chart-1' },
+              { icon: Play, label: 'In Progress', value: projectModules.filter(m => m.status === 'in-progress').length, color: 'text-chart-2' },
+              { icon: Target, label: 'Modules', value: projectModules.length, color: 'text-chart-4' },
+              { icon: Users, label: 'Users', value: realtimeStats.totalUsers, color: 'text-chart-3' },
               { icon: Building2, label: 'Properties', value: realtimeStats.totalProperties, color: 'text-primary' },
-              { icon: Shield, label: 'Security', value: `${projectStats.securityScore}%`, color: 'text-green-500' }
+              { icon: Shield, label: 'Security', value: `${projectStats.securityScore}%`, color: 'text-chart-1' }
             ].map((stat, idx) => (
               <div key={idx} className="p-2 rounded-md bg-background/60 border border-border/30">
                 <div className="flex items-center gap-1.5">
@@ -602,7 +602,7 @@ const ProjectMapVisualization = () => {
                   <CardHeader className="p-3 pb-2">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-sm">{category.category}</CardTitle>
-                      <Badge className={progress === 100 ? 'bg-green-500/10 text-green-600' : 'bg-orange-500/10 text-orange-600'}>
+                      <Badge className={progress === 100 ? 'bg-chart-1/10 text-chart-1' : 'bg-chart-3/10 text-chart-3'}>
                         {completedCount}/{category.items.length}
                       </Badge>
                     </div>
@@ -697,8 +697,8 @@ const ProjectMapVisualization = () => {
                 </ResponsiveContainer>
                 <div className="flex justify-center gap-4 mt-2">
                   {[
-                    { label: 'Completed', color: 'bg-green-500' },
-                    { label: 'In Progress', color: 'bg-blue-500' },
+                    { label: 'Completed', color: 'bg-chart-1' },
+                    { label: 'In Progress', color: 'bg-chart-2' },
                     { label: 'Pending', color: 'bg-muted' }
                   ].map((item, idx) => (
                     <div key={idx} className="flex items-center gap-1.5">

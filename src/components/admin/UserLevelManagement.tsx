@@ -50,11 +50,11 @@ const getLevelIcon = (levelName: string, size: 'sm' | 'md' | 'lg' = 'sm') => {
   const membership = getMembershipFromUserLevel(levelName);
   const sizeClass = size === 'lg' ? 'h-5 w-5' : size === 'md' ? 'h-4 w-4' : 'h-3.5 w-3.5';
   switch (membership) {
-    case 'diamond': return <Gem className={`${sizeClass} text-sky-500`} />;
-    case 'platinum': return <Sparkles className={`${sizeClass} text-cyan-500`} />;
-    case 'gold': return <Crown className={`${sizeClass} text-yellow-500`} />;
-    case 'vip': return <Star className={`${sizeClass} text-purple-500`} />;
-    case 'verified': return <Shield className={`${sizeClass} text-blue-500`} />;
+    case 'diamond': return <Gem className={`${sizeClass} text-chart-2`} />;
+    case 'platinum': return <Sparkles className={`${sizeClass} text-chart-5`} />;
+    case 'gold': return <Crown className={`${sizeClass} text-chart-3`} />;
+    case 'vip': return <Star className={`${sizeClass} text-chart-4`} />;
+    case 'verified': return <Shield className={`${sizeClass} text-primary`} />;
     default: return <Users className={`${sizeClass} text-muted-foreground`} />;
   }
 };
@@ -272,7 +272,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-bold flex items-center gap-2">
-            <Crown className="h-5 w-5 text-yellow-500" />
+            <Crown className="h-5 w-5 text-chart-3" />
             User Levels & VIP Management
           </h3>
           <p className="text-xs text-muted-foreground">
@@ -307,8 +307,8 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-green-500/10">
-              <Users className="h-4 w-4 text-green-500" />
+            <div className="p-2 rounded-lg bg-chart-1/10">
+              <Users className="h-4 w-4 text-chart-1" />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">Users Assigned</p>
@@ -318,8 +318,8 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-blue-500/10">
-              <TrendingUp className="h-4 w-4 text-blue-500" />
+            <div className="p-2 rounded-lg bg-chart-2/10">
+              <TrendingUp className="h-4 w-4 text-chart-2" />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">Assignment Rate</p>
@@ -329,8 +329,8 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-purple-500/10">
-              <Award className="h-4 w-4 text-purple-500" />
+            <div className="p-2 rounded-lg bg-chart-4/10">
+              <Award className="h-4 w-4 text-chart-4" />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">Unassigned</p>
@@ -409,7 +409,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
                   </div>
                   <div className="flex items-center justify-between py-1.5 px-2 rounded-md bg-muted/50">
                     <div className="flex items-center gap-2">
-                      <Zap className="h-3.5 w-3.5 text-yellow-500" />
+                      <Zap className="h-3.5 w-3.5 text-chart-3" />
                       <Label className="text-xs">Can Feature Listings</Label>
                     </div>
                     <Switch
@@ -419,7 +419,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
                   </div>
                   <div className="flex items-center justify-between py-1.5 px-2 rounded-md bg-muted/50">
                     <div className="flex items-center gap-2">
-                      <HeadphonesIcon className="h-3.5 w-3.5 text-green-500" />
+                      <HeadphonesIcon className="h-3.5 w-3.5 text-chart-1" />
                       <Label className="text-xs">Priority Support</Label>
                     </div>
                     <Switch
@@ -454,7 +454,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
           <Card>
             <CardHeader className="py-3 px-4">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-cyan-500" />
+                <Sparkles className="h-4 w-4 text-chart-5" />
                 Membership Tier System
               </CardTitle>
             </CardHeader>
@@ -479,7 +479,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
             <CardHeader className="py-3 px-4">
               <CardTitle className="text-sm font-medium flex items-center justify-between">
                 <span className="flex items-center gap-2">
-                  <ListChecks className="h-4 w-4 text-blue-500" />
+                  <ListChecks className="h-4 w-4 text-primary" />
                   Configured Levels ({levels?.length || 0})
                 </span>
               </CardTitle>
@@ -542,13 +542,13 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
                                     <span>{level.max_listings} listings</span>
                                   </div>
                                   {level.can_feature_listings && (
-                                    <Badge className="text-[9px] px-1 py-0 h-4 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                    <Badge className="text-[9px] px-1 py-0 h-4 bg-chart-3/10 text-chart-3 border border-chart-3/30">
                                       <Zap className="h-2.5 w-2.5 mr-0.5" />
                                       Featured
                                     </Badge>
                                   )}
                                   {level.priority_support && (
-                                    <Badge className="text-[9px] px-1 py-0 h-4 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                    <Badge className="text-[9px] px-1 py-0 h-4 bg-chart-1/10 text-chart-1 border border-chart-1/30">
                                       <HeadphonesIcon className="h-2.5 w-2.5 mr-0.5" />
                                       Priority
                                     </Badge>
@@ -611,7 +611,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
                     <div className="space-y-1">
                       {config.benefits.slice(0, 3).map((benefit, idx) => (
                         <div key={idx} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                          <Check className="h-2.5 w-2.5 text-green-500" />
+                          <Check className="h-2.5 w-2.5 text-chart-1" />
                           <span>{benefit}</span>
                         </div>
                       ))}
@@ -667,7 +667,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
           <Card>
             <CardHeader className="py-3 px-4">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Users className="h-4 w-4 text-blue-500" />
+                <Users className="h-4 w-4 text-primary" />
                 Users ({users?.length || 0})
               </CardTitle>
             </CardHeader>
@@ -732,7 +732,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
                             </TableCell>
                             <TableCell>
                               {user.verification_status === 'verified' ? (
-                                <Badge className="text-[10px] bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                <Badge className="text-[10px] bg-chart-1/10 text-chart-1 border border-chart-1/30">
                                   <Shield className="h-2.5 w-2.5 mr-0.5" />
                                   Verified
                                 </Badge>
@@ -828,7 +828,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
               </div>
               <div className="flex items-center justify-between py-1.5 px-2 rounded-md bg-muted/50">
                 <div className="flex items-center gap-2">
-                  <Zap className="h-3.5 w-3.5 text-yellow-500" />
+                  <Zap className="h-3.5 w-3.5 text-chart-3" />
                   <Label className="text-xs">Can Feature Listings</Label>
                 </div>
                 <Switch
@@ -838,7 +838,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
               </div>
               <div className="flex items-center justify-between py-1.5 px-2 rounded-md bg-muted/50">
                 <div className="flex items-center gap-2">
-                  <HeadphonesIcon className="h-3.5 w-3.5 text-green-500" />
+                  <HeadphonesIcon className="h-3.5 w-3.5 text-chart-1" />
                   <Label className="text-xs">Priority Support</Label>
                 </div>
                 <Switch

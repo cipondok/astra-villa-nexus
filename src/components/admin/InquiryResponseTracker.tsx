@@ -149,7 +149,7 @@ export const InquiryResponseTracker: React.FC<InquiryResponseTrackerProps> = ({
     const diffMins = diffMs / (1000 * 60);
     
     if (diffMins <= 30) return 'text-destructive';
-    if (diffMins <= 60) return 'text-orange-500';
+    if (diffMins <= 60) return 'text-chart-3';
     return 'text-muted-foreground';
   };
 
