@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SEOHead } from '@/components/SEOHead';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Building2, Home, TrendingUp, Search, Filter, ChevronRight, ArrowLeft, Loader2, Navigation2, Globe2, Star, Layers } from 'lucide-react';
@@ -134,6 +135,11 @@ const LocationMap = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      <SEOHead
+        title="Peta Properti Indonesia"
+        description="Jelajahi properti di seluruh 34 provinsi Indonesia. Temukan properti impian Anda berdasarkan lokasi dengan peta interaktif."
+        keywords="peta properti indonesia, properti per provinsi, lokasi properti, peta real estate"
+      />
       {/* Decorative background blobs */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 dark:bg-primary/15 blur-3xl" />

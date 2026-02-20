@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SEOHead } from "@/components/SEOHead";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -223,6 +224,11 @@ const Properties = () => {
       </div>;
   }
   return <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <SEOHead
+        title="Semua Properti di Indonesia"
+        description="Jelajahi ribuan properti dijual dan disewa di seluruh Indonesia. Filter berdasarkan lokasi, tipe, dan harga untuk menemukan properti ideal Anda."
+        keywords="properti indonesia, semua properti, jual beli properti, sewa properti indonesia"
+      />
       {/* Sub-header with location info - fixed (reliable across scroll containers) */}
       {locationFilter && <>
           <div className="fixed left-0 right-0 top-[40px] md:top-[44px] lg:top-[48px] z-40 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-1">

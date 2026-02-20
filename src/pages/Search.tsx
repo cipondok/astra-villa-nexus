@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { SEOHead } from '@/components/SEOHead';
 import { useSearchParams } from 'react-router-dom';
 import { Search as SearchIcon, Filter, MapPin, Home, Building2, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -251,6 +252,11 @@ const Search = () => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      <SEOHead
+        title="Cari Properti"
+        description="Cari properti impian Anda di Indonesia. Filter berdasarkan lokasi, tipe properti, harga, dan jumlah kamar untuk hasil pencarian terbaik."
+        keywords="cari properti indonesia, search properti, filter properti, properti dijual disewa"
+      />
       {/* Luxury Background - matches home page */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />

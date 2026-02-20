@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { SEOHead } from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -76,6 +77,11 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <SEOHead
+        title="Tentang Astra Villa"
+        description="ASTRA Villa Realty adalah platform properti premium Indonesia. Kenali misi, visi, dan tim profesional kami yang berdedikasi."
+        keywords="tentang astra villa, platform properti indonesia, real estate premium"
+      />
       {isAuthenticated && (
         <AuthenticatedNavigation
           language={language}
