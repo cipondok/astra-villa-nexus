@@ -161,20 +161,20 @@ const B2BMarketplaceManagement = () => {
 
   const getClientTypeBadge = (type: string) => {
     const colors: Record<string, string> = {
-      agency: 'bg-blue-500/10 text-blue-500 border-blue-500/30',
-      investor: 'bg-green-500/10 text-green-500 border-green-500/30',
-      developer: 'bg-purple-500/10 text-purple-500 border-purple-500/30',
-      bank: 'bg-orange-500/10 text-orange-500 border-orange-500/30',
-      other: 'bg-gray-500/10 text-gray-500 border-gray-500/30'
+      agency: 'bg-chart-2/10 text-chart-2 border-chart-2/30',
+      investor: 'bg-chart-1/10 text-chart-1 border-chart-1/30',
+      developer: 'bg-chart-4/10 text-chart-4 border-chart-4/30',
+      bank: 'bg-chart-3/10 text-chart-3 border-chart-3/30',
+      other: 'bg-muted text-muted-foreground border-border'
     };
     return <Badge className={colors[type] || colors.other}>{type}</Badge>;
   };
 
   const getTierBadge = (tier: string) => {
     const colors: Record<string, string> = {
-      starter: 'bg-gray-500/10 text-gray-500',
-      professional: 'bg-blue-500/10 text-blue-500',
-      enterprise: 'bg-purple-500/10 text-purple-500'
+      starter: 'bg-muted text-muted-foreground',
+      professional: 'bg-chart-2/10 text-chart-2',
+      enterprise: 'bg-chart-4/10 text-chart-4'
     };
     return <Badge className={colors[tier] || colors.starter}>{tier}</Badge>;
   };
@@ -198,7 +198,7 @@ const B2BMarketplaceManagement = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-bold text-foreground">B2B Data Marketplace</h2>
-                <Badge className="bg-green-500/10 text-green-500 border-green-500/30 text-[10px] px-1.5">
+                <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/30 text-[10px] px-1.5">
                   Active
                 </Badge>
               </div>
@@ -314,9 +314,9 @@ const B2BMarketplaceManagement = () => {
                 <p className="text-[10px] text-muted-foreground">Total Clients</p>
                 <p className="text-xl font-bold text-foreground">{totalClients}</p>
               </div>
-              <Users className="h-5 w-5 text-blue-500" />
+              <Users className="h-5 w-5 text-chart-2" />
             </div>
-            <p className="text-[10px] text-green-500 mt-1">{activeClients} active</p>
+            <p className="text-[10px] text-chart-1 mt-1">{activeClients} active</p>
           </CardContent>
         </Card>
 
@@ -327,7 +327,7 @@ const B2BMarketplaceManagement = () => {
                 <p className="text-[10px] text-muted-foreground">Credits Balance</p>
                 <p className="text-xl font-bold text-foreground">{totalCredits.toLocaleString()}</p>
               </div>
-              <Coins className="h-5 w-5 text-yellow-500" />
+              <Coins className="h-5 w-5 text-chart-3" />
             </div>
             <p className="text-[10px] text-muted-foreground mt-1">Across all clients</p>
           </CardContent>
@@ -340,7 +340,7 @@ const B2BMarketplaceManagement = () => {
                 <p className="text-[10px] text-muted-foreground">Available Leads</p>
                 <p className="text-xl font-bold text-foreground">{totalLeads - soldLeads}</p>
               </div>
-              <FileText className="h-5 w-5 text-green-500" />
+              <FileText className="h-5 w-5 text-chart-1" />
             </div>
             <p className="text-[10px] text-muted-foreground mt-1">{soldLeads} sold</p>
           </CardContent>
@@ -353,9 +353,9 @@ const B2BMarketplaceManagement = () => {
                 <p className="text-[10px] text-muted-foreground">API Calls (24h)</p>
                 <p className="text-xl font-bold text-foreground">{apiUsage?.length || 0}</p>
               </div>
-              <Key className="h-5 w-5 text-purple-500" />
+              <Key className="h-5 w-5 text-chart-4" />
             </div>
-            <p className="text-[10px] text-green-500 mt-1 flex items-center gap-0.5">
+            <p className="text-[10px] text-chart-1 mt-1 flex items-center gap-0.5">
               <TrendingUp className="h-2.5 w-2.5" /> +12%
             </p>
           </CardContent>
@@ -368,9 +368,9 @@ const B2BMarketplaceManagement = () => {
                 <p className="text-[10px] text-muted-foreground">Revenue (MTD)</p>
                 <p className="text-xl font-bold text-foreground">Rp 45M</p>
               </div>
-              <DollarSign className="h-5 w-5 text-emerald-500" />
+              <DollarSign className="h-5 w-5 text-chart-1" />
             </div>
-            <p className="text-[10px] text-green-500 mt-1 flex items-center gap-0.5">
+            <p className="text-[10px] text-chart-1 mt-1 flex items-center gap-0.5">
               <TrendingUp className="h-2.5 w-2.5" /> +28%
             </p>
           </CardContent>
@@ -459,9 +459,9 @@ const B2BMarketplaceManagement = () => {
                         <TableCell className="text-xs font-mono">{client.credits_balance?.toLocaleString() || 0}</TableCell>
                         <TableCell>
                           {client.is_active ? (
-                            <Badge className="bg-green-500/10 text-green-500 border-green-500/30 text-[10px]">Active</Badge>
+                            <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/30 text-[10px]">Active</Badge>
                           ) : (
-                            <Badge className="bg-red-500/10 text-red-500 border-red-500/30 text-[10px]">Inactive</Badge>
+                            <Badge className="bg-destructive/10 text-destructive border-destructive/30 text-[10px]">Inactive</Badge>
                           )}
                         </TableCell>
                         <TableCell>
@@ -535,9 +535,9 @@ const B2BMarketplaceManagement = () => {
                         </TableCell>
                         <TableCell>
                           {lead.is_sold ? (
-                            <Badge className="bg-gray-500/10 text-gray-500 text-[10px]">Sold</Badge>
+                            <Badge className="bg-muted text-muted-foreground text-[10px]">Sold</Badge>
                           ) : (
-                            <Badge className="bg-green-500/10 text-green-500 text-[10px]">Available</Badge>
+                            <Badge className="bg-chart-1/10 text-chart-1 text-[10px]">Available</Badge>
                           )}
                         </TableCell>
                         <TableCell>
@@ -578,7 +578,7 @@ const B2BMarketplaceManagement = () => {
                     <span className="text-sm font-normal text-muted-foreground ml-1">credits</span>
                   </div>
                   {pkg.bonus_credits > 0 && (
-                    <Badge variant="outline" className="text-green-500 border-green-500/30">
+                    <Badge variant="outline" className="text-chart-1 border-chart-1/30">
                       +{pkg.bonus_credits} bonus
                     </Badge>
                   )}
@@ -634,8 +634,8 @@ const B2BMarketplaceManagement = () => {
                         <TableCell>
                           <Badge 
                             className={usage.response_status < 400 
-                              ? 'bg-green-500/10 text-green-500 text-[10px]' 
-                              : 'bg-red-500/10 text-red-500 text-[10px]'
+                              ? 'bg-chart-1/10 text-chart-1 text-[10px]' 
+                              : 'bg-destructive/10 text-destructive text-[10px]'
                             }
                           >
                             {usage.response_status}
