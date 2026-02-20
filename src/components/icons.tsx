@@ -6,7 +6,7 @@ import {
   LogOut,
   Home,
 } from "lucide-react";
-import astraLogoFallback from "@/assets/astra-logo.png";
+import astraLogoFallback from "@/assets/astra-logo.svg";
 import { cn } from "@/lib/utils";
 
 interface MetaAILogoProps extends LucideProps {

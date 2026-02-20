@@ -4,7 +4,7 @@ import { useGlobalLoading } from '@/hooks/useGlobalLoading';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import astraLogoFallback from '@/assets/astra-logo.png';
+import astraLogoFallback from '@/assets/astra-logo.svg';
 
 interface LoadingProgressPopupProps {
   className?: string;

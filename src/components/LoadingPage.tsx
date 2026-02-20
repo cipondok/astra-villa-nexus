@@ -4,7 +4,7 @@ import { Loader2, Wifi, WifiOff, AlertCircle, CheckCircle } from 'lucide-react';
 import { useConnectionSpeed } from '@/hooks/useConnectionSpeed';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
-import astraLogo from '@/assets/astra-logo.png';
+import astraLogo from '@/assets/astra-logo.svg';
 
 interface LoadingPageProps {
   message?: string;

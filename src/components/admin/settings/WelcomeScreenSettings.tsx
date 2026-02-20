@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGlobalLoading } from '@/hooks/useGlobalLoading';
-import astraLogo from '@/assets/astra-logo.png';
+import astraLogo from '@/assets/astra-logo.svg';
 
 interface WelcomeScreenSettingsProps {
   settings: any;

@@ -4,7 +4,7 @@ import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
-import astraLogo from '@/assets/astra-logo.png';
+import astraLogo from '@/assets/astra-logo.svg';
 
 interface LoadingPageProps {
   message?: string;

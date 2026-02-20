@@ -1,5 +1,5 @@
 import React from "react";
-import fallbackLogo from "@/assets/astra-logo.png";
+import fallbackLogo from "@/assets/astra-logo.svg";
 
 // Preconnect hint for logo loading - emitted once globally
 if (typeof document !== 'undefined' && !document.querySelector('link[rel="preload"][as="image"][data-logo]')) {
