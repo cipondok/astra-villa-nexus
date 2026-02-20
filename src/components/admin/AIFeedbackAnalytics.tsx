@@ -180,10 +180,10 @@ export function AIFeedbackAnalytics() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-500/10 via-emerald-500/10 to-teal-500/10 rounded-lg border border-green-200/50 dark:border-green-800/50">
+      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg border border-border/50">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-            <TrendingUp className="h-4 w-4 text-white" />
+          <div className="w-8 h-8 bg-chart-1/20 rounded-lg flex items-center justify-center">
+            <TrendingUp className="h-4 w-4 text-chart-1" />
           </div>
           <div>
             <h2 className="text-sm font-bold">AI Feedback Analytics</h2>
@@ -211,10 +211,10 @@ export function AIFeedbackAnalytics() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-        <div className="p-2 rounded-lg border bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50">
+        <div className="p-2 rounded-lg border bg-chart-2/5 border-chart-2/20">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
-              <MessageSquare className="h-3 w-3 text-blue-600" />
+            <div className="w-6 h-6 bg-chart-2/10 rounded flex items-center justify-center">
+              <MessageSquare className="h-3 w-3 text-chart-2" />
             </div>
             <div>
               <div className="text-sm font-bold">{reactionStats?.total_reactions || 0}</div>
@@ -223,10 +223,10 @@ export function AIFeedbackAnalytics() {
           </div>
         </div>
 
-        <div className="p-2 rounded-lg border bg-green-50/50 dark:bg-green-950/20 border-green-200/50">
+        <div className="p-2 rounded-lg border bg-chart-1/5 border-chart-1/20">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
-              <ThumbsUp className="h-3 w-3 text-green-600" />
+            <div className="w-6 h-6 bg-chart-1/10 rounded flex items-center justify-center">
+              <ThumbsUp className="h-3 w-3 text-chart-1" />
             </div>
             <div>
               <div className="text-sm font-bold">{reactionStats?.positive_reactions || 0}</div>
@@ -235,10 +235,10 @@ export function AIFeedbackAnalytics() {
           </div>
         </div>
 
-        <div className="p-2 rounded-lg border bg-red-50/50 dark:bg-red-950/20 border-red-200/50">
+        <div className="p-2 rounded-lg border bg-destructive/5 border-destructive/20">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-red-500/20 rounded flex items-center justify-center">
-              <ThumbsDown className="h-3 w-3 text-red-600" />
+            <div className="w-6 h-6 bg-destructive/10 rounded flex items-center justify-center">
+              <ThumbsDown className="h-3 w-3 text-destructive" />
             </div>
             <div>
               <div className="text-sm font-bold">{reactionStats?.negative_reactions || 0}</div>
@@ -247,10 +247,10 @@ export function AIFeedbackAnalytics() {
           </div>
         </div>
 
-        <div className="p-2 rounded-lg border bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50">
+        <div className="p-2 rounded-lg border bg-primary/5 border-primary/20">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
-              <TrendingUp className="h-3 w-3 text-purple-600" />
+            <div className="w-6 h-6 bg-primary/10 rounded flex items-center justify-center">
+              <TrendingUp className="h-3 w-3 text-primary" />
             </div>
             <div>
               <div className="text-sm font-bold">{reactionStats?.positive_percentage.toFixed(0)}%</div>

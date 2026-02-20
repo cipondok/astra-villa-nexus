@@ -120,9 +120,9 @@ const AIVendorMatching = () => {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return "text-green-600";
-    if (score >= 75) return "text-yellow-600";
-    return "text-red-600";
+    if (score >= 90) return "text-chart-1";
+    if (score >= 75) return "text-chart-3";
+    return "text-destructive";
   };
 
   if (isLoading) {
@@ -132,15 +132,15 @@ const AIVendorMatching = () => {
   return (
     <div className="space-y-4">
       {/* Professional Header */}
-      <div className="flex items-center justify-between p-4 bg-gradient-to-r from-violet-500/10 via-purple-500/5 to-transparent rounded-xl border border-violet-200/50">
+      <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border/50">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-violet-500/10 rounded-lg">
-            <Brain className="h-5 w-5 text-violet-600" />
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <Brain className="h-5 w-5 text-primary" />
           </div>
           <div>
             <h2 className="text-lg font-semibold flex items-center gap-2">
               AI Vendor Matching Engine
-              <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200 text-[10px]">
+              <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 text-[10px]">
                 ML Powered
               </Badge>
             </h2>
@@ -149,7 +149,7 @@ const AIVendorMatching = () => {
         </div>
         <Dialog open={isTestModalOpen} onOpenChange={setIsTestModalOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="bg-violet-600 hover:bg-violet-700">
+            <Button size="sm">
               <Zap className="h-3 w-3 mr-1" />
               Test AI
             </Button>
@@ -179,7 +179,7 @@ const AIVendorMatching = () => {
                     <div key={index} className="border rounded-lg p-3 bg-muted/30">
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-medium">#{result.recommendation_rank} {result.name}</h4>
-                        <Badge variant="secondary" className="bg-violet-100 text-violet-700">
+                        <Badge variant="secondary" className="bg-primary/10 text-primary">
                           Score: {result.matching_score}%
                         </Badge>
                       </div>
@@ -228,64 +228,64 @@ const AIVendorMatching = () => {
 
       {/* Compact Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Total Matches</p>
-                <p className="text-xl font-bold text-blue-700">{recentMatches?.length || 0}</p>
+                <p className="text-xl font-bold text-chart-2">{recentMatches?.length || 0}</p>
               </div>
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Search className="h-4 w-4 text-blue-600" />
+              <div className="p-2 bg-chart-2/10 rounded-lg">
+                <Search className="h-4 w-4 text-chart-2" />
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-green-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Avg Score</p>
-                <p className="text-xl font-bold text-green-700">
+                <p className="text-xl font-bold text-chart-1">
                   {recentMatches?.length ? 
                     Math.round(recentMatches.reduce((sum, match) => sum + (match.matching_score || 0), 0) / recentMatches.length) : 0}%
                 </p>
               </div>
-              <div className="p-2 bg-green-100 rounded-lg">
-                <Star className="h-4 w-4 text-green-600" />
+              <div className="p-2 bg-chart-1/10 rounded-lg">
+                <Star className="h-4 w-4 text-chart-1" />
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-orange-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">High (90%+)</p>
-                <p className="text-xl font-bold text-orange-700">
+                <p className="text-xl font-bold text-chart-4">
                   {recentMatches?.filter(m => (m.matching_score || 0) >= 90).length || 0}
                 </p>
               </div>
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <Award className="h-4 w-4 text-orange-600" />
+              <div className="p-2 bg-chart-4/10 rounded-lg">
+                <Award className="h-4 w-4 text-chart-4" />
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-purple-50 to-white">
+        <Card>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Vendors</p>
-                <p className="text-xl font-bold text-purple-700">
+                <p className="text-xl font-bold text-primary">
                   {new Set(recentMatches?.map(m => m.vendor_id)).size || 0}
                 </p>
               </div>
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Users className="h-4 w-4 text-purple-600" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Users className="h-4 w-4 text-primary" />
               </div>
             </div>
           </CardContent>
@@ -293,10 +293,10 @@ const AIVendorMatching = () => {
       </div>
 
       {/* Recent Matching Results */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader className="pb-3 bg-gradient-to-r from-violet-50 to-transparent">
+      <Card>
+        <CardHeader className="pb-3">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-violet-600" />
+            <TrendingUp className="h-4 w-4 text-primary" />
             Recent AI Matching Results
           </CardTitle>
           <CardDescription className="text-xs">Latest vendor matching results with AI explanations</CardDescription>
@@ -321,7 +321,7 @@ const AIVendorMatching = () => {
                 </div>
 
                 {match.explanation && (
-                  <div className="mb-2 p-2 bg-violet-50 rounded text-xs">
+                  <div className="mb-2 p-2 bg-muted rounded text-xs">
                     <strong>AI:</strong> {match.explanation}
                   </div>
                 )}
