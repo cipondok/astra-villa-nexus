@@ -947,16 +947,16 @@ const EmailManagementSettings: React.FC = () => {
                       >
                         <div className={cn(
                           "w-2 h-2 rounded-full",
-                          template.isActive ? "bg-green-500" : "bg-gray-400"
+                          template.isActive ? "bg-chart-1" : "bg-muted-foreground"
                         )} />
                         <div className="flex-1 min-w-0">
                           <p className="text-[10px] font-medium truncate">{template.name}</p>
                           <p className="text-[8px] text-muted-foreground capitalize">{template.category}</p>
                         </div>
-                        {template.category === 'auth' && <Shield className="h-3 w-3 text-blue-500" />}
-                        {template.category === 'reminder' && <Bell className="h-3 w-3 text-orange-500" />}
-                        {template.category === 'marketing' && <Megaphone className="h-3 w-3 text-pink-500" />}
-                        {template.category === 'notification' && <Gift className="h-3 w-3 text-purple-500" />}
+                        {template.category === 'auth' && <Shield className="h-3 w-3 text-primary" />}
+                        {template.category === 'reminder' && <Bell className="h-3 w-3 text-chart-4" />}
+                        {template.category === 'marketing' && <Megaphone className="h-3 w-3 text-chart-2" />}
+                        {template.category === 'notification' && <Gift className="h-3 w-3 text-chart-3" />}
                       </button>
                     ))}
                   </div>
@@ -1148,27 +1148,27 @@ const EmailManagementSettings: React.FC = () => {
             <CardContent className="px-3 pb-3">
               <div className="grid grid-cols-5 gap-2 text-center">
                 <div className="p-2 bg-muted/30 rounded-md">
-                  <UserCheck className="h-4 w-4 mx-auto mb-1 text-green-500" />
+                  <UserCheck className="h-4 w-4 mx-auto mb-1 text-chart-1" />
                   <p className="text-[9px] font-medium">New Users</p>
                   <p className="text-[8px] text-muted-foreground">Registered &lt;7 days</p>
                 </div>
                 <div className="p-2 bg-muted/30 rounded-md">
-                  <UserX className="h-4 w-4 mx-auto mb-1 text-orange-500" />
+                  <UserX className="h-4 w-4 mx-auto mb-1 text-chart-4" />
                   <p className="text-[9px] font-medium">Inactive</p>
                   <p className="text-[8px] text-muted-foreground">No login 7+ days</p>
                 </div>
                 <div className="p-2 bg-muted/30 rounded-md">
-                  <Shield className="h-4 w-4 mx-auto mb-1 text-blue-500" />
+                  <Shield className="h-4 w-4 mx-auto mb-1 text-primary" />
                   <p className="text-[9px] font-medium">Verified</p>
                   <p className="text-[8px] text-muted-foreground">Email confirmed</p>
                 </div>
                 <div className="p-2 bg-muted/30 rounded-md">
-                  <AlertCircle className="h-4 w-4 mx-auto mb-1 text-red-500" />
+                  <AlertCircle className="h-4 w-4 mx-auto mb-1 text-destructive" />
                   <p className="text-[9px] font-medium">Unverified</p>
                   <p className="text-[8px] text-muted-foreground">Pending email</p>
                 </div>
                 <div className="p-2 bg-muted/30 rounded-md">
-                  <Users className="h-4 w-4 mx-auto mb-1 text-purple-500" />
+                  <Users className="h-4 w-4 mx-auto mb-1 text-chart-2" />
                   <p className="text-[9px] font-medium">All Users</p>
                   <p className="text-[8px] text-muted-foreground">Everyone</p>
                 </div>

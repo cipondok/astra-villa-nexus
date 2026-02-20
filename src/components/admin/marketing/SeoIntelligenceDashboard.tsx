@@ -85,10 +85,10 @@ const SeoIntelligenceDashboard = () => {
 
   const getRatingColor = (rating: string) => {
     switch (rating) {
-      case 'excellent': return 'text-green-500 bg-green-500/10';
-      case 'good': return 'text-blue-500 bg-blue-500/10';
-      case 'needs_improvement': return 'text-amber-500 bg-amber-500/10';
-      case 'poor': return 'text-red-500 bg-red-500/10';
+      case 'excellent': return 'text-chart-1 bg-chart-1/10';
+      case 'good': return 'text-primary bg-primary/10';
+      case 'needs_improvement': return 'text-chart-3 bg-chart-3/10';
+      case 'poor': return 'text-destructive bg-destructive/10';
       default: return 'text-muted-foreground bg-muted';
     }
   };
@@ -104,23 +104,23 @@ const SeoIntelligenceDashboard = () => {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-500';
-    if (score >= 60) return 'text-blue-500';
-    if (score >= 40) return 'text-amber-500';
-    return 'text-red-500';
+    if (score >= 80) return 'text-chart-1';
+    if (score >= 60) return 'text-primary';
+    if (score >= 40) return 'text-chart-3';
+    return 'text-destructive';
   };
 
   const getTrendIcon = (dir: string) => {
-    if (dir === 'rising') return <ArrowUp className="h-3 w-3 text-green-500" />;
-    if (dir === 'falling') return <ArrowDown className="h-3 w-3 text-red-500" />;
+    if (dir === 'rising') return <ArrowUp className="h-3 w-3 text-chart-1" />;
+    if (dir === 'falling') return <ArrowDown className="h-3 w-3 text-destructive" />;
     return <Minus className="h-3 w-3 text-muted-foreground" />;
   };
 
   const getCompetitionBadge = (level: string) => {
     const colors: Record<string, string> = {
-      low: 'bg-green-500/10 text-green-600',
-      medium: 'bg-amber-500/10 text-amber-600',
-      high: 'bg-red-500/10 text-red-600',
+      low: 'bg-chart-1/10 text-chart-1',
+      medium: 'bg-chart-3/10 text-chart-3',
+      high: 'bg-destructive/10 text-destructive',
     };
     return <Badge className={`text-xs ${colors[level] || ''}`}>{level}</Badge>;
   };
@@ -188,10 +188,10 @@ const SeoIntelligenceDashboard = () => {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
           { label: 'Avg SEO Score', value: stats?.avgScore || 0, icon: Target, color: getScoreColor(stats?.avgScore || 0) },
-          { label: 'Analyzed', value: stats?.analyzedCount || 0, icon: CheckCircle, color: 'text-green-500' },
-          { label: 'Unanalyzed', value: stats?.unanalyzedCount || 0, icon: AlertTriangle, color: 'text-amber-500' },
-          { label: 'Excellent', value: stats?.excellent || 0, icon: Sparkles, color: 'text-green-500' },
-          { label: 'Poor', value: stats?.poor || 0, icon: XCircle, color: 'text-red-500' },
+          { label: 'Analyzed', value: stats?.analyzedCount || 0, icon: CheckCircle, color: 'text-chart-1' },
+          { label: 'Unanalyzed', value: stats?.unanalyzedCount || 0, icon: AlertTriangle, color: 'text-chart-3' },
+          { label: 'Excellent', value: stats?.excellent || 0, icon: Sparkles, color: 'text-chart-1' },
+          { label: 'Poor', value: stats?.poor || 0, icon: XCircle, color: 'text-destructive' },
         ].map((stat) => (
           <Card key={stat.label} className="bg-card border border-border rounded-[6px]">
             <CardContent className="p-3">
@@ -493,7 +493,7 @@ const SeoIntelligenceDashboard = () => {
                               <Copy className="h-3 w-3" />
                             </Button>
                           </div>
-                          <div className="p-2 bg-green-500/5 border border-green-500/20 rounded-[6px] text-sm">{contentOptimize.data.optimized_title}</div>
+                          <div className="p-2 bg-chart-1/5 border border-chart-1/20 rounded-[6px] text-sm">{contentOptimize.data.optimized_title}</div>
                         </div>
                         <div>
                           <div className="flex items-center justify-between mb-1">
@@ -533,7 +533,7 @@ const SeoIntelligenceDashboard = () => {
                             </Button>
                           </div>
                           <ScrollArea className="h-[120px]">
-                            <div className="p-2 bg-green-500/5 border border-green-500/20 rounded-[6px] text-sm">{contentOptimize.data.optimized_description}</div>
+                            <div className="p-2 bg-chart-1/5 border border-chart-1/20 rounded-[6px] text-sm">{contentOptimize.data.optimized_description}</div>
                           </ScrollArea>
                         </div>
                         <div>
@@ -719,12 +719,12 @@ const SeoIntelligenceDashboard = () => {
 
                     {/* Keyword Gaps */}
                     {competitorAnalysis.data.insights?.keyword_gaps && (
-                      <Card className="bg-green-500/5 border border-green-500/20">
+                      <Card className="bg-chart-1/5 border border-chart-1/20">
                         <CardContent className="p-3">
-                          <p className="text-xs font-medium text-green-600 mb-2">🎯 Untapped Keyword Opportunities</p>
+                          <p className="text-xs font-medium text-chart-1 mb-2">🎯 Untapped Keyword Opportunities</p>
                           <div className="flex flex-wrap gap-1">
                             {competitorAnalysis.data.insights.keyword_gaps.map((k: string) => (
-                              <Badge key={k} className="bg-green-500/10 text-green-600 text-xs cursor-pointer" onClick={() => copyToClipboard(k)}>{k}</Badge>
+                              <Badge key={k} className="bg-chart-1/10 text-chart-1 text-xs cursor-pointer" onClick={() => copyToClipboard(k)}>{k}</Badge>
                             ))}
                           </div>
                         </CardContent>
@@ -795,7 +795,7 @@ const SeoIntelligenceDashboard = () => {
             <Card className="border border-border rounded-[6px]">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-amber-500" />
+                  <AlertTriangle className="h-4 w-4 text-chart-3" />
                   Weak Listings Needing SEO
                 </CardTitle>
                 <CardDescription>Properties scoring below 50 that need optimization</CardDescription>
@@ -804,11 +804,11 @@ const SeoIntelligenceDashboard = () => {
                 <ScrollArea className="h-[300px]">
                   <div className="space-y-2">
                     {analyses.filter(a => a.seo_score < 50).slice(0, 10).map((a) => (
-                      <div key={a.id} className="p-3 bg-red-500/5 border border-red-500/20 rounded-[6px]">
+                      <div key={a.id} className="p-3 bg-destructive/5 border border-destructive/20 rounded-[6px]">
                         <div className="flex justify-between items-start mb-2">
                           <span className={`font-bold ${getScoreColor(a.seo_score)}`}>{a.seo_score}/100</span>
                           <div className="flex gap-1">
-                            <Badge className="bg-red-500/10 text-red-600 text-xs">{getRatingLabel(a.seo_rating)}</Badge>
+                            <Badge className="bg-destructive/10 text-destructive text-xs">{getRatingLabel(a.seo_rating)}</Badge>
                             <Button
                               size="sm"
                               variant="ghost"
@@ -876,8 +876,8 @@ const SeoIntelligenceDashboard = () => {
 function SerpCard({ preview }: { preview: SerpPreview }) {
   return (
     <div className="p-4 bg-card border border-border rounded-[6px] max-w-[600px]">
-      <p className="text-xs text-green-600 mb-0.5">{preview.url}</p>
-      <h3 className="text-blue-600 text-base font-medium hover:underline cursor-pointer mb-1 line-clamp-1">{preview.title}</h3>
+      <p className="text-xs text-chart-1 mb-0.5">{preview.url}</p>
+      <h3 className="text-primary text-base font-medium hover:underline cursor-pointer mb-1 line-clamp-1">{preview.title}</h3>
       <p className="text-sm text-muted-foreground line-clamp-2">{preview.description}</p>
       {preview.keywords && preview.keywords.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">
@@ -891,7 +891,7 @@ function SerpCard({ preview }: { preview: SerpPreview }) {
 }
 
 function MiniScore({ score }: { score: number }) {
-  const color = score >= 80 ? 'text-green-500' : score >= 60 ? 'text-blue-500' : score >= 40 ? 'text-amber-500' : 'text-red-500';
+  const color = score >= 80 ? 'text-chart-1' : score >= 60 ? 'text-primary' : score >= 40 ? 'text-chart-3' : 'text-destructive';
   return <span className={`text-xs font-medium ${color}`}>{score}</span>;
 }
 
