@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import astraLogoFallback from "@/assets/astra-logo.png";
+import astraLogoFallback from "@/assets/astra-logo.svg";
 
 /**
  * Fetches a branding logo from system_settings

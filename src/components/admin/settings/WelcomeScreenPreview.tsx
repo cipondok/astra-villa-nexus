@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Monitor, Smartphone, Bot, Loader2, Download, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import astraLogoFallback from '@/assets/astra-logo.png';
+import astraLogoFallback from '@/assets/astra-logo.svg';
 
 interface WelcomeScreenPreviewProps {
   settings: Record<string, any>;

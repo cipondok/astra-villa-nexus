@@ -82,6 +82,18 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/mapbox-gl/') || id.includes('node_modules/@mapbox/')) {
             return 'vendor-maps';
           }
+          // Date utilities
+          if (id.includes('node_modules/date-fns/')) {
+            return 'vendor-dates';
+          }
+          // PDF / export utilities (heavy, rarely needed)
+          if (id.includes('node_modules/jspdf') || id.includes('node_modules/html2pdf') || id.includes('node_modules/jspdf-autotable')) {
+            return 'vendor-pdf';
+          }
+          // Form libraries
+          if (id.includes('node_modules/react-hook-form') || id.includes('node_modules/@hookform/') || id.includes('node_modules/zod/')) {
+            return 'vendor-forms';
+          }
         },
       },
     },
@@ -95,4 +107,3 @@ export default defineConfig(({ mode }) => ({
     sourcemap: false,
   },
 }));
-

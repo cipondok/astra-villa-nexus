@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import astraLogo from '@/assets/astra-logo.png';
+import astraLogo from '@/assets/astra-logo.svg';
 
 interface InlineLoadingIndicatorProps {
   message?: string;

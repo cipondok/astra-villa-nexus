@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogIn, User, Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
-import astraLogoFallback from '@/assets/astra-logo.png';
+import astraLogoFallback from '@/assets/astra-logo.svg';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 

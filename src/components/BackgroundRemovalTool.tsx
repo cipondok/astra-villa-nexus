@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { removeBackground, loadImage } from "@/utils/backgroundRemoval";
 import { toast } from "sonner";
-import astraLogo from "@/assets/astra-logo.png";
+import astraLogo from "@/assets/astra-logo.svg";
 
 const BackgroundRemovalTool = () => {
   const [isProcessing, setIsProcessing] = useState(false);
