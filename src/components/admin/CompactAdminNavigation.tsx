@@ -185,7 +185,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
             {tab.badge && (
               <Badge 
                 variant="secondary"
-                className="absolute -top-1 -right-1 text-xs px-1 py-0 h-4 min-w-4 bg-green-600/10 text-green-600 border-green-600/20"
+                className="absolute -top-1 -right-1 text-xs px-1 py-0 h-4 min-w-4 bg-chart-1/10 text-chart-1 border-chart-1/20"
               >
                 {tab.badge}
               </Badge>
@@ -232,7 +232,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
                   {item.badge && (
                     <Badge 
                       variant="secondary"
-                      className="text-xs px-1 py-0 h-4 bg-green-600/10 text-green-600 border-green-600/20"
+                      className="text-xs px-1 py-0 h-4 bg-chart-1/10 text-chart-1 border-chart-1/20"
                     >
                       {item.badge}
                     </Badge>

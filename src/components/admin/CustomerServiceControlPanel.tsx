@@ -231,31 +231,22 @@ const CustomerServiceControlPanel = () => {
   });
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'open':
-        return <Badge className="bg-blue-500 text-white">Open</Badge>;
-      case 'in_progress':
-        return <Badge className="bg-yellow-500 text-white">In Progress</Badge>;
-      case 'resolved':
-        return <Badge className="bg-green-500 text-white">Resolved</Badge>;
-      case 'closed':
-        return <Badge className="bg-gray-500 text-white">Closed</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
+    const colors: Record<string, string> = {
+      open: 'bg-chart-2/10 text-chart-2 border-chart-2/20',
+      in_progress: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+      resolved: 'bg-chart-1/10 text-chart-1 border-chart-1/20',
+      closed: 'bg-muted text-muted-foreground',
+    };
+    return <Badge className={colors[status] || 'bg-muted text-muted-foreground'}>{status.replace('_', ' ').toUpperCase()}</Badge>;
   };
 
   const getPriorityBadge = (priority: string) => {
-    switch (priority) {
-      case 'high':
-        return <Badge className="bg-red-500 text-white">High</Badge>;
-      case 'medium':
-        return <Badge className="bg-orange-500 text-white">Medium</Badge>;
-      case 'low':
-        return <Badge className="bg-blue-500 text-white">Low</Badge>;
-      default:
-        return <Badge variant="outline">{priority}</Badge>;
-    }
+    const colors: Record<string, string> = {
+      high: 'bg-destructive/10 text-destructive border-destructive/20',
+      medium: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+      low: 'bg-chart-2/10 text-chart-2 border-chart-2/20',
+    };
+    return <Badge className={colors[priority] || 'bg-muted text-muted-foreground'}>{priority.toUpperCase()}</Badge>;
   };
 
   // Calculate stats
@@ -284,9 +275,9 @@ const CustomerServiceControlPanel = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Total Tickets</p>
-                    <p className="text-2xl font-bold text-blue-600">{totalTickets}</p>
+                    <p className="text-2xl font-bold text-chart-2">{totalTickets}</p>
                   </div>
-                  <FileText className="h-8 w-8 text-blue-500" />
+                  <FileText className="h-8 w-8 text-chart-2" />
                 </div>
               </CardContent>
             </Card>
@@ -296,9 +287,9 @@ const CustomerServiceControlPanel = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Open Tickets</p>
-                    <p className="text-2xl font-bold text-orange-600">{openTickets}</p>
+                    <p className="text-2xl font-bold text-chart-3">{openTickets}</p>
                   </div>
-                  <AlertTriangle className="h-8 w-8 text-orange-500" />
+                  <AlertTriangle className="h-8 w-8 text-chart-3" />
                 </div>
               </CardContent>
             </Card>
@@ -308,9 +299,9 @@ const CustomerServiceControlPanel = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Resolved</p>
-                    <p className="text-2xl font-bold text-green-600">{resolvedTickets}</p>
+                    <p className="text-2xl font-bold text-chart-1">{resolvedTickets}</p>
                   </div>
-                  <CheckCircle className="h-8 w-8 text-green-500" />
+                  <CheckCircle className="h-8 w-8 text-chart-1" />
                 </div>
               </CardContent>
             </Card>
@@ -320,9 +311,9 @@ const CustomerServiceControlPanel = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">CS Agents</p>
-                    <p className="text-2xl font-bold text-purple-600">{csAgents?.length || 0}</p>
+                    <p className="text-2xl font-bold text-chart-4">{csAgents?.length || 0}</p>
                   </div>
-                  <Users className="h-8 w-8 text-purple-500" />
+                  <Users className="h-8 w-8 text-chart-4" />
                 </div>
               </CardContent>
             </Card>
@@ -420,8 +411,8 @@ const CustomerServiceControlPanel = () => {
                         <TableRow key={agent.id}>
                           <TableCell>
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                <Headphones className="h-4 w-4 text-blue-600" />
+                              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                <Headphones className="h-4 w-4 text-primary" />
                               </div>
                               <div>
                                 <div className="font-medium">{agent.full_name || 'N/A'}</div>
@@ -431,7 +422,7 @@ const CustomerServiceControlPanel = () => {
                           </TableCell>
                           <TableCell>{agent.email}</TableCell>
                           <TableCell>
-                            <Badge className="bg-green-500 text-white">Active</Badge>
+                            <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">Active</Badge>
                           </TableCell>
                           <TableCell>
                             {new Date(agent.created_at).toLocaleDateString()}
@@ -443,7 +434,7 @@ const CustomerServiceControlPanel = () => {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-1">
-                              <Star className="h-4 w-4 text-yellow-500" />
+                              <Star className="h-4 w-4 text-chart-3" />
                               <span className="text-sm">4.8</span>
                             </div>
                           </TableCell>
@@ -572,7 +563,7 @@ const CustomerServiceControlPanel = () => {
                                     ticketId: ticket.id,
                                     status: 'resolved'
                                   })}
-                                  className="bg-green-600 hover:bg-green-700"
+                                  className="bg-chart-1/10 text-chart-1 border-chart-1/20 hover:bg-chart-1/20"
                                 >
                                   <CheckCircle className="h-3 w-3" />
                                 </Button>
@@ -680,7 +671,7 @@ const CustomerServiceControlPanel = () => {
                   <Card>
                     <CardContent className="p-6">
                       <div className="text-center">
-                        <MessageSquare className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+                        <MessageSquare className="h-12 w-12 text-primary mx-auto mb-4" />
                         <h3 className="text-lg font-semibold mb-2">Live Chat Management</h3>
                         <p className="text-muted-foreground mb-4">
                           Access the complete live chat system for real-time customer support
@@ -749,17 +740,17 @@ const CustomerServiceControlPanel = () => {
                       <div className="flex justify-between items-center">
                         <span>Overall Rating</span>
                         <div className="flex items-center gap-1">
-                          <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                          <Star className="h-4 w-4 text-chart-3 fill-current" />
                           <span className="font-bold">4.6/5</span>
                         </div>
                       </div>
                       <div className="flex justify-between">
                         <span>Satisfied Customers</span>
-                        <span className="font-bold text-green-600">92%</span>
+                        <span className="font-bold text-chart-1">92%</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Repeat Issues</span>
-                        <span className="font-bold text-red-600">8%</span>
+                        <span className="font-bold text-destructive">8%</span>
                       </div>
                     </div>
                   </CardContent>
