@@ -271,11 +271,11 @@ const UserUpgradeApplications = () => {
   const getTypeBadge = (type: string) => {
     switch (type) {
       case 'property_owner': 
-        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-blue-50 text-blue-700 border-blue-200">Owner</Badge>;
+        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-chart-1/10 text-chart-1 border-chart-1/30">Owner</Badge>;
       case 'vendor': 
-        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-purple-50 text-purple-700 border-purple-200">Vendor</Badge>;
+        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-primary/10 text-primary border-primary/30">Vendor</Badge>;
       case 'agent': 
-        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-green-50 text-green-700 border-green-200">Agent</Badge>;
+        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-chart-2/10 text-chart-2 border-chart-2/30">Agent</Badge>;
       default: 
         return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4">Unknown</Badge>;
     }
@@ -285,11 +285,11 @@ const UserUpgradeApplications = () => {
     switch (status) {
       case 'pending':
       case 'under_review':
-        return <Badge className="text-[8px] px-1 py-0 h-4 bg-yellow-100 text-yellow-800"><Clock className="h-2.5 w-2.5 mr-0.5" />Pending</Badge>;
+        return <Badge className="text-[8px] px-1 py-0 h-4 bg-chart-3/10 text-chart-3"><Clock className="h-2.5 w-2.5 mr-0.5" />Pending</Badge>;
       case 'approved':
-        return <Badge className="text-[8px] px-1 py-0 h-4 bg-green-100 text-green-800"><CheckCircle className="h-2.5 w-2.5 mr-0.5" />Approved</Badge>;
+        return <Badge className="text-[8px] px-1 py-0 h-4 bg-chart-1/10 text-chart-1"><CheckCircle className="h-2.5 w-2.5 mr-0.5" />Approved</Badge>;
       case 'rejected':
-        return <Badge className="text-[8px] px-1 py-0 h-4 bg-red-100 text-red-800"><XCircle className="h-2.5 w-2.5 mr-0.5" />Rejected</Badge>;
+        return <Badge className="text-[8px] px-1 py-0 h-4 bg-destructive/10 text-destructive"><XCircle className="h-2.5 w-2.5 mr-0.5" />Rejected</Badge>;
       default:
         return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4">{status}</Badge>;
     }
@@ -330,27 +330,27 @@ const UserUpgradeApplications = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] text-muted-foreground">Pending</p>
-              <p className="text-lg font-bold text-yellow-600">{stats.pending}</p>
+              <p className="text-lg font-bold text-chart-3">{stats.pending}</p>
             </div>
-            <Clock className="h-5 w-5 text-yellow-600" />
+            <Clock className="h-5 w-5 text-chart-3" />
           </div>
         </Card>
         <Card className="p-2">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] text-muted-foreground">Approved</p>
-              <p className="text-lg font-bold text-green-600">{stats.approved}</p>
+              <p className="text-lg font-bold text-chart-1">{stats.approved}</p>
             </div>
-            <CheckCircle className="h-5 w-5 text-green-600" />
+            <CheckCircle className="h-5 w-5 text-chart-1" />
           </div>
         </Card>
         <Card className="p-2">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] text-muted-foreground">Rejected</p>
-              <p className="text-lg font-bold text-red-600">{stats.rejected}</p>
+              <p className="text-lg font-bold text-destructive">{stats.rejected}</p>
             </div>
-            <XCircle className="h-5 w-5 text-red-600" />
+            <XCircle className="h-5 w-5 text-destructive" />
           </div>
         </Card>
       </div>
@@ -365,7 +365,7 @@ const UserUpgradeApplications = () => {
             <TabsList className="mb-2 h-7">
               <TabsTrigger value="all" className="text-[10px] h-6 px-2">All</TabsTrigger>
               <TabsTrigger value="pending" className="text-[10px] h-6 px-2">
-                Pending {stats.pending > 0 && <Badge className="ml-1 text-[8px] h-4 px-1 bg-yellow-500">{stats.pending}</Badge>}
+                Pending {stats.pending > 0 && <Badge className="ml-1 text-[8px] h-4 px-1 bg-chart-3 text-background">{stats.pending}</Badge>}
               </TabsTrigger>
               <TabsTrigger value="approved" className="text-[10px] h-6 px-2">Approved</TabsTrigger>
               <TabsTrigger value="rejected" className="text-[10px] h-6 px-2">Rejected</TabsTrigger>
@@ -560,7 +560,7 @@ const UserUpgradeApplications = () => {
                   Reject
                 </Button>
                 <Button 
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-chart-1 hover:bg-chart-1/90 text-background"
                   onClick={() => approveMutation.mutate({ app: selectedApp, notes: reviewNotes })}
                   disabled={approveMutation.isPending}
                 >
