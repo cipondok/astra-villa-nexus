@@ -13,22 +13,25 @@ import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import Navigation from '@/components/Navigation';
-import ProfessionalFooter from '@/components/ProfessionalFooter';
-import MobileFooter from '@/components/MobileFooter';
-import InitialLoadingScreen from '@/components/ui/InitialLoadingScreen';
 import { DesignSystemProvider } from '@/components/DesignSystemProvider';
 import CookieSystem from '@/components/cookies/CookieSystem';
-const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAIChatWidget'));
-const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import { useQueryLoadingIntegration } from '@/hooks/useQueryLoadingIntegration';
-import GlobalLoadingIndicator from '@/components/ui/GlobalLoadingIndicator';
-import LoadingProgressPopup from '@/components/ui/LoadingProgressPopup';
+
+// Lazy load all non-critical shell components — reduces initial parse time
+const Navigation = lazy(() => import('@/components/Navigation'));
+const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'));
+const MobileFooter = lazy(() => import('@/components/MobileFooter'));
+const InitialLoadingScreen = lazy(() => import('@/components/ui/InitialLoadingScreen'));
+const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingIndicator'));
+const LoadingProgressPopup = lazy(() => import('@/components/ui/LoadingProgressPopup'));
+
+const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAIChatWidget'));
+const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
 
 import SessionExpirationHandler from '@/components/SessionExpirationHandler';
 import AuthNotificationHandler from '@/components/AuthNotificationHandler';
