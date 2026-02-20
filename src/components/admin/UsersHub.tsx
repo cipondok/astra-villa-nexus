@@ -178,7 +178,7 @@ const UsersHub = () => {
                 <p className="text-xs text-muted-foreground">General</p>
                 <p className="text-lg font-bold">{stats.generalUsers.toLocaleString()}</p>
               </div>
-              <Users className="h-5 w-5 text-blue-500" />
+              <Users className="h-5 w-5 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -190,7 +190,7 @@ const UsersHub = () => {
                 <p className="text-xs text-muted-foreground">CS Staff</p>
                 <p className="text-lg font-bold">{stats.customerService.toLocaleString()}</p>
               </div>
-              <Headphones className="h-5 w-5 text-green-500" />
+              <Headphones className="h-5 w-5 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -202,7 +202,7 @@ const UsersHub = () => {
                 <p className="text-xs text-muted-foreground">Admins</p>
                 <p className="text-lg font-bold">{stats.admins.toLocaleString()}</p>
               </div>
-              <Shield className="h-5 w-5 text-purple-500" />
+              <Shield className="h-5 w-5 text-chart-5" />
             </div>
           </CardContent>
         </Card>
@@ -274,19 +274,19 @@ const UsersHub = () => {
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
                         <span className="text-sm">Active Today</span>
-                        <Badge className="bg-green-100 text-green-800">{stats.activeToday}</Badge>
+                        <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">{stats.activeToday}</Badge>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-sm">Pending Verification</span>
-                        <Badge className="bg-yellow-100 text-yellow-800">{stats.pending}</Badge>
+                        <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/20">{stats.pending}</Badge>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-sm">Suspended</span>
-                        <Badge className="bg-red-100 text-red-800">{stats.suspended}</Badge>
+                        <Badge className="bg-destructive/10 text-destructive border-destructive/20">{stats.suspended}</Badge>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-sm">Active Users</span>
-                        <Badge className="bg-blue-100 text-blue-800">
+                        <Badge className="bg-chart-2/10 text-chart-2 border-chart-2/20">
                           {stats.total - stats.suspended - stats.pending}
                         </Badge>
                       </div>
