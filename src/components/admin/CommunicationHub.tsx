@@ -124,21 +124,21 @@ const CommunicationHub = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'pending': return <Clock className="h-4 w-4 text-orange-500" />;
-      case 'in_progress': return <AlertTriangle className="h-4 w-4 text-blue-500" />;
-      case 'completed': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'delayed': return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      default: return <Clock className="h-4 w-4 text-gray-500" />;
+      case 'pending': return <Clock className="h-4 w-4 text-chart-3" />;
+      case 'in_progress': return <AlertTriangle className="h-4 w-4 text-chart-2" />;
+      case 'completed': return <CheckCircle className="h-4 w-4 text-chart-1" />;
+      case 'delayed': return <AlertTriangle className="h-4 w-4 text-destructive" />;
+      default: return <Clock className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getChannelIcon = (type: string) => {
     switch (type) {
-      case 'whatsapp': return <MessageSquare className="h-5 w-5 text-green-600" />;
-      case 'email': return <Mail className="h-5 w-5 text-blue-600" />;
-      case 'phone': return <Phone className="h-5 w-5 text-purple-600" />;
-      case 'chat': return <Video className="h-5 w-5 text-orange-600" />;
-      default: return <MessageSquare className="h-5 w-5 text-gray-600" />;
+      case 'whatsapp': return <MessageSquare className="h-5 w-5 text-chart-1" />;
+      case 'email': return <Mail className="h-5 w-5 text-chart-2" />;
+      case 'phone': return <Phone className="h-5 w-5 text-primary" />;
+      case 'chat': return <Video className="h-5 w-5 text-chart-3" />;
+      default: return <MessageSquare className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
@@ -400,7 +400,7 @@ const CommunicationHub = () => {
                     <span className="font-medium">4.2/5</span>
                   </div>
                   <div className="w-full bg-secondary rounded-full h-2">
-                    <div className="bg-green-500 h-2 rounded-full" style={{ width: '84%' }}></div>
+                    <div className="bg-chart-1 h-2 rounded-full" style={{ width: '84%' }}></div>
                   </div>
                 </div>
               </CardContent>

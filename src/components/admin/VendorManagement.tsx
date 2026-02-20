@@ -289,7 +289,7 @@ const VendorManagement = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder="Search vendors..."
                   value={searchTerm}
@@ -333,11 +333,11 @@ const VendorManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Pending</p>
-                <p className="text-2xl font-bold text-yellow-600">
+                <p className="text-2xl font-bold text-chart-3">
                   {vendorRequests?.filter(r => r.status === 'pending').length || 0}
                 </p>
               </div>
-              <FileText className="h-8 w-8 text-yellow-600" />
+              <FileText className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -347,11 +347,11 @@ const VendorManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Approved</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-chart-1">
                   {vendorRequests?.filter(r => r.status === 'approved').length || 0}
                 </p>
               </div>
-              <Check className="h-8 w-8 text-green-600" />
+              <Check className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -361,11 +361,11 @@ const VendorManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Active Vendors</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-2xl font-bold text-chart-2">
                   {vendorProfiles?.filter(p => p.is_active).length || 0}
                 </p>
               </div>
-              <Building className="h-8 w-8 text-blue-600" />
+              <Building className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -516,7 +516,7 @@ const VendorManagement = () => {
                   <Button
                     onClick={handleApprove}
                     disabled={approveVendorMutation.isPending}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
+                    className="flex-1 bg-chart-1 hover:bg-chart-1/90 text-background"
                   >
                     <Check className="h-4 w-4 mr-2" />
                     {approveVendorMutation.isPending ? 'Approving...' : 'Approve'}
