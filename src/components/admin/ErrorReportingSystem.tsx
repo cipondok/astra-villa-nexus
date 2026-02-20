@@ -79,7 +79,6 @@ const ErrorReportingSystem = () => {
           return false;
         }
         
-        console.log('Super admin check result:', data);
         return data || false;
       } catch (error) {
         console.error('Error in super admin check:', error);
@@ -93,7 +92,6 @@ const ErrorReportingSystem = () => {
   const { data: errorStats, isLoading: statsLoading } = useQuery({
     queryKey: ['error-stats'],
     queryFn: async (): Promise<ErrorStats> => {
-      console.log('Fetching error statistics...');
       
       const { count: totalErrors } = await supabase
         .from('system_error_logs')
@@ -126,7 +124,6 @@ const ErrorReportingSystem = () => {
   const { data: systemErrors, isLoading: errorsLoading, refetch } = useQuery({
     queryKey: ['system-errors'],
     queryFn: async (): Promise<SystemError[]> => {
-      console.log('Fetching system errors...');
       
       const { data, error } = await supabase
         .from('system_error_logs')
@@ -134,11 +131,8 @@ const ErrorReportingSystem = () => {
         .order('created_at', { ascending: false });
       
       if (error) {
-        console.error('Error fetching system errors:', error);
         throw new Error(`Failed to fetch system errors: ${error.message}`);
       }
-      
-      console.log('Fetched system errors:', data?.length || 0);
       
       // Type assertion to ensure severity is properly typed
       return (data || []).map(row => ({
@@ -153,7 +147,6 @@ const ErrorReportingSystem = () => {
   // Auto-fix error mutation
   const autoFixMutation = useMutation({
     mutationFn: async (errorId: string) => {
-      console.log('Attempting auto-fix for error:', errorId);
       setAutoFixing(errorId);
       
       // Simulate auto-fix process

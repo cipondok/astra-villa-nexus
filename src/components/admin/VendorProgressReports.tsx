@@ -63,8 +63,6 @@ const VendorProgressReports = () => {
   const { data: vendorProgress, isLoading } = useQuery({
     queryKey: ['vendor-progress-reports', refreshKey],
     queryFn: async () => {
-      console.log('Fetching vendor progress data...');
-      
       const { data, error } = await supabase
         .from('vendor_membership_progress')
         .select(`
@@ -73,16 +71,12 @@ const VendorProgressReports = () => {
         `)
         .order('progress_percentage', { ascending: false });
       
-      console.log('Vendor progress data:', data, 'Error:', error);
-      
       if (error) {
-        console.error('Progress error:', error);
         throw error;
       }
 
       // If no data, return sample data
       if (!data || data.length === 0) {
-        console.log('No progress data, returning sample data');
         return [
           {
             id: 'sample-1',

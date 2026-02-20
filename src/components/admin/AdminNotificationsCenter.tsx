@@ -38,7 +38,6 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
         throw error;
       }
       
-      console.log('Fetched notifications:', data?.length, 'records');
       return data || [];
     },
     refetchInterval: 30000,

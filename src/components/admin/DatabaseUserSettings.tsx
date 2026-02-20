@@ -198,16 +198,16 @@ const DatabaseUserSettings = () => {
   };
 
   const getRoleBadge = (role: string) => {
-    const colors = {
-      admin: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-      agent: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-      vendor: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-      property_owner: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
-      customer_service: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200",
-      general_user: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+    const colors: Record<string, string> = {
+      admin: "bg-destructive/10 text-destructive border-destructive/30",
+      agent: "bg-chart-2/10 text-chart-2 border-chart-2/30",
+      vendor: "bg-chart-5/10 text-chart-5 border-chart-5/30",
+      property_owner: "bg-chart-3/10 text-chart-3 border-chart-3/30",
+      customer_service: "bg-chart-4/10 text-chart-4 border-chart-4/30",
+      general_user: "bg-muted text-muted-foreground border-border"
     };
     return (
-      <Badge className={colors[role as keyof typeof colors] || colors.general_user}>
+      <Badge className={colors[role] || colors.general_user}>
         {role.replace('_', ' ').toUpperCase()}
       </Badge>
     );
@@ -225,7 +225,7 @@ const DatabaseUserSettings = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-blue-600" />
+              <Users className="h-5 w-5 text-chart-2" />
               <div>
                 <p className="text-sm text-muted-foreground">Total Users</p>
                 <p className="text-2xl font-bold">{userStats?.total || 0}</p>
@@ -237,7 +237,7 @@ const DatabaseUserSettings = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
+              <CheckCircle className="h-5 w-5 text-chart-1" />
               <div>
                 <p className="text-sm text-muted-foreground">Active Users</p>
                 <p className="text-2xl font-bold">{userStats?.active || 0}</p>
@@ -249,7 +249,7 @@ const DatabaseUserSettings = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <XCircle className="h-5 w-5 text-red-600" />
+              <XCircle className="h-5 w-5 text-destructive" />
               <div>
                 <p className="text-sm text-muted-foreground">Suspended</p>
                 <p className="text-2xl font-bold">{userStats?.suspended || 0}</p>
@@ -261,7 +261,7 @@ const DatabaseUserSettings = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-yellow-600" />
+              <Clock className="h-5 w-5 text-chart-3" />
               <div>
                 <p className="text-sm text-muted-foreground">Pending Verification</p>
                 <p className="text-2xl font-bold">{userStats?.pending_verification || 0}</p>
@@ -286,7 +286,7 @@ const DatabaseUserSettings = () => {
           <div className="flex gap-4 mb-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder="Search users by name, email, or ID..."
                   value={searchTerm}
@@ -397,9 +397,9 @@ const DatabaseUserSettings = () => {
                           <div className="text-sm font-medium">
                             {user.profile_completion_percentage || 0}%
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="w-full bg-muted rounded-full h-2">
                             <div 
-                              className="bg-blue-600 h-2 rounded-full" 
+                              className="bg-primary h-2 rounded-full" 
                               style={{ width: `${user.profile_completion_percentage || 0}%` }}
                             />
                           </div>
@@ -465,7 +465,7 @@ const DatabaseUserSettings = () => {
                   <div><span className="font-medium">Profile Completion:</span> {selectedUser.profile_completion_percentage || 0}%</div>
                 </div>
                 {selectedUser.is_suspended && selectedUser.suspension_reason && (
-                  <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="mt-3 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
                     <span className="font-medium">Suspension Reason:</span>
                     <p className="mt-1 text-sm">{selectedUser.suspension_reason}</p>
                   </div>
