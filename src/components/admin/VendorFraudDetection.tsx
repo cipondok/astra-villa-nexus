@@ -81,12 +81,12 @@ const VendorFraudDetection = () => {
 
   const getRiskLevelColor = (level: string) => {
     const colors = {
-      low: "bg-green-100 text-green-800",
-      medium: "bg-yellow-100 text-yellow-800",
-      high: "bg-orange-100 text-orange-800",
-      critical: "bg-red-100 text-red-800"
+      low: "bg-chart-1/10 text-chart-1",
+      medium: "bg-chart-3/10 text-chart-3",
+      high: "bg-chart-4/10 text-chart-4",
+      critical: "bg-destructive/10 text-destructive"
     };
-    return colors[level as keyof typeof colors] || "bg-gray-100 text-gray-800";
+    return colors[level as keyof typeof colors] || "bg-muted text-muted-foreground";
   };
 
   const getDetectionTypeIcon = (type: string) => {
@@ -138,7 +138,7 @@ const VendorFraudDetection = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Cases</p>
                 <p className="text-2xl font-bold">{fraudCases?.length || 0}</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-gray-600" />
+              <AlertTriangle className="h-8 w-8 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -148,11 +148,11 @@ const VendorFraudDetection = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">High Risk</p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-2xl font-bold text-destructive">
                   {fraudCases?.filter(c => c.risk_level === 'high' || c.risk_level === 'critical').length || 0}
                 </p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-600" />
+              <AlertTriangle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -162,11 +162,11 @@ const VendorFraudDetection = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Under Review</p>
-                <p className="text-2xl font-bold text-yellow-600">
+                <p className="text-2xl font-bold text-chart-3">
                   {fraudCases?.filter(c => !c.action_taken || c.action_taken === 'investigating').length || 0}
                 </p>
               </div>
-              <Eye className="h-8 w-8 text-yellow-600" />
+              <Eye className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -176,11 +176,11 @@ const VendorFraudDetection = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Resolved</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-chart-1">
                   {fraudCases?.filter(c => c.action_taken === 'cleared' || c.action_taken === 'suspended').length || 0}
                 </p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -231,7 +231,7 @@ const VendorFraudDetection = () => {
                       </div>
                       <div>
                         <Label className="font-medium">Fraud Probability</Label>
-                        <p className="font-bold text-red-600">{fraudCase.fraud_probability}%</p>
+                        <p className="font-bold text-destructive">{fraudCase.fraud_probability}%</p>
                       </div>
                       <div>
                         <Label className="font-medium">Model Version</Label>
@@ -242,9 +242,8 @@ const VendorFraudDetection = () => {
                         <p className="capitalize">{fraudCase.action_taken || 'Pending'}</p>
                       </div>
                     </div>
-
                     {fraudCase.detection_details && Object.keys(fraudCase.detection_details).length > 0 && (
-                      <div className="mt-3 p-2 bg-gray-50 rounded">
+                      <div className="mt-3 p-2 bg-muted rounded">
                         <Label className="text-sm font-medium">Detection Details:</Label>
                         <pre className="text-xs mt-1 whitespace-pre-wrap">
                           {JSON.stringify(fraudCase.detection_details, null, 2)}
@@ -267,7 +266,7 @@ const VendorFraudDetection = () => {
             <CardContent>
               <div className="space-y-4">
                 {fraudCases?.filter(c => c.risk_level === 'high' || c.risk_level === 'critical').map((fraudCase) => (
-                  <div key={fraudCase.id} className="border-2 border-red-200 rounded-lg p-4 bg-red-50">
+                  <div key={fraudCase.id} className="border-2 border-destructive/20 rounded-lg p-4 bg-destructive/5">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         {getDetectionTypeIcon(fraudCase.detection_type)}
@@ -326,13 +325,13 @@ const VendorFraudDetection = () => {
                 </div>
                 <div>
                   <Label>Fraud Probability</Label>
-                  <p className="font-bold text-red-600">{selectedCase.fraud_probability}%</p>
+                  <p className="font-bold text-destructive">{selectedCase.fraud_probability}%</p>
                 </div>
               </div>
 
               <div>
                 <Label>Detection Details</Label>
-                <div className="p-3 bg-gray-50 rounded mt-2 max-h-40 overflow-y-auto">
+                <div className="p-3 bg-muted rounded mt-2 max-h-40 overflow-y-auto">
                   <pre className="text-xs">{JSON.stringify(selectedCase.detection_details, null, 2)}</pre>
                 </div>
               </div>
