@@ -61,8 +61,11 @@ serve(async (req) => {
       </div>
     `;
 
+    // Use verified domain sender in production; fall back to Resend sandbox for dev
+    const fromAddress = Deno.env.get("EMAIL_FROM_ADDRESS") || "ASTRA Villa <onboarding@resend.dev>";
+
     const emailResponse = await resend.emails.send({
-      from: "ASTRA Villa <onboarding@resend.dev>",
+      from: fromAddress,
       to: [customer_email],
       subject,
       html,
