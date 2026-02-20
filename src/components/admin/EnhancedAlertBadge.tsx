@@ -120,7 +120,7 @@ const EnhancedAlertBadge = () => {
   };
 
   const getAlertIcon = (type: string, urgency = 1) => {
-    const iconClass = urgency >= 4 ? "text-red-500" : urgency >= 3 ? "text-orange-500" : "text-blue-500";
+    const iconClass = urgency >= 4 ? "text-destructive" : urgency >= 3 ? "text-chart-3" : "text-chart-2";
     
     switch (type) {
       case 'user_registration': return <Users className={`h-4 w-4 ${iconClass}`} />;
@@ -135,11 +135,11 @@ const EnhancedAlertBadge = () => {
   };
 
   const getPriorityColor = (priority: string, urgency: number) => {
-    if (urgency >= 5) return 'bg-red-600 text-white';
-    if (urgency >= 4) return 'bg-red-500 text-white';
-    if (urgency >= 3) return 'bg-orange-500 text-white';
-    if (urgency >= 2) return 'bg-yellow-500 text-black';
-    return 'bg-blue-500 text-white';
+    if (urgency >= 5) return 'bg-destructive text-destructive-foreground';
+    if (urgency >= 4) return 'bg-destructive/80 text-destructive-foreground';
+    if (urgency >= 3) return 'bg-chart-3 text-foreground';
+    if (urgency >= 2) return 'bg-chart-3/60 text-foreground';
+    return 'bg-chart-2 text-chart-2-foreground';
   };
 
   const formatTimeAgo = (dateString: string) => {
@@ -194,7 +194,7 @@ const EnhancedAlertBadge = () => {
             </Badge>
             {urgentCount > 0 && (
               <Badge 
-                className="h-3 w-3 p-0 bg-red-600 animate-pulse"
+                className="h-3 w-3 p-0 bg-destructive animate-pulse"
                 title={`${urgentCount} urgent alerts`}
               />
             )}
@@ -219,7 +219,7 @@ const EnhancedAlertBadge = () => {
                 </Badge>
               )}
               {urgentCount > 0 && (
-                <Badge className="ml-1 bg-red-600 animate-pulse">
+                <Badge className="ml-1 bg-destructive animate-pulse">
                   {urgentCount} urgent
                 </Badge>
               )}
@@ -273,7 +273,7 @@ const EnhancedAlertBadge = () => {
                         key={alert.id}
                         className={`p-4 border rounded-lg transition-colors ${
                           !alert.is_read 
-                            ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800' 
+                            ? 'bg-chart-2/5 border-chart-2/30' 
                             : 'hover:bg-muted/50'
                         }`}
                       >
@@ -290,12 +290,12 @@ const EnhancedAlertBadge = () => {
                                 {alert.priority} (L{alert.urgency_level})
                               </Badge>
                               {alert.action_required && (
-                                <Badge variant="outline" className="text-xs border-orange-500 text-orange-600">
+                                <Badge variant="outline" className="text-xs border-chart-3/50 text-chart-3">
                                   Action Required
                                 </Badge>
                               )}
                               {!alert.is_read && (
-                                <Badge variant="default" className="text-xs bg-blue-500">
+                                <Badge className="text-xs bg-chart-2 text-primary-foreground">
                                   New
                                 </Badge>
                               )}
@@ -305,7 +305,7 @@ const EnhancedAlertBadge = () => {
                             </p>
                             <div className="flex items-center gap-4 text-xs text-muted-foreground">
                               <span>{formatTimeAgo(alert.created_at)}</span>
-                              <span className="text-blue-600">Category: {alert.alert_category}</span>
+                              <span className="text-chart-2">Category: {alert.alert_category}</span>
                               {alert.reference_type && alert.reference_id && (
                                 <span>Ref: {alert.reference_type}#{alert.reference_id.slice(0, 8)}</span>
                               )}
@@ -331,42 +331,42 @@ const EnhancedAlertBadge = () => {
                           : alert.alert_category === category
                       )
                       .map((alert) => (
-                        <div
-                          key={alert.id}
-                          className={`p-4 border rounded-lg transition-colors ${
-                            !alert.is_read 
-                              ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800' 
-                              : 'hover:bg-muted/50'
-                          }`}
-                        >
-                          <div className="flex items-start gap-3">
-                            {getAlertIcon(alert.type, alert.urgency_level)}
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h4 className={`text-sm font-medium ${!alert.is_read ? 'font-semibold' : ''}`}>
-                                  {alert.title}
-                                </h4>
-                                <Badge 
-                                  className={`text-xs ${getPriorityColor(alert.priority, alert.urgency_level)}`}
-                                >
-                                  {alert.priority} (L{alert.urgency_level})
-                                </Badge>
-                                {alert.action_required && (
-                                  <Badge variant="outline" className="text-xs border-orange-500 text-orange-600">
-                                    Action Required
-                                  </Badge>
-                                )}
-                              </div>
-                              <p className="text-sm text-muted-foreground line-clamp-3 mb-2 whitespace-pre-wrap">
-                                {alert.message}
-                              </p>
-                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                <span>{formatTimeAgo(alert.created_at)}</span>
-                                <span className="text-blue-600">Type: {alert.type}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                         <div
+                           key={alert.id}
+                           className={`p-4 border rounded-lg transition-colors ${
+                             !alert.is_read 
+                               ? 'bg-chart-2/5 border-chart-2/30' 
+                               : 'hover:bg-muted/50'
+                           }`}
+                         >
+                           <div className="flex items-start gap-3">
+                             {getAlertIcon(alert.type, alert.urgency_level)}
+                             <div className="flex-1 min-w-0">
+                               <div className="flex items-center gap-2 mb-1">
+                                 <h4 className={`text-sm font-medium ${!alert.is_read ? 'font-semibold' : ''}`}>
+                                   {alert.title}
+                                 </h4>
+                                 <Badge 
+                                   className={`text-xs ${getPriorityColor(alert.priority, alert.urgency_level)}`}
+                                 >
+                                   {alert.priority} (L{alert.urgency_level})
+                                 </Badge>
+                                 {alert.action_required && (
+                                   <Badge variant="outline" className="text-xs border-chart-3/50 text-chart-3">
+                                     Action Required
+                                   </Badge>
+                                 )}
+                               </div>
+                               <p className="text-sm text-muted-foreground line-clamp-3 mb-2 whitespace-pre-wrap">
+                                 {alert.message}
+                               </p>
+                               <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                 <span>{formatTimeAgo(alert.created_at)}</span>
+                                 <span className="text-chart-2">Type: {alert.type}</span>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
                       ))}
                   </div>
                 </ScrollArea>
