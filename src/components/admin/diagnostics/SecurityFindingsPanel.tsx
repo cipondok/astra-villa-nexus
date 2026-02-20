@@ -54,11 +54,11 @@ export const SecurityFindingsPanel = ({
     }
     switch (level) {
       case 'error':
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       case 'warn':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+        return <AlertTriangle className="h-4 w-4 text-chart-3" />;
       default:
-        return <CheckCircle className="h-4 w-4 text-blue-500" />;
+        return <CheckCircle className="h-4 w-4 text-chart-2" />;
     }
   };
 
@@ -67,9 +67,9 @@ export const SecurityFindingsPanel = ({
       return <Badge variant="outline" className="text-muted-foreground">IGNORED</Badge>;
     }
     const colors = {
-      error: 'bg-red-500/10 text-red-500 border-red-500/20',
-      warn: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
-      info: 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+      error: 'bg-destructive/10 text-destructive border-destructive/20',
+      warn: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+      info: 'bg-chart-2/10 text-chart-2 border-chart-2/20'
     };
     return <Badge className={colors[level as keyof typeof colors]}>{level.toUpperCase()}</Badge>;
   };
@@ -120,16 +120,16 @@ export const SecurityFindingsPanel = ({
       <CardContent className="space-y-3">
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-2">
-          <div className="p-2 rounded-lg bg-red-500/5 border border-red-500/20">
-            <div className="text-lg font-bold text-red-500">{errorFindings.length}</div>
+          <div className="p-2 rounded-lg bg-destructive/5 border border-destructive/20">
+            <div className="text-lg font-bold text-destructive">{errorFindings.length}</div>
             <div className="text-[10px] text-muted-foreground">Errors</div>
           </div>
-          <div className="p-2 rounded-lg bg-yellow-500/5 border border-yellow-500/20">
-            <div className="text-lg font-bold text-yellow-500">{warnFindings.length}</div>
+          <div className="p-2 rounded-lg bg-chart-3/5 border border-chart-3/20">
+            <div className="text-lg font-bold text-chart-3">{warnFindings.length}</div>
             <div className="text-[10px] text-muted-foreground">Warnings</div>
           </div>
-          <div className="p-2 rounded-lg bg-green-500/5 border border-green-500/20">
-            <div className="text-lg font-bold text-green-500">{ignoredFindings.length}</div>
+          <div className="p-2 rounded-lg bg-chart-1/5 border border-chart-1/20">
+            <div className="text-lg font-bold text-chart-1">{ignoredFindings.length}</div>
             <div className="text-[10px] text-muted-foreground">Resolved</div>
           </div>
         </div>
@@ -201,9 +201,9 @@ export const SecurityFindingsPanel = ({
             ))}
           </div>
         ) : (
-          <Alert className="border-green-500/20 bg-green-500/5">
-            <CheckCircle className="h-4 w-4 text-green-500" />
-            <AlertDescription className="text-green-600 dark:text-green-400 text-xs">
+          <Alert className="border-chart-1/20 bg-chart-1/5">
+            <CheckCircle className="h-4 w-4 text-chart-1" />
+            <AlertDescription className="text-chart-1 text-xs">
               No active security findings! System is secure.
             </AlertDescription>
           </Alert>

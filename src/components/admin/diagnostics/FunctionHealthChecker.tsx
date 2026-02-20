@@ -39,13 +39,13 @@ export const FunctionHealthChecker = ({ functions }: FunctionHealthCheckerProps)
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'complete':
-        return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+        return <CheckCircle2 className="h-4 w-4 text-chart-1" />;
       case 'broken':
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       case 'incomplete':
-        return <Clock className="h-4 w-4 text-yellow-500" />;
+        return <Clock className="h-4 w-4 text-chart-3" />;
       case 'missing':
-        return <AlertTriangle className="h-4 w-4 text-orange-500" />;
+        return <AlertTriangle className="h-4 w-4 text-chart-4" />;
       default:
         return null;
     }
@@ -53,10 +53,10 @@ export const FunctionHealthChecker = ({ functions }: FunctionHealthCheckerProps)
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      complete: 'bg-green-500/10 text-green-500',
-      incomplete: 'bg-yellow-500/10 text-yellow-500',
-      broken: 'bg-red-500/10 text-red-500',
-      missing: 'bg-orange-500/10 text-orange-500'
+      complete: 'bg-chart-1/10 text-chart-1',
+      incomplete: 'bg-chart-3/10 text-chart-3',
+      broken: 'bg-destructive/10 text-destructive',
+      missing: 'bg-chart-4/10 text-chart-4'
     };
     return <Badge className={colors[status as keyof typeof colors]}>{status}</Badge>;
   };
@@ -75,9 +75,9 @@ export const FunctionHealthChecker = ({ functions }: FunctionHealthCheckerProps)
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Function Completion</span>
             <span className={`text-2xl font-bold ${
-              overallCompletion >= 80 ? 'text-green-500' : 
-              overallCompletion >= 60 ? 'text-yellow-500' : 
-              'text-red-500'
+              overallCompletion >= 80 ? 'text-chart-1' : 
+              overallCompletion >= 60 ? 'text-chart-3' : 
+              'text-destructive'
             }`}>
               {overallCompletion}%
             </span>
@@ -87,20 +87,20 @@ export const FunctionHealthChecker = ({ functions }: FunctionHealthCheckerProps)
 
         {/* Function Status Summary */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="p-3 rounded-lg bg-green-500/5 border border-green-500/20">
-            <div className="text-2xl font-bold text-green-500">{completeFunctions.length}</div>
+          <div className="p-3 rounded-lg bg-chart-1/5 border border-chart-1/20">
+            <div className="text-2xl font-bold text-chart-1">{completeFunctions.length}</div>
             <div className="text-xs text-muted-foreground">Complete</div>
           </div>
-          <div className="p-3 rounded-lg bg-yellow-500/5 border border-yellow-500/20">
-            <div className="text-2xl font-bold text-yellow-500">{incompleteFunctions.length}</div>
+          <div className="p-3 rounded-lg bg-chart-3/5 border border-chart-3/20">
+            <div className="text-2xl font-bold text-chart-3">{incompleteFunctions.length}</div>
             <div className="text-xs text-muted-foreground">Incomplete</div>
           </div>
-          <div className="p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-            <div className="text-2xl font-bold text-red-500">{brokenFunctions.length}</div>
+          <div className="p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+            <div className="text-2xl font-bold text-destructive">{brokenFunctions.length}</div>
             <div className="text-xs text-muted-foreground">Broken</div>
           </div>
-          <div className="p-3 rounded-lg bg-orange-500/5 border border-orange-500/20">
-            <div className="text-2xl font-bold text-orange-500">{missingFunctions.length}</div>
+          <div className="p-3 rounded-lg bg-chart-4/5 border border-chart-4/20">
+            <div className="text-2xl font-bold text-chart-4">{missingFunctions.length}</div>
             <div className="text-xs text-muted-foreground">Missing</div>
           </div>
         </div>
@@ -129,7 +129,7 @@ export const FunctionHealthChecker = ({ functions }: FunctionHealthCheckerProps)
                   {func.issues.length > 0 && (
                     <div className="space-y-1">
                       {func.issues.map((issue, idx) => (
-                        <div key={idx} className="text-xs text-red-600 dark:text-red-400 flex items-start gap-1">
+                        <div key={idx} className="text-xs text-destructive flex items-start gap-1">
                           <AlertTriangle className="h-3 w-3 mt-0.5" />
                           <span>{issue}</span>
                         </div>
@@ -138,7 +138,7 @@ export const FunctionHealthChecker = ({ functions }: FunctionHealthCheckerProps)
                   )}
                   
                   {func.estimatedFixTime && (
-                    <div className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400">
+                    <div className="flex items-center gap-1 text-xs text-chart-2">
                       <Clock className="h-3 w-3" />
                       <span>Est. fix time: {func.estimatedFixTime}</span>
                     </div>

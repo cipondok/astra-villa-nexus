@@ -46,22 +46,22 @@ export const BugDetectionSystem = ({
   const getBugTypeIcon = (type: string) => {
     switch (type) {
       case 'runtime':
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       case 'security':
-        return <AlertTriangle className="h-4 w-4 text-orange-500" />;
+        return <AlertTriangle className="h-4 w-4 text-chart-4" />;
       case 'performance':
-        return <Activity className="h-4 w-4 text-yellow-500" />;
+        return <Activity className="h-4 w-4 text-chart-3" />;
       default:
-        return <Bug className="h-4 w-4 text-blue-500" />;
+        return <Bug className="h-4 w-4 text-chart-2" />;
     }
   };
 
   const getSeverityColor = (severity: string) => {
     const colors = {
-      critical: 'bg-red-500/10 text-red-500 border-red-500/20',
-      high: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
-      medium: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
-      low: 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+      critical: 'bg-destructive/10 text-destructive border-destructive/20',
+      high: 'bg-chart-4/10 text-chart-4 border-chart-4/20',
+      medium: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+      low: 'bg-chart-2/10 text-chart-2 border-chart-2/20'
     };
     return colors[severity as keyof typeof colors];
   };
@@ -69,11 +69,11 @@ export const BugDetectionSystem = ({
   const getTrendIcon = () => {
     switch (trendDirection) {
       case 'up':
-        return <TrendingUp className="h-4 w-4 text-red-500" />;
+        return <TrendingUp className="h-4 w-4 text-destructive" />;
       case 'down':
-        return <TrendingDown className="h-4 w-4 text-green-500" />;
+        return <TrendingDown className="h-4 w-4 text-chart-1" />;
       default:
-        return <Activity className="h-4 w-4 text-blue-500" />;
+        return <Activity className="h-4 w-4 text-chart-2" />;
     }
   };
 
@@ -88,16 +88,16 @@ export const BugDetectionSystem = ({
       <CardContent className="space-y-4">
         {/* Bug Statistics */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-            <div className="text-2xl font-bold text-red-500">{criticalBugs.length}</div>
+          <div className="p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+            <div className="text-2xl font-bold text-destructive">{criticalBugs.length}</div>
             <div className="text-xs text-muted-foreground">Critical Bugs</div>
           </div>
-          <div className="p-3 rounded-lg bg-orange-500/5 border border-orange-500/20">
-            <div className="text-2xl font-bold text-orange-500">{highBugs.length}</div>
+          <div className="p-3 rounded-lg bg-chart-4/5 border border-chart-4/20">
+            <div className="text-2xl font-bold text-chart-4">{highBugs.length}</div>
             <div className="text-xs text-muted-foreground">High Priority</div>
           </div>
-          <div className="p-3 rounded-lg bg-green-500/5 border border-green-500/20">
-            <div className="text-2xl font-bold text-green-500">{fixedBugs.length}</div>
+          <div className="p-3 rounded-lg bg-chart-1/5 border border-chart-1/20">
+            <div className="text-2xl font-bold text-chart-1">{fixedBugs.length}</div>
             <div className="text-xs text-muted-foreground">Fixed</div>
           </div>
         </div>
@@ -141,13 +141,13 @@ export const BugDetectionSystem = ({
                       <span>{bug.occurrences} occurrences</span>
                     </div>
                     
-                    <div className="text-xs text-orange-600 dark:text-orange-400">
+                    <div className="text-xs text-chart-4">
                       <strong>Impact:</strong> {bug.impact}
                     </div>
                     
                     {bug.stackTrace && (
                       <details className="text-xs">
-                        <summary className="cursor-pointer text-blue-600 dark:text-blue-400">
+                        <summary className="cursor-pointer text-primary">
                           View stack trace
                         </summary>
                         <pre className="mt-2 p-2 rounded bg-muted overflow-x-auto text-xs">
@@ -161,9 +161,9 @@ export const BugDetectionSystem = ({
             ))}
           </div>
         ) : (
-          <Alert className="border-green-500/20 bg-green-500/5">
-            <CheckCircle className="h-4 w-4 text-green-500" />
-            <AlertDescription className="text-green-600 dark:text-green-400">
+          <Alert className="border-chart-1/20 bg-chart-1/5">
+            <CheckCircle className="h-4 w-4 text-chart-1" />
+            <AlertDescription className="text-chart-1">
               No active bugs detected! System is running smoothly.
             </AlertDescription>
           </Alert>
