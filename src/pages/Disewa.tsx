@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -205,6 +206,12 @@ const Disewa = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEOHead
+        title="Properti Disewa di Indonesia"
+        description="Sewa villa, apartemen, rumah, dan kos-kosan di seluruh Indonesia. Booking online mudah & cepat di ASTRA Villa Realty."
+        keywords="properti disewa, villa disewa, apartemen sewa, rumah sewa, kos-kosan Indonesia"
+        jsonLd={seoSchemas.breadcrumb([{ name: 'Beranda', url: '/' }, { name: 'Properti Disewa', url: '/disewa' }])}
+      />
       {/* Clean Header */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
         <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
