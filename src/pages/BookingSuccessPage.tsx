@@ -125,11 +125,11 @@ const BookingSuccessPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navigation />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
-            <Clock className="h-12 w-12 mx-auto mb-4 animate-spin text-blue-600" />
+            <Clock className="h-12 w-12 mx-auto mb-4 animate-spin text-primary" />
             <h2 className="text-xl font-semibold mb-2">Memverifikasi Pembayaran...</h2>
             <p className="text-muted-foreground">Mohon tunggu sebentar</p>
           </div>
@@ -140,13 +140,13 @@ const BookingSuccessPage = () => {
 
   if (paymentStatus === 'failed') {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navigation />
         <div className="container mx-auto px-4 py-8 max-w-2xl">
           <Card className="text-center">
             <CardContent className="p-8">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Clock className="h-8 w-8 text-red-600" />
+              <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Clock className="h-8 w-8 text-destructive" />
               </div>
               
               <h2 className="text-2xl font-bold mb-2">Pembayaran Gagal</h2>
@@ -171,17 +171,17 @@ const BookingSuccessPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
         {/* Success Header */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-10 w-10 text-green-600" />
+          <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-10 w-10 text-primary" />
           </div>
           
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             {paymentStatus === 'success' ? 'Pembayaran Berhasil!' : 'Booking Berhasil Dibuat!'}
           </h1>
           

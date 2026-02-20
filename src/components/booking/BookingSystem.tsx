@@ -189,24 +189,33 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
     setLoading(true);
     
     try {
-      // Create booking record
+      // Create booking record — map customer fields into contact_details (jsonb)
+      // and payment method into additional_fees metadata per the DB schema
       const bookingData = {
         property_id: property.id,
         customer_id: user?.id,
-        check_in_date: checkInDate?.toISOString(),
-        check_out_date: checkOutDate?.toISOString(),
+        check_in_date: checkInDate?.toISOString().split('T')[0],
+        check_out_date: checkOutDate?.toISOString().split('T')[0],
         total_days: totalDays,
         base_price: property.price,
         total_amount: totalAmount,
-        customer_name: customerInfo.fullName,
-        customer_email: customerInfo.email,
-        customer_phone: customerInfo.phone,
-        customer_address: customerInfo.address,
-        customer_id_number: customerInfo.idNumber,
-        emergency_contact: customerInfo.emergencyContact,
-        emergency_phone: customerInfo.emergencyPhone,
+        contact_details: {
+          fullName: customerInfo.fullName,
+          email: customerInfo.email,
+          phone: customerInfo.phone,
+          address: customerInfo.address,
+          idNumber: customerInfo.idNumber,
+          emergencyContact: customerInfo.emergencyContact,
+          emergencyPhone: customerInfo.emergencyPhone,
+        },
+        additional_fees: {
+          tax: property.price * totalDays * 0.1,
+          serviceCharge: property.price * totalDays * 0.05,
+          paymentMethod: paymentMethod,
+        },
+        contact_method: 'online',
         special_requests: specialRequests,
-        payment_method: paymentMethod,
+        terms_accepted: agreementAccepted,
         booking_status: 'pending',
         payment_status: 'pending'
       };
@@ -227,48 +236,25 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
       if (invoiceError) throw invoiceError;
 
       // Process payment based on method
-      if (['ovo', 'gopay', 'dana', 'shopeepay'].includes(paymentMethod)) {
-        // Process e-wallet payment
-        const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-booking-payment', {
+      // Process payment for all supported methods via single edge function
+      if (paymentMethod) {
+        const { data: paymentResult, error: paymentError } = await supabase.functions.invoke('create-booking-payment', {
           body: {
             bookingId: booking.id,
             amount: totalAmount,
             paymentMethod: paymentMethod,
-            customerInfo: customerInfo
+            customerInfo: {
+              fullName: customerInfo.fullName,
+              email: customerInfo.email,
+              phone: customerInfo.phone,
+            }
           }
         });
 
-        if (paymentError) throw paymentError;
-        console.log('E-wallet payment initiated:', paymentData);
-      } else if (['bca', 'mandiri', 'bni', 'bri'].includes(paymentMethod)) {
-        // Process bank transfer payment
-        const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-booking-payment', {
-          body: {
-            bookingId: booking.id,
-            amount: totalAmount,
-            paymentMethod: paymentMethod,
-            customerInfo: customerInfo
-          }
-        });
-
-        if (paymentError) throw paymentError;
-        console.log('Bank transfer payment initiated:', paymentData);
-      } else if (paymentMethod === 'credit_card') {
-        // Process credit card payment
-        const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-booking-payment', {
-          body: {
-            bookingId: booking.id,
-            amount: totalAmount,
-            paymentMethod: paymentMethod,
-            customerInfo: customerInfo
-          }
-        });
-
-        if (paymentError) throw paymentError;
-        console.log('Payment initiated:', paymentData);
-        setPaymentData(paymentData);
+        if (!paymentError && paymentResult?.success) {
+          setPaymentData(paymentResult);
+        }
       }
-      // For other payment methods, booking is created with pending status
 
       setStep(4);
       onBookingComplete?.(booking.id);
@@ -322,7 +308,7 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
       </div>
 
       {checkInDate && checkOutDate && (
-        <Card className="bg-blue-50">
+        <Card className="bg-muted/50">
           <CardContent className="p-4">
             <div className="flex justify-between items-center">
               <div>
@@ -480,158 +466,79 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
       <div>
         <label className="text-sm font-medium mb-3 block">Metode Pembayaran</label>
         
-        {/* Digital Wallets */}
-        <div className="mb-4">
-          <p className="text-sm font-medium mb-2 text-muted-foreground">E-Wallet</p>
-          <div className="grid grid-cols-2 gap-3">
-            <div
-              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                paymentMethod === 'ovo' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
-              }`}
-              onClick={() => setPaymentMethod('ovo')}
-            >
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center mr-3">
-                  <span className="text-white text-xs font-bold">OVO</span>
+      {/* Payment Methods - reuse shared selector pattern with themed classes */}
+        {[
+          { id: 'ovo', label: 'OVO', abbr: 'OVO' },
+          { id: 'gopay', label: 'GoPay', abbr: 'GP' },
+          { id: 'dana', label: 'DANA', abbr: 'DANA' },
+          { id: 'shopeepay', label: 'ShopeePay', abbr: 'SP' },
+        ].length > 0 && (
+          <div className="mb-4">
+            <p className="text-sm font-medium mb-2 text-muted-foreground">E-Wallet</p>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { id: 'ovo', label: 'OVO', abbr: 'OVO' },
+                { id: 'gopay', label: 'GoPay', abbr: 'GP' },
+                { id: 'dana', label: 'DANA', abbr: 'DANA' },
+                { id: 'shopeepay', label: 'ShopeePay', abbr: 'SP' },
+              ].map((m) => (
+                <div
+                  key={m.id}
+                  className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                    paymentMethod === m.id ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
+                  }`}
+                  onClick={() => setPaymentMethod(m.id)}
+                >
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-muted rounded-md flex items-center justify-center mr-3">
+                      <span className="text-foreground text-xs font-bold">{m.abbr}</span>
+                    </div>
+                    <p className="font-medium">{m.label}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium">OVO</p>
-                </div>
-              </div>
-            </div>
-            
-            <div
-              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                paymentMethod === 'gopay' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
-              }`}
-              onClick={() => setPaymentMethod('gopay')}
-            >
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center mr-3">
-                  <span className="text-white text-xs font-bold">GP</span>
-                </div>
-                <div>
-                  <p className="font-medium">GoPay</p>
-                </div>
-              </div>
-            </div>
-            
-            <div
-              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                paymentMethod === 'dana' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
-              }`}
-              onClick={() => setPaymentMethod('dana')}
-            >
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center mr-3">
-                  <span className="text-white text-xs font-bold">DANA</span>
-                </div>
-                <div>
-                  <p className="font-medium">DANA</p>
-                </div>
-              </div>
-            </div>
-            
-            <div
-              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                paymentMethod === 'shopeepay' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
-              }`}
-              onClick={() => setPaymentMethod('shopeepay')}
-            >
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center mr-3">
-                  <span className="text-white text-xs font-bold">SP</span>
-                </div>
-                <div>
-                  <p className="font-medium">ShopeePay</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Bank Transfer */}
         <div className="mb-4">
           <p className="text-sm font-medium mb-2 text-muted-foreground">Transfer Bank</p>
           <div className="grid grid-cols-2 gap-3">
-            <div
-              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                paymentMethod === 'bca' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
-              }`}
-              onClick={() => setPaymentMethod('bca')}
-            >
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-blue-700 rounded-md flex items-center justify-center mr-3">
-                  <span className="text-white text-xs font-bold">BCA</span>
-                </div>
-                <div>
-                  <p className="font-medium">Bank BCA</p>
-                </div>
-              </div>
-            </div>
-            
-            <div
-              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                paymentMethod === 'mandiri' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
-              }`}
-              onClick={() => setPaymentMethod('mandiri')}
-            >
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center mr-3">
-                  <span className="text-white text-xs font-bold">M</span>
-                </div>
-                <div>
-                  <p className="font-medium">Bank Mandiri</p>
+            {[
+              { id: 'bca', label: 'Bank BCA', abbr: 'BCA' },
+              { id: 'mandiri', label: 'Bank Mandiri', abbr: 'M' },
+              { id: 'bni', label: 'Bank BNI', abbr: 'BNI' },
+              { id: 'bri', label: 'Bank BRI', abbr: 'BRI' },
+            ].map((m) => (
+              <div
+                key={m.id}
+                className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                  paymentMethod === m.id ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
+                }`}
+                onClick={() => setPaymentMethod(m.id)}
+              >
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-muted rounded-md flex items-center justify-center mr-3">
+                    <span className="text-foreground text-xs font-bold">{m.abbr}</span>
+                  </div>
+                  <p className="font-medium">{m.label}</p>
                 </div>
               </div>
-            </div>
-            
-            <div
-              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                paymentMethod === 'bni' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
-              }`}
-              onClick={() => setPaymentMethod('bni')}
-            >
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-orange-600 rounded-md flex items-center justify-center mr-3">
-                  <span className="text-white text-xs font-bold">BNI</span>
-                </div>
-                <div>
-                  <p className="font-medium">Bank BNI</p>
-                </div>
-              </div>
-            </div>
-            
-            <div
-              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                paymentMethod === 'bri' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
-              }`}
-              onClick={() => setPaymentMethod('bri')}
-            >
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-blue-800 rounded-md flex items-center justify-center mr-3">
-                  <span className="text-white text-xs font-bold">BRI</span>
-                </div>
-                <div>
-                  <p className="font-medium">Bank BRI</p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Credit/Debit Cards */}
         <div>
           <p className="text-sm font-medium mb-2 text-muted-foreground">Kartu Kredit/Debit</p>
           <div className="grid grid-cols-1 gap-3">
             <div
               className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                paymentMethod === 'credit_card' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                paymentMethod === 'credit_card' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
               }`}
               onClick={() => setPaymentMethod('credit_card')}
             >
               <div className="flex items-center">
-                <CreditCard className="h-5 w-5 mr-3" />
+                <CreditCard className="h-5 w-5 mr-3 text-muted-foreground" />
                 <div>
                   <p className="font-medium">Kartu Kredit/Debit</p>
                   <p className="text-sm text-muted-foreground">Visa, Mastercard, JCB</p>
@@ -648,14 +555,14 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
           type="checkbox"
           checked={agreementAccepted}
           onChange={(e) => setAgreementAccepted(e.target.checked)}
-          className="mt-1"
+          className="mt-1 accent-primary"
         />
         <div className="text-sm">
           <p>
             Saya setuju dengan{" "}
-            <a href="#" className="text-blue-600 hover:underline">syarat dan ketentuan</a>
+            <a href="#" className="text-primary hover:underline">syarat dan ketentuan</a>
             {" "}serta{" "}
-            <a href="#" className="text-blue-600 hover:underline">kebijakan privasi</a>
+            <a href="#" className="text-primary hover:underline">kebijakan privasi</a>
           </p>
         </div>
       </div>
@@ -667,8 +574,8 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
       return (
         <div className="space-y-6">
           <div className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="h-8 w-8 text-green-600" />
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="h-8 w-8 text-primary" />
             </div>
             <h3 className="text-xl font-semibold mb-2">Booking Berhasil Dibuat!</h3>
             <p className="text-muted-foreground mb-6">
@@ -691,8 +598,8 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
 
     return (
       <div className="text-center space-y-6">
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-          <CheckCircle className="h-8 w-8 text-green-600" />
+        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+          <CheckCircle className="h-8 w-8 text-primary" />
         </div>
         
         <div>
@@ -706,12 +613,8 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
           <CardContent className="p-4">
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span>Booking ID:</span>
-                <span className="font-mono text-sm">#{Date.now()}</span>
-              </div>
-              <div className="flex justify-between">
                 <span>Status:</span>
-                <Badge variant="outline" className="text-yellow-600 border-yellow-600">
+                <Badge variant="secondary">
                   <Clock className="h-3 w-3 mr-1" />
                   Menunggu Pembayaran
                 </Badge>
@@ -737,8 +640,8 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
               key={stepNum}
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 step >= stepNum 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-200 text-gray-600'
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-muted text-muted-foreground'
               }`}
             >
               {stepNum}
