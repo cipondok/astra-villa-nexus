@@ -157,19 +157,19 @@ const DiagnosticAnalyticsOverview = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'text-green-600';
-      case 'warning': return 'text-yellow-600';
-      case 'critical': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'healthy': return 'text-chart-1';
+      case 'warning': return 'text-chart-3';
+      case 'critical': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'healthy': return <CheckCircle className="h-5 w-5 text-green-600" />;
-      case 'warning': return <AlertTriangle className="h-5 w-5 text-yellow-600" />;
-      case 'critical': return <AlertTriangle className="h-5 w-5 text-red-600" />;
-      default: return <Activity className="h-5 w-5 text-gray-600" />;
+      case 'healthy': return <CheckCircle className="h-5 w-5 text-chart-1" />;
+      case 'warning': return <AlertTriangle className="h-5 w-5 text-chart-3" />;
+      case 'critical': return <AlertTriangle className="h-5 w-5 text-destructive" />;
+      default: return <Activity className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
@@ -215,7 +215,7 @@ const DiagnosticAnalyticsOverview = () => {
                     <p className="text-sm text-muted-foreground">System Status</p>
                     <p className="text-2xl font-bold">Operational</p>
                   </div>
-                  <CheckCircle className="h-8 w-8 text-green-600" />
+                  <CheckCircle className="h-8 w-8 text-chart-1" />
                 </div>
               </CardContent>
             </Card>
@@ -227,7 +227,7 @@ const DiagnosticAnalyticsOverview = () => {
                     <p className="text-sm text-muted-foreground">Uptime</p>
                     <p className="text-2xl font-bold">{systemMetrics?.uptime || '99.9%'}</p>
                   </div>
-                  <TrendingUp className="h-8 w-8 text-blue-600" />
+                  <TrendingUp className="h-8 w-8 text-chart-2" />
                 </div>
               </CardContent>
             </Card>
@@ -239,7 +239,7 @@ const DiagnosticAnalyticsOverview = () => {
                     <p className="text-sm text-muted-foreground">Response Time</p>
                     <p className="text-2xl font-bold">{Math.round(systemMetrics?.responseTime || 0)}ms</p>
                   </div>
-                  <Zap className="h-8 w-8 text-yellow-600" />
+                  <Zap className="h-8 w-8 text-chart-3" />
                 </div>
               </CardContent>
             </Card>
@@ -251,7 +251,7 @@ const DiagnosticAnalyticsOverview = () => {
                     <p className="text-sm text-muted-foreground">Active Users</p>
                     <p className="text-2xl font-bold">{analytics?.activeUsers || 0}</p>
                   </div>
-                  <Users className="h-8 w-8 text-purple-600" />
+                  <Users className="h-8 w-8 text-chart-4" />
                 </div>
               </CardContent>
             </Card>
@@ -305,7 +305,7 @@ const DiagnosticAnalyticsOverview = () => {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span>Threat Level</span>
-                  <Badge variant="secondary" className="text-green-600">
+                  <Badge variant="secondary" className="text-chart-1">
                     {security?.threatLevel || 'low'}
                   </Badge>
                 </div>
@@ -337,7 +337,7 @@ const DiagnosticAnalyticsOverview = () => {
                     <p className="text-sm text-muted-foreground">Success Rate</p>
                     <p className="text-2xl font-bold">{(systemMetrics?.successRate || 0).toFixed(1)}%</p>
                   </div>
-                  <CheckCircle className="h-8 w-8 text-green-600" />
+                  <CheckCircle className="h-8 w-8 text-chart-1" />
                 </div>
               </CardContent>
             </Card>
@@ -349,7 +349,7 @@ const DiagnosticAnalyticsOverview = () => {
                     <p className="text-sm text-muted-foreground">Error Rate</p>
                     <p className="text-2xl font-bold">{(systemMetrics?.errorRate || 0).toFixed(2)}%</p>
                   </div>
-                  <AlertTriangle className="h-8 w-8 text-yellow-600" />
+                  <AlertTriangle className="h-8 w-8 text-chart-3" />
                 </div>
               </CardContent>
             </Card>
@@ -361,7 +361,7 @@ const DiagnosticAnalyticsOverview = () => {
                     <p className="text-sm text-muted-foreground">Total Requests</p>
                     <p className="text-2xl font-bold">{systemMetrics?.totalRequests?.toLocaleString() || '0'}</p>
                   </div>
-                  <BarChart3 className="h-8 w-8 text-blue-600" />
+                  <BarChart3 className="h-8 w-8 text-chart-2" />
                 </div>
               </CardContent>
             </Card>
@@ -406,15 +406,15 @@ const DiagnosticAnalyticsOverview = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>Authentication</span>
-                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <CheckCircle className="h-5 w-5 text-chart-1" />
                     </div>
                     <div className="flex justify-between">
                       <span>Authorization</span>
-                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <CheckCircle className="h-5 w-5 text-chart-1" />
                     </div>
                     <div className="flex justify-between">
                       <span>SSL/TLS</span>
-                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <CheckCircle className="h-5 w-5 text-chart-1" />
                     </div>
                   </div>
                 </div>
@@ -448,7 +448,7 @@ const DiagnosticAnalyticsOverview = () => {
                     <p className="text-sm text-muted-foreground">Total Users</p>
                     <p className="text-2xl font-bold">{analytics?.totalUsers || 0}</p>
                   </div>
-                  <Users className="h-8 w-8 text-blue-600" />
+                  <Users className="h-8 w-8 text-chart-2" />
                 </div>
               </CardContent>
             </Card>
@@ -460,7 +460,7 @@ const DiagnosticAnalyticsOverview = () => {
                     <p className="text-sm text-muted-foreground">New Signups</p>
                     <p className="text-2xl font-bold">{analytics?.newSignups || 0}</p>
                   </div>
-                  <TrendingUp className="h-8 w-8 text-green-600" />
+                  <TrendingUp className="h-8 w-8 text-chart-1" />
                 </div>
               </CardContent>
             </Card>
@@ -472,7 +472,7 @@ const DiagnosticAnalyticsOverview = () => {
                     <p className="text-sm text-muted-foreground">System Alerts</p>
                     <p className="text-2xl font-bold">{analytics?.systemAlerts || 0}</p>
                   </div>
-                  <AlertTriangle className="h-8 w-8 text-orange-600" />
+                  <AlertTriangle className="h-8 w-8 text-chart-3" />
                 </div>
               </CardContent>
             </Card>

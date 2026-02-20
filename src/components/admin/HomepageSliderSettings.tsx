@@ -184,9 +184,9 @@ export default function HomepageSliderSettings() {
                   <div className="text-sm font-medium">Order: {slide.slide_order}</div>
                   <CardTitle className="text-lg">{slide.title_en}</CardTitle>
                   {slide.is_active ? (
-                    <Eye className="h-4 w-4 text-green-500" />
+                  <Eye className="h-4 w-4 text-chart-1" />
                   ) : (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
                   )}
                 </div>
                 <div className="flex gap-2">
@@ -225,17 +225,17 @@ export default function HomepageSliderSettings() {
                     <div className="flex items-center gap-2">
                       <Monitor className="h-4 w-4" />
                       <span>{slide.desktop_height}px</span>
-                      {slide.show_on_desktop && <span className="text-green-500">✓</span>}
+                      {slide.show_on_desktop && <span className="text-chart-1">✓</span>}
                     </div>
                     <div className="flex items-center gap-2">
                       <Tablet className="h-4 w-4" />
                       <span>{slide.tablet_height}px</span>
-                      {slide.show_on_tablet && <span className="text-green-500">✓</span>}
+                      {slide.show_on_tablet && <span className="text-chart-1">✓</span>}
                     </div>
                     <div className="flex items-center gap-2">
                       <Smartphone className="h-4 w-4" />
                       <span>{slide.mobile_height}px</span>
-                      {slide.show_on_mobile && <span className="text-green-500">✓</span>}
+                      {slide.show_on_mobile && <span className="text-chart-1">✓</span>}
                     </div>
                   </div>
                   <div className="text-muted-foreground">{slide.subtitle_en}</div>
