@@ -63,6 +63,44 @@
     <link rel="canonical" href="https://astra-villa-realty.lovable.app" />
     
     <!-- Google Analytics 4 - Loaded dynamically via GoogleAnalytics.ts -->
+
+    <!-- JSON-LD: Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "ASTRA Villa Realty",
+      "url": "https://astra-villa-realty.lovable.app",
+      "logo": "https://astra-villa-realty.lovable.app/icon-512.png",
+      "description": "Platform properti premium Indonesia. Temukan villa, apartemen, dan rumah mewah dengan teknologi 3D & AI terdepan.",
+      "areaServed": "Indonesia",
+      "knowsAbout": ["Real Estate", "Property Investment", "Luxury Villas", "Apartments", "Indonesia Property"],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "availableLanguage": ["Indonesian", "English"]
+      },
+      "sameAs": ["https://twitter.com/astravilla"]
+    }
+    </script>
+
+    <!-- JSON-LD: WebSite with SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "ASTRA Villa Realty",
+      "url": "https://astra-villa-realty.lovable.app",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://astra-villa-realty.lovable.app/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
   </head>
 
   <body>

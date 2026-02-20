@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { SEOHead } from "@/components/SEOHead";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,34 +22,6 @@ import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Star, ThumbsUp, MessageSquarePlus } from "lucide-react";
 
-// SEO helpers
-const useSEO = () => {
-  useEffect(() => {
-    const title = "Property Discussion & Articles | Astra Villa";
-    const description =
-      "Join the community: post property articles, comment, reply, like and rate discussions on Astra Villa.";
-    document.title = title;
-
-    // Meta description
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", description);
-
-    // Canonical
-    const linkRel = "canonical";
-    let canonical = document.querySelector(`link[rel="${linkRel}"]`);
-    if (!canonical) {
-      canonical = document.createElement("link");
-      canonical.setAttribute("rel", linkRel);
-      document.head.appendChild(canonical);
-    }
-    canonical.setAttribute("href", window.location.href);
-  }, []);
-};
 
 // Validation schema
 const articleSchema = z.object({
@@ -93,7 +66,6 @@ const useArticles = () => {
 };
 
 const Community = () => {
-  useSEO();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: articles = [], isLoading } = useArticles();
@@ -140,6 +112,11 @@ const Community = () => {
 
   return (
     <div>
+      <SEOHead
+        title="Property Discussion & Articles"
+        description="Join the community: post property articles, comment, reply, like and rate discussions on Astra Villa Realty."
+        canonical="https://astra-villa-realty.lovable.app/community"
+      />
       <header className="container mx-auto px-4 pt-6 pb-4">
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Property Discussion & Articles</h1>
         <p className="text-muted-foreground mt-1">Share insights, ask questions, and engage with the community.</p>
