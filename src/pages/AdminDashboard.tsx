@@ -8,6 +8,7 @@ import AlertMonitoringProvider from '@/components/admin/AlertMonitoringProvider'
 import LoadingPage from '@/components/LoadingPage';
 import { useDatabaseConnection } from '@/hooks/useDatabaseConnection';
 import { motion } from 'framer-motion';
+import { AdminErrorBoundary } from '@/components/admin/AdminErrorBoundary';
 
 const AdminDashboard = () => {
   const { profile, user } = useAuth();
@@ -16,10 +17,6 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log('AdminDashboard mounted');
-    console.log('User:', user);
-    console.log('Profile:', profile);
-    
     // Remove artificial loading delay - check immediately
     if (user && profile) {
       setIsLoading(false);
@@ -31,8 +28,6 @@ const AdminDashboard = () => {
       return () => clearTimeout(timer);
     }
   }, [user, profile]);
-
-  console.log('isAdmin:', isAdmin);
 
   if (isLoading || adminCheckLoading) {
     return (
@@ -123,9 +118,11 @@ const AdminDashboard = () => {
   }
 
   return (
-    <AlertMonitoringProvider>
-      <ModernEnhancedAdminDashboard />
-    </AlertMonitoringProvider>
+    <AdminErrorBoundary>
+      <AlertMonitoringProvider>
+        <ModernEnhancedAdminDashboard />
+      </AlertMonitoringProvider>
+    </AdminErrorBoundary>
   );
 };
 
