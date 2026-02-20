@@ -251,7 +251,7 @@ export const DisputeManagement: React.FC = () => {
             return (
               <Card 
                 key={dispute.id} 
-                className={`cursor-pointer hover:shadow-md transition-shadow ${isOverdue ? 'border-red-500/50' : ''}`}
+                className={`cursor-pointer hover:shadow-md transition-shadow ${isOverdue ? 'border-destructive/50' : ''}`}
                 onClick={() => {
                   setSelectedDispute(dispute);
                   setShowDetailSheet(true);

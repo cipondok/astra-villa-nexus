@@ -87,7 +87,7 @@ const STATUS_COLORS: Record<string, string> = {
   closed: 'bg-muted-foreground'
 };
 
-const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+const CHART_COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
 
 export const FinancialDashboard: React.FC = () => {
   const [metrics, setMetrics] = useState<FinancialMetrics>({
@@ -204,8 +204,7 @@ export const FinancialDashboard: React.FC = () => {
         revenueGrowth: 12.5 // Placeholder
       });
 
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+    } catch (_error) {
     } finally {
       setIsLoading(false);
     }
@@ -222,9 +221,7 @@ export const FinancialDashboard: React.FC = () => {
         .eq('id', payoutId);
       
       fetchDashboardData();
-    } catch (error) {
-      console.error('Error approving payout:', error);
-    }
+    } catch (_error) {}
   };
 
   const handleResolveDispute = async (disputeId: string, resolution: string) => {
@@ -238,9 +235,7 @@ export const FinancialDashboard: React.FC = () => {
         .eq('id', disputeId);
       
       fetchDashboardData();
-    } catch (error) {
-      console.error('Error resolving dispute:', error);
-    }
+    } catch (_error) {}
   };
 
   if (isLoading) {
