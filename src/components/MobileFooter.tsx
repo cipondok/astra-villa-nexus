@@ -1,20 +1,18 @@
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { 
-  Home, Phone, Mail, MapPin, Facebook, Instagram, 
-  MessageCircle, Building2, Glasses, Youtube, Twitter, Music2
+  Phone, Mail, Facebook, Instagram, 
+  MessageCircle, Youtube, Twitter, Music2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useNavigate } from 'react-router-dom';
 import { useSocialMediaSettings } from '@/hooks/useSocialMediaSettings';
 
 const MobileFooter = () => {
   const { isMobile } = useIsMobile();
-  const { language } = useLanguage();
-  const navigate = useNavigate();
   const { settings } = useSocialMediaSettings();
 
+  // Only show on mobile, and only shows social/contact links
+  // (primary navigation is handled by MobileFirstNavigation bottom bar)
   if (!isMobile) return null;
 
   const footerStyle: React.CSSProperties = {
@@ -31,20 +29,16 @@ const MobileFooter = () => {
     border: '1px solid rgba(255,255,240,0.7)',
     borderBottom: 'none',
     boxShadow: '0 -15px 40px -15px rgba(0,20,30,0.4), inset 0 1px 6px rgba(255,255,255,0.9), inset 0 0 25px rgba(250,230,130,0.3)',
-    padding: '0.8rem 0.6rem',
+    // Extra bottom padding so content sits above the fixed bottom nav (h-16 + safe area)
+    paddingBottom: 'calc(4rem + max(env(safe-area-inset-bottom), 8px) + 0.8rem)',
+    paddingTop: '0.8rem',
+    paddingLeft: '0.6rem',
+    paddingRight: '0.6rem',
   };
 
-  const navLinks = [
-    { path: '/', label: 'Home', icon: Home },
-    { path: '/dijual', label: 'Buy', icon: Building2 },
-    { path: '/disewa', label: 'Rent', icon: Building2 },
-    { path: '/location', label: 'Map', icon: MapPin },
-    { path: '/vr-tour', label: 'VR', icon: Glasses },
-  ];
-
   const socialIconStyle = (bg: string): React.CSSProperties => ({
-    width: '32px',
-    height: '32px',
+    width: '40px',
+    height: '40px',
     borderRadius: '50%',
     background: bg,
     backdropFilter: 'blur(8px)',
@@ -82,47 +76,29 @@ const MobileFooter = () => {
 
   return (
     <footer style={footerStyle}>
-      <nav className="flex items-center justify-between gap-1 px-2 py-1.5 mb-2"
-        style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '40px', border: '1px solid rgba(255,245,180,0.3)' }}
-      >
-        {navLinks.map(link => (
-          <button
-            key={link.path}
-            onClick={() => navigate(link.path)}
-            title={link.label}
-            aria-label={link.label}
-            className="flex flex-col items-center gap-0.5 text-[10px] transition-opacity hover:opacity-70 active:scale-95"
-            style={{ color: '#0c4455' }}
-          >
-            <link.icon className="h-3.5 w-3.5" />
-            <span>{link.label}</span>
-          </button>
-        ))}
-      </nav>
-
       <div className="flex items-center justify-between px-2">
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <Button
             variant="ghost" size="sm"
-            className="h-7 w-7 p-0 rounded-full"
+            className="h-10 w-10 p-0 rounded-full"
             style={socialIconStyle('rgba(255,240,180,0.7)')}
             onClick={() => window.open('tel:+6285716008080')}
             aria-label="Call us" title="Call us"
           >
-            <Phone className="h-3.5 w-3.5" style={{ color: '#0c404e' }} />
+            <Phone className="h-4 w-4" style={{ color: '#0c404e' }} />
           </Button>
           <Button
             variant="ghost" size="sm"
-            className="h-7 w-7 p-0 rounded-full"
+            className="h-10 w-10 p-0 rounded-full"
             style={socialIconStyle('rgba(190,230,250,0.6)')}
             onClick={() => window.open('mailto:info@astravilla.com')}
             aria-label="Email us" title="Email us"
           >
-            <Mail className="h-3.5 w-3.5" style={{ color: '#0c404e' }} />
+            <Mail className="h-4 w-4" style={{ color: '#0c404e' }} />
           </Button>
         </div>
 
-        <div className="flex items-center gap-1.5 flex-wrap justify-end">
+        <div className="flex items-center gap-2 flex-wrap justify-end">
           {socialLinks.map((link) => (
             <a
               key={link.label}
@@ -134,7 +110,7 @@ const MobileFooter = () => {
               aria-label={link.label}
               title={link.label}
             >
-              <link.Icon className="h-3.5 w-3.5" />
+              <link.Icon className="h-4 w-4" />
             </a>
           ))}
           <span className="text-[9px] pl-1" style={{ color: '#083945', fontWeight: 450 }}>© 2026</span>

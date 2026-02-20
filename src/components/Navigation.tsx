@@ -195,17 +195,11 @@ const Navigation = () => {
 
   const isAgent = profile?.role === 'agent';
   
-  // Debug admin access
-  console.log('🔍 Navigation Debug:', {
-    userEmail: user?.email, 
-    profileRole: profile?.role, 
-    isAdmin,
-    showingAdminButton: isAdmin 
-  });
+  // Note: admin check is handled by isAdmin hook
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios glass-popup backdrop-blur-2xl border-b border-primary/15 dark:border-primary/10 shadow-sm shadow-primary/5 h-10 md:h-11 lg:h-12 transition-all duration-300">
+      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios glass-popup backdrop-blur-2xl border-b border-primary/15 dark:border-primary/10 shadow-sm shadow-primary/5 h-10 md:h-11 lg:h-12 transition-all duration-300" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
         <div className="w-full mx-auto px-1 sm:px-2 lg:px-4">
           <div className="flex items-center justify-between h-10 md:h-11 lg:h-12 gap-2">
             {/* Enhanced ASTRA Villa Logo with Animation - Left Corner */}
