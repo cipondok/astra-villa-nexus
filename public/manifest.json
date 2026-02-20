@@ -81,10 +81,10 @@
       ]
     },
     {
-      "name": "Admin Dashboard",
-      "short_name": "Admin",
-      "description": "Access admin panel",
-      "url": "/admin?source=shortcut",
+      "name": "Contact Us",
+      "short_name": "Contact",
+      "description": "Get in touch with ASTRA Villa",
+      "url": "/contact?source=shortcut",
       "icons": [
         {
           "src": "/icon-192.png",
