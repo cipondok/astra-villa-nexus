@@ -67,19 +67,19 @@ const VendorPerformanceAnalytics = () => {
   });
 
   const getPerformanceColor = (score: number) => {
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600";
-    return "text-red-600";
+    if (score >= 80) return "text-chart-1";
+    if (score >= 60) return "text-chart-3";
+    return "text-destructive";
   };
 
   const getAlertSeverityColor = (severity: string) => {
     const colors = {
-      low: "bg-blue-100 text-blue-800 border-blue-200",
-      medium: "bg-yellow-100 text-yellow-800 border-yellow-200",
-      high: "bg-orange-100 text-orange-800 border-orange-200",
-      critical: "bg-red-100 text-red-800 border-red-200"
+      low: "bg-chart-2/10 text-chart-2 border-chart-2/20",
+      medium: "bg-chart-3/10 text-chart-3 border-chart-3/20",
+      high: "bg-chart-4/10 text-chart-4 border-chart-4/20",
+      critical: "bg-destructive/10 text-destructive border-destructive/20"
     };
-    return colors[severity as keyof typeof colors] || "bg-gray-100 text-gray-800";
+    return colors[severity as keyof typeof colors] || "bg-muted text-muted-foreground";
   };
 
   const getAlertIcon = (type: string) => {
@@ -117,15 +117,15 @@ const VendorPerformanceAnalytics = () => {
   return (
     <div className="space-y-4">
       {/* Professional Header */}
-      <div className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-500/10 via-green-500/5 to-transparent rounded-xl border border-emerald-200/50">
+      <div className="flex items-center justify-between p-4 bg-chart-1/5 rounded-xl border border-chart-1/20">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-emerald-500/10 rounded-lg">
-            <BarChart3 className="h-5 w-5 text-emerald-600" />
+          <div className="p-2 bg-chart-1/10 rounded-lg">
+            <BarChart3 className="h-5 w-5 text-chart-1" />
           </div>
           <div>
             <h2 className="text-lg font-semibold flex items-center gap-2">
               Vendor Performance Analytics
-              <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px]">
+              <Badge variant="outline" className="bg-chart-1/10 text-chart-1 border-chart-1/30 text-[10px]">
                 AI Insights
               </Badge>
             </h2>
@@ -146,12 +146,12 @@ const VendorPerformanceAnalytics = () => {
 
       {/* Compact Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-green-50 to-white">
+        <Card className="border-chart-1/20 bg-chart-1/5">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Revenue</p>
-                <p className="text-lg font-bold text-green-700">
+                <p className="text-lg font-bold text-chart-1">
                   {new Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
@@ -160,54 +160,54 @@ const VendorPerformanceAnalytics = () => {
                   }).format(aggregatedMetrics?.totalRevenue || 0)}
                 </p>
               </div>
-              <div className="p-2 bg-green-100 rounded-lg">
-                <DollarSign className="h-4 w-4 text-green-600" />
+              <div className="p-2 bg-chart-1/10 rounded-lg">
+                <DollarSign className="h-4 w-4 text-chart-1" />
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-white">
+        <Card className="border-chart-2/20 bg-chart-2/5">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Bookings</p>
-                <p className="text-lg font-bold text-blue-700">{aggregatedMetrics?.totalBookings || 0}</p>
+                <p className="text-lg font-bold text-chart-2">{aggregatedMetrics?.totalBookings || 0}</p>
               </div>
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Users className="h-4 w-4 text-blue-600" />
+              <div className="p-2 bg-chart-2/10 rounded-lg">
+                <Users className="h-4 w-4 text-chart-2" />
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-orange-50 to-white">
+        <Card className="border-chart-3/20 bg-chart-3/5">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Avg Response</p>
-                <p className="text-lg font-bold text-orange-700">
+                <p className="text-lg font-bold text-chart-3">
                   {Math.round((aggregatedMetrics?.avgResponseTime || 0) / (aggregatedMetrics?.count || 1))}m
                 </p>
               </div>
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <Clock className="h-4 w-4 text-orange-600" />
+              <div className="p-2 bg-chart-3/10 rounded-lg">
+                <Clock className="h-4 w-4 text-chart-3" />
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-yellow-50 to-white">
+        <Card className="border-chart-4/20 bg-chart-4/5">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Satisfaction</p>
-                <p className="text-lg font-bold text-yellow-700">
+                <p className="text-lg font-bold text-chart-4">
                   {((aggregatedMetrics?.avgSatisfaction || 0) / (aggregatedMetrics?.count || 1)).toFixed(1)}
                 </p>
               </div>
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <Star className="h-4 w-4 text-yellow-600" />
+              <div className="p-2 bg-chart-4/10 rounded-lg">
+                <Star className="h-4 w-4 text-chart-4" />
               </div>
             </div>
           </CardContent>
@@ -216,15 +216,15 @@ const VendorPerformanceAnalytics = () => {
 
       <Tabs defaultValue="overview" className="space-y-3">
         <TabsList className="h-9 p-1 bg-muted/50">
-          <TabsTrigger value="overview" className="text-xs h-7 px-3 data-[state=active]:bg-emerald-100 data-[state=active]:text-emerald-700">
+          <TabsTrigger value="overview" className="text-xs h-7 px-3 data-[state=active]:bg-chart-1/10 data-[state=active]:text-chart-1">
             <TrendingUp className="h-3 w-3 mr-1" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="alerts" className="text-xs h-7 px-3 data-[state=active]:bg-red-100 data-[state=active]:text-red-700">
+          <TabsTrigger value="alerts" className="text-xs h-7 px-3 data-[state=active]:bg-destructive/10 data-[state=active]:text-destructive">
             <AlertTriangle className="h-3 w-3 mr-1" />
             Alerts ({alerts?.length || 0})
           </TabsTrigger>
-          <TabsTrigger value="insights" className="text-xs h-7 px-3 data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700">
+          <TabsTrigger value="insights" className="text-xs h-7 px-3 data-[state=active]:bg-primary/10 data-[state=active]:text-primary">
             <Lightbulb className="h-3 w-3 mr-1" />
             AI Insights
           </TabsTrigger>
@@ -232,9 +232,9 @@ const VendorPerformanceAnalytics = () => {
 
         <TabsContent value="overview">
           <Card className="border-0 shadow-sm">
-            <CardHeader className="pb-3 bg-gradient-to-r from-emerald-50 to-transparent">
+            <CardHeader className="pb-3 bg-chart-1/5">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Activity className="h-4 w-4 text-emerald-600" />
+                <Activity className="h-4 w-4 text-chart-1" />
                 Vendor Performance Metrics
               </CardTitle>
               <CardDescription className="text-xs">Daily performance tracking with AI-generated scores</CardDescription>
@@ -293,9 +293,9 @@ const VendorPerformanceAnalytics = () => {
 
         <TabsContent value="alerts">
           <Card className="border-0 shadow-sm">
-            <CardHeader className="pb-3 bg-gradient-to-r from-red-50 to-transparent">
+            <CardHeader className="pb-3 bg-destructive/5">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-red-600" />
+                <AlertTriangle className="h-4 w-4 text-destructive" />
                 AI-Generated Alerts
               </CardTitle>
               <CardDescription className="text-xs">Automated alerts for performance drops and opportunities</CardDescription>
@@ -317,7 +317,7 @@ const VendorPerformanceAnalytics = () => {
                         </div>
                         <p className="text-xs text-muted-foreground mb-2">{alert.alert_message}</p>
                         {alert.ai_recommendation && (
-                          <div className="p-2 bg-blue-50 rounded text-xs">
+                          <div className="p-2 bg-chart-2/10 rounded text-xs">
                             <strong>AI:</strong> {alert.ai_recommendation}
                           </div>
                         )}
@@ -335,9 +335,9 @@ const VendorPerformanceAnalytics = () => {
 
         <TabsContent value="insights">
           <Card className="border-0 shadow-sm">
-            <CardHeader className="pb-3 bg-gradient-to-r from-violet-50 to-transparent">
+            <CardHeader className="pb-3 bg-primary/5">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Lightbulb className="h-4 w-4 text-violet-600" />
+                <Lightbulb className="h-4 w-4 text-primary" />
                 AI-Powered Insights
               </CardTitle>
               <CardDescription className="text-xs">Machine learning insights and recommendations</CardDescription>
@@ -352,7 +352,7 @@ const VendorPerformanceAnalytics = () => {
                         {new Date(metric.metric_date).toLocaleDateString('id-ID')}
                       </p>
                     </div>
-                    <div className="p-2 bg-violet-50 rounded text-xs">
+                    <div className="p-2 bg-primary/5 rounded text-xs">
                       <pre className="whitespace-pre-wrap font-sans">
                         {JSON.stringify(metric.ai_insights, null, 2)}
                       </pre>

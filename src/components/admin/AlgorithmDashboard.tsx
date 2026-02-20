@@ -106,10 +106,10 @@ export function AlgorithmDashboard() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-lg border border-indigo-200/50 dark:border-indigo-800/50">
+      <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg border border-primary/20">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <Brain className="h-4 w-4 text-white" />
+          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+            <Brain className="h-4 w-4 text-primary" />
           </div>
           <div>
             <h2 className="text-sm font-bold">Algorithm Dashboard</h2>
@@ -128,10 +128,10 @@ export function AlgorithmDashboard() {
 
       {/* Algorithm Status Overview */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-        <div className="p-2 rounded-lg border bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50 dark:border-blue-800/30">
+        <div className="p-2 rounded-lg border bg-chart-2/5 border-chart-2/20">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1.5">
-              <Search className="h-3 w-3 text-blue-600" />
+              <Search className="h-3 w-3 text-chart-2" />
               <span className="text-[9px] font-medium text-muted-foreground">Search Algorithm</span>
             </div>
             <Button
@@ -147,10 +147,10 @@ export function AlgorithmDashboard() {
           <div className="text-[8px] text-muted-foreground">Success Rate</div>
         </div>
 
-        <div className="p-2 rounded-lg border bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 dark:border-purple-800/30">
+        <div className="p-2 rounded-lg border bg-primary/5 border-primary/20">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1.5">
-              <Brain className="h-3 w-3 text-purple-600" />
+              <Brain className="h-3 w-3 text-primary" />
               <span className="text-[9px] font-medium text-muted-foreground">Recommendations</span>
             </div>
             <Button
@@ -166,10 +166,10 @@ export function AlgorithmDashboard() {
           <div className="text-[8px] text-muted-foreground">Click-through Rate</div>
         </div>
 
-        <div className="p-2 rounded-lg border bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/30">
+        <div className="p-2 rounded-lg border bg-chart-1/5 border-chart-1/20">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1.5">
-              <Eye className="h-3 w-3 text-green-600" />
+              <Eye className="h-3 w-3 text-chart-1" />
               <span className="text-[9px] font-medium text-muted-foreground">Behavior Analytics</span>
             </div>
             <Button
@@ -185,10 +185,10 @@ export function AlgorithmDashboard() {
           <div className="text-[8px] text-muted-foreground">Avg Engagement</div>
         </div>
 
-        <div className="p-2 rounded-lg border bg-orange-50/50 dark:bg-orange-950/20 border-orange-200/50 dark:border-orange-800/30">
+        <div className="p-2 rounded-lg border bg-chart-3/5 border-chart-3/20">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1.5">
-              <Zap className="h-3 w-3 text-orange-600" />
+              <Zap className="h-3 w-3 text-chart-3" />
               <span className="text-[9px] font-medium text-muted-foreground">3D Optimization</span>
             </div>
             <Button
@@ -218,10 +218,10 @@ export function AlgorithmDashboard() {
         <TabsContent value="overview" className="space-y-3 mt-2">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {/* Key Performance Indicators */}
-            <Card className="border-indigo-200/50 dark:border-indigo-800/30">
+            <Card className="border-primary/20">
               <CardHeader className="p-3 pb-2">
                 <CardTitle className="text-xs flex items-center gap-2">
-                  <BarChart3 className="h-3 w-3 text-indigo-600" />
+                  <BarChart3 className="h-3 w-3 text-primary" />
                   Key Performance Indicators
                 </CardTitle>
               </CardHeader>
@@ -255,11 +255,10 @@ export function AlgorithmDashboard() {
               </CardContent>
             </Card>
 
-            {/* Algorithm Health Status */}
-            <Card className="border-orange-200/50 dark:border-orange-800/30">
+            <Card className="border-chart-3/20">
               <CardHeader className="p-3 pb-2">
                 <CardTitle className="text-xs flex items-center gap-2">
-                  <AlertTriangle className="h-3 w-3 text-orange-600" />
+                  <AlertTriangle className="h-3 w-3 text-chart-3" />
                   Algorithm Health Status
                 </CardTitle>
               </CardHeader>
@@ -319,9 +318,9 @@ interface AlgorithmHealthItemProps {
 
 function AlgorithmHealthItem({ name, status, value }: AlgorithmHealthItemProps) {
   const statusColors = {
-    healthy: 'text-green-600 bg-green-100 dark:bg-green-900/30',
-    warning: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30',
-    critical: 'text-red-600 bg-red-100 dark:bg-red-900/30'
+    healthy: 'text-chart-1 bg-chart-1/10',
+    warning: 'text-chart-3 bg-chart-3/10',
+    critical: 'text-destructive bg-destructive/10'
   };
 
   const statusLabels = {
