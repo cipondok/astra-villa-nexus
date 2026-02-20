@@ -158,7 +158,6 @@ export const KYCAnalyticsDashboard = () => {
   const { data: bpjsStats } = useQuery({
     queryKey: ['bpjs-stats', timeRange],
     queryFn: async () => {
-      console.warn('BPJS analytics require enhanced security clearance');
       return {
         kesehatan_verified: 0,
         kesehatan_pending: 0,
@@ -202,8 +201,7 @@ export const KYCAnalyticsDashboard = () => {
       a.download = `kyc-analytics-${format(new Date(), 'yyyy-MM-dd')}.csv`;
       a.click();
       window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Export failed:', error);
+    } catch (_error) {
     }
   };
 

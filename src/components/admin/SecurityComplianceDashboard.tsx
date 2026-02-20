@@ -142,7 +142,6 @@ const SecurityComplianceDashboard = () => {
       });
 
     } catch (error) {
-      console.error('Error fetching security data:', error);
       toast({
         title: "Error loading security data",
         description: "Failed to fetch security monitoring data.",

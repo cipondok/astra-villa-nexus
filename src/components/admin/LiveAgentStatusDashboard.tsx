@@ -105,61 +105,61 @@ const LiveAgentStatusDashboard = () => {
   }) || [];
 
   return (
-    <Card className="bg-white/10 backdrop-blur-md border-white/20">
+    <Card className="bg-card border-border">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-white">
+        <CardTitle className="flex items-center gap-2">
           <Wifi className="h-5 w-5" />
           Live Agent Status
         </CardTitle>
-        <CardDescription className="text-gray-300">
+        <CardDescription className="text-muted-foreground">
           Manage your availability and see which agents are online. (Updates every 15 seconds)
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between p-4 rounded-lg bg-black/20">
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between p-4 rounded-lg bg-muted/40 border border-border">
             <div>
-                <p className="text-white font-semibold">Your Status</p>
-                <p className="text-sm text-gray-400">Set your availability for customer chats.</p>
+                <p className="font-semibold">Your Status</p>
+                <p className="text-sm text-muted-foreground">Set your availability for customer chats.</p>
             </div>
             <Select value={localStatus} onValueChange={handleStatusChange}>
-                <SelectTrigger className="w-[180px] bg-white/10 border-white/20 text-white">
+                <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Set status" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-700">
-                    <SelectItem value="online" className="text-white">Online</SelectItem>
-                    <SelectItem value="busy" className="text-white">Busy</SelectItem>
-                    <SelectItem value="offline" className="text-white">Offline</SelectItem>
+                <SelectContent>
+                    <SelectItem value="online">Online</SelectItem>
+                    <SelectItem value="busy">Busy</SelectItem>
+                    <SelectItem value="offline">Offline</SelectItem>
                 </SelectContent>
             </Select>
         </div>
         
         <div className="space-y-4">
             <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-gray-300" />
-                <h3 className="text-lg font-semibold text-white">Online Agents ({onlineAgents.length})</h3>
+                <Users className="h-5 w-5 text-muted-foreground" />
+                <h3 className="text-lg font-semibold">Online Agents ({onlineAgents.length})</h3>
             </div>
             {isLoading ? (
-                <p className="text-gray-300">Loading agents...</p>
+                <p className="text-muted-foreground">Loading agents...</p>
             ) : onlineAgents.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {onlineAgents.map(agent => (
-                        <div key={agent.id} className="flex items-center gap-3 p-3 rounded-md bg-black/20">
+                        <div key={agent.id} className="flex items-center gap-3 p-3 rounded-md bg-muted/40 border border-border">
                             <Avatar>
                                 <AvatarImage src={agent.avatar_url ?? undefined} />
                                 <AvatarFallback>{agent.full_name?.charAt(0) || 'A'}</AvatarFallback>
                             </Avatar>
                             <div className="flex-1">
-                                <p className="font-medium text-white">{agent.full_name}</p>
-                                <p className="text-sm text-gray-400">{agent.email}</p>
+                                <p className="font-medium">{agent.full_name}</p>
+                                <p className="text-sm text-muted-foreground">{agent.email}</p>
                             </div>
-                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                            <div className="w-2 h-2 rounded-full bg-chart-1"></div>
                         </div>
                     ))}
                 </div>
             ) : (
-                <div className="flex flex-col items-center justify-center text-center p-8 bg-black/20 rounded-lg">
-                    <WifiOff className="h-10 w-10 text-gray-500 mb-4" />
-                    <p className="text-gray-400">No agents are currently online.</p>
+                <div className="flex flex-col items-center justify-center text-center p-8 bg-muted/20 rounded-lg border border-border">
+                    <WifiOff className="h-10 w-10 text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">No agents are currently online.</p>
                 </div>
             )}
         </div>
