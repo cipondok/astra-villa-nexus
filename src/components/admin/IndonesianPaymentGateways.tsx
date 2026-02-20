@@ -220,11 +220,11 @@ const IndonesianPaymentGateways = () => {
               <CardContent className="px-3 pb-3">
                 <div className="space-y-2">
                   {[
-                    { name: 'GoPay', pct: 35.2, color: 'bg-emerald-500' },
-                    { name: 'BCA VA', pct: 28.7, color: 'bg-blue-500' },
-                    { name: 'OVO', pct: 18.9, color: 'bg-purple-500' },
-                    { name: 'ShopeePay', pct: 12.4, color: 'bg-orange-500' },
-                    { name: 'Others', pct: 4.8, color: 'bg-gray-500' }
+                    { name: 'GoPay', pct: 35.2, color: 'bg-chart-1' },
+                    { name: 'BCA VA', pct: 28.7, color: 'bg-chart-2' },
+                    { name: 'OVO', pct: 18.9, color: 'bg-chart-5' },
+                    { name: 'ShopeePay', pct: 12.4, color: 'bg-chart-3' },
+                    { name: 'Others', pct: 4.8, color: 'bg-muted-foreground' }
                   ].map((item) => (
                     <div key={item.name} className="space-y-1">
                       <div className="flex justify-between text-[10px]">
