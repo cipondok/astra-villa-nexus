@@ -32,7 +32,7 @@ const IndonesianPaymentGateways = () => {
     {
       category: 'E-Wallets',
       icon: Smartphone,
-      color: 'border-l-emerald-500',
+      color: 'border-l-chart-1',
       methods: [
         { id: 'gopay', name: 'GoPay', logo: '🏍️', fee: '2.9%', status: 'active', transactions: 15420 },
         { id: 'ovo', name: 'OVO', logo: '💜', fee: '2.9%', status: 'active', transactions: 12350 },
@@ -44,7 +44,7 @@ const IndonesianPaymentGateways = () => {
     {
       category: 'Bank Transfer',
       icon: Building,
-      color: 'border-l-blue-500',
+      color: 'border-l-chart-2',
       methods: [
         { id: 'bca', name: 'BCA VA', logo: '🏦', fee: '4000', status: 'active', transactions: 23450 },
         { id: 'mandiri', name: 'Mandiri VA', logo: '🏛️', fee: '4000', status: 'inactive', transactions: 0 },
@@ -56,7 +56,7 @@ const IndonesianPaymentGateways = () => {
     {
       category: 'Others',
       icon: CreditCard,
-      color: 'border-l-purple-500',
+      color: 'border-l-chart-4',
       methods: [
         { id: 'qris', name: 'QRIS', logo: '📱', fee: '0.7%', status: 'active', transactions: 5670 },
         { id: 'kredivo', name: 'Kredivo', logo: '💳', fee: '2.95%', status: 'inactive', transactions: 0 },
@@ -73,10 +73,10 @@ const IndonesianPaymentGateways = () => {
   };
 
   const stats = [
-    { label: 'Active Gateways', value: Object.values(activeGateways).filter(Boolean).length, icon: CheckCircle, color: 'text-emerald-400' },
-    { label: 'Monthly Txns', value: '65.6K', icon: CreditCard, color: 'text-blue-400' },
-    { label: 'Success Rate', value: '98.5%', icon: CheckCircle, color: 'text-green-400' },
-    { label: 'Revenue', value: 'Rp 2.3B', icon: Building, color: 'text-purple-400' }
+    { label: 'Active Gateways', value: Object.values(activeGateways).filter(Boolean).length, icon: CheckCircle, color: 'text-chart-1' },
+    { label: 'Monthly Txns', value: '65.6K', icon: CreditCard, color: 'text-chart-2' },
+    { label: 'Success Rate', value: '98.5%', icon: CheckCircle, color: 'text-primary' },
+    { label: 'Revenue', value: 'Rp 2.3B', icon: Building, color: 'text-chart-4' }
   ];
 
   return (
@@ -159,7 +159,7 @@ const IndonesianPaymentGateways = () => {
         </TabsContent>
 
         <TabsContent value="configuration" className="mt-3">
-          <Card className="bg-card/50 border-border/50 border-l-2 border-l-orange-500">
+          <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-3">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs text-foreground">Gateway Configuration</CardTitle>
               <CardDescription className="text-[10px]">Configure API keys and settings</CardDescription>
@@ -213,7 +213,7 @@ const IndonesianPaymentGateways = () => {
 
         <TabsContent value="analytics" className="mt-3">
           <div className="grid grid-cols-2 gap-3">
-            <Card className="bg-card/50 border-border/50 border-l-2 border-l-cyan-500">
+            <Card className="bg-card/50 border-border/50 border-l-2 border-l-primary">
               <CardHeader className="py-2 px-3">
                 <CardTitle className="text-xs text-foreground">Payment Distribution</CardTitle>
               </CardHeader>
@@ -240,7 +240,7 @@ const IndonesianPaymentGateways = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-card/50 border-border/50 border-l-2 border-l-green-500">
+            <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-1">
               <CardHeader className="py-2 px-3">
                 <CardTitle className="text-xs text-foreground">Success Rates</CardTitle>
               </CardHeader>
@@ -258,8 +258,8 @@ const IndonesianPaymentGateways = () => {
                         variant="outline" 
                         className={`text-[9px] px-1.5 py-0 ${
                           item.status === 'success' 
-                            ? 'border-emerald-500/50 text-emerald-400' 
-                            : 'border-yellow-500/50 text-yellow-400'
+                            ? 'border-chart-1/50 text-chart-1' 
+                            : 'border-chart-3/50 text-chart-3'
                         }`}
                       >
                         {item.rate}
@@ -273,7 +273,7 @@ const IndonesianPaymentGateways = () => {
         </TabsContent>
 
         <TabsContent value="fees" className="mt-3">
-          <Card className="bg-card/50 border-border/50 border-l-2 border-l-amber-500">
+          <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-3">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs text-foreground">Fee Structure</CardTitle>
               <CardDescription className="text-[10px]">Current gateway fees</CardDescription>

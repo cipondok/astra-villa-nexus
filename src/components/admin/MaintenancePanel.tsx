@@ -85,7 +85,7 @@ const MaintenancePanel = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">System Maintenance</h2>
-          <p className="text-gray-600">System maintenance, updates, and health monitoring</p>
+          <p className="text-muted-foreground">System maintenance, updates, and health monitoring</p>
         </div>
         <Button onClick={runMaintenance} disabled={isRunningMaintenance}>
           <Wrench className="h-4 w-4 mr-2" />
@@ -98,10 +98,10 @@ const MaintenancePanel = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">System Health</p>
+                <p className="text-sm font-medium text-muted-foreground">System Health</p>
                 <p className="text-2xl font-bold">{systemStatus.health}%</p>
               </div>
-              <Activity className="h-8 w-8 text-green-500" />
+              <Activity className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -110,10 +110,10 @@ const MaintenancePanel = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Uptime</p>
+                <p className="text-sm font-medium text-muted-foreground">Uptime</p>
                 <p className="text-2xl font-bold">{systemStatus.uptime}%</p>
               </div>
-              <Server className="h-8 w-8 text-blue-500" />
+              <Server className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -122,10 +122,10 @@ const MaintenancePanel = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Database Size</p>
+                <p className="text-sm font-medium text-muted-foreground">Database Size</p>
                 <p className="text-2xl font-bold">{systemStatus.dbSize}</p>
               </div>
-              <Database className="h-8 w-8 text-purple-500" />
+              <Database className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -134,10 +134,10 @@ const MaintenancePanel = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Issues</p>
+                <p className="text-sm font-medium text-muted-foreground">Issues</p>
                 <p className="text-2xl font-bold">{systemStatus.issues}</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-yellow-500" />
+              <AlertTriangle className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -167,13 +167,13 @@ const MaintenancePanel = () => {
                   <div key={service.name} className="flex items-center justify-between p-3 border rounded">
                     <div className="flex items-center gap-3">
                       {service.status === 'healthy' ? 
-                        <CheckCircle className="h-5 w-5 text-green-500" /> :
-                        <AlertTriangle className="h-5 w-5 text-yellow-500" />
+                        <CheckCircle className="h-5 w-5 text-chart-1" /> :
+                        <AlertTriangle className="h-5 w-5 text-chart-3" />
                       }
                       <span>{service.name}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-500">{service.uptime}</span>
+                      <span className="text-sm text-muted-foreground">{service.uptime}</span>
                       <Badge variant={service.status === 'healthy' ? 'default' : 'secondary'}>
                         {service.status}
                       </Badge>
@@ -195,7 +195,7 @@ const MaintenancePanel = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium">Enable Maintenance Mode</div>
-                    <div className="text-sm text-gray-500">Display maintenance page to users</div>
+                    <div className="text-sm text-muted-foreground">Display maintenance page to users</div>
                   </div>
                   <Switch 
                     checked={maintenanceMode}
@@ -240,14 +240,14 @@ const MaintenancePanel = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="p-4 border rounded bg-blue-50">
+                <div className="p-4 border rounded bg-chart-2/5 border-chart-2/20">
                   <div className="font-medium">Security Update Available</div>
-                  <div className="text-sm text-gray-600">Critical security patches ready for installation</div>
+                  <div className="text-sm text-muted-foreground">Critical security patches ready for installation</div>
                   <Button size="sm" className="mt-2">Install Now</Button>
                 </div>
-                <div className="p-4 border rounded bg-green-50">
+                <div className="p-4 border rounded bg-chart-1/5 border-chart-1/20">
                   <div className="font-medium">System Up to Date</div>
-                  <div className="text-sm text-gray-600">All components are running the latest versions</div>
+                  <div className="text-sm text-muted-foreground">All components are running the latest versions</div>
                 </div>
               </div>
             </CardContent>
