@@ -33,25 +33,20 @@ const LoadingProgressPopup = lazy(() => import('@/components/ui/LoadingProgressP
 const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAIChatWidget'));
 const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
 
-import SessionExpirationHandler from '@/components/SessionExpirationHandler';
-import AuthNotificationHandler from '@/components/AuthNotificationHandler';
-import OnboardingHandler from '@/components/OnboardingHandler';
-import { DailyLoginReward } from '@/components/gamification';
+// Lazy load shell handlers — none are needed for first paint
+const SessionExpirationHandler = lazy(() => import('@/components/SessionExpirationHandler'));
+const AuthNotificationHandler = lazy(() => import('@/components/AuthNotificationHandler'));
 
-// Critical pages - load immediately
-import Index from '@/pages/Index';
-import Search from '@/pages/Search';
-import ErrorPage from '@/pages/ErrorPage';
-
-// Auth is not critical for first paint - lazy load it
-const Auth = lazy(() => import('@/pages/Auth'));
-
-// Route guards
+// Route guards — small but pull in auth context chains eagerly
 import VendorOnlyRoute from '@/components/VendorOnlyRoute';
 import AgentOnlyRoute from '@/components/AgentOnlyRoute';
 import PropertyOwnerOnlyRoute from '@/components/PropertyOwnerOnlyRoute';
 
-// Lazy load heavy pages for better initial load performance
+// All pages — lazy loaded for minimum initial bundle
+const Index = lazy(() => import('@/pages/Index'));
+const Search = lazy(() => import('@/pages/Search'));
+const ErrorPage = lazy(() => import('@/pages/ErrorPage'));
+const Auth = lazy(() => import('@/pages/Auth'));
 const PropertyDetail = lazy(() => import('@/pages/PropertyDetail'));
 const Dijual = lazy(() => import('@/pages/Dijual'));
 const Disewa = lazy(() => import('@/pages/Disewa'));
@@ -131,7 +126,7 @@ const AppContent = () => {
   useCLSMonitor(process.env.NODE_ENV === 'development');
   useScrollRestore(true);
   useVIPNotifications();
-  useQueryLoadingIntegration(); // Auto-show loading popup on React Query activity
+  useQueryLoadingIntegration();
   
   const location = useLocation();
   const { language } = useLanguage();
@@ -140,8 +135,8 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <GlobalLoadingIndicator />
-      {!isAdminRoute && <Navigation />}
+      <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
+      {!isAdminRoute && <Suspense fallback={null}><Navigation /></Suspense>}
       <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12'}>
         <Suspense fallback={<PageLoader />}>
           <Routes>
@@ -246,7 +241,11 @@ const AppContent = () => {
           </Routes>
         </Suspense>
       </main>
-      {!isAdminRoute && (isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />)}
+      {!isAdminRoute && (
+        <Suspense fallback={null}>
+          {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
+        </Suspense>
+      )}
     </div>
   );
 };
@@ -359,7 +358,7 @@ function App() {
     <ErrorBoundary>
       <AnimatePresence mode="wait">
         {isLoading && welcomeEnabled ? (
-          <InitialLoadingScreen key="loading" />
+          <Suspense fallback={null}><InitialLoadingScreen key="loading" /></Suspense>
         ) : (
           <Router key="app">
             <QueryClientProvider client={queryClient}>
@@ -377,13 +376,10 @@ function App() {
                             <Suspense fallback={null}>
                               <ResponsiveAIChatWidget />
                               <WhatsAppInquiryButton variant="floating" defaultType="general" />
+                              <LoadingProgressPopup />
+                              <SessionExpirationHandler />
+                              <AuthNotificationHandler />
                             </Suspense>
-                            <LoadingProgressPopup />
-                            <SessionExpirationHandler />
-                            <AuthNotificationHandler />
-                            {/* OnboardingHandler disabled permanently */}
-                            {/* DailyLoginReward disabled - claim via ASTRA Wallet instead */}
-                            {/* <DailyLoginReward autoShow /> */}
                           </PropertyComparisonProvider>
                         </NotificationProvider>
                       </AuthProvider>
