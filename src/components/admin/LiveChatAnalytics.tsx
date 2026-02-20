@@ -18,7 +18,7 @@ import {
 } from "recharts";
 import { TrendingUp, Clock, Users, MessageSquare } from "lucide-react";
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ['hsl(var(--chart-2))', 'hsl(var(--chart-1))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))'];
 
 const LiveChatAnalytics = () => {
   // Fetch chat analytics data
@@ -96,7 +96,7 @@ const LiveChatAnalytics = () => {
   return (
     <div className="space-y-6">
       {/* Analytics Header */}
-      <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-none">
+      <Card className="bg-muted/20 border-border">
         <CardContent className="p-6">
           <h1 className="text-3xl font-bold text-foreground flex items-center gap-3 mb-6">
             <TrendingUp className="h-8 w-8" />
@@ -105,10 +105,10 @@ const LiveChatAnalytics = () => {
           
           {/* Key Metrics */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+            <div className="bg-card rounded-xl p-4 border border-border">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                  <MessageSquare className="h-5 w-5 text-blue-600" />
+                <div className="w-10 h-10 bg-chart-2/10 rounded-lg flex items-center justify-center">
+                  <MessageSquare className="h-5 w-5 text-chart-2" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-foreground">{analyticsData?.totalSessions}</div>
@@ -117,10 +117,10 @@ const LiveChatAnalytics = () => {
               </div>
             </div>
             
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+            <div className="bg-card rounded-xl p-4 border border-border">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="h-5 w-5 text-green-600" />
+                <div className="w-10 h-10 bg-chart-1/10 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="h-5 w-5 text-chart-1" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-foreground">{resolutionRate}%</div>
@@ -129,10 +129,10 @@ const LiveChatAnalytics = () => {
               </div>
             </div>
             
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+            <div className="bg-card rounded-xl p-4 border border-border">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                  <Clock className="h-5 w-5 text-orange-600" />
+                <div className="w-10 h-10 bg-chart-3/10 rounded-lg flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-chart-3" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-foreground">2.5m</div>
@@ -141,10 +141,10 @@ const LiveChatAnalytics = () => {
               </div>
             </div>
             
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+            <div className="bg-card rounded-xl p-4 border border-border">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <Users className="h-5 w-5 text-purple-600" />
+                <div className="w-10 h-10 bg-chart-4/10 rounded-lg flex items-center justify-center">
+                  <Users className="h-5 w-5 text-chart-4" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-foreground">4.8</div>
@@ -170,8 +170,8 @@ const LiveChatAnalytics = () => {
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="sessions" fill="#3B82F6" />
-                <Bar dataKey="resolved" fill="#10B981" />
+                <Bar dataKey="sessions" fill="hsl(var(--chart-2))" />
+                <Bar dataKey="resolved" fill="hsl(var(--chart-1))" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -245,7 +245,7 @@ const LiveChatAnalytics = () => {
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="resolved" stroke="#10B981" strokeWidth={2} />
+                <Line type="monotone" dataKey="resolved" stroke="hsl(var(--chart-1))" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
