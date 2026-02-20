@@ -117,7 +117,7 @@ const ImageOptimizationPanel: React.FC = () => {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center space-x-2">
-                <Gauge className="h-4 w-4 text-green-500" />
+                <Gauge className="h-4 w-4 text-chart-1" />
                 <div className="text-2xl font-bold">{getAverageCompression()}%</div>
               </div>
               <p className="text-xs text-muted-foreground">Average Compression</p>
@@ -127,7 +127,7 @@ const ImageOptimizationPanel: React.FC = () => {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center space-x-2">
-                <Download className="h-4 w-4 text-blue-500" />
+                <Download className="h-4 w-4 text-primary" />
                 <div className="text-2xl font-bold">{formatFileSize(getTotalSavings())}</div>
               </div>
               <p className="text-xs text-muted-foreground">Total Savings</p>
@@ -137,7 +137,7 @@ const ImageOptimizationPanel: React.FC = () => {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center space-x-2">
-                <Sparkles className="h-4 w-4 text-purple-500" />
+                <Sparkles className="h-4 w-4 text-chart-4" />
                 <div className="text-2xl font-bold">
                   {optimizedImages.filter(img => img.webpFile).length}
                 </div>
@@ -290,7 +290,7 @@ const ImageOptimizationPanel: React.FC = () => {
                         </div>
                         <div>
                           <p className="text-muted-foreground">Compression</p>
-                          <p className="font-medium text-green-600">{image.compressionRatio}%</p>
+                          <p className="font-medium text-chart-1">{image.compressionRatio}%</p>
                         </div>
                       </div>
                       

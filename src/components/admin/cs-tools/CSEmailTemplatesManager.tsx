@@ -130,11 +130,11 @@ const CSEmailTemplatesManager = () => {
 
   const getTypeVariant = (type: string) => {
     switch (type) {
-      case 'welcome': return 'bg-blue-100 text-blue-800';
-      case 'follow_up': return 'bg-green-100 text-green-800';
-      case 'resolution': return 'bg-purple-100 text-purple-800';
-      case 'escalation': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'welcome': return 'bg-chart-2/10 text-chart-2 border-chart-2/20';
+      case 'follow_up': return 'bg-chart-1/10 text-chart-1 border-chart-1/20';
+      case 'resolution': return 'bg-chart-4/10 text-chart-4 border-chart-4/20';
+      case 'escalation': return 'bg-destructive/10 text-destructive border-destructive/20';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 

@@ -33,20 +33,20 @@ interface ActivityDetailsModalProps {
 const ActivityDetailsModal = ({ isOpen, onClose, type, title, data }: ActivityDetailsModalProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'approved': return 'bg-green-500';
-      case 'pending_approval': return 'bg-yellow-500';
-      case 'rejected': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'approved': return 'bg-chart-1';
+      case 'pending_approval': return 'bg-chart-3';
+      case 'rejected': return 'bg-destructive';
+      default: return 'bg-muted';
     }
   };
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'bg-purple-500';
-      case 'agent': return 'bg-blue-500';
-      case 'property_owner': return 'bg-green-500';
-      case 'vendor': return 'bg-orange-500';
-      default: return 'bg-gray-500';
+      case 'admin': return 'bg-chart-4';
+      case 'agent': return 'bg-chart-2';
+      case 'property_owner': return 'bg-chart-1';
+      case 'vendor': return 'bg-chart-3';
+      default: return 'bg-muted';
     }
   };
 
