@@ -299,19 +299,19 @@ const FeedbackBugSystem = () => {
 
   const getSeverityBadge = (severity: string) => {
     const colors: Record<string, string> = {
-      low: "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
-      medium: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300",
-      high: "bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300",
-      critical: "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+      low: "bg-chart-2/10 text-chart-2 border-chart-2/20",
+      medium: "bg-chart-3/10 text-chart-3 border-chart-3/20",
+      high: "bg-chart-4/10 text-chart-4 border-chart-4/20",
+      critical: "bg-destructive/10 text-destructive border-destructive/20"
     };
     return <Badge className={colors[severity] || colors.medium}>{severity}</Badge>;
   };
 
   const getHealthStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'text-green-500';
-      case 'degraded': return 'text-yellow-500';
-      case 'down': return 'text-red-500';
+      case 'healthy': return 'text-chart-1';
+      case 'degraded': return 'text-chart-3';
+      case 'down': return 'text-destructive';
       default: return 'text-muted-foreground';
     }
   };
@@ -409,43 +409,43 @@ const FeedbackBugSystem = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
+        <Card className="bg-chart-2/5 border-chart-2/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-blue-600" />
-              <span className="text-sm text-blue-700 dark:text-blue-300">{t.totalFeedback}</span>
+              <MessageSquare className="h-5 w-5 text-chart-2" />
+              <span className="text-sm text-chart-2">{t.totalFeedback}</span>
             </div>
-            <p className="text-2xl font-bold text-blue-900 dark:text-blue-100 mt-1">{stats.totalFeedback}</p>
+            <p className="text-2xl font-bold text-foreground mt-1">{stats.totalFeedback}</p>
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950 dark:to-red-900 border-red-200 dark:border-red-800">
+        <Card className="bg-destructive/5 border-destructive/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Bug className="h-5 w-5 text-red-600" />
-              <span className="text-sm text-red-700 dark:text-red-300">{t.openBugs}</span>
+              <Bug className="h-5 w-5 text-destructive" />
+              <span className="text-sm text-destructive">{t.openBugs}</span>
             </div>
-            <p className="text-2xl font-bold text-red-900 dark:text-red-100 mt-1">{stats.openBugs}</p>
+            <p className="text-2xl font-bold text-foreground mt-1">{stats.openBugs}</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900 border-yellow-200 dark:border-yellow-800">
+        <Card className="bg-chart-3/5 border-chart-3/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Settings className="h-5 w-5 text-yellow-600" />
-              <span className="text-sm text-yellow-700 dark:text-yellow-300">{t.pendingUpdates}</span>
+              <Settings className="h-5 w-5 text-chart-3" />
+              <span className="text-sm text-chart-3">{t.pendingUpdates}</span>
             </div>
-            <p className="text-2xl font-bold text-yellow-900 dark:text-yellow-100 mt-1">{stats.pendingUpdates}</p>
+            <p className="text-2xl font-bold text-foreground mt-1">{stats.pendingUpdates}</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
+        <Card className="bg-chart-1/5 border-chart-1/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Activity className="h-5 w-5 text-green-600" />
-              <span className="text-sm text-green-700 dark:text-green-300">{t.systemHealth}</span>
+              <Activity className="h-5 w-5 text-chart-1" />
+              <span className="text-sm text-chart-1">{t.systemHealth}</span>
             </div>
-            <p className="text-2xl font-bold text-green-900 dark:text-green-100 mt-1">{stats.healthScore}%</p>
+            <p className="text-2xl font-bold text-foreground mt-1">{stats.healthScore}%</p>
           </CardContent>
         </Card>
       </div>
@@ -523,7 +523,7 @@ const FeedbackBugSystem = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Bug className="h-5 w-5 text-red-500" />
+                <Bug className="h-5 w-5 text-destructive" />
                 {t.bugsTab}
               </CardTitle>
             </CardHeader>
@@ -562,7 +562,7 @@ const FeedbackBugSystem = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-yellow-500" />
+                <Zap className="h-5 w-5 text-chart-3" />
                 {t.updatesTab}
               </CardTitle>
             </CardHeader>

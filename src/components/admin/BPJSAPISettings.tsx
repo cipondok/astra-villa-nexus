@@ -183,7 +183,7 @@ const BPJSAPISettings = () => {
             </div>
             <div className="flex items-center gap-2">
               {existing?.is_active && (
-                <Badge variant="default" className="bg-green-600">
+                <Badge variant="default" className="bg-chart-1 text-chart-1-foreground">
                   Active
                 </Badge>
               )}
@@ -270,8 +270,8 @@ const BPJSAPISettings = () => {
           {testResult && (
             <div className={`p-3 rounded-md text-sm ${
               testResult.success 
-                ? "bg-green-50 text-green-800 border border-green-200" 
-                : "bg-red-50 text-red-800 border border-red-200"
+                ? "bg-chart-1/10 text-chart-1 border border-chart-1/20" 
+                : "bg-destructive/10 text-destructive border border-destructive/20"
             }`}>
               <p className="font-medium">
                 {testResult.success ? "✅ Test Successful" : "❌ Test Failed"}
@@ -342,8 +342,8 @@ const BPJSAPISettings = () => {
             </ul>
           </div>
 
-          <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-sm text-blue-800">
+          <div className="mt-4 p-4 bg-chart-2/5 rounded-lg border border-chart-2/20">
+            <p className="text-sm text-foreground">
               <strong>Security Note:</strong> API keys are stored encrypted and never exposed to the client. 
               Only masked versions are displayed for reference.
             </p>

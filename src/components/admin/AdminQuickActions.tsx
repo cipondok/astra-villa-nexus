@@ -320,8 +320,8 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
             todayActivity.map((activity, index) => (
               <div key={index} className="flex items-center gap-2 p-1.5 rounded-md hover:bg-muted/30">
                 <activity.icon className={`h-3.5 w-3.5 ${
-                  activity.type === 'success' ? 'text-green-500' :
-                  activity.type === 'warning' ? 'text-orange-500' :
+                  activity.type === 'success' ? 'text-chart-1' :
+                  activity.type === 'warning' ? 'text-chart-3' :
                   'text-primary'
                 }`} />
                 <div className="flex-1 min-w-0">

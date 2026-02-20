@@ -87,7 +87,7 @@ const VendorVerificationPanel = ({ vendor }: VendorVerificationPanelProps) => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'verified':
-        return <Badge className="bg-green-100 text-green-800">Verified</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">Verified</Badge>;
       case 'rejected':
         return <Badge variant="destructive">Rejected</Badge>;
       case 'pending':
@@ -136,7 +136,7 @@ const VendorVerificationPanel = ({ vendor }: VendorVerificationPanelProps) => {
                 <p className="text-sm text-muted-foreground">Total Documents</p>
                 <p className="text-2xl font-bold">{documents?.length || 0}</p>
               </div>
-              <FileText className="h-8 w-8 text-blue-500" />
+              <FileText className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -146,11 +146,11 @@ const VendorVerificationPanel = ({ vendor }: VendorVerificationPanelProps) => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Verified</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-chart-1">
                   {documents?.filter(d => d.verification_status === 'verified').length || 0}
                 </p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -160,11 +160,11 @@ const VendorVerificationPanel = ({ vendor }: VendorVerificationPanelProps) => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Pending</p>
-                <p className="text-2xl font-bold text-orange-600">
+                <p className="text-2xl font-bold text-chart-3">
                   {documents?.filter(d => d.verification_status === 'pending').length || 0}
                 </p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-orange-500" />
+              <AlertTriangle className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -174,11 +174,11 @@ const VendorVerificationPanel = ({ vendor }: VendorVerificationPanelProps) => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Rejected</p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-2xl font-bold text-destructive">
                   {documents?.filter(d => d.verification_status === 'rejected').length || 0}
                 </p>
               </div>
-              <XCircle className="h-8 w-8 text-red-500" />
+              <XCircle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -222,7 +222,7 @@ const VendorVerificationPanel = ({ vendor }: VendorVerificationPanelProps) => {
                   <TableCell>
                     {getStatusBadge(document.verification_status)}
                     {document.rejection_reason && (
-                      <p className="text-xs text-red-600 mt-1">{document.rejection_reason}</p>
+                      <p className="text-xs text-destructive mt-1">{document.rejection_reason}</p>
                     )}
                   </TableCell>
                   <TableCell>
