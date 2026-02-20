@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminCommandPalette } from "./AdminCommandPalette";
@@ -37,10 +37,10 @@ const ModernEnhancedAdminDashboard = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeSection]);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     await signOut();
     navigate('/');
-  };
+  }, [signOut, navigate]);
 
   // Fetch unread notifications
   const { data: notifications = [] } = useQuery({
@@ -79,11 +79,11 @@ const ModernEnhancedAdminDashboard = () => {
     },
   });
 
-  const handleNotificationClick = (notificationId: string) => {
+  const handleNotificationClick = useCallback((notificationId: string) => {
     markAsReadMutation.mutate(notificationId);
     setNotificationsOpen(false);
     setActiveSection('admin-alerts');
-  };
+  }, [markAsReadMutation]);
 
   const unreadCount = notifications.length;
 

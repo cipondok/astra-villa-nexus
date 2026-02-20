@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,12 +44,12 @@ interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
 
-const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
-  const handleQuickAction = (section: string) => {
+const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: AdminOverviewProps) {
+  const handleQuickAction = useCallback((section: string) => {
     if (onSectionChange) {
       onSectionChange(section);
     }
-  };
+  }, [onSectionChange]);
 
   // Fetch platform statistics
   const { data: platformStats, isLoading: statsLoading, refetch: refetchStats } = useQuery({
@@ -195,7 +195,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
     refetchInterval: 5 * 60 * 1000, // Every 5 min is plenty for charts
   });
 
-  const maxTraffic = Math.max(...(hourlyTraffic?.map(h => h.count) || [1]), 1);
+  const maxTraffic = useMemo(() => Math.max(...(hourlyTraffic?.map(h => h.count) || [1]), 1), [hourlyTraffic]);
 
   return (
     <div className="space-y-3 animate-in fade-in duration-300">
@@ -430,60 +430,65 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
       </div>
     </div>
   );
-};
+});
+
 
 // Metric Row
-const MetricRow = ({ icon: Icon, label, value, loading, highlight }: {
+const MetricRow = React.memo(function MetricRow({ icon: Icon, label, value, loading, highlight }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: number;
   loading?: boolean;
   highlight?: boolean;
-}) => (
-  <div className={`flex items-center justify-between py-1 ${highlight ? 'text-chart-1' : ''}`}>
-    <div className="flex items-center gap-2">
-      <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-      <span className="text-xs">{label}</span>
+}) {
+  return (
+    <div className={`flex items-center justify-between py-1 ${highlight ? 'text-chart-1' : ''}`}>
+      <div className="flex items-center gap-2">
+        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+        <span className="text-xs">{label}</span>
+      </div>
+      {loading ? (
+        <div className="h-4 w-10 bg-muted animate-pulse rounded" />
+      ) : (
+        <span className="text-sm font-bold">{value.toLocaleString()}</span>
+      )}
     </div>
-    {loading ? (
-      <div className="h-4 w-10 bg-muted animate-pulse rounded" />
-    ) : (
-      <span className="text-sm font-bold">{value.toLocaleString()}</span>
-    )}
-  </div>
-);
+  );
+});
 
 // Action Row with count
-const ActionRow = ({ icon: Icon, label, count, onClick, urgent }: {
+const ActionRow = React.memo(function ActionRow({ icon: Icon, label, count, onClick, urgent }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   count: number;
   onClick: () => void;
   urgent?: boolean;
-}) => (
-  <button
-    onClick={onClick}
-    className={`w-full flex items-center justify-between p-2 rounded-lg transition-all ${
-      urgent ? 'bg-chart-3/10 hover:bg-chart-3/20 border border-chart-3/30' : 'hover:bg-muted/50 border border-transparent'
-    }`}
-  >
-    <div className="flex items-center gap-2">
-      <Icon className={`h-4 w-4 ${urgent ? 'text-chart-3' : 'text-muted-foreground'}`} />
-      <span className="text-xs">{label}</span>
-    </div>
-    <Badge variant={urgent ? 'destructive' : 'secondary'} className="text-[10px] h-5 px-2">
-      {count}
-    </Badge>
-  </button>
-);
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center justify-between p-2 rounded-lg transition-all ${
+        urgent ? 'bg-chart-3/10 hover:bg-chart-3/20 border border-chart-3/30' : 'hover:bg-muted/50 border border-transparent'
+      }`}
+    >
+      <div className="flex items-center gap-2">
+        <Icon className={`h-4 w-4 ${urgent ? 'text-chart-3' : 'text-muted-foreground'}`} />
+        <span className="text-xs">{label}</span>
+      </div>
+      <Badge variant={urgent ? 'destructive' : 'secondary'} className="text-[10px] h-5 px-2">
+        {count}
+      </Badge>
+    </button>
+  );
+});
 
 // Summary Card
-const SummaryCard = ({ label, value, icon: Icon, color }: {
+const SummaryCard = React.memo(function SummaryCard({ label, value, icon: Icon, color }: {
   label: string;
   value: string | number;
   icon: React.ComponentType<{ className?: string }>;
   color: 'green' | 'blue' | 'purple' | 'orange';
-}) => {
+}) {
   const colors = {
     green: 'text-chart-1 bg-chart-1/10',
     blue: 'text-chart-2 bg-chart-2/10',
@@ -498,15 +503,15 @@ const SummaryCard = ({ label, value, icon: Icon, color }: {
       <div className="text-[10px] text-muted-foreground">{label}</div>
     </div>
   );
-};
+});
 
 // Health Bar
-const HealthBar = ({ label, value, icon: Icon, isStatus }: {
+const HealthBar = React.memo(function HealthBar({ label, value, icon: Icon, isStatus }: {
   label: string;
   value: number;
   icon: React.ComponentType<{ className?: string }>;
   isStatus?: boolean;
-}) => {
+}) {
   const getColor = (val: number) => {
     if (isStatus) return val === 100 ? 'bg-chart-1' : 'bg-chart-3';
     if (val < 50) return 'bg-chart-1';
@@ -528,10 +533,10 @@ const HealthBar = ({ label, value, icon: Icon, isStatus }: {
       </div>
     </div>
   );
-};
+});
 
 // Service Row
-const ServiceRow = ({ name, status }: { name: string; status: 'operational' | 'degraded' | 'down' }) => {
+const ServiceRow = React.memo(function ServiceRow({ name, status }: { name: string; status: 'operational' | 'degraded' | 'down' }) {
   const statusConfig = {
     operational: { color: 'bg-chart-1', text: 'OK' },
     degraded: { color: 'bg-chart-3', text: 'Slow' },
@@ -547,6 +552,6 @@ const ServiceRow = ({ name, status }: { name: string; status: 'operational' | 'd
       </div>
     </div>
   );
-};
+});
 
 export default AdminOverview;

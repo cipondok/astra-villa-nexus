@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { navigationSections, sectionTitles, categories } from './navigationSections';
 import { 
   LayoutDashboard, 
@@ -53,8 +53,8 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [flyoutQuery, setFlyoutQuery] = useState('');
 
-  // Find which category contains the active section
-  const getActiveCategory = () => {
+  // Memoize expensive active category lookup
+  const activeCategory = useMemo(() => {
     for (const category of categories) {
       const sections = navigationSections[category as keyof typeof navigationSections];
       if (sections?.some((section) => section.key === activeSection)) {
@@ -62,20 +62,16 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
       }
     }
     return 'overview';
-  };
+  }, [activeSection]);
 
-  const handleCategoryClick = (category: string) => {
-    if (openCategory === category) {
-      setOpenCategory(null);
-    } else {
-      setOpenCategory(category);
-    }
-  };
+  const handleCategoryClick = useCallback((category: string) => {
+    setOpenCategory(prev => prev === category ? null : category);
+  }, []);
 
-  const handleNavClick = (key: string) => {
+  const handleNavClick = useCallback((key: string) => {
     onSectionChange(key);
     setOpenCategory(null);
-  };
+  }, [onSectionChange]);
 
   // Reset flyout search when category changes/closes
   useEffect(() => {
@@ -106,7 +102,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
     return () => document.removeEventListener('keydown', handleEscape);
   }, []);
 
-  const activeCategory = getActiveCategory();
+  
   const openSections = openCategory ? navigationSections[openCategory as keyof typeof navigationSections] : null;
   const filteredOpenSections = openSections
     ? openSections.filter((section) => {
