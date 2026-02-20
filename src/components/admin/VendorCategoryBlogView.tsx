@@ -207,7 +207,7 @@ const VendorCategoryBlogView = () => {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
           Vendor Services Blog
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
@@ -254,13 +254,13 @@ const VendorCategoryBlogView = () => {
       {featuredPosts.length > 0 && (
         <section className="space-y-4">
           <h2 className="text-2xl font-bold flex items-center gap-2">
-            <TrendingUp className="h-6 w-6 text-orange-500" />
+            <TrendingUp className="h-6 w-6 text-chart-4" />
             Featured Articles
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredPosts.slice(0, 3).map((post) => (
-              <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow border-2 border-orange-200">
-                <div className="h-48 bg-gradient-to-br from-orange-100 to-purple-100 flex items-center justify-center">
+              <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow border-2 border-chart-4/30">
+                <div className="h-48 bg-gradient-to-br from-chart-4/10 to-chart-2/10 flex items-center justify-center">
                   <div className="text-center">
                     <div className="text-4xl mb-2">
                       {mainCategories?.find(cat => cat.name === post.category)?.icon || "📝"}
@@ -360,25 +360,25 @@ const VendorCategoryBlogView = () => {
       </section>
 
       {/* Stats Section */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50">
+      <Card className="bg-gradient-to-r from-primary/5 to-chart-2/5">
         <CardContent className="pt-6">
           <div className="text-center space-y-4">
             <h3 className="text-2xl font-bold">Content Statistics</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">{blogPosts.length}</div>
+                <div className="text-3xl font-bold text-primary">{blogPosts.length}</div>
                 <div className="text-sm text-muted-foreground">Total Articles</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">{mainCategories?.length || 0}</div>
+                <div className="text-3xl font-bold text-chart-1">{mainCategories?.length || 0}</div>
                 <div className="text-sm text-muted-foreground">Categories</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600">{featuredPosts.length}</div>
+                <div className="text-3xl font-bold text-chart-2">{featuredPosts.length}</div>
                 <div className="text-sm text-muted-foreground">Featured</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-600">
+                <div className="text-3xl font-bold text-chart-4">
                   {Math.round(blogPosts.reduce((acc, post) => acc + post.views, 0) / 1000)}K
                 </div>
                 <div className="text-sm text-muted-foreground">Total Views</div>
