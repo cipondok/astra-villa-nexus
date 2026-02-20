@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { format, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+const COLORS = ['hsl(var(--chart-2))', 'hsl(var(--chart-1))', 'hsl(var(--chart-3))', 'hsl(var(--destructive))', 'hsl(var(--primary))'];
 
 interface KYCStats {
   total_submissions: number;
@@ -149,7 +149,7 @@ export const KYCAnalyticsDashboard = () => {
       return Object.entries(statusCounts).map(([status, count]) => ({
         name: status.replace(/_/g, ' ').charAt(0).toUpperCase() + status.replace(/_/g, ' ').slice(1),
         value: count,
-        color: status === 'verified' ? '#00C49F' : status === 'rejected' ? '#FF8042' : '#FFBB28'
+        color: status === 'verified' ? 'hsl(var(--chart-1))' : status === 'rejected' ? 'hsl(var(--destructive))' : 'hsl(var(--chart-3))'
       }));
     }
   });
@@ -218,16 +218,16 @@ export const KYCAnalyticsDashboard = () => {
   return (
     <div className="space-y-4">
       {/* Professional Header */}
-      <div className="bg-gradient-to-r from-cyan-500/10 via-teal-500/5 to-transparent border border-cyan-500/20 rounded-lg p-4">
+      <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-cyan-500/20 rounded-lg">
-              <BarChart3 className="h-5 w-5 text-cyan-600" />
+            <div className="p-2 bg-primary/20 rounded-lg">
+              <BarChart3 className="h-5 w-5 text-primary" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-lg font-bold">KYC Analytics Dashboard</h1>
-                <Badge variant="outline" className="bg-cyan-500/10 text-cyan-700 border-cyan-500/30 text-xs">
+                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 text-xs">
                   Live Data
                 </Badge>
               </div>
@@ -256,11 +256,11 @@ export const KYCAnalyticsDashboard = () => {
 
       {/* Key Metrics Cards - Compact Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-        <Card className="border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-transparent">
+        <Card className="border-primary/20 bg-primary/5">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
-              <Users className="h-4 w-4 text-blue-500" />
-              <Badge variant="outline" className="text-[10px] bg-blue-500/10 border-blue-500/30">Total</Badge>
+              <Users className="h-4 w-4 text-primary" />
+              <Badge variant="outline" className="text-[10px] bg-primary/10 border-primary/30">Total</Badge>
             </div>
             <div className="mt-2">
               <p className="text-xl font-bold">{kycStats?.total_submissions || 0}</p>
@@ -269,11 +269,11 @@ export const KYCAnalyticsDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-transparent">
+        <Card className="border-chart-3/20 bg-chart-3/5">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
-              <Clock className="h-4 w-4 text-amber-500" />
-              <Badge variant="outline" className="text-[10px] bg-amber-500/10 border-amber-500/30">Queue</Badge>
+              <Clock className="h-4 w-4 text-chart-3" />
+              <Badge variant="outline" className="text-[10px] bg-chart-3/10 border-chart-3/30">Queue</Badge>
             </div>
             <div className="mt-2">
               <p className="text-xl font-bold">{kycStats?.pending_reviews || 0}</p>
@@ -282,11 +282,11 @@ export const KYCAnalyticsDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent">
+        <Card className="border-chart-1/20 bg-chart-1/5">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
-              <CheckCircle className="h-4 w-4 text-emerald-500" />
-              <Badge variant="outline" className="text-[10px] bg-emerald-500/10 border-emerald-500/30">Done</Badge>
+              <CheckCircle className="h-4 w-4 text-chart-1" />
+              <Badge variant="outline" className="text-[10px] bg-chart-1/10 border-chart-1/30">Done</Badge>
             </div>
             <div className="mt-2">
               <p className="text-xl font-bold">{kycStats?.approved_count || 0}</p>
@@ -295,11 +295,11 @@ export const KYCAnalyticsDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-red-500/20 bg-gradient-to-br from-red-500/5 to-transparent">
+        <Card className="border-destructive/20 bg-destructive/5">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
-              <XCircle className="h-4 w-4 text-red-500" />
-              <Badge variant="outline" className="text-[10px] bg-red-500/10 border-red-500/30">Failed</Badge>
+              <XCircle className="h-4 w-4 text-destructive" />
+              <Badge variant="outline" className="text-[10px] bg-destructive/10 border-destructive/30">Failed</Badge>
             </div>
             <div className="mt-2">
               <p className="text-xl font-bold">{kycStats?.rejected_count || 0}</p>
@@ -308,11 +308,11 @@ export const KYCAnalyticsDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-transparent">
+        <Card className="border-chart-2/20 bg-chart-2/5">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
-              <Activity className="h-4 w-4 text-purple-500" />
-              <Badge variant="outline" className="text-[10px] bg-purple-500/10 border-purple-500/30">Rate</Badge>
+              <Activity className="h-4 w-4 text-chart-2" />
+              <Badge variant="outline" className="text-[10px] bg-chart-2/10 border-chart-2/30">Rate</Badge>
             </div>
             <div className="mt-2">
               <p className="text-xl font-bold">{kycStats?.completion_rate.toFixed(0)}%</p>
@@ -321,11 +321,11 @@ export const KYCAnalyticsDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-cyan-500/20 bg-gradient-to-br from-cyan-500/5 to-transparent">
+        <Card className="border-chart-4/20 bg-chart-4/5">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
-              <Clock className="h-4 w-4 text-cyan-500" />
-              <Badge variant="outline" className="text-[10px] bg-cyan-500/10 border-cyan-500/30">Avg</Badge>
+              <Clock className="h-4 w-4 text-chart-4" />
+              <Badge variant="outline" className="text-[10px] bg-chart-4/10 border-chart-4/30">Avg</Badge>
             </div>
             <div className="mt-2">
               <p className="text-xl font-bold">{kycStats?.avg_review_time.toFixed(1)}h</p>
@@ -340,28 +340,28 @@ export const KYCAnalyticsDashboard = () => {
         <TabsList className="h-9 p-1 bg-muted/50 w-full md:w-auto">
           <TabsTrigger 
             value="overview" 
-            className="h-7 px-3 text-xs gap-1.5 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-700"
+            className="h-7 px-3 text-xs gap-1.5 data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
           >
             <BarChart3 className="h-3 w-3" />
             Overview
           </TabsTrigger>
           <TabsTrigger 
             value="trends" 
-            className="h-7 px-3 text-xs gap-1.5 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-700"
+            className="h-7 px-3 text-xs gap-1.5 data-[state=active]:bg-chart-2/20 data-[state=active]:text-chart-2"
           >
             <Activity className="h-3 w-3" />
             Trends
           </TabsTrigger>
           <TabsTrigger 
             value="distribution" 
-            className="h-7 px-3 text-xs gap-1.5 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-700"
+            className="h-7 px-3 text-xs gap-1.5 data-[state=active]:bg-chart-4/20 data-[state=active]:text-chart-4"
           >
             <PieChartIcon className="h-3 w-3" />
             Distribution
           </TabsTrigger>
           <TabsTrigger 
             value="bpjs" 
-            className="h-7 px-3 text-xs gap-1.5 data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-700"
+            className="h-7 px-3 text-xs gap-1.5 data-[state=active]:bg-chart-1/20 data-[state=active]:text-chart-1"
           >
             <Shield className="h-3 w-3" />
             BPJS Stats
@@ -371,10 +371,10 @@ export const KYCAnalyticsDashboard = () => {
         {/* Overview Tab */}
         <TabsContent value="overview" className="mt-4">
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            <Card className="border-slate-200/50">
+            <Card className="border-border">
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
-                  <Activity className="h-4 w-4 text-cyan-500" />
+                  <Activity className="h-4 w-4 text-primary" />
                   <CardTitle className="text-sm">Submission Timeline</CardTitle>
                 </div>
                 <CardDescription className="text-xs">Daily KYC submissions and review outcomes</CardDescription>
@@ -384,30 +384,30 @@ export const KYCAnalyticsDashboard = () => {
                   <AreaChart data={timeSeriesData}>
                     <defs>
                       <linearGradient id="colorSubmissions" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#06b6d4" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                       </linearGradient>
                       <linearGradient id="colorApprovals" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                     <XAxis dataKey="date" tick={{ fontSize: 10 }} />
                     <YAxis tick={{ fontSize: 10 }} />
                     <Tooltip contentStyle={{ fontSize: 11 }} />
-                    <Area type="monotone" dataKey="submissions" stroke="#06b6d4" fillOpacity={1} fill="url(#colorSubmissions)" name="Submissions" />
-                    <Area type="monotone" dataKey="approvals" stroke="#10b981" fillOpacity={1} fill="url(#colorApprovals)" name="Approvals" />
-                    <Line type="monotone" dataKey="rejections" stroke="#ef4444" name="Rejections" strokeWidth={2} dot={false} />
+                    <Area type="monotone" dataKey="submissions" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorSubmissions)" name="Submissions" />
+                    <Area type="monotone" dataKey="approvals" stroke="hsl(var(--chart-1))" fillOpacity={1} fill="url(#colorApprovals)" name="Approvals" />
+                    <Line type="monotone" dataKey="rejections" stroke="hsl(var(--destructive))" name="Rejections" strokeWidth={2} dot={false} />
                   </AreaChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
 
-            <Card className="border-slate-200/50">
+            <Card className="border-border">
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
-                  <PieChartIcon className="h-4 w-4 text-purple-500" />
+                  <PieChartIcon className="h-4 w-4 text-chart-4" />
                   <CardTitle className="text-sm">Status Distribution</CardTitle>
                 </div>
                 <CardDescription className="text-xs">Current verification status breakdown</CardDescription>
@@ -422,7 +422,7 @@ export const KYCAnalyticsDashboard = () => {
                       labelLine={false}
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                       outerRadius={70}
-                      fill="#8884d8"
+                      fill="hsl(var(--primary))"
                       dataKey="value"
                     >
                       {statusDistribution?.map((entry, index) => (
@@ -439,10 +439,10 @@ export const KYCAnalyticsDashboard = () => {
 
         {/* Trends Tab */}
         <TabsContent value="trends" className="mt-4">
-          <Card className="border-slate-200/50">
+          <Card className="border-border">
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-blue-500" />
+                <TrendingUp className="h-4 w-4 text-chart-2" />
                 <CardTitle className="text-sm">Submission Trends</CardTitle>
               </div>
               <CardDescription className="text-xs">Historical trend analysis over {timeRange} days</CardDescription>
@@ -450,41 +450,31 @@ export const KYCAnalyticsDashboard = () => {
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={timeSeriesData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                   <XAxis dataKey="date" tick={{ fontSize: 10 }} />
                   <YAxis tick={{ fontSize: 10 }} />
                   <Tooltip contentStyle={{ fontSize: 11 }} />
-                  <Line type="monotone" dataKey="submissions" stroke="#3b82f6" name="Submissions" strokeWidth={2} />
-                  <Line type="monotone" dataKey="approvals" stroke="#10b981" name="Approvals" strokeWidth={2} />
-                  <Line type="monotone" dataKey="rejections" stroke="#ef4444" name="Rejections" strokeWidth={2} />
+                  <Line type="monotone" dataKey="submissions" stroke="hsl(var(--primary))" name="Submissions" strokeWidth={2} />
+                  <Line type="monotone" dataKey="approvals" stroke="hsl(var(--chart-1))" name="Approvals" strokeWidth={2} />
+                  <Line type="monotone" dataKey="rejections" stroke="hsl(var(--destructive))" name="Rejections" strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
-
-        {/* Distribution Tab */}
         <TabsContent value="distribution" className="mt-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Card className="border-slate-200/50">
+            <Card className="border-border">
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
-                  <PieChartIcon className="h-4 w-4 text-purple-500" />
+                  <PieChartIcon className="h-4 w-4 text-chart-4" />
                   <CardTitle className="text-sm">Pie Chart</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
-                    <Pie
-                      data={statusDistribution}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label
-                    >
+                    <Pie data={statusDistribution} cx="50%" cy="50%" outerRadius={80} fill="hsl(var(--primary))" dataKey="value" label>
                       {statusDistribution?.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
@@ -495,21 +485,21 @@ export const KYCAnalyticsDashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-slate-200/50">
+            <Card className="border-border">
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4 text-cyan-500" />
+                  <BarChart3 className="h-4 w-4 text-primary" />
                   <CardTitle className="text-sm">Bar Chart</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={statusDistribution}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                     <XAxis dataKey="name" tick={{ fontSize: 9 }} />
                     <YAxis tick={{ fontSize: 10 }} />
                     <Tooltip contentStyle={{ fontSize: 11 }} />
-                    <Bar dataKey="value" fill="#06b6d4" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -519,10 +509,10 @@ export const KYCAnalyticsDashboard = () => {
 
         {/* BPJS Stats Tab */}
         <TabsContent value="bpjs" className="mt-4">
-          <Card className="border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent">
+          <Card className="border-chart-1/20 bg-chart-1/5">
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-emerald-500" />
+                <Shield className="h-4 w-4 text-chart-1" />
                 <CardTitle className="text-sm">BPJS Verification Statistics</CardTitle>
               </div>
               <CardDescription className="text-xs">Government verification API performance</CardDescription>
@@ -531,21 +521,21 @@ export const KYCAnalyticsDashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <div className="p-1.5 bg-blue-500/10 rounded">
-                      <FileCheck className="h-3 w-3 text-blue-500" />
+                    <div className="p-1.5 bg-primary/10 rounded">
+                      <FileCheck className="h-3 w-3 text-primary" />
                     </div>
                     <h4 className="text-sm font-semibold">BPJS Kesehatan</h4>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 text-xs gap-1">
+                    <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20 text-xs gap-1">
                       <CheckCircle className="w-3 h-3" />
                       Verified: {bpjsStats?.kesehatan_verified || 0}
                     </Badge>
-                    <Badge className="bg-amber-100 text-amber-800 border-amber-200 text-xs gap-1">
+                    <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/20 text-xs gap-1">
                       <Clock className="w-3 h-3" />
                       Pending: {bpjsStats?.kesehatan_pending || 0}
                     </Badge>
-                    <Badge className="bg-red-100 text-red-800 border-red-200 text-xs gap-1">
+                    <Badge className="bg-destructive/10 text-destructive border-destructive/20 text-xs gap-1">
                       <XCircle className="w-3 h-3" />
                       Failed: {bpjsStats?.kesehatan_rejected || 0}
                     </Badge>
@@ -553,21 +543,21 @@ export const KYCAnalyticsDashboard = () => {
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <div className="p-1.5 bg-purple-500/10 rounded">
-                      <FileCheck className="h-3 w-3 text-purple-500" />
+                    <div className="p-1.5 bg-chart-2/10 rounded">
+                      <FileCheck className="h-3 w-3 text-chart-2" />
                     </div>
                     <h4 className="text-sm font-semibold">BPJS Ketenagakerjaan</h4>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 text-xs gap-1">
+                    <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20 text-xs gap-1">
                       <CheckCircle className="w-3 h-3" />
                       Verified: {bpjsStats?.ketenagakerjaan_verified || 0}
                     </Badge>
-                    <Badge className="bg-amber-100 text-amber-800 border-amber-200 text-xs gap-1">
+                    <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/20 text-xs gap-1">
                       <Clock className="w-3 h-3" />
                       Pending: {bpjsStats?.ketenagakerjaan_pending || 0}
                     </Badge>
-                    <Badge className="bg-red-100 text-red-800 border-red-200 text-xs gap-1">
+                    <Badge className="bg-destructive/10 text-destructive border-destructive/20 text-xs gap-1">
                       <XCircle className="w-3 h-3" />
                       Failed: {bpjsStats?.ketenagakerjaan_rejected || 0}
                     </Badge>

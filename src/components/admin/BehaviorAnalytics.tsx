@@ -51,7 +51,13 @@ export function BehaviorAnalytics({ metrics }: BehaviorAnalyticsProps) {
     }
   };
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+  const COLORS = [
+    'hsl(var(--chart-2))',
+    'hsl(var(--chart-1))',
+    'hsl(var(--chart-3))',
+    'hsl(var(--chart-4))',
+    'hsl(var(--primary))',
+  ];
 
   if (isLoading) {
     return (
@@ -157,8 +163,8 @@ export function BehaviorAnalytics({ metrics }: BehaviorAnalyticsProps) {
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
-                <Area type="monotone" dataKey="engagement" stackId="1" stroke="#8884d8" fill="#8884d8" />
-                <Area type="monotone" dataKey="users" stackId="2" stroke="#82ca9d" fill="#82ca9d" />
+                <Area type="monotone" dataKey="engagement" stackId="1" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
+                <Area type="monotone" dataKey="users" stackId="2" stroke="hsl(var(--chart-1))" fill="hsl(var(--chart-1))" fillOpacity={0.3} />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
@@ -241,8 +247,8 @@ export function BehaviorAnalytics({ metrics }: BehaviorAnalyticsProps) {
                 <XAxis dataKey="step" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="users" fill="#8884d8" />
-                <Bar dataKey="dropoff" fill="#ff8042" />
+                <Bar dataKey="users" fill="hsl(var(--primary))" />
+                <Bar dataKey="dropoff" fill="hsl(var(--destructive))" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -294,7 +300,7 @@ export function BehaviorAnalytics({ metrics }: BehaviorAnalyticsProps) {
                     key={`${day}-${hour}`}
                     className="aspect-square rounded"
                     style={{
-                      backgroundColor: `rgba(59, 130, 246, ${intensity / 100})`,
+                      backgroundColor: `hsl(var(--primary) / ${intensity / 100})`,
                     }}
                     title={`Day ${day + 1}, Hour ${hour}: ${intensity.toFixed(0)}% activity`}
                   />
