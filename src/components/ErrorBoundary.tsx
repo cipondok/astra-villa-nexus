@@ -21,8 +21,12 @@ class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Error caught by boundary:", error, errorInfo);
+  public componentDidCatch(error: Error, _errorInfo: ErrorInfo) {
+    // In production: send to error tracking service (e.g. Sentry)
+    // Avoid logging stack traces to console in production
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error caught by boundary:", error);
+    }
   }
 
   public render() {
