@@ -195,7 +195,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
   return (
     <div className="space-y-3 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-green-500/5 rounded-xl border border-border/30 px-4 py-3">
+      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-chart-1/5 rounded-xl border border-border/30 px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10">
             <Monitor className="h-5 w-5 text-primary" />
@@ -204,7 +204,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
             <h1 className="text-base font-bold">Live Monitoring Dashboard</h1>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                <span className="w-2 h-2 bg-chart-1 rounded-full animate-pulse" />
                 Online
               </span>
               <span>•</span>
@@ -376,10 +376,10 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 pt-0 space-y-2.5">
-              <div className={`flex items-center justify-between p-2.5 rounded-lg border ${
+      <div className={`flex items-center justify-between p-2.5 rounded-lg border ${
                 systemHealth?.status === 'healthy' 
-                  ? 'bg-green-500/5 border-green-500/30' 
-                  : 'bg-orange-500/5 border-orange-500/30'
+                  ? 'bg-chart-1/5 border-chart-1/30' 
+                  : 'bg-chart-3/5 border-chart-3/30'
               }`}>
                 <span className="text-xs font-medium">Status</span>
                 <Badge variant={systemHealth?.status === 'healthy' ? 'default' : 'destructive'} className="text-[10px] h-5 px-2">
@@ -435,7 +435,7 @@ const MetricRow = ({ icon: Icon, label, value, loading, highlight }: {
   loading?: boolean;
   highlight?: boolean;
 }) => (
-  <div className={`flex items-center justify-between py-1 ${highlight ? 'text-green-600 dark:text-green-400' : ''}`}>
+  <div className={`flex items-center justify-between py-1 ${highlight ? 'text-chart-1' : ''}`}>
     <div className="flex items-center gap-2">
       <Icon className="h-3.5 w-3.5 text-muted-foreground" />
       <span className="text-xs">{label}</span>
@@ -459,11 +459,11 @@ const ActionRow = ({ icon: Icon, label, count, onClick, urgent }: {
   <button
     onClick={onClick}
     className={`w-full flex items-center justify-between p-2 rounded-lg transition-all ${
-      urgent ? 'bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30' : 'hover:bg-muted/50 border border-transparent'
+      urgent ? 'bg-chart-3/10 hover:bg-chart-3/20 border border-chart-3/30' : 'hover:bg-muted/50 border border-transparent'
     }`}
   >
     <div className="flex items-center gap-2">
-      <Icon className={`h-4 w-4 ${urgent ? 'text-orange-500' : 'text-muted-foreground'}`} />
+      <Icon className={`h-4 w-4 ${urgent ? 'text-chart-3' : 'text-muted-foreground'}`} />
       <span className="text-xs">{label}</span>
     </div>
     <Badge variant={urgent ? 'destructive' : 'secondary'} className="text-[10px] h-5 px-2">
@@ -480,10 +480,10 @@ const SummaryCard = ({ label, value, icon: Icon, color }: {
   color: 'green' | 'blue' | 'purple' | 'orange';
 }) => {
   const colors = {
-    green: 'text-green-500 bg-green-500/10',
-    blue: 'text-blue-500 bg-blue-500/10',
-    purple: 'text-purple-500 bg-purple-500/10',
-    orange: 'text-orange-500 bg-orange-500/10'
+    green: 'text-chart-1 bg-chart-1/10',
+    blue: 'text-chart-2 bg-chart-2/10',
+    purple: 'text-primary bg-primary/10',
+    orange: 'text-chart-3 bg-chart-3/10'
   };
   
   return (
@@ -503,10 +503,10 @@ const HealthBar = ({ label, value, icon: Icon, isStatus }: {
   isStatus?: boolean;
 }) => {
   const getColor = (val: number) => {
-    if (isStatus) return val === 100 ? 'bg-green-500' : 'bg-orange-500';
-    if (val < 50) return 'bg-green-500';
-    if (val < 80) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (isStatus) return val === 100 ? 'bg-chart-1' : 'bg-chart-3';
+    if (val < 50) return 'bg-chart-1';
+    if (val < 80) return 'bg-chart-3';
+    return 'bg-destructive';
   };
 
   return (
@@ -528,9 +528,9 @@ const HealthBar = ({ label, value, icon: Icon, isStatus }: {
 // Service Row
 const ServiceRow = ({ name, status }: { name: string; status: 'operational' | 'degraded' | 'down' }) => {
   const statusConfig = {
-    operational: { color: 'bg-green-500', text: 'OK' },
-    degraded: { color: 'bg-yellow-500', text: 'Slow' },
-    down: { color: 'bg-red-500', text: 'Down' }
+    operational: { color: 'bg-chart-1', text: 'OK' },
+    degraded: { color: 'bg-chart-3', text: 'Slow' },
+    down: { color: 'bg-destructive', text: 'Down' }
   };
 
   return (
