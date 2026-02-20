@@ -1,8 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,15 +15,22 @@ interface EmailRequest {
   variables?: Record<string, string>;
   html?: string;
   text?: string;
-  skipAuth?: boolean; // For system emails (webhooks, cron)
+  skipAuth?: boolean;
 }
 
 interface EmailConfig {
-  provider: string;
+  provider: 'resend' | 'smtp';
   fromEmail: string;
   fromName: string;
   replyToEmail: string;
   isEnabled: boolean;
+  // SMTP
+  smtpHost?: string;
+  smtpPort?: string;
+  smtpUsername?: string;
+  smtpPassword?: string;
+  smtpEncryption?: 'none' | 'tls' | 'ssl';
+  // URLs
   siteUrl: string;
   verificationBaseUrl: string;
   passwordResetUrl: string;
@@ -94,6 +100,100 @@ const defaultBranding: EmailBranding = {
   copyrightText: '© 2024 ASTRA Villa. All rights reserved.'
 };
 
+// Built-in fallback templates (used when admin hasn't saved custom ones)
+const builtInTemplates: Record<string, Partial<EmailTemplate>> = {
+  booking_confirmation: {
+    subject: 'Booking Confirmed – {{property_title}}',
+    preheader: 'Your viewing has been scheduled',
+    headerText: 'Booking Confirmed ✅',
+    body: 'Dear {{user_name}},\n\nYour booking request for <strong>{{property_title}}</strong> has been submitted successfully.\n\n📅 Date: {{booking_date}}\n🕐 Time: {{booking_time}}\n📍 Address: {{property_address}}\n\nOur team will confirm your appointment shortly. Please keep this email for your records.',
+    buttonText: 'View My Bookings',
+    buttonUrl: '{{site_url}}/profile?tab=bookings',
+    showSocialLinks: true,
+    showUnsubscribe: false,
+  },
+  booking_cancelled: {
+    subject: 'Booking Cancelled – {{property_title}}',
+    preheader: 'Your booking has been cancelled',
+    headerText: 'Booking Cancelled',
+    body: 'Dear {{user_name}},\n\nYour booking for <strong>{{property_title}}</strong> on {{booking_date}} has been cancelled.\n\n📝 Reason: {{cancellation_reason}}\n\nIf you have questions, please contact our support team.',
+    buttonText: 'Browse Properties',
+    buttonUrl: '{{site_url}}/properties',
+    showSocialLinks: true,
+    showUnsubscribe: false,
+  },
+  new_review: {
+    subject: 'New Review on {{property_title}}',
+    preheader: '{{reviewer_name}} left a {{rating}}-star review',
+    headerText: 'New Review Received ⭐',
+    body: 'Dear {{owner_name}},\n\n{{reviewer_name}} has left a {{rating}}-star review on your property <strong>{{property_title}}</strong>.\n\n💬 "{{review_text}}"\n\nLog in to respond to this review.',
+    buttonText: 'View Review',
+    buttonUrl: '{{site_url}}/dashboard',
+    showSocialLinks: false,
+    showUnsubscribe: false,
+  },
+  verification_approved: {
+    subject: 'Verification Approved – {{verification_type}}',
+    preheader: 'Your account has been verified',
+    headerText: 'Verification Approved ✅',
+    body: 'Dear {{user_name}},\n\nCongratulations! Your <strong>{{verification_type}}</strong> verification has been approved.\n\nYou now have full access to all verified member features on ASTRA Villa.',
+    buttonText: 'Explore Benefits',
+    buttonUrl: '{{site_url}}/dashboard',
+    showSocialLinks: true,
+    showUnsubscribe: false,
+  },
+  vip_upgrade: {
+    subject: 'Welcome to {{membership_level}} – ASTRA Villa',
+    preheader: 'Your VIP membership is now active',
+    headerText: '🌟 VIP Membership Activated',
+    body: 'Dear {{user_name}},\n\nWelcome to <strong>{{membership_level}}</strong>! Your exclusive membership is now active.\n\n{{benefits_list}}\n\nThank you for choosing the premium ASTRA Villa experience.',
+    buttonText: 'Access VIP Portal',
+    buttonUrl: '{{site_url}}/dashboard/vip',
+    showSocialLinks: true,
+    showUnsubscribe: false,
+  },
+  foreign_investment_inquiry: {
+    subject: 'Foreign Investment Inquiry Received',
+    preheader: 'We received your property investment inquiry',
+    headerText: 'Investment Inquiry Received 🌏',
+    body: 'Dear {{user_name}},\n\nThank you for your interest in investing in Indonesian real estate through ASTRA Villa.\n\n🏠 Property: {{property_title}}\n💰 Investment Type: {{investment_type}}\n🌏 Country: {{investor_country}}\n\nOur foreign investment specialists will contact you within 1-2 business days to discuss the opportunities and legal framework.',
+    buttonText: 'View Investment Guide',
+    buttonUrl: '{{site_url}}/foreign-investment',
+    showSocialLinks: true,
+    showUnsubscribe: true,
+  },
+  admin_new_property: {
+    subject: '[Admin] New Property Listing: {{property_title}}',
+    preheader: 'A new property requires review',
+    headerText: 'New Property Listing 🏠',
+    body: 'A new property has been submitted for review.\n\n📌 Title: {{property_title}}\n👤 Owner: {{owner_name}}\n📍 Location: {{property_location}}\n📅 Submitted: {{submission_date}}\n\nPlease review and approve or reject this listing.',
+    buttonText: 'Review Listing',
+    buttonUrl: '{{site_url}}/admin/properties',
+    showSocialLinks: false,
+    showUnsubscribe: false,
+  },
+  admin_review_notification: {
+    subject: '[Admin] New Review Requires Moderation',
+    preheader: 'A review is pending moderation',
+    headerText: 'Review Pending Moderation',
+    body: 'A new review has been submitted and requires moderation.\n\n📌 Property: {{property_title}}\n👤 Reviewer: {{reviewer_name}}\n⭐ Rating: {{rating}}\n💬 Review: {{review_text}}\n\nPlease review and approve or reject.',
+    buttonText: 'Moderate Review',
+    buttonUrl: '{{site_url}}/admin/reviews',
+    showSocialLinks: false,
+    showUnsubscribe: false,
+  },
+  general: {
+    subject: 'Message from ASTRA Villa',
+    preheader: '',
+    headerText: '',
+    body: '{{message}}',
+    buttonText: '',
+    buttonUrl: '',
+    showSocialLinks: true,
+    showUnsubscribe: true,
+  }
+};
+
 serve(async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -111,7 +211,6 @@ serve(async (req: Request): Promise<Response> => {
     if (!skipAuth) {
       const authHeader = req.headers.get('Authorization');
       if (!authHeader) {
-        console.error('send-email: Missing Authorization header');
         return new Response(
           JSON.stringify({ success: false, error: 'Authorization required' }),
           { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -124,21 +223,21 @@ serve(async (req: Request): Promise<Response> => {
         { global: { headers: { Authorization: authHeader } } }
       );
 
-      const { data: { user }, error: userError } = await supabaseAuth.auth.getUser();
-      if (userError || !user) {
-        console.error('send-email: Invalid user token', userError);
+      const token = authHeader.replace('Bearer ', '');
+      const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
+      if (claimsError || !claimsData?.claims) {
         return new Response(
           JSON.stringify({ success: false, error: 'Invalid or expired token' }),
           { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
 
-      // Check admin permission for sending to others
+      const userId = claimsData.claims.sub;
+      const userEmail = claimsData.claims.email?.toLowerCase();
       const toAddresses = Array.isArray(to) ? to : [to];
-      const { data: isAdmin } = await supabase.rpc('has_role', { user_id: user.id, role: 'admin' });
+      const { data: isAdmin } = await supabase.rpc('has_role', { user_id: userId, role: 'admin' });
       
       if (!isAdmin) {
-        const userEmail = user.email?.toLowerCase();
         const allToOwnEmail = toAddresses.every(addr => addr.toLowerCase() === userEmail);
         if (!allToOwnEmail) {
           return new Response(
@@ -149,7 +248,7 @@ serve(async (req: Request): Promise<Response> => {
       }
     }
 
-    // Fetch email config
+    // Fetch email config from DB
     const { data: configData } = await supabase
       .from('system_settings')
       .select('key, value')
@@ -158,16 +257,15 @@ serve(async (req: Request): Promise<Response> => {
 
     let config = { ...defaultConfig };
     let branding = { ...defaultBranding };
-    let templates: EmailTemplate[] = [];
+    let dbTemplates: EmailTemplate[] = [];
 
     configData?.forEach((item) => {
       if (item.key === 'config' && item.value) config = { ...config, ...(item.value as Partial<EmailConfig>) };
       if (item.key === 'branding' && item.value) branding = { ...branding, ...(item.value as Partial<EmailBranding>) };
-      if (item.key === 'templates' && Array.isArray(item.value)) templates = item.value as EmailTemplate[];
+      if (item.key === 'templates' && Array.isArray(item.value)) dbTemplates = item.value as EmailTemplate[];
     });
 
     if (!config.isEnabled) {
-      console.log('Email sending is disabled');
       return new Response(
         JSON.stringify({ success: false, error: 'Email sending is disabled' }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -194,18 +292,28 @@ serve(async (req: Request): Promise<Response> => {
       ...variables
     };
 
+    const replaceVariables = (str: string) => {
+      let result = str;
+      for (const [key, value] of Object.entries(allVariables)) {
+        result = result.replace(new RegExp(`\\{\\{${key}\\}\\}`, 'g'), value || '');
+      }
+      return result;
+    };
+
     // Build email HTML
     let emailHtml = html;
     let emailSubject = subject;
 
     if (template) {
-      const emailTemplate = templates.find(t => t.id === template);
+      // Prefer DB-saved template, fall back to built-in
+      const dbTemplate = dbTemplates.find(t => t.id === template);
+      const builtIn = builtInTemplates[template];
       
-      if (!emailTemplate) {
-        console.warn(`Template "${template}" not found, using default template`);
-      }
-
-      const tpl = emailTemplate || {
+      const tpl = dbTemplate || (builtIn ? {
+        id: template,
+        name: template,
+        isActive: true,
+        category: 'notification',
         subject: subject || 'Notification from ASTRA Villa',
         preheader: '',
         headerText: '',
@@ -213,29 +321,33 @@ serve(async (req: Request): Promise<Response> => {
         buttonText: '',
         buttonUrl: '',
         showSocialLinks: true,
-        showUnsubscribe: true
+        showUnsubscribe: true,
+        ...builtIn,
+      } as EmailTemplate : null);
+
+      if (!tpl) {
+        console.warn(`Template "${template}" not found, using fallback`);
+      }
+
+      const activeTpl = tpl || {
+        subject: subject || 'Notification from ASTRA Villa',
+        preheader: '',
+        headerText: '',
+        body: variables?.message || text || '',
+        buttonText: '',
+        buttonUrl: '',
+        showSocialLinks: true,
+        showUnsubscribe: true,
       };
 
-      emailSubject = emailSubject || tpl.subject;
-      
-      // Replace variables in template
-      const replaceVariables = (text: string) => {
-        let result = text;
-        for (const [key, value] of Object.entries(allVariables)) {
-          result = result.replace(new RegExp(`\\{\\{${key}\\}\\}`, 'g'), value || '');
-        }
-        return result;
-      };
+      emailSubject = replaceVariables(emailSubject || activeTpl.subject || 'Notification');
+      const bodyContent = replaceVariables(activeTpl.body || '');
+      const headerText = replaceVariables(activeTpl.headerText || '');
+      const buttonText = replaceVariables(activeTpl.buttonText || '');
+      const buttonUrl = replaceVariables(activeTpl.buttonUrl || '');
+      const preheader = replaceVariables(activeTpl.preheader || '');
 
-      emailSubject = replaceVariables(emailSubject);
-      const bodyContent = replaceVariables(tpl.body);
-      const headerText = replaceVariables(tpl.headerText);
-      const buttonText = replaceVariables(tpl.buttonText);
-      const buttonUrl = replaceVariables(tpl.buttonUrl);
-      const preheader = replaceVariables(tpl.preheader);
-
-      // Build social links HTML
-      const socialLinksHtml = (branding.socialFacebook || branding.socialInstagram || branding.socialTwitter || branding.socialLinkedin) && tpl.showSocialLinks
+      const socialLinksHtml = (branding.socialFacebook || branding.socialInstagram || branding.socialTwitter || branding.socialLinkedin) && activeTpl.showSocialLinks
         ? `<div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #E8E0D5;">
             ${branding.socialFacebook ? `<a href="${branding.socialFacebook}" style="display: inline-block; margin: 0 8px; color: ${branding.primaryColor}; text-decoration: none; font-size: 13px;">Facebook</a>` : ''}
             ${branding.socialInstagram ? `<a href="${branding.socialInstagram}" style="display: inline-block; margin: 0 8px; color: ${branding.primaryColor}; text-decoration: none; font-size: 13px;">Instagram</a>` : ''}
@@ -244,34 +356,25 @@ serve(async (req: Request): Promise<Response> => {
           </div>`
         : '';
 
-      // Luxury email template
-      emailHtml = `
-<!DOCTYPE html>
+      emailHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   ${preheader ? `<span style="display:none!important;visibility:hidden;mso-hide:all;font-size:0;max-height:0;line-height:0;">${preheader}</span>` : ''}
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
   </style>
 </head>
-<body style="margin: 0; padding: 0; background: linear-gradient(135deg, #FFFBF5 0%, #FFF8F0 50%, #FFFDF9 100%); font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+<body style="margin: 0; padding: 0; background: linear-gradient(135deg, #FFFBF5 0%, #FFF8F0 50%, #FFFDF9 100%); font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background: linear-gradient(135deg, #FFFBF5 0%, #FFF8F0 50%, #FFFDF9 100%);">
     <tr>
       <td align="center" style="padding: 40px 20px;">
-        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="background-color: #FFFFFF; border-radius: 16px; overflow: hidden; max-width: 100%; box-shadow: 0 4px 24px rgba(184, 134, 11, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);">
-          
-          <!-- Top Gold Accent -->
-          <tr>
-            <td style="height: 4px; background: linear-gradient(90deg, ${branding.primaryColor} 0%, ${branding.accentColor} 50%, ${branding.primaryColor} 100%);"></td>
-          </tr>
-          
-          <!-- Logo Section -->
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="background-color: #FFFFFF; border-radius: 16px; overflow: hidden; max-width: 100%; box-shadow: 0 4px 24px rgba(184, 134, 11, 0.08);">
+          <tr><td style="height: 4px; background: linear-gradient(90deg, ${branding.primaryColor} 0%, ${branding.accentColor} 50%, ${branding.primaryColor} 100%);"></td></tr>
           <tr>
             <td align="center" style="padding: 32px 24px 24px 24px; background: linear-gradient(180deg, #FFFDF9 0%, #FFFFFF 100%);">
-              ${branding.companyLogoUrl 
+              ${branding.companyLogoUrl
                 ? `<img src="${branding.companyLogoUrl}" alt="${branding.companyName}" style="max-height: 56px; max-width: 200px;">`
                 : `<div style="font-family: 'Playfair Display', Georgia, serif;">
                     <span style="color: ${branding.primaryColor}; font-size: 32px; font-weight: 600; letter-spacing: 2px;">ASTRA</span>
@@ -281,23 +384,17 @@ serve(async (req: Request): Promise<Response> => {
               }
             </td>
           </tr>
-          
-          <!-- Decorative Divider -->
           <tr>
             <td align="center" style="padding: 0 40px;">
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                 <tr>
                   <td style="border-bottom: 1px solid #E8E0D5;"></td>
-                  <td style="padding: 0 16px; width: 20px;">
-                    <div style="width: 8px; height: 8px; background: ${branding.primaryColor}; transform: rotate(45deg);"></div>
-                  </td>
+                  <td style="padding: 0 16px; width: 20px;"><div style="width: 8px; height: 8px; background: ${branding.primaryColor}; transform: rotate(45deg);"></div></td>
                   <td style="border-bottom: 1px solid #E8E0D5;"></td>
                 </tr>
               </table>
             </td>
           </tr>
-          
-          <!-- Content Section -->
           <tr>
             <td style="padding: 40px 40px 32px 40px;">
               ${headerText ? `<h1 style="margin: 0 0 24px 0; color: #2D2A26; font-family: 'Playfair Display', Georgia, serif; font-size: 26px; font-weight: 600; line-height: 1.3; text-align: center;">${headerText}</h1>` : ''}
@@ -309,8 +406,6 @@ serve(async (req: Request): Promise<Response> => {
               ` : ''}
             </td>
           </tr>
-          
-          <!-- Footer Section -->
           <tr>
             <td style="background: linear-gradient(180deg, #FAFAF8 0%, #F5F3F0 100%); padding: 32px 40px; text-align: center;">
               <p style="margin: 0 0 12px 0; color: #6B635A; font-size: 14px; font-style: italic;">${branding.footerText}</p>
@@ -322,25 +417,12 @@ serve(async (req: Request): Promise<Response> => {
               </p>
               ${socialLinksHtml}
               <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #E8E0D5;">
-                <p style="margin: 0; color: #A8A29E; font-size: 11px; letter-spacing: 0.5px;">${branding.copyrightText}</p>
-                ${tpl.showUnsubscribe ? `<p style="margin: 8px 0 0 0;"><a href="${branding.companyWebsite}/unsubscribe" style="color: #A8A29E; font-size: 11px; text-decoration: underline;">Unsubscribe from emails</a></p>` : ''}
+                <p style="margin: 0; color: #A8A29E; font-size: 11px;">${branding.copyrightText}</p>
+                ${activeTpl.showUnsubscribe ? `<p style="margin: 8px 0 0 0;"><a href="${branding.companyWebsite}/unsubscribe" style="color: #A8A29E; font-size: 11px; text-decoration: underline;">Unsubscribe</a></p>` : ''}
               </div>
             </td>
           </tr>
-          
-          <!-- Bottom Gold Accent -->
-          <tr>
-            <td style="height: 4px; background: linear-gradient(90deg, ${branding.primaryColor} 0%, ${branding.accentColor} 50%, ${branding.primaryColor} 100%);"></td>
-          </tr>
-        </table>
-        
-        <!-- Footer Tagline -->
-        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width: 100%;">
-          <tr>
-            <td align="center" style="padding: 24px 20px;">
-              <p style="margin: 0; color: #A8A29E; font-size: 11px; font-family: 'Playfair Display', Georgia, serif; letter-spacing: 1px;">Experience Luxury Living</p>
-            </td>
-          </tr>
+          <tr><td style="height: 4px; background: linear-gradient(90deg, ${branding.primaryColor} 0%, ${branding.accentColor} 50%, ${branding.primaryColor} 100%);"></td></tr>
         </table>
       </td>
     </tr>
@@ -349,12 +431,9 @@ serve(async (req: Request): Promise<Response> => {
 </html>`;
     }
 
-    // Fallback HTML if no template
+    // Fallback HTML
     if (!emailHtml) {
-      emailHtml = `
-<!DOCTYPE html>
-<html>
-<body style="margin: 0; padding: 40px 20px; background: linear-gradient(135deg, #FFFBF5 0%, #FFF8F0 100%); font-family: -apple-system, sans-serif;">
+      emailHtml = `<!DOCTYPE html><html><body style="margin: 0; padding: 40px 20px; background: #FFFBF5; font-family: -apple-system, sans-serif;">
   <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="margin: 0 auto; background: #FFFFFF; border-radius: 16px; box-shadow: 0 4px 24px rgba(184, 134, 11, 0.08);">
     <tr><td style="height: 4px; background: linear-gradient(90deg, ${branding.primaryColor} 0%, ${branding.accentColor} 100%);"></td></tr>
     <tr>
@@ -367,24 +446,55 @@ serve(async (req: Request): Promise<Response> => {
     </tr>
     <tr><td style="height: 4px; background: linear-gradient(90deg, ${branding.primaryColor} 0%, ${branding.accentColor} 100%);"></td></tr>
   </table>
-</body>
-</html>`;
+</body></html>`;
     }
 
-    // Send email via Resend
-    const fromAddress = `${config.fromName} <${config.fromEmail || 'onboarding@resend.dev'}>`;
-    
-    const emailResponse = await resend.emails.send({
-      from: fromAddress,
-      to: Array.isArray(to) ? to : [to],
-      subject: emailSubject || 'Notification',
-      html: emailHtml,
-      reply_to: config.replyToEmail || undefined,
-    });
+    const toAddresses = Array.isArray(to) ? to : [to];
+    const finalSubject = emailSubject || 'Notification';
 
-    console.log("Email sent successfully:", emailResponse);
+    // ——— Send via SMTP or Resend ———
+    if (config.provider === 'smtp' && config.smtpHost && config.smtpUsername && config.smtpPassword) {
+      const port = parseInt(config.smtpPort || '587');
+      const useTLS = config.smtpEncryption === 'tls' || config.smtpEncryption === 'ssl';
 
-    return new Response(JSON.stringify({ success: true, ...emailResponse }), {
+      const client = new SMTPClient({
+        connection: {
+          hostname: config.smtpHost,
+          port,
+          tls: useTLS,
+          auth: {
+            username: config.smtpUsername,
+            password: config.smtpPassword,
+          },
+        },
+      });
+
+      for (const recipient of toAddresses) {
+        await client.send({
+          from: `${config.fromName} <${config.fromEmail}>`,
+          to: recipient,
+          subject: finalSubject,
+          html: emailHtml,
+        });
+      }
+
+      await client.close();
+      console.log(`SMTP: email sent to ${toAddresses.join(', ')}`);
+    } else {
+      // Use Resend
+      const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+      const fromAddress = `${config.fromName} <${config.fromEmail || 'onboarding@resend.dev'}>`;
+      const emailResponse = await resend.emails.send({
+        from: fromAddress,
+        to: toAddresses,
+        subject: finalSubject,
+        html: emailHtml,
+        reply_to: config.replyToEmail || undefined,
+      });
+      console.log("Resend: email sent:", emailResponse);
+    }
+
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
@@ -392,10 +502,7 @@ serve(async (req: Request): Promise<Response> => {
     console.error("Error in send-email function:", error);
     return new Response(
       JSON.stringify({ success: false, error: error.message }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

@@ -113,6 +113,59 @@ export const emailService = {
     });
   },
 
+  // Send foreign investment inquiry confirmation
+  async sendForeignInvestmentInquiry(
+    email: string,
+    variables: {
+      user_name: string;
+      property_title: string;
+      investment_type: string;
+      investor_country: string;
+    }
+  ) {
+    return sendEmail({
+      to: email,
+      template: 'foreign_investment_inquiry',
+      variables,
+    });
+  },
+
+  // Send admin notification for new property listing
+  async sendAdminNewPropertyNotification(
+    adminEmails: string | string[],
+    variables: {
+      property_title: string;
+      owner_name: string;
+      property_location: string;
+      submission_date: string;
+    }
+  ) {
+    return sendEmail({
+      to: adminEmails,
+      template: 'admin_new_property',
+      variables,
+      skipAuth: true,
+    } as any);
+  },
+
+  // Send admin notification for new review  
+  async sendAdminReviewNotification(
+    adminEmails: string | string[],
+    variables: {
+      property_title: string;
+      reviewer_name: string;
+      rating: string;
+      review_text: string;
+    }
+  ) {
+    return sendEmail({
+      to: adminEmails,
+      template: 'admin_review_notification',
+      variables,
+      skipAuth: true,
+    } as any);
+  },
+
   // Send custom email
   async sendCustomEmail(
     email: string,
