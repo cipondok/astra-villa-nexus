@@ -249,7 +249,7 @@ const DatabaseTableManagement = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Tables</p>
                 <p className="text-2xl font-bold">{dbStats?.total_tables || 0}</p>
               </div>
-              <Table2 className="h-8 w-8 text-blue-600" />
+              <Table2 className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -261,7 +261,7 @@ const DatabaseTableManagement = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Rows</p>
                 <p className="text-2xl font-bold">{dbStats?.total_rows.toLocaleString() || 0}</p>
               </div>
-              <BarChart3 className="h-8 w-8 text-green-600" />
+              <BarChart3 className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -273,7 +273,7 @@ const DatabaseTableManagement = () => {
                 <p className="text-sm font-medium text-muted-foreground">DB Size</p>
                 <p className="text-2xl font-bold">{dbStats?.database_size || '0'}</p>
               </div>
-              <Database className="h-8 w-8 text-purple-600" />
+              <Database className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -285,7 +285,7 @@ const DatabaseTableManagement = () => {
                 <p className="text-sm font-medium text-muted-foreground">Active Connections</p>
                 <p className="text-2xl font-bold">{dbStats?.active_connections || 0}</p>
               </div>
-              <Activity className="h-8 w-8 text-orange-600" />
+              <Activity className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -297,7 +297,7 @@ const DatabaseTableManagement = () => {
                 <p className="text-sm font-medium text-muted-foreground">Cache Hit Ratio</p>
                 <p className="text-2xl font-bold">{dbStats?.cache_hit_ratio || 0}%</p>
               </div>
-              <Server className="h-8 w-8 text-teal-600" />
+              <Server className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -307,9 +307,9 @@ const DatabaseTableManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Slow Queries</p>
-                <p className="text-2xl font-bold text-red-600">{dbStats?.slow_queries || 0}</p>
+                <p className="text-2xl font-bold text-destructive">{dbStats?.slow_queries || 0}</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-600" />
+              <AlertTriangle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -407,7 +407,7 @@ const DatabaseTableManagement = () => {
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder="Search tables..."
                   value={searchTerm}

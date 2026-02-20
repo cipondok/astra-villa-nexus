@@ -388,12 +388,12 @@ END OF REPORT
                       />
                       <div className="flex items-center gap-2">
                         {message.reaction_type === 'positive' ? (
-                          <Badge variant="default" className="bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20">
+                          <Badge variant="default" className="bg-chart-1/10 text-chart-1 border-chart-1/20">
                             <ThumbsUp className="w-3 h-3 mr-1" />
                             Positive
                           </Badge>
                         ) : (
-                          <Badge variant="default" className="bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20">
+                          <Badge variant="default" className="bg-destructive/10 text-destructive border-destructive/20">
                             <ThumbsDown className="w-3 h-3 mr-1" />
                             Negative
                           </Badge>
@@ -417,7 +417,7 @@ END OF REPORT
                         title="Copy message details"
                       >
                         {copiedId === message.id ? (
-                          <Check className="w-4 h-4 text-green-600" />
+                          <Check className="w-4 h-4 text-chart-1" />
                         ) : (
                           <Copy className="w-4 h-4" />
                         )}

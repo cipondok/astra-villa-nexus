@@ -282,15 +282,15 @@ const EnhancedPropertyManagement = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Active</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1"><CheckCircle className="h-3 w-3 mr-1" />Active</Badge>;
       case 'sold':
-        return <Badge className="bg-blue-100 text-blue-800"><CheckCircle className="h-3 w-3 mr-1" />Sold</Badge>;
+        return <Badge className="bg-chart-2/10 text-chart-2"><CheckCircle className="h-3 w-3 mr-1" />Sold</Badge>;
       case 'rented':
-        return <Badge className="bg-purple-100 text-purple-800"><CheckCircle className="h-3 w-3 mr-1" />Rented</Badge>;
+        return <Badge className="bg-primary/10 text-primary"><CheckCircle className="h-3 w-3 mr-1" />Rented</Badge>;
       case 'pending_approval':
-        return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
       case 'inactive':
-        return <Badge className="bg-gray-100 text-gray-800"><XCircle className="h-3 w-3 mr-1" />Inactive</Badge>;
+        return <Badge className="bg-muted text-muted-foreground"><XCircle className="h-3 w-3 mr-1" />Inactive</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -321,9 +321,9 @@ const EnhancedPropertyManagement = () => {
       <Card className="max-w-md mx-auto mt-8">
         <CardContent className="pt-6">
           <div className="text-center">
-            <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-red-800 mb-2">Access Denied</h3>
-            <p className="text-red-600">You need admin privileges to access property management.</p>
+            <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-destructive mb-2">Access Denied</h3>
+            <p className="text-destructive/80">You need admin privileges to access property management.</p>
           </div>
         </CardContent>
       </Card>
@@ -337,19 +337,19 @@ const EnhancedPropertyManagement = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold flex items-center gap-2">
-              <Building2 className="h-8 w-8 text-blue-600" />
+              <Building2 className="h-8 w-8 text-primary" />
               Enhanced Property Management
             </h2>
-            <p className="text-gray-600 mt-1">Loading properties...</p>
+            <p className="text-muted-foreground mt-1">Loading properties...</p>
           </div>
         </div>
 
         <Card>
           <CardContent className="pt-6">
             <div className="text-center py-12">
-              <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-blue-500" />
+              <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
               <h3 className="text-xl font-medium mb-2">Loading Properties</h3>
-              <p className="text-gray-600">Fetching data from database...</p>
+              <p className="text-muted-foreground">Fetching data from database...</p>
             </div>
           </CardContent>
         </Card>
@@ -364,28 +364,28 @@ const EnhancedPropertyManagement = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold flex items-center gap-2">
-              <Building2 className="h-8 w-8 text-blue-600" />
+              <Building2 className="h-8 w-8 text-primary" />
               Enhanced Property Management
             </h2>
-            <p className="text-gray-600 mt-1">Database connection error</p>
+            <p className="text-muted-foreground mt-1">Database connection error</p>
           </div>
         </div>
 
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-destructive/30 bg-destructive/5">
           <CardContent className="pt-6">
             <div className="text-center py-8">
-              <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-              <h3 className="text-xl font-medium mb-2 text-red-800">Database Connection Error</h3>
-              <p className="text-red-600 mb-6">
+              <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
+              <h3 className="text-xl font-medium mb-2 text-destructive">Database Connection Error</h3>
+              <p className="text-destructive/80 mb-6">
                 {error instanceof Error ? error.message : 'Unable to connect to the database.'}
               </p>
               
               <div className="flex justify-center gap-3">
-                <Button onClick={() => refetch()} variant="outline" className="border-red-300 text-red-700 hover:bg-red-100">
+                <Button onClick={() => refetch()} variant="outline" className="border-destructive/30 text-destructive hover:bg-destructive/10">
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Retry Connection
                 </Button>
-                <Button onClick={clearAllFilters} variant="outline" className="border-red-300 text-red-700 hover:bg-red-100">
+                <Button onClick={clearAllFilters} variant="outline" className="border-destructive/30 text-destructive hover:bg-destructive/10">
                   Clear Filters
                 </Button>
               </div>
@@ -402,10 +402,10 @@ const EnhancedPropertyManagement = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold flex items-center gap-2">
-            <Building2 className="h-8 w-8 text-blue-600" />
+            <Building2 className="h-8 w-8 text-primary" />
             Enhanced Property Management
           </h2>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             Advanced property management with comprehensive search and filtering ({properties.length} properties)
           </p>
         </div>
@@ -436,7 +436,7 @@ const EnhancedPropertyManagement = () => {
           {/* Primary Search Row */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder="Search title, description, location..."
                 value={searchTerm}
@@ -445,7 +445,7 @@ const EnhancedPropertyManagement = () => {
               />
             </div>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder="Filter by location..."
                 value={locationFilter}
@@ -544,9 +544,9 @@ const EnhancedPropertyManagement = () => {
         <CardContent>
           {properties.length === 0 ? (
             <div className="text-center py-16">
-              <Building2 className="h-20 w-20 text-gray-300 mx-auto mb-6" />
+              <Building2 className="h-20 w-20 text-muted-foreground/30 mx-auto mb-6" />
               <h3 className="text-2xl font-medium mb-3">No Properties Found</h3>
-              <p className="text-gray-600 mb-8 max-w-md mx-auto">
+              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
                 {searchTerm || statusFilter !== "all" || typeFilter !== "all" || listingTypeFilter !== "all" || locationFilter || priceRangeFilter !== "all"
                   ? "No properties match your current search criteria. Try adjusting your filters or search terms."
                   : "No properties have been added to the system yet. Start by adding your first property."
@@ -577,18 +577,18 @@ const EnhancedPropertyManagement = () => {
                 </TableHeader>
                 <TableBody>
                   {properties.map((property) => (
-                    <TableRow key={property.id} className="hover:bg-gray-50 transition-colors">
+                    <TableRow key={property.id} className="hover:bg-muted/30 transition-colors">
                       <TableCell>
                         <div className="space-y-1">
-                          <div className="font-medium text-gray-900 flex items-center gap-2">
+                          <div className="font-medium text-foreground flex items-center gap-2">
                             <span className="text-lg">{getPropertyTypeIcon(property.property_type)}</span>
                             {property.title}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-muted-foreground">
                             ID: {property.id.slice(0, 8)}...
                           </div>
                           {property.description && (
-                            <div className="text-xs text-gray-400 max-w-xs truncate">
+                            <div className="text-xs text-muted-foreground/70 max-w-xs truncate">
                               {property.description}
                             </div>
                           )}
@@ -607,24 +607,24 @@ const EnhancedPropertyManagement = () => {
                       <TableCell>
                         <div className="space-y-1">
                           <div className="font-medium flex items-center gap-1">
-                            <MapPin className="h-3 w-3 text-gray-400" />
+                            <MapPin className="h-3 w-3 text-muted-foreground" />
                             {property.location}
                           </div>
                           {property.city && (
-                            <div className="text-sm text-gray-500">{property.city}</div>
+                            <div className="text-sm text-muted-foreground">{property.city}</div>
                           )}
                           {property.state && (
-                            <div className="text-xs text-gray-400">{property.state}</div>
+                            <div className="text-xs text-muted-foreground/70">{property.state}</div>
                           )}
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          <div className="font-bold text-green-600 flex items-center gap-1">
+                          <div className="font-bold text-chart-1 flex items-center gap-1">
                             <DollarSign className="h-3 w-3" />
                             {property.price ? formatIDR(property.price) : 'Not set'}
                           </div>
-                          <div className="flex items-center gap-3 text-xs text-gray-500">
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
                             {property.bedrooms && (
                               <span className="flex items-center gap-1">
                                 <Bed className="h-3 w-3" />
@@ -672,7 +672,7 @@ const EnhancedPropertyManagement = () => {
                             variant="outline" 
                             size="sm"
                             onClick={() => handleView(property)}
-                            className="hover:bg-blue-50"
+                            className="hover:bg-primary/10"
                           >
                             <Eye className="h-3 w-3" />
                           </Button>
@@ -680,7 +680,7 @@ const EnhancedPropertyManagement = () => {
                             variant="outline" 
                             size="sm"
                             onClick={() => handleEdit(property)}
-                            className="hover:bg-green-50 text-green-600 hover:text-green-700"
+                            className="hover:bg-chart-1/10 text-chart-1 hover:text-chart-1"
                           >
                             <Edit className="h-3 w-3" />
                           </Button>
@@ -688,7 +688,7 @@ const EnhancedPropertyManagement = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => handleDelete(property.id, property.title)}
-                            className="hover:bg-red-50 text-red-600 hover:text-red-700"
+                            className="hover:bg-destructive/10 text-destructive hover:text-destructive"
                           >
                             <Trash2 className="h-3 w-3" />
                           </Button>
