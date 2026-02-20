@@ -85,15 +85,15 @@ const SortableQuickNavItem = ({ link, isActive, onTabChange, onRemove, getBadgeC
       style={style}
       className={`group relative flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
         isActive 
-          ? 'bg-gradient-to-r from-blue-500/30 to-purple-500/30 border border-blue-400/50 shadow-lg'
-          : 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/30'
+          ? 'bg-primary/20 border border-primary/50 shadow-lg'
+          : 'bg-muted/50 hover:bg-muted border border-border/30'
       }`}
     >
       {/* Drag Handle */}
       <div
         {...attributes}
         {...listeners}
-        className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-white mr-1"
+        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground mr-1"
       >
         <Menu className="h-3 w-3" />
       </div>
@@ -104,7 +104,7 @@ const SortableQuickNavItem = ({ link, isActive, onTabChange, onRemove, getBadgeC
         className="flex items-center gap-2"
       >
         <span className="text-sm">{link.icon}</span>
-        <span className="text-sm font-medium text-white">{link.label}</span>
+        <span className="text-sm font-medium text-foreground">{link.label}</span>
         
         {link.count !== undefined && (
           <Badge className={`text-xs px-1.5 py-0.5 ${getBadgeColor(link.color)}`}>
@@ -113,13 +113,13 @@ const SortableQuickNavItem = ({ link, isActive, onTabChange, onRemove, getBadgeC
         )}
         
         {link.isNew && (
-          <Badge className="text-xs px-1 py-0.5 bg-pink-500/20 text-pink-400 border-pink-500/30">
+          <Badge className="text-xs px-1 py-0.5 bg-chart-4/20 text-chart-4 border-chart-4/30">
             NEW
           </Badge>
         )}
         
         {usageStats[link.id] && (
-          <div className="flex items-center gap-1 text-xs text-gray-400">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <Star className="h-3 w-3" />
             <span>{usageStats[link.id]}</span>
           </div>
@@ -132,7 +132,7 @@ const SortableQuickNavItem = ({ link, isActive, onTabChange, onRemove, getBadgeC
           e.stopPropagation();
           onRemove(link.id);
         }}
-        className="absolute -top-1 -right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute -top-1 -right-1 bg-destructive hover:bg-destructive/80 text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
       >
         <X className="h-3 w-3" />
       </button>
@@ -379,13 +379,13 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
 
   const getBadgeColor = (color?: string) => {
     switch (color) {
-      case 'green': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'blue': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      case 'purple': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
-      case 'cyan': return 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
-      case 'orange': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
-      case 'red': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      case 'green': return 'bg-chart-1/20 text-chart-1 border-chart-1/30';
+      case 'blue': return 'bg-chart-2/20 text-chart-2 border-chart-2/30';
+      case 'purple': return 'bg-primary/20 text-primary border-primary/30';
+      case 'cyan': return 'bg-chart-2/20 text-chart-2 border-chart-2/30';
+      case 'orange': return 'bg-chart-3/20 text-chart-3 border-chart-3/30';
+      case 'red': return 'bg-destructive/20 text-destructive border-destructive/30';
+      default: return 'bg-muted text-muted-foreground border-border/30';
     }
   };
 
@@ -443,14 +443,14 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
   };
 
   return (
-    <div className="bg-gradient-to-r from-gray-900/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg p-4">
+    <div className="bg-card border border-border rounded-xl shadow-lg p-4">
       {/* Inline Navigation Buttons */}
       <div className="flex flex-wrap gap-2 items-center justify-between">
         <div className="flex flex-wrap gap-2 items-center">
           <div className="flex items-center gap-2 mr-4">
             <span className="text-lg">⚡</span>
-            <span className="text-sm font-semibold text-white">Quick Nav</span>
-            <Badge className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30">
+            <span className="text-sm font-semibold text-foreground">Quick Nav</span>
+            <Badge className="text-xs bg-chart-2/20 text-chart-2 border-chart-2/30">
               Smart
             </Badge>
           </div>
@@ -490,7 +490,6 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
               <Button
                 size="sm"
                 onClick={handleSaveSelection}
-                className="bg-green-600 hover:bg-green-700 text-white"
               >
                 <Save className="h-4 w-4 mr-1" />
                 Save ({selectedItems.size})
@@ -510,17 +509,16 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
                 size="sm"
                 variant="outline"
                 onClick={handleEditMode}
-                className="text-yellow-400 border-yellow-400/50 hover:bg-yellow-400/10"
               >
                 <Edit className="h-4 w-4 mr-1" />
                 Edit
               </Button>
               <button
                 onClick={handleToggleExpansion}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-700/50 hover:bg-gray-600/50 border border-gray-500/30 transition-all duration-200"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted hover:bg-muted/80 border border-border/50 transition-all duration-200"
               >
-                <Menu className="h-4 w-4 text-gray-400" />
-                <span className="text-sm text-gray-300">More</span>
+                <Menu className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">More</span>
               </button>
             </>
           )}
@@ -529,17 +527,17 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
 
       {/* Expanded Menu - appears below when "More" is clicked or in Edit Mode */}
       {(expansionState !== 'collapsed' || isEditMode) && (
-        <div className="mt-4 pt-4 border-t border-white/10">
+        <div className="mt-4 pt-4 border-t border-border">
           {isEditMode && (
-            <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+            <div className="mb-4 p-3 bg-chart-3/10 border border-chart-3/30 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
-                <Edit className="h-4 w-4 text-yellow-400" />
-                <span className="text-sm font-medium text-yellow-400">Edit Mode</span>
-                <Badge className="text-xs bg-yellow-500/20 text-yellow-400">
+                <Edit className="h-4 w-4 text-chart-3" />
+                <span className="text-sm font-medium text-chart-3">Edit Mode</span>
+                <Badge className="text-xs bg-chart-3/20 text-chart-3">
                   {selectedItems.size} selected
                 </Badge>
               </div>
-              <p className="text-xs text-gray-300">
+              <p className="text-xs text-muted-foreground">
                 Click items to add/remove from quick navigation. Click Save to apply changes.
               </p>
             </div>
@@ -553,32 +551,32 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
                 className={`flex items-center gap-2 p-2 rounded-lg transition-all duration-200 relative ${
                   isEditMode 
                     ? selectedItems.has(link.id)
-                      ? 'bg-green-500/20 border border-green-400/50 text-green-400'
-                      : 'bg-gray-700/50 border border-gray-500/30 hover:bg-gray-600/50'
+                      ? 'bg-chart-1/20 border border-chart-1/50 text-chart-1'
+                      : 'bg-muted/50 border border-border hover:bg-muted'
                     : activeTab === link.id
-                      ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30'
-                      : 'hover:bg-white/5 border border-transparent'
+                      ? 'bg-primary/20 border border-primary/30'
+                      : 'hover:bg-muted/50 border border-transparent'
                 }`}
               >
                 {isEditMode && (
                   <div className="absolute top-1 right-1">
                     {selectedItems.has(link.id) ? (
-                      <Check className="h-3 w-3 text-green-400" />
+                      <Check className="h-3 w-3 text-chart-1" />
                     ) : (
-                      <Plus className="h-3 w-3 text-gray-400" />
+                      <Plus className="h-3 w-3 text-muted-foreground" />
                     )}
                   </div>
                 )}
                 
                 <span className="text-sm">{link.icon}</span>
-                <span className="text-sm text-white truncate">{link.label}</span>
+                <span className="text-sm text-foreground truncate">{link.label}</span>
                 {link.count !== undefined && !isEditMode && (
                   <Badge className={`text-xs px-1 py-0.5 ${getBadgeColor(link.color)}`}>
                     {link.count}
                   </Badge>
                 )}
                 {link.isNew && !isEditMode && (
-                  <Badge className="text-xs px-1 py-0.5 bg-pink-500/20 text-pink-400 border-pink-500/30">
+                  <Badge className="text-xs px-1 py-0.5 bg-chart-4/20 text-chart-4 border-chart-4/30">
                     NEW
                   </Badge>
                 )}

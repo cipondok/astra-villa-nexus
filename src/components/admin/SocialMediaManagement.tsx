@@ -149,15 +149,15 @@ const SocialMediaManagement = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-white/10 backdrop-blur-md border-white/20">
+      <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="flex items-center gap-2 text-white">
+              <CardTitle className="flex items-center gap-2">
                 <Share2 className="h-5 w-5" />
                 Social Media Management
               </CardTitle>
-              <CardDescription className="text-gray-300">
+              <CardDescription>
                 Manage social media accounts, posting settings, and analytics
               </CardDescription>
             </div>
@@ -165,30 +165,29 @@ const SocialMediaManagement = () => {
               <DialogTrigger asChild>
                 <Button 
                   onClick={() => { resetForm(); setEditingPlatform(null); }}
-                  className="bg-blue-600 hover:bg-blue-700"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Platform
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl bg-gray-900/95 backdrop-blur-md border-gray-700">
+              <DialogContent className="max-w-2xl">
                 <DialogHeader>
-                  <DialogTitle className="text-white">
+                  <DialogTitle>
                     {editingPlatform ? 'Edit Platform' : 'Add Social Media Platform'}
                   </DialogTitle>
-                  <DialogDescription className="text-gray-300">
+                  <DialogDescription>
                     Configure social media platform settings and credentials.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="grid gap-2">
-                      <Label htmlFor="platform" className="text-white">Platform</Label>
+                      <Label htmlFor="platform">Platform</Label>
                       <Select value={formData.platform} onValueChange={(value) => setFormData({ ...formData, platform: value })}>
-                        <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                        <SelectTrigger>
                           <SelectValue placeholder="Select platform" />
                         </SelectTrigger>
-                        <SelectContent className="bg-gray-800 border-gray-700">
+                        <SelectContent>
                           <SelectItem value="facebook">Facebook</SelectItem>
                           <SelectItem value="twitter">Twitter</SelectItem>
                           <SelectItem value="instagram">Instagram</SelectItem>
@@ -199,30 +198,28 @@ const SocialMediaManagement = () => {
                       </Select>
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="account_name" className="text-white">Account Name</Label>
+                      <Label htmlFor="account_name">Account Name</Label>
                       <Input
                         id="account_name"
                         value={formData.account_name}
                         onChange={(e) => setFormData({ ...formData, account_name: e.target.value })}
                         placeholder="@username"
-                        className="bg-gray-800 border-gray-700 text-white"
                       />
                     </div>
                   </div>
                   
                   <div className="grid gap-2">
-                    <Label htmlFor="profile_url" className="text-white">Profile URL</Label>
+                    <Label htmlFor="profile_url">Profile URL</Label>
                     <Input
                       id="profile_url"
                       value={formData.profile_url}
                       onChange={(e) => setFormData({ ...formData, profile_url: e.target.value })}
                       placeholder="https://facebook.com/username"
-                      className="bg-gray-800 border-gray-700 text-white"
                     />
                   </div>
                   
                   <div className="grid gap-2">
-                    <Label htmlFor="api_credentials" className="text-white">API Credentials (JSON)</Label>
+                    <Label htmlFor="api_credentials">API Credentials (JSON)</Label>
                     <Textarea
                       id="api_credentials"
                       value={JSON.stringify(formData.api_credentials, null, 2)}
@@ -236,12 +233,12 @@ const SocialMediaManagement = () => {
                       }}
                       placeholder='{"api_key": "your_key", "access_token": "your_token"}'
                       rows={4}
-                      className="bg-gray-800 border-gray-700 text-white font-mono"
+                      className="font-mono"
                     />
                   </div>
                   
                   <div className="grid gap-2">
-                    <Label htmlFor="posting_settings" className="text-white">Posting Settings (JSON)</Label>
+                    <Label htmlFor="posting_settings">Posting Settings (JSON)</Label>
                     <Textarea
                       id="posting_settings"
                       value={JSON.stringify(formData.posting_settings, null, 2)}
@@ -255,7 +252,7 @@ const SocialMediaManagement = () => {
                       }}
                       placeholder='{"auto_post": true, "schedule": "daily", "hashtags": ["#realestate"]}'
                       rows={4}
-                      className="bg-gray-800 border-gray-700 text-white font-mono"
+                      className="font-mono"
                     />
                   </div>
                   
@@ -265,17 +262,16 @@ const SocialMediaManagement = () => {
                       checked={formData.is_active}
                       onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
                     />
-                    <Label htmlFor="is_active" className="text-white">Active</Label>
+                    <Label htmlFor="is_active">Active</Label>
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setShowForm(false)} className="border-gray-600 text-gray-300">
+                  <Button variant="outline" onClick={() => setShowForm(false)}>
                     Cancel
                   </Button>
                   <Button 
                     onClick={handleSubmit}
                     disabled={createPlatformMutation.isPending || updatePlatformMutation.isPending}
-                    className="bg-blue-600 hover:bg-blue-700"
                   >
                     {editingPlatform ? 'Update' : 'Add'} Platform
                   </Button>
@@ -285,70 +281,69 @@ const SocialMediaManagement = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="border border-white/20 rounded-lg bg-white/5">
+          <div className="border border-border rounded-lg">
             <Table>
               <TableHeader>
-                <TableRow className="border-white/20">
-                  <TableHead className="text-gray-300">Platform</TableHead>
-                  <TableHead className="text-gray-300">Account</TableHead>
-                  <TableHead className="text-gray-300">Status</TableHead>
-                  <TableHead className="text-gray-300">Created</TableHead>
-                  <TableHead className="text-gray-300">Actions</TableHead>
+                <TableRow>
+                  <TableHead>Platform</TableHead>
+                  <TableHead>Account</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8 text-gray-300">
+                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                       Loading platforms...
                     </TableCell>
                   </TableRow>
                 ) : platforms?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8 text-gray-300">
+                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                       No platforms configured
                     </TableCell>
                   </TableRow>
                 ) : (
                   platforms?.map((platform) => (
-                    <TableRow key={platform.id} className="border-white/20">
-                      <TableCell className="text-white">
+                    <TableRow key={platform.id}>
+                      <TableCell>
                         <div className="flex items-center gap-2">
                           <span className="text-xl">{getPlatformIcon(platform.platform)}</span>
                           <span className="font-medium capitalize">{platform.platform}</span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-white">
+                      <TableCell>
                         <div>
                           <div className="font-medium">{platform.account_name}</div>
                           {platform.profile_url && (
-                            <a href={platform.profile_url} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-400 hover:text-blue-300">
+                            <a href={platform.profile_url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
                               View Profile
                             </a>
                           )}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={platform.is_active ? 'default' : 'outline'} className={platform.is_active ? 'bg-green-600' : 'border-gray-600 text-gray-300'}>
+                        <Badge variant={platform.is_active ? 'default' : 'outline'}>
                           {platform.is_active ? 'Active' : 'Inactive'}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-gray-300">
+                      <TableCell className="text-muted-foreground">
                         {new Date(platform.created_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Button size="sm" variant="outline" className="border-gray-600 text-gray-300">
+                          <Button size="sm" variant="outline">
                             <BarChart3 className="h-4 w-4" />
                           </Button>
-                          <Button size="sm" variant="outline" onClick={() => handleEdit(platform)} className="border-gray-600 text-gray-300">
+                          <Button size="sm" variant="outline" onClick={() => handleEdit(platform)}>
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button 
                             size="sm" 
                             variant="outline" 
                             onClick={() => handleDelete(platform.id)}
-                            className="border-gray-600 text-gray-300"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
