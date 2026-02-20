@@ -97,14 +97,11 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
         .from('admin_alerts')
         .select('*', { count: 'exact', head: true })
         .eq('is_read', false);
-      
-      if (error) {
-        console.error('Error fetching alert count:', error);
-        return 0;
-      }
+      if (error) return 0;
       return count || 0;
     },
-    refetchInterval: 30000, // Refetch every 30 seconds
+    staleTime: 60 * 1000,
+    refetchInterval: 60000,
   });
 
   // Fetch other admin counts
@@ -119,28 +116,21 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
       };
 
       try {
-        // Get pending tasks (you can adjust this query based on your needs)
-        const { count: tasksCount } = await supabase
-          .from('properties')
-          .select('*', { count: 'exact', head: true })
-          .eq('approval_status', 'pending');
-        counts.pendingTasks = tasksCount || 0;
-
-        // Get system issues count (example query)
-        const { count: issuesCount } = await supabase
-          .from('admin_alerts')
-          .select('*', { count: 'exact', head: true })
-          .eq('type', 'system_issue')
-          .eq('action_required', true);
-        counts.systemIssues = issuesCount || 0;
-      } catch (error) {
-        console.error('Error fetching admin counts:', error);
+        const [tasksResult, issuesResult] = await Promise.all([
+          supabase.from('properties').select('*', { count: 'exact', head: true }).eq('approval_status', 'pending'),
+          supabase.from('admin_alerts').select('*', { count: 'exact', head: true }).eq('type', 'system_issue').eq('action_required', true),
+        ]);
+        counts.pendingTasks = tasksResult.count || 0;
+        counts.systemIssues = issuesResult.count || 0;
+      } catch {
+        // silently return defaults
       }
 
       return counts;
     },
     enabled: !!user?.id && isAdmin,
-    refetchInterval: 30000, // Refetch every 30 seconds
+    staleTime: 2 * 60 * 1000,
+    refetchInterval: 60000,
   });
 
   useEffect(() => {
@@ -166,26 +156,20 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
   }, []);
 
   const handleSignOut = async () => {
-    try {
-      setShowProfile(false);
-      await signOut();
-    } catch (error) {
-      console.error('AdminDashboardHeader: Error signing out:', error);
-    }
+    setShowProfile(false);
+    await signOut().catch(() => {});
   };
 
   const handleExtendSession = async () => {
     try {
       await extendSession();
       toast.success('Session extended successfully! You can continue working.');
-    } catch (error) {
-      console.error('Error extending session:', error);
+    } catch {
       toast.error('Failed to extend session');
     }
   };
 
   const handleProfileClick = () => {
-    console.log('Opening profile dialog...');
     setShowProfile(true);
   };
 
