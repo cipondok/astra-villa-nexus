@@ -24,11 +24,11 @@ const StatCard = ({ title, value, change, icon: Icon }: StatCardProps) => (
       {change && (
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
           {change.type === 'increase' ? (
-            <TrendingUp className="h-3 w-3 text-green-500" />
+            <TrendingUp className="h-3 w-3 text-chart-1" />
           ) : (
-            <TrendingDown className="h-3 w-3 text-red-500" />
+            <TrendingDown className="h-3 w-3 text-destructive" />
           )}
-          <span className={change.type === 'increase' ? 'text-green-500' : 'text-red-500'}>
+          <span className={change.type === 'increase' ? 'text-chart-1' : 'text-destructive'}>
             {change.value}%
           </span>
           <span>from last month</span>
