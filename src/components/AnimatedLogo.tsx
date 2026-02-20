@@ -36,7 +36,8 @@ const AnimatedLogo = ({
       <img
         src={src || fallbackLogo}
         alt={alt}
-        loading="lazy"
+        loading="eager"
+        fetchPriority="high"
         decoding="async"
         width={120}
         height={48}

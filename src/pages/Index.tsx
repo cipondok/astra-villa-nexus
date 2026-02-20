@@ -517,29 +517,29 @@ const Index = () => {
         </section>
 
         {/* Search Section - Blue themed */}
-        <section className="w-full bg-gradient-to-b from-[hsl(210,100%,45%)] via-[hsl(210,100%,50%)] to-[hsl(210,100%,55%)] dark:from-[hsl(210,55%,12%)] dark:via-[hsl(210,50%,16%)] dark:to-[hsl(210,45%,20%)] py-4 sm:py-6 md:py-8">
+        <section className="w-full bg-gradient-to-b from-navy-primary/90 via-navy-primary to-navy-secondary dark:from-background dark:via-background dark:to-muted/30 py-4 sm:py-6 md:py-8">
           <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
             {/* AI Badge */}
             <div className="text-center mb-3 sm:mb-4 animate-in fade-in-50 duration-500">
               <div className={cn(
                 "inline-flex items-center gap-1.5 mb-2 sm:mb-3",
                 "px-3 py-1 sm:px-4 sm:py-1.5",
-                "bg-[hsl(48,100%,52%)] dark:bg-[hsl(48,100%,50%)]/90",
-                "rounded-full border border-[hsl(48,100%,60%)]/40",
-                "shadow-lg shadow-[hsl(48,100%,52%)]/30"
+                "bg-gold-primary",
+                "rounded-full border border-gold-primary/40",
+                "shadow-lg shadow-gold-primary/30"
               )}>
-                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-[hsl(210,60%,12%)]" />
-                <span className="text-[10px] sm:text-xs font-bold text-[hsl(210,60%,12%)] uppercase tracking-wide">
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-foreground" />
+                <span className="text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wide">
                   AI-Powered Search
                 </span>
               </div>
               
               <h2 className="text-lg sm:text-xl md:text-3xl lg:text-4xl font-extrabold leading-tight mb-1 sm:mb-2">
-                <span className="bg-gradient-to-r from-[hsl(48,100%,52%)] via-white to-[hsl(48,100%,52%)] bg-clip-text text-transparent drop-shadow-lg">
+                <span className="bg-gradient-to-r from-gold-primary via-white to-gold-primary bg-clip-text text-transparent drop-shadow-lg">
                   {t.findYour}
                 </span>
               </h2>
-              <p className="flex text-xs sm:text-sm md:text-base text-white/90 items-center justify-center gap-1.5 font-medium">
+              <p className="flex text-xs sm:text-sm md:text-base text-primary-foreground/90 items-center justify-center gap-1.5 font-medium">
                 <Search className="h-3 w-3 sm:h-4 sm:w-4" />
                 {t.searchPowered}
               </p>
@@ -562,7 +562,7 @@ const Index = () => {
             
             {/* Retry Indicator */}
             {isRetrying && (
-              <div className="mt-2 bg-[hsl(48,100%,52%)] text-[hsl(210,60%,12%)] px-3 py-1.5 rounded-lg shadow-lg flex items-center justify-center gap-2 animate-in slide-in-from-bottom-2">
+              <div className="mt-2 bg-gold-primary text-foreground px-3 py-1.5 rounded-lg shadow-lg flex items-center justify-center gap-2 animate-in slide-in-from-bottom-2">
                 <RefreshCw className="h-3.5 w-3.5 animate-spin" />
                 <span className="text-xs font-bold">Retrying... ({retryCount}/3)</span>
               </div>
@@ -572,11 +572,11 @@ const Index = () => {
           {/* Featured Properties Slideshow */}
           <div className="w-full mt-4 md:mt-6">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Star className="h-3 w-3 md:h-4 md:w-4 text-[hsl(48,100%,52%)] fill-[hsl(48,100%,52%)]/50" />
-              <h3 className="text-xs md:text-sm font-semibold text-white">
+              <Star className="h-3 w-3 md:h-4 md:w-4 text-gold-primary fill-gold-primary/50" />
+              <h3 className="text-xs md:text-sm font-semibold text-primary-foreground">
                 {t.featuredProperties}
               </h3>
-              <Star className="h-3 w-3 md:h-4 md:w-4 text-[hsl(48,100%,52%)] fill-[hsl(48,100%,52%)]/50" />
+              <Star className="h-3 w-3 md:h-4 md:w-4 text-gold-primary fill-gold-primary/50" />
             </div>
             <Suspense fallback={
               <div className="flex gap-2 px-3 overflow-hidden justify-center">
