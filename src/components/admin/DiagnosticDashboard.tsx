@@ -162,17 +162,17 @@ const DiagnosticDashboard = () => {
     switch (status) {
       case 'healthy':
       case 'completed':
-        return 'text-green-600 dark:text-green-400';
+        return 'text-chart-1';
       case 'warning':
       case 'in_progress':
-        return 'text-yellow-600 dark:text-yellow-400';
+        return 'text-chart-3';
       case 'critical':
       case 'error':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-destructive';
       case 'pending':
-        return 'text-blue-600 dark:text-blue-400';
+        return 'text-chart-2';
       default:
-        return 'text-gray-600 dark:text-gray-400';
+        return 'text-muted-foreground';
     }
   };
 
@@ -180,16 +180,16 @@ const DiagnosticDashboard = () => {
     switch (status) {
       case 'healthy':
       case 'completed':
-        return <CheckCircle className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />;
+        return <CheckCircle className="h-3.5 w-3.5 text-chart-1" />;
       case 'warning':
-        return <AlertTriangle className="h-3.5 w-3.5 text-yellow-600 dark:text-yellow-400" />;
+        return <AlertTriangle className="h-3.5 w-3.5 text-chart-3" />;
       case 'critical':
       case 'error':
-        return <AlertTriangle className="h-3.5 w-3.5 text-red-600 dark:text-red-400" />;
+        return <AlertTriangle className="h-3.5 w-3.5 text-destructive" />;
       case 'in_progress':
-        return <Loader className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 animate-spin" />;
+        return <Loader className="h-3.5 w-3.5 text-chart-2 animate-spin" />;
       case 'pending':
-        return <Clock className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />;
+        return <Clock className="h-3.5 w-3.5 text-chart-2" />;
       default:
         return <Monitor className="h-3.5 w-3.5 text-muted-foreground" />;
     }
@@ -250,7 +250,7 @@ const DiagnosticDashboard = () => {
   return (
     <div className="space-y-3 bg-background min-h-0 rounded-lg">
       {/* Header - Slim Style */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 dark:from-primary/10 dark:via-primary/20 dark:to-primary/10 rounded-lg border border-border/50">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-muted/20 rounded-lg border border-border/50">
         <div className="flex-1">
           <h2 className="text-sm font-bold text-foreground">System Diagnostics</h2>
           <p className="text-[10px] text-muted-foreground mt-0.5">Monitor system health and performance metrics</p>
@@ -312,16 +312,16 @@ const DiagnosticDashboard = () => {
           {diagnostics.map((diagnostic) => {
             const IconComponent = getCategoryIcon(diagnostic.category);
             return (
-              <Card key={diagnostic.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 touch-manipulation">
+              <Card key={diagnostic.id} className="bg-card border border-border touch-manipulation">
                 <CardHeader className="p-3 sm:p-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center space-x-2 min-w-0">
                       <IconComponent className={`h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 ${getStatusColor(diagnostic.status)}`} />
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 truncate">
+                        <h3 className="font-semibold text-sm sm:text-base text-foreground truncate">
                           {diagnostic.name}
                         </h3>
-                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
+                        <p className="text-xs sm:text-sm text-muted-foreground truncate">
                           {diagnostic.category} • {diagnostic.description}
                         </p>
                       </div>
@@ -345,8 +345,8 @@ const DiagnosticDashboard = () => {
                   </div>
                   <div className="mt-2 sm:mt-3 space-y-2">
                     <div className="flex items-center justify-between text-xs sm:text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">Progress</span>
-                      <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{diagnostic.progress}%</span>
+                      <span className="text-muted-foreground">Progress</span>
+                      <span className="text-xs sm:text-sm text-muted-foreground">{diagnostic.progress}%</span>
                     </div>
                     <Progress 
                       value={diagnostic.progress} 
@@ -354,14 +354,14 @@ const DiagnosticDashboard = () => {
                     />
                   </div>
                   {diagnostic.nextStep && (
-                    <div className="mt-2 p-2 sm:p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                      <h4 className="text-xs sm:text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">Next Step</h4>
-                      <p className="text-xs sm:text-sm text-blue-700 dark:text-blue-400">{diagnostic.nextStep}</p>
+                    <div className="mt-2 p-2 sm:p-3 bg-chart-2/10 rounded-lg">
+                      <h4 className="text-xs sm:text-sm font-medium text-chart-2 mb-1">Next Step</h4>
+                      <p className="text-xs sm:text-sm text-chart-2/80">{diagnostic.nextStep}</p>
                     </div>
                   )}
                   {diagnostic.dependencies && diagnostic.dependencies.length > 0 && (
                     <div className="mt-2">
-                      <h4 className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">Dependencies</h4>
+                      <h4 className="text-xs sm:text-sm font-medium text-foreground mb-1">Dependencies</h4>
                       <div className="flex flex-wrap gap-1">
                         {diagnostic.dependencies.map((dep, idx) => (
                           <Badge key={idx} variant="outline" className="text-xs">
@@ -371,7 +371,7 @@ const DiagnosticDashboard = () => {
                       </div>
                     </div>
                   )}
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  <p className="text-xs text-muted-foreground mt-2">
                     Last updated: {new Date(diagnostic.lastUpdated).toLocaleString()}
                   </p>
                 </CardHeader>
@@ -383,14 +383,14 @@ const DiagnosticDashboard = () => {
 
       {/* Show message if no diagnostics are available */}
       {diagnostics.length === 0 && !isRunning && (
-        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <Card className="bg-card border border-border">
           <CardContent className="text-center py-12">
-            <Monitor className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">No Diagnostic Data Available</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+            <Monitor className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">No Diagnostic Data Available</h3>
+            <p className="text-muted-foreground mb-4">
               Click "Run Full Diagnostics" to start comprehensive system testing
             </p>
-            <Button onClick={runFullDiagnostics} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button onClick={runFullDiagnostics}>
               <PlayCircle className="h-4 w-4 mr-2" />
               Start Diagnostics
             </Button>
@@ -400,14 +400,14 @@ const DiagnosticDashboard = () => {
 
       {/* Detailed Diagnostics */}
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-          <TabsTrigger value="overview" className="text-gray-700 dark:text-gray-300 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">
+        <TabsList className="bg-muted/30 border border-border/40">
+          <TabsTrigger value="overview">
             Overview
           </TabsTrigger>
-          <TabsTrigger value="performance" className="text-gray-700 dark:text-gray-300 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">
+          <TabsTrigger value="performance">
             Performance
           </TabsTrigger>
-          <TabsTrigger value="logs" className="text-gray-700 dark:text-gray-300 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">
+          <TabsTrigger value="logs">
             System Logs
           </TabsTrigger>
         </TabsList>
@@ -415,19 +415,19 @@ const DiagnosticDashboard = () => {
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Authentication Status Card */}
-            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <Card className="bg-card border border-border">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-2 text-foreground">
                   <Shield className="h-5 w-5" />
                   User Authentication
                 </CardTitle>
-                <CardDescription className="text-gray-600 dark:text-gray-400">
+                <CardDescription>
                   Current authentication status and session details
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Status</span>
+                  <span className="text-sm text-foreground">Status</span>
                   <div className="flex items-center gap-2">
                     {getStatusIcon(authHealth?.status || 'checking')}
                     <Badge variant={authHealth?.details?.authenticated ? 'default' : 'outline'}>
@@ -439,29 +439,29 @@ const DiagnosticDashboard = () => {
                 {authHealth?.details?.authenticated && (
                   <>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-700 dark:text-gray-300">User ID</span>
-                      <span className="text-xs text-gray-600 dark:text-gray-400 font-mono">
+                      <span className="text-sm text-foreground">User ID</span>
+                      <span className="text-xs text-muted-foreground font-mono">
                         {authHealth.details.userId?.slice(0, 8)}...
                       </span>
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-700 dark:text-gray-300">Email</span>
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                      <span className="text-sm text-foreground">Email</span>
+                      <span className="text-sm text-muted-foreground">
                         {authHealth.details.email}
                       </span>
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-700 dark:text-gray-300">Provider</span>
+                      <span className="text-sm text-foreground">Provider</span>
                       <Badge variant="outline" className="text-xs">
                         {authHealth.details.provider}
                       </Badge>
                     </div>
                     
                     {authHealth.details.roles && authHealth.details.roles.length > 0 && (
-                      <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-                        <span className="text-sm text-gray-700 dark:text-gray-300 mb-2 block">User Roles</span>
+                      <div className="pt-2 border-t border-border">
+                        <span className="text-sm text-foreground mb-2 block">User Roles</span>
                         <div className="flex flex-wrap gap-1">
                           {authHealth.details.roles.map((role: string, idx: number) => (
                             <Badge key={idx} variant="secondary" className="text-xs">
@@ -473,9 +473,9 @@ const DiagnosticDashboard = () => {
                     )}
                     
                     {authHealth.details.sessionExpiry && (
-                      <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
-                        <span className="text-sm text-gray-700 dark:text-gray-300">Session Expires</span>
-                        <span className="text-xs text-gray-600 dark:text-gray-400">
+                      <div className="flex items-center justify-between pt-2 border-t border-border">
+                        <span className="text-sm text-foreground">Session Expires</span>
+                        <span className="text-xs text-muted-foreground">
                           {authHealth.details.sessionExpiry.toLocaleString()}
                         </span>
                       </div>
@@ -493,38 +493,38 @@ const DiagnosticDashboard = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <Card className="bg-card border border-border">
               <CardHeader>
-                <CardTitle className="text-gray-900 dark:text-gray-100">System Health</CardTitle>
-                <CardDescription className="text-gray-600 dark:text-gray-400">
+                <CardTitle className="text-foreground">System Health</CardTitle>
+                <CardDescription>
                   Overall system status and health metrics
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Overall Status</span>
-                  <Badge variant="outline" className="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600">
+                  <span className="text-sm text-foreground">Overall Status</span>
+                  <Badge variant="outline" className="bg-chart-1/10 text-chart-1 border-chart-1/30">
                     {diagnostics.length > 0 ? 
                       (diagnostics.every(d => d.status === 'completed') ? 'Healthy' : 'Running Tests') 
                       : 'Healthy'}
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Last Check</span>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-foreground">Last Check</span>
+                  <span className="text-sm text-muted-foreground">
                     {lastCheck.toLocaleTimeString()}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Tests Completed</span>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-foreground">Tests Completed</span>
+                  <span className="text-sm text-muted-foreground">
                     {diagnostics.filter(d => d.status === 'completed').length} / {diagnostics.length || 7}
                   </span>
                 </div>
                 <Button 
                   onClick={refreshDiagnostics} 
                   disabled={isRefreshing || isRunning}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  className="w-full"
                 >
                   {(isRefreshing || isRunning) ? (
                     <>
@@ -541,27 +541,27 @@ const DiagnosticDashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <Card className="bg-card border border-border">
               <CardHeader>
-                <CardTitle className="text-gray-900 dark:text-gray-100">Quick Actions</CardTitle>
-                <CardDescription className="text-gray-600 dark:text-gray-400">
+                <CardTitle className="text-foreground">Quick Actions</CardTitle>
+                <CardDescription>
                   System maintenance and troubleshooting
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Button variant="outline" className="w-full justify-start">
                   <Database className="h-4 w-4 mr-2" />
                   Test Database Connection
                 </Button>
-                <Button variant="outline" className="w-full justify-start border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Button variant="outline" className="w-full justify-start">
                   <Shield className="h-4 w-4 mr-2" />
                   Verify Authentication
                 </Button>
-                <Button variant="outline" className="w-full justify-start border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Button variant="outline" className="w-full justify-start">
                   <HardDrive className="h-4 w-4 mr-2" />
                   Check Storage Status
                 </Button>
-                <Button variant="outline" className="w-full justify-start border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Button variant="outline" className="w-full justify-start">
                   <Settings className="h-4 w-4 mr-2" />
                   System Settings
                 </Button>
@@ -572,53 +572,53 @@ const DiagnosticDashboard = () => {
 
         <TabsContent value="performance" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <Card className="bg-card border border-border">
               <CardHeader>
-                <CardTitle className="text-gray-900 dark:text-gray-100">Response Time</CardTitle>
+                <CardTitle className="text-foreground">Response Time</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700 dark:text-gray-300">API Response</span>
-                    <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    <span className="text-sm text-foreground">API Response</span>
+                    <span className="text-sm font-semibold text-foreground">
                       {performanceMetrics?.responseTime || 0}ms
                     </span>
                   </div>
                   <Progress 
                     value={Math.min((performanceMetrics?.responseTime || 0) / 10, 100)} 
-                    className="w-full bg-gray-200 dark:bg-gray-700"
+                    className="w-full"
                   />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <Card className="bg-card border border-border">
               <CardHeader>
-                <CardTitle className="text-gray-900 dark:text-gray-100">Resource Usage</CardTitle>
+                <CardTitle className="text-foreground">Resource Usage</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Memory</span>
-                    <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    <span className="text-sm text-foreground">Memory</span>
+                    <span className="text-sm font-semibold text-foreground">
                       {performanceMetrics?.memoryUsage || 0}%
                     </span>
                   </div>
                   <Progress 
                     value={performanceMetrics?.memoryUsage || 0} 
-                    className="w-full bg-gray-200 dark:bg-gray-700"
+                    className="w-full"
                   />
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-700 dark:text-gray-300">CPU</span>
-                    <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    <span className="text-sm text-foreground">CPU</span>
+                    <span className="text-sm font-semibold text-foreground">
                       {performanceMetrics?.cpuUsage || 0}%
                     </span>
                   </div>
                   <Progress 
                     value={performanceMetrics?.cpuUsage || 0} 
-                    className="w-full bg-gray-200 dark:bg-gray-700"
+                    className="w-full"
                   />
                 </div>
               </CardContent>
@@ -627,10 +627,10 @@ const DiagnosticDashboard = () => {
         </TabsContent>
 
         <TabsContent value="logs" className="space-y-4">
-          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+          <Card className="bg-card border border-border">
             <CardHeader>
-              <CardTitle className="text-gray-900 dark:text-gray-100">Recent System Events</CardTitle>
-              <CardDescription className="text-gray-600 dark:text-gray-400">
+              <CardTitle className="text-foreground">Recent System Events</CardTitle>
+              <CardDescription>
                 Latest system logs and events
               </CardDescription>
             </CardHeader>
@@ -642,17 +642,17 @@ const DiagnosticDashboard = () => {
                   { time: '10:20 AM', type: 'INFO', message: 'User authentication service active' },
                   { time: '10:15 AM', type: 'INFO', message: 'System diagnostics initialized' },
                 ].map((log, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                     <div className="flex items-center space-x-3">
                       <Badge 
                         variant="outline" 
-                        className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-600"
+                        className="bg-chart-2/10 text-chart-2 border-chart-2/30"
                       >
                         {log.type}
                       </Badge>
-                      <span className="text-sm text-gray-700 dark:text-gray-300">{log.message}</span>
+                      <span className="text-sm text-foreground">{log.message}</span>
                     </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">{log.time}</span>
+                    <span className="text-xs text-muted-foreground">{log.time}</span>
                   </div>
                 ))}
               </div>
