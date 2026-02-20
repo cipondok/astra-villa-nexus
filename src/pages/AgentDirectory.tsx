@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SEOHead } from '@/components/SEOHead';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
@@ -47,6 +48,11 @@ const AgentDirectory = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Direktori Agen Properti"
+        description="Temukan agen properti terpercaya dan terverifikasi di seluruh Indonesia. Ribuan agen profesional siap membantu transaksi properti Anda."
+        keywords="agen properti indonesia, agen properti terpercaya, cari agen, real estate agent"
+      />
       {/* Hero Banner Section */}
       <AgentHeroBanner stats={agentStats} />
 

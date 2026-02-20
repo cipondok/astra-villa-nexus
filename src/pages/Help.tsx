@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { SEOHead } from "@/components/SEOHead";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -161,6 +162,11 @@ const Help = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Bantuan & Dukungan"
+        description="Temukan jawaban untuk pertanyaan umum seputar properti, akun, dan layanan ASTRA Villa Realty. Tim dukungan kami siap 24/7."
+        keywords="bantuan astra villa, faq properti, dukungan pelanggan, help center"
+      />
       <EnhancedNavigation
         language={language}
         onLanguageToggle={toggleLanguage}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SEOHead } from "@/components/SEOHead";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -282,6 +283,11 @@ const ForeignInvestment = () => {
   // If not logged in, show the public information page
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Panduan Investasi Asing di Indonesia"
+        description="Panduan lengkap investasi properti Indonesia untuk WNA. Regulasi, syarat, dan proses pembelian properti bagi warga negara asing."
+        keywords="investasi properti asing indonesia, WNA beli properti, foreign property investment indonesia"
+      />
       {/* Sticky Header */}
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
         <div className="container mx-auto px-3 sm:px-4 py-3 flex items-center justify-between">
