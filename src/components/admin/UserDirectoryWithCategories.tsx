@@ -353,7 +353,7 @@ const UserDirectoryWithCategories = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-blue-500" />
+              <Users className="h-4 w-4 text-chart-2" />
               <span className="text-sm font-medium">Total Users</span>
             </div>
             <div className="text-2xl font-bold mt-2">{stats.totalUsers}</div>
@@ -362,7 +362,7 @@ const UserDirectoryWithCategories = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-green-500" />
+              <Shield className="h-4 w-4 text-chart-1" />
               <span className="text-sm font-medium">Active Users</span>
             </div>
             <div className="text-2xl font-bold mt-2">{stats.activeUsers}</div>
@@ -371,7 +371,7 @@ const UserDirectoryWithCategories = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-purple-500" />
+              <Building2 className="h-4 w-4 text-chart-4" />
               <span className="text-sm font-medium">Vendors</span>
             </div>
             <div className="text-2xl font-bold mt-2">{stats.vendors}</div>
@@ -380,7 +380,7 @@ const UserDirectoryWithCategories = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Package className="h-4 w-4 text-orange-500" />
+              <Package className="h-4 w-4 text-chart-3" />
               <span className="text-sm font-medium">Categorized</span>
             </div>
             <div className="text-2xl font-bold mt-2">{stats.vendorsWithCategory}</div>
@@ -394,7 +394,7 @@ const UserDirectoryWithCategories = () => {
           <div className="flex gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder="Search users, email, company..."
                   value={searchTerm}
@@ -469,7 +469,7 @@ const UserDirectoryWithCategories = () => {
                             <div className="text-xs text-muted-foreground">{user.company_name}</div>
                           )}
                           {vendorProfile?.business_name && (
-                            <div className="text-xs font-medium text-blue-600">
+                            <div className="text-xs font-medium text-primary">
                               {vendorProfile.business_name}
                             </div>
                           )}
@@ -492,7 +492,7 @@ const UserDirectoryWithCategories = () => {
                                 )}
                                 <span className="text-sm font-medium">{categoryInfo.name}</span>
                                 {categoryInfo.isLocked && (
-                                  <Lock className="h-3 w-3 text-orange-500" />
+                                  <Lock className="h-3 w-3 text-chart-3" />
                                 )}
                               </div>
                               {categoryInfo.isSubcategory && categoryInfo.parentName && (
@@ -505,11 +505,11 @@ const UserDirectoryWithCategories = () => {
                                   {categoryInfo.type === 'products' ? 'Produk' : 'Layanan'}
                                 </Badge>
                                 {categoryInfo.isLocked ? (
-                                  <Badge variant="outline" className="text-xs text-orange-600">
+                                  <Badge variant="outline" className="text-xs text-chart-3">
                                     Terkunci
                                   </Badge>
                                 ) : (
-                                  <Badge variant="outline" className="text-xs text-green-600">
+                                  <Badge variant="outline" className="text-xs text-chart-1">
                                     Dapat Diubah
                                   </Badge>
                                 )}
@@ -517,7 +517,7 @@ const UserDirectoryWithCategories = () => {
                             </div>
                           ) : (
                             <div className="text-sm text-muted-foreground flex items-center gap-1">
-                              <AlertTriangle className="h-3 w-3 text-amber-500" />
+                              <AlertTriangle className="h-3 w-3 text-chart-3" />
                               Belum dipilih
                             </div>
                           )
