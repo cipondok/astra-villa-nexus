@@ -143,7 +143,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
 
                  return (
                    <div key={category} className="relative">
-                     {/* Icon Button - Smaller */}
+                     {/* Icon Button */}
                      <button
                        onClick={() => handleCategoryClick(category)}
                        onMouseEnter={() => setHoveredCategory(category)}
@@ -151,25 +151,31 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                        className={cn(
                          "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 group relative",
                          isOpen
-                           ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                           ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-105"
                            : isActive
                              ? "bg-primary/15 text-primary"
-                             : "hover:bg-slate-700/50 text-slate-400 hover:text-slate-200"
+                             : "hover:bg-slate-700/60 text-slate-400 hover:text-slate-100 hover:scale-105"
                        )}
                      >
-                       <CategoryIcon className="h-4 w-4" />
+                       <CategoryIcon className="h-4 w-4 transition-transform duration-200" />
 
-                       {/* Active indicator dot */}
+                       {/* Active indicator bar */}
                        {isActive && !isOpen && (
-                         <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-1 bg-primary rounded-full" />
+                         <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-full transition-all duration-300" />
+                       )}
+                       {/* Open indicator bar */}
+                       {isOpen && (
+                         <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary-foreground/60 rounded-full" />
                        )}
                      </button>
 
                       {/* Hover Tooltip */}
                       {isHovered && openCategory !== category && (
-                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 animate-in fade-in-0 slide-in-from-left-1 duration-150 pointer-events-none">
-                          <div className="px-2.5 py-1.5 bg-slate-800/95 backdrop-blur-sm text-white text-xs font-medium rounded-md shadow-lg border border-slate-700/50 whitespace-nowrap">
+                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2.5 z-50 animate-in fade-in-0 slide-in-from-left-2 duration-150 pointer-events-none">
+                          <div className="px-2.5 py-1.5 bg-foreground text-background text-xs font-medium rounded-md shadow-xl border border-border/20 whitespace-nowrap">
                             {sectionTitles[category as keyof typeof sectionTitles]}
+                            {/* Arrow */}
+                            <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-foreground" />
                           </div>
                         </div>
                       )}
@@ -180,42 +186,43 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
            </ScrollArea>
          </div>
 
-        {/* Flyout Panel - Small floating window */}
+        {/* Flyout Panel */}
         {openCategory && openSections && (
-          <div className="absolute left-14 top-2 max-h-[calc(100%-16px)] w-48 bg-popover/95 backdrop-blur-md rounded-lg border border-border/60 shadow-2xl z-40 animate-in slide-in-from-left-2 fade-in-0 duration-150 overflow-hidden">
-            {/* Panel Header - Minimal */}
-            <div className="flex items-center justify-between px-2.5 py-2 border-b border-border/40 bg-muted/30">
-              <div className="flex items-center gap-1.5">
+          <div className="absolute left-14 top-2 max-h-[calc(100%-16px)] w-52 bg-popover/98 backdrop-blur-xl rounded-xl border border-border/60 shadow-2xl z-40 animate-in slide-in-from-left-3 fade-in-0 duration-200 overflow-hidden ring-1 ring-black/5">
+            {/* Panel Header */}
+            <div className="flex items-center justify-between px-3 py-2.5 border-b border-border/40 bg-muted/20">
+              <div className="flex items-center gap-2">
                 {(() => {
                   const CategoryIcon = categoryIcons[openCategory] || LayoutDashboard;
                   return <CategoryIcon className="h-3.5 w-3.5 text-primary" />;
                 })()}
-                <h3 className="font-medium text-xs text-foreground">
+                <h3 className="font-semibold text-xs text-foreground">
                   {sectionTitles[openCategory as keyof typeof sectionTitles]}
                 </h3>
               </div>
               <button
                 onClick={() => setOpenCategory(null)}
-                className="w-5 h-5 rounded hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                className="w-5 h-5 rounded-md hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-all duration-150 hover:scale-110"
               >
                 <X className="h-3 w-3" />
               </button>
             </div>
 
             {/* Quick search within category */}
-            <div className="px-2.5 py-2 border-b border-border/40 bg-background/30">
+            <div className="px-2.5 py-2 border-b border-border/30">
               <Input
                 value={flyoutQuery}
                 onChange={(e) => setFlyoutQuery(e.target.value)}
                 placeholder={`Search ${sectionTitles[openCategory as keyof typeof sectionTitles] ?? 'sections'}...`}
-                className="h-7 text-xs"
+                className="h-7 text-xs bg-background/50"
+                autoFocus
               />
             </div>
 
-            {/* Panel Content - Minimal */}
-            <ScrollArea className="max-h-80">
-              <div className="p-1 pb-2">
-                {filteredOpenSections?.length ? filteredOpenSections.map((section) => {
+            {/* Panel Content */}
+            <ScrollArea className="max-h-[300px]">
+              <div className="p-1.5 pb-2">
+                {filteredOpenSections?.length ? filteredOpenSections.map((section, idx) => {
                   const Icon = section.icon;
                   const isActive = section.key === activeSection;
 
@@ -223,29 +230,30 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                     <button
                       key={section.key}
                       onClick={() => handleNavClick(section.key)}
+                      style={{ animationDelay: `${idx * 20}ms` }}
                       className={cn(
-                        "w-full flex items-center gap-2 px-2 py-1.5 rounded-md transition-all duration-100 text-left",
+                        "w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all duration-150 text-left group animate-in fade-in slide-in-from-left-1 duration-200",
                         isActive
-                          ? "bg-primary text-primary-foreground"
-                          : "hover:bg-muted/70 text-foreground"
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "hover:bg-accent/60 text-foreground"
                       )}
                     >
                       <Icon className={cn(
-                        "h-3 w-3 shrink-0",
+                        "h-3.5 w-3.5 shrink-0 transition-transform duration-150 group-hover:scale-110",
                         isActive ? "text-primary-foreground" : "text-primary"
                       )} />
                       <span className={cn(
-                        "text-[11px] truncate flex-1",
-                        isActive ? "text-primary-foreground font-medium" : "text-foreground"
+                        "text-[11px] truncate flex-1 font-medium",
+                        isActive ? "text-primary-foreground" : "text-foreground"
                       )}>
                         {section.label}
                       </span>
                       {'badge' in section && section.badge && (
                         <span className={cn(
-                          "text-[8px] px-1 rounded font-medium shrink-0",
-                          isActive 
+                          "text-[8px] px-1.5 py-0.5 rounded-full font-semibold shrink-0",
+                          isActive
                             ? "bg-primary-foreground/20 text-primary-foreground"
-                            : "bg-destructive/80 text-destructive-foreground"
+                            : "bg-destructive text-destructive-foreground"
                         )}>
                           {String(section.badge)}
                         </span>
@@ -253,8 +261,8 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                     </button>
                   );
                 }) : (
-                  <div className="px-2 py-6 text-center">
-                    <p className="text-[11px] text-muted-foreground">No matches.</p>
+                  <div className="px-2 py-8 text-center">
+                    <p className="text-[11px] text-muted-foreground">No matches for "{flyoutQuery}"</p>
                   </div>
                 )}
               </div>

@@ -1,8 +1,9 @@
 
 import React, { Suspense, lazy, ComponentType } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Home, ChevronRight, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, Home, ChevronRight, AlertCircle } from "lucide-react";
 import { AdminCategoryTabs } from "./AdminCategoryTabs";
 
 // Retry wrapper for lazy imports to handle transient chunk loading failures
@@ -238,12 +239,30 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "ahu-company-checker": { label: "AHU Company Checker", category: "Verification" },
 };
 
-// Loading fallback component
+// Loading fallback — content-aware skeleton instead of a generic spinner
 const LoadingFallback = () => (
-  <div className="flex items-center justify-center min-h-[400px]">
-    <div className="flex flex-col items-center gap-3">
-      <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      <p className="text-sm text-muted-foreground">Loading section...</p>
+  <div className="p-4 md:p-6 space-y-4 animate-in fade-in duration-300">
+    {/* Stats row skeleton */}
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="h-20 rounded-xl bg-muted/40 border border-border/30 animate-pulse" style={{ animationDelay: `${i * 80}ms` }} />
+      ))}
+    </div>
+    {/* Content block skeletons */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="md:col-span-2 space-y-3">
+        <div className="h-8 w-1/3 rounded-lg bg-muted/40 animate-pulse" />
+        <div className="space-y-2">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-10 rounded-lg bg-muted/30 border border-border/20 animate-pulse" style={{ animationDelay: `${i * 60}ms` }} />
+          ))}
+        </div>
+      </div>
+      <div className="space-y-3">
+        <div className="h-8 w-2/3 rounded-lg bg-muted/40 animate-pulse" />
+        <div className="h-48 rounded-xl bg-muted/30 border border-border/20 animate-pulse" />
+        <div className="h-28 rounded-xl bg-muted/30 border border-border/20 animate-pulse" />
+      </div>
     </div>
   </div>
 );
@@ -526,7 +545,12 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
     <div className="flex-1 p-2 md:p-3 lg:p-4">
       {/* Back Navigation & Active Section Indicator */}
       {!isOverview && (
-        <div className="mb-2 md:mb-3 animate-in fade-in slide-in-from-top-2 duration-300">
+        <motion.div
+          className="mb-2 md:mb-3"
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+        >
           <div className="flex items-center gap-1 md:gap-2 p-1.5 md:p-2 rounded-lg bg-gradient-to-r from-primary/5 via-background to-accent/5 border border-border/40 overflow-x-auto">
             {/* Back Button */}
             <Button
@@ -572,20 +596,28 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
               {currentSection.label}
             </span>
           </div>
-        </div>
+        </motion.div>
       )}
 
-      {/* Main Content Area */}
-      <div className="animate-in fade-in duration-300">
-        {!isOverview && (
-          <AdminCategoryTabs activeSection={activeSection} onSectionChange={onSectionChange} />
-        )}
-        <SectionErrorBoundary>
-          <Suspense fallback={<LoadingFallback />}>
-            {renderContent()}
-          </Suspense>
-        </SectionErrorBoundary>
-      </div>
+      {/* Main Content Area - animated on section change */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeSection}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          {!isOverview && (
+            <AdminCategoryTabs activeSection={activeSection} onSectionChange={onSectionChange} />
+          )}
+          <SectionErrorBoundary>
+            <Suspense fallback={<LoadingFallback />}>
+              {renderContent()}
+            </Suspense>
+          </SectionErrorBoundary>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };
