@@ -76,7 +76,7 @@ const SystemAnalytics = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Users</p>
                 <p className="text-2xl font-bold">{userCount.toLocaleString()}</p>
               </div>
-              <Users className="h-8 w-8 text-blue-500" />
+              <Users className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -88,7 +88,7 @@ const SystemAnalytics = () => {
                 <p className="text-sm font-medium text-muted-foreground">Properties Listed</p>
                 <p className="text-2xl font-bold">{propertyCount.toLocaleString()}</p>
               </div>
-              <Building2 className="h-8 w-8 text-green-500" />
+              <Building2 className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -100,7 +100,7 @@ const SystemAnalytics = () => {
                 <p className="text-sm font-medium text-muted-foreground">Page Views (30d)</p>
                 <p className="text-2xl font-bold">{pageViews.toLocaleString()}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-purple-500" />
+              <TrendingUp className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -112,7 +112,7 @@ const SystemAnalytics = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Searches (30d)</p>
                 <p className="text-2xl font-bold">{searchCount.toLocaleString()}</p>
               </div>
-              <Search className="h-8 w-8 text-orange-500" />
+              <Search className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>

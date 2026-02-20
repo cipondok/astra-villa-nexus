@@ -41,7 +41,7 @@ const TransactionManagementTabs = () => {
   return (
     <div className="space-y-3 animate-in fade-in duration-300">
       {/* Header - Same style as Dashboard Overview */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-green-500/5 rounded-xl border border-border/30 px-4 py-3">
+      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-chart-1/5 rounded-xl border border-border/30 px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10">
             <CreditCard className="h-5 w-5 text-primary" />
@@ -50,7 +50,7 @@ const TransactionManagementTabs = () => {
             <h1 className="text-base font-bold">{t.title}</h1>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                <span className="w-2 h-2 bg-chart-1 rounded-full animate-pulse" />
                 Live
               </span>
               <span>•</span>
@@ -58,7 +58,7 @@ const TransactionManagementTabs = () => {
             </div>
           </div>
         </div>
-        <Badge variant="outline" className="text-xs h-6 px-2.5 border-green-500/30 text-green-600 dark:text-green-400">
+        <Badge variant="outline" className="text-xs h-6 px-2.5 border-chart-1/30 text-chart-1">
           <Activity className="h-3 w-3 mr-1" />
           Real-time Active
         </Badge>
