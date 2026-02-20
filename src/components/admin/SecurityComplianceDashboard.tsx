@@ -163,21 +163,21 @@ const SecurityComplianceDashboard = () => {
     switch (status.toLowerCase()) {
       case 'compliant':
       case 'success':
-        return 'bg-green-500';
+        return 'bg-chart-1';
       case 'warning':
-        return 'bg-yellow-500';
+        return 'bg-chart-3';
       case 'critical':
       case 'failed':
-        return 'bg-red-500';
+        return 'bg-destructive';
       default:
-        return 'bg-gray-500';
+        return 'bg-muted-foreground';
     }
   };
 
   const getRiskBadge = (riskScore: number) => {
     if (riskScore >= 80) return <Badge variant="destructive">High Risk</Badge>;
-    if (riskScore >= 50) return <Badge variant="outline" className="border-orange-500 text-orange-500">Medium Risk</Badge>;
-    return <Badge variant="outline" className="border-green-500 text-green-500">Low Risk</Badge>;
+    if (riskScore >= 50) return <Badge variant="outline" className="border-chart-3 text-chart-3">Medium Risk</Badge>;
+    return <Badge variant="outline" className="border-chart-1 text-chart-1">Low Risk</Badge>;
   };
 
   const getPriorityBadge = (priority: string) => {
@@ -187,7 +187,7 @@ const SecurityComplianceDashboard = () => {
       case 'high':
         return <Badge variant="destructive">High</Badge>;
       case 'medium':
-        return <Badge variant="outline" className="border-orange-500 text-orange-500">Medium</Badge>;
+        return <Badge variant="outline" className="border-chart-3 text-chart-3">Medium</Badge>;
       default:
         return <Badge variant="outline">Low</Badge>;
     }
@@ -262,7 +262,7 @@ const SecurityComplianceDashboard = () => {
                 <p className="text-2xl font-bold">{securityMetrics.threatLevel}</p>
                 <p className="text-xs text-muted-foreground">{securityMetrics.activeThreats} active</p>
               </div>
-              <Shield className={`h-8 w-8 ${securityMetrics.threatLevel === 'Low' ? 'text-green-500' : securityMetrics.threatLevel === 'Medium' ? 'text-yellow-500' : 'text-red-500'}`} />
+              <Shield className={`h-8 w-8 ${securityMetrics.threatLevel === 'Low' ? 'text-chart-1' : securityMetrics.threatLevel === 'Medium' ? 'text-chart-3' : 'text-destructive'}`} />
             </div>
           </CardContent>
         </Card>
@@ -274,7 +274,7 @@ const SecurityComplianceDashboard = () => {
                 <p className="text-2xl font-bold">{securityMetrics.blockedAttempts}</p>
                 <p className="text-xs text-muted-foreground">Last 24 hours</p>
               </div>
-              <Lock className="h-8 w-8 text-red-500" />
+              <Lock className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -286,7 +286,7 @@ const SecurityComplianceDashboard = () => {
                 <p className="text-2xl font-bold">{securityMetrics.complianceScore}%</p>
                 <p className="text-xs text-muted-foreground">Security Rating</p>
               </div>
-              <CheckCircle2 className="h-8 w-8 text-green-500" />
+              <CheckCircle2 className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -298,7 +298,7 @@ const SecurityComplianceDashboard = () => {
                 <p className="text-lg font-bold">{securityMetrics.lastScan}</p>
                 <p className="text-xs text-muted-foreground">All systems</p>
               </div>
-              <Activity className="h-8 w-8 text-blue-500" />
+              <Activity className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -326,8 +326,8 @@ const SecurityComplianceDashboard = () => {
                     <XAxis dataKey="date" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="threats" fill="#EF4444" name="Threats Detected" />
-                    <Bar dataKey="blocked" fill="#10B981" name="Threats Blocked" />
+                    <Bar dataKey="threats" fill="hsl(var(--destructive))" name="Threats Detected" />
+                    <Bar dataKey="blocked" fill="hsl(var(--chart-1))" name="Threats Blocked" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -368,8 +368,8 @@ const SecurityComplianceDashboard = () => {
                   </TableBody>
                 </Table>
                 {securityLogs.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
-                    No security events found for the last 24 hours.
+                <div className="text-center py-8 text-muted-foreground">
+                  No security events found for the last 24 hours.
                   </div>
                 )}
               </CardContent>
@@ -389,7 +389,7 @@ const SecurityComplianceDashboard = () => {
             <CardContent>
               <div className="space-y-2">
                 {securityLogs.map((log, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border">
                     <div className="flex items-center gap-3">
                       <div className="flex flex-col">
                         <span className="font-medium">{log.event_type}</span>
@@ -409,7 +409,7 @@ const SecurityComplianceDashboard = () => {
                 ))}
               </div>
               {securityLogs.length === 0 && (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-muted-foreground">
                   No audit trail data available.
                 </div>
               )}
@@ -432,7 +432,7 @@ const SecurityComplianceDashboard = () => {
             <CardContent>
               <div className="space-y-4">
                 {adminAlerts.map((alert) => (
-                  <div key={alert.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div key={alert.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border border-border">
                     <div>
                       <h3 className="font-semibold">{alert.title}</h3>
                       <p className="text-sm text-muted-foreground">{alert.message}</p>
@@ -450,7 +450,7 @@ const SecurityComplianceDashboard = () => {
                 ))}
               </div>
               {adminAlerts.length === 0 && (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-muted-foreground">
                   No admin alerts at this time.
                 </div>
               )}
@@ -489,7 +489,7 @@ const SecurityComplianceDashboard = () => {
                       </TableCell>
                       <TableCell>{error.error_page}</TableCell>
                       <TableCell className="font-mono">{String(error.user_ip || 'N/A')}</TableCell>
-                      <TableCell className="text-sm text-gray-500 max-w-xs truncate">
+                      <TableCell className="text-sm text-muted-foreground max-w-xs truncate">
                         {error.user_agent}
                       </TableCell>
                     </TableRow>
@@ -497,7 +497,7 @@ const SecurityComplianceDashboard = () => {
                 </TableBody>
               </Table>
               {errorLogs.length === 0 && (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-muted-foreground">
                   No error logs found for the last 24 hours.
                 </div>
               )}
