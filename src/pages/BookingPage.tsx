@@ -307,13 +307,13 @@ const BookingPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navigation />
         <div className="container mx-auto px-4 py-8">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-300 rounded mb-4"></div>
-            <div className="h-64 bg-gray-300 rounded mb-4"></div>
-            <div className="h-32 bg-gray-300 rounded"></div>
+          <div className="space-y-4">
+            <div className="h-8 bg-muted animate-pulse rounded mb-4" />
+            <div className="h-64 bg-muted animate-pulse rounded mb-4" />
+            <div className="h-32 bg-muted animate-pulse rounded" />
           </div>
         </div>
       </div>
@@ -322,10 +322,10 @@ const BookingPage = () => {
 
   if (!property) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navigation />
         <div className="container mx-auto px-4 py-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Properti Tidak Ditemukan</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-4">Properti Tidak Ditemukan</h1>
           <Button onClick={() => navigate('/disewa')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Kembali ke Daftar Properti
@@ -336,7 +336,7 @@ const BookingPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -352,14 +352,14 @@ const BookingPage = () => {
           </Button>
           
           <div className="flex items-center space-x-3 mb-2">
-            <h1 className="text-3xl font-bold text-gray-900">{property.title}</h1>
-            <Badge className="bg-green-100 text-green-800">
+            <h1 className="text-3xl font-bold text-foreground">{property.title}</h1>
+            <Badge className="bg-primary/10 text-primary border-primary/20">
               <CheckCircle className="h-3 w-3 mr-1" />
               Online Booking
             </Badge>
           </div>
           
-          <div className="flex items-center text-gray-600">
+          <div className="flex items-center text-muted-foreground">
             <MapPin className="h-4 w-4 mr-1" />
             {property.location}{property.city && `, ${property.city}`}
           </div>
@@ -368,7 +368,7 @@ const BookingPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Property Images */}
           <div className="lg:col-span-2">
-            <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden mb-6">
+            <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-6">
               {property.image_urls?.[0] || property.images?.[0] ? (
                 <img 
                   src={property.image_urls?.[0] || property.images?.[0]} 
@@ -377,7 +377,7 @@ const BookingPage = () => {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-gray-400">No Image Available</span>
+                  <span className="text-muted-foreground">No Image Available</span>
                 </div>
               )}
             </div>
@@ -388,7 +388,7 @@ const BookingPage = () => {
                 <CardTitle>Deskripsi Properti</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">{property.description || "Deskripsi tidak tersedia."}</p>
+                <p className="text-muted-foreground">{property.description || "Deskripsi tidak tersedia."}</p>
               </CardContent>
             </Card>
           </div>

@@ -91,6 +91,10 @@ serve(async (req) => {
     const issueDate = new Date().toISOString();
     const dueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days from now
 
+    // Extract customer info from contact_details jsonb (actual DB schema)
+    const contactDetails = booking.contact_details as any || {};
+    const additionalFees = booking.additional_fees as any || {};
+
     // Prepare invoice data
     const invoiceData: InvoiceData = {
       bookingId: booking.id,
@@ -98,11 +102,11 @@ serve(async (req) => {
       issueDate,
       dueDate,
       customer: {
-        name: booking.customer_name,
-        email: booking.customer_email,
-        phone: booking.customer_phone,
-        address: booking.customer_address,
-        idNumber: booking.customer_id_number
+        name: contactDetails.fullName || 'N/A',
+        email: contactDetails.email || 'N/A',
+        phone: contactDetails.phone || 'N/A',
+        address: contactDetails.address || 'N/A',
+        idNumber: contactDetails.idNumber || 'N/A',
       },
       property: {
         title: booking.properties.title,
@@ -120,11 +124,11 @@ serve(async (req) => {
         basePrice: booking.base_price,
         totalDays: booking.total_days,
         subtotal: booking.base_price * booking.total_days,
-        tax: booking.base_price * booking.total_days * 0.1,
-        serviceCharge: booking.base_price * booking.total_days * 0.05,
+        tax: additionalFees.tax ?? booking.base_price * booking.total_days * 0.1,
+        serviceCharge: additionalFees.serviceCharge ?? booking.base_price * booking.total_days * 0.05,
         total: booking.total_amount
       },
-      paymentMethod: booking.payment_method
+      paymentMethod: additionalFees.paymentMethod || booking.contact_method || 'N/A'
     };
 
     // Save invoice to database
