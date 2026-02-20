@@ -160,7 +160,7 @@ const MobileFirstNavigation: React.FC = () => {
         className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border/30"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 8px)' }}
       >
-        <div className="flex items-center justify-around px-2 h-16">
+        <div className="flex items-center justify-around px-1 h-16 min-h-[64px]">
           {primaryNav.slice(0, 2).map((item) => (
             <NavButton
               key={item.path}
@@ -173,9 +173,10 @@ const MobileFirstNavigation: React.FC = () => {
           {/* Center FAB Button */}
           <button
             onClick={() => setShowQuickActions(!showQuickActions)}
+            aria-label="Quick actions"
             className={cn(
               "relative -mt-6 flex items-center justify-center",
-              "w-14 h-14 rounded-full",
+              "w-14 h-14 rounded-full flex-shrink-0",
               "bg-gradient-to-br from-primary to-primary/80",
               "shadow-lg shadow-primary/30",
               "active:scale-95 transition-transform",
@@ -197,8 +198,9 @@ const MobileFirstNavigation: React.FC = () => {
           {/* Menu expand button */}
           <button
             onClick={() => setIsExpanded(!isExpanded)}
+            aria-label="More navigation options"
             className={cn(
-              "flex flex-col items-center gap-0.5 p-2 min-w-[56px]",
+              "flex flex-col items-center gap-0.5 py-2 px-1 min-w-[44px] min-h-[44px] flex-1",
               "active:scale-95 transition-all",
               isExpanded ? "text-primary" : "text-muted-foreground"
             )}
@@ -223,8 +225,9 @@ const NavButton: React.FC<{
 }> = ({ item, isActive, onClick }) => (
   <button
     onClick={onClick}
+    aria-label={item.label}
     className={cn(
-      "relative flex flex-col items-center gap-0.5 p-2 min-w-[56px]",
+      "relative flex flex-col items-center gap-0.5 py-2 px-1 min-w-[44px] min-h-[44px] flex-1",
       "active:scale-95 transition-all duration-200",
       isActive ? "text-primary" : "text-muted-foreground"
     )}

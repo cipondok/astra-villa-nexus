@@ -137,7 +137,7 @@ const AppContent = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
       {!isAdminRoute && <Suspense fallback={null}><Navigation /></Suspense>}
-      <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12'}>
+      <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Index />} />
