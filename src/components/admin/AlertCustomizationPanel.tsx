@@ -25,11 +25,11 @@ const AlertCustomizationPanel = () => {
   ];
 
   const alertPriorities = [
-    { level: 1, name: 'Info', color: 'bg-blue-100 text-blue-800', description: 'General information' },
-    { level: 2, name: 'Low', color: 'bg-green-100 text-green-800', description: 'Minor issues' },
-    { level: 3, name: 'Medium', color: 'bg-yellow-100 text-yellow-800', description: 'Moderate attention needed' },
-    { level: 4, name: 'High', color: 'bg-orange-100 text-orange-800', description: 'Important issues' },
-    { level: 5, name: 'Critical', color: 'bg-red-100 text-red-800', description: 'Urgent action required' }
+    { level: 1, name: 'Info', color: 'bg-chart-2/10 text-chart-2 border-chart-2/30', description: 'General information' },
+    { level: 2, name: 'Low', color: 'bg-chart-1/10 text-chart-1 border-chart-1/30', description: 'Minor issues' },
+    { level: 3, name: 'Medium', color: 'bg-chart-3/10 text-chart-3 border-chart-3/30', description: 'Moderate attention needed' },
+    { level: 4, name: 'High', color: 'bg-chart-4/10 text-chart-4 border-chart-4/30', description: 'Important issues' },
+    { level: 5, name: 'Critical', color: 'bg-destructive/10 text-destructive border-destructive/30', description: 'Urgent action required' }
   ];
 
   return (
@@ -89,8 +89,8 @@ const AlertCustomizationPanel = () => {
                           key={scheme.id}
                           className={`p-3 border rounded-lg cursor-pointer transition-all ${
                             alertSettings.colorScheme === scheme.id 
-                              ? 'border-blue-500 bg-blue-50 dark:bg-blue-950' 
-                              : 'hover:border-gray-300'
+                          ? 'border-primary bg-primary/5' 
+                              : 'hover:border-border'
                           }`}
                           onClick={() => setAlertSettings(prev => ({ ...prev, colorScheme: scheme.id }))}
                         >

@@ -195,11 +195,11 @@ const VendorDiagnostics = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-500';
-      case 'inactive': return 'bg-gray-500';
-      case 'pending': return 'bg-yellow-500';
-      case 'suspended': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'active': return 'bg-chart-1';
+      case 'inactive': return 'bg-muted-foreground';
+      case 'pending': return 'bg-chart-3';
+      case 'suspended': return 'bg-destructive';
+      default: return 'bg-muted-foreground';
     }
   };
 

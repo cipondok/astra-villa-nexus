@@ -15,7 +15,6 @@ export const useOptimizedDatabaseConnection = () => {
     
     try {
       checkInProgress.current = true;
-      console.log('🔍 Quick connection test...');
       
       // Very fast query with timeout
       const controller = new AbortController();
@@ -35,7 +34,6 @@ export const useOptimizedDatabaseConnection = () => {
         return false;
       }
 
-      console.log('✅ Connection test passed');
       setConnectionStatus('connected');
       setLastChecked(new Date());
       return true;
@@ -53,7 +51,6 @@ export const useOptimizedDatabaseConnection = () => {
   };
 
   const retryConnection = async () => {
-    console.log('🔄 Manual connection retry');
     setIsLoading(true);
     const result = await quickConnectionTest();
     setIsLoading(false);
@@ -61,8 +58,6 @@ export const useOptimizedDatabaseConnection = () => {
   };
 
   useEffect(() => {
-    console.log('🚀 Starting optimized connection monitoring');
-    
     // Quick initial check
     quickConnectionTest();
     
@@ -74,7 +69,6 @@ export const useOptimizedDatabaseConnection = () => {
     }, 60000); // Check every minute instead of 15 seconds
 
     return () => {
-      console.log('🛑 Stopping connection monitoring');
       clearInterval(interval);
     };
   }, [connectionStatus]);

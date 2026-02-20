@@ -18,9 +18,9 @@ const MajorTopicsDashboard = () => {
   });
 
   const getSentimentIcon = (rating: number) => {
-    if (rating >= 4) return <Smile className="h-5 w-5 text-green-500" />;
-    if (rating >= 2.5) return <Meh className="h-5 w-5 text-yellow-500" />;
-    return <Angry className="h-5 w-5 text-red-500" />;
+    if (rating >= 4) return <Smile className="h-5 w-5 text-chart-1" />;
+    if (rating >= 2.5) return <Meh className="h-5 w-5 text-chart-3" />;
+    return <Angry className="h-5 w-5 text-destructive" />;
   };
 
   const analysis = feedback?.reduce((acc, item) => {
@@ -62,12 +62,12 @@ const MajorTopicsDashboard = () => {
 
   if (isLoading) {
     return (
-        <Card className="bg-white/10 backdrop-blur-md border-white/20">
+        <Card>
             <CardHeader>
-                <CardTitle className="text-white">Loading Major Topics...</CardTitle>
+                <CardTitle>Loading Major Topics...</CardTitle>
             </CardHeader>
             <CardContent>
-                <p className="text-gray-300">Analyzing feedback...</p>
+                <p className="text-muted-foreground">Analyzing feedback...</p>
             </CardContent>
         </Card>
     )
@@ -75,47 +75,47 @@ const MajorTopicsDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-white/10 backdrop-blur-md border-white/20">
+      <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-white">
+          <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
             Major Topics Dashboard
           </CardTitle>
-          <CardDescription className="text-gray-300">
+          <CardDescription>
             AI-powered analysis of customer feedback topics and sentiment.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow className="border-white/20">
-                <TableHead className="text-gray-300">Topic</TableHead>
-                <TableHead className="text-gray-300">Volume</TableHead>
-                <TableHead className="text-gray-300">Avg. Sentiment</TableHead>
-                <TableHead className="text-gray-300">Sample Query</TableHead>
+              <TableRow>
+                <TableHead>Topic</TableHead>
+                <TableHead>Volume</TableHead>
+                <TableHead>Avg. Sentiment</TableHead>
+                <TableHead>Sample Query</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {topics.map(item => (
-                <TableRow key={item.topic} className="border-white/20">
-                  <TableCell className="text-white capitalize">{item.topic.replace(/_/g, ' ')}</TableCell>
-                  <TableCell className="text-gray-300">{item.volume}</TableCell>
-                  <TableCell className="text-gray-300 flex items-center gap-2">
+                <TableRow key={item.topic}>
+                  <TableCell className="capitalize">{item.topic.replace(/_/g, ' ')}</TableCell>
+                  <TableCell>{item.volume}</TableCell>
+                  <TableCell className="flex items-center gap-2">
                     {getSentimentIcon(parseFloat(item.avgSentiment))}
                     <span>{item.avgSentiment} / 5.0</span>
                   </TableCell>
-                  <TableCell className="text-gray-300 italic">"{item.topQuery.substring(0, 50)}..."</TableCell>
+                  <TableCell className="italic text-muted-foreground">"{item.topQuery.substring(0, 50)}..."</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-          <Card className="mt-6 bg-blue-900/30 border-blue-500/50">
+          <Card className="mt-6 bg-chart-2/10 border-chart-2/30">
             <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                    <Lightbulb className="h-5 w-5 text-yellow-400 mt-1" />
+                    <Lightbulb className="h-5 w-5 text-chart-3 mt-1" />
                     <div>
-                        <p className="font-semibold text-white">AI Suggestion</p>
-                        <p className="text-sm text-blue-200">{getAISuggestion()}</p>
+                        <p className="font-semibold">AI Suggestion</p>
+                        <p className="text-sm text-muted-foreground">{getAISuggestion()}</p>
                     </div>
                 </div>
             </CardContent>

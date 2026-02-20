@@ -297,9 +297,9 @@ const DatabaseUserManagement = () => {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      approved: { variant: "default" as const, icon: CheckCircle, color: "text-green-600" },
-      pending: { variant: "secondary" as const, icon: AlertTriangle, color: "text-yellow-600" },
-      rejected: { variant: "destructive" as const, icon: XCircle, color: "text-red-600" }
+      approved: { variant: "default" as const, icon: CheckCircle, color: "text-chart-1" },
+      pending: { variant: "secondary" as const, icon: AlertTriangle, color: "text-chart-3" },
+      rejected: { variant: "destructive" as const, icon: XCircle, color: "text-destructive" }
     };
     
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
@@ -316,7 +316,7 @@ const DatabaseUserManagement = () => {
   const getRoleBadge = (role: string, isAdmin: boolean, adminPermissions: string[]) => {
     if (adminPermissions.includes('super_admin')) {
       return (
-        <Badge variant="destructive" className="flex items-center gap-1 bg-red-600">
+        <Badge variant="destructive" className="flex items-center gap-1">
           <Crown className="h-3 w-3" />
           SUPER ADMIN
         </Badge>
@@ -370,12 +370,12 @@ const DatabaseUserManagement = () => {
 
   if (!isSuperAdmin) {
     return (
-      <Card className="border-red-500/20">
+      <Card className="border-destructive/20">
         <CardContent className="p-6 text-center">
-          <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-red-900">Access Denied</h3>
-          <p className="text-red-700">Super administrator privileges required for database management.</p>
-          <p className="text-sm text-red-600 mt-2">
+          <Shield className="h-12 w-12 text-destructive mx-auto mb-4" />
+          <h3 className="text-lg font-semibold">Access Denied</h3>
+          <p className="text-muted-foreground">Super administrator privileges required for database management.</p>
+          <p className="text-sm text-muted-foreground mt-2">
             Current user: {user?.email || 'Not logged in'}
             <br />
             Super admin status: {isSuperAdmin ? 'Granted' : 'Denied'}
@@ -389,13 +389,13 @@ const DatabaseUserManagement = () => {
     <div className="space-y-6">
       {/* Super Admin Header */}
       {isSuperAdmin && (
-        <Card className="border-red-500/20 bg-red-50/50">
+        <Card className="border-destructive/20 bg-destructive/5">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <Crown className="h-6 w-6 text-red-600" />
+              <Crown className="h-6 w-6 text-destructive" />
               <div>
-                <h3 className="font-semibold text-red-900">Super Administrator Control Panel</h3>
-                <p className="text-sm text-red-700">
+                <h3 className="font-semibold">Super Administrator Control Panel</h3>
+                <p className="text-sm text-muted-foreground">
                   Full database access enabled for super admin - Exercise caution with user modifications
                 </p>
               </div>
@@ -412,7 +412,7 @@ const DatabaseUserManagement = () => {
               <CardTitle className="flex items-center gap-2">
                 <Database className="h-5 w-5" />
                 Database User Management
-                {isSuperAdmin && <Crown className="h-4 w-4 text-red-600" />}
+                {isSuperAdmin && <Crown className="h-4 w-4 text-destructive" />}
               </CardTitle>
               <CardDescription>
                 {isSuperAdmin 
@@ -432,7 +432,7 @@ const DatabaseUserManagement = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder="Search users..."
                   value={searchTerm}
@@ -503,11 +503,11 @@ const DatabaseUserManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Verified Users</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-chart-1">
                   {databaseUsers?.filter(u => u.verification_status === 'approved').length || 0}
                 </p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -517,11 +517,11 @@ const DatabaseUserManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Pending Verification</p>
-                <p className="text-2xl font-bold text-yellow-600">
+                <p className="text-2xl font-bold text-chart-3">
                   {databaseUsers?.filter(u => u.verification_status === 'pending').length || 0}
                 </p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-yellow-600" />
+              <AlertTriangle className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -531,11 +531,11 @@ const DatabaseUserManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Admin Users</p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-2xl font-bold text-destructive">
                   {databaseUsers?.filter(u => u.is_admin).length || 0}
                 </p>
               </div>
-              <Shield className="h-8 w-8 text-red-600" />
+              <Shield className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -615,7 +615,7 @@ const DatabaseUserManagement = () => {
                             GRANTED
                           </Badge>
                           {user.admin_permissions.includes('super_admin') && (
-                            <Badge variant="outline" className="text-xs bg-red-50">SUPER</Badge>
+                            <Badge variant="outline" className="text-xs bg-destructive/10 text-destructive">SUPER</Badge>
                           )}
                         </div>
                       ) : (
@@ -814,15 +814,15 @@ const DatabaseUserManagement = () => {
           <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <Crown className="h-5 w-5 text-red-600" />
+                <Crown className="h-5 w-5 text-destructive" />
                 Super Admin: Edit User Profile
               </DialogTitle>
             </DialogHeader>
             
             <div className="space-y-4">
-              <div className="flex items-center gap-2 p-3 bg-red-50 rounded-lg">
-                <AlertTriangle className="h-4 w-4 text-red-600" />
-                <span className="text-sm text-red-700">
+              <div className="flex items-center gap-2 p-3 bg-destructive/5 rounded-lg">
+                <AlertTriangle className="h-4 w-4 text-destructive" />
+                <span className="text-sm text-destructive">
                   Caution: You are modifying user data with super admin privileges
                 </span>
               </div>
