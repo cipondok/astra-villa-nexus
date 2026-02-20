@@ -63,7 +63,7 @@ const BusinessIntelligenceDashboard = () => {
   };
 
   const handleExport = () => {
-    console.log('Exporting BI data...');
+    // Export BI data - implementation pending
   };
 
   return (

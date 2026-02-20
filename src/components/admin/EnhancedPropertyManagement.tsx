@@ -85,43 +85,33 @@ const EnhancedPropertyManagement = () => {
   const { data: properties = [], isLoading, error, refetch, isError } = useQuery({
     queryKey: ['enhanced-admin-properties', searchTerm, statusFilter, typeFilter, listingTypeFilter, locationFilter, priceRangeFilter, sortBy],
     queryFn: async () => {
-      console.log('Fetching enhanced admin properties with filters:', { 
-        searchTerm, statusFilter, typeFilter, listingTypeFilter, locationFilter, priceRangeFilter, sortBy 
-      });
-      
       try {
         let query = supabase
           .from('properties')
           .select('*');
 
-        // Apply text search across multiple fields
         if (searchTerm && searchTerm.trim()) {
           const searchTermLower = searchTerm.toLowerCase().trim();
           query = query.or(`title.ilike.%${searchTermLower}%,location.ilike.%${searchTermLower}%,city.ilike.%${searchTermLower}%,state.ilike.%${searchTermLower}%,description.ilike.%${searchTermLower}%`);
         }
 
-        // Apply location filter
         if (locationFilter && locationFilter.trim()) {
           const locationLower = locationFilter.toLowerCase().trim();
           query = query.or(`location.ilike.%${locationLower}%,city.ilike.%${locationLower}%,state.ilike.%${locationLower}%`);
         }
 
-        // Apply status filter
         if (statusFilter !== "all") {
           query = query.eq('status', statusFilter);
         }
 
-        // Apply property type filter
         if (typeFilter !== "all") {
           query = query.eq('property_type', typeFilter);
         }
 
-        // Apply listing type filter
         if (listingTypeFilter !== "all") {
           query = query.eq('listing_type', listingTypeFilter);
         }
 
-        // Apply price range filter
         if (priceRangeFilter !== "all") {
           const ranges = {
             'under_500m': { min: 0, max: 500000000 },
@@ -140,41 +130,23 @@ const EnhancedPropertyManagement = () => {
           }
         }
 
-        // Apply sorting
         switch (sortBy) {
-          case 'title_asc':
-            query = query.order('title', { ascending: true });
-            break;
-          case 'title_desc':
-            query = query.order('title', { ascending: false });
-            break;
-          case 'price_asc':
-            query = query.order('price', { ascending: true });
-            break;
-          case 'price_desc':
-            query = query.order('price', { ascending: false });
-            break;
-          case 'created_at_asc':
-            query = query.order('created_at', { ascending: true });
-            break;
+          case 'title_asc': query = query.order('title', { ascending: true }); break;
+          case 'title_desc': query = query.order('title', { ascending: false }); break;
+          case 'price_asc': query = query.order('price', { ascending: true }); break;
+          case 'price_desc': query = query.order('price', { ascending: false }); break;
+          case 'created_at_asc': query = query.order('created_at', { ascending: true }); break;
           case 'created_at_desc':
-          default:
-            query = query.order('created_at', { ascending: false });
-            break;
+          default: query = query.order('created_at', { ascending: false }); break;
         }
 
         const { data, error } = await query.limit(100);
         
-        if (error) {
-          console.error('Enhanced admin query error:', error);
-          throw new Error(`Database error: ${error.message}`);
-        }
+        if (error) throw new Error(`Database error: ${error.message}`);
         
-        console.log('Enhanced admin properties fetched successfully:', data?.length || 0);
         return data || [];
         
       } catch (err) {
-        console.error('Enhanced property fetch error:', err);
         throw err;
       }
     },
