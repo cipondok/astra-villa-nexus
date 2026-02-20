@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { ChevronRight, Home } from 'lucide-react';
 import { navigationSections, sectionTitles, categories } from './navigationSections';
 
@@ -7,25 +7,29 @@ interface AdminBreadcrumbProps {
   onSectionChange: (section: string) => void;
 }
 
-export function AdminBreadcrumb({ activeSection, onSectionChange }: AdminBreadcrumbProps) {
-  // Find the category and section info
-  let categoryName = '';
-  let sectionInfo = null;
-
-  for (const category of categories) {
-    const sections = navigationSections[category as keyof typeof navigationSections];
-    const found = sections?.find((s) => s.key === activeSection);
-    if (found) {
-      categoryName = sectionTitles[category as keyof typeof sectionTitles];
-      sectionInfo = found;
-      break;
+export const AdminBreadcrumb = React.memo(function AdminBreadcrumb({ activeSection, onSectionChange }: AdminBreadcrumbProps) {
+  // Memoize expensive category/section lookup
+  const { categoryName, sectionInfo } = useMemo(() => {
+    let categoryName = '';
+    let sectionInfo = null;
+    for (const category of categories) {
+      const sections = navigationSections[category as keyof typeof navigationSections];
+      const found = sections?.find((s) => s.key === activeSection);
+      if (found) {
+        categoryName = sectionTitles[category as keyof typeof sectionTitles];
+        sectionInfo = found;
+        break;
+      }
     }
-  }
+    return { categoryName, sectionInfo };
+  }, [activeSection]);
+
+  const goToOverview = useCallback(() => onSectionChange('overview'), [onSectionChange]);
 
   return (
     <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
       <button
-        onClick={() => onSectionChange('overview')}
+        onClick={goToOverview}
         className="flex items-center gap-1 hover:text-foreground transition-colors"
       >
         <Home className="h-3.5 w-3.5" />
@@ -47,4 +51,5 @@ export function AdminBreadcrumb({ activeSection, onSectionChange }: AdminBreadcr
       )}
     </nav>
   );
-}
+});
+

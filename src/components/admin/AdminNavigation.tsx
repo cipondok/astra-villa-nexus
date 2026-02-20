@@ -8,7 +8,7 @@ interface AdminNavigationProps {
   onSectionChange: (section: string) => void;
 }
 
-const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProps) => {
+const AdminNavigation = React.memo(function AdminNavigation({ activeSection, onSectionChange }: AdminNavigationProps) {
   return (
     <div className="space-y-6">
       {categories.map((category) => (
@@ -21,6 +21,7 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
       ))}
     </div>
   );
-};
+});
+
 
 export default AdminNavigation;
