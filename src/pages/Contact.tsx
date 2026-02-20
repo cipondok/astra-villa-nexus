@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,23 +101,40 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    
-    toast({
-      title: currentText.success.title,
-      description: currentText.success.description,
-    });
+    try {
+      const { error } = await supabase.functions.invoke('send-inquiry-email', {
+        body: {
+          customer_email: formData.email,
+          customer_name: formData.name,
+          inquiry_type: formData.category || formData.subject || 'inquiry',
+          message: formData.message,
+        },
+      });
 
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: "", email: "", phone: "", subject: "", category: "", message: "" });
-    }, 3000);
+      if (error) throw error;
+
+      setIsSubmitted(true);
+      toast({
+        title: currentText.success.title,
+        description: currentText.success.description,
+      });
+
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({ name: "", email: "", phone: "", subject: "", category: "", message: "" });
+      }, 3000);
+    } catch (err: any) {
+      console.error('Contact form error:', err);
+      toast({
+        title: "Gagal mengirim pesan",
+        description: "Terjadi kesalahan. Silakan coba lagi.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
