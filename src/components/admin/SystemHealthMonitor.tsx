@@ -66,36 +66,36 @@ const SystemHealthMonitor = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'healthy': return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case 'warning': return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
-      case 'critical': return <XCircle className="h-5 w-5 text-red-500" />;
-      default: return <Monitor className="h-5 w-5 text-gray-500" />;
+      case 'healthy': return <CheckCircle className="h-5 w-5 text-chart-1" />;
+      case 'warning': return <AlertTriangle className="h-5 w-5 text-chart-3" />;
+      case 'critical': return <XCircle className="h-5 w-5 text-destructive" />;
+      default: return <Monitor className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'text-green-600 bg-green-50 border-green-200';
-      case 'warning': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'critical': return 'text-red-600 bg-red-50 border-red-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+      case 'healthy': return 'text-chart-1 bg-chart-1/10 border-chart-1/20';
+      case 'warning': return 'text-chart-3 bg-chart-3/10 border-chart-3/20';
+      case 'critical': return 'text-destructive bg-destructive/10 border-destructive/20';
+      default: return 'text-muted-foreground bg-muted border-border';
     }
   };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'up': return <TrendingUp className="h-4 w-4 text-red-500" />;
-      case 'down': return <TrendingDown className="h-4 w-4 text-green-500" />;
-      default: return <Activity className="h-4 w-4 text-blue-500" />;
+      case 'up': return <TrendingUp className="h-4 w-4 text-destructive" />;
+      case 'down': return <TrendingDown className="h-4 w-4 text-chart-1" />;
+      default: return <Activity className="h-4 w-4 text-primary" />;
     }
   };
 
   const getLogLevelColor = (level: string) => {
     switch (level) {
-      case 'error': return 'text-red-600 bg-red-50';
-      case 'warning': return 'text-yellow-600 bg-yellow-50';
-      case 'info': return 'text-blue-600 bg-blue-50';
-      default: return 'text-gray-600 bg-gray-50';
+      case 'error': return 'text-destructive bg-destructive/10';
+      case 'warning': return 'text-chart-3 bg-chart-3/10';
+      case 'info': return 'text-primary bg-primary/10';
+      default: return 'text-muted-foreground bg-muted';
     }
   };
 
@@ -110,12 +110,12 @@ const SystemHealthMonitor = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/20">
-            <Monitor className="h-6 w-6 text-green-600 dark:text-green-400" />
+          <div className="p-2 rounded-lg bg-chart-1/10">
+            <Monitor className="h-6 w-6 text-chart-1" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">System Health Monitor</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Real-time system performance and health metrics</p>
+            <h2 className="text-xl font-bold text-foreground">System Health Monitor</h2>
+            <p className="text-sm text-muted-foreground">Real-time system performance and health metrics</p>
           </div>
         </div>
         <Button 
@@ -137,10 +137,10 @@ const SystemHealthMonitor = () => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  {index === 0 && <Cpu className="h-5 w-5 text-blue-500" />}
-                  {index === 1 && <HardDrive className="h-5 w-5 text-orange-500" />}
-                  {index === 2 && <Database className="h-5 w-5 text-green-500" />}
-                  {index === 3 && <Wifi className="h-5 w-5 text-purple-500" />}
+                  {index === 0 && <Cpu className="h-5 w-5 text-primary" />}
+                  {index === 1 && <HardDrive className="h-5 w-5 text-chart-4" />}
+                  {index === 2 && <Database className="h-5 w-5 text-chart-1" />}
+                  {index === 3 && <Wifi className="h-5 w-5 text-chart-2" />}
                   <h3 className="font-medium text-sm">{metric.name}</h3>
                 </div>
                 {getTrendIcon(metric.trend)}
@@ -156,13 +156,10 @@ const SystemHealthMonitor = () => {
                 
                 <Progress 
                   value={metric.value} 
-                  className={`h-2 ${
-                    metric.status === 'critical' ? 'bg-red-200' :
-                    metric.status === 'warning' ? 'bg-yellow-200' : 'bg-green-200'
-                  }`}
+                  className="h-2"
                 />
                 
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   Updated {format(metric.lastUpdated, 'HH:mm:ss')}
                 </p>
               </div>
@@ -182,19 +179,19 @@ const SystemHealthMonitor = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             {serviceStatus.map((service, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-3">
                   {getStatusIcon(service.status)}
                   <div>
                     <p className="font-medium text-sm">{service.name}</p>
-                    <p className="text-xs text-gray-500">Uptime: {service.uptime}</p>
+                    <p className="text-xs text-muted-foreground">Uptime: {service.uptime}</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <Badge className={getStatusColor(service.status)}>
                     {service.status}
                   </Badge>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {format(service.lastCheck, 'HH:mm')}
                   </p>
                 </div>
@@ -216,7 +213,7 @@ const SystemHealthMonitor = () => {
               <div key={index} className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium">{metric.name}</span>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-muted-foreground">
                     {metric.value} {metric.unit}
                   </span>
                 </div>
@@ -241,29 +238,29 @@ const SystemHealthMonitor = () => {
         <CardContent className="space-y-3">
           {logsLoading ? (
             <div className="flex items-center justify-center py-8">
-              <RefreshCw className="h-6 w-6 animate-spin text-blue-500" />
-              <span className="ml-2 text-gray-500">Loading system logs...</span>
+              <RefreshCw className="h-6 w-6 animate-spin text-primary" />
+              <span className="ml-2 text-muted-foreground">Loading system logs...</span>
             </div>
           ) : (
             systemLogs.map((log) => (
-              <div key={log.id} className="flex items-start justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div key={log.id} className="flex items-start justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-start gap-3">
                   <div className={`w-2 h-2 rounded-full mt-2 ${
-                    log.level === 'error' ? 'bg-red-500' :
-                    log.level === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
+                    log.level === 'error' ? 'bg-destructive' :
+                    log.level === 'warning' ? 'bg-chart-3' : 'bg-primary'
                   }`}></div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <Badge className={`text-xs ${getLogLevelColor(log.level)}`}>
                         {log.level.toUpperCase()}
                       </Badge>
-                      <span className="text-xs text-gray-500">{log.component}</span>
+                      <span className="text-xs text-muted-foreground">{log.component}</span>
                     </div>
                     <p className="text-sm font-medium">{log.message}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Clock className="h-3 w-3" />
                     {format(log.timestamp, 'HH:mm:ss')}
                   </div>

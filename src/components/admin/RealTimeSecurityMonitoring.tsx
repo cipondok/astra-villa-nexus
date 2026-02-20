@@ -110,15 +110,15 @@ const RealTimeSecurityMonitoring = () => {
     if (riskScore >= 70) {
       return <Badge variant="destructive">High Risk</Badge>;
     } else if (riskScore >= 40) {
-      return <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">Medium Risk</Badge>;
+      return <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/20">Medium Risk</Badge>;
     } else {
-      return <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Low Risk</Badge>;
+      return <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">Low Risk</Badge>;
     }
   };
 
   const getStatusBadge = (success: boolean) => {
     return success 
-      ? <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Success</Badge>
+      ? <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">Success</Badge>
       : <Badge variant="destructive">Failed</Badge>;
   };
 
@@ -167,7 +167,7 @@ const RealTimeSecurityMonitoring = () => {
                 <p className="text-sm font-medium text-muted-foreground">Active Sessions</p>
                 <p className="text-2xl font-bold">{activeSessions?.length || 0}</p>
               </div>
-              <Users className="h-8 w-8 text-green-500" />
+              <Users className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -179,7 +179,7 @@ const RealTimeSecurityMonitoring = () => {
                 <p className="text-sm font-medium text-muted-foreground">Login Attempts (24h)</p>
                 <p className="text-2xl font-bold">{loginAttempts?.length || 0}</p>
               </div>
-              <Activity className="h-8 w-8 text-blue-500" />
+              <Activity className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -189,9 +189,9 @@ const RealTimeSecurityMonitoring = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Failed Attempts</p>
-                <p className="text-2xl font-bold text-red-600">{failedAttempts.length}</p>
+                <p className="text-2xl font-bold text-destructive">{failedAttempts.length}</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-500" />
+              <AlertTriangle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -201,9 +201,9 @@ const RealTimeSecurityMonitoring = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Account Lockouts</p>
-                <p className="text-2xl font-bold text-orange-600">{accountLockouts?.length || 0}</p>
+                <p className="text-2xl font-bold text-chart-4">{accountLockouts?.length || 0}</p>
               </div>
-              <Ban className="h-8 w-8 text-orange-500" />
+              <Ban className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -273,7 +273,7 @@ const RealTimeSecurityMonitoring = () => {
                         <TableCell className="text-sm max-w-xs truncate">
                           {attempt.user_agent || 'Unknown'}
                         </TableCell>
-                        <TableCell className="text-sm text-red-600">
+                        <TableCell className="text-sm text-destructive">
                           {!attempt.success ? 'Login Failed' : '-'}
                         </TableCell>
                         <TableCell>
@@ -312,7 +312,7 @@ const RealTimeSecurityMonitoring = () => {
                     <div key={event.id} className="p-4 border rounded-lg">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <AlertTriangle className="h-5 w-5 text-orange-500" />
+                          <AlertTriangle className="h-5 w-5 text-chart-4" />
                           <div>
                             <div className="font-medium">{event.event_type}</div>
                             <div className="text-sm text-muted-foreground">
@@ -360,8 +360,8 @@ const RealTimeSecurityMonitoring = () => {
                   {activeSessions?.map((session) => (
                     <div key={session.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-                          <Users className="h-5 w-5 text-green-600 dark:text-green-400" />
+                        <div className="w-10 h-10 bg-chart-1/10 rounded-full flex items-center justify-center">
+                          <Users className="h-5 w-5 text-chart-1" />
                         </div>
                         <div>
                           <div className="font-medium">User ID: {session.user_id}</div>
@@ -374,7 +374,7 @@ const RealTimeSecurityMonitoring = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Active</Badge>
+                        <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">Active</Badge>
                         <Button size="sm" variant="outline">
                           <Eye className="h-3 w-3 mr-1" />
                           View
@@ -407,10 +407,10 @@ const RealTimeSecurityMonitoring = () => {
               ) : (
                 <div className="space-y-4">
                   {accountLockouts?.map((lockout) => (
-                    <div key={lockout.id} className="p-4 border rounded-lg bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800">
+                    <div key={lockout.id} className="p-4 border rounded-lg bg-destructive/5 border-destructive/20">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <Ban className="h-5 w-5 text-red-500" />
+                          <Ban className="h-5 w-5 text-destructive" />
                           <div>
                             <div className="font-medium">Account Locked</div>
                             <div className="text-sm text-muted-foreground">
