@@ -1,8 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
-import DOMPurify from "npm:dompurify@3.0.6";
-import { JSDOM } from "npm:jsdom@23.0.1";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -20,6 +18,16 @@ const emailSchema = z.object({
   message: z.string().max(5000).optional().default('')
 });
 
+// Simple HTML sanitizer — strips all tags without needing jsdom/DOMPurify
+function sanitizeText(input: string): string {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -31,33 +39,30 @@ serve(async (req) => {
     
     const { customer_email, customer_name, inquiry_type, message } = validated;
     
-    // Setup DOMPurify with JSDOM
-    const window = new JSDOM('').window;
-    const purify = DOMPurify(window);
-    
     // Sanitize all user inputs
-    const safeName = purify.sanitize(customer_name);
-    const safeMessage = message ? purify.sanitize(message) : '';
+    const safeName = sanitizeText(customer_name);
+    const safeMessage = message ? sanitizeText(message) : '';
 
-    if (!customer_email || !customer_name) {
-      return new Response(
-        JSON.stringify({ error: "Missing customer_email or customer_name" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-
-    const subject = `We received your ${inquiry_type}!`;
+    const subject = `We received your ${sanitizeText(inquiry_type || 'inquiry')}!`;
     const html = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>Thank you, ${safeName}!</h2>
-        <p>We have received your message and our team will get back to you shortly.</p>
-        ${safeMessage ? `<p style="white-space: pre-wrap;"><strong>Your message:</strong><br/>${safeMessage}</p>` : ''}
-        <p style="margin-top: 16px;">Best regards,<br/>Astra Villa Team</p>
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 24px; background: #fff;">
+        <div style="border-top: 4px solid #B8860B; padding-top: 24px;">
+          <h2 style="color: #2D2A26; font-size: 22px; margin: 0 0 16px 0;">Terima kasih, ${safeName}!</h2>
+          <p style="color: #4A4540; font-size: 15px;">Kami telah menerima pesan Anda dan tim kami akan segera menghubungi Anda.</p>
+          ${safeMessage ? `<div style="background: #FFFBF5; border-left: 3px solid #B8860B; padding: 12px 16px; margin: 16px 0; border-radius: 4px;">
+            <p style="margin: 0; font-size: 13px; color: #6B635A; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Pesan Anda:</p>
+            <p style="margin: 8px 0 0 0; color: #4A4540; font-size: 14px; white-space: pre-wrap;">${safeMessage}</p>
+          </div>` : ''}
+          <p style="color: #4A4540; font-size: 15px; margin-top: 24px;">Salam hormat,<br/><strong style="color: #B8860B;">Tim ASTRA Villa Realty</strong></p>
+        </div>
+        <div style="border-top: 1px solid #E8E0D5; margin-top: 32px; padding-top: 16px; text-align: center;">
+          <p style="color: #A8A29E; font-size: 11px; margin: 0;">© 2024 ASTRA Villa Realty • Jakarta, Indonesia</p>
+        </div>
       </div>
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "Astra Villa <onboarding@resend.dev>",
+      from: "ASTRA Villa <onboarding@resend.dev>",
       to: [customer_email],
       subject,
       html,
@@ -70,7 +75,6 @@ serve(async (req) => {
   } catch (error: any) {
     console.error("Error in send-inquiry-email:", error);
     
-    // Handle validation errors
     if (error.name === 'ZodError') {
       return new Response(
         JSON.stringify({ error: "Validation failed", details: error.errors }),

@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import emailService from '@/services/emailService';
 
 export interface PropertyBooking {
   id: string;
@@ -102,10 +103,10 @@ export function usePropertyBooking() {
     mutationFn: async (data: CreateBookingData) => {
       if (!user?.id) throw new Error('Must be logged in');
 
-      // Get property owner
+      // Get property owner + title + address
       const { data: property, error: propError } = await supabase
         .from('properties')
-        .select('owner_id')
+        .select('owner_id, title, location, city')
         .eq('id', data.property_id)
         .single();
 
@@ -122,16 +123,34 @@ export function usePropertyBooking() {
         .single();
 
       if (error) throw error;
-      return booking;
+      return { booking, property };
     },
-    onSuccess: () => {
+    onSuccess: async ({ booking, property }) => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
       toast.success('Booking request submitted!');
+
+      // Send confirmation email to the requester
+      if (user?.email) {
+        const userProfile = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', user.id)
+          .single();
+
+        emailService.sendBookingConfirmation(user.email, {
+          user_name: userProfile.data?.full_name || user.email.split('@')[0],
+          property_title: property.title || 'Properti',
+          booking_date: booking.scheduled_date,
+          booking_time: booking.scheduled_time,
+          property_address: [property.location, property.city].filter(Boolean).join(', ') || '-',
+        }).catch(err => console.warn('Booking email failed:', err));
+      }
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to create booking');
     },
   });
+
 
   // Update booking status mutation
   const updateBookingMutation = useMutation({
@@ -166,16 +185,43 @@ export function usePropertyBooking() {
       if (error) throw error;
       return data;
     },
-    onSuccess: (_, variables) => {
+    onSuccess: async (updatedBooking, variables) => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
       queryClient.invalidateQueries({ queryKey: ['received-bookings'] });
-      
+
       const statusMessages: Record<string, string> = {
         confirmed: 'Booking confirmed!',
         completed: 'Booking marked as completed',
         cancelled: 'Booking cancelled',
       };
       toast.success(statusMessages[variables.status] || 'Booking updated');
+
+      // Send cancellation email
+      if (variables.status === 'cancelled' && user?.email) {
+        try {
+          const { data: bookingFull } = await supabase
+            .from('property_bookings')
+            .select('scheduled_date, properties:property_id(title)')
+            .eq('id', variables.bookingId)
+            .single();
+
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name')
+            .eq('id', user.id)
+            .single();
+
+          const propTitle = (bookingFull?.properties as any)?.title || 'Properti';
+          emailService.sendBookingCancellation(user.email, {
+            user_name: profile?.full_name || user.email.split('@')[0],
+            property_title: propTitle,
+            booking_date: bookingFull?.scheduled_date || '-',
+            cancellation_reason: variables.cancellationReason || 'Dibatalkan oleh pengguna',
+          }).catch(err => console.warn('Cancellation email failed:', err));
+        } catch (err) {
+          console.warn('Could not send cancellation email:', err);
+        }
+      }
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to update booking');
