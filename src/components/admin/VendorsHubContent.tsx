@@ -77,14 +77,14 @@ const VendorsHubContent = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-yellow-500/10 rounded-lg border border-orange-200/50 dark:border-orange-800/50">
-        <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-600 rounded-lg flex items-center justify-center">
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-primary/10 via-accent/5 to-chart-3/10 rounded-lg border border-border/50">
+        <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
           <Store className="h-4 w-4 text-white" />
         </div>
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold">Vendor Management Hub</h2>
-            <Badge className="bg-orange-500/20 text-orange-700 dark:text-orange-400 text-[9px] px-1.5 py-0 h-4">Enterprise</Badge>
+            <Badge className="bg-chart-3/20 text-chart-3 text-[9px] px-1.5 py-0 h-4">Enterprise</Badge>
           </div>
           <p className="text-[10px] text-muted-foreground">Complete vendor lifecycle management</p>
         </div>
@@ -92,11 +92,11 @@ const VendorsHubContent = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-3 lg:grid-cols-6 gap-2">
-        <Card className="border-orange-200/50 dark:border-orange-800/30">
+        <Card className="border-border/50">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-orange-500/20 rounded flex items-center justify-center">
-                <Store className="h-3 w-3 text-orange-600" />
+              <div className="w-6 h-6 bg-primary/10 rounded flex items-center justify-center">
+                <Store className="h-3 w-3 text-primary" />
               </div>
               <div>
                 <div className="text-sm font-bold">{vendorStats.totalVendors}</div>
@@ -106,70 +106,70 @@ const VendorsHubContent = () => {
           </CardContent>
         </Card>
         
-        <Card className="border-green-200/50 dark:border-green-800/30">
+        <Card className="border-border/50">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
-                <UserCheck className="h-3 w-3 text-green-600" />
+              <div className="w-6 h-6 bg-chart-1/10 rounded flex items-center justify-center">
+                <UserCheck className="h-3 w-3 text-chart-1" />
               </div>
               <div>
-                <div className="text-sm font-bold text-green-600">{vendorStats.activeVendors}</div>
+                <div className="text-sm font-bold text-chart-1">{vendorStats.activeVendors}</div>
                 <div className="text-[9px] text-muted-foreground">Active</div>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-yellow-200/50 dark:border-yellow-800/30">
+        <Card className="border-border/50">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-yellow-500/20 rounded flex items-center justify-center">
-                <ClipboardList className="h-3 w-3 text-yellow-600" />
+              <div className="w-6 h-6 bg-chart-3/10 rounded flex items-center justify-center">
+                <ClipboardList className="h-3 w-3 text-chart-3" />
               </div>
               <div>
-                <div className="text-sm font-bold text-yellow-600">{vendorStats.pendingApplications}</div>
+                <div className="text-sm font-bold text-chart-3">{vendorStats.pendingApplications}</div>
                 <div className="text-[9px] text-muted-foreground">Pending</div>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-blue-200/50 dark:border-blue-800/30">
+        <Card className="border-border/50">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
-                <ShoppingBag className="h-3 w-3 text-blue-600" />
+              <div className="w-6 h-6 bg-chart-2/10 rounded flex items-center justify-center">
+                <ShoppingBag className="h-3 w-3 text-chart-2" />
               </div>
               <div>
-                <div className="text-sm font-bold text-blue-600">{vendorStats.totalServices}</div>
+                <div className="text-sm font-bold text-chart-2">{vendorStats.totalServices}</div>
                 <div className="text-[9px] text-muted-foreground">Services</div>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-emerald-200/50 dark:border-emerald-800/30">
+        <Card className="border-border/50">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-emerald-500/20 rounded flex items-center justify-center">
-                <Shield className="h-3 w-3 text-emerald-600" />
+              <div className="w-6 h-6 bg-chart-1/10 rounded flex items-center justify-center">
+                <Shield className="h-3 w-3 text-chart-1" />
               </div>
               <div>
-                <div className="text-sm font-bold text-emerald-600">{vendorStats.approvedServices}</div>
+                <div className="text-sm font-bold text-chart-1">{vendorStats.approvedServices}</div>
                 <div className="text-[9px] text-muted-foreground">Approved</div>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-purple-200/50 dark:border-purple-800/30">
+        <Card className="border-border/50">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
-                <TrendingUp className="h-3 w-3 text-purple-600" />
+              <div className="w-6 h-6 bg-chart-5/10 rounded flex items-center justify-center">
+                <TrendingUp className="h-3 w-3 text-chart-5" />
               </div>
               <div>
-                <div className="text-[10px] font-bold text-purple-600">Rp {(vendorStats.monthlyRevenue / 1000000).toFixed(1)}M</div>
+                <div className="text-[10px] font-bold text-chart-5">Rp {(vendorStats.monthlyRevenue / 1000000).toFixed(1)}M</div>
                 <div className="text-[9px] text-muted-foreground">Revenue</div>
               </div>
             </div>
@@ -179,48 +179,48 @@ const VendorsHubContent = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
         <TabsList className="grid w-full grid-cols-11 h-8 p-0.5 bg-muted/50">
-          <TabsTrigger value="overview" className="text-[9px] h-7 data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-700 dark:data-[state=active]:text-orange-400">
+          <TabsTrigger value="overview" className="text-[9px] h-7 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             Overview
           </TabsTrigger>
-          <TabsTrigger value="user-directory" className="text-[9px] h-7 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-700 dark:data-[state=active]:text-blue-400">
+          <TabsTrigger value="user-directory" className="text-[9px] h-7 data-[state=active]:bg-chart-2/20 data-[state=active]:text-chart-2">
             Directory
           </TabsTrigger>
-          <TabsTrigger value="vendors" className="text-[9px] h-7 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-700 dark:data-[state=active]:text-green-400">
+          <TabsTrigger value="vendors" className="text-[9px] h-7 data-[state=active]:bg-chart-1/20 data-[state=active]:text-chart-1">
             Vendors
           </TabsTrigger>
-          <TabsTrigger value="user-roles" className="text-[9px] h-7 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">
+          <TabsTrigger value="user-roles" className="text-[9px] h-7 data-[state=active]:bg-chart-5/20 data-[state=active]:text-chart-5">
             Roles
           </TabsTrigger>
-          <TabsTrigger value="applications" className="text-[9px] h-7 data-[state=active]:bg-yellow-500/20 data-[state=active]:text-yellow-700 dark:data-[state=active]:text-yellow-400">
+          <TabsTrigger value="applications" className="text-[9px] h-7 data-[state=active]:bg-chart-3/20 data-[state=active]:text-chart-3">
             Apps
           </TabsTrigger>
-          <TabsTrigger value="services" className="text-[9px] h-7 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-700 dark:data-[state=active]:text-cyan-400">
+          <TabsTrigger value="services" className="text-[9px] h-7 data-[state=active]:bg-chart-2/20 data-[state=active]:text-chart-2">
             Services
           </TabsTrigger>
-          <TabsTrigger value="categories" className="text-[9px] h-7 data-[state=active]:bg-indigo-500/20 data-[state=active]:text-indigo-700 dark:data-[state=active]:text-indigo-400">
+          <TabsTrigger value="categories" className="text-[9px] h-7 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             Categories
           </TabsTrigger>
-          <TabsTrigger value="category-control" className="text-[9px] h-7 data-[state=active]:bg-pink-500/20 data-[state=active]:text-pink-700 dark:data-[state=active]:text-pink-400">
+          <TabsTrigger value="category-control" className="text-[9px] h-7 data-[state=active]:bg-chart-4/20 data-[state=active]:text-chart-4">
             Control
           </TabsTrigger>
-          <TabsTrigger value="kyc" className="text-[9px] h-7 data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-700 dark:data-[state=active]:text-emerald-400">
+          <TabsTrigger value="kyc" className="text-[9px] h-7 data-[state=active]:bg-chart-1/20 data-[state=active]:text-chart-1">
             KYC
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="text-[9px] h-7 data-[state=active]:bg-teal-500/20 data-[state=active]:text-teal-700 dark:data-[state=active]:text-teal-400">
+          <TabsTrigger value="analytics" className="text-[9px] h-7 data-[state=active]:bg-chart-2/20 data-[state=active]:text-chart-2">
             Analytics
           </TabsTrigger>
-          <TabsTrigger value="control" className="text-[9px] h-7 data-[state=active]:bg-slate-500/20 data-[state=active]:text-slate-700 dark:data-[state=active]:text-slate-400">
+          <TabsTrigger value="control" className="text-[9px] h-7 data-[state=active]:bg-muted data-[state=active]:text-foreground">
             Panel
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-3">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            <Card className="border-blue-200/50 dark:border-blue-800/30">
+            <Card className="border-border/50">
               <CardHeader className="p-3 pb-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
-                    <Users className="h-3 w-3 text-blue-600" />
+                  <div className="w-6 h-6 bg-chart-2/10 rounded flex items-center justify-center">
+                    <Users className="h-3 w-3 text-chart-2" />
                   </div>
                   <CardTitle className="text-xs">Recent Activity</CardTitle>
                 </div>
@@ -243,11 +243,11 @@ const VendorsHubContent = () => {
               </CardContent>
             </Card>
             
-            <Card className="border-green-200/50 dark:border-green-800/30">
+            <Card className="border-border/50">
               <CardHeader className="p-3 pb-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
-                    <Settings className="h-3 w-3 text-green-600" />
+                  <div className="w-6 h-6 bg-chart-1/10 rounded flex items-center justify-center">
+                    <Settings className="h-3 w-3 text-chart-1" />
                   </div>
                   <CardTitle className="text-xs">Quick Actions</CardTitle>
                 </div>
