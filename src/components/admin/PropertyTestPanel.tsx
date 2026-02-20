@@ -108,22 +108,22 @@ const PropertyTestPanel = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "success":
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-chart-1" />;
       case "error":
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       case "warning":
-        return <AlertTriangle className="h-4 w-4 text-yellow-600" />;
+        return <AlertTriangle className="h-4 w-4 text-chart-3" />;
       default:
-        return <AlertTriangle className="h-4 w-4 text-blue-600" />;
+        return <AlertTriangle className="h-4 w-4 text-chart-2" />;
     }
   };
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      success: "bg-green-100 text-green-800",
-      error: "bg-red-100 text-red-800", 
-      warning: "bg-yellow-100 text-yellow-800",
-      info: "bg-blue-100 text-blue-800"
+      success: "bg-chart-1/10 text-chart-1 border-chart-1/30",
+      error: "bg-destructive/10 text-destructive border-destructive/30", 
+      warning: "bg-chart-3/10 text-chart-3 border-chart-3/30",
+      info: "bg-chart-2/10 text-chart-2 border-chart-2/30"
     };
     
     return <Badge className={colors[status as keyof typeof colors] || colors.info}>{status}</Badge>;
@@ -172,7 +172,7 @@ const PropertyTestPanel = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   {getStatusBadge(result.status)}
-                  <span className="text-sm text-gray-600">{result.message}</span>
+                  <span className="text-sm text-muted-foreground">{result.message}</span>
                 </div>
               </div>
             ))}

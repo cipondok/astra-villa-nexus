@@ -29,7 +29,7 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
       description: "Configure token rewards, daily check-ins, and transfer settings",
       icon: Coins,
       action: "settings",
-      color: "text-purple-500",
+      color: "text-chart-4",
       badge: "Token Management"
     },
     {
@@ -37,7 +37,7 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
       description: "General system configuration and preferences",
       icon: Settings,
       action: "settings",
-      color: "text-blue-500",
+      color: "text-chart-2",
       badge: "Configuration"
     },
     {
@@ -45,7 +45,7 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
       description: "Manage user accounts, roles, and permissions",
       icon: Users,
       action: "user-management",
-      color: "text-green-500",
+      color: "text-chart-1",
       badge: "Users"
     },
     {
@@ -53,7 +53,7 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
       description: "View platform analytics and performance metrics",
       icon: BarChart3,
       action: "analytics",
-      color: "text-orange-500",
+      color: "text-chart-3",
       badge: "Analytics"
     },
     {
@@ -61,7 +61,7 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
       description: "Monitor system security and audit logs",
       icon: Shield,
       action: "security-monitor",
-      color: "text-red-500",
+      color: "text-destructive",
       badge: "Security"
     },
     {
@@ -69,7 +69,7 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
       description: "Database administration and monitoring tools",
       icon: Database,
       action: "database",
-      color: "text-indigo-500",
+      color: "text-chart-5",
       badge: "Database"
     },
     {
@@ -77,7 +77,7 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
       description: "Search engine optimization and content management",
       icon: Search,
       action: "seo-management",
-      color: "text-teal-500",
+      color: "text-primary",
       badge: "SEO"
     }
   ];
@@ -110,7 +110,7 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
         <Button 
           onClick={handleDirectTokenAccess}
           size="sm"
-          className="h-7 text-xs bg-purple-600 hover:bg-purple-700 text-white"
+          className="h-7 text-xs"
         >
           <Coins className="h-3 w-3 mr-1.5" />
           Token Settings
@@ -143,12 +143,12 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
       </div>
 
       {/* Direct Token Settings Access */}
-      <Card className="border-purple-500/20 bg-gradient-to-r from-purple-500/5 to-indigo-500/5">
+      <Card className="border-chart-4/20 bg-chart-4/5">
         <CardContent className="p-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
-              <Coins className="h-4 w-4 text-purple-500" />
-              <span className="text-xs font-medium text-purple-700 dark:text-purple-300">ASTRA Token Management</span>
+              <Coins className="h-4 w-4 text-chart-4" />
+              <span className="text-xs font-medium text-chart-4">ASTRA Token Management</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
               <Button 

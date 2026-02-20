@@ -142,11 +142,11 @@ const MobileEnhancementsManagement = () => {
     .reduce((sum, t) => sum + (t.amount || 0), 0);
 
   const featureConfig = [
-    { key: "ar_preview", name: "AR Property Preview", icon: Camera, color: "text-purple-500" },
-    { key: "live_auctions", name: "Live Auctions", icon: Gavel, color: "text-green-500" },
-    { key: "community_chat", name: "Community Chat", icon: MessageCircle, color: "text-blue-500" },
-    { key: "property_journey", name: "Property Journey", icon: MapPin, color: "text-orange-500" },
-    { key: "offline_mode", name: "Offline Mode", icon: WifiOff, color: "text-gray-500" },
+    { key: "ar_preview", name: "AR Property Preview", icon: Camera, color: "text-chart-4" },
+    { key: "live_auctions", name: "Live Auctions", icon: Gavel, color: "text-chart-1" },
+    { key: "community_chat", name: "Community Chat", icon: MessageCircle, color: "text-chart-2" },
+    { key: "property_journey", name: "Property Journey", icon: MapPin, color: "text-chart-3" },
+    { key: "offline_mode", name: "Offline Mode", icon: WifiOff, color: "text-muted-foreground" },
   ];
 
   return (
@@ -166,7 +166,7 @@ const MobileEnhancementsManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <Camera className="h-5 w-5 text-purple-500" />
+              <Camera className="h-5 w-5 text-chart-4" />
               <div>
                 <p className="text-xs text-muted-foreground">AR Sessions</p>
                 <p className="text-xl font-bold">{totalARSessions}</p>
@@ -177,7 +177,7 @@ const MobileEnhancementsManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <Gavel className="h-5 w-5 text-green-500" />
+              <Gavel className="h-5 w-5 text-chart-1" />
               <div>
                 <p className="text-xs text-muted-foreground">Live Auctions</p>
                 <p className="text-xl font-bold">{liveAuctions}</p>
@@ -188,7 +188,7 @@ const MobileEnhancementsManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <MessageCircle className="h-5 w-5 text-blue-500" />
+              <MessageCircle className="h-5 w-5 text-chart-2" />
               <div>
                 <p className="text-xs text-muted-foreground">Chat Members</p>
                 <p className="text-xl font-bold">{totalChatMembers}</p>
@@ -199,7 +199,7 @@ const MobileEnhancementsManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <MapPin className="h-5 w-5 text-orange-500" />
+              <MapPin className="h-5 w-5 text-chart-3" />
               <div>
                 <p className="text-xs text-muted-foreground">Active Journeys</p>
                 <p className="text-xl font-bold">{activeJourneys}</p>
@@ -221,7 +221,7 @@ const MobileEnhancementsManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <CreditCard className="h-5 w-5 text-yellow-500" />
+              <CreditCard className="h-5 w-5 text-chart-3" />
               <div>
                 <p className="text-xs text-muted-foreground">IAP Revenue</p>
                 <p className="text-xl font-bold">Rp {(totalIAPRevenue / 1000000).toFixed(1)}M</p>
@@ -292,21 +292,21 @@ const MobileEnhancementsManagement = () => {
           <div className="grid md:grid-cols-3 gap-4">
             <Card>
               <CardContent className="p-4 text-center">
-                <Eye className="h-8 w-8 mx-auto mb-2 text-purple-500" />
+                <Eye className="h-8 w-8 mx-auto mb-2 text-chart-4" />
                 <p className="text-2xl font-bold">{totalARSessions}</p>
                 <p className="text-sm text-muted-foreground">Total Sessions</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <Play className="h-8 w-8 mx-auto mb-2 text-green-500" />
+                <Play className="h-8 w-8 mx-auto mb-2 text-chart-1" />
                 <p className="text-2xl font-bold">{avgARDuration}s</p>
                 <p className="text-sm text-muted-foreground">Avg Duration</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <Download className="h-8 w-8 mx-auto mb-2 text-blue-500" />
+                <Download className="h-8 w-8 mx-auto mb-2 text-chart-2" />
                 <p className="text-2xl font-bold">
                   {arSessions.reduce((sum, s) => sum + (s.screenshots_taken || 0), 0)}
                 </p>
@@ -324,7 +324,7 @@ const MobileEnhancementsManagement = () => {
                 {arSessions.slice(0, 10).map((session) => (
                   <div key={session.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
                     <div className="flex items-center gap-2">
-                      <Camera className="h-4 w-4 text-purple-500" />
+                      <Camera className="h-4 w-4 text-chart-4" />
                       <span className="text-sm">{session.session_duration || 0}s session</span>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -355,9 +355,9 @@ const MobileEnhancementsManagement = () => {
                       <div className="flex items-center gap-2">
                         <h4 className="font-medium">{auction.title || (auction.properties as any)?.title}</h4>
                         <Badge className={
-                          auction.status === "live" ? "bg-green-500" :
-                          auction.status === "scheduled" ? "bg-blue-500" :
-                          auction.status === "ended" ? "bg-gray-500" : ""
+                          auction.status === "live" ? "bg-chart-1/10 text-chart-1 border-chart-1/30" :
+                          auction.status === "scheduled" ? "bg-chart-2/10 text-chart-2 border-chart-2/30" :
+                          "bg-muted text-muted-foreground"
                         }>
                           {auction.status}
                         </Badge>
@@ -506,12 +506,12 @@ const MobileEnhancementsManagement = () => {
                     </div>
                     <div className="flex items-center gap-3">
                       <p className="font-medium">Rp {transaction.amount?.toLocaleString()}</p>
-                      <Badge className={
-                        transaction.status === "completed" ? "bg-green-500" :
-                        transaction.status === "pending" ? "bg-yellow-500" :
-                        "bg-red-500"
-                      }>
-                        {transaction.status}
+                       <Badge className={
+                         transaction.status === "completed" ? "bg-chart-1/10 text-chart-1 border-chart-1/30" :
+                         transaction.status === "pending" ? "bg-chart-3/10 text-chart-3 border-chart-3/30" :
+                         "bg-destructive/10 text-destructive border-destructive/30"
+                       }>
+                         {transaction.status}
                       </Badge>
                     </div>
                   </div>

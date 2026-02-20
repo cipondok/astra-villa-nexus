@@ -16,7 +16,6 @@ const SystemMonitor = () => {
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    console.log('🔄 Manual refresh triggered');
     
     await Promise.all([
       retryConnection(),
