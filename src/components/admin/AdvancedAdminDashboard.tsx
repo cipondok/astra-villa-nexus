@@ -180,7 +180,7 @@ const AdvancedAdminDashboard = () => {
           {activeTab === 'user-auth-mfa' && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                <Shield className="h-6 w-6 text-blue-500" />
+                <Shield className="h-6 w-6 text-chart-2" />
                 User Management & Authentication
               </h2>
               <MFASettings />
@@ -192,7 +192,7 @@ const AdvancedAdminDashboard = () => {
           {activeTab === 'astra-tokens' && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                <Shield className="h-6 w-6 text-purple-500" />
+                <Shield className="h-6 w-6 text-chart-5" />
                 ASTRA Token Management
               </h2>
               <div className="grid gap-6 md:grid-cols-3">
@@ -227,7 +227,7 @@ const AdvancedAdminDashboard = () => {
           {activeTab === 'customer-service' && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                <Bell className="h-6 w-6 text-yellow-500" />
+                <Bell className="h-6 w-6 text-chart-3" />
                 Customer Service Hub
               </h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -605,14 +605,14 @@ const AdvancedAdminDashboard = () => {
           {activeTab === 'error-reporting' && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                <AlertTriangle className="h-6 w-6 text-red-500" />
+                <AlertTriangle className="h-6 w-6 text-destructive" />
                 Error Reporting & Diagnostics
               </h2>
               <div className="grid gap-6 md:grid-cols-2">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <AlertTriangle className="h-5 w-5 text-red-500" />
+                      <AlertTriangle className="h-5 w-5 text-destructive" />
                       Database Error Tracking
                     </CardTitle>
                   </CardHeader>
@@ -623,7 +623,7 @@ const AdvancedAdminDashboard = () => {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Monitor className="h-5 w-5 text-blue-500" />
+                      <Monitor className="h-5 w-5 text-chart-2" />
                       System Diagnostics
                     </CardTitle>
                   </CardHeader>
@@ -640,86 +640,86 @@ const AdvancedAdminDashboard = () => {
       </div>
 
       {/* HUD Footer */}
-      <footer className="hud-border border-t-2 border-cyan-400/30 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 mt-auto">
+      <footer className="border-t border-border bg-muted/20 mt-auto">
         <div className="container mx-auto px-4 py-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="space-y-2">
-              <h4 className="hud-text font-semibold text-sm">SYSTEM INFO</h4>
+              <h4 className="font-semibold text-sm text-foreground">SYSTEM INFO</h4>
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Version:</span>
-                  <span className="hud-accent">v2.1.0</span>
+                  <span className="text-muted-foreground">Version:</span>
+                  <span className="text-primary">v2.1.0</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Build:</span>
-                  <span className="hud-accent">20240708</span>
+                  <span className="text-muted-foreground">Build:</span>
+                  <span className="text-primary">20240708</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Uptime:</span>
-                  <span className="hud-accent">99.9%</span>
+                  <span className="text-muted-foreground">Uptime:</span>
+                  <span className="text-primary">99.9%</span>
                 </div>
               </div>
             </div>
             
             <div className="space-y-2">
-              <h4 className="hud-text font-semibold text-sm">PERFORMANCE</h4>
+              <h4 className="font-semibold text-sm text-foreground">PERFORMANCE</h4>
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">CPU:</span>
-                  <span className="text-green-400">12%</span>
+                  <span className="text-muted-foreground">CPU:</span>
+                  <span className="text-chart-1">12%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Memory:</span>
-                  <span className="text-green-400">2.1GB</span>
+                  <span className="text-muted-foreground">Memory:</span>
+                  <span className="text-chart-1">2.1GB</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Network:</span>
-                  <span className="text-green-400">Active</span>
+                  <span className="text-muted-foreground">Network:</span>
+                  <span className="text-chart-1">Active</span>
                 </div>
               </div>
             </div>
             
             <div className="space-y-2">
-              <h4 className="hud-text font-semibold text-sm">SECURITY</h4>
+              <h4 className="font-semibold text-sm text-foreground">SECURITY</h4>
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Firewall:</span>
-                  <span className="text-green-400">Active</span>
+                  <span className="text-muted-foreground">Firewall:</span>
+                  <span className="text-chart-1">Active</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">SSL:</span>
-                  <span className="text-green-400">Enabled</span>
+                  <span className="text-muted-foreground">SSL:</span>
+                  <span className="text-chart-1">Enabled</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Auth:</span>
-                  <span className="text-green-400">Secure</span>
+                  <span className="text-muted-foreground">Auth:</span>
+                  <span className="text-chart-1">Secure</span>
                 </div>
               </div>
             </div>
             
             <div className="space-y-2">
-              <h4 className="hud-text font-semibold text-sm">QUICK ACCESS</h4>
+              <h4 className="font-semibold text-sm text-foreground">QUICK ACCESS</h4>
               <div className="flex flex-wrap gap-2">
-                <button className="hud-border px-2 py-1 text-xs hud-text hover:hud-accent transition-colors">
+                <button className="border border-border px-2 py-1 text-xs text-foreground hover:text-primary transition-colors">
                   LOGS
                 </button>
-                <button className="hud-border px-2 py-1 text-xs hud-text hover:hud-accent transition-colors">
+                <button className="border border-border px-2 py-1 text-xs text-foreground hover:text-primary transition-colors">
                   BACKUP
                 </button>
-                <button className="hud-border px-2 py-1 text-xs hud-text hover:hud-accent transition-colors">
+                <button className="border border-border px-2 py-1 text-xs text-foreground hover:text-primary transition-colors">
                   RESTART
                 </button>
               </div>
             </div>
           </div>
           
-          <div className="mt-4 pt-4 border-t border-cyan-400/20 flex items-center justify-between">
+          <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
-                <span className="text-xs text-gray-400">All Systems Operational</span>
+                <div className="w-2 h-2 bg-chart-1 rounded-full pulse-dot"></div>
+                <span className="text-xs text-muted-foreground">All Systems Operational</span>
               </div>
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-muted-foreground">
                 Last Updated: {new Date().toLocaleString()}
               </div>
             </div>
