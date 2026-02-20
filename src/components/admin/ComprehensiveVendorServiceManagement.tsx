@@ -256,7 +256,7 @@ const ComprehensiveVendorServiceManagement = () => {
                 <p className="text-sm text-muted-foreground">Total Services</p>
                 <p className="text-2xl font-bold">{stats.total}</p>
               </div>
-              <BarChart3 className="h-8 w-8 text-blue-500" />
+              <BarChart3 className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -266,9 +266,9 @@ const ComprehensiveVendorServiceManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Active</p>
-                <p className="text-2xl font-bold text-green-600">{stats.active}</p>
+                <p className="text-2xl font-bold text-chart-1">{stats.active}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -278,9 +278,9 @@ const ComprehensiveVendorServiceManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Pending</p>
-                <p className="text-2xl font-bold text-orange-600">{stats.pending}</p>
+                <p className="text-2xl font-bold text-chart-3">{stats.pending}</p>
               </div>
-              <Clock className="h-8 w-8 text-orange-500" />
+              <Clock className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -290,9 +290,9 @@ const ComprehensiveVendorServiceManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Verified</p>
-                <p className="text-2xl font-bold text-emerald-600">{stats.verified}</p>
+                <p className="text-2xl font-bold text-chart-1">{stats.verified}</p>
               </div>
-              <Verified className="h-8 w-8 text-emerald-500" />
+              <Verified className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -302,9 +302,9 @@ const ComprehensiveVendorServiceManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">KYC Verified</p>
-                <p className="text-2xl font-bold text-purple-600">{verificationStats?.verified || 0}</p>
+                <p className="text-2xl font-bold text-chart-5">{verificationStats?.verified || 0}</p>
               </div>
-              <Shield className="h-8 w-8 text-purple-500" />
+              <Shield className="h-8 w-8 text-chart-5" />
             </div>
           </CardContent>
         </Card>
@@ -314,9 +314,9 @@ const ComprehensiveVendorServiceManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Full Access</p>
-                <p className="text-2xl font-bold text-indigo-600">{verificationStats?.fullAccess || 0}</p>
+                <p className="text-2xl font-bold text-primary">{verificationStats?.fullAccess || 0}</p>
               </div>
-              <UserCheck className="h-8 w-8 text-indigo-500" />
+              <UserCheck className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -535,17 +535,17 @@ const ComprehensiveVendorServiceManagement = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center p-4 border rounded-lg">
-                    <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
+                    <p className="text-2xl font-bold text-chart-2">{stats.total}</p>
                     <p className="text-sm text-muted-foreground">Total Services</p>
                   </div>
                   <div className="text-center p-4 border rounded-lg">
-                    <p className="text-2xl font-bold text-green-600">
+                    <p className="text-2xl font-bold text-chart-1">
                       {stats.total > 0 ? Math.round((stats.active / stats.total) * 100) : 0}%
                     </p>
                     <p className="text-sm text-muted-foreground">Active Rate</p>
                   </div>
                   <div className="text-center p-4 border rounded-lg">
-                    <p className="text-2xl font-bold text-purple-600">
+                    <p className="text-2xl font-bold text-chart-5">
                       {stats.total > 0 ? Math.round((stats.verified / stats.total) * 100) : 0}%
                     </p>
                     <p className="text-sm text-muted-foreground">Verification Rate</p>

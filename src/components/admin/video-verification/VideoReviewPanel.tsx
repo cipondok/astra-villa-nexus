@@ -183,9 +183,9 @@ const VideoReviewPanel: React.FC<VideoReviewPanelProps> = ({
                 <Label className="text-xs text-muted-foreground">Consent Given</Label>
                 <p className="font-medium flex items-center gap-1">
                   {session.consent_given ? (
-                    <><CheckCircle className="h-4 w-4 text-green-500" /> Yes</>
+                    <><CheckCircle className="h-4 w-4 text-chart-1" /> Yes</>
                   ) : (
-                    <><XCircle className="h-4 w-4 text-red-500" /> No</>
+                    <><XCircle className="h-4 w-4 text-destructive" /> No</>
                   )}
                 </p>
               </div>
@@ -193,7 +193,7 @@ const VideoReviewPanel: React.FC<VideoReviewPanelProps> = ({
                 <Label className="text-xs text-muted-foreground">Recording</Label>
                 <p className="font-medium flex items-center gap-1">
                   {session.recording_consent ? (
-                    <><CheckCircle className="h-4 w-4 text-green-500" /> Consented</>
+                    <><CheckCircle className="h-4 w-4 text-chart-1" /> Consented</>
                   ) : (
                     <><XCircle className="h-4 w-4 text-muted-foreground" /> Declined</>
                   )}
@@ -213,18 +213,18 @@ const VideoReviewPanel: React.FC<VideoReviewPanelProps> = ({
                       key={log.id}
                       className={cn(
                         "p-3 rounded-lg flex items-center justify-between",
-                        log.severity === 'critical' && "bg-red-100 border border-red-200",
-                        log.severity === 'high' && "bg-orange-100 border border-orange-200",
-                        log.severity === 'medium' && "bg-yellow-100 border border-yellow-200",
-                        log.severity === 'low' && "bg-blue-100 border border-blue-200"
+                        log.severity === 'critical' && "bg-destructive/10 border border-destructive/30",
+                        log.severity === 'high' && "bg-chart-3/10 border border-chart-3/30",
+                        log.severity === 'medium' && "bg-chart-4/10 border border-chart-4/30",
+                        log.severity === 'low' && "bg-chart-2/10 border border-chart-2/30"
                       )}
                     >
                       <div className="flex items-center gap-2">
                         <AlertTriangle className={cn(
                           "h-4 w-4",
-                          log.severity === 'critical' && "text-red-600",
-                          log.severity === 'high' && "text-orange-600",
-                          log.severity === 'medium' && "text-yellow-600"
+                          log.severity === 'critical' && "text-destructive",
+                          log.severity === 'high' && "text-chart-3",
+                          log.severity === 'medium' && "text-chart-4"
                         )} />
                         <span className="font-medium">
                           {FRAUD_TYPES.find(f => f.id === log.detection_type)?.label || log.detection_type}
@@ -238,7 +238,7 @@ const VideoReviewPanel: React.FC<VideoReviewPanelProps> = ({
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-green-500" />
+                  <Shield className="h-4 w-4 text-chart-1" />
                   No fraud flags detected
                 </p>
               )}
@@ -418,25 +418,25 @@ const VideoReviewPanel: React.FC<VideoReviewPanelProps> = ({
                 <SelectContent>
                   <SelectItem value="approved">
                     <span className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4 text-chart-1" />
                       Approve
                     </span>
                   </SelectItem>
                   <SelectItem value="rejected">
                     <span className="flex items-center gap-2">
-                      <XCircle className="h-4 w-4 text-red-500" />
+                      <XCircle className="h-4 w-4 text-destructive" />
                       Reject
                     </span>
                   </SelectItem>
                   <SelectItem value="needs_more_info">
                     <span className="flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                      <AlertTriangle className="h-4 w-4 text-chart-3" />
                       Needs More Info
                     </span>
                   </SelectItem>
                   <SelectItem value="escalated">
                     <span className="flex items-center gap-2">
-                      <Flag className="h-4 w-4 text-orange-500" />
+                      <Flag className="h-4 w-4 text-chart-3" />
                       Escalate
                     </span>
                   </SelectItem>
