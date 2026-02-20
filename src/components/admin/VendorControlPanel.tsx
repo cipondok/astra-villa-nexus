@@ -137,17 +137,14 @@ const VendorControlPanel = () => {
   };
 
   const handleApproveVendor = (vendorId: string) => {
-    console.log('Approving vendor:', vendorId);
     // Implement approval logic
   };
 
   const handleRejectVendor = (vendorId: string) => {
-    console.log('Rejecting vendor:', vendorId);
     // Implement rejection logic
   };
 
   const handleSuspendVendor = (vendorId: string) => {
-    console.log('Suspending vendor:', vendorId);
     // Implement suspension logic
   };
 

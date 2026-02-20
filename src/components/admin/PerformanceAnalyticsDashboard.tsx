@@ -43,13 +43,13 @@ const PerformanceAnalyticsDashboard = () => {
   const [timeRange, setTimeRange] = useState("7");
   const [refreshing, setRefreshing] = useState(false);
 
-  console.log('PerformanceAnalyticsDashboard - Component loaded with timeRange:', timeRange);
+  
 
   // Fetch system performance metrics
   const { data: performanceMetrics, isLoading: metricsLoading, refetch: refetchMetrics, error } = useQuery({
     queryKey: ['performance-metrics', timeRange],
     queryFn: async () => {
-      console.log('PerformanceAnalyticsDashboard - Fetching data for timeRange:', timeRange);
+      
       
       const endDate = new Date();
       const startDate = new Date();
@@ -64,7 +64,7 @@ const PerformanceAnalyticsDashboard = () => {
           .lte('date', endDate.toISOString().split('T')[0])
           .order('date', { ascending: true });
 
-        console.log('PerformanceAnalyticsDashboard - Daily data:', dailyData, 'Error:', dailyError);
+        
 
         // Get web analytics for performance data
         const { data: webData, error: webError } = await supabase
@@ -73,11 +73,11 @@ const PerformanceAnalyticsDashboard = () => {
           .gte('created_at', startDate.toISOString())
           .lte('created_at', endDate.toISOString());
 
-        console.log('PerformanceAnalyticsDashboard - Web data:', webData, 'Error:', webError);
+        
 
         // Return mock data if no real data exists
         if (!dailyData || dailyData.length === 0) {
-          console.log('PerformanceAnalyticsDashboard - No data found, returning mock data');
+          
           const mockDailyData = [];
           for (let i = parseInt(timeRange) - 1; i >= 0; i--) {
             const date = new Date();
@@ -127,7 +127,7 @@ const PerformanceAnalyticsDashboard = () => {
   }
 
   const handleRefresh = async () => {
-    console.log('PerformanceAnalyticsDashboard - Refreshing data');
+    
     setRefreshing(true);
     await refetchMetrics();
     setTimeout(() => setRefreshing(false), 1000);

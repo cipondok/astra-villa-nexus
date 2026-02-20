@@ -472,19 +472,19 @@ const ProjectDiagnosticSystem = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'text-green-600 dark:text-green-400';
-      case 'in_progress': return 'text-primary dark:text-primary';
-      case 'pending': return 'text-yellow-600 dark:text-yellow-400';
-      case 'error': return 'text-destructive dark:text-destructive';
+      case 'completed': return 'text-chart-1';
+      case 'in_progress': return 'text-primary';
+      case 'pending': return 'text-chart-3';
+      case 'error': return 'text-destructive';
       default: return 'text-muted-foreground';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed': return <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />;
+      case 'completed': return <CheckCircle className="h-5 w-5 text-chart-1" />;
       case 'in_progress': return <Clock className="h-5 w-5 text-primary" />;
-      case 'pending': return <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />;
+      case 'pending': return <AlertTriangle className="h-5 w-5 text-chart-3" />;
       case 'error': return <AlertTriangle className="h-5 w-5 text-destructive" />;
       default: return <Activity className="h-5 w-5 text-muted-foreground" />;
     }
@@ -492,10 +492,10 @@ const ProjectDiagnosticSystem = () => {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'Critical': return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800';
-      case 'High': return 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800';
-      case 'Low': return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800';
+      case 'Critical': return 'bg-destructive/10 text-destructive border-destructive/30';
+      case 'High': return 'bg-chart-4/10 text-chart-4 border-chart-4/30';
+      case 'Medium': return 'bg-chart-3/10 text-chart-3 border-chart-3/30';
+      case 'Low': return 'bg-chart-1/10 text-chart-1 border-chart-1/30';
       default: return 'bg-muted text-muted-foreground border-border';
     }
   };
@@ -576,7 +576,7 @@ const ProjectDiagnosticSystem = () => {
                     <p className="text-sm text-muted-foreground">Completed</p>
                     <p className="text-2xl font-bold">{completedModules}</p>
                   </div>
-                  <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+                  <CheckCircle className="h-8 w-8 text-chart-1" />
                 </div>
               </CardContent>
             </Card>
@@ -600,7 +600,7 @@ const ProjectDiagnosticSystem = () => {
                     <p className="text-sm text-muted-foreground">Pending</p>
                     <p className="text-2xl font-bold">{pendingModules}</p>
                   </div>
-                  <AlertTriangle className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
+                  <AlertTriangle className="h-8 w-8 text-chart-3" />
                 </div>
               </CardContent>
             </Card>
@@ -674,27 +674,27 @@ const ProjectDiagnosticSystem = () => {
                     <h4 className="font-medium mb-3">Next Steps to 100% Completion</h4>
                     <div className="space-y-3">
                       <div className="flex items-start gap-3">
-                        <div className="w-6 h-6 bg-red-100 text-red-700 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                        <div className="w-6 h-6 bg-destructive/10 text-destructive rounded-full flex items-center justify-center text-sm font-bold">1</div>
                         <div>
-                          <h5 className="font-medium text-red-700">Complete Payment System (Critical Priority)</h5>
+                          <h5 className="font-medium text-destructive">Complete Payment System (Critical Priority)</h5>
                           <p className="text-sm text-muted-foreground mt-1">
                             Essential for vendor monetization and business operations. Estimated: 65 hours
                           </p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <div className="w-6 h-6 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                        <div className="w-6 h-6 bg-chart-4/10 text-chart-4 rounded-full flex items-center justify-center text-sm font-bold">2</div>
                         <div>
-                          <h5 className="font-medium text-orange-700">Finalize KYC & Vendor Management</h5>
+                          <h5 className="font-medium text-chart-4">Finalize KYC & Vendor Management</h5>
                           <p className="text-sm text-muted-foreground mt-1">
                             Required for regulatory compliance and vendor trust. Estimated: 42 hours
                           </p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <div className="w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                        <div className="w-6 h-6 bg-chart-2/10 text-chart-2 rounded-full flex items-center justify-center text-sm font-bold">3</div>
                         <div>
-                          <h5 className="font-medium text-blue-700">Optimize Image Processing & Performance</h5>
+                          <h5 className="font-medium text-chart-2">Optimize Image Processing & Performance</h5>
                           <p className="text-sm text-muted-foreground mt-1">
                             Critical for user experience and platform performance. Estimated: 28 hours
                           </p>
