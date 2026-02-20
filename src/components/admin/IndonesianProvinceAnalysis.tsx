@@ -204,7 +204,7 @@ const IndonesianProvinceAnalysis = () => {
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="text-center py-8 text-red-600">
+          <div className="text-center py-8 text-destructive">
             <XCircle className="h-12 w-12 mx-auto mb-4" />
             <p>Error loading province data: {error.message}</p>
           </div>
@@ -227,20 +227,20 @@ const IndonesianProvinceAnalysis = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{OFFICIAL_STATS.PROVINCES}</div>
+            <div className="text-center p-4 bg-chart-2/10 rounded-lg">
+              <div className="text-2xl font-bold text-chart-2">{OFFICIAL_STATS.PROVINCES}</div>
               <div className="text-sm text-muted-foreground">Official Provinces</div>
             </div>
-            <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{uniqueProvinces.length}</div>
+            <div className="text-center p-4 bg-chart-1/10 rounded-lg">
+              <div className="text-2xl font-bold text-chart-1">{uniqueProvinces.length}</div>
               <div className="text-sm text-muted-foreground">Found in Database</div>
             </div>
-            <div className="text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{duplicates.length}</div>
+            <div className="text-center p-4 bg-chart-3/10 rounded-lg">
+              <div className="text-2xl font-bold text-chart-3">{duplicates.length}</div>
               <div className="text-sm text-muted-foreground">Duplicate Groups</div>
             </div>
-            <div className="text-center p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{missingProvinces.length}</div>
+            <div className="text-center p-4 bg-destructive/10 rounded-lg">
+              <div className="text-2xl font-bold text-destructive">{missingProvinces.length}</div>
               <div className="text-sm text-muted-foreground">Missing Provinces</div>
             </div>
           </div>
@@ -249,23 +249,23 @@ const IndonesianProvinceAnalysis = () => {
           <div className="border-t pt-6">
             <h3 className="text-lg font-semibold mb-4">Second-Level Administrative Regions</h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="text-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                <div className="text-2xl font-bold text-orange-600">{OFFICIAL_STATS.CITIES_KOTA}</div>
+              <div className="text-center p-4 bg-chart-3/10 rounded-lg">
+                <div className="text-2xl font-bold text-chart-3">{OFFICIAL_STATS.CITIES_KOTA}</div>
                 <div className="text-sm text-muted-foreground">Cities (Kota)</div>
                 <div className="text-xs text-muted-foreground mt-1">Official Count</div>
               </div>
-              <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">{OFFICIAL_STATS.REGENCIES_KABUPATEN}</div>
+              <div className="text-center p-4 bg-chart-5/10 rounded-lg">
+                <div className="text-2xl font-bold text-chart-5">{OFFICIAL_STATS.REGENCIES_KABUPATEN}</div>
                 <div className="text-sm text-muted-foreground">Regencies (Kabupaten)</div>
                 <div className="text-xs text-muted-foreground mt-1">Official Count</div>
               </div>
-              <div className="text-center p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
-                <div className="text-2xl font-bold text-indigo-600">{OFFICIAL_STATS.TOTAL_SECOND_LEVEL}</div>
+              <div className="text-center p-4 bg-primary/10 rounded-lg">
+                <div className="text-2xl font-bold text-primary">{OFFICIAL_STATS.TOTAL_SECOND_LEVEL}</div>
                 <div className="text-sm text-muted-foreground">Total Expected</div>
                 <div className="text-xs text-muted-foreground mt-1">Cities + Regencies</div>
               </div>
-              <div className="text-center p-4 bg-teal-50 dark:bg-teal-900/20 rounded-lg">
-                <div className="text-2xl font-bold text-teal-600">
+              <div className="text-center p-4 bg-chart-4/10 rounded-lg">
+                <div className="text-2xl font-bold text-chart-4">
                   {cityTypeStats.reduce((sum, stat) => sum + stat.unique_cities, 0)}
                 </div>
                 <div className="text-sm text-muted-foreground">In Database</div>
@@ -314,7 +314,7 @@ const IndonesianProvinceAnalysis = () => {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between p-3 bg-card rounded-lg border">
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-chart-1" />
                     <span className="text-sm">Provinces Found</span>
                   </div>
                   <Badge variant="default">{uniqueProvinces.length}/38</Badge>
@@ -322,7 +322,7 @@ const IndonesianProvinceAnalysis = () => {
                 
                 <div className="flex items-center justify-between p-3 bg-card rounded-lg border">
                   <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                    <AlertTriangle className="h-4 w-4 text-chart-3" />
                     <span className="text-sm">Need Standardization</span>
                   </div>
                   <Badge variant="secondary">{duplicates.length} groups</Badge>
@@ -330,7 +330,7 @@ const IndonesianProvinceAnalysis = () => {
                 
                 <div className="flex items-center justify-between p-3 bg-card rounded-lg border">
                   <div className="flex items-center gap-2">
-                    <XCircle className="h-4 w-4 text-red-600" />
+                    <XCircle className="h-4 w-4 text-destructive" />
                     <span className="text-sm">Missing Provinces</span>
                   </div>
                   <Badge variant="destructive">{missingProvinces.length}</Badge>
@@ -377,9 +377,9 @@ const IndonesianProvinceAnalysis = () => {
               <div className="space-y-6">
                 {/* Comparison Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card className="border-orange-200 dark:border-orange-800">
+                  <Card className="border-chart-3/30">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-lg text-orange-600">Cities (Kota)</CardTitle>
+                      <CardTitle className="text-lg text-chart-3">Cities (Kota)</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex justify-between items-center">
@@ -392,9 +392,9 @@ const IndonesianProvinceAnalysis = () => {
                           {cityTypeStats.find(s => s.city_type === 'KOTA')?.unique_cities || 0}
                         </Badge>
                       </div>
-                      <div className="w-full bg-orange-100 dark:bg-orange-900/20 rounded-full h-2">
+                      <div className="w-full bg-muted rounded-full h-2">
                         <div 
-                          className="bg-orange-600 h-2 rounded-full transition-all duration-300" 
+                          className="bg-chart-3 h-2 rounded-full transition-all duration-300" 
                           style={{
                             width: `${Math.min(
                               ((cityTypeStats.find(s => s.city_type === 'KOTA')?.unique_cities || 0) / OFFICIAL_STATS.CITIES_KOTA) * 100,
@@ -409,9 +409,9 @@ const IndonesianProvinceAnalysis = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="border-purple-200 dark:border-purple-800">
+                  <Card className="border-chart-5/30">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-lg text-purple-600">Regencies (Kabupaten)</CardTitle>
+                      <CardTitle className="text-lg text-chart-5">Regencies (Kabupaten)</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex justify-between items-center">
@@ -424,9 +424,9 @@ const IndonesianProvinceAnalysis = () => {
                           {cityTypeStats.find(s => s.city_type === 'KABUPATEN')?.unique_cities || 0}
                         </Badge>
                       </div>
-                      <div className="w-full bg-purple-100 dark:bg-purple-900/20 rounded-full h-2">
+                      <div className="w-full bg-muted rounded-full h-2">
                         <div 
-                          className="bg-purple-600 h-2 rounded-full transition-all duration-300" 
+                          className="bg-chart-5 h-2 rounded-full transition-all duration-300" 
                           style={{
                             width: `${Math.min(
                               ((cityTypeStats.find(s => s.city_type === 'KABUPATEN')?.unique_cities || 0) / OFFICIAL_STATS.REGENCIES_KABUPATEN) * 100,
@@ -506,10 +506,10 @@ const IndonesianProvinceAnalysis = () => {
                             </p>
                             <div className="mt-2 text-xs">
                               {stat.city_type === 'KOTA' && (
-                                <span className="text-orange-600">Cities • Expected: {OFFICIAL_STATS.CITIES_KOTA}</span>
+                                <span className="text-chart-3">Cities • Expected: {OFFICIAL_STATS.CITIES_KOTA}</span>
                               )}
                               {stat.city_type === 'KABUPATEN' && (
-                                <span className="text-purple-600">Regencies • Expected: {OFFICIAL_STATS.REGENCIES_KABUPATEN}</span>
+                                <span className="text-chart-5">Regencies • Expected: {OFFICIAL_STATS.REGENCIES_KABUPATEN}</span>
                               )}
                               {!['KOTA', 'KABUPATEN'].includes(stat.city_type) && (
                                 <span className="text-muted-foreground">Other administrative type</span>
@@ -537,7 +537,7 @@ const IndonesianProvinceAnalysis = () => {
             <CardContent>
               {duplicates.length === 0 ? (
                 <div className="text-center py-8">
-                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-600" />
+                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-chart-1" />
                   <p className="text-muted-foreground">No duplicates found! All province names are standardized.</p>
                 </div>
               ) : (
@@ -589,15 +589,15 @@ const IndonesianProvinceAnalysis = () => {
             <CardContent>
               {missingProvinces.length === 0 ? (
                 <div className="text-center py-8">
-                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-600" />
+                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-chart-1" />
                   <p className="text-muted-foreground">All provinces are present in the database!</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {missingProvinces.map((province) => (
-                    <div key={province} className="p-3 border rounded-lg bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+                    <div key={province} className="p-3 border rounded-lg bg-destructive/10 border-destructive/30">
                       <div className="flex items-center gap-2">
-                        <XCircle className="h-4 w-4 text-red-600" />
+                        <XCircle className="h-4 w-4 text-destructive" />
                         <span className="text-sm font-medium">{province}</span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">
@@ -633,8 +633,8 @@ const IndonesianProvinceAnalysis = () => {
                       key={province} 
                       className={`p-3 border rounded-lg ${
                         isPresent 
-                          ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' 
-                          : 'bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-800'
+                          ? 'bg-chart-1/10 border-chart-1/30' 
+                          : 'bg-muted/50 border-border'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
@@ -642,9 +642,9 @@ const IndonesianProvinceAnalysis = () => {
                           #{index + 1}
                         </Badge>
                         {isPresent ? (
-                          <CheckCircle className="h-4 w-4 text-green-600" />
+                          <CheckCircle className="h-4 w-4 text-chart-1" />
                         ) : (
-                          <XCircle className="h-4 w-4 text-gray-400" />
+                          <XCircle className="h-4 w-4 text-muted-foreground" />
                         )}
                       </div>
                       <h4 className="font-medium text-sm">{province}</h4>

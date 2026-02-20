@@ -88,7 +88,6 @@ const AdminAlertBadge = () => {
   const unreadCount = typeof unreadCountData === 'number' ? unreadCountData : 0;
 
   const handleAlertClick = () => {
-    console.log('Alert badge clicked, opening alerts dialog...');
     setShowAlerts(true);
   };
 

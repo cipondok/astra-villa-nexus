@@ -166,9 +166,8 @@ const EnhancedAdminDashboard = () => {
         refetchAlerts(),
         refetchEvents()
       ]);
-      console.log('✅ Dashboard data refreshed successfully');
-    } catch (error) {
-      console.error('❌ Failed to refresh dashboard:', error);
+    } catch {
+      // silently handle refresh failures
     }
     setTimeout(() => setIsRefreshing(false), 1000);
   };

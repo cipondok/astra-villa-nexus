@@ -53,13 +53,13 @@ interface FilterConfiguration {
 }
 
 const FILTER_CATEGORIES = [
-  { value: 'search', label: 'Search', emoji: '🔍', bg: 'bg-blue-500/10 dark:bg-blue-500/20', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-500/30' },
-  { value: 'location', label: 'Location', emoji: '📍', bg: 'bg-green-500/10 dark:bg-green-500/20', text: 'text-green-700 dark:text-green-300', border: 'border-green-500/30' },
-  { value: 'price', label: 'Price', emoji: '💰', bg: 'bg-amber-500/10 dark:bg-amber-500/20', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-500/30' },
-  { value: 'specifications', label: 'Specs', emoji: '📐', bg: 'bg-purple-500/10 dark:bg-purple-500/20', text: 'text-purple-700 dark:text-purple-300', border: 'border-purple-500/30' },
-  { value: 'investment', label: 'Investment', emoji: '📈', bg: 'bg-emerald-500/10 dark:bg-emerald-500/20', text: 'text-emerald-700 dark:text-emerald-300', border: 'border-emerald-500/30' },
-  { value: 'rental_terms', label: 'Rental', emoji: '📋', bg: 'bg-cyan-500/10 dark:bg-cyan-500/20', text: 'text-cyan-700 dark:text-cyan-300', border: 'border-cyan-500/30' },
-  { value: 'facilities', label: 'Facilities', emoji: '🏊', bg: 'bg-pink-500/10 dark:bg-pink-500/20', text: 'text-pink-700 dark:text-pink-300', border: 'border-pink-500/30' },
+  { value: 'search', label: 'Search', emoji: '🔍', bg: 'bg-chart-2/10', text: 'text-chart-2', border: 'border-chart-2/30' },
+  { value: 'location', label: 'Location', emoji: '📍', bg: 'bg-chart-1/10', text: 'text-chart-1', border: 'border-chart-1/30' },
+  { value: 'price', label: 'Price', emoji: '💰', bg: 'bg-chart-3/10', text: 'text-chart-3', border: 'border-chart-3/30' },
+  { value: 'specifications', label: 'Specs', emoji: '📐', bg: 'bg-chart-5/10', text: 'text-chart-5', border: 'border-chart-5/30' },
+  { value: 'investment', label: 'Investment', emoji: '📈', bg: 'bg-primary/10', text: 'text-primary', border: 'border-primary/30' },
+  { value: 'rental_terms', label: 'Rental', emoji: '📋', bg: 'bg-chart-4/10', text: 'text-chart-4', border: 'border-chart-4/30' },
+  { value: 'facilities', label: 'Facilities', emoji: '🏊', bg: 'bg-accent/10', text: 'text-accent-foreground', border: 'border-accent/30' },
 ];
 
 const FILTER_TYPES = [
@@ -371,7 +371,7 @@ const PropertyFilterSettings = () => {
             </div>
             <span className="text-border">|</span>
             <div className="flex items-center gap-1.5">
-              <div className="h-2 w-2 rounded-full bg-green-500" />
+              <div className="h-2 w-2 rounded-full bg-chart-1" />
               <span className="text-xs text-muted-foreground">{typeFilters.filter(f => f.is_active).length} active</span>
             </div>
             <div className="flex items-center gap-1.5">
