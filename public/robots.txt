@@ -1,3 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin-dashboard
+Disallow: /admin-dashboard/*
+Disallow: /profile
+Disallow: /favorites
+Disallow: /notifications
+Disallow: /dashboard
+
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +19,4 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /
+Sitemap: https://astra-villa-realty.lovable.app/sitemap.xml
