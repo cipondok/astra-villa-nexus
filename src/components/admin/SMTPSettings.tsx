@@ -62,7 +62,7 @@ const SMTPSettings = () => {
           value: settings,
           description: 'SMTP email configuration',
           is_public: false
-        }, { onConflict: 'key' });
+        }, { onConflict: 'category,key' });
 
       if (error) throw error;
       toast({ title: "Settings Saved", description: "SMTP configuration updated successfully" });
