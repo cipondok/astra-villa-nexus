@@ -114,13 +114,13 @@ const AdminAlertBadge = () => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
-        return 'text-red-600';
+        return 'text-destructive';
       case 'medium':
-        return 'text-orange-600';
+        return 'text-chart-3';
       case 'low':
-        return 'text-blue-600';
+        return 'text-chart-2';
       default:
-        return 'text-gray-600';
+        return 'text-muted-foreground';
     }
   };
 
@@ -197,7 +197,7 @@ const AdminAlertBadge = () => {
                     key={alert.id}
                     className={`p-4 border rounded-lg transition-colors cursor-pointer ${
                       !alert.is_read 
-                        ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800' 
+                        ? 'bg-chart-2/5 border-chart-2/20' 
                         : 'hover:bg-muted/50'
                     }`}
                     onClick={() => {
@@ -222,7 +222,7 @@ const AdminAlertBadge = () => {
                             {alert.priority}
                           </Badge>
                           {!alert.is_read && (
-                            <Badge variant="default" className="text-xs bg-blue-500">
+                            <Badge variant="default" className="text-xs bg-chart-2 text-chart-2-foreground">
                               New
                             </Badge>
                           )}
@@ -237,7 +237,7 @@ const AdminAlertBadge = () => {
                         </p>
                         <div className="flex items-center gap-4 text-xs text-muted-foreground">
                           <span>{formatTimeAgo(alert.created_at)}</span>
-                          <span className="text-blue-600">Type: {alert.type}</span>
+                          <span className="text-chart-2">Type: {alert.type}</span>
                           {alert.reference_type && alert.reference_id && (
                             <span>Ref: {alert.reference_type}#{alert.reference_id.slice(0, 8)}</span>
                           )}

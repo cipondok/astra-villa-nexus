@@ -40,15 +40,12 @@ export const AdminStatCard = ({
           <div className="flex items-center gap-3">
             <div className={cn(
               "h-10 w-10 rounded-[6px] flex items-center justify-center shrink-0",
-              iconColor.includes("primary") ? "bg-primary/10" : 
-              iconColor.includes("green") ? "bg-green-500/10" :
-              iconColor.includes("blue") ? "bg-blue-500/10" :
-              iconColor.includes("amber") ? "bg-amber-500/10" :
-              iconColor.includes("purple") ? "bg-purple-500/10" :
-              iconColor.includes("pink") ? "bg-pink-500/10" :
-              iconColor.includes("orange") ? "bg-orange-500/10" :
-              iconColor.includes("indigo") ? "bg-indigo-500/10" :
-              iconColor.includes("red") ? "bg-red-500/10" :
+              iconColor.includes("chart-1") ? "bg-chart-1/10" :
+              iconColor.includes("chart-2") ? "bg-chart-2/10" :
+              iconColor.includes("chart-3") ? "bg-chart-3/10" :
+              iconColor.includes("chart-4") ? "bg-chart-4/10" :
+              iconColor.includes("chart-5") ? "bg-chart-5/10" :
+              iconColor.includes("destructive") ? "bg-destructive/10" :
               "bg-primary/10"
             )}>
               <Icon className={cn("h-5 w-5", iconColor)} />
@@ -61,7 +58,7 @@ export const AdminStatCard = ({
           {trend && (
             <div className={cn(
               "text-xs font-medium px-2 py-1 rounded-[4px]",
-              trend.value >= 0 ? "bg-green-500/10 text-green-600" : "bg-red-500/10 text-red-600"
+              trend.value >= 0 ? "bg-chart-1/10 text-chart-1" : "bg-destructive/10 text-destructive"
             )}>
               {trend.value >= 0 ? "+" : ""}{trend.value}%
             </div>

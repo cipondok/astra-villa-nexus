@@ -188,26 +188,26 @@ const AuthorizationMonitoringSystem = () => {
   const getSessionStatusBadge = (session: any) => {
     const isActive = session.is_active && new Date(session.expires_at) > new Date();
     return isActive ? (
-      <Badge className="bg-green-500 text-white">Active</Badge>
+      <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">Active</Badge>
     ) : (
-      <Badge className="bg-gray-500 text-white">Expired</Badge>
+      <Badge className="bg-muted text-muted-foreground">Expired</Badge>
     );
   };
 
   const getRiskBadge = (riskScore: number) => {
-    if (riskScore >= 80) return <Badge className="bg-red-500 text-white">High Risk</Badge>;
-    if (riskScore >= 50) return <Badge className="bg-orange-500 text-white">Medium Risk</Badge>;
-    return <Badge className="bg-green-500 text-white">Low Risk</Badge>;
+    if (riskScore >= 80) return <Badge className="bg-destructive/10 text-destructive border-destructive/20">High Risk</Badge>;
+    if (riskScore >= 50) return <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/20">Medium Risk</Badge>;
+    return <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">Low Risk</Badge>;
   };
 
   const getAlertTypeBadge = (type: string) => {
     switch (type) {
       case 'suspicious_login':
-        return <Badge className="bg-red-500 text-white">Suspicious Login</Badge>;
+        return <Badge className="bg-destructive/10 text-destructive border-destructive/20">Suspicious Login</Badge>;
       case 'new_device':
-        return <Badge className="bg-blue-500 text-white">New Device</Badge>;
+        return <Badge className="bg-chart-2/10 text-chart-2 border-chart-2/20">New Device</Badge>;
       case 'location_change':
-        return <Badge className="bg-orange-500 text-white">Location Change</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/20">Location Change</Badge>;
       default:
         return <Badge variant="outline">{type}</Badge>;
     }
@@ -422,9 +422,9 @@ const AuthorizationMonitoringSystem = () => {
                           </TableCell>
                           <TableCell>
                             {log.is_flagged ? (
-                              <Badge className="bg-red-500 text-white">Flagged</Badge>
+                              <Badge className="bg-destructive/10 text-destructive border-destructive/20">Flagged</Badge>
                             ) : (
-                              <Badge className="bg-green-500 text-white">Normal</Badge>
+                              <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">Normal</Badge>
                             )}
                           </TableCell>
                         </TableRow>
@@ -465,7 +465,7 @@ const AuthorizationMonitoringSystem = () => {
                       </TableRow>
                     ) : (
                       loginAlerts?.map((alert: any) => (
-                        <TableRow key={alert.id} className={!alert.is_read ? 'bg-blue-50' : ''}>
+                        <TableRow key={alert.id} className={!alert.is_read ? 'bg-chart-2/5' : ''}>
                           <TableCell>
                             <div className="space-y-1">
                               <div className="font-medium">{alert.profiles?.full_name || 'Unknown'}</div>
@@ -490,9 +490,9 @@ const AuthorizationMonitoringSystem = () => {
                           </TableCell>
                           <TableCell>
                             {alert.is_read ? (
-                              <Badge className="bg-green-500 text-white">Read</Badge>
+                              <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">Read</Badge>
                             ) : (
-                              <Badge className="bg-blue-500 text-white">Unread</Badge>
+                              <Badge className="bg-chart-2/10 text-chart-2 border-chart-2/20">Unread</Badge>
                             )}
                           </TableCell>
                           <TableCell>
