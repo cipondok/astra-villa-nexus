@@ -87,9 +87,9 @@ const UserActivityMonitoring = () => {
       case 'high':
         return <Badge variant="destructive">High Risk</Badge>;
       case 'medium':
-        return <Badge className="bg-yellow-100 text-yellow-800">Medium Risk</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3">Medium Risk</Badge>;
       case 'low':
-        return <Badge className="bg-green-100 text-green-800">Low Risk</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1">Low Risk</Badge>;
       default:
         return <Badge variant="outline">Unknown</Badge>;
     }
@@ -98,9 +98,9 @@ const UserActivityMonitoring = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-100 text-green-800">Active</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1">Active</Badge>;
       case 'idle':
-        return <Badge className="bg-yellow-100 text-yellow-800">Idle</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3">Idle</Badge>;
       case 'offline':
         return <Badge variant="outline">Offline</Badge>;
       default:
@@ -114,7 +114,7 @@ const UserActivityMonitoring = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">User Activity Monitoring</h2>
-          <p className="text-gray-600">Monitor user activities, sessions, and security events</p>
+          <p className="text-muted-foreground">Monitor user activities, sessions, and security events</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
@@ -134,10 +134,10 @@ const UserActivityMonitoring = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Online Users</p>
+                <p className="text-sm font-medium text-muted-foreground">Online Users</p>
                 <p className="text-2xl font-bold">142</p>
               </div>
-              <Users className="h-8 w-8 text-green-500" />
+              <Users className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -146,10 +146,10 @@ const UserActivityMonitoring = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Today's Activities</p>
+                <p className="text-sm font-medium text-muted-foreground">Today's Activities</p>
                 <p className="text-2xl font-bold">2,847</p>
               </div>
-              <Activity className="h-8 w-8 text-blue-500" />
+              <Activity className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -158,10 +158,10 @@ const UserActivityMonitoring = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Security Alerts</p>
+                <p className="text-sm font-medium text-muted-foreground">Security Alerts</p>
                 <p className="text-2xl font-bold">5</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-500" />
+              <AlertTriangle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -170,10 +170,10 @@ const UserActivityMonitoring = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Avg Session Time</p>
+                <p className="text-sm font-medium text-muted-foreground">Avg Session Time</p>
                 <p className="text-2xl font-bold">24m</p>
               </div>
-              <Clock className="h-8 w-8 text-purple-500" />
+              <Clock className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -230,7 +230,7 @@ const UserActivityMonitoring = () => {
                       <TableCell>
                         <div>
                           <div className="font-medium">{activity.userName}</div>
-                          <div className="text-sm text-gray-500">{activity.email}</div>
+                          <div className="text-sm text-muted-foreground">{activity.email}</div>
                         </div>
                       </TableCell>
                       <TableCell>{activity.action}</TableCell>
@@ -278,17 +278,17 @@ const UserActivityMonitoring = () => {
                 {onlineUsers.map((user) => (
                   <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <Users className="h-5 w-5 text-blue-600" />
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <Users className="h-5 w-5 text-primary" />
                       </div>
                       <div>
                         <div className="font-medium">{user.name}</div>
-                        <div className="text-sm text-gray-500">{user.location}</div>
+                        <div className="text-sm text-muted-foreground">{user.location}</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       {getStatusBadge(user.status)}
-                      <span className="text-sm text-gray-500">{user.lastSeen}</span>
+                      <span className="text-sm text-muted-foreground">{user.lastSeen}</span>
                       <Button size="sm" variant="outline">
                         <Eye className="h-3 w-3 mr-1" />
                         View
@@ -311,14 +311,14 @@ const UserActivityMonitoring = () => {
             <CardContent>
               <div className="space-y-4">
                 {suspiciousActivities.map((event) => (
-                  <div key={event.id} className="p-4 border rounded-lg bg-red-50 border-red-200">
+                  <div key={event.id} className="p-4 border rounded-lg bg-destructive/5 border-destructive/20">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <AlertTriangle className="h-5 w-5 text-red-500" />
+                        <AlertTriangle className="h-5 w-5 text-destructive" />
                         <div>
                           <div className="font-medium">{event.type}</div>
-                          <div className="text-sm text-gray-600">{event.details}</div>
-                          <div className="text-xs text-gray-500">{event.timestamp}</div>
+                          <div className="text-sm text-muted-foreground">{event.details}</div>
+                          <div className="text-xs text-muted-foreground">{event.timestamp}</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -341,7 +341,7 @@ const UserActivityMonitoring = () => {
                 <CardTitle>User Activity Trends</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64 flex items-center justify-center text-gray-500">
+                <div className="h-64 flex items-center justify-center text-muted-foreground">
                   Activity Chart Placeholder
                   <br />
                   (Integrate with your preferred charting library)
@@ -354,7 +354,7 @@ const UserActivityMonitoring = () => {
                 <CardTitle>Geographic Distribution</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64 flex items-center justify-center text-gray-500">
+                <div className="h-64 flex items-center justify-center text-muted-foreground">
                   Map Visualization Placeholder
                   <br />
                   (Integrate with mapping library)

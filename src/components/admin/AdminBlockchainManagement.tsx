@@ -68,13 +68,13 @@ const AdminBlockchainManagement = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/30"><Clock className="h-3 w-3 mr-1" />Active</Badge>;
+        return <Badge className="bg-chart-2/10 text-chart-2 border-chart-2/30"><Clock className="h-3 w-3 mr-1" />Active</Badge>;
       case 'completed':
-        return <Badge className="bg-green-500/10 text-green-500 border-green-500/30"><CheckCircle2 className="h-3 w-3 mr-1" />Completed</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/30"><CheckCircle2 className="h-3 w-3 mr-1" />Completed</Badge>;
       case 'disputed':
-        return <Badge className="bg-red-500/10 text-red-500 border-red-500/30"><AlertTriangle className="h-3 w-3 mr-1" />Disputed</Badge>;
+        return <Badge className="bg-destructive/10 text-destructive border-destructive/30"><AlertTriangle className="h-3 w-3 mr-1" />Disputed</Badge>;
       case 'confirmed':
-        return <Badge className="bg-green-500/10 text-green-500 border-green-500/30">Confirmed</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/30">Confirmed</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -92,7 +92,7 @@ const AdminBlockchainManagement = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-bold text-foreground">Blockchain Management</h2>
-                <Badge className="bg-purple-500/10 text-purple-500 border-purple-500/30 text-[10px] px-1.5">
+                <Badge className="bg-chart-4/10 text-chart-4 border-chart-4/30 text-[10px] px-1.5">
                   Polygon
                 </Badge>
               </div>
@@ -120,8 +120,8 @@ const AdminBlockchainManagement = () => {
                 <p className="text-xs text-muted-foreground">Active Escrows</p>
                 <p className="text-2xl font-bold text-foreground">3</p>
               </div>
-              <div className="p-2 rounded-lg bg-blue-500/10">
-                <Shield className="h-5 w-5 text-blue-500" />
+              <div className="p-2 rounded-lg bg-chart-2/10">
+                <Shield className="h-5 w-5 text-chart-2" />
               </div>
             </div>
             <p className="text-xs text-muted-foreground mt-2">+2 this week</p>
@@ -135,11 +135,11 @@ const AdminBlockchainManagement = () => {
                 <p className="text-xs text-muted-foreground">Total Value Locked</p>
                 <p className="text-2xl font-bold text-foreground">1.57M</p>
               </div>
-              <div className="p-2 rounded-lg bg-green-500/10">
-                <DollarSign className="h-5 w-5 text-green-500" />
+              <div className="p-2 rounded-lg bg-chart-1/10">
+                <DollarSign className="h-5 w-5 text-chart-1" />
               </div>
             </div>
-            <p className="text-xs text-green-500 mt-2">MATIC</p>
+            <p className="text-xs text-chart-1 mt-2">MATIC</p>
           </CardContent>
         </Card>
 
@@ -150,8 +150,8 @@ const AdminBlockchainManagement = () => {
                 <p className="text-xs text-muted-foreground">Tokenized Properties</p>
                 <p className="text-2xl font-bold text-foreground">3</p>
               </div>
-              <div className="p-2 rounded-lg bg-purple-500/10">
-                <Building2 className="h-5 w-5 text-purple-500" />
+              <div className="p-2 rounded-lg bg-chart-4/10">
+                <Building2 className="h-5 w-5 text-chart-4" />
               </div>
             </div>
             <p className="text-xs text-muted-foreground mt-2">45 token holders</p>
@@ -165,11 +165,11 @@ const AdminBlockchainManagement = () => {
                 <p className="text-xs text-muted-foreground">Transactions (24h)</p>
                 <p className="text-2xl font-bold text-foreground">12</p>
               </div>
-              <div className="p-2 rounded-lg bg-orange-500/10">
-                <Activity className="h-5 w-5 text-orange-500" />
+              <div className="p-2 rounded-lg bg-chart-3/10">
+                <Activity className="h-5 w-5 text-chart-3" />
               </div>
             </div>
-            <p className="text-xs text-green-500 mt-2 flex items-center gap-1">
+            <p className="text-xs text-chart-1 mt-2 flex items-center gap-1">
               <TrendingUp className="h-3 w-3" /> +15%
             </p>
           </CardContent>
