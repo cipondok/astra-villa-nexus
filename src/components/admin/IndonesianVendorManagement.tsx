@@ -190,11 +190,11 @@ const IndonesianVendorManagement = () => {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      draft: { color: 'bg-gray-500', text: language === 'id' ? 'Draft' : 'Draft', icon: Clock },
-      submitted: { color: 'bg-blue-500', text: language === 'id' ? 'Diajukan' : 'Submitted', icon: Clock },
-      under_review: { color: 'bg-yellow-500', text: language === 'id' ? 'Ditinjau' : 'Under Review', icon: Clock },
-      approved: { color: 'bg-green-500', text: language === 'id' ? 'Disetujui' : 'Approved', icon: CheckCircle },
-      rejected: { color: 'bg-red-500', text: language === 'id' ? 'Ditolak' : 'Rejected', icon: XCircle }
+      draft: { color: 'bg-muted-foreground', text: language === 'id' ? 'Draft' : 'Draft', icon: Clock },
+      submitted: { color: 'bg-chart-2', text: language === 'id' ? 'Diajukan' : 'Submitted', icon: Clock },
+      under_review: { color: 'bg-chart-3', text: language === 'id' ? 'Ditinjau' : 'Under Review', icon: Clock },
+      approved: { color: 'bg-chart-1', text: language === 'id' ? 'Disetujui' : 'Approved', icon: CheckCircle },
+      rejected: { color: 'bg-destructive', text: language === 'id' ? 'Ditolak' : 'Rejected', icon: XCircle }
     };
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.draft;
