@@ -20,7 +20,6 @@ const DatabaseHealthDemo = () => {
 
   const handleTestOptimizedQuery = async () => {
     setIsTestingQuery(true);
-    console.log('🧪 Testing optimized vendor profile query...');
     
     const startTime = Date.now();
     const result = await queryVendorProfiles({
@@ -42,7 +41,6 @@ const DatabaseHealthDemo = () => {
   };
 
   const handleTestConnection = async () => {
-    console.log('🔍 Testing database connection...');
     await checkConnection();
   };
 
@@ -59,10 +57,10 @@ const DatabaseHealthDemo = () => {
           {/* Connection Status */}
           <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
             <div className="flex items-center gap-2">
-              {isConnected ? (
-                <CheckCircle className="h-4 w-4 text-green-500" />
+          {isConnected ? (
+                <CheckCircle className="h-4 w-4 text-chart-1" />
               ) : (
-                <AlertTriangle className="h-4 w-4 text-red-500" />
+                <AlertTriangle className="h-4 w-4 text-destructive" />
               )}
               <span className="font-medium">Connection Status</span>
             </div>
@@ -73,23 +71,23 @@ const DatabaseHealthDemo = () => {
 
           {/* Performance Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-3 bg-blue-50 rounded-lg text-center">
-              <div className="text-lg font-bold text-blue-600">
+            <div className="p-3 bg-chart-2/10 rounded-lg text-center">
+              <div className="text-lg font-bold text-chart-2">
                 {metrics.averageResponseTime > 0 ? `${Math.round(metrics.averageResponseTime)}ms` : 'N/A'}
               </div>
-              <div className="text-xs text-blue-600">Avg Response</div>
+              <div className="text-xs text-chart-2">Avg Response</div>
             </div>
-            <div className="p-3 bg-green-50 rounded-lg text-center">
-              <div className="text-lg font-bold text-green-600">{metrics.successfulQueries}</div>
-              <div className="text-xs text-green-600">Successful</div>
+            <div className="p-3 bg-chart-1/10 rounded-lg text-center">
+              <div className="text-lg font-bold text-chart-1">{metrics.successfulQueries}</div>
+              <div className="text-xs text-chart-1">Successful</div>
             </div>
-            <div className="p-3 bg-red-50 rounded-lg text-center">
-              <div className="text-lg font-bold text-red-600">{metrics.failedQueries}</div>
-              <div className="text-xs text-red-600">Failed</div>
+            <div className="p-3 bg-destructive/10 rounded-lg text-center">
+              <div className="text-lg font-bold text-destructive">{metrics.failedQueries}</div>
+              <div className="text-xs text-destructive">Failed</div>
             </div>
-            <div className="p-3 bg-orange-50 rounded-lg text-center">
-              <div className="text-lg font-bold text-orange-600">{metrics.timeouts}</div>
-              <div className="text-xs text-orange-600">Timeouts</div>
+            <div className="p-3 bg-chart-4/10 rounded-lg text-center">
+              <div className="text-lg font-bold text-chart-4">{metrics.timeouts}</div>
+              <div className="text-xs text-chart-4">Timeouts</div>
             </div>
           </div>
 
@@ -121,7 +119,7 @@ const DatabaseHealthDemo = () => {
 
           {/* Test Results */}
           {testResults && (
-            <div className={`p-4 rounded-lg border ${testResults.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+            <div className={`p-4 rounded-lg border ${testResults.success ? 'bg-chart-1/10 border-chart-1/30' : 'bg-destructive/10 border-destructive/30'}`}>
               <h4 className="font-medium mb-2">Optimized Query Test Results</h4>
               <div className="space-y-1 text-sm">
                 <div>✅ Status: {testResults.success ? 'Success' : 'Failed'}</div>

@@ -51,7 +51,6 @@ class ErrorBoundary extends React.Component<
 }
 
 const AstraTokenSettingsWrapper: React.FC<AstraTokenSettingsWrapperProps> = ({ settings, onInputChange }) => {
-  console.log('AstraTokenSettingsWrapper called with:', { settings, onInputChange });
   
   return (
     <ErrorBoundary onError={(error, errorInfo) => {

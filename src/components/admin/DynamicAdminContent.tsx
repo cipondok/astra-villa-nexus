@@ -40,7 +40,6 @@ interface DynamicAdminContentProps {
 
 const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminContentProps) => {
   const { user } = useAuth();
-  console.log('DynamicAdminContent: Rendering section:', activeSection);
   
   const renderContent = () => {
     switch (activeSection) {
@@ -104,7 +103,7 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
       case "ai-diagnostics":
         return (
           <div className="space-y-6">
-            <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div></div>}>
+            <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
               <EnhancedProjectDiagnostics />
               <DeepSeekDiagnostics />
             </Suspense>
@@ -133,49 +132,49 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <div className="p-6">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">System Alerts & Monitoring</h2>
+              <h2 className="text-2xl font-bold mb-6">System Alerts & Monitoring</h2>
               
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div className="bg-card rounded-lg shadow p-6 border">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Alerts</p>
-                      <p className="text-2xl font-bold text-red-600">3</p>
+                      <p className="text-sm font-medium text-muted-foreground">Active Alerts</p>
+                      <p className="text-2xl font-bold text-destructive">3</p>
                     </div>
-                    <div className="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center">
-                      <AlertTriangle className="w-6 h-6 text-red-600" />
+                    <div className="w-12 h-12 bg-destructive/10 rounded-lg flex items-center justify-center">
+                      <AlertTriangle className="w-6 h-6 text-destructive" />
                     </div>
                   </div>
                 </div>
                 
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div className="bg-card rounded-lg shadow p-6 border">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">System Uptime</p>
-                      <p className="text-2xl font-bold text-green-600">99.8%</p>
+                      <p className="text-sm font-medium text-muted-foreground">System Uptime</p>
+                      <p className="text-2xl font-bold text-chart-1">99.8%</p>
                     </div>
-                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
-                      <Activity className="w-6 h-6 text-green-600" />
+                    <div className="w-12 h-12 bg-chart-1/10 rounded-lg flex items-center justify-center">
+                      <Activity className="w-6 h-6 text-chart-1" />
                     </div>
                   </div>
                 </div>
                 
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div className="bg-card rounded-lg shadow p-6 border">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">New Users Today</p>
-                      <p className="text-2xl font-bold text-blue-600">12</p>
+                      <p className="text-sm font-medium text-muted-foreground">New Users Today</p>
+                      <p className="text-2xl font-bold text-chart-2">12</p>
                     </div>
-                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                      <UserPlus className="w-6 h-6 text-blue-600" />
+                    <div className="w-12 h-12 bg-chart-2/10 rounded-lg flex items-center justify-center">
+                      <UserPlus className="w-6 h-6 text-chart-2" />
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent System Events</h3>
+              <div className="bg-card rounded-lg shadow border">
+                <div className="p-6 border-b">
+                  <h3 className="text-lg font-semibold">Recent System Events</h3>
                 </div>
                 <div className="p-6">
                   <div className="space-y-4">
@@ -185,21 +184,21 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
                       { type: 'system', message: 'Cache refresh completed successfully', time: '10 minutes ago', severity: 'low' },
                       { type: 'user', message: 'New user registration: jane.doe@example.com', time: '15 minutes ago', severity: 'low' },
                     ].map((event, index) => (
-                      <div key={index} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                      <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                         <div className="flex items-center space-x-3">
                           <div className={`w-3 h-3 rounded-full ${
-                            event.severity === 'high' ? 'bg-red-500' :
-                            event.severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                            event.severity === 'high' ? 'bg-destructive' :
+                            event.severity === 'medium' ? 'bg-chart-3' : 'bg-chart-1'
                           }`}></div>
                           <div>
-                            <p className="text-sm text-gray-900 dark:text-gray-100">{event.message}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">{event.time}</p>
+                            <p className="text-sm">{event.message}</p>
+                            <p className="text-xs text-muted-foreground">{event.time}</p>
                           </div>
                         </div>
                         <span className={`text-xs px-2 py-1 rounded-full ${
-                          event.severity === 'high' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-                          event.severity === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                          'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                          event.severity === 'high' ? 'bg-destructive/10 text-destructive' :
+                          event.severity === 'medium' ? 'bg-chart-3/10 text-chart-3' :
+                          'bg-chart-1/10 text-chart-1'
                         }`}>
                           {event.severity}
                         </span>
@@ -216,40 +215,40 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <div className="p-6">
             <div className="max-w-2xl mx-auto">
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Profile Settings</h2>
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
+              <div className="bg-card rounded-lg shadow p-6 border">
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Email
                     </label>
                     <input
                       type="email"
                       readOnly
                       value={user?.email || ''}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-border rounded-md bg-muted text-foreground"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Role
                     </label>
                     <input
                       type="text"
                       readOnly
                       value="Administrator"
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-border rounded-md bg-muted text-foreground"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Last Login
                     </label>
                     <input
                       type="text"
                       readOnly
                       value={new Date().toLocaleDateString()}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-border rounded-md bg-muted text-foreground"
                     />
                   </div>
                 </div>
@@ -262,9 +261,9 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
           <div className="p-6">
             <div className="text-center py-20">
               <div className="text-6xl mb-4">📁</div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">File Explorer</h2>
-              <p className="text-gray-600">Browse and manage project files</p>
-              <p className="text-sm text-gray-500 mt-4">This would show the project file structure</p>
+              <h2 className="text-2xl font-bold mb-2">File Explorer</h2>
+              <p className="text-muted-foreground">Browse and manage project files</p>
+              <p className="text-sm text-muted-foreground mt-4">This would show the project file structure</p>
             </div>
           </div>
         );

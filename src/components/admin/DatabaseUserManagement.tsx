@@ -121,7 +121,7 @@ const DatabaseUserManagement = () => {
         };
       });
 
-      console.log('Fetched database users:', usersWithAdminStatus.length);
+      
       return usersWithAdminStatus;
     },
     retry: 2,

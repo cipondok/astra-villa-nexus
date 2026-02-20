@@ -180,7 +180,6 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
   });
 
   const handleQuickAction = (tab: string) => {
-    console.log('Quick action clicked:', tab);
     if (onTabChange) {
       onTabChange(tab);
     }
