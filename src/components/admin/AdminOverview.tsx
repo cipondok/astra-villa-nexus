@@ -83,12 +83,12 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
           activeUsers24h: activeUsersResult.count || 0,
           activeSessions: Number(statsData?.active_sessions) || 0,
         };
-      } catch (error) {
-        console.error('Error fetching platform stats:', error);
+      } catch {
         return { totalUsers: 0, totalProperties: 0, totalVendors: 0, totalOrders: 0, totalPageViews: 0, activeUsers24h: 0, activeSessions: 0 };
       }
     },
-    refetchInterval: 30000,
+    staleTime: 2 * 60 * 1000,
+    refetchInterval: 60000, // was 30s
   });
 
   // Fetch system health
@@ -115,7 +115,8 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
         return { dbErrors: 0, responseTime: 0, cpuUsage: 0, memoryUsage: 0, diskUsage: 0, uptime: 0, status: 'error' };
       }
     },
-    refetchInterval: 15000,
+    staleTime: 2 * 60 * 1000,
+    refetchInterval: 60000, // was 15s
   });
 
   // Fetch recent activity
@@ -129,11 +130,12 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
           .order('created_at', { ascending: false })
           .limit(8);
         return data || [];
-      } catch (error) {
+      } catch {
         return [];
       }
     },
-    refetchInterval: 10000,
+    staleTime: 60 * 1000,
+    refetchInterval: 60000, // was 10s
   });
 
   // Fetch pending items
@@ -152,42 +154,45 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
           upgrades: (propertyOwner.count || 0) + (vendor.count || 0) + (agent.count || 0),
           alerts: alerts.count || 0,
         };
-      } catch (error) {
+      } catch {
         return { upgrades: 0, alerts: 0 };
       }
     },
-    refetchInterval: 30000,
+    staleTime: 2 * 60 * 1000,
+    refetchInterval: 60000,
   });
 
-  // Fetch hourly traffic
+  // Fetch hourly traffic - single batched query instead of 12 sequential calls
   const { data: hourlyTraffic } = useQuery({
     queryKey: ['hourly-traffic'],
     queryFn: async () => {
       try {
-        const hours = [];
+        const since = new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString();
+        const { data } = await supabase
+          .from('activity_logs')
+          .select('created_at')
+          .gte('created_at', since)
+          .order('created_at', { ascending: true });
+
+        // Group by hour in JS — much faster than 12 round trips
+        const hourBuckets: Record<string, number> = {};
         for (let i = 11; i >= 0; i--) {
-          const hour = new Date();
-          hour.setHours(hour.getHours() - i);
-          const startHour = new Date(hour.setMinutes(0, 0, 0)).toISOString();
-          const endHour = new Date(hour.setMinutes(59, 59, 999)).toISOString();
-          
-          const { count } = await supabase
-            .from('activity_logs')
-            .select('*', { count: 'exact', head: true })
-            .gte('created_at', startHour)
-            .lte('created_at', endHour);
-          
-          hours.push({ 
-            hour: new Date(hour).toLocaleTimeString('en', { hour: '2-digit', hour12: false }), 
-            count: count || 0 
-          });
+          const d = new Date();
+          d.setHours(d.getHours() - i, 0, 0, 0);
+          hourBuckets[d.toLocaleTimeString('en', { hour: '2-digit', hour12: false })] = 0;
         }
-        return hours;
-      } catch (error) {
+        (data || []).forEach(row => {
+          const label = new Date(row.created_at).toLocaleTimeString('en', { hour: '2-digit', hour12: false });
+          if (label in hourBuckets) hourBuckets[label]++;
+        });
+
+        return Object.entries(hourBuckets).map(([hour, count]) => ({ hour, count }));
+      } catch {
         return [];
       }
     },
-    refetchInterval: 60000,
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000, // Every 5 min is plenty for charts
   });
 
   const maxTraffic = Math.max(...(hourlyTraffic?.map(h => h.count) || [1]), 1);

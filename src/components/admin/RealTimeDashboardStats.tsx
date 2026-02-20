@@ -11,68 +11,34 @@ const RealTimeDashboardStats = () => {
     queryKey: ['admin-dashboard-stats'],
     queryFn: async () => {
       try {
-        // Use secure RPC function to get platform stats
-        const { data: platformStats, error: rpcError } = await supabase.rpc('get_platform_stats');
-        
-        const statsData = (platformStats as Array<{
-          total_users: number;
-          total_properties: number;
-          total_bookings: number;
-          total_vendors: number;
-          active_sessions: number;
-        }> | null)?.[0];
-
-        const [vendorsBusinessProfilesResult] = await Promise.all([
-          supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true })
+        // Run all queries in parallel for max speed
+        const [
+          platformResult,
+          vendorBizResult,
+          vendorRolesResult,
+          ordersResult,
+          errorsResult,
+          activeUsersResult,
+        ] = await Promise.allSettled([
+          supabase.rpc('get_platform_stats'),
+          supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }),
+          supabase.from('user_roles').select('*', { count: 'exact', head: true }).eq('role', 'vendor').eq('is_active', true),
+          supabase.from('orders').select('*', { count: 'exact', head: true }),
+          supabase.from('system_error_logs').select('*', { count: 'exact', head: true }),
+          supabase.from('user_activity_logs').select('user_id').gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()).not('user_id', 'is', null),
         ]);
 
-        // Get vendor count from user_roles table
-        const { count: vendorRolesCount } = await supabase
-          .from('user_roles')
-          .select('*', { count: 'exact', head: true })
-          .eq('role', 'vendor')
-          .eq('is_active', true);
+        const statsData = (platformResult.status === 'fulfilled'
+          ? (platformResult.value.data as Array<{ total_users: number; total_properties: number; total_bookings: number; total_vendors: number; active_sessions: number }> | null)?.[0]
+          : null);
 
-        // Try to get orders and errors with fallback
-        let ordersCount = 0;
-        let errorsCount = 0;
-
-        try {
-          const { count: orderCount } = await supabase
-            .from('orders')
-            .select('*', { count: 'exact', head: true });
-          ordersCount = orderCount || 0;
-        } catch {
-          // orders table may not be accessible
-        }
-
-        try {
-          const { count: errorCount } = await supabase
-            .from('system_error_logs')
-            .select('*', { count: 'exact', head: true });
-          errorsCount = errorCount || 0;
-        } catch {
-          // system_error_logs may not be accessible
-        }
-
-        // Get active users (users who logged in within last 24 hours)
-        let uniqueActiveUsers = 0;
-        try {
-          const { data: activeUsers } = await supabase
-            .from('user_activity_logs')
-            .select('user_id')
-            .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
-            .not('user_id', 'is', null);
-
-          uniqueActiveUsers = new Set(activeUsers?.map(log => log.user_id) || []).size;
-        } catch {
-          // user_activity_logs may not be accessible
-        }
-
-        const totalVendors = Math.max(
-          vendorRolesCount || 0,
-          typeof vendorsBusinessProfilesResult.count === 'number' ? vendorsBusinessProfilesResult.count : 0
-        );
+        const vendorBizCount = vendorBizResult.status === 'fulfilled' ? (vendorBizResult.value.count ?? 0) : 0;
+        const vendorRolesCount = vendorRolesResult.status === 'fulfilled' ? (vendorRolesResult.value.count ?? 0) : 0;
+        const ordersCount = ordersResult.status === 'fulfilled' ? (ordersResult.value.count ?? 0) : 0;
+        const errorsCount = errorsResult.status === 'fulfilled' ? (errorsResult.value.count ?? 0) : 0;
+        const activeUsersData = activeUsersResult.status === 'fulfilled' ? activeUsersResult.value.data : null;
+        const uniqueActiveUsers = new Set(activeUsersData?.map(log => log.user_id) || []).size;
+        const totalVendors = Math.max(vendorRolesCount, vendorBizCount);
 
         return {
           totalUsers: Number(statsData?.total_users) || 0,
@@ -82,8 +48,7 @@ const RealTimeDashboardStats = () => {
           totalOrders: ordersCount,
           systemErrors: errorsCount,
         };
-      } catch (error) {
-        console.error('Error fetching dashboard stats:', error);
+      } catch {
         return {
           totalUsers: 0,
           activeUsers: 0,
@@ -94,7 +59,8 @@ const RealTimeDashboardStats = () => {
         };
       }
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
+    staleTime: 2 * 60 * 1000, // Consider fresh for 2 minutes
+    refetchInterval: 60000, // Refresh every 60s (was 30s)
   });
 
   if (isLoading) {
