@@ -237,7 +237,7 @@ const ErrorReportingSystem = () => {
 
   const getStatusBadge = (isResolved: boolean) => {
     return isResolved ? (
-      <Badge variant="default" className="flex items-center gap-1 bg-green-600">
+      <Badge variant="default" className="flex items-center gap-1 bg-chart-1 text-chart-1-foreground">
         <CheckCircle className="h-3 w-3" />
         RESOLVED
       </Badge>
@@ -258,12 +258,12 @@ const ErrorReportingSystem = () => {
 
   if (!isSuperAdmin) {
     return (
-      <Card className="border-red-500/20">
+      <Card className="border-destructive/20">
         <CardContent className="p-6 text-center">
-          <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-red-900">Access Denied</h3>
-          <p className="text-red-700">Super administrator privileges required for error management.</p>
-          <p className="text-sm text-red-600 mt-2">
+          <Shield className="h-12 w-12 text-destructive mx-auto mb-4" />
+          <h3 className="text-lg font-semibold">Access Denied</h3>
+          <p className="text-muted-foreground">Super administrator privileges required for error management.</p>
+          <p className="text-sm text-muted-foreground mt-2">
             Current user: {user?.email || 'Not logged in'}
             <br />
             Super admin status: {isSuperAdmin ? 'Granted' : 'Denied'}
@@ -276,13 +276,13 @@ const ErrorReportingSystem = () => {
   return (
     <div className="space-y-6">
       {/* Super Admin Header */}
-      <Card className="border-red-500/20 bg-red-50/50">
+      <Card className="border-destructive/20 bg-destructive/5">
         <CardContent className="p-4">
           <div className="flex items-center gap-3">
-            <Crown className="h-6 w-6 text-red-600" />
+            <Crown className="h-6 w-6 text-destructive" />
             <div>
-              <h3 className="font-semibold text-red-900">Super Administrator Error Management</h3>
-              <p className="text-sm text-red-700">
+              <h3 className="font-semibold">Super Administrator Error Management</h3>
+              <p className="text-sm text-muted-foreground">
                 Advanced error monitoring and automated fixing system for {user?.email}
               </p>
             </div>
@@ -299,7 +299,7 @@ const ErrorReportingSystem = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Errors</p>
                 <p className="text-2xl font-bold">{errorStats?.total_errors || 0}</p>
               </div>
-              <Bug className="h-8 w-8 text-red-600" />
+              <Bug className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -309,9 +309,9 @@ const ErrorReportingSystem = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Critical Errors</p>
-                <p className="text-2xl font-bold text-red-600">{errorStats?.critical_errors || 0}</p>
+                <p className="text-2xl font-bold text-destructive">{errorStats?.critical_errors || 0}</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-600" />
+              <AlertTriangle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -321,9 +321,9 @@ const ErrorReportingSystem = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Resolved</p>
-                <p className="text-2xl font-bold text-green-600">{errorStats?.resolved_errors || 0}</p>
+                <p className="text-2xl font-bold text-chart-1">{errorStats?.resolved_errors || 0}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -335,7 +335,7 @@ const ErrorReportingSystem = () => {
                 <p className="text-sm font-medium text-muted-foreground">Error Rate (24h)</p>
                 <p className="text-2xl font-bold">{errorStats?.error_rate_24h || 0}%</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-orange-600" />
+              <TrendingUp className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -345,9 +345,9 @@ const ErrorReportingSystem = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">System Uptime</p>
-                <p className="text-2xl font-bold text-green-600">{errorStats?.system_uptime || '0%'}</p>
+                <p className="text-2xl font-bold text-chart-1">{errorStats?.system_uptime || '0%'}</p>
               </div>
-              <Activity className="h-8 w-8 text-green-600" />
+              <Activity className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -357,9 +357,9 @@ const ErrorReportingSystem = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Auto-Fix Rate</p>
-                <p className="text-2xl font-bold text-blue-600">87%</p>
+                <p className="text-2xl font-bold text-chart-2">87%</p>
               </div>
-              <Zap className="h-8 w-8 text-blue-600" />
+              <Zap className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -388,7 +388,7 @@ const ErrorReportingSystem = () => {
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder="Search errors..."
                   value={searchTerm}
@@ -540,14 +540,14 @@ const ErrorReportingSystem = () => {
                 </div>
                 <div className="col-span-2">
                   <Label>Error Message</Label>
-                  <p className="font-medium text-red-600 mt-1">{selectedError.error_message}</p>
+                  <p className="font-medium text-destructive mt-1">{selectedError.error_message}</p>
                 </div>
               </div>
 
               {selectedError.stack_trace && (
                 <div>
                   <Label>Stack Trace</Label>
-                  <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto text-xs font-mono mt-2">
+                  <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-xs font-mono mt-2">
                     {selectedError.stack_trace}
                   </pre>
                 </div>
@@ -556,7 +556,7 @@ const ErrorReportingSystem = () => {
               {selectedError.request_headers && (
                 <div>
                   <Label>Request Headers</Label>
-                  <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto text-xs font-mono mt-2">
+                  <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-xs font-mono mt-2">
                     {JSON.stringify(selectedError.request_headers, null, 2)}
                   </pre>
                 </div>
