@@ -533,11 +533,11 @@ const SamplePropertyGenerator = () => {
               Auto-Run All Remaining
             </CardTitle>
             <div className="flex items-center gap-1.5">
-              <Badge variant="outline" className="text-[10px] gap-1 border-green-500/30 text-green-600">
+              <Badge variant="outline" className="text-[10px] gap-1 border-chart-1/30 text-chart-1">
                 <CheckCircle className="h-3 w-3" />
                 {allCompletedProvinces.length} done
               </Badge>
-              <Badge variant="outline" className="text-[10px] gap-1 border-orange-500/30 text-orange-500">
+              <Badge variant="outline" className="text-[10px] gap-1 border-chart-3/30 text-chart-3">
                 {actualRemainingProvinces.length} remaining
               </Badge>
             </div>
@@ -557,20 +557,20 @@ const SamplePropertyGenerator = () => {
               <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
                 <div>Current: <span className="font-medium text-foreground">{autoRunState!.currentProvince}</span></div>
                 <div>Offset: <span className="font-medium text-foreground">{autoRunState!.currentOffset}</span></div>
-                <div>Completed: <span className="font-medium text-green-600">{autoRunState!.completedProvinces.length} provinces</span></div>
-                <div>Remaining: <span className="font-medium text-orange-500">{autoRunState!.provincesQueue.length} provinces</span></div>
+                <div>Completed: <span className="font-medium text-chart-1">{autoRunState!.completedProvinces.length} provinces</span></div>
+                <div>Remaining: <span className="font-medium text-chart-3">{autoRunState!.provincesQueue.length} provinces</span></div>
               </div>
               <div className="grid grid-cols-3 gap-2 text-xs">
                 <div className="text-center p-1.5 rounded bg-muted/50">
-                  <span className="font-bold text-green-600">{autoRunState!.totalCreated}</span>
+                  <span className="font-bold text-chart-1">{autoRunState!.totalCreated}</span>
                   <p className="text-[9px] text-muted-foreground">Created</p>
                 </div>
                 <div className="text-center p-1.5 rounded bg-muted/50">
-                  <span className="font-bold text-orange-500">{autoRunState!.totalSkipped}</span>
+                  <span className="font-bold text-chart-3">{autoRunState!.totalSkipped}</span>
                   <p className="text-[9px] text-muted-foreground">Skipped</p>
                 </div>
                 <div className="text-center p-1.5 rounded bg-muted/50">
-                  <span className="font-bold text-red-500">{autoRunState!.totalErrors}</span>
+                  <span className="font-bold text-destructive">{autoRunState!.totalErrors}</span>
                   <p className="text-[9px] text-muted-foreground">Errors</p>
                 </div>
               </div>
@@ -628,9 +628,9 @@ const SamplePropertyGenerator = () => {
                 <Progress value={progressPercent} className="h-1.5" />
               </div>
               <div className="flex gap-4 text-xs text-muted-foreground">
-                <span className="text-green-600">✓ {progress.created} created</span>
-                <span className="text-orange-500">⊘ {progress.skipped} skipped</span>
-                <span className="text-red-500">✗ {progress.errors} errors</span>
+                <span className="text-chart-1">✓ {progress.created} created</span>
+                <span className="text-chart-3">⊘ {progress.skipped} skipped</span>
+                <span className="text-destructive">✗ {progress.errors} errors</span>
               </div>
             </div>
           )}
@@ -668,7 +668,7 @@ const SamplePropertyGenerator = () => {
                   {/* Remaining provinces */}
                   {actualRemainingProvinces.length > 0 && (
                     <div>
-                      <p className="text-[10px] font-semibold text-orange-500 mb-1.5 uppercase tracking-wider">
+                      <p className="text-[10px] font-semibold text-chart-3 mb-1.5 uppercase tracking-wider">
                         Remaining ({actualRemainingProvinces.length})
                       </p>
                       <ScrollArea className="max-h-40">
@@ -703,7 +703,7 @@ const SamplePropertyGenerator = () => {
                   {/* Completed provinces */}
                   {allCompletedProvinces.length > 0 && (
                     <div>
-                      <p className="text-[10px] font-semibold text-green-600 mb-1.5 uppercase tracking-wider">
+                      <p className="text-[10px] font-semibold text-chart-1 mb-1.5 uppercase tracking-wider">
                         Completed ({allCompletedProvinces.length})
                       </p>
                       <ScrollArea className="max-h-32">
@@ -711,11 +711,11 @@ const SamplePropertyGenerator = () => {
                           {allCompletedProvinces.map(p => (
                             <div
                               key={p}
-                              className="flex items-center gap-1.5 text-[11px] px-2 py-1.5 rounded-md border border-green-500/20 bg-green-500/5 text-green-700 dark:text-green-400"
+                            className="flex items-center gap-1.5 text-[11px] px-2 py-1.5 rounded-md border border-chart-1/20 bg-chart-1/5 text-chart-1"
                             >
                               <CheckCircle className="h-3 w-3 shrink-0" />
                               <span className="truncate">{p}</span>
-                              <span className="ml-auto text-[9px] text-green-600/60 shrink-0">
+                              <span className="ml-auto text-[9px] text-chart-1/60 shrink-0">
                                 {provincePropertyCounts[p] || "✓"}
                               </span>
                             </div>
@@ -793,7 +793,7 @@ const SamplePropertyGenerator = () => {
                         <CommandItem key={p} value={p} onSelect={() => handleProvinceSelect(p)} className="text-sm">
                           <Check className={cn("mr-2 h-3.5 w-3.5", selectedProvince === p ? "opacity-100" : "opacity-0")} />
                           <span className="flex-1">{p}</span>
-                          <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-orange-500/30 text-orange-500 ml-2">new</Badge>
+                          <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-chart-3/30 text-chart-3 ml-2">new</Badge>
                         </CommandItem>
                       ))}
                     </CommandGroup>
@@ -804,7 +804,7 @@ const SamplePropertyGenerator = () => {
                         <CommandItem key={p} value={p} onSelect={() => handleProvinceSelect(p)} className="text-sm">
                           <Check className={cn("mr-2 h-3.5 w-3.5", selectedProvince === p ? "opacity-100" : "opacity-0")} />
                           <span className="flex-1">{p}</span>
-                          <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-green-500/30 text-green-600 ml-2">
+                          <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-chart-1/30 text-chart-1 ml-2">
                             {provincePropertyCounts[p] || "✓"} props
                           </Badge>
                         </CommandItem>
@@ -827,7 +827,7 @@ const SamplePropertyGenerator = () => {
                 <p className="text-[10px] text-muted-foreground">To Create</p>
               </div>
               <div className="p-2.5 rounded-lg bg-muted/50 text-center">
-                <p className="text-lg font-bold text-orange-500">{existingCount}</p>
+                <p className="text-lg font-bold text-chart-3">{existingCount}</p>
                 <p className="text-[10px] text-muted-foreground">Existing</p>
               </div>
             </div>
@@ -851,9 +851,9 @@ const SamplePropertyGenerator = () => {
           </div>
 
           {selectedProvince && totalExpected > 100 && (
-            <div className="flex items-start gap-2 p-2.5 rounded-lg bg-orange-500/10 border border-orange-500/20">
-              <AlertTriangle className="h-4 w-4 text-orange-500 mt-0.5 shrink-0" />
-              <p className="text-[11px] text-orange-700 dark:text-orange-300 leading-relaxed">
+            <div className="flex items-start gap-2 p-2.5 rounded-lg bg-chart-3/10 border border-chart-3/20">
+              <AlertTriangle className="h-4 w-4 text-chart-3 mt-0.5 shrink-0" />
+              <p className="text-[11px] text-chart-3 leading-relaxed">
                 <span className="font-semibold">Large batch:</span> {totalExpected} properties in batches of {PROPERTY_TYPES.length * 5}. You can cancel anytime.
               </p>
             </div>
@@ -894,34 +894,34 @@ const SamplePropertyGenerator = () => {
             </div>
             <Progress value={progressPercent} className="h-2" />
             <div className="flex gap-4 text-xs text-muted-foreground">
-              <span className="text-green-600">✓ {progress.created} created</span>
-              <span className="text-orange-500">⊘ {progress.skipped} skipped</span>
-              <span className="text-red-500">✗ {progress.errors} errors</span>
+              <span className="text-chart-1">✓ {progress.created} created</span>
+              <span className="text-chart-3">⊘ {progress.skipped} skipped</span>
+              <span className="text-destructive">✗ {progress.errors} errors</span>
             </div>
           </CardContent>
         </Card>
       )}
 
       {result && !isRunning && (
-        <Card className="border-green-500/30 bg-green-500/5">
+        <Card className="border-chart-1/30 bg-chart-1/5">
           <CardContent className="p-4">
             <div className="flex items-start gap-2.5">
-              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+              <CheckCircle className="h-5 w-5 text-chart-1 mt-0.5" />
               <div className="space-y-2 flex-1">
-                <h3 className="text-sm font-semibold text-green-700 dark:text-green-300">
+                <h3 className="text-sm font-semibold text-chart-1">
                   {result.allDone ? "🎉 All Provinces Complete!" : "Generation Complete!"}
                 </h3>
                 <div className="grid grid-cols-3 gap-2">
                   <div className="text-center p-2 rounded-md bg-background/50">
-                    <p className="text-base font-bold text-green-600">{result.created}</p>
+                    <p className="text-base font-bold text-chart-1">{result.created}</p>
                     <p className="text-[10px] text-muted-foreground">Created</p>
                   </div>
                   <div className="text-center p-2 rounded-md bg-background/50">
-                    <p className="text-base font-bold text-orange-500">{result.skipped}</p>
+                    <p className="text-base font-bold text-chart-3">{result.skipped}</p>
                     <p className="text-[10px] text-muted-foreground">Skipped</p>
                   </div>
                   <div className="text-center p-2 rounded-md bg-background/50">
-                    <p className="text-base font-bold text-red-500">{result.errors}</p>
+                    <p className="text-base font-bold text-destructive">{result.errors}</p>
                     <p className="text-[10px] text-muted-foreground">Errors</p>
                   </div>
                 </div>

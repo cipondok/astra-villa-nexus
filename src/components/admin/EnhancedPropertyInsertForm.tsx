@@ -754,14 +754,14 @@ const EnhancedPropertyInsertForm = () => {
               {/* Enhanced Indonesian location loading and error states */}
               {locationsLoading ? (
                 <div className="text-center py-8">
-                  <div className="animate-spin h-6 w-6 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
-                  <div className="text-sm text-gray-600">Loading Indonesian locations from database...</div>
+                  <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+                  <div className="text-sm text-muted-foreground">Loading Indonesian locations from database...</div>
                 </div>
               ) : locationsError ? (
                 <div className="text-center py-8">
-                  <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-2" />
-                  <div className="text-sm text-red-600 mb-2">Failed to load Indonesian locations from database</div>
-                  <div className="text-xs text-gray-500 mb-4">Using fallback locations. Some options may be limited.</div>
+                  <AlertTriangle className="h-8 w-8 text-destructive mx-auto mb-2" />
+                  <div className="text-sm text-destructive mb-2">Failed to load Indonesian locations from database</div>
+                  <div className="text-xs text-muted-foreground mb-4">Using fallback locations. Some options may be limited.</div>
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -772,12 +772,12 @@ const EnhancedPropertyInsertForm = () => {
                 </div>
               ) : !locations || locations.length === 0 ? (
                 <div className="text-center py-6">
-                  <div className="text-sm text-yellow-600 mb-2">No Indonesian locations found in database</div>
-                  <div className="text-xs text-gray-500">Using default locations. Contact administrator to add more locations.</div>
+                  <div className="text-sm text-chart-3 mb-2">No Indonesian locations found in database</div>
+                  <div className="text-xs text-muted-foreground">Using default locations. Contact administrator to add more locations.</div>
                 </div>
               ) : (
                 <div className="text-center py-2">
-                  <div className="text-xs text-green-600">✓ {locations.length} Indonesian locations loaded from database</div>
+                  <div className="text-xs text-chart-1">✓ {locations.length} Indonesian locations loaded from database</div>
                 </div>
               )}
               
@@ -868,7 +868,7 @@ const EnhancedPropertyInsertForm = () => {
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {images.map((image) => (
                       <div key={image.id} className="relative group">
-                        <div className="aspect-square rounded-lg overflow-hidden border-2 border-dashed border-gray-200">
+                        <div className="aspect-square rounded-lg overflow-hidden border-2 border-dashed border-border">
                           <img
                             src={image.preview}
                             alt="Preview"
@@ -889,16 +889,16 @@ const EnhancedPropertyInsertForm = () => {
                         {/* Content Scan Status */}
                         <div className="absolute top-2 left-2">
                           {image.contentScanStatus === 'scanning' && (
-                            <Badge className="bg-yellow-500 text-white">Scanning...</Badge>
+                            <Badge className="bg-chart-3/20 text-chart-3 border border-chart-3/30">Scanning...</Badge>
                           )}
                           {image.contentScanStatus === 'approved' && (
-                            <Badge className="bg-green-500 text-white">
+                            <Badge className="bg-chart-1/20 text-chart-1 border border-chart-1/30">
                               <CheckCircle className="h-3 w-3 mr-1" />
                               Approved
                             </Badge>
                           )}
                           {image.contentScanStatus === 'rejected' && (
-                            <Badge className="bg-red-500 text-white">
+                            <Badge className="bg-destructive/20 text-destructive border border-destructive/30">
                               <AlertTriangle className="h-3 w-3 mr-1" />
                               Rejected
                             </Badge>
@@ -913,7 +913,7 @@ const EnhancedPropertyInsertForm = () => {
                               variant="secondary"
                               size="sm"
                               onClick={() => setThumbnailId(image.id)}
-                              className={thumbnailId === image.id ? "bg-blue-500 text-white" : ""}
+                              className={thumbnailId === image.id ? "bg-primary text-primary-foreground" : ""}
                             >
                               <Eye className="h-3 w-3" />
                             </Button>
@@ -986,7 +986,7 @@ const EnhancedPropertyInsertForm = () => {
                       <Settings className="h-4 w-4" />
                       Watermark Settings
                       {watermarkLoading && (
-                        <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                        <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
                       )}
                     </CardTitle>
                     <Button 
@@ -1000,7 +1000,7 @@ const EnhancedPropertyInsertForm = () => {
                     </Button>
                   </div>
                   {defaultWatermarkSettings && (
-                    <CardDescription className="text-green-600 text-sm">
+                    <CardDescription className="text-chart-1 text-sm">
                       ✓ Default settings loaded
                     </CardDescription>
                   )}
@@ -1088,10 +1088,10 @@ const EnhancedPropertyInsertForm = () => {
                       <div>
                         <Label>Watermark Preview</Label>
                         <div 
-                          className="relative bg-gradient-to-br from-gray-100 to-gray-200 h-40 rounded-lg border overflow-hidden"
+                          className="relative bg-gradient-to-br from-muted to-muted/60 h-40 rounded-lg border overflow-hidden"
                         >
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-gray-400 text-sm">Property Image Preview Area</div>
+                            <div className="text-muted-foreground text-sm">Property Image Preview Area</div>
                           </div>
                           
                           <div
@@ -1181,8 +1181,8 @@ const EnhancedPropertyInsertForm = () => {
               
               {/* Image Summary */}
               {images.length > 0 && (
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                  <div className="text-sm text-gray-600">
+                <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+                  <div className="text-sm text-muted-foreground">
                     <div>Total Images: {images.length}</div>
                     <div>Approved: {images.filter(img => img.contentScanStatus === 'approved').length}</div>
                     <div>Rejected: {images.filter(img => img.contentScanStatus === 'rejected').length}</div>
