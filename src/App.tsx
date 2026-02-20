@@ -23,6 +23,7 @@ import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import { useQueryLoadingIntegration } from '@/hooks/useQueryLoadingIntegration';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import MaintenancePage from '@/pages/MaintenancePage';
+import { NetworkStatusIndicator } from '@/components/NetworkStatusIndicator';
 
 // Lazy load all non-critical shell components — reduces initial parse time
 const Navigation = lazy(() => import('@/components/Navigation'));
@@ -171,6 +172,7 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <NetworkStatusIndicator />
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
       {!isAdminRoute && <Suspense fallback={null}><Navigation /></Suspense>}
       <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
