@@ -154,31 +154,21 @@ const DatabaseErrorMonitor = () => {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'CRITICAL':
-        return 'bg-red-500';
-      case 'HIGH':
-        return 'bg-orange-500';
-      case 'MEDIUM':
-        return 'bg-yellow-500';
-      case 'LOW':
-        return 'bg-blue-500';
-      default:
-        return 'bg-gray-500';
+      case 'CRITICAL': return 'bg-destructive';
+      case 'HIGH': return 'bg-chart-4';
+      case 'MEDIUM': return 'bg-chart-3';
+      case 'LOW': return 'bg-chart-2';
+      default: return 'bg-muted';
     }
   };
 
   const getSeverityBadgeColor = (severity: string) => {
     switch (severity) {
-      case 'CRITICAL':
-        return 'bg-red-100 text-red-800';
-      case 'HIGH':
-        return 'bg-orange-100 text-orange-800';
-      case 'MEDIUM':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'LOW':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+      case 'CRITICAL': return 'bg-destructive/10 text-destructive border-destructive/20';
+      case 'HIGH': return 'bg-chart-4/10 text-chart-4 border-chart-4/20';
+      case 'MEDIUM': return 'bg-chart-3/10 text-chart-3 border-chart-3/20';
+      case 'LOW': return 'bg-chart-2/10 text-chart-2 border-chart-2/20';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -195,7 +185,7 @@ const DatabaseErrorMonitor = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Database className="h-5 w-5 text-blue-500" />
+            <Database className="h-5 w-5 text-primary" />
             Database Error Monitor
           </CardTitle>
         </CardHeader>
@@ -204,7 +194,7 @@ const DatabaseErrorMonitor = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search by error message or table..."
                   value={searchTerm}
@@ -239,34 +229,34 @@ const DatabaseErrorMonitor = () => {
 
           {/* Statistics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">
+            <div className="text-center p-3 bg-destructive/10 rounded-lg">
+              <div className="text-2xl font-bold text-destructive">
                 {mockDatabaseErrors.filter(e => e.error_severity === 'CRITICAL').length}
               </div>
-              <div className="text-sm text-red-600">Critical</div>
+              <div className="text-sm text-destructive">Critical</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">
+            <div className="text-center p-3 bg-chart-4/10 rounded-lg">
+              <div className="text-2xl font-bold text-chart-4">
                 {mockDatabaseErrors.filter(e => e.error_severity === 'HIGH').length}
               </div>
-              <div className="text-sm text-orange-600">High</div>
+              <div className="text-sm text-chart-4">High</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">
+            <div className="text-center p-3 bg-chart-1/10 rounded-lg">
+              <div className="text-2xl font-bold text-chart-1">
                 {mockDatabaseErrors.filter(e => e.is_resolved).length}
               </div>
-              <div className="text-sm text-green-600">Resolved</div>
+              <div className="text-sm text-chart-1">Resolved</div>
             </div>
-            <div className="text-center p-3 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold text-gray-600">
+            <div className="text-center p-3 bg-muted/30 rounded-lg">
+              <div className="text-2xl font-bold text-foreground">
                 {mockDatabaseErrors.reduce((sum, e) => sum + e.occurrence_count, 0)}
               </div>
-              <div className="text-sm text-gray-600">Total Occurrences</div>
+              <div className="text-sm text-muted-foreground">Total Occurrences</div>
             </div>
           </div>
 
           {/* Results */}
-          <div className="text-sm text-gray-600 mb-4">
+          <div className="text-sm text-muted-foreground mb-4">
             Showing {filteredErrors.length} of {mockDatabaseErrors.length} database errors
           </div>
 
@@ -287,7 +277,7 @@ const DatabaseErrorMonitor = () => {
               <TableBody>
                 {filteredErrors.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                       No database errors found matching your criteria
                     </TableCell>
                   </TableRow>
@@ -315,7 +305,7 @@ const DatabaseErrorMonitor = () => {
                           {error.occurrence_count}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-sm text-gray-600">
+                      <TableCell className="text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
                           {new Date(error.last_seen_at).toLocaleString()}
@@ -323,12 +313,12 @@ const DatabaseErrorMonitor = () => {
                       </TableCell>
                       <TableCell>
                         {error.is_resolved ? (
-                          <Badge className="bg-green-100 text-green-800">
+                        <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">
                             <CheckCircle className="h-3 w-3 mr-1" />
                             Resolved
                           </Badge>
                         ) : (
-                          <Badge variant="secondary" className="bg-red-100 text-red-800">
+                          <Badge variant="secondary" className="bg-destructive/10 text-destructive border-destructive/20">
                             <XCircle className="h-3 w-3 mr-1" />
                             Active
                           </Badge>
@@ -368,7 +358,7 @@ const DatabaseErrorMonitor = () => {
         <DialogContent className="max-w-4xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5 text-blue-500" />
+              <Database className="h-5 w-5 text-primary" />
               Database Error Details - {selectedError?.error_severity}
             </DialogTitle>
           </DialogHeader>
@@ -378,25 +368,25 @@ const DatabaseErrorMonitor = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium">Error Signature</label>
-                    <p className="font-mono text-sm bg-gray-100 p-2 rounded">
+                    <p className="font-mono text-sm bg-muted p-2 rounded">
                       {selectedError.error_signature}
                     </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium">Table Name</label>
-                    <p className="font-mono text-sm bg-gray-100 p-2 rounded">
+                    <p className="font-mono text-sm bg-muted p-2 rounded">
                       {selectedError.table_name || 'N/A'}
                     </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium">Operation Type</label>
-                    <p className="text-sm bg-gray-100 p-2 rounded">
+                    <p className="text-sm bg-muted p-2 rounded">
                       {selectedError.operation_type || 'Unknown'}
                     </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium">Occurrence Count</label>
-                    <p className="text-sm bg-gray-100 p-2 rounded">
+                    <p className="text-sm bg-muted p-2 rounded">
                       {selectedError.occurrence_count} times
                     </p>
                   </div>
@@ -404,7 +394,7 @@ const DatabaseErrorMonitor = () => {
 
                 <div>
                   <label className="text-sm font-medium">Full Error Message</label>
-                  <p className="text-sm bg-red-50 border border-red-200 p-3 rounded">
+                  <p className="text-sm bg-destructive/5 border border-destructive/20 p-3 rounded">
                     {selectedError.error_message}
                   </p>
                 </div>
@@ -412,7 +402,7 @@ const DatabaseErrorMonitor = () => {
                 {selectedError.suggested_fix && (
                   <div>
                     <label className="text-sm font-medium">Suggested Fix</label>
-                    <div className="bg-blue-50 border border-blue-200 p-3 rounded">
+                    <div className="bg-primary/5 border border-primary/20 p-3 rounded">
                       <p className="text-sm mb-2">{selectedError.suggested_fix}</p>
                       {!selectedError.is_resolved && (
                         <Button 
@@ -431,7 +421,7 @@ const DatabaseErrorMonitor = () => {
                 {selectedError.fix_applied && (
                   <div>
                     <label className="text-sm font-medium">Fix Applied</label>
-                    <p className="text-sm bg-green-50 border border-green-200 p-3 rounded font-mono">
+                    <p className="text-sm bg-chart-1/5 border border-chart-1/20 p-3 rounded font-mono">
                       {selectedError.fix_applied}
                     </p>
                   </div>
@@ -440,14 +430,12 @@ const DatabaseErrorMonitor = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium">First Occurrence</label>
-                    <p className="text-sm bg-gray-100 p-2 rounded flex items-center gap-2">
-                      <Calendar className="h-3 w-3" />
-                      {new Date(selectedError.first_occurrence).toLocaleString()}
+                    <p className="text-sm bg-muted p-2 rounded flex items-center gap-2">
                     </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium">Last Seen</label>
-                    <p className="text-sm bg-gray-100 p-2 rounded flex items-center gap-2">
+                    <p className="text-sm bg-muted p-2 rounded flex items-center gap-2">
                       <Clock className="h-3 w-3" />
                       {new Date(selectedError.last_seen_at).toLocaleString()}
                     </p>
@@ -457,7 +445,7 @@ const DatabaseErrorMonitor = () => {
                 {selectedError.metadata && (
                   <div>
                     <label className="text-sm font-medium">Additional Context</label>
-                    <pre className="text-xs bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto">
+                    <pre className="text-xs bg-muted text-foreground p-3 rounded overflow-x-auto font-mono">
                       {JSON.stringify(selectedError.metadata, null, 2)}
                     </pre>
                   </div>

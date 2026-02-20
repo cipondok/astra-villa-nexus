@@ -19,16 +19,16 @@ import {
 } from '@/hooks/useSeoIntelligence';
 
 const ScoreBadge = ({ score }: { score: number }) => {
-  const color = score >= 80 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-    : score >= 60 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-    : score >= 40 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+  const color = score >= 80 ? 'bg-chart-1/10 text-chart-1 border-chart-1/20'
+    : score >= 60 ? 'bg-primary/10 text-primary border-primary/20'
+    : score >= 40 ? 'bg-chart-3/10 text-chart-3 border-chart-3/20'
+    : 'bg-destructive/10 text-destructive border-destructive/20';
   return <Badge className={color}>{score}/100</Badge>;
 };
 
 const TrendIcon = ({ direction }: { direction: string }) => {
-  if (direction === 'up') return <ArrowUpRight className="h-3 w-3 text-green-500" />;
-  if (direction === 'down') return <ArrowDownRight className="h-3 w-3 text-red-500" />;
+  if (direction === 'up') return <ArrowUpRight className="h-3 w-3 text-chart-1" />;
+  if (direction === 'down') return <ArrowDownRight className="h-3 w-3 text-destructive" />;
   return <Minus className="h-3 w-3 text-muted-foreground" />;
 };
 
@@ -92,13 +92,13 @@ const SEOManagement = () => {
         <Card>
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Excellent (80+)</p>
-            <p className="text-2xl font-bold text-green-600">{statsLoading ? '...' : stats?.excellent ?? 0}</p>
+            <p className="text-2xl font-bold text-chart-1">{statsLoading ? '...' : stats?.excellent ?? 0}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Needs Work (&lt;50)</p>
-            <p className="text-2xl font-bold text-red-600">{statsLoading ? '...' : (stats?.needsImprovement ?? 0) + (stats?.poor ?? 0)}</p>
+            <p className="text-2xl font-bold text-destructive">{statsLoading ? '...' : (stats?.needsImprovement ?? 0) + (stats?.poor ?? 0)}</p>
           </CardContent>
         </Card>
       </div>
@@ -117,10 +117,10 @@ const SEOManagement = () => {
               <CardHeader><CardTitle className="text-base">Score Distribution</CardTitle></CardHeader>
               <CardContent className="space-y-3">
                 {[
-                  { label: 'Excellent (80-100)', count: stats?.excellent ?? 0, color: 'bg-green-500' },
-                  { label: 'Good (60-79)', count: stats?.good ?? 0, color: 'bg-blue-500' },
-                  { label: 'Needs Improvement (40-59)', count: stats?.needsImprovement ?? 0, color: 'bg-yellow-500' },
-                  { label: 'Poor (<40)', count: stats?.poor ?? 0, color: 'bg-red-500' },
+                  { label: 'Excellent (80-100)', count: stats?.excellent ?? 0, color: 'bg-chart-1' },
+                  { label: 'Good (60-79)', count: stats?.good ?? 0, color: 'bg-primary' },
+                  { label: 'Needs Improvement (40-59)', count: stats?.needsImprovement ?? 0, color: 'bg-chart-3' },
+                  { label: 'Poor (<40)', count: stats?.poor ?? 0, color: 'bg-destructive' },
                 ].map(item => (
                   <div key={item.label} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -168,7 +168,7 @@ const SEOManagement = () => {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                  <AlertTriangle className="h-4 w-4 text-chart-3" />
                   Weak Listings (Score &lt; 50)
                 </CardTitle>
                 <div className="relative w-64">
@@ -260,7 +260,7 @@ const SEOManagement = () => {
           <Card>
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                <CheckCircle2 className="h-4 w-4 text-chart-1" />
                 Top Performers (Score 80+)
               </CardTitle>
             </CardHeader>
