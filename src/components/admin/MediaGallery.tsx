@@ -261,7 +261,7 @@ const MediaGallery = () => {
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="text-center text-red-600">
+          <div className="text-center text-destructive">
             <XCircle className="h-12 w-12 mx-auto mb-4" />
             <p>Error loading media files: {error.message}</p>
           </div>
@@ -400,7 +400,7 @@ const MediaGallery = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Files</p>
                 <p className="text-2xl font-bold">{files.length}</p>
               </div>
-              <Archive className="h-8 w-8 text-blue-600" />
+              <Archive className="h-8 w-8 text-chart-2" />
             </div>
           </CardContent>
         </Card>
@@ -412,7 +412,7 @@ const MediaGallery = () => {
                 <p className="text-sm font-medium text-muted-foreground">Images</p>
                 <p className="text-2xl font-bold">{files.filter(f => getFileType(f.name) === 'image').length}</p>
               </div>
-              <Image className="h-8 w-8 text-green-600" />
+              <Image className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -424,7 +424,7 @@ const MediaGallery = () => {
                 <p className="text-sm font-medium text-muted-foreground">Documents</p>
                 <p className="text-2xl font-bold">{files.filter(f => getFileType(f.name) === 'document').length}</p>
               </div>
-              <FileText className="h-8 w-8 text-orange-600" />
+              <FileText className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -436,7 +436,7 @@ const MediaGallery = () => {
                 <p className="text-sm font-medium text-muted-foreground">Storage Buckets</p>
                 <p className="text-2xl font-bold">{buckets.length}</p>
               </div>
-              <Settings className="h-8 w-8 text-purple-600" />
+              <Settings className="h-8 w-8 text-chart-5" />
             </div>
           </CardContent>
         </Card>
@@ -451,7 +451,7 @@ const MediaGallery = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredFiles.map((file) => (
                 <Card key={file.id} className="overflow-hidden">
-                  <div className="aspect-video bg-gray-100 dark:bg-gray-800 relative">
+                  <div className="aspect-video bg-muted relative">
                     {getFileType(file.name) === 'image' ? (
                       <img
                         src={file.url}
@@ -509,7 +509,7 @@ const MediaGallery = () => {
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
                               onClick={() => handleDeleteFile(file.bucket_id, file.name)}
-                              className="bg-red-600 hover:bg-red-700"
+                              className="bg-destructive hover:bg-destructive/90"
                             >
                               Delete
                             </AlertDialogAction>
@@ -574,13 +574,13 @@ const MediaGallery = () => {
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
                               <AlertDialogAction
                                 onClick={() => handleDeleteFile(file.bucket_id, file.name)}
-                                className="bg-red-600 hover:bg-red-700"
-                              >
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                              className="bg-destructive hover:bg-destructive/90"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                       </div>
                     </TableCell>
                   </TableRow>
