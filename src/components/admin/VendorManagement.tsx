@@ -230,14 +230,13 @@ const VendorManagement = () => {
   }) || [];
 
   const getStatusBadge = (status: string) => {
-    const statusColors: { [key: string]: "default" | "secondary" | "destructive" | "outline" } = {
-      pending: "secondary",
-      approved: "default",
-      rejected: "destructive"
+    const statusColors: Record<string, string> = {
+      pending: 'bg-chart-3/10 text-chart-3 border-chart-3/30',
+      approved: 'bg-chart-1/10 text-chart-1 border-chart-1/30',
+      rejected: 'bg-destructive/10 text-destructive border-destructive/30',
     };
-    
     return (
-      <Badge variant={statusColors[status] || "outline"}>
+      <Badge className={statusColors[status] || 'bg-muted text-muted-foreground'}>
         {status?.toUpperCase()}
       </Badge>
     );
