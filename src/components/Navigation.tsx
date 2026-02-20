@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,7 +9,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones, Box, Settings2, Bell, Coins, ChevronDown, TrendingUp, Plus, List, MapPin } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones, Box, Settings2, Bell, Coins, ChevronDown, TrendingUp, Plus, List, MapPin, Search } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -24,6 +26,8 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
+  const [headerSearchQuery, setHeaderSearchQuery] = useState('');
   const { user, profile, signOut } = useAuth();
   const { isAdmin } = useAdminCheck();
   const { language } = useLanguage();
@@ -77,15 +81,23 @@ const Navigation = () => {
     };
   }, [isMenuOpen]);
 
-  // Handle scroll effect with throttling for better performance
+  // Handle scroll effect - transparent at top, solid when scrolled
   useEffect(() => {
     let ticking = false;
     
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          const isScrolled = window.scrollY > 0;
+          const isScrolled = window.scrollY > 10;
           setScrolled(isScrolled);
+          // Check if hero section is scrolled past
+          const heroSection = document.getElementById('hero-section');
+          if (heroSection) {
+            const heroBottom = heroSection.getBoundingClientRect().bottom;
+            setPastHero(heroBottom < 60);
+          } else {
+            setPastHero(window.scrollY > 600);
+          }
           ticking = false;
         });
         ticking = true;
@@ -93,6 +105,7 @@ const Navigation = () => {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial check
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -194,14 +207,32 @@ const Navigation = () => {
   ];
 
   const isAgent = profile?.role === 'agent';
+  const isHomePage = location.pathname === '/';
   
   // Note: admin check is handled by isAdmin hook
 
+  const handleHeaderSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (headerSearchQuery.trim()) {
+      navigate(`/?search=${encodeURIComponent(headerSearchQuery.trim())}`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios glass-popup backdrop-blur-2xl border-b border-primary/15 dark:border-primary/10 shadow-sm shadow-primary/5 h-10 md:h-11 lg:h-12 transition-all duration-300" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
+      <nav 
+        className={cn(
+          "fixed top-0 left-0 right-0 w-full z-[10000] transition-all duration-500",
+          isHomePage && !scrolled
+            ? "bg-transparent border-b border-white/10 shadow-none"
+            : "header-ios glass-popup backdrop-blur-2xl border-b border-primary/15 dark:border-primary/10 shadow-sm shadow-primary/5",
+          pastHero ? "h-12 md:h-13 lg:h-14" : "h-10 md:h-11 lg:h-12"
+        )} 
+        style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+      >
         <div className="w-full mx-auto px-1 sm:px-2 lg:px-4">
-          <div className="flex items-center justify-between h-10 md:h-11 lg:h-12 gap-2">
+          <div className={cn("flex items-center justify-between gap-2 transition-all duration-300", pastHero ? "h-12 md:h-13 lg:h-14" : "h-10 md:h-11 lg:h-12")}>
             {/* Enhanced ASTRA Villa Logo with Animation - Left Corner */}
             <div 
               className="flex items-center cursor-pointer group flex-shrink-0 -ml-1" 
@@ -225,8 +256,8 @@ const Navigation = () => {
                     />
                   </div>
                   <div className="hidden sm:flex items-center space-x-1">
-                    <span className="text-lg font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl">ASTRA</span>
-                    <span className="text-lg font-bold bg-gradient-to-r from-accent via-primary to-foreground bg-clip-text text-transparent drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl">Villa</span>
+                    <span className={cn("text-lg font-bold drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl", isHomePage && !scrolled ? "text-white" : "bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent")}>ASTRA</span>
+                    <span className={cn("text-lg font-bold drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl", isHomePage && !scrolled ? "text-white/90" : "bg-gradient-to-r from-accent via-primary to-foreground bg-clip-text text-transparent")}>Villa</span>
                   </div>
                 </>
               )}
@@ -309,6 +340,25 @@ const Navigation = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              {/* Search bar - appears when scrolled past hero */}
+              {pastHero && isHomePage && (
+                <form onSubmit={handleHeaderSearch} className="flex items-center gap-1.5 ml-2">
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      value={headerSearchQuery}
+                      onChange={(e) => setHeaderSearchQuery(e.target.value)}
+                      placeholder="Search properties..."
+                      className="pl-8 pr-3 h-8 w-40 xl:w-56 text-xs bg-muted/30 dark:bg-muted/20 border-border/40 rounded-lg focus:bg-background transition-colors"
+                    />
+                  </div>
+                  <Button type="submit" size="sm" className="h-8 px-2.5 rounded-lg bg-primary hover:bg-primary/90 shrink-0">
+                    <Search className="h-3.5 w-3.5" />
+                  </Button>
+                </form>
+              )}
 
 
                {/* Dashboard link - show role-appropriate dashboard */}
