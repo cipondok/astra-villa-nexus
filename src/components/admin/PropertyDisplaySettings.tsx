@@ -67,8 +67,6 @@ const PropertyDisplaySettings = () => {
 
   const loadSettings = async () => {
     try {
-      console.log('Loading display settings...');
-      
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Database connection timeout')), 10000);
       });
@@ -108,10 +106,8 @@ const PropertyDisplaySettings = () => {
           showContactInfo: settingsMap.showContactInfo === 'true',
         }));
         
-        console.log('Display settings loaded successfully');
       }
     } catch (error: any) {
-      console.error('Error loading settings:', error);
       if (error.message === 'Database connection timeout') {
         showError('Connection Timeout', 'Database connection timed out. Please check your internet connection and try again.');
       } else {
@@ -122,8 +118,6 @@ const PropertyDisplaySettings = () => {
 
   const saveSettings = async () => {
     setLoading(true);
-    console.log('Starting to save display settings...');
-    
     try {
       const settingsToSave = [
         { key: 'property_display_layoutType', value: settings.layoutType, category: 'property_display', description: 'Property layout type' },
@@ -143,8 +137,6 @@ const PropertyDisplaySettings = () => {
         { key: 'property_display_showContactInfo', value: settings.showContactInfo.toString(), category: 'property_display', description: 'Show contact info' }
       ];
 
-      console.log('Attempting to save settings to database...');
-
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Database save timeout')), 15000);
       });
@@ -158,15 +150,10 @@ const PropertyDisplaySettings = () => {
 
       const { error } = await Promise.race([savePromise, timeoutPromise]) as any;
 
-      if (error) {
-        console.error('Database save error:', error);
-        throw error;
-      }
+      if (error) throw error;
 
-      console.log('Settings saved successfully to database');
       showSuccess('Settings Saved', 'Property display settings have been saved successfully');
     } catch (error: any) {
-      console.error('Error saving settings:', error);
       if (error.message === 'Database save timeout') {
         showError('Save Timeout', 'The save operation timed out. Please check your connection and try again.');
       } else if (error.message?.includes('timeout')) {
@@ -176,7 +163,6 @@ const PropertyDisplaySettings = () => {
       }
     } finally {
       setLoading(false);
-      console.log('Save operation completed');
     }
   };
 

@@ -105,36 +105,36 @@ const CustomerServiceTicketManagement = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'resolved':
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Resolved</Badge>;
+        return <Badge className="bg-chart-1 text-primary-foreground"><CheckCircle className="h-3 w-3 mr-1" />Resolved</Badge>;
       case 'in_progress':
-        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" />In Progress</Badge>;
+        return <Badge className="bg-chart-3 text-primary-foreground"><Clock className="h-3 w-3 mr-1" />In Progress</Badge>;
       case 'closed':
           return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Closed</Badge>;
       case 'open':
       default:
-        return <Badge variant="outline" className="border-orange-500 text-orange-500">Open</Badge>;
+        return <Badge variant="outline" className="border-chart-3 text-chart-3">Open</Badge>;
     }
   };
   
   const getPriorityBadge = (priority: string) => {
     const colors: { [key: string]: string } = {
-      high: "bg-red-500",
-      medium: "bg-yellow-500",
-      low: "bg-green-500"
+      high: "bg-destructive text-destructive-foreground",
+      medium: "bg-chart-3 text-primary-foreground",
+      low: "bg-chart-1 text-primary-foreground"
     };
-    return <Badge className={colors[priority] || 'bg-gray-500'}>{priority?.toUpperCase()}</Badge>;
+    return <Badge className={colors[priority] || 'bg-muted text-muted-foreground'}>{priority?.toUpperCase()}</Badge>;
   };
   
   const getAvailabilityBadge = (status: string | null | undefined) => {
     if (!status) return null;
     const badgeClasses = {
-      online: "border-green-500 text-green-500",
-      busy: "border-yellow-500 text-yellow-500",
-      offline: "border-gray-500 text-gray-500",
+      online: "border-chart-1 text-chart-1",
+      busy: "border-chart-3 text-chart-3",
+      offline: "border-muted-foreground text-muted-foreground",
     };
     const text = status.charAt(0).toUpperCase() + status.slice(1);
     
-    const className = badgeClasses[status as keyof typeof badgeClasses] || "border-gray-400 text-gray-400";
+    const className = badgeClasses[status as keyof typeof badgeClasses] || "border-border text-muted-foreground";
 
     return <Badge variant="outline" className={`${className} text-xs`}>{text}</Badge>;
   };
@@ -294,19 +294,19 @@ const CustomerServiceTicketManagement = () => {
 
               {/* Conversation */}
               <div className="space-y-4">
-                <h3 className="text-sm font-medium text-gray-500 border-b pb-2">Conversation History</h3>
+                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">Conversation History</h3>
                 
                 {/* User's Message */}
                 <div className="flex gap-3">
-                   <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                   <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm shrink-0">
                      {selectedTicket.customer?.full_name?.charAt(0) || 'U'}
                    </div>
                    <div className="flex-1">
                      <div className="font-semibold">{selectedTicket.subject}</div>
-                     <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg rounded-tl-none mt-1">
-                       <p className="text-sm text-gray-800 dark:text-gray-200">{selectedTicket.description}</p>
+                      <div className="bg-muted p-3 rounded-lg rounded-tl-none mt-1">
+                       <p className="text-sm text-foreground">{selectedTicket.description}</p>
                      </div>
-                     <p className="text-xs text-gray-500 mt-1">
+                     <p className="text-xs text-muted-foreground mt-1">
                        {new Date(selectedTicket.created_at).toLocaleString()}
                      </p>
                    </div>
@@ -316,15 +316,15 @@ const CustomerServiceTicketManagement = () => {
                 {selectedTicket.resolution && (
                    <div className="flex gap-3 justify-end">
                      <div className="flex-1 max-w-[85%] text-right">
-                        <div className="bg-blue-100 dark:bg-blue-900/50 inline-block p-3 rounded-lg rounded-br-none text-left">
-                          <p className="font-semibold text-sm text-blue-800 dark:text-blue-200">Our response:</p>
-                          <p className="text-sm text-gray-800 dark:text-gray-200">{selectedTicket.resolution}</p>
+                        <div className="bg-primary/10 inline-block p-3 rounded-lg rounded-br-none text-left">
+                          <p className="font-semibold text-sm text-primary">Our response:</p>
+                          <p className="text-sm text-foreground">{selectedTicket.resolution}</p>
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           {selectedTicket.resolved_at ? new Date(selectedTicket.resolved_at).toLocaleString() : ''}
                         </p>
                      </div>
-                      <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-muted-foreground flex items-center justify-center text-background font-bold text-sm shrink-0">
                         S
                       </div>
                    </div>
@@ -342,10 +342,10 @@ const CustomerServiceTicketManagement = () => {
           <DialogFooter className="gap-2 pt-4 border-t">
             <Button variant="outline" onClick={() => setShowDetailDialog(false)}>Cancel</Button>
             {selectedTicket?.status === 'open' && (
-              <Button onClick={() => handleStatusUpdate('in_progress')} disabled={updateTicketMutation.isPending} className="bg-yellow-500 hover:bg-yellow-600">Take Ownership &amp; Start</Button>
+              <Button onClick={() => handleStatusUpdate('in_progress')} disabled={updateTicketMutation.isPending} className="bg-chart-3 hover:bg-chart-3/80 text-primary-foreground">Take Ownership &amp; Start</Button>
             )}
             {selectedTicket?.status !== 'resolved' && selectedTicket?.status !== 'closed' && (
-              <Button onClick={() => handleStatusUpdate('resolved')} disabled={updateTicketMutation.isPending || !resolution.trim()} className="bg-green-600 hover:bg-green-700">Mark Resolved &amp; Send Response</Button>
+              <Button onClick={() => handleStatusUpdate('resolved')} disabled={updateTicketMutation.isPending || !resolution.trim()} className="bg-chart-1 hover:bg-chart-1/80 text-primary-foreground">Mark Resolved &amp; Send Response</Button>
             )}
             {selectedTicket?.status !== 'closed' && (
               <Button variant="destructive" onClick={() => handleStatusUpdate('closed')} disabled={updateTicketMutation.isPending}>Close Ticket</Button>

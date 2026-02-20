@@ -281,7 +281,7 @@ const IndonesianTaxConfiguration = () => {
                       <div className="border-t pt-2">
                         <div className="flex justify-between text-sm font-medium">
                           <span>{t.totalTax}</span>
-                          <span className="font-mono text-orange-600">{formatCurrency(calcResult.totalTax)}</span>
+                          <span className="font-mono text-chart-3">{formatCurrency(calcResult.totalTax)}</span>
                         </div>
                         <div className="flex justify-between text-lg font-bold mt-1">
                           <span>{t.grandTotal}</span>
@@ -299,10 +299,10 @@ const IndonesianTaxConfiguration = () => {
 
       {/* Tax Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/50">
+        <Card className="border-chart-2/30 bg-chart-2/5">
           <CardContent className="pt-4">
             <div className="flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-blue-100 text-blue-700">PPN</Badge>
+              <Badge variant="outline" className="bg-chart-2/10 text-chart-2 border-chart-2/30">PPN</Badge>
               <span className="font-semibold">11%</span>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -313,10 +313,10 @@ const IndonesianTaxConfiguration = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/50">
+        <Card className="border-chart-1/30 bg-chart-1/5">
           <CardContent className="pt-4">
             <div className="flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-green-100 text-green-700">PPh</Badge>
+              <Badge variant="outline" className="bg-chart-1/10 text-chart-1 border-chart-1/30">PPh</Badge>
               <span className="font-semibold">2.5% - 10%</span>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -327,10 +327,10 @@ const IndonesianTaxConfiguration = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-950/50">
+        <Card className="border-chart-4/30 bg-chart-4/5">
           <CardContent className="pt-4">
             <div className="flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-purple-100 text-purple-700">BPHTB</Badge>
+              <Badge variant="outline" className="bg-chart-4/10 text-chart-4 border-chart-4/30">BPHTB</Badge>
               <span className="font-semibold">5%</span>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -443,15 +443,15 @@ const IndonesianTaxConfiguration = () => {
       </Card>
 
       {/* Info Card */}
-      <Card className="border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/50">
+      <Card className="border-chart-3/30 bg-chart-3/5">
         <CardContent className="pt-4">
           <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-amber-600 mt-0.5" />
+            <Info className="h-5 w-5 text-chart-3 mt-0.5" />
             <div>
-              <p className="font-medium text-amber-800 dark:text-amber-200">
+              <p className="font-medium text-chart-3">
                 {language === 'id' ? 'Catatan Penting' : 'Important Note'}
               </p>
-              <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {language === 'id'
                   ? 'Tarif pajak diatur sesuai peraturan perpajakan Indonesia. Perubahan tarif akan mempengaruhi semua transaksi baru. Pastikan untuk berkonsultasi dengan akuntan atau penasihat pajak sebelum mengubah konfigurasi.'
                   : 'Tax rates are configured according to Indonesian tax regulations. Rate changes will affect all new transactions. Please consult with an accountant or tax advisor before modifying configurations.'}
