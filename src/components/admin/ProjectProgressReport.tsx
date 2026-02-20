@@ -239,9 +239,9 @@ const ProjectProgressReport = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'operational': return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20';
-      case 'partial': return 'bg-amber-500/10 text-amber-600 border-amber-500/20';
-      case 'issues': return 'bg-rose-500/10 text-rose-600 border-rose-500/20';
+      case 'operational': return 'bg-chart-1/10 text-chart-1 border-chart-1/20';
+      case 'partial': return 'bg-chart-3/10 text-chart-3 border-chart-3/20';
+      case 'issues': return 'bg-destructive/10 text-destructive border-destructive/20';
       default: return 'bg-muted text-muted-foreground';
     }
   };
@@ -293,7 +293,7 @@ const ProjectProgressReport = () => {
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Modules Status</p>
-              <p className="text-sm font-medium text-emerald-600">{operationalCount}/{moduleStatuses.length} Operational</p>
+              <p className="text-sm font-medium text-chart-1">{operationalCount}/{moduleStatuses.length} Operational</p>
             </div>
           </div>
           <Progress value={overallProgress} className="h-2" multiColor />
@@ -304,7 +304,7 @@ const ProjectProgressReport = () => {
       <div className="grid grid-cols-4 gap-2">
         <Card className="p-2.5">
           <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-blue-500" />
+            <Users className="h-4 w-4 text-chart-2" />
             <div>
               <p className="text-lg font-bold">{stats?.users || 0}</p>
               <p className="text-[10px] text-muted-foreground">Users</p>
@@ -313,7 +313,7 @@ const ProjectProgressReport = () => {
         </Card>
         <Card className="p-2.5">
           <div className="flex items-center gap-2">
-            <Building className="h-4 w-4 text-purple-500" />
+            <Building className="h-4 w-4 text-chart-4" />
             <div>
               <p className="text-lg font-bold">{stats?.properties || 0}</p>
               <p className="text-[10px] text-muted-foreground">Properties</p>
@@ -322,7 +322,7 @@ const ProjectProgressReport = () => {
         </Card>
         <Card className="p-2.5">
           <div className="flex items-center gap-2">
-            <Store className="h-4 w-4 text-orange-500" />
+            <Store className="h-4 w-4 text-chart-3" />
             <div>
               <p className="text-lg font-bold">{stats?.vendors || 0}</p>
               <p className="text-[10px] text-muted-foreground">Vendors</p>
@@ -331,7 +331,7 @@ const ProjectProgressReport = () => {
         </Card>
         <Card className="p-2.5">
           <div className="flex items-center gap-2">
-            <Eye className="h-4 w-4 text-cyan-500" />
+            <Eye className="h-4 w-4 text-primary" />
             <div>
               <p className="text-lg font-bold">{stats?.pageViews || 0}</p>
               <p className="text-[10px] text-muted-foreground">Views</p>
@@ -344,19 +344,19 @@ const ProjectProgressReport = () => {
       <Card className="p-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Database className="h-4 w-4 text-emerald-500" />
+            <Database className="h-4 w-4 text-chart-1" />
             <span className="text-sm font-medium">Database</span>
           </div>
           <div className="flex items-center gap-3">
             <Badge variant="outline" className={`text-[10px] ${
-              dbHealth?.status === 'excellent' ? 'text-emerald-600 border-emerald-500/30' :
-              dbHealth?.status === 'good' ? 'text-amber-600 border-amber-500/30' :
-              'text-rose-600 border-rose-500/30'
+              dbHealth?.status === 'excellent' ? 'text-chart-1 border-chart-1/30' :
+              dbHealth?.status === 'good' ? 'text-chart-3 border-chart-3/30' :
+              'text-destructive border-destructive/30'
             }`}>
               {dbHealth?.responseTime || 0}ms
             </Badge>
             <Badge className={`text-[10px] ${
-              dbHealth?.isConnected ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'
+              dbHealth?.isConnected ? 'bg-chart-1/10 text-chart-1' : 'bg-destructive/10 text-destructive'
             }`}>
               {dbHealth?.isConnected ? 'Connected' : 'Disconnected'}
             </Badge>
@@ -369,13 +369,13 @@ const ProjectProgressReport = () => {
         <Card className="p-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Activity className="h-4 w-4 text-blue-500" />
+            <Activity className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium">Weekly Activity</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold">{activityTrend.thisWeek}</span>
               <Badge variant="outline" className={`text-[10px] ${
-                activityTrend.change >= 0 ? 'text-emerald-600' : 'text-rose-600'
+                activityTrend.change >= 0 ? 'text-chart-1' : 'text-destructive'
               }`}>
                 <TrendingUp className={`h-3 w-3 mr-1 ${activityTrend.change < 0 ? 'rotate-180' : ''}`} />
                 {Math.abs(activityTrend.change).toFixed(0)}%
@@ -465,7 +465,7 @@ const ProjectProgressReport = () => {
 
           <Card className="p-3">
             <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-emerald-500" />
+              <TrendingUp className="h-4 w-4 text-chart-1" />
               Platform Statistics
             </h3>
             <div className="grid grid-cols-2 gap-2">
@@ -492,7 +492,7 @@ const ProjectProgressReport = () => {
         <TabsContent value="health" className="mt-3 space-y-2">
           <Card className="p-3">
             <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-              <Shield className="h-4 w-4 text-emerald-500" />
+              <Shield className="h-4 w-4 text-chart-1" />
               System Health
             </h3>
             <div className="space-y-2">
@@ -501,7 +501,7 @@ const ProjectProgressReport = () => {
                   <Database className="h-3.5 w-3.5" />
                   <span className="text-xs">Database Connection</span>
                 </div>
-                <Badge className={`text-[10px] ${dbHealth?.isConnected ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}`}>
+                <Badge className={`text-[10px] ${dbHealth?.isConnected ? 'bg-chart-1/10 text-chart-1' : 'bg-destructive/10 text-destructive'}`}>
                   {dbHealth?.isConnected ? 'Healthy' : 'Error'}
                 </Badge>
               </div>
@@ -519,7 +519,7 @@ const ProjectProgressReport = () => {
                   <AlertCircle className="h-3.5 w-3.5" />
                   <span className="text-xs">Pending Errors</span>
                 </div>
-                <Badge className={`text-[10px] ${(stats?.pendingErrors || 0) > 5 ? 'bg-rose-500/10 text-rose-600' : 'bg-emerald-500/10 text-emerald-600'}`}>
+                <Badge className={`text-[10px] ${(stats?.pendingErrors || 0) > 5 ? 'bg-destructive/10 text-destructive' : 'bg-chart-1/10 text-chart-1'}`}>
                   {stats?.pendingErrors || 0}
                 </Badge>
               </div>
@@ -546,15 +546,15 @@ const ProjectProgressReport = () => {
                   <span className="text-muted-foreground">{module.name}</span>
                   <div className="flex items-center gap-1.5">
                     {module.status === 'operational' ? (
-                      <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                      <CheckCircle2 className="h-3 w-3 text-chart-1" />
                     ) : module.status === 'partial' ? (
-                      <Clock className="h-3 w-3 text-amber-500" />
+                      <Clock className="h-3 w-3 text-chart-3" />
                     ) : (
-                      <AlertCircle className="h-3 w-3 text-rose-500" />
+                      <AlertCircle className="h-3 w-3 text-destructive" />
                     )}
                     <span className={`text-[10px] ${
-                      module.status === 'operational' ? 'text-emerald-600' :
-                      module.status === 'partial' ? 'text-amber-600' : 'text-rose-600'
+                      module.status === 'operational' ? 'text-chart-1' :
+                      module.status === 'partial' ? 'text-chart-3' : 'text-destructive'
                     }`}>
                       {module.progress.toFixed(0)}%
                     </span>

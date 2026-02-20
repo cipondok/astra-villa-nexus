@@ -113,31 +113,22 @@ const PropertyManagementAdvanced = () => {
   ];
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return <Badge className="bg-green-100 text-green-800">Approved</Badge>;
-      case 'pending':
-        return <Badge className="bg-yellow-100 text-yellow-800">Pending Review</Badge>;
-      case 'rejected':
-        return <Badge variant="destructive">Rejected</Badge>;
-      case 'flagged':
-        return <Badge className="bg-red-100 text-red-800">Flagged</Badge>;
-      default:
-        return <Badge variant="outline">Unknown</Badge>;
-    }
+    const colors: Record<string, string> = {
+      approved: 'bg-chart-1/10 text-chart-1 border-chart-1/20',
+      pending: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+      rejected: 'bg-destructive/10 text-destructive border-destructive/20',
+      flagged: 'bg-chart-4/10 text-chart-4 border-chart-4/20',
+    };
+    return <Badge className={colors[status] || 'bg-muted text-muted-foreground'}>{status.replace('_', ' ').charAt(0).toUpperCase() + status.slice(1)}</Badge>;
   };
 
   const getSeverityBadge = (severity: string) => {
-    switch (severity) {
-      case 'high':
-        return <Badge variant="destructive">High</Badge>;
-      case 'medium':
-        return <Badge className="bg-yellow-100 text-yellow-800">Medium</Badge>;
-      case 'low':
-        return <Badge className="bg-green-100 text-green-800">Low</Badge>;
-      default:
-        return <Badge variant="outline">Unknown</Badge>;
-    }
+    const colors: Record<string, string> = {
+      high: 'bg-destructive/10 text-destructive border-destructive/20',
+      medium: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+      low: 'bg-chart-1/10 text-chart-1 border-chart-1/20',
+    };
+    return <Badge className={colors[severity] || 'bg-muted text-muted-foreground'}>{severity.charAt(0).toUpperCase() + severity.slice(1)}</Badge>;
   };
 
   const formatPrice = (price: number, type: string) => {

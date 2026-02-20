@@ -288,9 +288,9 @@ const EnhancedProjectDiagnostics = () => {
   });
 
   const getHealthColor = (value: number) => {
-    if (value >= 85) return 'text-green-500';
-    if (value >= 70) return 'text-yellow-500';
-    return 'text-red-500';
+    if (value >= 85) return 'text-chart-1';
+    if (value >= 70) return 'text-chart-3';
+    return 'text-destructive';
   };
 
   const getHealthBadgeVariant = (value: number) => {
@@ -301,11 +301,11 @@ const EnhancedProjectDiagnostics = () => {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500 text-white';
-      case 'high': return 'bg-orange-500 text-white';
-      case 'medium': return 'bg-yellow-500 text-black';
-      case 'low': return 'bg-blue-500 text-white';
-      default: return 'bg-gray-500 text-white';
+      case 'critical': return 'bg-destructive/10 text-destructive border-destructive/20';
+      case 'high': return 'bg-chart-4/10 text-chart-4 border-chart-4/20';
+      case 'medium': return 'bg-chart-3/10 text-chart-3 border-chart-3/20';
+      case 'low': return 'bg-chart-2/10 text-chart-2 border-chart-2/20';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -322,9 +322,9 @@ const EnhancedProjectDiagnostics = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Monitor className="h-6 w-6 text-blue-500" />
+          <Monitor className="h-6 w-6 text-primary" />
           <h2 className="text-2xl font-bold">Enhanced Project Diagnostics</h2>
-          <Badge variant="outline" className="bg-blue-50 text-blue-700">
+          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
             Real-time Monitoring
           </Badge>
         </div>
@@ -346,11 +346,11 @@ const EnhancedProjectDiagnostics = () => {
       </div>
 
       {/* Overall Health Score */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+      <Card className="bg-muted/30 border-border">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between">
             <span className="flex items-center gap-2">
-              <Activity className="h-5 w-5 text-blue-500" />
+              <Activity className="h-5 w-5 text-primary" />
               Project Health Score
             </span>
             <Badge variant={getHealthBadgeVariant(projectHealth?.overall || 0)} className="text-lg px-3 py-1">
@@ -396,11 +396,11 @@ const EnhancedProjectDiagnostics = () => {
         <TabsContent value="issues" className="space-y-4">
           <div className="grid gap-4">
             {diagnosticIssues.map((issue) => (
-              <Card key={issue.id} className="border-l-4 border-l-red-500">
+              <Card key={issue.id} className="border-l-4 border-l-destructive">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <AlertTriangle className="h-5 w-5 text-orange-500" />
+                      <AlertTriangle className="h-5 w-5 text-chart-4" />
                       {issue.title}
                     </CardTitle>
                     <div className="flex items-center gap-2">
@@ -413,9 +413,9 @@ const EnhancedProjectDiagnostics = () => {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <p className="text-muted-foreground">{issue.description}</p>
-                  <div className="bg-green-50 p-3 rounded-lg">
-                    <p className="text-sm font-medium text-green-800 mb-1">Recommended Solution:</p>
-                    <p className="text-sm text-green-700">{issue.solution}</p>
+                  <div className="bg-chart-1/10 p-3 rounded-lg">
+                    <p className="text-sm font-medium text-chart-1 mb-1">Recommended Solution:</p>
+                    <p className="text-sm text-chart-1/80">{issue.solution}</p>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-4">
@@ -448,9 +448,9 @@ const EnhancedProjectDiagnostics = () => {
                   <CardTitle className="flex items-center justify-between text-sm">
                     <span>{metric.name}</span>
                     <div className="flex items-center gap-1">
-                      {metric.trend === 'up' && <TrendingUp className="h-4 w-4 text-green-500" />}
-                      {metric.trend === 'down' && <TrendingDown className="h-4 w-4 text-red-500" />}
-                      {metric.trend === 'stable' && <Activity className="h-4 w-4 text-blue-500" />}
+                      {metric.trend === 'up' && <TrendingUp className="h-4 w-4 text-chart-1" />}
+                      {metric.trend === 'down' && <TrendingDown className="h-4 w-4 text-destructive" />}
+                      {metric.trend === 'stable' && <Activity className="h-4 w-4 text-primary" />}
                     </div>
                   </CardTitle>
                 </CardHeader>
@@ -518,7 +518,7 @@ const EnhancedProjectDiagnostics = () => {
                       <XAxis dataKey="name" />
                       <YAxis />
                       <Tooltip />
-                      <Bar dataKey="value" fill="#3b82f6" />
+                      <Bar dataKey="value" fill="hsl(var(--primary))" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -540,7 +540,7 @@ const EnhancedProjectDiagnostics = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-yellow-500" />
+                  <Zap className="h-5 w-5 text-chart-3" />
                   Performance Optimization
                 </CardTitle>
               </CardHeader>
@@ -557,7 +557,7 @@ const EnhancedProjectDiagnostics = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-red-500" />
+                  <Shield className="h-5 w-5 text-destructive" />
                   Security Enhancements
                 </CardTitle>
               </CardHeader>
@@ -574,7 +574,7 @@ const EnhancedProjectDiagnostics = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Code className="h-5 w-5 text-blue-500" />
+                  <Code className="h-5 w-5 text-primary" />
                   Code Quality
                 </CardTitle>
               </CardHeader>
