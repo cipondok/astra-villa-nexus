@@ -99,17 +99,17 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
     switch (type) {
       case 'critical':
       case 'security':
-        return <XCircle className="h-5 w-5 text-red-500" />;
+        return <XCircle className="h-5 w-5 text-destructive" />;
       case 'warning':
-        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+        return <AlertTriangle className="h-5 w-5 text-chart-3" />;
       case 'property_owner_application':
-        return <Home className="h-5 w-5 text-blue-500" />;
+        return <Home className="h-5 w-5 text-chart-2" />;
       case 'vendor_application':
-        return <Building2 className="h-5 w-5 text-purple-500" />;
+        return <Building2 className="h-5 w-5 text-chart-4" />;
       case 'agent_application':
-        return <UserPlus className="h-5 w-5 text-green-500" />;
+        return <UserPlus className="h-5 w-5 text-chart-1" />;
       default:
-        return <Info className="h-5 w-5 text-blue-500" />;
+        return <Info className="h-5 w-5 text-chart-2" />;
     }
   };
 
@@ -129,13 +129,13 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'medium':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+        return 'bg-chart-3/10 text-chart-3 border-chart-3/20';
       case 'low':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+        return 'bg-chart-2/10 text-chart-2 border-chart-2/20';
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -188,7 +188,7 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
                 </div>
               ) : error ? (
                 <div className="text-center py-12">
-                  <div className="text-red-500 mb-2">Error loading notifications</div>
+                  <div className="text-destructive mb-2">Error loading notifications</div>
                   <div className="text-sm text-muted-foreground">
                     {error.message || 'Please check your permissions'}
                   </div>

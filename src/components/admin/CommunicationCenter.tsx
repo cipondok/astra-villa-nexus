@@ -9,15 +9,15 @@ const CommunicationCenter = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
+      <div className="flex items-center justify-between p-3 bg-muted/40 rounded-lg border border-border/50">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-            <MessageSquare className="h-4 w-4 text-white" />
+          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+            <MessageSquare className="h-4 w-4 text-primary" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-bold">Communication Center</h2>
-              <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-400 text-[9px] px-1.5 py-0 h-4">Active</Badge>
+              <Badge className="bg-chart-1/20 text-chart-1 text-[9px] px-1.5 py-0 h-4">Active</Badge>
             </div>
             <p className="text-[10px] text-muted-foreground">Manage communication channels and messaging</p>
           </div>
@@ -30,19 +30,19 @@ const CommunicationCenter = () => {
 
       <Tabs defaultValue="messages" className="space-y-3">
         <TabsList className="grid w-full grid-cols-4 h-8 p-0.5 bg-muted/50">
-          <TabsTrigger value="messages" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-700 dark:data-[state=active]:text-blue-400">
+          <TabsTrigger value="messages" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-chart-2/20 data-[state=active]:text-chart-2">
             <MessageSquare className="h-3 w-3" />
             Messages
           </TabsTrigger>
-          <TabsTrigger value="emails" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-700 dark:data-[state=active]:text-green-400">
+          <TabsTrigger value="emails" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-chart-1/20 data-[state=active]:text-chart-1">
             <Mail className="h-3 w-3" />
             Templates
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">
+          <TabsTrigger value="notifications" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-chart-4/20 data-[state=active]:text-chart-4">
             <Bell className="h-3 w-3" />
             Push
           </TabsTrigger>
-          <TabsTrigger value="broadcasts" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-700 dark:data-[state=active]:text-orange-400">
+          <TabsTrigger value="broadcasts" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-chart-3/20 data-[state=active]:text-chart-3">
             <Radio className="h-3 w-3" />
             Broadcasts
           </TabsTrigger>
@@ -50,11 +50,11 @@ const CommunicationCenter = () => {
 
         <TabsContent value="messages" className="mt-3">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            <Card className="border-blue-200/50 dark:border-blue-800/30">
+            <Card className="border-border/50">
               <CardHeader className="p-3 pb-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
-                    <MessageSquare className="h-3 w-3 text-blue-600" />
+                  <div className="w-6 h-6 bg-chart-2/20 rounded flex items-center justify-center">
+                    <MessageSquare className="h-3 w-3 text-chart-2" />
                   </div>
                   <CardTitle className="text-xs">Recent Messages</CardTitle>
                 </div>
@@ -71,11 +71,11 @@ const CommunicationCenter = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-green-200/50 dark:border-green-800/30">
+            <Card className="border-border/50">
               <CardHeader className="p-3 pb-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
-                    <Users className="h-3 w-3 text-green-600" />
+                  <div className="w-6 h-6 bg-chart-1/20 rounded flex items-center justify-center">
+                    <Users className="h-3 w-3 text-chart-1" />
                   </div>
                   <CardTitle className="text-xs">Statistics</CardTitle>
                 </div>
@@ -88,7 +88,7 @@ const CommunicationCenter = () => {
                   </div>
                   <div className="flex justify-between p-2 bg-muted/30 rounded-lg">
                     <span className="text-[10px]">Response Rate</span>
-                    <span className="text-[10px] font-bold text-green-600">94%</span>
+                    <span className="text-[10px] font-bold text-chart-1">94%</span>
                   </div>
                   <div className="flex justify-between p-2 bg-muted/30 rounded-lg">
                     <span className="text-[10px]">Avg Response Time</span>
@@ -101,11 +101,11 @@ const CommunicationCenter = () => {
         </TabsContent>
 
         <TabsContent value="emails" className="mt-3">
-          <Card className="border-green-200/50 dark:border-green-800/30">
+          <Card className="border-border/50">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
-                  <Mail className="h-3 w-3 text-green-600" />
+                <div className="w-6 h-6 bg-chart-1/20 rounded flex items-center justify-center">
+                  <Mail className="h-3 w-3 text-chart-1" />
                 </div>
                 <CardTitle className="text-xs">Email Templates</CardTitle>
               </div>
@@ -124,11 +124,11 @@ const CommunicationCenter = () => {
         </TabsContent>
 
         <TabsContent value="notifications" className="mt-3">
-          <Card className="border-purple-200/50 dark:border-purple-800/30">
+          <Card className="border-border/50">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
-                  <Bell className="h-3 w-3 text-purple-600" />
+                <div className="w-6 h-6 bg-chart-4/20 rounded flex items-center justify-center">
+                  <Bell className="h-3 w-3 text-chart-4" />
                 </div>
                 <CardTitle className="text-xs">Push Notifications</CardTitle>
               </div>
@@ -142,11 +142,11 @@ const CommunicationCenter = () => {
         </TabsContent>
 
         <TabsContent value="broadcasts" className="mt-3">
-          <Card className="border-orange-200/50 dark:border-orange-800/30">
+          <Card className="border-border/50">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-orange-500/20 rounded flex items-center justify-center">
-                  <Radio className="h-3 w-3 text-orange-600" />
+                <div className="w-6 h-6 bg-chart-3/20 rounded flex items-center justify-center">
+                  <Radio className="h-3 w-3 text-chart-3" />
                 </div>
                 <CardTitle className="text-xs">Broadcast Messages</CardTitle>
               </div>
