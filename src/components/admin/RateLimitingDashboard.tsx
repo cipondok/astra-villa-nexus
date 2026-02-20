@@ -148,8 +148,8 @@ const RateLimitingDashboard: React.FC = () => {
         <Card className="border-border/40">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-orange-500/10">
-                <AlertTriangle className="h-5 w-5 text-orange-500" />
+          <div className="p-2 rounded-lg bg-chart-3/10">
+                <AlertTriangle className="h-5 w-5 text-chart-3" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{totalViolations}</p>
@@ -162,8 +162,8 @@ const RateLimitingDashboard: React.FC = () => {
         <Card className="border-border/40">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-red-500/10">
-                <Shield className="h-5 w-5 text-red-500" />
+          <div className="p-2 rounded-lg bg-destructive/10">
+                <Shield className="h-5 w-5 text-destructive" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{activeBlocks}</p>
@@ -588,7 +588,7 @@ const RateLimitingDashboard: React.FC = () => {
                         </TableCell>
                         <TableCell>
                           {key.is_whitelisted ? (
-                            <Badge className="text-[10px] bg-green-500">Whitelisted</Badge>
+                            <Badge className="text-[10px] bg-chart-1/10 text-chart-1 border-chart-1/30">Whitelisted</Badge>
                           ) : key.is_active ? (
                             <Badge className="text-[10px]">Active</Badge>
                           ) : (
