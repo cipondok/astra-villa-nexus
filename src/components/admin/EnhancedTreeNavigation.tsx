@@ -225,15 +225,11 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
       try {
         const parsed = JSON.parse(savedQuickLinks);
         setQuickLinks(parsed);
-        console.log('Loaded quick links from localStorage:', parsed);
-      } catch (error) {
-        console.error('Error parsing saved quick links:', error);
-        // Reset to empty if corrupted
+      } catch {
         localStorage.removeItem('admin-quick-links');
         setQuickLinks([]);
       }
     } else {
-      console.log('No saved quick links found, initializing with empty array');
       setQuickLinks([]);
     }
   }, []);
@@ -245,11 +241,7 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
 
   useEffect(() => {
     if (quickLinks.length > 0) {
-      console.log('Saving quick links to localStorage:', quickLinks);
       localStorage.setItem('admin-quick-links', JSON.stringify(quickLinks));
-      console.log('Saved to localStorage. Verification:', localStorage.getItem('admin-quick-links'));
-    } else {
-      console.log('Quick links array is empty, not saving to localStorage');
     }
   }, [quickLinks]);
 

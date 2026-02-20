@@ -73,8 +73,7 @@ const WebsiteDesignSettings = () => {
       }
     };
 
-    console.log("Saving design settings:", settings);
-    // Here you would save to your backend/database
+    // Save to backend/database when implemented
   };
 
   return (

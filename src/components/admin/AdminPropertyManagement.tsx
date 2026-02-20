@@ -24,7 +24,6 @@ const AdminPropertyManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleAddProperty = () => {
-    console.log('🆕 Add Property button clicked - switching to add-property tab');
     setActiveTab("add-property");
   };
 

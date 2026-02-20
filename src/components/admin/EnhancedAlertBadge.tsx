@@ -167,7 +167,6 @@ const EnhancedAlertBadge = () => {
   };
 
   const handleAlertClick = () => {
-    console.log('Enhanced alert badge clicked, opening alerts dialog...');
     setShowAlerts(true);
   };
 

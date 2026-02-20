@@ -24,8 +24,8 @@ const SystemReports = () => {
     }
   };
 
-  const generateReport = (type: string) => {
-    console.log(`Generating ${type} report...`);
+  const generateReport = (_type: string) => {
+    // Report generation - implementation pending
   };
 
   return (

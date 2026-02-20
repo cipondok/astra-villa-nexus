@@ -45,14 +45,12 @@ const AdvancedAdminDashboard = () => {
   const { isAdmin } = useAdminCheck();
   const navigate = useNavigate();
 
-  console.log('AdvancedAdminDashboard - Current active tab:', activeTab);
 
   // Handle URL parameters to set initial tab
   React.useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const section = urlParams.get('section');
     if (section) {
-      console.log('Setting active tab from URL:', section);
       const mapped = section === 'vendors-hub' ? 'vendor-management' : section;
       setActiveTab(mapped);
     }
@@ -69,7 +67,6 @@ const AdvancedAdminDashboard = () => {
   }, []);
 
   const handleTabChange = (tab: string) => {
-    console.log('AdvancedAdminDashboard - Tab changed to:', tab);
     const mapped = tab === 'vendors-hub' ? 'vendor-management' : tab;
     setActiveTab(mapped);
   };
@@ -292,7 +289,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <FileText className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>System reports coming soon...</p>
                 </div>
               </CardContent>
@@ -307,7 +304,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Shield className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Shield className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>KYC review system coming soon...</p>
                 </div>
               </CardContent>
@@ -320,7 +317,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <BarChart3 className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>KYC analytics coming soon...</p>
                 </div>
               </CardContent>
@@ -333,7 +330,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Users className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Bulk KYC processing coming soon...</p>
                 </div>
               </CardContent>
@@ -348,7 +345,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Globe className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Globe className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Location management coming soon...</p>
                 </div>
               </CardContent>
@@ -361,7 +358,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <FileText className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Content management system coming soon...</p>
                 </div>
               </CardContent>
@@ -376,7 +373,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Settings className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Settings className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Customer service control panel coming soon...</p>
                 </div>
               </CardContent>
@@ -389,7 +386,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Users className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Contact management coming soon...</p>
                 </div>
               </CardContent>
@@ -402,7 +399,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Feedback system coming soon...</p>
                 </div>
               </CardContent>
@@ -417,7 +414,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <TrendingUp className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <TrendingUp className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Billing management coming soon...</p>
                 </div>
               </CardContent>
@@ -430,7 +427,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Database className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Database className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Payment configuration coming soon...</p>
                 </div>
               </CardContent>
@@ -443,7 +440,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <TrendingUp className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <TrendingUp className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Booking payment management coming soon...</p>
                 </div>
               </CardContent>
@@ -456,7 +453,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Activity className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Activity className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>BPJS API integration coming soon...</p>
                 </div>
               </CardContent>
@@ -471,7 +468,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Blocks className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Blocks className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>AI bot management coming soon...</p>
                 </div>
               </CardContent>
@@ -484,7 +481,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Zap className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Zap className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>AI assistant features coming soon...</p>
                 </div>
               </CardContent>
@@ -497,7 +494,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <FileText className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Document OCR system coming soon...</p>
                 </div>
               </CardContent>
@@ -512,7 +509,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Database className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Database className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Database management tools coming soon...</p>
                 </div>
               </CardContent>
@@ -525,7 +522,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Bell className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Bell className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>SMTP email configuration coming soon...</p>
                 </div>
               </CardContent>
@@ -538,7 +535,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <TrendingUp className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <TrendingUp className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>SEO settings coming soon...</p>
                 </div>
               </CardContent>
@@ -553,7 +550,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Shield className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Shield className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Security monitoring dashboard coming soon...</p>
                 </div>
               </CardContent>
@@ -566,7 +563,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Monitor className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Monitor className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Authentication monitoring coming soon...</p>
                 </div>
               </CardContent>
@@ -579,7 +576,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Alert management system coming soon...</p>
                 </div>
               </CardContent>
@@ -594,7 +591,7 @@ const AdvancedAdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Building className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <Building className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p>Advanced search filters coming soon...</p>
                 </div>
               </CardContent>

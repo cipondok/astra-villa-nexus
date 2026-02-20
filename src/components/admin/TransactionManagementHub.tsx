@@ -190,8 +190,7 @@ const TransactionManagementHub = () => {
         event: '*',
         schema: 'public',
         table: 'unified_transactions'
-      }, (payload) => {
-        console.log('Transaction update:', payload);
+      }, () => {
         fetchTransactions();
         toast.info(language === 'id' ? 'Transaksi diperbarui' : 'Transaction updated');
       })

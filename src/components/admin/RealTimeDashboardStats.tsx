@@ -42,8 +42,8 @@ const RealTimeDashboardStats = () => {
             .from('orders')
             .select('*', { count: 'exact', head: true });
           ordersCount = orderCount || 0;
-        } catch (error) {
-          console.log('Orders table not accessible:', error);
+        } catch {
+          // orders table may not be accessible
         }
 
         try {
@@ -51,8 +51,8 @@ const RealTimeDashboardStats = () => {
             .from('system_error_logs')
             .select('*', { count: 'exact', head: true });
           errorsCount = errorCount || 0;
-        } catch (error) {
-          console.log('System error logs not accessible:', error);
+        } catch {
+          // system_error_logs may not be accessible
         }
 
         // Get active users (users who logged in within last 24 hours)
@@ -65,8 +65,8 @@ const RealTimeDashboardStats = () => {
             .not('user_id', 'is', null);
 
           uniqueActiveUsers = new Set(activeUsers?.map(log => log.user_id) || []).size;
-        } catch (error) {
-          console.log('User activity logs not accessible:', error);
+        } catch {
+          // user_activity_logs may not be accessible
         }
 
         const totalVendors = Math.max(
