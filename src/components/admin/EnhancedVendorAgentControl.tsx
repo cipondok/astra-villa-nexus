@@ -171,13 +171,13 @@ const EnhancedVendorAgentControl = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <Badge className="bg-green-500 text-white">Approved</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/30">Approved</Badge>;
       case 'pending':
-        return <Badge className="bg-yellow-500 text-white">Pending</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/30">Pending</Badge>;
       case 'rejected':
-        return <Badge className="bg-red-500 text-white">Rejected</Badge>;
+        return <Badge variant="destructive">Rejected</Badge>;
       case 'suspended':
-        return <Badge className="bg-red-600 text-white">Suspended</Badge>;
+        return <Badge variant="destructive">Suspended</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -264,7 +264,7 @@ const EnhancedVendorAgentControl = () => {
                   {type === 'vendor' && (
                     <TableCell>
                       <div className="text-sm">Business Profile</div>
-                      <Badge className="bg-blue-500 text-white text-xs">Active</Badge>
+                      <Badge className="bg-chart-2/10 text-chart-2 text-xs">Active</Badge>
                     </TableCell>
                   )}
                   {type === 'agent' && (
@@ -293,7 +293,6 @@ const EnhancedVendorAgentControl = () => {
                             size="sm"
                             variant="default"
                             onClick={() => handleAction('approve', user)}
-                            className="bg-green-600 hover:bg-green-700"
                           >
                             <CheckCircle className="h-3 w-3" />
                           </Button>
@@ -322,7 +321,6 @@ const EnhancedVendorAgentControl = () => {
                           size="sm"
                           variant="default"
                           onClick={() => handleAction('unblock', user)}
-                          className="bg-green-600 hover:bg-green-700"
                         >
                           <UserCheck className="h-3 w-3" />
                         </Button>
