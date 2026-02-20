@@ -496,11 +496,6 @@ const Index = () => {
       {/* Network Status Indicator */}
       <NetworkStatusIndicator onStatusChange={setIsOnline} />
 
-      {/* Sticky Header Search - appears only when main panel scrolls out */}
-      <StickyHeaderSearch 
-        onSearch={handleStickySearch}
-        initialQuery={quickSearch}
-      />
 
       {/* Content Layer - full width edge-to-edge */}
       <div className="relative z-10 min-h-screen pb-20 md:pb-4">
