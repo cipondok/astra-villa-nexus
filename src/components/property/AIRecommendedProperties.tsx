@@ -275,7 +275,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
           </div>
 
           {/* Title */}
-          <h3 className="text-[10px] sm:text-[11px] font-semibold text-foreground truncate leading-snug group-hover/card:text-purple-600 dark:group-hover/card:text-purple-400 transition-colors group-hover/card:whitespace-normal group-hover/card:overflow-visible" title={property.title}>
+          <h3 className="text-[10px] sm:text-[11px] font-semibold text-foreground truncate leading-snug" title={property.title}>
             {property.title}
           </h3>
 
