@@ -207,19 +207,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
                   )}
                 </div>
 
-                {/* Posted By - Verification & Level */}
-                {property.posted_by && (
-                  <div className="flex items-center gap-1 pt-1 border-t border-blue-400/15">
-                    {property.posted_by.avatar_url ? (
-                      <img src={property.posted_by.avatar_url} alt="" className="w-4 h-4 rounded-full object-cover flex-shrink-0" />
-                    ) : (
-                      <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-white text-[7px] font-bold flex-shrink-0">
-                        {property.posted_by.name.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                    {/* Name removed */}
-                  </div>
-                )}
+                {/* Posted By section removed */}
               </div>
             </div>
           );
