@@ -34,15 +34,15 @@ const CSTicketsTable = ({
     switch (status) {
       case 'open':
       case 'new':
-        return <Badge className="bg-blue-500 text-white">Open</Badge>;
+        return <Badge className="bg-chart-4 text-primary-foreground">Open</Badge>;
       case 'in_progress':
       case 'pending':
-        return <Badge className="bg-yellow-500 text-white">In Progress</Badge>;
+        return <Badge className="bg-chart-3 text-primary-foreground">In Progress</Badge>;
       case 'resolved':
       case 'responded':
-        return <Badge className="bg-green-500 text-white">Resolved</Badge>;
+        return <Badge className="bg-chart-1 text-primary-foreground">Resolved</Badge>;
       case 'closed':
-        return <Badge className="bg-gray-500 text-white">Closed</Badge>;
+        return <Badge className="bg-muted text-muted-foreground">Closed</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -51,11 +51,11 @@ const CSTicketsTable = ({
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case 'high':
-        return <Badge className="bg-red-500 text-white">High</Badge>;
+        return <Badge className="bg-destructive text-destructive-foreground">High</Badge>;
       case 'medium':
-        return <Badge className="bg-orange-500 text-white">Medium</Badge>;
+        return <Badge className="bg-chart-3 text-primary-foreground">Medium</Badge>;
       case 'low':
-        return <Badge className="bg-blue-500 text-white">Low</Badge>;
+        return <Badge className="bg-chart-4 text-primary-foreground">Low</Badge>;
       default:
         return <Badge variant="outline">{priority}</Badge>;
     }

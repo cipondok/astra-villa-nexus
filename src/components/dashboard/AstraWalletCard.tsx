@@ -136,7 +136,7 @@ const AstraWalletCard: React.FC<AstraWalletCardProps> = ({ compact = false }) =>
                       : dayData.wasCheckedIn 
                         ? 'bg-emerald-500/20' 
                         : dayData.isPast 
-                          ? 'bg-red-500/10' 
+                          ? 'bg-destructive/10' 
                           : 'bg-muted/30'
                   }`}
                 >
@@ -146,7 +146,7 @@ const AstraWalletCard: React.FC<AstraWalletCardProps> = ({ compact = false }) =>
                       : dayData.wasCheckedIn 
                         ? 'text-emerald-400' 
                         : dayData.isPast 
-                          ? 'text-red-400' 
+                          ? 'text-destructive' 
                           : 'text-muted-foreground'
                   }`}>
                     {dayData.day}
@@ -155,7 +155,7 @@ const AstraWalletCard: React.FC<AstraWalletCardProps> = ({ compact = false }) =>
                     {dayData.wasCheckedIn ? (
                       <CheckCircle2 className="h-3 w-3 text-emerald-400" />
                     ) : dayData.isPast ? (
-                      <span className="text-[8px] text-red-400">-{dayData.missedReward}</span>
+                      <span className="text-[8px] text-destructive">-{dayData.missedReward}</span>
                     ) : dayData.isToday ? (
                       <Sparkles className="h-3 w-3 text-amber-400" />
                     ) : (
@@ -219,12 +219,12 @@ const AstraWalletCard: React.FC<AstraWalletCardProps> = ({ compact = false }) =>
         {/* Stats Grid - Compact */}
         <div className="grid grid-cols-3 gap-1.5">
           <div className="text-center p-1.5 bg-muted/50 rounded-md">
-            <Gift className="h-3 w-3 mx-auto text-blue-500 mb-0.5" />
+            <Gift className="h-3 w-3 mx-auto text-chart-4 mb-0.5" />
             <p className="text-[10px] font-semibold">{formatTokenAmount(walletStats.todayRewards)}</p>
             <p className="text-[8px] text-muted-foreground">Today</p>
           </div>
           <div className="text-center p-1.5 bg-muted/50 rounded-md">
-            <Calendar className="h-3 w-3 mx-auto text-purple-500 mb-0.5" />
+            <Calendar className="h-3 w-3 mx-auto text-accent-foreground mb-0.5" />
             <p className="text-[10px] font-semibold">{formatTokenAmount(walletStats.weekRewards)}</p>
             <p className="text-[8px] text-muted-foreground">Week</p>
           </div>
