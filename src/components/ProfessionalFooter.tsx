@@ -72,8 +72,8 @@ const Dock = ({ items }: { items: DockItem[] }) => {
       className="relative flex items-end gap-1.5 md:gap-2.5 px-3 md:px-5 py-2.5 pt-7 md:pt-9 rounded-2xl
         overflow-x-auto overflow-y-visible md:overflow-visible md:justify-center
         scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
-        bg-background/60 border border-border/50 backdrop-blur-xl
-        shadow-[0_4px_24px_hsl(var(--primary)/0.08)]"
+        bg-muted/40 border border-border/30 backdrop-blur-xl
+        shadow-sm"
     >
       {items.map((item, i) => {
         const scale = scales[i] ?? 1;
