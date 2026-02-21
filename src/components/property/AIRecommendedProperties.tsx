@@ -307,19 +307,6 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
             )}
           </div>
 
-          {/* Posted By - Verification & Level */}
-          {property.posted_by && (
-            <div className="flex items-center gap-1 pt-1 border-t border-purple-400/15">
-              {property.posted_by.avatar_url ? (
-                <img src={property.posted_by.avatar_url} alt="" className="w-4 h-4 rounded-full object-cover flex-shrink-0" />
-              ) : (
-                <div className="w-4 h-4 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-[7px] font-bold flex-shrink-0">
-                  {property.posted_by.name.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <span className="text-[9px] text-foreground/70 font-medium truncate">{property.posted_by.name}</span>
-            </div>
-          )}
         </div>
       </div>
     );
