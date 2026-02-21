@@ -56,10 +56,10 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
       features: t.wniFeatures,
       flag: '🇮🇩',
       gradient: 'from-red-500 via-red-600 to-orange-500',
-      accentColor: 'text-red-500 dark:text-red-400',
-      bgColor: 'bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/40 dark:to-orange-900/30',
-      borderColor: 'border-red-200/60 dark:border-red-500/30',
-      hoverBorder: 'hover:border-red-400 dark:hover:border-red-400/60'
+      accentColor: 'text-red-400',
+      bgColor: 'bg-gradient-to-br from-red-500/30 to-orange-500/20',
+      borderColor: 'border-red-400/30',
+      hoverBorder: 'hover:border-red-400/60'
     },
     {
       id: 'wna',
@@ -70,10 +70,10 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
       features: t.wnaFeatures,
       flag: '🌍',
       gradient: 'from-blue-500 via-blue-600 to-indigo-500',
-      accentColor: 'text-blue-500 dark:text-blue-400',
-      bgColor: 'bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/30',
-      borderColor: 'border-blue-200/60 dark:border-blue-500/30',
-      hoverBorder: 'hover:border-blue-400 dark:hover:border-blue-400/60'
+      accentColor: 'text-blue-400',
+      bgColor: 'bg-gradient-to-br from-blue-500/30 to-indigo-500/20',
+      borderColor: 'border-blue-400/30',
+      hoverBorder: 'hover:border-blue-400/60'
     }
   ];
 
@@ -280,11 +280,11 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
               </div>
             </div>
             <div className="text-left">
-              <h2 className="text-sm md:text-base font-bold text-foreground dark:text-white flex items-center gap-1.5">
+              <h2 className="text-sm md:text-base font-bold text-white flex items-center gap-1.5">
                 {t.headline}
-                <TrendingUp className="h-3.5 w-3.5 text-green-500" />
+                <TrendingUp className="h-3.5 w-3.5 text-green-400" />
               </h2>
-              <p className="text-[9px] md:text-[10px] text-muted-foreground dark:text-white/60">
+              <p className="text-[9px] md:text-[10px] text-white/70">
                 {t.subtitle}
               </p>
             </div>
@@ -331,10 +331,10 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                       <span className="text-lg">{item.flag}</span>
                       <Shield className="h-3.5 w-3.5 text-green-500" />
                     </div>
-                    <h3 className="text-xs sm:text-sm font-bold text-foreground dark:text-white group-hover:text-primary transition-colors">
+                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-gold-primary transition-colors">
                       {item.title}
                     </h3>
-                    <p className="text-[9px] sm:text-[10px] text-muted-foreground dark:text-white/60">
+                    <p className="text-[9px] sm:text-[10px] text-white/70">
                       {item.description}
                     </p>
                   </div>
@@ -353,7 +353,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                       key={idx}
                       className={cn(
                         "px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-medium",
-                        "border border-border/30",
+                        "border border-white/20",
                         item.accentColor
                       )}
                     >
