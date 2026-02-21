@@ -504,50 +504,53 @@ const Index = () => {
         <section className="relative w-full" id="hero-section" style={{ contain: 'layout' }}>
           {/* Hero Banner Image - explicit width/height & aspect-ratio prevents CLS */}
           <div
-            className="w-full overflow-hidden"
+            className="w-full overflow-hidden relative"
             style={{ aspectRatio: '1920/600', minHeight: '200px' }}
           >
             <img 
               src={astraHeroBanner} 
               alt="Astra Villa - Indonesia's Smart Property Platform" 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover animate-[scale-in_1.2s_ease-out]"
               fetchPriority="high"
               decoding="sync"
               width={1920}
               height={600}
               style={{ display: 'block' }}
             />
+            {/* Subtle vignette overlay for depth */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30 pointer-events-none" />
           </div>
           
-          {/* Bottom gradient fade into next section - using CSS var to prevent CLS */}
-          <div className="absolute bottom-0 left-0 right-0 h-8 sm:h-12 bg-gradient-to-t from-[hsl(210,55%,25%)] dark:from-[hsl(210,55%,8%)] to-transparent pointer-events-none" />
+          {/* Bottom gradient fade into next section */}
+          <div className="absolute bottom-0 left-0 right-0 h-12 sm:h-16 bg-gradient-to-t from-[hsl(210,55%,25%)] dark:from-[hsl(210,55%,8%)] to-transparent pointer-events-none" />
         </section>
 
         {/* Search Section - Blue themed */}
         <section className="w-full bg-gradient-to-b from-[hsl(210,55%,25%)] via-[hsl(210,50%,30%)] to-[hsl(210,45%,35%)] dark:from-[hsl(210,55%,8%)] dark:via-[hsl(210,50%,10%)] dark:to-[hsl(210,45%,12%)] py-4 sm:py-6 md:py-8">
           <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
             {/* AI Badge */}
-            <div className="text-center mb-3 sm:mb-4 animate-in fade-in-50 duration-500">
+            <div className="text-center mb-4 sm:mb-5">
               <div className={cn(
-                "inline-flex items-center gap-1.5 mb-2 sm:mb-3",
-                "px-3 py-1 sm:px-4 sm:py-1.5",
-                "bg-gold-primary",
-                "rounded-full border border-gold-primary/40",
-                "shadow-lg shadow-gold-primary/30"
+                "inline-flex items-center gap-1.5 mb-3 sm:mb-4",
+                "px-4 py-1.5 sm:px-5 sm:py-2",
+                "bg-gold-primary/90 backdrop-blur-sm",
+                "rounded-full border border-gold-primary/50",
+                "shadow-lg shadow-gold-primary/25",
+                "animate-in fade-in-50 slide-in-from-bottom-2 duration-700"
               )}>
-                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-foreground" />
-                <span className="text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wide">
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-foreground animate-pulse" />
+                <span className="text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-widest">
                   AI-Powered Search
                 </span>
               </div>
               
-              <h2 className="text-lg sm:text-xl md:text-3xl lg:text-4xl font-extrabold leading-tight mb-1 sm:mb-2">
-                <span className="bg-gradient-to-r from-[hsl(48,100%,55%)] via-[hsl(0,0%,100%)] to-[hsl(200,100%,70%)] bg-clip-text text-transparent drop-shadow-lg">
+              <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black leading-tight mb-2 sm:mb-3 animate-in fade-in-50 slide-in-from-bottom-3 duration-700 delay-150">
+                <span className="bg-gradient-to-r from-[hsl(48,100%,60%)] via-[hsl(0,0%,100%)] to-[hsl(200,100%,75%)] bg-clip-text text-transparent drop-shadow-lg">
                   {t.findYour}
                 </span>
               </h2>
-              <p className="flex text-xs sm:text-sm md:text-base text-white/80 items-center justify-center gap-1.5 font-medium">
-                <Search className="h-3 w-3 sm:h-4 sm:w-4" />
+              <p className="flex text-xs sm:text-sm md:text-base text-white/70 items-center justify-center gap-2 font-medium animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-300">
+                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/50" />
                 {t.searchPowered}
               </p>
             </div>
