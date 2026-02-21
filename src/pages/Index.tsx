@@ -505,53 +505,55 @@ const Index = () => {
           {/* Hero Banner Image */}
           <div
             className="w-full overflow-hidden relative"
-            style={{ aspectRatio: '1920/600', minHeight: '200px' }}
+            style={{ aspectRatio: '1920/600', minHeight: '220px' }}
           >
             <img 
               src={astraHeroBanner} 
               alt="Astra Villa - Indonesia's Smart Property Platform" 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover brightness-105 saturate-105"
               fetchPriority="high"
               decoding="sync"
               width={1920}
               height={600}
               style={{ display: 'block' }}
             />
-            {/* Cinematic overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/40 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-black/10 pointer-events-none" />
+            {/* Cinematic overlays - layered for depth */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/15 via-transparent to-black/15 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-hero-from via-hero-from/20 to-transparent pointer-events-none" />
           </div>
           
           {/* Seamless fade into search section */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-24 bg-gradient-to-t from-hero-from to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-20 sm:h-28 bg-gradient-to-t from-hero-from via-hero-from/80 to-transparent pointer-events-none" />
         </section>
 
         {/* Search Section */}
-        <section className="w-full bg-gradient-to-b from-hero-from via-hero-via to-hero-to py-4 sm:py-6 md:py-8">
+        <section className="w-full bg-gradient-to-b from-hero-from via-hero-via to-hero-to py-5 sm:py-7 md:py-10">
           <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
             {/* AI Badge */}
-            <div className="text-center mb-4 sm:mb-5">
+            <div className="text-center mb-5 sm:mb-6">
               <div className={cn(
-                "inline-flex items-center gap-1.5 mb-3 sm:mb-4",
-                "px-4 py-1.5 sm:px-5 sm:py-2",
-                "bg-primary-foreground/10 backdrop-blur-md",
-                "rounded-full border border-primary-foreground/15",
-                "shadow-sm",
+                "inline-flex items-center gap-2 mb-3 sm:mb-4",
+                "px-4 py-1.5 sm:px-6 sm:py-2",
+                "bg-primary-foreground/8 backdrop-blur-xl",
+                "rounded-full border border-gold-primary/25",
+                "shadow-[0_0_20px_-5px_hsl(var(--gold-primary)/0.15)]",
                 "animate-in fade-in-50 slide-in-from-bottom-2 duration-700"
               )}>
                 <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
-                <span className="text-[10px] sm:text-xs font-semibold text-primary-foreground/90 uppercase tracking-widest">
+                <span className="text-[10px] sm:text-xs font-semibold text-gold-primary/90 uppercase tracking-[0.2em]">
                   AI-Powered Search
                 </span>
+                <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
               </div>
               
-              <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black leading-tight mb-2 sm:mb-3 animate-in fade-in-50 slide-in-from-bottom-3 duration-700 delay-150">
-                <span className="bg-gradient-to-r from-primary-foreground via-primary-foreground/95 to-primary-foreground/80 bg-clip-text text-transparent drop-shadow-lg">
+              <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black leading-[1.1] mb-2.5 sm:mb-3 animate-in fade-in-50 slide-in-from-bottom-3 duration-700 delay-150">
+                <span className="bg-gradient-to-r from-primary-foreground via-primary-foreground to-primary-foreground/70 bg-clip-text text-transparent drop-shadow-lg">
                   {t.findYour}
                 </span>
               </h2>
-              <p className="flex text-xs sm:text-sm md:text-base text-primary-foreground/50 items-center justify-center gap-2 font-medium animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-300">
-                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary-foreground/40" />
+              <p className="flex text-xs sm:text-sm md:text-base text-primary-foreground/45 items-center justify-center gap-2 font-medium tracking-wide animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-300">
+                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary-foreground/35" />
                 {t.searchPowered}
               </p>
             </div>
@@ -581,13 +583,15 @@ const Index = () => {
           </div>
 
           {/* Featured Properties Slideshow */}
-          <div className="w-full mt-4 md:mt-6">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Star className="h-3 w-3 md:h-4 md:w-4 text-gold-primary fill-gold-primary/50" />
-              <h3 className="text-xs md:text-sm font-semibold text-primary-foreground">
+          <div className="w-full mt-5 md:mt-8">
+            <div className="flex items-center justify-center gap-2.5 mb-3">
+              <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent to-gold-primary/40" />
+              <Star className="h-3 w-3 md:h-3.5 md:w-3.5 text-gold-primary fill-gold-primary/40" />
+              <h3 className="text-[11px] md:text-sm font-semibold text-primary-foreground/80 uppercase tracking-widest">
                 {t.featuredProperties}
               </h3>
-              <Star className="h-3 w-3 md:h-4 md:w-4 text-gold-primary fill-gold-primary/50" />
+              <Star className="h-3 w-3 md:h-3.5 md:w-3.5 text-gold-primary fill-gold-primary/40" />
+              <div className="h-px w-8 sm:w-12 bg-gradient-to-l from-transparent to-gold-primary/40" />
             </div>
             <Suspense fallback={
               <div className="flex gap-2 px-3 overflow-hidden justify-center">
