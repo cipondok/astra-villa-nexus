@@ -61,9 +61,9 @@ const LEVEL_CONFIG: Record<string, {label: string; shieldColor: string; shieldLi
 };
 
 const SIZE_MAP = {
-  xs: { width: 20, height: 23, logoSize: 18, logoY: 4, fontSize: "text-[8px]", gap: "gap-0.5" },
-  sm: { width: 26, height: 30, logoSize: 22, logoY: 5, fontSize: "text-[9px]", gap: "gap-1" },
-  md: { width: 32, height: 36, logoSize: 28, logoY: 6, fontSize: "text-[10px]", gap: "gap-1" }
+  xs: { width: 22, height: 26, logoSize: 13, logoY: 6, fontSize: "text-[8px]", gap: "gap-0.5" },
+  sm: { width: 28, height: 32, logoSize: 16, logoY: 8, fontSize: "text-[9px]", gap: "gap-1" },
+  md: { width: 34, height: 40, logoSize: 20, logoY: 9, fontSize: "text-[10px]", gap: "gap-1" }
 };
 
 const getLevelConfig = (level?: string) => {
@@ -75,14 +75,16 @@ const getLevelConfig = (level?: string) => {
   return null;
 };
 
-// 3D Shield with embedded logo
-const Shield3DIcon = ({ color, lightColor, darkColor, width, height, logoUrl, logoSize, logoY }: {
+// 3D Shield with embedded logo — checkmark color matches shield tier
+const Shield3DIcon = ({ color, lightColor, darkColor, width, height, logoUrl, logoSize, logoY, checkColor }: {
   color: string; lightColor: string; darkColor: string;
   width: number; height: number; logoUrl: string; logoSize: number; logoY: number;
+  checkColor: string;
 }) => {
-  const gradId = `shield-grad-${color.replace('#', '')}`;
-  const glossId = `shield-gloss-${color.replace('#', '')}`;
-  const shadowId = `shield-shadow-${color.replace('#', '')}`;
+  const uid = color.replace(/[^a-zA-Z0-9]/g, '');
+  const gradId = `sg-${uid}`;
+  const glossId = `sgl-${uid}`;
+  const shadowId = `ss-${uid}`;
 
   return (
     <svg
@@ -90,72 +92,61 @@ const Shield3DIcon = ({ color, lightColor, darkColor, width, height, logoUrl, lo
       viewBox="0 0 32 38"
       width={width}
       height={height}
-      style={{ display: 'block', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.25))' }}
+      style={{ display: 'block', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }}
     >
       <defs>
-        {/* 3D gradient */}
         <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor={lightColor} />
-          <stop offset="50%" stopColor={color} />
+          <stop offset="45%" stopColor={color} />
           <stop offset="100%" stopColor={darkColor} />
         </linearGradient>
-        {/* Gloss highlight */}
         <linearGradient id={glossId} x1="0.5" y1="0" x2="0.5" y2="1">
-          <stop offset="0%" stopColor="white" stopOpacity="0.45" />
-          <stop offset="50%" stopColor="white" stopOpacity="0.08" />
+          <stop offset="0%" stopColor="white" stopOpacity="0.5" />
+          <stop offset="40%" stopColor="white" stopOpacity="0.1" />
           <stop offset="100%" stopColor="white" stopOpacity="0" />
         </linearGradient>
-        {/* Inner shadow */}
         <radialGradient id={shadowId} cx="0.5" cy="1" r="0.7">
-          <stop offset="0%" stopColor="black" stopOpacity="0.15" />
+          <stop offset="0%" stopColor="black" stopOpacity="0.2" />
           <stop offset="100%" stopColor="black" stopOpacity="0" />
         </radialGradient>
       </defs>
 
-      {/* Shield base - 3D shape */}
+      {/* Shield */}
       <path
         d="M16 1L2 7v11c0 9.5 6.2 17.4 14 19.5 7.8-2.1 14-10 14-19.5V7L16 1z"
         fill={`url(#${gradId})`}
         stroke={darkColor}
         strokeWidth="0.8"
       />
-
-      {/* Gloss overlay for 3D effect */}
       <path
         d="M16 1L2 7v11c0 9.5 6.2 17.4 14 19.5 7.8-2.1 14-10 14-19.5V7L16 1z"
         fill={`url(#${glossId})`}
       />
-
-      {/* Bottom shadow for depth */}
       <path
         d="M16 1L2 7v11c0 9.5 6.2 17.4 14 19.5 7.8-2.1 14-10 14-19.5V7L16 1z"
         fill={`url(#${shadowId})`}
       />
 
-      {/* Edge highlight - left */}
-      <path
-        d="M3 7.5L16 2v35c-7-2-13-10-13-19V7.5z"
-        fill="white"
-        opacity="0.08"
-      />
+      {/* White circle background for logo */}
+      <circle cx="16" cy={logoY + logoSize / 2} r={logoSize / 2 + 1.5} fill="white" opacity="0.9" />
 
-      {/* Logo image - no background, transparent */}
+      {/* Logo */}
       <image
         href={logoUrl}
         x={16 - logoSize / 2}
         y={logoY}
         width={logoSize}
         height={logoSize}
+        preserveAspectRatio="xMidYMid meet"
       />
 
-      {/* Checkmark at bottom */}
-      <circle cx="24" cy="28" r="5" fill="white" />
-      <circle cx="24" cy="28" r="4" fill="#22c55e" />
-      <path d="M22 28l1.5 1.5 3-3" stroke="white" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Checkmark badge — color matches tier */}
+      <circle cx="25" cy="30" r="5" fill="white" />
+      <circle cx="25" cy="30" r="4" fill={checkColor} />
+      <path d="M23 30l1.5 1.5 3-3" stroke="white" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 };
-
 const BrandedStatusBadge = ({
   verificationStatus,
   userLevel,
@@ -170,6 +161,7 @@ const BrandedStatusBadge = ({
   const shieldColor = levelConfig?.shieldColor || "#2563eb";
   const shieldLight = levelConfig?.shieldLight || "#60a5fa";
   const shieldDark = levelConfig?.shieldDark || "#1d4ed8";
+  const checkColor = levelConfig?.shieldColor || "#22c55e";
   const tooltipLabel = levelConfig
     ? `Verified · ${levelConfig.label}`
     : statusConfig.label;
@@ -191,6 +183,7 @@ const BrandedStatusBadge = ({
         logoUrl={brandLogo}
         logoSize={sizeConfig.logoSize}
         logoY={sizeConfig.logoY}
+        checkColor={checkColor}
       />
       {size !== "xs" && (
         <span className={cn(
