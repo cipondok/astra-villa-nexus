@@ -199,7 +199,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
                       <span className="text-[8px] text-sky-500/70 dark:text-sky-400/70 font-bold">KM</span>
                     </div>
                   )}
-                  {property.area_sqm && (
+                  {Number(property.area_sqm) > 0 && (
                     <div className="flex items-center gap-0.5 bg-gradient-to-br from-amber-500/15 to-orange-500/15 border border-amber-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-amber-500/10">
                       <Maximize className="h-2.5 w-2.5 text-amber-500 dark:text-amber-400" />
                       <span className="text-[10px] font-bold text-foreground/80">{property.area_sqm}m²</span>
