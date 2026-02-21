@@ -178,19 +178,19 @@ const PropertyDetailModal = ({
                     <>
                       <button
                         onClick={() => handleImageNavigation('prev')}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 text-white p-3 rounded-full hover:bg-black/80 transition-all"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/60 backdrop-blur-sm text-foreground p-3 rounded-full hover:bg-background/80 transition-all"
                       >
                         ←
                       </button>
                       <button
                         onClick={() => handleImageNavigation('next')}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 text-white p-3 rounded-full hover:bg-black/80 transition-all"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/60 backdrop-blur-sm text-foreground p-3 rounded-full hover:bg-background/80 transition-all"
                       >
                         →
                       </button>
                       
                       {/* Image Counter */}
-                      <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+                      <div className="absolute bottom-4 right-4 bg-background/60 backdrop-blur-sm text-foreground px-3 py-1 rounded-full text-sm">
                         {currentImageIndex + 1} / {imageUrls.length}
                       </div>
                     </>
@@ -198,7 +198,7 @@ const PropertyDetailModal = ({
 
                   {/* Property Type Badge */}
                   <div className="absolute top-4 left-4">
-                    <Badge variant="secondary" className="bg-white/90 text-black">
+                    <Badge variant="secondary" className="bg-card/90 backdrop-blur-sm text-foreground">
                       {getListingTypeLabel(property.listing_type)}
                     </Badge>
                   </div>
@@ -212,7 +212,7 @@ const PropertyDetailModal = ({
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
                         className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                          index === currentImageIndex ? 'border-primary' : 'border-transparent'
+                          index === currentImageIndex ? 'border-gold-primary' : 'border-transparent'
                         }`}
                       >
                         <img src={url} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
