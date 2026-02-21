@@ -59,29 +59,29 @@ const ApplicationStatusBar = () => {
       case 'pending':
         return {
           icon: Clock,
-          color: 'text-yellow-600',
-          bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
+          color: 'text-chart-3',
+          bgColor: 'bg-chart-3/10',
           label: 'Pending'
         };
       case 'under_review':
         return {
           icon: AlertCircle,
-          color: 'text-blue-600',
-          bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+          color: 'text-chart-4',
+          bgColor: 'bg-chart-4/10',
           label: 'Reviewing'
         };
       case 'approved':
         return {
           icon: CheckCircle,
-          color: 'text-green-600',
-          bgColor: 'bg-green-50 dark:bg-green-900/20',
+          color: 'text-chart-1',
+          bgColor: 'bg-chart-1/10',
           label: 'Approved'
         };
       case 'rejected':
         return {
           icon: XCircle,
-          color: 'text-red-600',
-          bgColor: 'bg-red-50 dark:bg-red-900/20',
+          color: 'text-destructive',
+          bgColor: 'bg-destructive/10',
           label: 'Rejected'
         };
       default:
@@ -126,15 +126,15 @@ const ApplicationStatusBar = () => {
     return (
       <button
         onClick={() => setIsExpanded(true)}
-        className="w-full flex items-center justify-between p-2 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-[10px] hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
+        className="w-full flex items-center justify-between p-2 rounded-lg bg-chart-1/10 border border-chart-1/20 text-[10px] hover:bg-chart-1/15 transition-colors"
       >
         <div className="flex items-center gap-1.5">
-          <CheckCircle className="h-3 w-3 text-green-600" />
-          <span className="text-green-700 dark:text-green-300 font-medium">
+          <CheckCircle className="h-3 w-3 text-chart-1" />
+          <span className="text-chart-1 font-medium">
             {applications.length} Application{applications.length > 1 ? 's' : ''} Approved
           </span>
         </div>
-        <ChevronDown className="h-3 w-3 text-green-600" />
+        <ChevronDown className="h-3 w-3 text-chart-1" />
       </button>
     );
   }
@@ -142,7 +142,7 @@ const ApplicationStatusBar = () => {
   return (
     <div className={cn(
       "rounded-lg border overflow-hidden",
-      allApproved ? "border-green-200 dark:border-green-800" : "border-primary/20"
+      allApproved ? "border-chart-1/20" : "border-primary/20"
     )}>
       {/* Compact Header */}
       <button
@@ -150,7 +150,7 @@ const ApplicationStatusBar = () => {
         className={cn(
           "w-full flex items-center justify-between p-2 text-[10px]",
           allApproved 
-            ? "bg-green-50 dark:bg-green-900/20" 
+            ? "bg-chart-1/10" 
             : "bg-gradient-to-r from-primary/5 to-accent/5"
         )}
       >
@@ -197,7 +197,7 @@ const ApplicationStatusBar = () => {
                       variant="secondary"
                       className={cn(
                         "text-[8px] h-3.5 px-1",
-                        isApproved && "bg-green-500 text-white"
+                        isApproved && "bg-chart-1 text-primary-foreground"
                       )}
                     >
                       <StatusIcon className="h-2 w-2 mr-0.5" />
@@ -205,7 +205,7 @@ const ApplicationStatusBar = () => {
                     </Badge>
                   </div>
                   {isApproved ? (
-                    <p className="text-[9px] text-green-600 dark:text-green-400 truncate">
+                    <p className="text-[9px] text-chart-1 truncate">
                       ✓ Access granted
                     </p>
                   ) : (
@@ -219,7 +219,7 @@ const ApplicationStatusBar = () => {
                   <Button
                     variant="default"
                     size="sm"
-                    className="h-6 px-2 text-[9px] bg-green-600 hover:bg-green-700"
+                    className="h-6 px-2 text-[9px] bg-chart-1 hover:bg-chart-1/90"
                     onClick={async () => {
                       await queryClient.invalidateQueries({ queryKey: ['user-roles', user?.id] });
                       navigate(typeConfig.route);
