@@ -226,7 +226,7 @@ const PropertySlideshow = () => {
                 <div className="p-2.5 space-y-1.5">
                   {/* Price */}
                   <div className="border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
-                    <div className="flex items-baseline gap-1 flex-wrap">
+                    <div className="flex items-baseline gap-1 flex-nowrap">
                       <span className="text-sm font-black text-primary tracking-tight">{priceInfo.main}</span>
                       {priceInfo.suffix && (
                         <span className="text-xs font-extrabold text-primary/70">{priceInfo.suffix}</span>
