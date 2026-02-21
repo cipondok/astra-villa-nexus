@@ -379,8 +379,8 @@ const PropertyDetail: React.FC = () => {
         {/* Loading content */}
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="text-center">
-            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 animate-pulse">
-              <Building2 className="h-8 w-8 text-primary" />
+            <div className="h-16 w-16 rounded-full bg-gold-primary/10 flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <Building2 className="h-8 w-8 text-gold-primary" />
             </div>
             <h3 className="text-sm font-semibold mb-1">Memuat Detail Properti...</h3>
             <p className="text-xs text-muted-foreground">Mohon tunggu sebentar</p>
@@ -528,7 +528,7 @@ const PropertyDetail: React.FC = () => {
                 
               <Button 
                 size="sm"
-                className="flex-shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white border-0 h-9 px-4 text-xs font-semibold shadow-sm"
+                className="flex-shrink-0 bg-emerald-600 hover:bg-emerald-700 text-background border-0 h-9 px-4 text-xs font-semibold shadow-sm"
                 onClick={() => {
                   if (user && property.posted_by?.whatsapp_number) {
                     window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
@@ -1116,7 +1116,7 @@ const PropertyDetail: React.FC = () => {
                     {/* Contact Buttons - Slim */}
                     <div className="space-y-1.5">
                       <Button 
-                        className="w-full bg-green-500 hover:bg-green-600 text-white h-8 text-[10px] sm:text-xs font-medium rounded-lg active:scale-95 transition-transform"
+                        className="w-full bg-chart-1 hover:bg-chart-1/90 text-background h-8 text-[10px] sm:text-xs font-medium rounded-lg active:scale-95 transition-transform"
                         onClick={() => {
                           if (user && property.posted_by?.whatsapp_number) {
                             window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, interested in ${property.title}`, '_blank');
