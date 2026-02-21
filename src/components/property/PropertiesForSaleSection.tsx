@@ -8,8 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import UserStatusBadge from "@/components/ui/UserStatusBadge";
-import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
+import BrandedStatusBadge from "@/components/ui/BrandedStatusBadge";
 
 interface PropertiesForSaleSectionProps {
   language: "en" | "id";
@@ -225,8 +224,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                       </div>
                     )}
                     <span className="text-[9px] text-foreground/70 font-medium truncate">{property.posted_by.name}</span>
-                    <UserStatusBadge status={property.posted_by.verification_status} size="xs" />
-                    <VIPLevelBadge level={property.posted_by.user_level} size="xs" />
+                    <BrandedStatusBadge verificationStatus={property.posted_by.verification_status} userLevel={property.posted_by.user_level} size="xs" />
                   </div>
                 )}
               </div>
