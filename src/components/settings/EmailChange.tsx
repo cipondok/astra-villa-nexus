@@ -80,7 +80,7 @@ export const EmailChange = () => {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-1.5 mb-1">
-        <Mail className="h-3.5 w-3.5 text-blue-500" />
+        <Mail className="h-3.5 w-3.5 text-chart-2" />
         <span className="text-xs font-semibold">Email</span>
       </div>
       
@@ -103,7 +103,7 @@ export const EmailChange = () => {
           {error && <p className="text-[10px] text-destructive mt-0.5">{error}</p>}
         </div>
 
-        <div className="flex items-start gap-1 p-1.5 rounded-md bg-blue-500/5 border border-blue-500/20 text-[10px] text-blue-600 dark:text-blue-400">
+        <div className="flex items-start gap-1 p-1.5 rounded-md bg-chart-2/5 border border-chart-2/20 text-[10px] text-chart-2">
           <AlertCircle className="h-3 w-3 flex-shrink-0 mt-0.5" />
           <span>Verify from both old & new email</span>
         </div>

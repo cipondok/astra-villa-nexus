@@ -35,8 +35,8 @@ export const TwoFactorAuth = () => {
       <Card className="professional-card border p-2">
         <div className="flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-1.5">
-            <div className="w-6 h-6 rounded-md bg-blue-500/10 flex items-center justify-center">
-              <Shield className="h-3 w-3 text-blue-500" />
+            <div className="w-6 h-6 rounded-md bg-chart-2/10 flex items-center justify-center">
+              <Shield className="h-3 w-3 text-chart-2" />
             </div>
             <div>
               <p className="text-xs font-semibold">2FA</p>
@@ -44,7 +44,7 @@ export const TwoFactorAuth = () => {
             </div>
           </div>
           {settings?.is_enabled ? (
-            <Badge className="text-[10px] h-4 px-1.5 bg-green-500/10 text-green-600 border-green-500/20">
+            <Badge className="text-[10px] h-4 px-1.5 bg-chart-1/10 text-chart-1 border-chart-1/20">
               <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />On
             </Badge>
           ) : (
@@ -56,9 +56,9 @@ export const TwoFactorAuth = () => {
         
         {settings?.is_enabled ? (
           <div className="space-y-1.5">
-            <div className="flex items-center gap-1.5 p-1.5 rounded-md bg-green-500/5 border border-green-500/20">
-              <Lock className="h-3 w-3 text-green-500" />
-              <span className="text-[10px] text-green-700 dark:text-green-300">
+            <div className="flex items-center gap-1.5 p-1.5 rounded-md bg-chart-1/5 border border-chart-1/20">
+              <Lock className="h-3 w-3 text-chart-1" />
+              <span className="text-[10px] text-chart-1">
                 Protected via {settings.method === 'both' ? 'SMS + App' : settings.method === 'sms' ? 'SMS' : 'App'}
               </span>
             </div>
