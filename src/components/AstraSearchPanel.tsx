@@ -2483,7 +2483,7 @@ const AstraSearchPanel = ({
       <div className="relative bg-transparent overflow-visible rounded-none border-b border-white/10 dark:border-white/5">
         {/* Subtle top shine line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/20 pointer-events-none" />
-        <div className={cn("relative space-y-1.5 overflow-visible bg-card/90 dark:bg-card/95 backdrop-blur-xl border border-border/60 dark:border-border/50 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
+        <div className={cn("relative space-y-1.5 overflow-visible bg-card/95 backdrop-blur-xl border border-border/40 rounded-2xl shadow-lg", isMobile ? "p-1.5" : "p-2.5 lg:p-3.5 xl:p-4")}>
           
           {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
           <div className="flex justify-center">
@@ -2593,8 +2593,8 @@ const AstraSearchPanel = ({
                   }
                 }}
                 className={cn(
-                  "w-full bg-white/90 dark:bg-white/10 border border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all duration-300 shadow-sm font-medium",
-                  "text-foreground placeholder:text-muted-foreground/60",
+                  "w-full bg-background/90 border border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/15 rounded-xl transition-all duration-300 shadow-sm font-medium",
+                  "text-foreground placeholder:text-muted-foreground/50",
                   isMobile ? "pl-8 pr-24 h-10 text-xs" : "pl-11 pr-32 h-11 text-sm"
                 )} 
               />
@@ -3286,30 +3286,22 @@ const AstraSearchPanel = ({
               </span>
             </button>
             
-            {/* Search Button - Original Style with Gradient Border Effect */}
-            <div className="relative group p-[1.5px] rounded-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-gradient-x transition-all duration-500 hover:shadow-lg hover:shadow-primary/30">
-              <button
-                onClick={handleSearch}
-                aria-label={currentText.search}
-                className={cn(
-                  "group inline-flex items-center justify-center rounded-full font-semibold transition-all duration-300 ease-out",
-                  "bg-gradient-to-r from-violet-600 via-fuchsia-500 to-cyan-400",
-                  "hover:from-violet-500 hover:via-fuchsia-400 hover:to-cyan-300",
-                  "hover:scale-105 hover:-translate-y-0.5",
-                  "text-white shadow-lg shadow-fuchsia-500/40 hover:shadow-xl hover:shadow-fuchsia-400/50",
-                  "active:scale-95 active:shadow-md",
-                  "relative overflow-hidden",
-                  isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-10 px-6 text-sm gap-2"
-                )}
-              >
-                {/* Animated shimmer overlay */}
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none rounded-full" />
-                {/* Glossy shine overlay */}
-                <span className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent pointer-events-none rounded-full" />
-                <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "relative z-10 transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]")} />
-                <span className="font-medium relative z-10 drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]">{currentText.search}</span>
-              </button>
-            </div>
+            {/* Search Button */}
+            <button
+              onClick={handleSearch}
+              aria-label={currentText.search}
+              className={cn(
+                "inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-300 ease-out",
+                "bg-primary hover:bg-primary/90",
+                "hover:scale-[1.02] hover:-translate-y-0.5",
+                "text-primary-foreground shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30",
+                "active:scale-95 active:shadow-sm",
+                isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-10 px-6 text-sm gap-2"
+              )}
+            >
+              <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
+              <span className="font-medium">{currentText.search}</span>
+            </button>
           </div>
           
           {/* Recent Image Searches - Desktop */}
@@ -3541,8 +3533,8 @@ const AstraSearchPanel = ({
             onTouchStart={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
             className={cn(
-              "fixed z-[99999] rounded-2xl shadow-2xl shadow-primary/30 flex flex-col",
-              "glass-popup backdrop-blur-2xl border-primary/20",
+              "fixed z-[99999] rounded-2xl shadow-2xl flex flex-col",
+              "bg-popover/95 backdrop-blur-2xl border border-border/40",
               "touch-none select-none",
               isMobile 
                 ? "inset-x-2 top-16 bottom-4" 
@@ -3555,7 +3547,7 @@ const AstraSearchPanel = ({
             }}
           >
             {/* Google-style Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-primary/10 shrink-0">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border/40 shrink-0">
               <h3 className="text-sm font-semibold text-foreground">Filters</h3>
               <div className="flex items-center gap-2">
                 {getActiveFiltersCount() > 0 && (
@@ -3577,7 +3569,7 @@ const AstraSearchPanel = ({
 
             {/* Google-style Active Filter Pills */}
             {getActiveFiltersCount() > 0 && (
-              <div className="px-4 py-2 border-b border-primary/10 shrink-0">
+              <div className="px-4 py-2 border-b border-border/40 shrink-0">
                 <div className="flex flex-wrap gap-1.5">
                   {filters.listingType && (
                     <span className="inline-flex items-center gap-1 h-7 px-3 rounded-full bg-primary/10 text-primary text-xs font-medium">
@@ -4191,7 +4183,7 @@ const AstraSearchPanel = ({
             </div>
 
             {/* Footer */}
-            <div className="border-t border-primary/10 px-4 py-3 shrink-0 flex items-center gap-3">
+            <div className="border-t border-border/40 px-4 py-3 shrink-0 flex items-center gap-3">
               <button 
                 onClick={clearAllFilters} 
                 className="flex-1 h-10 text-sm font-medium text-foreground border border-border rounded-lg hover:bg-muted transition-colors active:scale-[0.98]"
