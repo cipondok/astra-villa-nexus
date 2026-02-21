@@ -97,8 +97,8 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
       <div
         className={cn(
           "fixed left-0 top-20 z-40 transition-all duration-500 ease-in-out",
-          "backdrop-blur-xl bg-background/80 dark:bg-background/60",
-          "border-r border-border/50 shadow-2xl",
+          "backdrop-blur-2xl bg-card/80",
+          "border-r border-gold-primary/15 shadow-2xl",
           isExpanded && !isMinimized ? "w-80 md:w-96" : "w-16",
           "h-[calc(100vh-5rem)] overflow-hidden"
         )}
@@ -114,7 +114,7 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
           onClick={() => setIsExpanded(!isExpanded)}
           className={cn(
             "absolute -right-4 top-4 z-50 h-8 w-8 rounded-full",
-            "bg-primary hover:bg-primary/90 text-primary-foreground",
+            "bg-gold-primary hover:bg-gold-primary/90 text-background",
             "shadow-lg transition-transform hover:scale-110"
           )}
         >
@@ -136,7 +136,7 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
                 placeholder={currentText.search}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-11 bg-background/50 backdrop-blur-sm border-primary/20 focus:border-primary"
+                className="pl-10 h-11 bg-background/50 backdrop-blur-sm border-gold-primary/20 focus:border-gold-primary"
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               />
             </div>
@@ -150,7 +150,7 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
                 <Badge
                   key={type.value}
                   variant={filters.propertyType === type.value ? 'default' : 'outline'}
-                  className="cursor-pointer hover:bg-primary/10 transition-colors"
+                  className="cursor-pointer hover:bg-gold-primary/10 transition-colors"
                   onClick={() => setFilters({ ...filters, propertyType: type.value })}
                 >
                   <Home className="h-3 w-3 mr-1" />
@@ -168,7 +168,7 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
                 <Badge
                   key={num}
                   variant={filters.bedrooms === num ? 'default' : 'outline'}
-                  className="cursor-pointer hover:bg-primary/10 transition-colors"
+                  className="cursor-pointer hover:bg-gold-primary/10 transition-colors"
                   onClick={() => setFilters({ ...filters, bedrooms: num })}
                 >
                   <Bed className="h-3 w-3 mr-1" />
@@ -186,7 +186,7 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
                 <Badge
                   key={num}
                   variant={filters.bathrooms === num ? 'default' : 'outline'}
-                  className="cursor-pointer hover:bg-primary/10 transition-colors"
+                  className="cursor-pointer hover:bg-gold-primary/10 transition-colors"
                   onClick={() => setFilters({ ...filters, bathrooms: num })}
                 >
                   <Bath className="h-3 w-3 mr-1" />
@@ -200,7 +200,7 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
           <div className="space-y-2 pt-4 border-t">
             <Button 
               onClick={handleSearch}
-              className="w-full h-11 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+              className="w-full h-11 bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:opacity-90 text-background shadow-lg shadow-gold-primary/20"
             >
               <Search className="h-4 w-4 mr-2" />
               {currentText.searchBtn}
@@ -226,7 +226,7 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
           <Button
             variant="ghost"
             size="icon"
-            className="h-10 w-10 rounded-full hover:bg-primary/10"
+            className="h-10 w-10 rounded-full hover:bg-gold-primary/10"
             onClick={() => setIsExpanded(true)}
           >
             <Search className="h-5 w-5" />
@@ -234,7 +234,7 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
           <Button
             variant="ghost"
             size="icon"
-            className="h-10 w-10 rounded-full hover:bg-primary/10"
+            className="h-10 w-10 rounded-full hover:bg-gold-primary/10"
             onClick={() => setShowAdvanced(true)}
           >
             <SlidersHorizontal className="h-5 w-5" />
@@ -258,7 +258,7 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
       <div
         className={cn(
           "fixed bottom-0 left-0 right-0 z-40 md:hidden transition-transform duration-300",
-          "backdrop-blur-xl bg-background/80 border-t border-border/50",
+          "backdrop-blur-2xl bg-card/80 border-t border-gold-primary/15",
           "p-3 shadow-2xl",
           isMinimized ? "translate-y-0" : "translate-y-full"
         )}
