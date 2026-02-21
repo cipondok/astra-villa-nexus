@@ -319,28 +319,29 @@ const Search = () => {
       </div>
 
       {/* Slim Search Header */}
-      <div className="bg-background/90 backdrop-blur-xl border-b border-border/40 sticky top-11 md:top-12 z-40 shadow-sm">
+      <div className="bg-background/95 backdrop-blur-2xl border-b border-border/30 sticky top-11 md:top-12 z-40 shadow-sm shadow-black/5 dark:shadow-black/20">
         <div className="container mx-auto px-2 md:px-3 py-2">
           <div className="space-y-2">
             {/* Search Input */}
             <div className="relative">
-              <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+              <SearchIcon className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
               <Input
                 placeholder="Search properties, locations..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                className="pl-7 h-8 text-xs"
+                className="pl-8 h-9 text-xs bg-muted/30 dark:bg-muted/20 border-border/40 rounded-lg focus:bg-background focus:border-primary/40 transition-colors"
               />
             </div>
 
             {/* Compact Filters */}
             <div className="flex flex-wrap gap-1.5 items-center">
               <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="h-7 text-[10px] md:text-xs w-24 md:w-28">
+                <SelectTrigger className="h-7 text-[10px] md:text-xs w-24 md:w-28 rounded-lg border-border/40 bg-muted/20">
+                  <Home className="h-3 w-3 text-muted-foreground mr-1 shrink-0" />
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-popover border-border z-50">
                   <SelectItem value="all" className="text-xs">All Types</SelectItem>
                   <SelectItem value="villa" className="text-xs">Villa</SelectItem>
                   <SelectItem value="apartment" className="text-xs">Apartment</SelectItem>
@@ -350,10 +351,11 @@ const Search = () => {
               </Select>
 
               <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                <SelectTrigger className="h-7 text-[10px] md:text-xs w-24 md:w-28">
+                <SelectTrigger className="h-7 text-[10px] md:text-xs w-24 md:w-28 rounded-lg border-border/40 bg-muted/20">
+                  <MapPin className="h-3 w-3 text-muted-foreground mr-1 shrink-0" />
                   <SelectValue placeholder="Location" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-popover border-border z-50">
                   <SelectItem value="all" className="text-xs">All Locations</SelectItem>
                   <SelectItem value="jakarta" className="text-xs">Jakarta</SelectItem>
                   <SelectItem value="bali" className="text-xs">Bali</SelectItem>
@@ -365,7 +367,7 @@ const Search = () => {
               <Button 
                 onClick={handleSearch} 
                 size="sm"
-                className="h-7 text-[10px] md:text-xs px-2 gap-1"
+                className="h-7 text-[10px] md:text-xs px-3 gap-1 rounded-lg"
               >
                 <SearchIcon className="h-3 w-3" />
                 Search
@@ -373,10 +375,10 @@ const Search = () => {
               
               {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all') && (
                 <Button 
-                  variant="outline" 
+                  variant="ghost" 
                   size="sm"
                   onClick={clearFilters}
-                  className="h-7 text-[10px] md:text-xs px-2"
+                  className="h-7 text-[10px] md:text-xs px-2 text-muted-foreground hover:text-foreground"
                 >
                   Clear
                 </Button>
