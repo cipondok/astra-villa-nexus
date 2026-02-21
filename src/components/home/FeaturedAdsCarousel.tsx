@@ -93,10 +93,10 @@ const getVerificationInfo = (property: FallbackProperty) => {
   
   // Verification statuses
   if (status === 'verified' || property.owner_verified || property.agent_verified || property.agency_verified) {
-    return { icon: BadgeCheck, label: 'Verified User', color: 'text-green-500', bg: 'bg-green-500/20', glow: '' };
+    return { icon: BadgeCheck, label: 'Verified User', color: 'text-chart-1', bg: 'bg-chart-1/20', glow: '' };
   }
   if (status === 'trusted') {
-    return { icon: ShieldCheck, label: 'Trusted Seller', color: 'text-blue-500', bg: 'bg-blue-500/20', glow: '' };
+    return { icon: ShieldCheck, label: 'Trusted Seller', color: 'text-chart-4', bg: 'bg-chart-4/20', glow: '' };
   }
   return { icon: ShieldAlert, label: 'Unverified', color: 'text-muted-foreground', bg: 'bg-muted/50', glow: '' };
 };
@@ -278,10 +278,10 @@ export default function FeaturedAdsCarousel() {
                     </span>
                   </span>
                   {/* Listing Type Badge - Jual/Sewa with icon */}
-                  <span className={`flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-bold px-2 py-1 rounded-full text-white shadow-md border ${
+                  <span className={`flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-bold px-2 py-1 rounded-full text-primary-foreground shadow-md border ${
                     p.listing_type === 'rent' 
-                      ? 'bg-blue-600 border-blue-400/50' 
-                      : 'bg-emerald-600 border-emerald-400/50'
+                      ? 'bg-chart-4 border-chart-4/50' 
+                      : 'bg-chart-1 border-chart-1/50'
                   }`}>
                     {p.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
                     {getListingLabel(p.listing_type)}
