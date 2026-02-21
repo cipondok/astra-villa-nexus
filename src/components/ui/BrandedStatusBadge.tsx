@@ -118,7 +118,7 @@ const BrandedStatusBadge = ({
   const badge =
   <div
     className={cn(
-      "relative inline-flex items-center justify-center gap-1 rounded-full transition-all duration-300 hover:scale-110 cursor-pointer",
+      "relative inline-flex items-center justify-center gap-1 rounded-full",
       sizeConfig.container,
       sizeConfig.ring,
       activeRing,
