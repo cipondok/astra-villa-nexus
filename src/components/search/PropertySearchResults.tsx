@@ -95,12 +95,12 @@ const PropertySearchResults = ({
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[...Array(6)].map((_, i) => (
-          <Card key={i} className="animate-pulse">
-            <div className="h-48 bg-gray-200 rounded-t-lg"></div>
+          <Card key={i} className="animate-pulse border-border/40">
+            <div className="h-48 bg-muted rounded-t-lg"></div>
             <CardContent className="p-4">
-              <div className="h-4 bg-gray-200 rounded mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-4 bg-muted rounded mb-2"></div>
+              <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+              <div className="h-4 bg-muted rounded w-1/2"></div>
             </CardContent>
           </Card>
         ))}
@@ -111,11 +111,11 @@ const PropertySearchResults = ({
   if (properties.length === 0) {
     return (
       <Card className="p-8 text-center">
-        <Building2 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+        <Building2 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-foreground mb-2">
           {currentText.noResults}
         </h3>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           {currentText.noResultsDesc}
         </p>
       </Card>
@@ -127,7 +127,7 @@ const PropertySearchResults = ({
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 animate-fade-in hover-scale"
+          className="group hover:shadow-xl hover:shadow-gold-primary/10 transition-all duration-300 cursor-pointer border border-border/40 bg-card/60 backdrop-blur-xl hover:bg-card/80 animate-fade-in hover-scale"
           onClick={() => onPropertyClick?.(property)}
         >
           <div className="relative">
@@ -138,15 +138,15 @@ const PropertySearchResults = ({
                 className="w-full h-48 object-cover rounded-t-lg"
               />
             ) : (
-              <div className="w-full h-48 bg-gray-200 rounded-t-lg flex items-center justify-center">
-                <Building2 className="h-12 w-12 text-gray-400" />
+              <div className="w-full h-48 bg-muted rounded-t-lg flex items-center justify-center">
+                <Building2 className="h-12 w-12 text-muted-foreground" />
               </div>
             )}
             
             {/* Property Type Badge */}
             <Badge 
               variant="secondary" 
-              className="absolute top-2 left-2 bg-white/90 text-gray-700"
+              className="absolute top-2 left-2 bg-card/90 backdrop-blur-sm text-foreground"
             >
               {property.property_type}
             </Badge>
@@ -155,7 +155,7 @@ const PropertySearchResults = ({
             {(property as any).similarityScore !== undefined && (
               <Badge 
                 variant="default"
-                className="absolute top-12 left-2 bg-primary/90 text-white"
+                className="absolute top-12 left-2 bg-gold-primary/90 text-background"
               >
                 {(property as any).similarityScore}% match
               </Badge>
@@ -175,7 +175,7 @@ const PropertySearchResults = ({
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+                  className="h-8 w-8 p-0 bg-card/90 backdrop-blur-sm hover:bg-card"
                   onClick={(e) => {
                     e.stopPropagation();
                     onView3D?.(property);
@@ -188,7 +188,7 @@ const PropertySearchResults = ({
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+                  className="h-8 w-8 p-0 bg-card/90 backdrop-blur-sm hover:bg-card"
                   onClick={(e) => {
                     e.stopPropagation();
                     window.open(property.virtual_tour_url, '_blank');
@@ -203,7 +203,7 @@ const PropertySearchResults = ({
           <CardContent className="p-4">
             {/* Price with Gradient Badge and Discount */}
             <div className="flex items-center gap-2 mb-2">
-              <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground px-3 py-1.5 rounded-lg shadow-md">
+              <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-gold-primary via-gold-primary/90 to-gold-primary/80 text-background px-3 py-1.5 rounded-lg shadow-md shadow-gold-primary/20">
                 <Tag className="h-4 w-4" />
                 <span className="text-lg font-bold">
                   {property.price ? formatIDR(property.price) : currentText.priceOnRequest}
@@ -211,7 +211,7 @@ const PropertySearchResults = ({
               </div>
               {/* Discount Badge */}
               {(property as any).discount_percentage && (property as any).discount_percentage > 0 && (
-                <div className="inline-flex items-center gap-1 bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 py-1 rounded-full shadow-md animate-pulse">
+                <div className="inline-flex items-center gap-1 bg-gradient-to-r from-destructive to-chart-3 text-destructive-foreground px-2 py-1 rounded-full shadow-md animate-pulse">
                   <Percent className="h-3 w-3" />
                   <span className="font-bold text-xs">{(property as any).discount_percentage}% OFF</span>
                 </div>
@@ -233,7 +233,7 @@ const PropertySearchResults = ({
 
             {/* Location */}
             <div className="flex items-center text-muted-foreground mb-3">
-              <MapPin className="h-4 w-4 mr-1 text-primary" />
+              <MapPin className="h-4 w-4 mr-1 text-gold-primary" />
               <span className="text-sm line-clamp-1">{property.location}</span>
             </div>
 
@@ -327,7 +327,7 @@ const PropertySearchResults = ({
                   e.stopPropagation();
                   onPropertyClick?.(property);
                 }}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-200"
+                className="bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:opacity-90 text-background shadow-sm shadow-gold-primary/20 transition-all duration-200"
               >
                 {currentText.viewDetails}
               </Button>
