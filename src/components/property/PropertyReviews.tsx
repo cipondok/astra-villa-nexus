@@ -53,7 +53,7 @@ function StarRating({
             className={cn(
               sizeClasses[size],
               star <= rating 
-                ? "fill-yellow-400 text-yellow-400" 
+                ? "fill-gold-primary text-gold-primary" 
                 : "text-muted-foreground/30"
             )}
           />
@@ -113,7 +113,7 @@ function ReviewCard({ review, onVote, onEdit, onDelete, isOwner }: {
             <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
               {review.pros?.length ? (
                 <div>
-                  <span className="font-medium text-green-600">Pros:</span>
+                  <span className="font-medium text-chart-1">Pros:</span>
                   <ul className="mt-1 space-y-0.5 text-muted-foreground">
                     {review.pros.map((pro, i) => (
                       <li key={i}>+ {pro}</li>
@@ -123,7 +123,7 @@ function ReviewCard({ review, onVote, onEdit, onDelete, isOwner }: {
               ) : null}
               {review.cons?.length ? (
                 <div>
-                  <span className="font-medium text-red-600">Cons:</span>
+                  <span className="font-medium text-destructive">Cons:</span>
                   <ul className="mt-1 space-y-0.5 text-muted-foreground">
                     {review.cons.map((con, i) => (
                       <li key={i}>- {con}</li>
@@ -261,7 +261,7 @@ export function PropertyReviews({ propertyId }: PropertyReviewsProps) {
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
-            <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+            <Star className="h-5 w-5 text-gold-primary fill-gold-primary" />
             Reviews & Ratings
           </CardTitle>
           {user && !myReview && (
@@ -290,7 +290,7 @@ export function PropertyReviews({ propertyId }: PropertyReviewsProps) {
                 return (
                   <div key={star} className="flex items-center gap-2">
                     <span className="text-xs w-3">{star}</span>
-                    <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
+                    <Star className="h-3 w-3 text-gold-primary fill-gold-primary" />
                     <Progress value={percentage} className="h-2 flex-1" />
                     <span className="text-xs text-muted-foreground w-8">{count}</span>
                   </div>

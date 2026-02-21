@@ -45,19 +45,19 @@ const PropertySpecifications = ({ propertyFilters, onFilterChange }: PropertySpe
 
         return (
           <div key={filter.id}>
-            <Label htmlFor={filter.id} className="text-gray-700 font-medium">
+            <Label htmlFor={filter.id} className="text-foreground font-medium">
               {filter.filter_name}
             </Label>
             <Select 
               value={filterValue} 
               onValueChange={(value) => onFilterChange(filter.id, value)}
             >
-              <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+              <SelectTrigger className="bg-background border-border text-foreground">
                 <SelectValue placeholder={`Pilih ${filter.filter_name}`} />
               </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+              <SelectContent className="bg-popover border border-border shadow-lg z-50">
                 {options.map((option: string, index: number) => (
-                  <SelectItem key={index} value={option} className="text-gray-900 hover:bg-blue-50">
+                  <SelectItem key={index} value={option} className="text-foreground hover:bg-accent">
                     {option}
                   </SelectItem>
                 ))}
@@ -75,7 +75,7 @@ const PropertySpecifications = ({ propertyFilters, onFilterChange }: PropertySpe
 
         return (
           <div key={filter.id}>
-            <Label className="text-gray-700 font-medium mb-2 block">
+            <Label className="text-foreground font-medium mb-2 block">
               {filter.filter_name}
             </Label>
             <div className="space-y-2">
@@ -93,7 +93,7 @@ const PropertySpecifications = ({ propertyFilters, onFilterChange }: PropertySpe
                       }
                     }}
                   />
-                  <Label htmlFor={`${filter.id}-${index}`} className="text-sm text-gray-900">
+                  <Label htmlFor={`${filter.id}-${index}`} className="text-sm text-foreground">
                     {option}
                   </Label>
                 </div>
@@ -105,7 +105,7 @@ const PropertySpecifications = ({ propertyFilters, onFilterChange }: PropertySpe
       case 'input':
         return (
           <div key={filter.id}>
-            <Label htmlFor={filter.id} className="text-gray-700 font-medium">
+            <Label htmlFor={filter.id} className="text-foreground font-medium">
               {filter.filter_name}
             </Label>
             <Input
@@ -113,7 +113,7 @@ const PropertySpecifications = ({ propertyFilters, onFilterChange }: PropertySpe
               value={filterValue}
               onChange={(e) => onFilterChange(filter.id, e.target.value)}
               placeholder={`Masukkan ${filter.filter_name}`}
-              className="bg-white border-gray-300 text-gray-900"
+              className="bg-background border-border text-foreground"
             />
           </div>
         );
@@ -130,19 +130,19 @@ const PropertySpecifications = ({ propertyFilters, onFilterChange }: PropertySpe
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'lifestyle':
-        return <Heart className="h-5 w-5 text-pink-600" />;
+        return <Heart className="h-5 w-5 text-destructive" />;
       case 'sustainability':
-        return <Leaf className="h-5 w-5 text-green-600" />;
+        return <Leaf className="h-5 w-5 text-chart-1" />;
       case 'investment':
-        return <TrendingUp className="h-5 w-5 text-blue-600" />;
+        return <TrendingUp className="h-5 w-5 text-chart-4" />;
       case 'neighborhood':
-        return <Volume2 className="h-5 w-5 text-purple-600" />;
+        return <Volume2 className="h-5 w-5 text-accent-foreground" />;
       case 'developer':
-        return <Building2 className="h-5 w-5 text-orange-600" />;
+        return <Building2 className="h-5 w-5 text-chart-3" />;
       case 'property':
-        return <Home className="h-5 w-5 text-gray-600" />;
+        return <Home className="h-5 w-5 text-muted-foreground" />;
       default:
-        return <Filter className="h-5 w-5 text-gray-600" />;
+        return <Filter className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
@@ -174,14 +174,14 @@ const PropertySpecifications = ({ propertyFilters, onFilterChange }: PropertySpe
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-blue-600" />
+            <Filter className="h-5 w-5 text-primary" />
             Spesifikasi & Fitur Properti
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-2 text-gray-600">Memuat spesifikasi...</span>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-2 text-muted-foreground">Memuat spesifikasi...</span>
           </div>
         </CardContent>
       </Card>
@@ -193,15 +193,15 @@ const PropertySpecifications = ({ propertyFilters, onFilterChange }: PropertySpe
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-blue-600" />
+            <Filter className="h-5 w-5 text-primary" />
             Spesifikasi & Fitur Properti
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
-            <Filter className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-            <p className="text-gray-500">Belum ada spesifikasi properti yang tersedia.</p>
-            <p className="text-sm text-gray-400 mt-1">
+            <Filter className="h-12 w-12 text-muted-foreground/40 mx-auto mb-3" />
+            <p className="text-muted-foreground">Belum ada spesifikasi properti yang tersedia.</p>
+            <p className="text-sm text-muted-foreground/70 mt-1">
               Admin dapat menambahkan spesifikasi di panel administrasi.
             </p>
           </div>
@@ -226,10 +226,10 @@ const PropertySpecifications = ({ propertyFilters, onFilterChange }: PropertySpe
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Filter className="h-5 w-5 text-blue-600" />
+          <Filter className="h-5 w-5 text-primary" />
           Spesifikasi & Fitur Properti
         </CardTitle>
-        <p className="text-sm text-gray-600 mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           Tambahkan spesifikasi dan fitur properti untuk informasi yang lebih detail kepada calon pembeli/penyewa.
         </p>
       </CardHeader>
@@ -237,7 +237,7 @@ const PropertySpecifications = ({ propertyFilters, onFilterChange }: PropertySpe
         <div className="space-y-8">
           {Object.entries(filtersByCategory).map(([category, filters]) => (
             <div key={category}>
-              <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
+              <h4 className="text-md font-medium text-foreground mb-4 flex items-center gap-2">
                 {getCategoryIcon(category)}
                 {getCategoryTitle(category)}
               </h4>

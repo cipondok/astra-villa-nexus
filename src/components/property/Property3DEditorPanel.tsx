@@ -75,10 +75,10 @@ const Property3DEditorPanel: React.FC<Property3DEditorPanelProps> = ({
   };
 
   const platformInfo: Record<Platform, { name: string; color: string; icon: string }> = {
-    matterport: { name: 'Matterport', color: 'bg-red-500/20 text-red-300 border-red-500/30', icon: '🏠' },
-    sketchfab: { name: 'Sketchfab', color: 'bg-blue-500/20 text-blue-300 border-blue-500/30', icon: '📦' },
-    kuula: { name: 'Kuula 360°', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30', icon: '🔮' },
-    unknown: { name: 'Generic', color: 'bg-gray-500/20 text-gray-300 border-gray-500/30', icon: '🔗' }
+    matterport: { name: 'Matterport', color: 'bg-destructive/20 text-destructive border-destructive/30', icon: '🏠' },
+    sketchfab: { name: 'Sketchfab', color: 'bg-chart-4/20 text-chart-4 border-chart-4/30', icon: '📦' },
+    kuula: { name: 'Kuula 360°', color: 'bg-accent/20 text-accent-foreground border-accent/30', icon: '🔮' },
+    unknown: { name: 'Generic', color: 'bg-muted/50 text-muted-foreground border-border', icon: '🔗' }
   };
 
   return (
@@ -137,9 +137,9 @@ const Property3DEditorPanel: React.FC<Property3DEditorPanelProps> = ({
                   {modelUrlInput && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
                       {isValidUrl(modelUrlInput) ? (
-                        <CheckCircle2 className="h-4 w-4 text-green-400" />
+                        <CheckCircle2 className="h-4 w-4 text-chart-1" />
                       ) : (
-                        <AlertCircle className="h-4 w-4 text-red-400" />
+                        <AlertCircle className="h-4 w-4 text-destructive" />
                       )}
                     </div>
                   )}
@@ -202,12 +202,12 @@ const Property3DEditorPanel: React.FC<Property3DEditorPanelProps> = ({
             )}
 
             {/* Instructions */}
-            <div className="glass-effect rounded-xl p-4 border border-blue-500/20 bg-blue-500/5">
-              <h4 className="font-medium text-blue-300 mb-3 flex items-center gap-2">
+            <div className="glass-effect rounded-xl p-4 border border-chart-4/20 bg-chart-4/5">
+              <h4 className="font-medium text-chart-4 mb-3 flex items-center gap-2">
                 <Settings className="h-4 w-4" />
                 How to add 3D models
               </h4>
-              <ul className="text-sm text-blue-200/80 space-y-2">
+              <ul className="text-sm text-chart-4/80 space-y-2">
                 <li className="flex items-start gap-2">
                   <span className="text-gold-primary">•</span>
                   Upload to Sketchfab and get embed URL
@@ -247,9 +247,9 @@ const Property3DEditorPanel: React.FC<Property3DEditorPanelProps> = ({
                   {tourUrlInput && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
                       {isValidUrl(tourUrlInput) ? (
-                        <CheckCircle2 className="h-4 w-4 text-green-400" />
+                        <CheckCircle2 className="h-4 w-4 text-chart-1" />
                       ) : (
-                        <AlertCircle className="h-4 w-4 text-red-400" />
+                        <AlertCircle className="h-4 w-4 text-destructive" />
                       )}
                     </div>
                   )}
@@ -312,12 +312,12 @@ const Property3DEditorPanel: React.FC<Property3DEditorPanelProps> = ({
             )}
 
             {/* Instructions */}
-            <div className="glass-effect rounded-xl p-4 border border-green-500/20 bg-green-500/5">
-              <h4 className="font-medium text-green-300 mb-3 flex items-center gap-2">
+            <div className="glass-effect rounded-xl p-4 border border-chart-1/20 bg-chart-1/5">
+              <h4 className="font-medium text-chart-1 mb-3 flex items-center gap-2">
                 <Layers className="h-4 w-4" />
                 Virtual tour options
               </h4>
-              <ul className="text-sm text-green-200/80 space-y-2">
+              <ul className="text-sm text-chart-1/80 space-y-2">
                 <li className="flex items-start gap-2">
                   <span className="text-gold-primary">•</span>
                   Matterport 3D virtual tours (recommended)
@@ -339,17 +339,17 @@ const Property3DEditorPanel: React.FC<Property3DEditorPanelProps> = ({
 
             {/* Supported Platforms */}
             <div className="grid grid-cols-3 gap-3">
-              <div className="glass-effect p-3 rounded-xl text-center border border-red-500/20">
+              <div className="glass-effect p-3 rounded-xl text-center border border-destructive/20">
                 <div className="text-2xl mb-1">🏠</div>
                 <div className="text-xs font-medium text-text-light">Matterport</div>
                 <div className="text-[10px] text-text-muted">Best for tours</div>
               </div>
-              <div className="glass-effect p-3 rounded-xl text-center border border-purple-500/20">
+              <div className="glass-effect p-3 rounded-xl text-center border border-accent/20">
                 <div className="text-2xl mb-1">🔮</div>
                 <div className="text-xs font-medium text-text-light">Kuula</div>
                 <div className="text-[10px] text-text-muted">360° photos</div>
               </div>
-              <div className="glass-effect p-3 rounded-xl text-center border border-blue-500/20">
+              <div className="glass-effect p-3 rounded-xl text-center border border-chart-4/20">
                 <div className="text-2xl mb-1">📦</div>
                 <div className="text-xs font-medium text-text-light">Sketchfab</div>
                 <div className="text-[10px] text-text-muted">3D models</div>
