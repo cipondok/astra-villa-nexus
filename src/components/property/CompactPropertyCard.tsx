@@ -196,7 +196,7 @@ const CompactPropertyCard = ({
 
   return (
     <>
-      <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col border border-white/30 dark:border-white/15 bg-white/60 dark:bg-white/5 backdrop-blur-xl shadow-lg hover:shadow-2xl hover:shadow-primary/15 hover:-translate-y-1 transition-all duration-400 rounded-xl relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:via-transparent before:to-accent/5 before:pointer-events-none before:rounded-xl">
+      <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col border border-border/30 bg-card/60 backdrop-blur-xl shadow-lg hover:shadow-2xl hover:shadow-primary/15 hover:-translate-y-1 transition-all duration-400 rounded-xl relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:via-transparent before:to-accent/5 before:pointer-events-none before:rounded-xl">
         {/* Image Section with Overlay Info */}
         <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
           <img
@@ -213,20 +213,20 @@ const CompactPropertyCard = ({
           {/* Top Left Badges */}
           <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 flex flex-wrap gap-1 max-w-[75%]">
             {similarityScore && (
-              <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-xs shadow-lg shadow-purple-500/40 ring-1 ring-white/30 flex items-center gap-0.5">
+              <Badge className="bg-primary/80 text-primary-foreground font-bold px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-xs shadow-lg shadow-primary/40 ring-1 ring-primary-foreground/30 flex items-center gap-0.5">
                 <ScanEye className="h-2 sm:h-2.5 w-2 sm:w-2.5" />
                 {similarityScore.toFixed(0)}%
               </Badge>
             )}
-            <Badge className={`font-bold px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-xs shadow-lg ring-1 ring-white/30 ${
+            <Badge className={`font-bold px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-xs shadow-lg ring-1 ring-primary-foreground/30 ${
               property.listing_type === 'sale' 
-                ? 'bg-gradient-to-r from-emerald-400 to-cyan-500 shadow-emerald-500/40' 
-                : 'bg-gradient-to-r from-blue-400 to-cyan-500 shadow-blue-500/40'
-            } text-white rounded-full`}>
+                ? 'bg-accent shadow-accent/40' 
+                : 'bg-primary shadow-primary/40'
+            } text-primary-foreground rounded-full`}>
               {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
             </Badge>
             {property.property_type && (
-              <Badge variant="outline" className="bg-white/20 backdrop-blur-lg capitalize text-[9px] sm:text-xs px-1.5 sm:px-2 py-0.5 text-white border-white/30 rounded-full">
+              <Badge variant="outline" className="bg-background/20 backdrop-blur-lg capitalize text-[9px] sm:text-xs px-1.5 sm:px-2 py-0.5 text-white border-white/30 rounded-full">
                 {property.property_type}
               </Badge>
             )}
@@ -238,7 +238,7 @@ const CompactPropertyCard = ({
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-6 w-6 sm:h-7 sm:w-7 p-0 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg shadow-purple-500/30 rounded-full ring-1 ring-white/30"
+                className="h-6 w-6 sm:h-7 sm:w-7 p-0 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30 rounded-full ring-1 ring-primary-foreground/30"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowComparisonModal(true);
@@ -250,16 +250,16 @@ const CompactPropertyCard = ({
             <Button
               size="sm"
               variant="ghost"
-              className={`h-6 w-6 sm:h-7 sm:w-7 p-0 bg-white/80 backdrop-blur-lg hover:bg-white rounded-full ring-1 ring-white/30 ${isLiked ? "ring-2 ring-red-400" : ""}`}
+              className={`h-6 w-6 sm:h-7 sm:w-7 p-0 bg-background/80 backdrop-blur-lg hover:bg-background rounded-full ring-1 ring-border/30 ${isLiked ? "ring-2 ring-destructive" : ""}`}
               onClick={handleLike}
             >
-              <Heart className={`h-3 sm:h-3.5 w-3 sm:w-3.5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+              <Heart className={`h-3 sm:h-3.5 w-3 sm:w-3.5 ${isLiked ? 'fill-destructive text-destructive' : 'text-muted-foreground'}`} />
             </Button>
             {(property.three_d_model_url || property.virtual_tour_url) && (
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-6 w-6 sm:h-7 sm:w-7 p-0 bg-white/80 backdrop-blur-lg hover:bg-white text-blue-500 rounded-full ring-1 ring-white/30"
+                className="h-6 w-6 sm:h-7 sm:w-7 p-0 bg-background/80 backdrop-blur-lg hover:bg-background text-primary rounded-full ring-1 ring-border/30"
                 onClick={handleView3D}
               >
                 <ViewIcon className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
@@ -268,7 +268,7 @@ const CompactPropertyCard = ({
             <Button
               size="sm"
               variant="ghost"
-              className="h-6 w-6 sm:h-7 sm:w-7 p-0 bg-white/80 backdrop-blur-lg hover:bg-white text-gray-600 rounded-full ring-1 ring-white/30"
+              className="h-6 w-6 sm:h-7 sm:w-7 p-0 bg-background/80 backdrop-blur-lg hover:bg-background text-muted-foreground rounded-full ring-1 ring-border/30"
               onClick={handleShare}
             >
               <Share2 className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
@@ -280,25 +280,25 @@ const CompactPropertyCard = ({
             {/* Price with Gradient Badge */}
             <div className="flex items-center gap-1.5 flex-wrap">
               {/* Main Price Badge */}
-              <div className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg shadow-xl backdrop-blur-md border border-white/30 ring-1 ring-white/20 ${
+              <div className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg shadow-xl backdrop-blur-md border border-primary-foreground/30 ring-1 ring-primary-foreground/20 ${
                 property.listing_type === 'sale'
-                  ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 shadow-emerald-500/30'
-                  : 'bg-gradient-to-r from-blue-500 via-cyan-500 to-sky-500 shadow-blue-500/30'
+                  ? 'bg-accent shadow-accent/30'
+                  : 'bg-primary shadow-primary/30'
               }`}>
-                <Tag className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-white" />
-                <span className="text-white font-black text-sm sm:text-base md:text-lg leading-none tracking-tight">
+                <Tag className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-primary-foreground" />
+                <span className="text-primary-foreground font-black text-sm sm:text-base md:text-lg leading-none tracking-tight">
                   {formatPrice(property.price)}
                 </span>
                 {property.listing_type === 'rent' && (
-                  <span className="text-white/80 text-[9px] sm:text-[11px] font-bold">/bln</span>
+                  <span className="text-primary-foreground/80 text-[9px] sm:text-[11px] font-bold">/bln</span>
                 )}
               </div>
 
               {/* Discount Badge */}
               {property.discount_percentage && property.discount_percentage > 0 && (
-                <div className="inline-flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 shadow-lg shadow-red-500/30 animate-pulse ring-1 ring-white/30">
-                  <Percent className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white" />
-                  <span className="text-white font-bold text-[10px] sm:text-xs">
+                <div className="inline-flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg bg-destructive shadow-lg shadow-destructive/30 animate-pulse ring-1 ring-destructive-foreground/30">
+                  <Percent className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-destructive-foreground" />
+                  <span className="text-destructive-foreground font-bold text-[10px] sm:text-xs">
                     {property.discount_percentage}% OFF
                   </span>
                 </div>
@@ -313,27 +313,27 @@ const CompactPropertyCard = ({
             {/* Property Details Row - KT/KM/LB */}
             <div className="flex items-center gap-1.5 sm:gap-2 mt-1 sm:mt-1.5 flex-wrap">
               {property.bedrooms && property.bedrooms > 0 && (
-                <div className="flex items-center gap-0.5 border border-violet-300/30 bg-violet-500/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm shadow-violet-500/20">
-                  <Bed className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-violet-200" />
+                <div className="flex items-center gap-0.5 border border-primary-foreground/20 bg-primary/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
+                  <Bed className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-primary-foreground/80" />
                   <span className="text-[10px] sm:text-xs text-white font-bold">{property.bedrooms}</span>
-                  <span className="text-[8px] sm:text-[10px] text-violet-200/80 font-bold">KT</span>
+                  <span className="text-[8px] sm:text-[10px] text-primary-foreground/70 font-bold">KT</span>
                 </div>
               )}
               {property.bathrooms && property.bathrooms > 0 && (
-                <div className="flex items-center gap-0.5 border border-sky-300/30 bg-sky-500/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm shadow-sky-500/20">
-                  <Bath className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-sky-200" />
+                <div className="flex items-center gap-0.5 border border-primary-foreground/20 bg-accent/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
+                  <Bath className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-primary-foreground/80" />
                   <span className="text-[10px] sm:text-xs text-white font-bold">{property.bathrooms}</span>
-                  <span className="text-[8px] sm:text-[10px] text-sky-200/80 font-bold">KM</span>
+                  <span className="text-[8px] sm:text-[10px] text-primary-foreground/70 font-bold">KM</span>
                 </div>
               )}
               {property.area_sqm && (
-                <div className="flex items-center gap-0.5 border border-amber-300/30 bg-amber-500/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm shadow-amber-500/20">
-                  <span className="text-[8px] sm:text-[10px] text-amber-200/80 font-bold">LB</span>
+                <div className="flex items-center gap-0.5 border border-primary-foreground/20 bg-muted/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
+                  <span className="text-[8px] sm:text-[10px] text-primary-foreground/70 font-bold">LB</span>
                   <span className="text-[10px] sm:text-xs text-white font-bold">{property.area_sqm}m²</span>
                 </div>
               )}
               {(property.three_d_model_url || property.virtual_tour_url) && (
-                <div className="flex items-center gap-0.5 border border-cyan-300/30 bg-cyan-500/50 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm shadow-cyan-500/20">
+                <div className="flex items-center gap-0.5 border border-primary-foreground/20 bg-primary/40 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
                   <ViewIcon className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-white" />
                   <span className="text-[10px] sm:text-xs text-white font-bold">3D</span>
                 </div>
@@ -365,7 +365,7 @@ const CompactPropertyCard = ({
         <CardContent className="p-1.5 sm:p-2 md:p-3 space-y-1 sm:space-y-1.5 flex-1 flex flex-col">
           {/* Posted By - Compact */}
           {property.posted_by && (
-            <div className="flex items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 glass-ios rounded-lg">
+            <div className="flex items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 bg-muted/50 rounded-lg">
               {property.posted_by.avatar_url ? (
                 <img 
                   src={property.posted_by.avatar_url} 
@@ -399,8 +399,8 @@ const CompactPropertyCard = ({
               </div>
               {property.posted_by.rating && (
                 <div className="flex items-center gap-0.5 flex-shrink-0">
-                  <Star className="h-2.5 sm:h-3 w-2.5 sm:w-3 fill-yellow-400 text-yellow-400" />
-                  <span className="text-[9px] sm:text-xs font-bold text-yellow-600 dark:text-yellow-400">
+                  <Star className="h-2.5 sm:h-3 w-2.5 sm:w-3 fill-primary text-primary" />
+                  <span className="text-[9px] sm:text-xs font-bold text-primary">
                     {property.posted_by.rating.toFixed(1)}
                   </span>
                 </div>
