@@ -178,13 +178,13 @@ const UserDashboard = () => {
 
   const getRoleBadgeColor = () => {
     switch (userRole) {
-      case 'admin': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100';
-      case 'customer_service': return 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-100';
-      case 'agent': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100';
-      case 'property_owner': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100';
-      case 'vendor': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100';
+      case 'admin': return 'bg-accent/10 text-accent-foreground';
+      case 'customer_service': return 'bg-chart-4/10 text-chart-4';
+      case 'agent': return 'bg-primary/10 text-primary';
+      case 'property_owner': return 'bg-chart-1/10 text-chart-1';
+      case 'vendor': return 'bg-chart-3/10 text-chart-3';
       case 'general_user':
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -211,14 +211,14 @@ const UserDashboard = () => {
       )}
 
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg shadow-lg">
+      <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground p-6 rounded-lg shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold mb-2">
               Welcome back, {displayName}!
             </h1>
-            <p className="text-blue-100 text-lg">{roleConfig.description}</p>
-            <div className="mt-2 text-sm text-blue-200">
+            <p className="text-primary-foreground/70 text-lg">{roleConfig.description}</p>
+            <div className="mt-2 text-sm text-primary-foreground/50">
               User ID: {user.id}
             </div>
           </div>
@@ -270,7 +270,7 @@ const UserDashboard = () => {
                         <Button
                           key={index}
                           variant="outline"
-                          className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-blue-50 dark:hover:bg-blue-950"
+                          className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-muted/50"
                           onClick={() => {
                             if ('path' in action && action.path) {
                               const navState = ('tab' in action && action.tab) 
@@ -282,7 +282,7 @@ const UserDashboard = () => {
                             }
                           }}
                         >
-                          <IconComponent className="h-8 w-8 text-blue-600" />
+                          <IconComponent className="h-8 w-8 text-gold-primary" />
                           <span className="text-sm font-medium text-center">{action.label}</span>
                         </Button>
                       );
@@ -311,7 +311,7 @@ const UserDashboard = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center space-x-3">
-                    <RoleIcon className="h-10 w-10 text-blue-600" />
+                    <RoleIcon className="h-10 w-10 text-gold-primary" />
                     <div>
                       <h3 className="font-semibold text-lg">{displayName}</h3>
                       <p className="text-sm text-muted-foreground">{roleConfig.title}</p>

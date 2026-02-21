@@ -437,16 +437,16 @@ const CustomerServiceDashboard = () => {
             </div>
             
             {/* Main Header */}
-            <div className="flex items-center justify-between p-3 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10">
+            <div className="flex items-center justify-between p-3 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/5">
               <div className="flex items-center gap-3">
                 <SidebarTrigger />
-                <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
-                  <Headphones className="h-4 w-4 text-white" />
+                <div className="w-8 h-8 bg-gradient-to-br from-gold-primary to-gold-primary/70 rounded-lg flex items-center justify-center">
+                  <Headphones className="h-4 w-4 text-background" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h1 className="text-sm font-bold text-foreground">Customer Service Dashboard</h1>
-                    <Badge className="bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 text-[9px] px-1.5 py-0 h-4">Active</Badge>
+                    <Badge className="bg-gold-primary/20 text-gold-primary text-[9px] px-1.5 py-0 h-4">Active</Badge>
                   </div>
                   <p className="text-[10px] text-muted-foreground">Manage support tickets and customer inquiries</p>
                 </div>

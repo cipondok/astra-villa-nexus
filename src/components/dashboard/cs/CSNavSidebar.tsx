@@ -28,24 +28,16 @@ const CSNavSidebar = ({
 
   const getActiveStyles = (color: string, isActive: boolean) => {
     if (!isActive) return "";
-    const colors: Record<string, string> = {
-      cyan: "bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 border-l-2 border-cyan-500",
-      orange: "bg-orange-500/20 text-orange-700 dark:text-orange-400 border-l-2 border-orange-500",
-      blue: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-l-2 border-blue-500",
-      purple: "bg-purple-500/20 text-purple-700 dark:text-purple-400 border-l-2 border-purple-500",
-      green: "bg-green-500/20 text-green-700 dark:text-green-400 border-l-2 border-green-500",
-      slate: "bg-slate-500/20 text-slate-700 dark:text-slate-400 border-l-2 border-slate-500",
-    };
-    return colors[color] || "";
+    return "bg-gold-primary/15 text-gold-primary border-l-2 border-gold-primary";
   };
 
   return (
     <Sidebar className="border-r">
       <SidebarContent>
         <div className="p-3">
-          <div className="flex items-center gap-2 p-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-lg">
-            <div className="w-7 h-7 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
-              <Headphones className="h-3.5 w-3.5 text-white" />
+          <div className="flex items-center gap-2 p-2 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg">
+            <div className="w-7 h-7 bg-gradient-to-br from-gold-primary to-gold-primary/70 rounded-lg flex items-center justify-center">
+              <Headphones className="h-3.5 w-3.5 text-background" />
             </div>
             <div>
               <h2 className="font-semibold text-xs">CS Dashboard</h2>
@@ -67,7 +59,7 @@ const CSNavSidebar = ({
                     <item.icon className="h-3.5 w-3.5" />
                     <span>{item.title}</span>
                     {item.badge !== undefined && item.badge > 0 && (
-                      <Badge className="ml-auto bg-red-500/90 text-white text-[9px] px-1.5 py-0 h-4">
+                      <Badge className="ml-auto bg-destructive/90 text-destructive-foreground text-[9px] px-1.5 py-0 h-4">
                         {item.badge}
                       </Badge>
                     )}
@@ -83,14 +75,14 @@ const CSNavSidebar = ({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="text-xs h-8 hover:bg-green-500/10">
-                  <Phone className="h-3.5 w-3.5 text-green-600" />
+                <SidebarMenuButton className="text-xs h-8 hover:bg-chart-1/10">
+                  <Phone className="h-3.5 w-3.5 text-chart-1" />
                   <span>Live Chat</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton className="text-xs h-8 hover:bg-blue-500/10">
-                  <HelpCircle className="h-3.5 w-3.5 text-blue-600" />
+                <SidebarMenuButton className="text-xs h-8 hover:bg-chart-4/10">
+                  <HelpCircle className="h-3.5 w-3.5 text-chart-4" />
                   <span>Help Center</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
