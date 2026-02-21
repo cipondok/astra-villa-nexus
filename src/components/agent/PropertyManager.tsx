@@ -605,7 +605,7 @@ const PropertyManager = () => {
                         {property.listing_type}
                       </Badge>
                       {property.listing_type === 'rent' && property.online_booking_enabled && (
-                        <Badge className="bg-green-100 text-green-800">
+                        <Badge className="bg-chart-1/10 text-chart-1">
                           <Zap className="h-3 w-3 mr-1" />
                           Online Booking
                         </Badge>
@@ -636,7 +636,7 @@ const PropertyManager = () => {
                   </div>
 
                   {property.listing_type === 'rent' && (
-                    <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
+                    <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-4">
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-1" />
                         Min. {property.minimum_rental_days || 30} days
