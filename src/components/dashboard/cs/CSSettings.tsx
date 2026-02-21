@@ -46,11 +46,11 @@ const CSSettings = ({ settings, onSettingsChange, onSave, isSaving }: CSSettings
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card className="border-blue-200/50 dark:border-blue-800/30">
+        <Card className="border-chart-4/30">
           <CardHeader className="p-3 pb-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
-                <Settings className="h-3 w-3 text-blue-600" />
+              <div className="w-6 h-6 bg-chart-4/20 rounded flex items-center justify-center">
+                <Settings className="h-3 w-3 text-chart-4" />
               </div>
               <div>
                 <CardTitle className="text-xs">CS Preferences</CardTitle>
@@ -111,11 +111,11 @@ const CSSettings = ({ settings, onSettingsChange, onSave, isSaving }: CSSettings
           </CardContent>
         </Card>
 
-        <Card className="border-purple-200/50 dark:border-purple-800/30">
+        <Card className="border-chart-5/30">
           <CardHeader className="p-3 pb-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
-                <User className="h-3 w-3 text-purple-600" />
+              <div className="w-6 h-6 bg-chart-5/20 rounded flex items-center justify-center">
+                <User className="h-3 w-3 text-chart-5" />
               </div>
               <div>
                 <CardTitle className="text-xs">Account Settings</CardTitle>
@@ -180,11 +180,11 @@ const CSSettings = ({ settings, onSettingsChange, onSave, isSaving }: CSSettings
         </Card>
         
         {/* Current Settings Preview */}
-        <Card className="lg:col-span-2 border-green-200/50 dark:border-green-800/30">
+        <Card className="lg:col-span-2 border-chart-1/30">
           <CardHeader className="p-3 pb-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
-                <Settings className="h-3 w-3 text-green-600" />
+              <div className="w-6 h-6 bg-chart-1/20 rounded flex items-center justify-center">
+                <Settings className="h-3 w-3 text-chart-1" />
               </div>
               <div>
                 <CardTitle className="text-xs">Current Settings</CardTitle>
@@ -194,36 +194,36 @@ const CSSettings = ({ settings, onSettingsChange, onSave, isSaving }: CSSettings
           </CardHeader>
           <CardContent className="p-3 pt-0">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              <div className="p-2 border rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50 dark:border-blue-800/30">
+              <div className="p-2 border rounded-lg bg-chart-4/5 border-chart-4/20">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <Settings className="h-3 w-3 text-blue-500" />
+                  <Settings className="h-3 w-3 text-chart-4" />
                   <span className="text-[10px] font-medium">Auto-assign</span>
                 </div>
                 <p className="text-[9px] text-muted-foreground">
                   {settings.autoAssignTickets ? "Enabled" : "Disabled"}
                 </p>
               </div>
-              <div className="p-2 border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/30">
+              <div className="p-2 border rounded-lg bg-chart-1/5 border-chart-1/20">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <MessageSquare className="h-3 w-3 text-green-500" />
+                  <MessageSquare className="h-3 w-3 text-chart-1" />
                   <span className="text-[10px] font-medium">Notifications</span>
                 </div>
                 <p className="text-[9px] text-muted-foreground">
                   {settings.emailNotifications ? "Enabled" : "Disabled"}
                 </p>
               </div>
-              <div className="p-2 border rounded-lg bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 dark:border-purple-800/30">
+              <div className="p-2 border rounded-lg bg-chart-5/5 border-chart-5/20">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <User className="h-3 w-3 text-purple-500" />
+                  <User className="h-3 w-3 text-chart-5" />
                   <span className="text-[10px] font-medium">Display Name</span>
                 </div>
                 <p className="text-[9px] text-muted-foreground truncate">
                   {settings.displayName}
                 </p>
               </div>
-              <div className="p-2 border rounded-lg bg-orange-50/50 dark:bg-orange-950/20 border-orange-200/50 dark:border-orange-800/30">
+              <div className="p-2 border rounded-lg bg-chart-3/5 border-chart-3/20">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <Clock className="h-3 w-3 text-orange-500" />
+                  <Clock className="h-3 w-3 text-chart-3" />
                   <span className="text-[10px] font-medium">Working Hours</span>
                 </div>
                 <p className="text-[9px] text-muted-foreground">
