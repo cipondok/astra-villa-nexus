@@ -133,12 +133,11 @@ const AutoScrollCarousel = ({
               .from('properties')
               .select(`
                 *,
-                owner:profiles!properties_owner_id_fkey(
+                owner:public_profiles!properties_owner_id_fkey(
                   id,
                   full_name,
                   avatar_url,
-                  verification_status,
-                  created_at
+                  verification_status
                 )
               `)
               .eq('owner_id', ownerId)
@@ -173,12 +172,11 @@ const AutoScrollCarousel = ({
               .from('properties')
               .select(`
                 *,
-                owner:profiles!properties_owner_id_fkey(
+                owner:public_profiles!properties_owner_id_fkey(
                   id,
                   full_name,
                   avatar_url,
-                  verification_status,
-                  created_at
+                  verification_status
                 )
               `)
               .neq('id', currentPropertyId)
@@ -214,12 +212,11 @@ const AutoScrollCarousel = ({
             .from('properties')
             .select(`
               *,
-              owner:profiles!properties_owner_id_fkey(
+              owner:public_profiles!properties_owner_id_fkey(
                 id,
                 full_name,
                 avatar_url,
-                verification_status,
-                created_at
+                verification_status
               )
             `)
             .eq('status', 'active')
