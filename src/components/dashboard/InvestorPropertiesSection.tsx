@@ -61,7 +61,7 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
         {/* Badges */}
         <div className="absolute top-1.5 left-1.5 flex flex-wrap gap-0.5">
           {property.wna_eligible && (
-            <Badge className="bg-blue-500/90 text-white text-[8px] px-1 py-0.5">
+            <Badge className="bg-chart-4/90 text-primary-foreground text-[8px] px-1 py-0.5">
               <Globe className="h-2 w-2 mr-0.5" />
               WNA
             </Badge>
@@ -239,7 +239,7 @@ export const InvestorPropertiesSection = () => {
         <div className="flex items-center gap-2 flex-wrap">
           <Badge 
             variant="outline" 
-            className={`text-[10px] px-2 py-0.5 ${isWna ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10' : 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10'}`}
+            className={`text-[10px] px-2 py-0.5 ${isWna ? 'border-chart-4 text-chart-4 bg-chart-4/10' : 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10'}`}
           >
             <Globe className="h-2.5 w-2.5 mr-1" />
             {isWna ? 'Foreign Investor (WNA)' : 'Indonesian Investor (WNI)'}
@@ -263,7 +263,7 @@ export const InvestorPropertiesSection = () => {
         isLoading={recommendedLoading || profileLoading}
         emptyMessage={isWna ? 'No WNA-eligible properties available' : 'No recommendations yet. Update your preferences!'}
         viewAllPath="/dijual"
-        icon={isWna ? <Globe className="h-4 w-4 text-blue-500" /> : <Building2 className="h-4 w-4 text-primary" />}
+        icon={isWna ? <Globe className="h-4 w-4 text-chart-4" /> : <Building2 className="h-4 w-4 text-primary" />}
       />
 
       {/* Featured Properties */}
@@ -287,7 +287,7 @@ export const InvestorPropertiesSection = () => {
         isLoading={savedLoading}
         emptyMessage="No saved properties yet. Start browsing!"
         viewAllPath="/saved"
-        icon={<Heart className="h-4 w-4 text-red-500" />}
+        icon={<Heart className="h-4 w-4 text-destructive" />}
       />
     </div>
   );

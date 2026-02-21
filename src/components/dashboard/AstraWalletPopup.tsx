@@ -128,12 +128,12 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-2">
             <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <Gift className="h-4 w-4 mx-auto text-blue-500 mb-1" />
+              <Gift className="h-4 w-4 mx-auto text-chart-4 mb-1" />
               <p className="text-sm font-semibold">{formatTokenAmount(walletStats.todayRewards)}</p>
               <p className="text-[10px] text-muted-foreground">Today</p>
             </div>
             <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <Calendar className="h-4 w-4 mx-auto text-purple-500 mb-1" />
+              <Calendar className="h-4 w-4 mx-auto text-chart-5 mb-1" />
               <p className="text-sm font-semibold">{formatTokenAmount(walletStats.weekRewards)}</p>
               <p className="text-[10px] text-muted-foreground">This Week</p>
             </div>
@@ -165,7 +165,7 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
                       : dayData.wasCheckedIn 
                         ? 'bg-emerald-500/20' 
                         : dayData.isPast 
-                          ? 'bg-red-500/10' 
+                          ? 'bg-destructive/10' 
                           : 'bg-background/50'
                   }`}
                 >
@@ -175,7 +175,7 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
                       : dayData.wasCheckedIn 
                         ? 'text-emerald-500' 
                         : dayData.isPast 
-                          ? 'text-red-400' 
+                          ? 'text-destructive' 
                           : 'text-muted-foreground'
                   }`}>
                     {dayData.day}
@@ -184,7 +184,7 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
                     {dayData.wasCheckedIn ? (
                       <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                     ) : dayData.isPast ? (
-                      <span className="text-[9px] text-red-400">-{dayData.missedReward}</span>
+                      <span className="text-[9px] text-destructive">-{dayData.missedReward}</span>
                     ) : dayData.isToday ? (
                       <Sparkles className="h-4 w-4 text-amber-500" />
                     ) : (

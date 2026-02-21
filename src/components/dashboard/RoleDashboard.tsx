@@ -186,8 +186,8 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your dashboard...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -242,18 +242,18 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
     
     switch (userRole) {
       case 'admin':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-chart-5/20 text-chart-5';
       case 'customer_service':
-        return 'bg-cyan-100 text-cyan-800';
+        return 'bg-chart-4/20 text-chart-4';
       case 'agent':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-primary/20 text-primary';
       case 'property_owner':
-        return 'bg-green-100 text-green-800';
+        return 'bg-chart-1/20 text-chart-1';
       case 'vendor':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-chart-3/20 text-chart-3';
       case 'general_user':
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -287,13 +287,13 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
       )}
 
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-orange-500 text-white p-6 rounded-lg">
+      <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground p-6 rounded-lg">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">
               {currentText.welcome}, {displayName}!
             </h1>
-            <p className="text-blue-100 mt-2">{roleConfig.description}</p>
+            <p className="text-primary-foreground/70 mt-2">{roleConfig.description}</p>
           </div>
           <div className="flex items-center space-x-2">
             <RoleIcon className="h-8 w-8" />
@@ -323,7 +323,7 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
                     <Button
                       key={index}
                       variant="outline"
-                      className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-blue-50"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-primary/5"
                       onClick={() => {
                         if ('path' in action && action.path) {
                           const navState = ('tab' in action && action.tab) ? { state: { defaultTab: action.tab } } : {};
@@ -367,32 +367,32 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-3">
-                <RoleIcon className="h-8 w-8 text-blue-600" />
+                <RoleIcon className="h-8 w-8 text-primary" />
                 <div>
                   <h3 className="font-semibold">{roleConfig.title}</h3>
-                  <p className="text-sm text-gray-600">{roleConfig.description}</p>
+                  <p className="text-sm text-muted-foreground">{roleConfig.description}</p>
                 </div>
               </div>
               
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Email:</span>
+                  <span className="text-muted-foreground">Email:</span>
                   <span>{displayEmail}</span>
                 </div>
                 {profile?.phone && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Phone:</span>
+                    <span className="text-muted-foreground">Phone:</span>
                     <span>{profile.phone}</span>
                   </div>
                 )}
                 {profile?.company_name && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Company:</span>
+                    <span className="text-muted-foreground">Company:</span>
                     <span>{profile.company_name}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Status:</span>
+                  <span className="text-muted-foreground">Status:</span>
                   <Badge variant={profile?.verification_status === 'approved' ? 'default' : 'secondary'}>
                     {profile?.verification_status || 'pending'}
                   </Badge>
@@ -410,7 +410,7 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">Welcome to your dashboard! Start exploring the available features.</p>
+              <p className="text-sm text-muted-foreground">Welcome to your dashboard! Start exploring the available features.</p>
             </CardContent>
           </Card>
         </div>
