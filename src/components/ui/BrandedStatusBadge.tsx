@@ -83,9 +83,9 @@ const LEVEL_CONFIG: Record<string, {ring: string;glow: string;label: string;bg: 
 };
 
 const SIZE_MAP = {
-  xs: { container: "h-3.5 w-3.5", ring: "ring-[1.5px]", img: "h-2.5 w-2.5" },
-  sm: { container: "h-4 min-w-5 px-1", ring: "ring-[1.5px]", img: "h-3.5 w-3.5" },
-  md: { container: "h-5 min-w-6 px-1.5", ring: "ring-[1.5px]", img: "h-4 w-4" }
+  xs: { container: "h-3.5 w-3.5", ring: "ring-[1.5px]", img: "h-3 w-3" },
+  sm: { container: "h-4 min-w-5 px-1", ring: "ring-[1.5px]", img: "h-4 w-4" },
+  md: { container: "h-5 min-w-6 px-1.5", ring: "ring-[1.5px]", img: "h-5 w-5" }
 };
 
 const getLevelConfig = (level?: string) => {
