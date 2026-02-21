@@ -287,12 +287,12 @@ const RoleBasedPropertyForm = () => {
       <Card className="max-w-2xl mx-auto">
         <CardContent className="pt-6">
           <div className="text-center">
-            <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-4">Access Restricted</h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted-foreground mb-4">
               You need to be a Property Owner, Agent, or Admin to create property listings.
             </p>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-muted-foreground/70 mb-6">
               Current role: <span className="font-medium capitalize">{profile?.role || 'Not assigned'}</span>
             </p>
             <Button onClick={() => navigate('/')}>Go to Home</Button>
@@ -802,10 +802,10 @@ const RoleBasedPropertyForm = () => {
           {/* Submit Button */}
           <div className="pt-4 border-t">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-muted-foreground">
                 {!isAdmin && (
                   <p className="flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4 text-yellow-500" />
+                    <AlertCircle className="h-4 w-4 text-chart-3" />
                     Property will be submitted for admin approval
                   </p>
                 )}
