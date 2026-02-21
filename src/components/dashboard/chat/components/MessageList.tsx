@@ -19,22 +19,22 @@ const MessageItem = memo(({
 
   const getMessageStyle = () => {
     if (message.sender_type === 'system') {
-      return 'bg-gray-100 text-gray-800 text-center';
+      return 'bg-muted text-foreground text-center';
     }
     if (isFromCurrentUser) {
-      return 'bg-blue-500 text-white';
+      return 'bg-primary text-primary-foreground';
     }
-    return 'bg-gray-100 text-gray-800';
+    return 'bg-muted text-foreground';
   };
 
   const getTextStyle = () => {
     if (message.sender_type === 'system') {
-      return 'text-gray-800';
+      return 'text-foreground';
     }
     if (isFromCurrentUser) {
-      return 'text-blue-100';
+      return 'text-primary-foreground/70';
     }
-    return 'text-gray-500';
+    return 'text-muted-foreground';
   };
 
   return (

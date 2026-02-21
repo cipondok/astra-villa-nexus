@@ -155,7 +155,7 @@ const CategoryDiscountSettings = () => {
     return (
       <Card>
         <CardContent className="text-center py-8">
-          <AlertTriangle className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
+          <AlertTriangle className="h-12 w-12 mx-auto text-chart-3 mb-4" />
           <h3 className="font-semibold mb-2">Belum Ada Layanan</h3>
           <p className="text-muted-foreground">
             Anda belum memiliki layanan aktif. Tambahkan layanan terlebih dahulu untuk mengatur diskon.
@@ -187,11 +187,11 @@ const CategoryDiscountSettings = () => {
                         {getServiceCountForCategory(category.id)} layanan
                       </Badge>
                       {category.discount_eligible ? (
-                        <Badge variant="outline" className="text-green-600 border-green-600">
+                        <Badge variant="outline" className="text-chart-1 border-chart-1">
                           Diskon Aktif
                         </Badge>
                       ) : (
-                        <Badge variant="outline" className="text-red-600 border-red-600">
+                        <Badge variant="outline" className="text-destructive border-destructive">
                           Diskon Nonaktif
                         </Badge>
                       )}
@@ -235,11 +235,11 @@ const CategoryDiscountSettings = () => {
                           </Badge>
                         )}
                         {subcategory.discount_eligible ? (
-                          <Badge variant="outline" className="text-green-600 border-green-600">
+                          <Badge variant="outline" className="text-chart-1 border-chart-1">
                             Diskon Aktif
                           </Badge>
                         ) : (
-                          <Badge variant="outline" className="text-red-600 border-red-600">
+                          <Badge variant="outline" className="text-destructive border-destructive">
                             Diskon Nonaktif
                           </Badge>
                         )}
