@@ -98,6 +98,14 @@ const config: Config = {
           bg: 'hsl(var(--dark-bg))',
           card: 'hsl(var(--dark-card))',
         },
+        'hero': {
+          from: 'hsl(var(--hero-from))',
+          via: 'hsl(var(--hero-via))',
+          to: 'hsl(var(--hero-to))',
+          mid: 'hsl(var(--hero-mid))',
+          end: 'hsl(var(--hero-end))',
+          fade: 'hsl(var(--hero-fade))',
+        },
         'text': {
           light: 'hsl(var(--text-light))',
           muted: 'hsl(var(--text-muted))',
