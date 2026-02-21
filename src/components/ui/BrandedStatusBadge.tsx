@@ -61,9 +61,9 @@ const LEVEL_CONFIG: Record<string, {label: string; shieldColor: string; shieldLi
 };
 
 const SIZE_MAP = {
-  xs: { width: 18, height: 21, logoSize: 12, logoY: 7, fontSize: "text-[8px]", gap: "gap-0.5" },
-  sm: { width: 22, height: 26, logoSize: 15, logoY: 8, fontSize: "text-[9px]", gap: "gap-1" },
-  md: { width: 28, height: 32, logoSize: 19, logoY: 10, fontSize: "text-[10px]", gap: "gap-1" }
+  xs: { width: 18, height: 21, logoSize: 14, logoY: 5, fontSize: "text-[8px]", gap: "gap-0.5" },
+  sm: { width: 22, height: 26, logoSize: 18, logoY: 6, fontSize: "text-[9px]", gap: "gap-1" },
+  md: { width: 28, height: 32, logoSize: 22, logoY: 7, fontSize: "text-[10px]", gap: "gap-1" }
 };
 
 const getLevelConfig = (level?: string) => {
