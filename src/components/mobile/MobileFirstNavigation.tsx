@@ -78,7 +78,7 @@ const MobileFirstNavigation: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
             onClick={() => {
               setIsExpanded(false);
               setShowQuickActions(false);
@@ -91,26 +91,27 @@ const MobileFirstNavigation: React.FC = () => {
       <AnimatePresence>
         {showQuickActions && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            initial={{ opacity: 0, y: 16, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            exit={{ opacity: 0, y: 16, scale: 0.95 }}
+            transition={{ type: 'spring', damping: 22, stiffness: 300 }}
             className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50"
           >
-            <div className="flex gap-4 p-4 bg-card/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-border/50">
+            <div className="flex gap-3 p-3 bg-card/95 backdrop-blur-xl rounded-2xl shadow-xl border border-border/40">
               {quickActions.map((action, idx) => (
                 <motion.button
                   key={action.path}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0, transition: { delay: idx * 0.05 } }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0, transition: { delay: idx * 0.04 } }}
                   onClick={() => handleNavigation(action.path)}
                   className={cn(
                     "flex flex-col items-center gap-1.5 p-3 rounded-xl",
-                    "active:scale-95 transition-transform",
+                    "active:scale-95 transition-all duration-200",
                     action.color
                   )}
                 >
-                  <action.icon className="h-6 w-6 text-white" />
-                  <span className="text-[10px] font-medium text-white">{action.label}</span>
+                  <action.icon className="h-5 w-5 text-white" />
+                  <span className="text-[10px] font-medium text-white whitespace-nowrap">{action.label}</span>
                 </motion.button>
               ))}
             </div>
@@ -126,27 +127,26 @@ const MobileFirstNavigation: React.FC = () => {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-16 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border/50 rounded-t-3xl shadow-2xl"
+            className="fixed bottom-16 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border/30 rounded-t-2xl shadow-xl"
           >
-            {/* Drag handle */}
-            <div className="flex justify-center pt-3 pb-2">
-              <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
+            <div className="flex justify-center pt-2.5 pb-1.5">
+              <div className="w-8 h-1 rounded-full bg-muted-foreground/20" />
             </div>
             
-            <div className="px-4 pb-6 grid grid-cols-4 gap-4">
+            <div className="px-4 pb-5 grid grid-cols-4 gap-3">
               {secondaryNav.map((item) => (
                 <button
                   key={item.path}
                   onClick={() => handleNavigation(item.path)}
                   className={cn(
-                    "flex flex-col items-center gap-2 p-3 rounded-xl",
+                    "flex flex-col items-center gap-1.5 p-2.5 rounded-xl",
                     "active:scale-95 transition-all duration-200",
                     isActive(item.path) 
                       ? "bg-primary/10 text-primary" 
                       : "text-muted-foreground hover:bg-muted/50"
                   )}
                 >
-                  <item.icon className="h-6 w-6" />
+                  <item.icon className="h-5 w-5" />
                   <span className="text-[11px] font-medium">{item.label}</span>
                 </button>
               ))}
@@ -155,9 +155,9 @@ const MobileFirstNavigation: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Primary Bottom Navigation Bar - Thumb Zone */}
+      {/* Primary Bottom Navigation Bar */}
       <nav 
-        className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border/30"
+        className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border/20"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 8px)' }}
       >
         <div className="flex items-center justify-around px-1 h-16 min-h-[64px]">
@@ -175,15 +175,14 @@ const MobileFirstNavigation: React.FC = () => {
             onClick={() => setShowQuickActions(!showQuickActions)}
             aria-label="Quick actions"
             className={cn(
-              "relative -mt-6 flex items-center justify-center",
-              "w-14 h-14 rounded-full flex-shrink-0",
-              "bg-gradient-to-br from-primary to-primary/80",
-              "shadow-lg shadow-primary/30",
-              "active:scale-95 transition-transform",
+              "relative -mt-5 flex items-center justify-center",
+              "w-13 h-13 rounded-full flex-shrink-0",
+              "bg-primary shadow-md shadow-primary/25",
+              "active:scale-95 transition-all duration-200",
               showQuickActions && "rotate-45"
             )}
           >
-            <Plus className="h-7 w-7 text-primary-foreground" />
+            <Plus className="h-6 w-6 text-primary-foreground" />
           </button>
 
           {primaryNav.slice(2, 4).map((item) => (
@@ -201,7 +200,7 @@ const MobileFirstNavigation: React.FC = () => {
             aria-label="More navigation options"
             className={cn(
               "flex flex-col items-center gap-0.5 py-2 px-1 min-w-[44px] min-h-[44px] flex-1",
-              "active:scale-95 transition-all",
+              "active:scale-95 transition-all duration-200",
               isExpanded ? "text-primary" : "text-muted-foreground"
             )}
           >
