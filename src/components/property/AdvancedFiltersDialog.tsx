@@ -332,19 +332,19 @@ const AdvancedFiltersDialog = ({
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="relative h-12 bg-binance-gray border-binance-light-gray text-binance-white hover:bg-binance-light-gray hover:border-binance-orange transition-all duration-300"
+          className="relative h-12 bg-card/60 backdrop-blur-xl border-gold-primary/20 text-foreground hover:bg-gold-primary/10 hover:border-gold-primary/40 transition-all duration-300"
         >
-          <SlidersHorizontal className="h-5 w-5 mr-2" />
+          <SlidersHorizontal className="h-5 w-5 mr-2 text-gold-primary" />
           <span className="hidden sm:inline">{currentText.title}</span>
           <span className="sm:hidden">Filters</span>
           {activeFilterCount > 0 && (
-            <Badge className="absolute -top-2 -right-2 h-6 w-6 p-0 flex items-center justify-center bg-binance-orange text-white border-0 animate-pulse">
+            <Badge className="absolute -top-2 -right-2 h-6 w-6 p-0 flex items-center justify-center bg-gold-primary text-background border-0 animate-pulse">
               {activeFilterCount}
             </Badge>
           )}
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-full max-w-[95vw] sm:max-w-[600px] max-h-[95vh] sm:max-h-[90vh] bg-binance-dark-gray border-binance-light-gray text-binance-white p-0 overflow-hidden">
+      <DialogContent className="w-full max-w-[95vw] sm:max-w-[600px] max-h-[95vh] sm:max-h-[90vh] bg-card/95 backdrop-blur-2xl border-gold-primary/20 text-foreground p-0 overflow-hidden">
         <motion.div
           ref={contentRef}
           drag={isMobile ? "y" : false}
@@ -362,7 +362,7 @@ const AdvancedFiltersDialog = ({
                 animate={{ opacity: 1 }}
                 className="flex justify-center pt-2 pb-1 cursor-grab active:cursor-grabbing"
               >
-                <div className="w-12 h-1.5 bg-binance-light-gray/40 rounded-full" />
+                <div className="w-12 h-1.5 bg-muted-foreground/30 rounded-full" />
               </motion.div>
               
               {/* Animated Swipe Hint */}
@@ -384,8 +384,8 @@ const AdvancedFiltersDialog = ({
                       }}
                       className="flex flex-col items-center"
                     >
-                      <ChevronDown className="h-6 w-6 text-binance-orange drop-shadow-lg" />
-                      <ChevronDown className="h-6 w-6 text-binance-orange drop-shadow-lg -mt-4" />
+                      <ChevronDown className="h-6 w-6 text-gold-primary drop-shadow-lg" />
+                      <ChevronDown className="h-6 w-6 text-gold-primary drop-shadow-lg -mt-4" />
                     </motion.div>
                     <motion.div
                       initial={{ scale: 0.9 }}
@@ -395,7 +395,7 @@ const AdvancedFiltersDialog = ({
                         repeat: Infinity, 
                         ease: "easeInOut" 
                       }}
-                      className="bg-binance-orange/90 backdrop-blur-sm text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg"
+                      className="bg-gold-primary/90 backdrop-blur-sm text-background px-4 py-2 rounded-full text-xs font-semibold shadow-lg shadow-gold-primary/30"
                     >
                       {language === "en" ? "Swipe down to close" : "Geser ke bawah untuk menutup"}
                     </motion.div>
@@ -409,15 +409,15 @@ const AdvancedFiltersDialog = ({
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="bg-gradient-to-r from-binance-orange to-yellow-500 px-4 sm:px-6 py-3 sm:py-4"
+            className="bg-gradient-to-r from-gold-primary to-gold-primary/70 px-4 sm:px-6 py-3 sm:py-4"
           >
           <DialogHeader>
-            <DialogTitle className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+            <DialogTitle className="text-base sm:text-lg font-bold text-background flex items-center gap-2">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="h-6 w-6 sm:h-7 sm:w-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+                className="h-6 w-6 sm:h-7 sm:w-7 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </motion.div>
@@ -483,7 +483,7 @@ const AdvancedFiltersDialog = ({
           >
             <button
               onClick={() => setListingTypeCollapsed(!listingTypeCollapsed)}
-              className="w-full text-sm sm:text-base font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity min-h-[44px] touch-target"
+              className="w-full text-sm sm:text-base font-semibold text-gold-primary flex items-center justify-between gap-2 hover:opacity-80 transition-opacity min-h-[44px] touch-target"
             >
               <span className="flex items-center gap-2 flex-wrap">
                 <span className="text-lg sm:text-base">💰</span> {currentText.listingType}
@@ -528,21 +528,21 @@ const AdvancedFiltersDialog = ({
             className="space-y-4"
           >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-              <label className="text-sm sm:text-base font-semibold text-binance-orange flex items-center gap-2">
+              <label className="text-sm sm:text-base font-semibold text-gold-primary flex items-center gap-2">
                 <span className="text-lg sm:text-base">💸</span> {currentText.priceRange}
               </label>
               <motion.span
                 key={`${minPrice}-${maxPrice}`}
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-xs sm:text-sm text-binance-light-gray font-medium"
+                className="text-xs sm:text-sm text-muted-foreground font-medium"
               >
                 {formatPrice(minPrice)} - {formatPrice(maxPrice)}
               </motion.span>
             </div>
             <div className="space-y-4 sm:space-y-5">
               <div className="touch-pan-x">
-                <label className="text-xs sm:text-sm text-binance-light-gray mb-3 block">Min Price</label>
+                <label className="text-xs sm:text-sm text-muted-foreground mb-3 block">Min Price</label>
                 <Slider
                   value={[minPrice]}
                   onValueChange={(value) => setMinPrice(value[0])}
@@ -553,7 +553,7 @@ const AdvancedFiltersDialog = ({
                 />
               </div>
               <div className="touch-pan-x">
-                <label className="text-xs sm:text-sm text-binance-light-gray mb-3 block">Max Price</label>
+                <label className="text-xs sm:text-sm text-muted-foreground mb-3 block">Max Price</label>
                 <Slider
                   value={[maxPrice]}
                   onValueChange={(value) => setMaxPrice(value[0])}
@@ -575,7 +575,7 @@ const AdvancedFiltersDialog = ({
           >
             <button
               onClick={() => setBedroomsCollapsed(!bedroomsCollapsed)}
-              className="w-full text-sm sm:text-base font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity min-h-[44px] touch-target"
+              className="w-full text-sm sm:text-base font-semibold text-gold-primary flex items-center justify-between gap-2 hover:opacity-80 transition-opacity min-h-[44px] touch-target"
             >
               <span className="flex items-center gap-2 flex-wrap">
                 <span className="text-lg sm:text-base">🛏️</span> {currentText.bedrooms}
@@ -621,7 +621,7 @@ const AdvancedFiltersDialog = ({
           >
             <button
               onClick={() => setBathroomsCollapsed(!bathroomsCollapsed)}
-              className="w-full text-sm sm:text-base font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity min-h-[44px] touch-target"
+              className="w-full text-sm sm:text-base font-semibold text-gold-primary flex items-center justify-between gap-2 hover:opacity-80 transition-opacity min-h-[44px] touch-target"
             >
               <span className="flex items-center gap-2 flex-wrap">
                 <span className="text-lg sm:text-base">🚿</span> {currentText.bathrooms}
@@ -664,13 +664,13 @@ const AdvancedFiltersDialog = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="border-t border-binance-light-gray bg-binance-gray px-3 sm:px-4 py-3 sm:py-4 flex flex-col sm:flex-row gap-2 sm:gap-2"
+          className="border-t border-gold-primary/15 bg-card/80 backdrop-blur-xl px-3 sm:px-4 py-3 sm:py-4 flex flex-col sm:flex-row gap-2 sm:gap-2"
         >
           <div className="flex gap-2 sm:contents">
             <Button
               variant="outline"
               onClick={handleClear}
-              className="flex-1 sm:flex-none min-h-[44px] sm:h-10 text-xs sm:text-sm border-binance-light-gray text-binance-white hover:bg-binance-light-gray transition-all duration-200 active:scale-95"
+              className="flex-1 sm:flex-none min-h-[44px] sm:h-10 text-xs sm:text-sm border-border/40 text-foreground hover:bg-muted transition-all duration-200 active:scale-95"
             >
               <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
               <span className="hidden sm:inline">{currentText.clear}</span>
@@ -679,14 +679,14 @@ const AdvancedFiltersDialog = ({
             <Button
               variant="outline"
               onClick={handleCancel}
-              className="flex-1 sm:flex-none min-h-[44px] sm:h-10 text-xs sm:text-sm border-binance-light-gray text-binance-white hover:bg-binance-light-gray transition-all duration-200 active:scale-95"
+              className="flex-1 sm:flex-none min-h-[44px] sm:h-10 text-xs sm:text-sm border-border/40 text-foreground hover:bg-muted transition-all duration-200 active:scale-95"
             >
               {currentText.cancel}
             </Button>
           </div>
           <Button
             onClick={handleApply}
-            className="w-full sm:flex-1 min-h-[44px] sm:h-10 text-sm sm:text-base bg-gradient-to-r from-binance-orange to-yellow-500 hover:from-yellow-500 hover:to-binance-orange text-white font-semibold shadow-lg hover:shadow-binance-orange/50 transition-all duration-300 active:scale-95"
+            className="w-full sm:flex-1 min-h-[44px] sm:h-10 text-sm sm:text-base bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-background font-semibold shadow-lg shadow-gold-primary/20 hover:shadow-gold-primary/40 transition-all duration-300 active:scale-95"
           >
             {currentText.apply}
           </Button>
