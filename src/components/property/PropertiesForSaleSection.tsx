@@ -110,7 +110,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
             <div
               key={property.id}
               onClick={() => onPropertyClick(property)}
-              className="group cursor-pointer rounded-xl border border-white/20 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur-md shadow-md hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
+              className="group cursor-pointer rounded-xl border border-white/30 dark:border-white/15 bg-white/60 dark:bg-white/5 backdrop-blur-xl shadow-lg shadow-emerald-500/5 hover:shadow-2xl hover:shadow-emerald-500/15 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-emerald-400/5 before:via-transparent before:to-cyan-400/5 before:pointer-events-none before:rounded-xl"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -122,15 +122,15 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                 />
 
                 {/* Gradient overlay bottom */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
                 {/* Top Badges */}
                 <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between">
-                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-sm shadow-emerald-500/40">
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gradient-to-r from-emerald-400 to-cyan-500 text-white shadow-lg shadow-emerald-500/40 ring-1 ring-white/30">
                     <Tag className="h-2 w-2" />
                     JUAL
                   </span>
-                  <span className="flex items-center gap-0.5 bg-black/40 backdrop-blur-sm text-white/90 text-[9px] px-1.5 py-0.5 rounded-full border border-white/20">
+                  <span className="flex items-center gap-0.5 bg-white/20 backdrop-blur-lg text-white text-[9px] px-1.5 py-0.5 rounded-full border border-white/30 shadow-sm">
                     <Building className="h-2 w-2" />
                     {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
                   </span>
@@ -138,7 +138,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
 
                 {/* Image count badge */}
                 {imageCount > 1 && (
-                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 bg-black/50 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded-full border border-white/20">
+                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 bg-white/15 backdrop-blur-lg text-white text-[9px] px-1.5 py-0.5 rounded-full border border-white/25 shadow-sm">
                     <Camera className="h-2 w-2" />
                     {imageCount}
                   </div>
@@ -146,21 +146,21 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
 
                 {/* Hover eye */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg ring-2 ring-emerald-400/40">
+                  <div className="h-10 w-10 rounded-full bg-white/80 backdrop-blur-xl flex items-center justify-center shadow-xl ring-2 ring-emerald-400/50 ring-offset-2 ring-offset-transparent">
                     <Eye className="h-4 w-4 text-emerald-600" />
                   </div>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="p-2.5 space-y-1.5">
+              <div className="p-2.5 space-y-1.5 relative">
                 {/* Price */}
-                <div className="flex items-baseline gap-1 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-400/20 dark:border-emerald-400/15 rounded-lg px-2 py-1.5 flex-wrap">
-                  <span className="text-base font-black bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent leading-none tracking-tight">{priceInfo.main}</span>
+                <div className="flex items-baseline gap-1 bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-cyan-500/15 border border-emerald-400/25 dark:border-emerald-400/20 rounded-lg px-2 py-1.5 flex-wrap backdrop-blur-sm">
+                  <span className="text-base font-black bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-400 bg-clip-text text-transparent leading-none tracking-tight">{priceInfo.main}</span>
                   {priceInfo.suffix && (
                     <span className="text-[11px] font-extrabold text-emerald-600/70 dark:text-emerald-400/70">{priceInfo.suffix}</span>
                   )}
-                  <span className="text-[9px] text-muted-foreground/60 font-medium bg-muted/40 rounded-full px-1 ml-auto">≈ {formatMonthly(property.price)}</span>
+                  <span className="text-[9px] text-muted-foreground/60 font-medium bg-white/40 dark:bg-white/10 backdrop-blur-sm rounded-full px-1.5 ml-auto border border-white/30 dark:border-white/10">≈ {formatMonthly(property.price)}</span>
                 </div>
 
                 {/* Title */}
@@ -169,30 +169,30 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                 </h3>
 
                 {/* Location */}
-                <div className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-teal-500/8 to-emerald-500/8 border border-teal-400/20 px-1.5 py-0.5" title={getLocation(property)}>
-                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-teal-600 dark:text-teal-400" />
+                <div className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-teal-500/10 via-cyan-500/8 to-emerald-500/10 border border-teal-400/25 px-1.5 py-0.5 backdrop-blur-sm" title={getLocation(property)}>
+                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-teal-500 dark:text-teal-400" />
                   <span className="text-[10px] text-foreground/70 font-medium truncate">{getLocation(property)}</span>
                 </div>
 
                 {/* Specs */}
-                <div className="flex items-center gap-1 pt-1 border-t border-emerald-400/10">
+                <div className="flex items-center gap-1 pt-1.5 border-t border-emerald-400/15">
                   {property.bedrooms && property.bedrooms > 0 && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-400/20 rounded-md px-1.5 py-0.5">
-                      <Bed className="h-2.5 w-2.5 text-violet-600 dark:text-violet-400" />
+                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-violet-500/15 to-purple-500/15 border border-violet-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-violet-500/10">
+                      <Bed className="h-2.5 w-2.5 text-violet-500 dark:text-violet-400" />
                       <span className="text-[10px] font-bold text-foreground/80">{property.bedrooms}</span>
-                      <span className="text-[8px] text-muted-foreground font-semibold">KT</span>
+                      <span className="text-[8px] text-violet-500/70 dark:text-violet-400/70 font-bold">KT</span>
                     </div>
                   )}
                   {property.bathrooms && property.bathrooms > 0 && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-sky-500/10 to-blue-500/10 border border-sky-400/20 rounded-md px-1.5 py-0.5">
-                      <Bath className="h-2.5 w-2.5 text-sky-600 dark:text-sky-400" />
+                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-sky-500/15 to-blue-500/15 border border-sky-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-sky-500/10">
+                      <Bath className="h-2.5 w-2.5 text-sky-500 dark:text-sky-400" />
                       <span className="text-[10px] font-bold text-foreground/80">{property.bathrooms}</span>
-                      <span className="text-[8px] text-muted-foreground font-semibold">KM</span>
+                      <span className="text-[8px] text-sky-500/70 dark:text-sky-400/70 font-bold">KM</span>
                     </div>
                   )}
                   {property.area_sqm && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-400/20 rounded-md px-1.5 py-0.5">
-                      <Maximize className="h-2.5 w-2.5 text-amber-600 dark:text-amber-400" />
+                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-amber-500/15 to-orange-500/15 border border-amber-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-amber-500/10">
+                      <Maximize className="h-2.5 w-2.5 text-amber-500 dark:text-amber-400" />
                       <span className="text-[10px] font-bold text-foreground/80">{property.area_sqm}m²</span>
                     </div>
                   )}
