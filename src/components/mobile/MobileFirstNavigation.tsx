@@ -45,9 +45,9 @@ const MobileFirstNavigation: React.FC = () => {
   // Quick actions - 1 tap from FAB
   const quickActions = [
     { icon: Plus, label: 'List Property', path: '/add-property', color: 'bg-primary' },
-    { icon: Camera, label: 'AR Preview', path: '/mobile/ar-preview', color: 'bg-violet-500' },
-    { icon: MessageCircle, label: 'Community', path: '/mobile/community', color: 'bg-emerald-500' },
-    { icon: Gavel, label: 'Auctions', path: '/mobile/auctions', color: 'bg-amber-500' },
+    { icon: Camera, label: 'AR Preview', path: '/mobile/ar-preview', color: 'bg-accent' },
+    { icon: MessageCircle, label: 'Community', path: '/mobile/community', color: 'bg-secondary' },
+    { icon: Gavel, label: 'Auctions', path: '/mobile/auctions', color: 'bg-muted-foreground' },
   ];
 
   // Secondary navigation - accessible via menu expansion
