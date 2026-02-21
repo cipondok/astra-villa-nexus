@@ -263,17 +263,17 @@ const PropertyImageUpload: React.FC<PropertyImageUploadProps> = ({
   return (
     <div className="space-y-4">
       {/* Property Type Header */}
-      <div className="flex items-center space-x-2 text-sm font-medium text-gray-700">
+      <div className="flex items-center space-x-2 text-sm font-medium text-foreground">
         {getPropertyTypeIcon(propertyType)}
         <span>{getPropertyTypeLabel(propertyType)} Images</span>
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-muted-foreground">
           ({uploadedImages.length}/{maxImages})
         </span>
       </div>
 
       {/* Upload Area */}
       <Card className={`border-2 border-dashed transition-colors ${
-        dragOver ? 'border-primary bg-primary/5' : 'border-gray-300 hover:border-gray-400'
+        dragOver ? 'border-primary bg-primary/5' : 'border-border hover:border-border/80'
       }`}>
         <CardContent className="p-6">
           <div
@@ -284,11 +284,11 @@ const PropertyImageUpload: React.FC<PropertyImageUploadProps> = ({
             onDrop={handleDrop}
           >
             <div className="flex flex-col items-center space-y-2">
-              <Upload className="h-8 w-8 text-gray-400" />
-              <div className="text-sm text-gray-600">
+              <Upload className="h-8 w-8 text-muted-foreground" />
+              <div className="text-sm text-muted-foreground">
                 <span className="font-medium text-primary">Click to upload</span> or drag and drop
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-muted-foreground/70">
                 PNG, JPG, WebP, GIF up to 5MB each
               </div>
             </div>
@@ -321,7 +321,7 @@ const PropertyImageUpload: React.FC<PropertyImageUploadProps> = ({
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {uploadedImages.map((imageUrl, index) => (
             <div key={index} className="relative group">
-              <div className="aspect-square rounded-lg overflow-hidden border bg-gray-100">
+              <div className="aspect-square rounded-lg overflow-hidden border bg-muted">
                 <img
                   src={imageUrl}
                   alt={`Property image ${index + 1}`}
@@ -355,8 +355,8 @@ const PropertyImageUpload: React.FC<PropertyImageUploadProps> = ({
 
       {/* Empty State */}
       {uploadedImages.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
-          <FileImage className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+        <div className="text-center py-8 text-muted-foreground">
+          <FileImage className="h-12 w-12 mx-auto mb-2 text-muted-foreground/60" />
           <p className="text-sm">No images uploaded yet</p>
           <p className="text-xs">Upload images to showcase your {getPropertyTypeLabel(propertyType).toLowerCase()}</p>
         </div>

@@ -328,7 +328,7 @@ const OptimizedImageUpload = ({
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <ImageIcon className="h-5 w-5 text-blue-600" />
+            <ImageIcon className="h-5 w-5 text-primary" />
             <span>Property Photos</span>
           </div>
           <div className="flex items-center gap-2 ml-auto">
@@ -337,7 +337,7 @@ const OptimizedImageUpload = ({
               AI Optimized
             </Badge>
             {compressionStats.saved > 0 && (
-              <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+              <Badge variant="secondary" className="text-xs bg-chart-1/10 text-chart-1">
                 <Gauge className="h-3 w-3 mr-1" />
                 {compressionStats.percent}% Compressed
               </Badge>
@@ -355,8 +355,8 @@ const OptimizedImageUpload = ({
           className={`
             relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200
             ${dragActive 
-              ? 'border-blue-500 bg-blue-50 shadow-lg' 
-              : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+              ? 'border-primary bg-primary/5 shadow-lg' 
+              : 'border-border hover:border-border/80 hover:bg-muted/30'
             }
             ${hasActiveTasks ? 'pointer-events-none opacity-60' : 'cursor-pointer'}
           `}
@@ -377,19 +377,19 @@ const OptimizedImageUpload = ({
           
           <div className="space-y-4">
             <div className="flex justify-center">
-              <div className="p-4 bg-blue-100 rounded-full">
-                <Camera className="h-8 w-8 text-blue-600" />
+              <div className="p-4 bg-primary/10 rounded-full">
+                <Camera className="h-8 w-8 text-primary" />
               </div>
             </div>
             
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-lg font-medium text-foreground mb-2">
                 {hasActiveTasks ? 'Processing Images...' : 'Upload Property Photos'}
               </h3>
-              <p className="text-gray-600 text-sm mb-4">
+              <p className="text-muted-foreground text-sm mb-4">
                 Drag and drop images here, or click to select files
               </p>
-              <div className="flex flex-wrap justify-center gap-2 text-xs text-gray-500">
+              <div className="flex flex-wrap justify-center gap-2 text-xs text-muted-foreground/70">
                 <span>• Max {maxFiles} images</span>
                 <span>• Auto compression</span>
                 <span>• WebP optimization</span>
