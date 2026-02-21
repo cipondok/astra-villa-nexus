@@ -95,8 +95,8 @@ const AgentOverview = () => {
       name: "Gold",
       level: 3,
       icon: Crown,
-      color: "bg-gradient-to-r from-yellow-400 to-yellow-600",
-      textColor: "text-yellow-600"
+      color: "bg-gradient-to-r from-gold-primary to-gold-primary/80",
+      textColor: "text-gold-primary"
     },
     nextLevel: {
       name: "Platinum",
@@ -183,7 +183,7 @@ const AgentOverview = () => {
               <div className="min-w-0">
                 <h1 className="text-xs sm:text-sm font-bold text-foreground truncate">Agent Dashboard</h1>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                  <div className="w-1.5 h-1.5 bg-chart-1 rounded-full animate-pulse"></div>
                   <Badge className="bg-primary text-primary-foreground px-1.5 py-0 text-[8px] sm:text-[9px]">
                     <CurrentIcon className="h-2 w-2 mr-0.5" />
                     {agentMembership.currentLevel.name}
@@ -210,28 +210,28 @@ const AgentOverview = () => {
               <div className="text-[8px] text-muted-foreground">Properties</div>
             </div>
             <div className="text-center p-1.5 bg-muted/50 rounded-md">
-              <Activity className="h-3 w-3 mx-auto mb-0.5 text-green-600" />
+              <Activity className="h-3 w-3 mx-auto mb-0.5 text-chart-1" />
               <div className="text-sm sm:text-base font-bold">{stats.activeListings}</div>
               <div className="text-[8px] text-muted-foreground">Active</div>
             </div>
             <div className="text-center p-1.5 bg-muted/50 rounded-md">
-              <Clock className="h-3 w-3 mx-auto mb-0.5 text-amber-500" />
+              <Clock className="h-3 w-3 mx-auto mb-0.5 text-chart-3" />
               <div className="text-sm sm:text-base font-bold">{stats.pendingListings}</div>
               <div className="text-[8px] text-muted-foreground">Pending</div>
             </div>
             <div className="text-center p-1.5 bg-muted/50 rounded-md">
-              <Users className="h-3 w-3 mx-auto mb-0.5 text-blue-600" />
+              <Users className="h-3 w-3 mx-auto mb-0.5 text-chart-2" />
               <div className="text-sm sm:text-base font-bold">{stats.totalClients}</div>
               <div className="text-[8px] text-muted-foreground">Clients</div>
             </div>
             {/* ASTRA Wallet Mini */}
             <div 
-              className="text-center p-1.5 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-md cursor-pointer hover:from-amber-500/20 hover:to-orange-500/20 transition-colors"
+              className="text-center p-1.5 bg-gradient-to-br from-gold-primary/10 to-gold-primary/5 border border-gold-primary/20 rounded-md cursor-pointer hover:from-gold-primary/20 hover:to-gold-primary/10 transition-colors"
               onClick={() => navigate('/astra-tokens')}
             >
-              <Coins className="h-3 w-3 mx-auto mb-0.5 text-amber-500" />
-              <div className="text-sm sm:text-base font-bold text-amber-600">{formatTokens(balance?.available_tokens || 0)}</div>
-              <div className="text-[8px] text-amber-600/80">ASTRA</div>
+              <Coins className="h-3 w-3 mx-auto mb-0.5 text-gold-primary" />
+              <div className="text-sm sm:text-base font-bold text-gold-primary">{formatTokens(balance?.available_tokens || 0)}</div>
+              <div className="text-[8px] text-gold-primary/80">ASTRA</div>
             </div>
           </div>
 
@@ -251,7 +251,7 @@ const AgentOverview = () => {
 
             {/* Profile Completion */}
             <div className="flex items-center gap-2 p-1.5 bg-muted/30 rounded-md">
-              <User className="h-4 w-4 text-amber-500 shrink-0" />
+              <User className="h-4 w-4 text-gold-primary shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-0.5">
                   <span className="text-[9px] font-medium">Profile</span>
@@ -270,27 +270,27 @@ const AgentOverview = () => {
             </div>
 
             {/* Daily Check-in */}
-            <div className="flex items-center gap-2 p-1.5 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-md">
+            <div className="flex items-center gap-2 p-1.5 bg-gradient-to-r from-gold-primary/10 to-gold-primary/5 border border-gold-primary/20 rounded-md">
               {walletStats?.currentStreak > 0 && (
-                <div className="flex items-center gap-0.5 text-orange-500 shrink-0">
+                <div className="flex items-center gap-0.5 text-gold-primary shrink-0">
                   <Flame className="h-3 w-3" />
                   <span className="text-[9px] font-bold">{walletStats.currentStreak}</span>
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <span className="text-[9px] font-medium text-amber-700 dark:text-amber-300">Daily Reward</span>
+                <span className="text-[9px] font-medium text-gold-primary">Daily Reward</span>
               </div>
               {!checkinStatus?.hasCheckedInToday && walletStats?.canClaimToday ? (
                 <Button 
                   size="sm" 
                   onClick={() => performCheckin()}
                   disabled={isCheckingIn}
-                  className="h-5 text-[8px] px-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                  className="h-5 text-[8px] px-2 bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-background"
                 >
                   {isCheckingIn ? <Sparkles className="h-2.5 w-2.5 animate-spin" /> : <><Gift className="h-2.5 w-2.5 mr-0.5" />Claim</>}
                 </Button>
               ) : (
-                <Badge className="bg-emerald-500/20 text-emerald-600 border-emerald-500/30 text-[8px] px-1.5 py-0">
+                <Badge className="bg-chart-1/20 text-chart-1 border-chart-1/30 text-[8px] px-1.5 py-0">
                   <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />Done
                 </Badge>
               )}
@@ -342,7 +342,7 @@ const AgentOverview = () => {
                     <div className="text-[10px] font-bold">Jan 2024</div>
                   </div>
                   <div className="text-center p-1.5 bg-muted/30 rounded-md">
-                    <TrendingUp className="h-3 w-3 mx-auto mb-0.5 text-green-600" />
+                    <TrendingUp className="h-3 w-3 mx-auto mb-0.5 text-chart-1" />
                     <div className="text-[8px] text-muted-foreground">Sales</div>
                     <div className="text-[10px] font-bold">Rp 2.5B</div>
                   </div>
@@ -563,7 +563,7 @@ const AgentOverview = () => {
                   <div>
                     <p className="text-[9px] text-muted-foreground">Revenue</p>
                     <p className="text-xs font-bold">Rp 2.5B</p>
-                    <p className="text-[8px] text-green-600">+12%</p>
+                    <p className="text-[8px] text-chart-1">+12%</p>
                   </div>
                   <DollarSign className="h-4 w-4 text-primary" />
                 </div>
@@ -576,7 +576,7 @@ const AgentOverview = () => {
                   <div>
                     <p className="text-[9px] text-muted-foreground">Sold</p>
                     <p className="text-xs font-bold">24</p>
-                    <p className="text-[8px] text-green-600">+8%</p>
+                    <p className="text-[8px] text-chart-1">+8%</p>
                   </div>
                   <Building className="h-4 w-4 text-primary" />
                 </div>
@@ -589,7 +589,7 @@ const AgentOverview = () => {
                   <div>
                     <p className="text-[9px] text-muted-foreground">Clients</p>
                     <p className="text-xs font-bold">48</p>
-                    <p className="text-[8px] text-blue-600">+5 new</p>
+                    <p className="text-[8px] text-chart-2">+5 new</p>
                   </div>
                   <Users className="h-4 w-4 text-primary" />
                 </div>
@@ -602,7 +602,7 @@ const AgentOverview = () => {
                   <div>
                     <p className="text-[9px] text-muted-foreground">Deal Time</p>
                     <p className="text-xs font-bold">21 days</p>
-                    <p className="text-[8px] text-green-600">-3 days</p>
+                    <p className="text-[8px] text-chart-1">-3 days</p>
                   </div>
                   <Clock className="h-4 w-4 text-primary" />
                 </div>

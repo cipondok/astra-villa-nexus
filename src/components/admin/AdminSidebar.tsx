@@ -128,7 +128,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
       
       <div ref={sidebarRef} className="relative h-full flex z-40">
         {/* Icon-only Sidebar - Compact */}
-         <div className="w-12 h-full bg-slate-900/95 backdrop-blur-sm border-r border-slate-700/30 flex flex-col py-2 px-1.5 shadow-lg">
+         <div className="w-12 h-full bg-card/95 backdrop-blur-sm border-r border-border/30 flex flex-col py-2 px-1.5 shadow-lg">
            {/* IMPORTANT: category list must be scrollable or bottom categories (like Features) become unreachable */}
            <ScrollArea className="flex-1">
              <div className="flex flex-col gap-0.5">
@@ -154,7 +154,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                            ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-105"
                            : isActive
                              ? "bg-primary/15 text-primary"
-                             : "hover:bg-slate-700/60 text-slate-400 hover:text-slate-100 hover:scale-105"
+                             : "hover:bg-muted/60 text-muted-foreground hover:text-foreground hover:scale-105"
                        )}
                      >
                        <CategoryIcon className="h-4 w-4 transition-transform duration-200" />
