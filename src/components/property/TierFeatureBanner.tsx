@@ -107,7 +107,7 @@ const TierFeatureBanner: React.FC = () => {
               </Badge>
             )}
             {canUse3DModel && (
-              <Badge variant="secondary" className="text-xs gap-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30">
+              <Badge variant="secondary" className="text-xs gap-1 bg-chart-4/10 text-chart-4 border-chart-4/30">
                 <Box className="h-3 w-3" />
                 {t.model3d}
               </Badge>
