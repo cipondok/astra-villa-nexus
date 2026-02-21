@@ -55,10 +55,10 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
   const renderFieldIndicator = (field: keyof typeof fieldValidation) => {
     const status = getFieldStatus(field);
     if (status === 'valid') {
-      return <Check className="h-4 w-4 text-green-500" />;
+      return <Check className="h-4 w-4 text-chart-1" />;
     }
     if (status === 'invalid') {
-      return <AlertCircle className="h-4 w-4 text-red-500" />;
+      return <AlertCircle className="h-4 w-4 text-destructive" />;
     }
     return null;
   };
@@ -163,7 +163,7 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                 {/* Full Name */}
                 <div>
                   <Label htmlFor="full_name" className="flex items-center gap-2">
-                    Full Name <span className="text-red-500">*</span>
+                    Full Name <span className="text-destructive">*</span>
                     {renderFieldIndicator('full_name')}
                   </Label>
                   <Input
@@ -172,10 +172,10 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                     onChange={(e) => handleInputChange('full_name', e.target.value)}
                     onBlur={() => setTouchedFields(prev => ({ ...prev, full_name: true }))}
                     placeholder="John Doe"
-                    className={getFieldStatus('full_name') === 'invalid' ? 'border-red-500' : getFieldStatus('full_name') === 'valid' ? 'border-green-500' : ''}
+                    className={getFieldStatus('full_name') === 'invalid' ? 'border-destructive' : getFieldStatus('full_name') === 'valid' ? 'border-chart-1' : ''}
                   />
                   {getFieldStatus('full_name') === 'invalid' && (
-                    <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                    <p className="text-xs text-destructive mt-1 flex items-center gap-1">
                       <AlertCircle className="h-3 w-3" /> Full Name is required (min 2 characters)
                     </p>
                   )}
@@ -184,7 +184,7 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                 {/* Email */}
                 <div>
                   <Label htmlFor="email" className="flex items-center gap-2">
-                    Email Address <span className="text-red-500">*</span>
+                    Email Address <span className="text-destructive">*</span>
                     {renderFieldIndicator('email')}
                   </Label>
                   <Input
@@ -194,10 +194,10 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                     onChange={(e) => handleInputChange('email', e.target.value)}
                     onBlur={() => setTouchedFields(prev => ({ ...prev, email: true }))}
                     placeholder="john@example.com"
-                    className={getFieldStatus('email') === 'invalid' ? 'border-red-500' : getFieldStatus('email') === 'valid' ? 'border-green-500' : ''}
+                    className={getFieldStatus('email') === 'invalid' ? 'border-destructive' : getFieldStatus('email') === 'valid' ? 'border-chart-1' : ''}
                   />
                   {getFieldStatus('email') === 'invalid' && (
-                    <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                    <p className="text-xs text-destructive mt-1 flex items-center gap-1">
                       <AlertCircle className="h-3 w-3" /> Please enter a valid email address
                     </p>
                   )}
@@ -206,7 +206,7 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                 {/* Phone */}
                 <div>
                   <Label htmlFor="phone" className="flex items-center gap-2">
-                    Phone Number <span className="text-red-500">*</span>
+                    Phone Number <span className="text-destructive">*</span>
                     {renderFieldIndicator('phone')}
                   </Label>
                   <Input
@@ -216,10 +216,10 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     onBlur={() => setTouchedFields(prev => ({ ...prev, phone: true }))}
                     placeholder="+1234567890"
-                    className={getFieldStatus('phone') === 'invalid' ? 'border-red-500' : getFieldStatus('phone') === 'valid' ? 'border-green-500' : ''}
+                    className={getFieldStatus('phone') === 'invalid' ? 'border-destructive' : getFieldStatus('phone') === 'valid' ? 'border-chart-1' : ''}
                   />
                   {getFieldStatus('phone') === 'invalid' && (
-                    <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                    <p className="text-xs text-destructive mt-1 flex items-center gap-1">
                       <AlertCircle className="h-3 w-3" /> Phone Number is required (min 8 digits)
                     </p>
                   )}
@@ -250,14 +250,14 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                 {/* Business Type */}
                 <div>
                   <Label htmlFor="business_type" className="flex items-center gap-2">
-                    Business Type <span className="text-red-500">*</span>
+                    Business Type <span className="text-destructive">*</span>
                     {renderFieldIndicator('business_type')}
                   </Label>
                   <Select 
                     value={formData.business_type} 
                     onValueChange={(value) => handleSelectChange('business_type', value)}
                   >
-                    <SelectTrigger className={getFieldStatus('business_type') === 'invalid' ? 'border-red-500' : getFieldStatus('business_type') === 'valid' ? 'border-green-500' : ''}>
+                    <SelectTrigger className={getFieldStatus('business_type') === 'invalid' ? 'border-destructive' : getFieldStatus('business_type') === 'valid' ? 'border-chart-1' : ''}>
                       <SelectValue placeholder="Select business type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -267,7 +267,7 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                     </SelectContent>
                   </Select>
                   {getFieldStatus('business_type') === 'invalid' && (
-                    <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                    <p className="text-xs text-destructive mt-1 flex items-center gap-1">
                       <AlertCircle className="h-3 w-3" /> Please select a business type
                     </p>
                   )}

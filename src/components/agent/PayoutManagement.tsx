@@ -259,17 +259,17 @@ const PayoutManagement = () => {
     switch (status?.toLowerCase()) {
       case 'completed':
       case 'paid_out':
-        return 'bg-green-100 text-green-800';
+        return 'bg-chart-1/10 text-chart-1';
       case 'pending':
       case 'earned':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-chart-3/10 text-chart-3';
       case 'processing':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-chart-4/10 text-chart-4';
       case 'failed':
       case 'cancelled':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -321,14 +321,14 @@ const PayoutManagement = () => {
 
       {/* Balance Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 md:gap-6">
-        <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+        <Card className="bg-gradient-to-r from-chart-1 to-chart-1/80 text-primary-foreground">
           <CardContent className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] sm:text-xs md:text-sm text-green-100">Available Balance</p>
+                <p className="text-[10px] sm:text-xs md:text-sm text-primary-foreground/70">Available Balance</p>
                 <p className="text-sm sm:text-lg md:text-2xl font-bold">{formatCurrency(availableBalance)}</p>
               </div>
-              <Wallet className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-green-100" />
+              <Wallet className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-primary-foreground/70" />
             </div>
           </CardContent>
         </Card>
@@ -388,11 +388,11 @@ const PayoutManagement = () => {
                     <div key={transaction.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          transaction.booking_type === 'rental' ? 'bg-blue-100' : 'bg-green-100'
+                          transaction.booking_type === 'rental' ? 'bg-chart-4/10' : 'bg-chart-1/10'
                         }`}>
                           {transaction.booking_type === 'rental' ? 
-                            <BanknoteIcon className="h-5 w-5 text-blue-600" /> :
-                            <Smartphone className="h-5 w-5 text-green-600" />
+                            <BanknoteIcon className="h-5 w-5 text-chart-4" /> :
+                            <Smartphone className="h-5 w-5 text-chart-1" />
                           }
                         </div>
                         <div>
@@ -403,7 +403,7 @@ const PayoutManagement = () => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-green-600">+{formatCurrency(transaction.amount)}</p>
+                        <p className="font-bold text-chart-1">+{formatCurrency(transaction.amount)}</p>
                         <Badge className={getStatusColor(transaction.status)}>
                           {transaction.status.replace('_', ' ')}
                         </Badge>
@@ -542,11 +542,11 @@ const PayoutManagement = () => {
                     <div key={transaction.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          transaction.booking_type === 'rental' ? 'bg-blue-100' : 'bg-green-100'
+                          transaction.booking_type === 'rental' ? 'bg-chart-4/10' : 'bg-chart-1/10'
                         }`}>
                           {transaction.booking_type === 'rental' ? 
-                            <BanknoteIcon className="h-4 w-4 text-blue-600" /> :
-                            <Smartphone className="h-4 w-4 text-green-600" />
+                            <BanknoteIcon className="h-4 w-4 text-chart-4" /> :
+                            <Smartphone className="h-4 w-4 text-chart-1" />
                           }
                         </div>
                         <div>
@@ -558,7 +558,7 @@ const PayoutManagement = () => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-green-600">{formatCurrency(transaction.amount)}</p>
+                        <p className="font-bold text-chart-1">{formatCurrency(transaction.amount)}</p>
                         <Badge className={getStatusColor(transaction.status)}>
                           {transaction.status.replace('_', ' ')}
                         </Badge>

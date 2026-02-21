@@ -261,15 +261,15 @@ const BookingPaymentManager = () => {
     switch (status?.toLowerCase()) {
       case 'confirmed':
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-chart-1/10 text-chart-1';
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-chart-3/10 text-chart-3';
       case 'cancelled':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive';
       case 'in_progress':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-chart-4/10 text-chart-4';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -277,15 +277,15 @@ const BookingPaymentManager = () => {
     switch (status?.toLowerCase()) {
       case 'paid':
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-chart-1/10 text-chart-1';
       case 'pending':
       case 'pending_verification':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-chart-3/10 text-chart-3';
       case 'failed':
       case 'cancelled':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -442,7 +442,7 @@ const BookingPaymentManager = () => {
                           <Button 
                             size="sm" 
                             onClick={() => updateVendorBookingStatus(booking.id, 'confirmed')}
-                            className="bg-green-600 hover:bg-green-700"
+                            className="bg-chart-1 hover:bg-chart-1/90"
                           >
                             <CheckCircle className="h-4 w-4 mr-1" />
                             Confirm
@@ -461,7 +461,7 @@ const BookingPaymentManager = () => {
                         <Button 
                           size="sm" 
                           onClick={() => updateVendorBookingStatus(booking.id, 'in_progress')}
-                          className="bg-blue-600 hover:bg-blue-700"
+                          className="bg-chart-4 hover:bg-chart-4/90"
                         >
                           Start Service
                         </Button>
@@ -470,7 +470,7 @@ const BookingPaymentManager = () => {
                         <Button 
                           size="sm" 
                           onClick={() => updateVendorBookingStatus(booking.id, 'completed')}
-                          className="bg-purple-600 hover:bg-purple-700"
+                          className="bg-accent hover:bg-accent/90"
                         >
                           Mark Complete
                         </Button>
@@ -551,7 +551,7 @@ const BookingPaymentManager = () => {
                           <Button 
                             size="sm" 
                             onClick={() => updateRentalBookingStatus(booking.id, 'confirmed')}
-                            className="bg-green-600 hover:bg-green-700"
+                            className="bg-chart-1 hover:bg-chart-1/90"
                           >
                             <CheckCircle className="h-4 w-4 mr-1" />
                             Confirm
@@ -570,7 +570,7 @@ const BookingPaymentManager = () => {
                         <Button 
                           size="sm" 
                           onClick={() => updateRentalBookingStatus(booking.id, 'checked_in')}
-                          className="bg-blue-600 hover:bg-blue-700"
+                          className="bg-chart-4 hover:bg-chart-4/90"
                         >
                           Check In
                         </Button>
@@ -579,7 +579,7 @@ const BookingPaymentManager = () => {
                         <Button 
                           size="sm" 
                           onClick={() => updateRentalBookingStatus(booking.id, 'completed')}
-                          className="bg-purple-600 hover:bg-purple-700"
+                          className="bg-accent hover:bg-accent/90"
                         >
                           Check Out
                         </Button>
