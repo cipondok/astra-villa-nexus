@@ -1815,11 +1815,11 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             aria-label="AI Chat Assistant"
             aria-modal="true"
           >
-          <Card className="h-full w-full flex flex-col border border-primary/40 overflow-hidden glass-card shadow-2xl shadow-primary/20 rounded-2xl md:rounded-2xl max-h-full relative touch-manipulation">
+          <Card className="h-full w-full flex flex-col border border-border/60 overflow-hidden bg-background/95 backdrop-blur-2xl shadow-2xl shadow-black/20 rounded-2xl md:rounded-2xl max-h-full relative touch-manipulation">
             {/* Header with Close, Minimize, and Sound Toggle - Draggable */}
             <div 
               className={cn(
-                "flex items-center justify-between p-3 border-b-2 border-primary/30 bg-gradient-to-r from-background/95 via-background/90 to-primary/5 backdrop-blur-2xl text-foreground touch-manipulation",
+                "flex items-center justify-between px-4 py-3 border-b border-border/50 bg-gradient-to-r from-background via-background to-primary/5 backdrop-blur-2xl text-foreground touch-manipulation",
                 !isMobile && !isMinimized && "cursor-move select-none"
               )}
               onMouseDown={handleDragStart}
@@ -1828,17 +1828,19 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               title={isMobile ? "Double-tap to toggle view mode" : !isMobile ? "Double-click to reset position" : undefined}
             >
               <div className="flex items-center gap-3">
-                {/* Logo with glassy royal border */}
-                <div className="relative p-1 rounded-xl bg-gradient-to-br from-primary/20 via-accent/10 to-primary/20 border border-primary/30 shadow-lg shadow-primary/10">
-                  <Icons.aiLogo className="h-7 w-7" logoUrl={chatbotLogoUrl} />
+                {/* Logo with subtle border */}
+                <div className="relative p-1.5 rounded-xl bg-primary/10 border border-primary/20">
+                  <Icons.aiLogo className="h-6 w-6" logoUrl={chatbotLogoUrl} />
+                  {/* Online indicator */}
+                  <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-background" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ASTRA AI</span>
-                  {viewMode === 'mini' && messages.length > 3 && (
-                    <span className="text-[10px] text-muted-foreground">
-                      {messages.length} messages
-                    </span>
-                  )}
+                  <span className="text-sm font-bold tracking-wide bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ASTRA AI</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    {viewMode === 'mini' && messages.length > 3 
+                      ? `${messages.length} messages` 
+                      : 'Online · Ready to help'}
+                  </span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -2080,13 +2082,14 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 text-foreground hover:bg-primary/20 rounded-full"
+                  className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-destructive/10 rounded-full transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleClose();
                   }}
+                  aria-label="Close chat"
                 >
-                  ✕
+                  <XIcon className="h-4 w-4" />
                 </Button>
               </div>
             </div>
