@@ -439,58 +439,48 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       onClick={handleInteraction}
       onKeyDown={handleInteraction}
     >
-      {/* 60% Transparent Backdrop */}
+      {/* Backdrop with brand tint */}
       <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+        className="absolute inset-0 bg-primary/40 dark:bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
         onClick={handleClose}
       />
       
-      {/* Compact Modal - Smaller Size */}
-      <div className="relative w-full max-w-[300px] md:max-w-[340px] animate-in slide-in-from-top-4 fade-in zoom-in-95 duration-300 origin-center">
-        {/* Glass Card */}
-        <div className="bg-background/70 backdrop-blur-xl border border-border/30 rounded-xl shadow-2xl overflow-hidden">
+      {/* Modal Card - Brand styled */}
+      <div className="relative w-full max-w-[320px] md:max-w-[360px] animate-in slide-in-from-top-4 fade-in zoom-in-95 duration-300 origin-center">
+        {/* Outer glow */}
+        <div className="absolute -inset-1 bg-gradient-to-br from-primary/30 via-transparent to-accent/20 rounded-2xl blur-lg pointer-events-none" />
+        
+        <div className="relative bg-card/95 dark:bg-card/98 backdrop-blur-2xl border border-primary/20 dark:border-primary/15 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden">
+          {/* Top accent bar */}
+          <div className="h-1 bg-gradient-to-r from-primary via-primary/80 to-accent" />
+          
           {/* Countdown Timer */}
           {!hasInteraction && !isLoading && !isSuccess && countdown > 0 && (
-            <div className="absolute left-3 top-3 z-10 flex items-center gap-1">
+            <div className="absolute left-3 top-4 z-10 flex items-center gap-1">
               <div className="relative h-5 w-5">
                 <svg className="h-5 w-5 -rotate-90" viewBox="0 0 24 24">
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="text-muted/30"
-                  />
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeDasharray={62.83}
-                    strokeDashoffset={62.83 - (62.83 * countdown) / 5}
-                    className="text-primary transition-all duration-1000"
-                  />
+                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" className="text-muted/30" />
+                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray={62.83} strokeDashoffset={62.83 - (62.83 * countdown) / 5} className="text-primary transition-all duration-1000" />
                 </svg>
-                <span className="absolute inset-0 flex items-center justify-center text-[8px] font-medium text-foreground">
-                  {countdown}
-                </span>
+                <span className="absolute inset-0 flex items-center justify-center text-[8px] font-medium text-foreground">{countdown}</span>
               </div>
             </div>
           )}
 
-          {/* Header */}
-          <div className="flex items-center justify-between px-3 py-2 border-b border-primary/20 bg-gradient-to-r from-primary/15 via-primary/10 to-accent/15">
+          {/* Header - Brand gradient */}
+          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 border-b border-primary/10">
             <div className="flex items-center gap-2">
-              <h2 className="text-xs font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                ASTRA Villa
-              </h2>
-              <span className="text-[9px] text-muted-foreground">
-                {isLogin ? 'Welcome back!' : 'Join us today'}
-              </span>
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-sm shadow-primary/20">
+                <span className="text-primary-foreground font-bold text-[10px]">A</span>
+              </div>
+              <div>
+                <h2 className="text-sm font-bold text-foreground">
+                  ASTRA <span className="text-primary">Villa</span>
+                </h2>
+                <span className="text-[9px] text-muted-foreground">
+                  {isLogin ? 'Welcome back!' : 'Join us today'}
+                </span>
+              </div>
             </div>
             <Button 
               ref={closeRef}
@@ -498,14 +488,14 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
               size="sm" 
               onClick={handleClose} 
               disabled={isLoading}
-              className="h-5 w-5 p-0 hover:bg-muted rounded-full text-muted-foreground"
+              className="h-7 w-7 p-0 hover:bg-destructive/10 rounded-full text-muted-foreground hover:text-destructive"
             >
-              <X className="h-3 w-3" />
+              <X className="h-3.5 w-3.5" />
             </Button>
           </div>
 
           {/* Content */}
-          <div className="px-3 py-2 space-y-2">
+          <div className="px-4 py-3 space-y-2.5">
             {/* Signup Promotion Banner */}
             {!isLogin && !isSuccess && (
               <SignupPromotionBanner 
@@ -535,13 +525,13 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
             <Button 
               onClick={handleGoogleSignIn}
               disabled={isLoading || isSuccess}
-              className="w-full h-8 bg-background hover:bg-muted text-foreground border border-border font-medium rounded-lg text-[10px] flex items-center justify-center gap-1.5"
+              className="w-full h-9 bg-card hover:bg-muted text-foreground border border-border/60 font-medium rounded-xl text-xs flex items-center justify-center gap-2 shadow-sm transition-all hover:shadow-md"
             >
               {isLoading ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <>
-                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24">
+                  <svg className="h-4 w-4" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -560,38 +550,38 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
             </div>
 
             {/* Auth Method Toggle - Email / WhatsApp */}
-            <div className="flex gap-1 p-0.5 bg-muted/50 rounded-lg">
+            <div className="flex gap-1 p-0.5 bg-muted/40 rounded-xl border border-border/30">
               <Button
                 type="button"
                 variant={authMethod === "email" ? "default" : "ghost"}
                 size="sm"
-                className="flex-1 h-7 text-[10px] gap-1"
+                className={`flex-1 h-8 text-xs gap-1.5 rounded-lg transition-all ${authMethod === "email" ? "bg-primary text-primary-foreground shadow-sm" : ""}`}
                 onClick={() => { setAuthMethod("email"); handleInteraction(); }}
               >
-                <Mail className="h-3 w-3" />
+                <Mail className="h-3.5 w-3.5" />
                 {currentText.useEmail}
               </Button>
               <Button
                 type="button"
                 variant={authMethod === "whatsapp" ? "default" : "ghost"}
                 size="sm"
-                className="flex-1 h-7 text-[10px] gap-1"
+                className={`flex-1 h-8 text-xs gap-1.5 rounded-lg transition-all ${authMethod === "whatsapp" ? "bg-primary text-primary-foreground shadow-sm" : ""}`}
                 onClick={() => { setAuthMethod("whatsapp"); handleInteraction(); }}
               >
-                <MessageCircle className="h-3 w-3" />
+                <MessageCircle className="h-3.5 w-3.5" />
                 {currentText.useWhatsapp}
               </Button>
             </div>
 
             {/* Toggle Buttons */}
-            <div className="flex bg-muted/50 rounded-md p-0.5">
+            <div className="flex bg-muted/40 rounded-xl p-0.5 border border-border/30">
               <button
                 type="button"
                 onClick={() => { setIsLogin(true); setErrors({}); handleInteraction(); }}
                 disabled={isLoading}
-                className={`flex-1 py-1.5 px-2 text-[10px] font-medium rounded-md transition-all duration-200 ${
+                className={`flex-1 py-2 px-3 text-xs font-semibold rounded-lg transition-all duration-200 ${
                   isLogin 
-                    ? 'bg-primary text-primary-foreground shadow-sm' 
+                    ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20' 
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -601,9 +591,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                 type="button"
                 onClick={() => { setIsLogin(false); setErrors({}); handleInteraction(); }}
                 disabled={isLoading}
-                className={`flex-1 py-1.5 px-2 text-[10px] font-medium rounded-md transition-all duration-200 ${
+                className={`flex-1 py-2 px-3 text-xs font-semibold rounded-lg transition-all duration-200 ${
                   !isLogin 
-                    ? 'bg-primary text-primary-foreground shadow-sm' 
+                    ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20' 
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -711,17 +701,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
                 <Button 
                   type="submit" 
-                  className="w-full h-7 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-md text-[10px]"
+                  className="w-full h-9 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold rounded-xl text-xs shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all"
                   disabled={isLoading || isSuccess}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                      <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
                       {currentText.signingIn}
                     </>
                   ) : isSuccess ? (
                     <>
-                      <CheckCircle className="mr-1 h-3 w-3" />
+                      <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
                       {currentText.success}
                     </>
                   ) : (
@@ -861,17 +851,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
                 <Button 
                   type="submit" 
-                  className="w-full h-7 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-md text-[10px]"
+                  className="w-full h-9 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold rounded-xl text-xs shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all"
                   disabled={isLoading || isSuccess}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                      <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
                       {currentText.creatingAccount}
                     </>
                   ) : isSuccess ? (
                     <>
-                      <CheckCircle className="mr-1 h-3 w-3" />
+                      <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
                       {currentText.success}
                     </>
                   ) : (
@@ -882,12 +872,12 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
             )}
 
             {/* Switch Form Link */}
-            <div className="text-center pt-1.5 border-t border-border">
+            <div className="text-center pt-2 border-t border-primary/10">
               <button
                 type="button"
                 onClick={() => { setIsLogin(!isLogin); setErrors({}); handleInteraction(); }}
                 disabled={isLoading}
-                className="text-[10px] text-primary hover:text-primary/80 transition-colors font-medium"
+                className="text-xs text-primary hover:text-primary/80 transition-colors font-semibold"
               >
                 {isLogin ? currentText.switchToRegister : currentText.switchToLogin}
               </button>
