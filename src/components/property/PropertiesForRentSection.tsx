@@ -7,6 +7,8 @@ import { Eye, Key, Building, Bed, Bath, Maximize, Plus, MapPin, Camera } from "l
 import { useNavigate } from "react-router-dom";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { Badge } from "@/components/ui/badge";
+import UserStatusBadge from "@/components/ui/UserStatusBadge";
+import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
 
 interface PropertiesForRentSectionProps {
   language: "en" | "id";
@@ -24,7 +26,8 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
     queryFn: async () => {
       const { data, error } = await supabase
         .from('properties')
-        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, area, development_status, description, three_d_model_url, virtual_tour_url, created_at')
+        .select(`id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, area, development_status, description, three_d_model_url, virtual_tour_url, created_at, owner_id,
+          owner:profiles!properties_owner_id_fkey(id, full_name, avatar_url, verification_status, user_level_id, user_levels(name))`)
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .eq('listing_type', 'rent')
@@ -36,11 +39,24 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
         .limit(12);
 
       if (error) return [];
-      return data?.map(property => ({
-        ...property,
-        listing_type: property.listing_type as "sale" | "rent" | "lease",
-        image_urls: property.images || []
-      })) || [];
+      return data?.map((property: any) => {
+        const ownerData = Array.isArray(property.owner) ? property.owner[0] : property.owner;
+        const userLevel = ownerData?.user_levels
+          ? (Array.isArray(ownerData.user_levels) ? ownerData.user_levels[0] : ownerData.user_levels)
+          : null;
+        return {
+          ...property,
+          listing_type: property.listing_type as "sale" | "rent" | "lease",
+          image_urls: property.images || [],
+          posted_by: ownerData ? {
+            id: ownerData.id,
+            name: ownerData.full_name || 'Anonymous',
+            avatar_url: ownerData.avatar_url,
+            verification_status: ownerData.verification_status || 'unverified',
+            user_level: userLevel?.name || undefined,
+          } : undefined,
+        };
+      }) || [];
     },
     retry: 1,
     refetchOnWindowFocus: false,
@@ -188,6 +204,22 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
                     </div>
                   )}
                 </div>
+
+                {/* Posted By - Verification & Level */}
+                {property.posted_by && (
+                  <div className="flex items-center gap-1 pt-1 border-t border-blue-400/15">
+                    {property.posted_by.avatar_url ? (
+                      <img src={property.posted_by.avatar_url} alt="" className="w-4 h-4 rounded-full object-cover flex-shrink-0" />
+                    ) : (
+                      <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-white text-[7px] font-bold flex-shrink-0">
+                        {property.posted_by.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <span className="text-[9px] text-foreground/70 font-medium truncate">{property.posted_by.name}</span>
+                    <UserStatusBadge status={property.posted_by.verification_status} size="xs" />
+                    <VIPLevelBadge level={property.posted_by.user_level} size="xs" />
+                  </div>
+                )}
               </div>
             </div>
           );
