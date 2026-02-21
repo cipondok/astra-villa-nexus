@@ -78,15 +78,15 @@ const UserDashboardPage = () => {
 
   if (loading || rolesLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-background via-background to-gold-primary/5">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
           <div className="relative">
-            <div className="animate-spin rounded-full h-12 w-12 border-2 border-primary/20 border-t-primary mx-auto mb-4"></div>
-            <Sparkles className="h-4 w-4 text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+             <div className="animate-spin rounded-full h-12 w-12 border-2 border-gold-primary/20 border-t-gold-primary mx-auto mb-4"></div>
+             <Sparkles className="h-4 w-4 text-gold-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           </div>
           <h2 className="text-sm font-medium text-muted-foreground">Loading your dashboard...</h2>
         </motion.div>
@@ -105,17 +105,17 @@ const UserDashboardPage = () => {
   }
 
   const statsData = [
-    { icon: Heart, value: stats.savedProperties, label: 'Saved', color: 'from-rose-500 to-pink-500', bgColor: 'bg-rose-500/10' },
-    { icon: Calendar, value: stats.messages, label: 'Bookings', color: 'from-blue-500 to-cyan-500', bgColor: 'bg-blue-500/10' },
-    { icon: Activity, value: recentActivity.length, label: 'Activities', color: 'from-emerald-500 to-green-500', bgColor: 'bg-emerald-500/10' },
-    { icon: Coins, value: balance?.available_tokens || 0, label: 'ASTRA', color: 'from-amber-500 to-yellow-500', bgColor: 'bg-amber-500/10' },
+    { icon: Heart, value: stats.savedProperties, label: 'Saved', color: 'from-destructive to-destructive/70', bgColor: 'bg-destructive/10' },
+    { icon: Calendar, value: stats.messages, label: 'Bookings', color: 'from-chart-2 to-chart-2/70', bgColor: 'bg-chart-2/10' },
+    { icon: Activity, value: recentActivity.length, label: 'Activities', color: 'from-chart-1 to-chart-1/70', bgColor: 'bg-chart-1/10' },
+    { icon: Coins, value: balance?.available_tokens || 0, label: 'ASTRA', color: 'from-gold-primary to-gold-primary/70', bgColor: 'bg-gold-primary/10' },
   ];
 
   const quickActions = [
-    { icon: Search, label: 'Browse', path: '/dijual', color: 'text-primary' },
-    { icon: Heart, label: `Saved (${stats.savedProperties})`, path: '/favorites', color: 'text-rose-500' },
-    { icon: Coins, label: 'ASTRA', path: '/astra-tokens', color: 'text-amber-500' },
-    { icon: MessageSquare, label: 'Support', path: '/contact', color: 'text-blue-500' },
+    { icon: Search, label: 'Browse', path: '/dijual', color: 'text-gold-primary' },
+    { icon: Heart, label: `Saved (${stats.savedProperties})`, path: '/favorites', color: 'text-destructive' },
+    { icon: Coins, label: 'ASTRA', path: '/astra-tokens', color: 'text-gold-primary' },
+    { icon: MessageSquare, label: 'Support', path: '/contact', color: 'text-chart-2' },
   ];
 
   return (
@@ -127,41 +127,41 @@ const UserDashboardPage = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary/90 via-primary to-accent/90 p-4 sm:p-5 shadow-lg shadow-primary/20"
+          className="relative overflow-hidden rounded-xl bg-gradient-to-r from-gold-primary/90 via-gold-primary to-gold-primary/70 p-4 sm:p-5 shadow-lg shadow-gold-primary/20"
         >
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yIDItNCAyLTRzMiAyIDIgNC0yIDQtMiA0LTItMi0yLTR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
           <div className="relative flex items-center gap-4">
             {/* User Avatar - Larger Display */}
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-full ring-3 ring-white/40 flex-shrink-0 overflow-hidden shadow-lg"
-            >
+               className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-full ring-3 ring-background/40 flex-shrink-0 overflow-hidden shadow-lg"
+             >
               <Avatar className="h-full w-full">
                 <AvatarImage 
                   src={profile?.avatar_url || ''} 
                   alt={profile?.full_name || 'User'} 
                   className="object-cover"
                 />
-                <AvatarFallback className="bg-white/20 backdrop-blur-sm text-white text-lg sm:text-xl font-bold">
+                <AvatarFallback className="bg-background/20 backdrop-blur-sm text-background text-lg sm:text-xl font-bold">
                   {profile?.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
-              <span className="absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white" />
+              <span className="absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full bg-chart-1 ring-2 ring-background" />
             </motion.div>
 
             {/* User Info */}
             <div className="min-w-0 flex-1">
-              <h1 className="text-lg sm:text-xl font-bold text-primary-foreground truncate">
+              <h1 className="text-lg sm:text-xl font-bold text-background truncate">
                 {profile?.full_name || user.email?.split('@')[0] || 'User'}
               </h1>
               <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                <Badge className="bg-white/25 text-white border-white/40 text-[10px] sm:text-xs px-2 py-0.5">
+                <Badge className="bg-background/25 text-background border-background/40 text-[10px] sm:text-xs px-2 py-0.5">
                   <Sparkles className="h-3 w-3 mr-1" />
                   {primaryRole}
                 </Badge>
                 <Badge 
                   variant="outline" 
-                  className="text-[10px] sm:text-xs px-2 py-0.5 border-amber-400/50 bg-amber-500/30 text-white"
+                  className="text-[10px] sm:text-xs px-2 py-0.5 border-background/50 bg-background/30 text-background"
                 >
                   🏆 {membershipLevel || 'Basic'}
                 </Badge>
@@ -183,14 +183,14 @@ const UserDashboardPage = () => {
                 return (
                   <div className="mt-2 space-y-1 max-w-[260px]">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-primary-foreground/70">
+                      <span className="text-[10px] text-background/70">
                         {nextLevel ? `Next: ${nextConfig?.icon} ${nextConfig?.shortLabel}` : '🏆 Max Level!'}
                       </span>
-                      <span className="text-[10px] text-primary-foreground/60 font-medium">{Math.round(progressPercent)}%</span>
+                      <span className="text-[10px] text-background/60 font-medium">{Math.round(progressPercent)}%</span>
                     </div>
-                    <Progress value={progressPercent} className="h-1.5 bg-white/20 [&>div]:bg-amber-400" />
+                    <Progress value={progressPercent} className="h-1.5 bg-background/20 [&>div]:bg-background" />
                     {nextLevel && tips[nextLevel] && (
-                      <p className="text-[9px] text-primary-foreground/60 leading-tight animate-pulse">
+                      <p className="text-[9px] text-background/60 leading-tight animate-pulse">
                         {tips[nextLevel]}
                       </p>
                     )}
@@ -204,9 +204,9 @@ const UserDashboardPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setWalletPopupOpen(true)}
-              className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-amber-500/30 backdrop-blur-sm flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400/50 hover:bg-amber-500/40 transition-colors"
-            >
-              <Wallet className="h-5 w-5 text-white" />
+               className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-background/30 backdrop-blur-sm flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-background/50 hover:bg-background/40 transition-colors"
+             >
+              <Wallet className="h-5 w-5 text-background" />
             </motion.button>
 
             {/* Settings Dropdown */}
@@ -215,9 +215,9 @@ const UserDashboardPage = () => {
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50 hover:bg-white/30 transition-colors"
-                >
-                  <Settings className="h-5 w-5 text-white" />
+                   className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-background/50 hover:bg-background/30 transition-colors"
+                 >
+                  <Settings className="h-5 w-5 text-background" />
                 </motion.button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
@@ -262,22 +262,22 @@ const UserDashboardPage = () => {
             transition={{ delay: 0.1 }}
           >
             <Card 
-              className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 text-white border-0 cursor-pointer group shadow-md shadow-emerald-500/20"
+              className="relative overflow-hidden bg-gradient-to-r from-gold-primary via-gold-primary/90 to-gold-primary/70 text-background border-0 cursor-pointer group shadow-md shadow-gold-primary/20"
               onClick={() => {
                 if (userRoles.includes('property_owner')) navigate('/dashboard/property-owner');
                 else if (userRoles.includes('agent')) navigate('/dashboard/agent');
                 else if (userRoles.includes('vendor')) navigate('/dashboard/vendor');
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-background/0 via-background/10 to-background/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
               <CardContent className="p-2 sm:p-2.5 relative">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-md bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-md bg-background/20 backdrop-blur-sm flex items-center justify-center">
                       <Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </div>
                     <div>
-                      <p className="text-[8px] text-white/70 flex items-center gap-0.5">
+                      <p className="text-[8px] text-background/70 flex items-center gap-0.5">
                         <TrendingUp className="h-2.5 w-2.5" /> Your Dashboard
                       </p>
                       <h3 className="text-xs sm:text-sm font-bold capitalize">
@@ -285,7 +285,7 @@ const UserDashboardPage = () => {
                       </h3>
                     </div>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-white/70 group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight className="h-4 w-4 text-background/70 group-hover:translate-x-1 transition-transform" />
                 </div>
               </CardContent>
             </Card>
@@ -301,7 +301,7 @@ const UserDashboardPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + index * 0.05 }}
             >
-              <Card className="relative overflow-hidden backdrop-blur-sm bg-card/80 border-border/50 hover:shadow-sm transition-all duration-300 group">
+              <Card className="relative overflow-hidden backdrop-blur-xl bg-card/60 border-gold-primary/15 hover:shadow-sm transition-all duration-300 group">
                 <CardContent className="p-2 sm:p-2.5">
                   <div className="flex items-center gap-1.5">
                     <div className={`h-6 w-6 sm:h-7 sm:w-7 rounded-md ${stat.bgColor} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
@@ -329,13 +329,13 @@ const UserDashboardPage = () => {
 
         {/* Dashboard Tabs - Slim */}
         <Tabs defaultValue="overview" className="space-y-2">
-          <TabsList className="grid w-full grid-cols-2 h-8 bg-muted/50 backdrop-blur-sm p-0.5">
-            <TabsTrigger value="overview" className="flex items-center gap-1 text-[10px] data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              <Home className="h-3 w-3" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="flex items-center gap-1 text-[10px] data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              <Settings className="h-3 w-3" />
+          <TabsList className="grid w-full grid-cols-2 h-8 bg-primary-foreground/5 backdrop-blur-xl p-0.5 border border-gold-primary/15">
+             <TabsTrigger value="overview" className="flex items-center gap-1 text-[10px] data-[state=active]:bg-gold-primary/10 data-[state=active]:text-gold-primary data-[state=active]:shadow-sm">
+               <Home className="h-3 w-3" />
+               Overview
+             </TabsTrigger>
+             <TabsTrigger value="settings" className="flex items-center gap-1 text-[10px] data-[state=active]:bg-gold-primary/10 data-[state=active]:text-gold-primary data-[state=active]:shadow-sm">
+               <Settings className="h-3 w-3" />
               Settings
             </TabsTrigger>
           </TabsList>
@@ -352,7 +352,7 @@ const UserDashboardPage = () => {
                 >
                   <Button 
                     variant="outline" 
-                    className="h-auto w-full p-1.5 sm:p-2 flex flex-col items-center gap-0.5 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-primary/5 hover:border-primary/30 active:scale-95 transition-all" 
+                    className="h-auto w-full p-1.5 sm:p-2 flex flex-col items-center gap-0.5 bg-card/60 backdrop-blur-xl border-gold-primary/15 hover:bg-gold-primary/5 hover:border-gold-primary/30 active:scale-95 transition-all" 
                     onClick={() => navigate(action.path)}
                   >
                     <action.icon className={`h-3.5 w-3.5 ${action.color}`} />
@@ -363,12 +363,12 @@ const UserDashboardPage = () => {
             </div>
 
             {/* Recent Activity - Slim */}
-            <Card className="backdrop-blur-sm bg-card/80 border-border/50">
+             <Card className="backdrop-blur-xl bg-card/60 border-gold-primary/15">
               <CardHeader className="p-2 pb-1.5">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-1.5 text-xs">
-                    <div className="h-5 w-5 rounded bg-primary/10 flex items-center justify-center">
-                      <Activity className="h-3 w-3 text-primary" />
+                     <div className="h-5 w-5 rounded bg-gold-primary/10 flex items-center justify-center">
+                       <Activity className="h-3 w-3 text-gold-primary" />
                     </div>
                     Recent Activity
                   </CardTitle>
@@ -382,7 +382,7 @@ const UserDashboardPage = () => {
               <CardContent className="p-2 pt-0">
                 {isLoading ? (
                   <div className="flex justify-center py-4">
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary/20 border-t-primary"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-gold-primary/20 border-t-gold-primary"></div>
                   </div>
                 ) : recentActivity.length > 0 ? (
                   <div className="space-y-1">
@@ -394,8 +394,8 @@ const UserDashboardPage = () => {
                         transition={{ delay: index * 0.05 }}
                         className="flex items-center gap-1.5 p-1.5 bg-muted/30 hover:bg-muted/50 rounded-md transition-colors group"
                       >
-                        <div className="h-5 w-5 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
-                          <Activity className="h-2.5 w-2.5 text-primary" />
+                         <div className="h-5 w-5 rounded-full bg-gradient-to-br from-gold-primary/20 to-gold-primary/10 flex items-center justify-center flex-shrink-0">
+                           <Activity className="h-2.5 w-2.5 text-gold-primary" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-[10px] font-medium truncate capitalize">
@@ -439,11 +439,11 @@ const UserDashboardPage = () => {
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-2 mt-2">
-            <Card className="backdrop-blur-sm bg-card/80 border-border/50">
+            <Card className="backdrop-blur-xl bg-card/60 border-gold-primary/15">
               <CardHeader className="p-2 pb-1.5">
                 <CardTitle className="flex items-center gap-1.5 text-xs">
-                  <div className="h-5 w-5 rounded bg-primary/10 flex items-center justify-center">
-                    <User className="h-3 w-3 text-primary" />
+                     <div className="h-5 w-5 rounded bg-gold-primary/10 flex items-center justify-center">
+                       <User className="h-3 w-3 text-gold-primary" />
                   </div>
                   Account Settings
                 </CardTitle>
@@ -460,7 +460,7 @@ const UserDashboardPage = () => {
                       <label className="text-[8px] font-medium text-muted-foreground uppercase tracking-wide">{item.label}</label>
                       {item.badge ? (
                         <Badge 
-                          className={`text-[8px] mt-0.5 ${hasUpgradedRole ? 'bg-emerald-500/20 text-emerald-600 border-emerald-500/30' : ''}`}
+                          className={`text-[8px] mt-0.5 ${hasUpgradedRole ? 'bg-chart-1/20 text-chart-1 border-chart-1/30' : ''}`}
                           variant={hasUpgradedRole ? 'outline' : 'secondary'}
                         >
                           {item.value}
@@ -488,7 +488,7 @@ const UserDashboardPage = () => {
                         else if (userRoles.includes('agent')) navigate('/dashboard/agent');
                         else if (userRoles.includes('vendor')) navigate('/dashboard/vendor');
                       }} 
-                      className="h-7 text-[9px] flex-1 bg-emerald-600 hover:bg-emerald-700"
+                      className="h-7 text-[9px] flex-1 bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-background"
                       size="sm"
                     >
                       <ChevronRight className="h-2.5 w-2.5 mr-0.5" />
