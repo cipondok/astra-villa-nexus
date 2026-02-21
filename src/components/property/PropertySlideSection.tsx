@@ -35,12 +35,11 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
           .from('properties')
           .select(`
             *,
-            owner:profiles!properties_owner_id_fkey(
+            owner:public_profiles!properties_owner_id_fkey(
               id,
               full_name,
               avatar_url,
-              verification_status,
-              created_at
+              verification_status
             )
           `)
           .eq('status', 'active')

@@ -25,13 +25,10 @@ interface AIRecommendedPropertiesProps {
 }
 
 const AI_PROPERTY_SELECT = `id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url, created_at, owner_id,
-  owner:profiles!properties_owner_id_fkey(id, full_name, avatar_url, verification_status, user_level_id, user_levels(name))`;
+  owner:public_profiles!properties_owner_id_fkey(id, full_name, avatar_url, verification_status, user_level_id)`;
 
 const transformWithOwner = (p: any) => {
   const ownerData = Array.isArray(p.owner) ? p.owner[0] : p.owner;
-  const userLevel = ownerData?.user_levels
-    ? (Array.isArray(ownerData.user_levels) ? ownerData.user_levels[0] : ownerData.user_levels)
-    : null;
   return {
     ...p,
     listing_type: p.listing_type as "sale" | "rent" | "lease",
@@ -41,7 +38,6 @@ const transformWithOwner = (p: any) => {
       name: ownerData.full_name || 'Anonymous',
       avatar_url: ownerData.avatar_url,
       verification_status: ownerData.verification_status || 'unverified',
-      user_level: userLevel?.name || undefined,
     } : undefined,
   };
 };

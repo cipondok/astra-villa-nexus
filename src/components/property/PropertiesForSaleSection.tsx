@@ -27,7 +27,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
       const { data, error } = await supabase
         .from('properties')
         .select(`id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, area, development_status, description, three_d_model_url, virtual_tour_url, created_at, owner_id,
-          owner:profiles!properties_owner_id_fkey(id, full_name, avatar_url, verification_status, user_level_id, user_levels(name))`)
+          owner:public_profiles!properties_owner_id_fkey(id, full_name, avatar_url, verification_status, user_level_id)`)
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .eq('listing_type', 'sale')
@@ -41,9 +41,6 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
       if (error) return [];
       return data?.map((property: any) => {
         const ownerData = Array.isArray(property.owner) ? property.owner[0] : property.owner;
-        const userLevel = ownerData?.user_levels
-          ? (Array.isArray(ownerData.user_levels) ? ownerData.user_levels[0] : ownerData.user_levels)
-          : null;
         return {
           ...property,
           listing_type: property.listing_type as "sale" | "rent" | "lease",
@@ -53,7 +50,6 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
             name: ownerData.full_name || 'Anonymous',
             avatar_url: ownerData.avatar_url,
             verification_status: ownerData.verification_status || 'unverified',
-            user_level: userLevel?.name || undefined,
           } : undefined,
         };
       }) || [];
