@@ -118,32 +118,26 @@ const BrandedStatusBadge = ({
   const badge =
   <div
     className={cn(
-      "relative inline-flex items-center justify-center gap-1 rounded-full",
+      "relative inline-flex items-center justify-center gap-1 rounded-full overflow-hidden",
       sizeConfig.container,
       sizeConfig.ring,
       activeRing,
       activeGlow,
-      activeBg,
+      "bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500",
       className
     )}>
 
-      {/* Color overlay for level shading */}
-      {levelConfig &&
-    <div
-      className={cn(
-        "absolute inset-0 rounded-full bg-gradient-to-br mix-blend-overlay opacity-60",
-        levelConfig.overlay
-      )} />
+      {/* Shimmer overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/25 to-white/0 animate-pulse" />
 
-    }
       <img
       src={brandLogo}
       alt="Astra"
-      className={cn(sizeConfig.img, "object-contain rounded-full relative z-10")}
+      className={cn(sizeConfig.img, "object-contain rounded-full relative z-10 ring-1 ring-white/40")}
       loading="lazy" />
 
       {size !== "xs" &&
-    <span className="relative z-10 text-[8px] font-bold tracking-tight leading-none text-foreground/80 pr-1">
+    <span className="relative z-10 text-[8px] font-bold tracking-tight leading-none text-white drop-shadow-sm pr-1">
           Verified Partner
         </span>
     }
