@@ -133,16 +133,16 @@ const Settings = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-muted/20 to-background">
-        <div className="text-center max-w-md mx-auto professional-card">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-            <User className="h-10 w-10 text-primary" />
+      <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+        <div className="text-center max-w-md mx-auto border border-gold-primary/15 bg-card/60 backdrop-blur-xl rounded-2xl p-8">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gold-primary/10 border border-gold-primary/20 flex items-center justify-center">
+            <User className="h-10 w-10 text-gold-primary" />
           </div>
-          <h1 className="text-3xl font-bold mb-3 gradient-text">Settings</h1>
+          <h1 className="text-3xl font-bold mb-3 text-foreground">Settings</h1>
           <p className="text-muted-foreground mb-8">
             Sign in to access your settings and preferences
           </p>
-          <Button onClick={() => navigate('/auth')} size="lg" className="btn-primary">
+          <Button onClick={() => navigate('/auth')} size="lg" className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-md shadow-gold-primary/20">
             Sign In
           </Button>
         </div>
@@ -151,16 +151,16 @@ const Settings = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
+    <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-2 py-2">
         {/* Compact Header */}
-        <div className="sticky top-0 z-40 bg-gradient-to-r from-primary to-accent text-primary-foreground px-2 py-2 -mx-2 mb-2 rounded-lg">
+        <div className="sticky top-0 z-40 bg-gradient-to-r from-gold-primary/20 via-gold-primary/10 to-gold-primary/5 border border-gold-primary/15 backdrop-blur-2xl px-2 py-2 -mx-2 mb-2 rounded-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 w-7 p-0 text-primary-foreground hover:bg-white/20"
+                className="h-7 w-7 p-0 text-foreground hover:bg-gold-primary/10"
                 onClick={() => navigate(-1)}
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -170,16 +170,16 @@ const Settings = () => {
                   <img
                     src={profile.avatar_url}
                     alt={profile?.full_name || 'User'}
-                    className="w-7 h-7 rounded-lg object-cover border border-white/20"
+                    className="w-7 h-7 rounded-lg object-cover border border-gold-primary/20"
                   />
                 ) : (
-                  <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
-                    <User className="h-3.5 w-3.5" />
+                  <div className="w-7 h-7 rounded-lg bg-gold-primary/10 flex items-center justify-center">
+                    <User className="h-3.5 w-3.5 text-gold-primary" />
                   </div>
                 )}
                 <div>
-                  <h1 className="text-sm font-bold">Settings</h1>
-                  <p className="text-[9px] text-primary-foreground/80">
+                  <h1 className="text-sm font-bold text-foreground">Settings</h1>
+                  <p className="text-[9px] text-muted-foreground">
                     {user?.email?.split('@')[0] || 'User'}
                   </p>
                 </div>
@@ -221,7 +221,7 @@ const Settings = () => {
 
           {/* Security Alerts Tab */}
           <TabsContent value="security" className="space-y-2">
-            <Card className="professional-card border p-2">
+            <Card className="border-gold-primary/15 bg-card/60 backdrop-blur-xl p-2">
               <SecurityAlerts />
             </Card>
             <TwoFactorAuth />
@@ -230,7 +230,7 @@ const Settings = () => {
 
           {/* Account Tab - Email & Password */}
           <TabsContent value="account" className="space-y-0">
-            <Card className="professional-card border p-2">
+            <Card className="border-gold-primary/15 bg-card/60 backdrop-blur-xl p-2">
               <div className="space-y-2">
                 <EmailChange />
                 <div className="border-t pt-2">
@@ -242,20 +242,20 @@ const Settings = () => {
 
           {/* Preferences Tab */}
           <TabsContent value="preferences" className="space-y-0">
-            <Card className="professional-card border p-2">
+            <Card className="border-gold-primary/15 bg-card/60 backdrop-blur-xl p-2">
               <UserPreferences />
             </Card>
           </TabsContent>
 
           {/* Theme Tab */}
           <TabsContent value="theme" className="space-y-0">
-            <Card className="professional-card border p-2">
+            <Card className="border-gold-primary/15 bg-card/60 backdrop-blur-xl p-2">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5">
                   <div className={`w-6 h-6 rounded-md flex items-center justify-center ${
-                    theme === 'dark' ? 'bg-blue-500/10' : 'bg-yellow-500/10'
+                    theme === 'dark' ? 'bg-gold-primary/10' : 'bg-gold-primary/10'
                   }`}>
-                    {theme === 'dark' ? <Moon className="h-3.5 w-3.5 text-blue-400" /> : <Sun className="h-3.5 w-3.5 text-yellow-500" />}
+                    {theme === 'dark' ? <Moon className="h-3.5 w-3.5 text-gold-primary" /> : <Sun className="h-3.5 w-3.5 text-gold-primary" />}
                   </div>
                   <div>
                     <p className="text-xs font-semibold">{theme === 'dark' ? 'Dark' : 'Light'} Mode</p>
@@ -268,26 +268,26 @@ const Settings = () => {
                     setTheme(checked ? 'dark' : 'light');
                     toast({ title: checked ? "Dark Mode" : "Light Mode" });
                   }}
-                  className="h-5 w-9 data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-yellow-500"
+                  className="h-5 w-9 data-[state=checked]:bg-gold-primary data-[state=unchecked]:bg-gold-primary/60"
                 />
               </div>
               <div className="grid grid-cols-2 gap-1.5">
                 <button
                   onClick={() => { setTheme('light'); toast({ title: "Light Mode" }); }}
                   className={`p-2 rounded-md border transition-all ${
-                    theme === 'light' ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20' : 'border-border bg-muted/30'
+                    theme === 'light' ? 'border-gold-primary bg-gold-primary/5' : 'border-border bg-muted/30'
                   }`}
                 >
-                  <Sun className={`h-4 w-4 mx-auto ${theme === 'light' ? 'text-yellow-500' : 'text-muted-foreground'}`} />
+                  <Sun className={`h-4 w-4 mx-auto ${theme === 'light' ? 'text-gold-primary' : 'text-muted-foreground'}`} />
                   <p className="text-[10px] font-medium mt-0.5">Light</p>
                 </button>
                 <button
                   onClick={() => { setTheme('dark'); toast({ title: "Dark Mode" }); }}
                   className={`p-2 rounded-md border transition-all ${
-                    theme === 'dark' ? 'border-blue-500 bg-blue-950/20' : 'border-border bg-muted/30'
+                    theme === 'dark' ? 'border-gold-primary bg-gold-primary/5' : 'border-border bg-muted/30'
                   }`}
                 >
-                  <Moon className={`h-4 w-4 mx-auto ${theme === 'dark' ? 'text-blue-400' : 'text-muted-foreground'}`} />
+                  <Moon className={`h-4 w-4 mx-auto ${theme === 'dark' ? 'text-gold-primary' : 'text-muted-foreground'}`} />
                   <p className="text-[10px] font-medium mt-0.5">Dark</p>
                 </button>
               </div>
@@ -296,14 +296,14 @@ const Settings = () => {
 
           {/* Activity Log Tab */}
           <TabsContent value="activity" className="space-y-0">
-            <Card className="professional-card border p-2">
+            <Card className="border-gold-primary/15 bg-card/60 backdrop-blur-xl p-2">
               <ActivityLog />
             </Card>
           </TabsContent>
 
           {/* Cache Management Tab */}
           <TabsContent value="cache" className="space-y-0">
-            <Card className="professional-card border p-2">
+            <Card className="border-gold-primary/15 bg-card/60 backdrop-blur-xl p-2">
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-1.5">
                   <HardDrive className="h-3.5 w-3.5 text-accent" />
@@ -342,15 +342,15 @@ const Settings = () => {
                     </div>
                     <div className="grid grid-cols-3 gap-1 text-center">
                       <div className="p-1 rounded bg-background border">
-                        <p className="text-sm font-bold text-primary">{cacheStats.queryCacheCount}</p>
+                        <p className="text-sm font-bold text-gold-primary">{cacheStats.queryCacheCount}</p>
                         <p className="text-[8px] text-muted-foreground">Total</p>
                       </div>
                       <div className="p-1 rounded bg-background border">
-                        <p className="text-sm font-bold text-green-500">{cacheStats.queryCacheActive}</p>
+                        <p className="text-sm font-bold text-chart-1">{cacheStats.queryCacheActive}</p>
                         <p className="text-[8px] text-muted-foreground">Active</p>
                       </div>
                       <div className="p-1 rounded bg-background border">
-                        <p className="text-sm font-bold text-amber-500">{cacheStats.queryCacheStale}</p>
+                        <p className="text-sm font-bold text-chart-3">{cacheStats.queryCacheStale}</p>
                         <p className="text-[8px] text-muted-foreground">Stale</p>
                       </div>
                     </div>
