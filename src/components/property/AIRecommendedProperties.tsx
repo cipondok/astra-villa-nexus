@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight, Key, Tag, Building, Clock, Maximize } from 'lucide-react';
+import UserStatusBadge from "@/components/ui/UserStatusBadge";
+import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
 import { formatDistanceToNow } from 'date-fns';
 
 // Helper to capitalize first letter
@@ -22,6 +24,28 @@ interface AIRecommendedPropertiesProps {
   onPropertyClick: (property: BaseProperty) => void;
   className?: string;
 }
+
+const AI_PROPERTY_SELECT = `id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url, created_at, owner_id,
+  owner:profiles!properties_owner_id_fkey(id, full_name, avatar_url, verification_status, user_level_id, user_levels(name))`;
+
+const transformWithOwner = (p: any) => {
+  const ownerData = Array.isArray(p.owner) ? p.owner[0] : p.owner;
+  const userLevel = ownerData?.user_levels
+    ? (Array.isArray(ownerData.user_levels) ? ownerData.user_levels[0] : ownerData.user_levels)
+    : null;
+  return {
+    ...p,
+    listing_type: p.listing_type as "sale" | "rent" | "lease",
+    image_urls: p.images || [],
+    posted_by: ownerData ? {
+      id: ownerData.id,
+      name: ownerData.full_name || 'Anonymous',
+      avatar_url: ownerData.avatar_url,
+      verification_status: ownerData.verification_status || 'unverified',
+      user_level: userLevel?.name || undefined,
+    } : undefined,
+  };
+};
 
 const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPropertiesProps) => {
   const { user } = useAuth();
@@ -66,7 +90,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       // Get recent properties for context
       const { data: recentProperties } = await supabase
         .from('properties')
-        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url, created_at')
+        .select(AI_PROPERTY_SELECT)
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .order('created_at', { ascending: false })
@@ -95,26 +119,18 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         // Fallback to recent properties
         const recommended = recentProperties
           ?.slice(0, 8)
-          .map((p: any) => ({
-            ...p,
-            listing_type: p.listing_type as "sale" | "rent" | "lease",
-            image_urls: p.images || [],
-          })) || [];
+          .map(transformWithOwner) || [];
         setRecommendations(recommended);
       } else {
         // Fetch recommended properties
         const { data: recommendedProps } = await supabase
           .from('properties')
-          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url, created_at')
+          .select(AI_PROPERTY_SELECT)
           .in('id', propertyIds.slice(0, 8))
           .eq('status', 'active')
           .eq('approval_status', 'approved');
 
-        const transformed = recommendedProps?.map((p: any) => ({
-          ...p,
-          listing_type: p.listing_type as "sale" | "rent" | "lease",
-          image_urls: p.images || [],
-        })) || [];
+        const transformed = recommendedProps?.map(transformWithOwner) || [];
 
         setRecommendations(transformed);
       }
@@ -141,17 +157,13 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       // Fallback to trending properties
       const { data: fallbackProps } = await supabase
         .from('properties')
-        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url, created_at')
+        .select(AI_PROPERTY_SELECT)
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .order('created_at', { ascending: false })
         .limit(8);
 
-      const transformed = fallbackProps?.map((p: any) => ({
-        ...p,
-        listing_type: p.listing_type as "sale" | "rent" | "lease",
-        image_urls: p.images || [],
-      })) || [];
+      const transformed = fallbackProps?.map(transformWithOwner) || [];
 
       setRecommendations(transformed);
 
@@ -292,6 +304,22 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
               </div>
             )}
           </div>
+
+          {/* Posted By - Verification & Level */}
+          {property.posted_by && (
+            <div className="flex items-center gap-1 pt-1 border-t border-purple-400/15">
+              {property.posted_by.avatar_url ? (
+                <img src={property.posted_by.avatar_url} alt="" className="w-4 h-4 rounded-full object-cover flex-shrink-0" />
+              ) : (
+                <div className="w-4 h-4 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-[7px] font-bold flex-shrink-0">
+                  {property.posted_by.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <span className="text-[9px] text-foreground/70 font-medium truncate">{property.posted_by.name}</span>
+              <UserStatusBadge status={property.posted_by.verification_status} size="xs" />
+              <VIPLevelBadge level={property.posted_by.user_level} size="xs" />
+            </div>
+          )}
         </div>
       </div>
     );
