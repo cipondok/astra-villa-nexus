@@ -24,19 +24,19 @@ const SupabaseDiagnosticsPanel = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'pass': return <CheckCircle2 className="h-4 w-4 text-green-500" />;
-      case 'fail': return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      case 'warning': return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      default: return <Activity className="h-4 w-4 text-gray-500" />;
+      case 'pass': return <CheckCircle2 className="h-4 w-4 text-chart-1" />;
+      case 'fail': return <AlertTriangle className="h-4 w-4 text-destructive" />;
+      case 'warning': return <AlertTriangle className="h-4 w-4 text-chart-3" />;
+      default: return <Activity className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getOverallStatusColor = () => {
     switch (diagnostics.overallStatus) {
-      case 'healthy': return 'bg-green-50 border-green-200';
-      case 'degraded': return 'bg-yellow-50 border-yellow-200';
-      case 'offline': return 'bg-red-50 border-red-200';
-      default: return 'bg-gray-50 border-gray-200';
+      case 'healthy': return 'bg-chart-1/5 border-chart-1/20';
+      case 'degraded': return 'bg-chart-3/5 border-chart-3/20';
+      case 'offline': return 'bg-destructive/5 border-destructive/20';
+      default: return 'bg-muted border-border';
     }
   };
 
@@ -47,7 +47,7 @@ const SupabaseDiagnosticsPanel = () => {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {isOnline ? <Wifi className="h-5 w-5 text-green-500" /> : <WifiOff className="h-5 w-5 text-red-500" />}
+              {isOnline ? <Wifi className="h-5 w-5 text-chart-1" /> : <WifiOff className="h-5 w-5 text-destructive" />}
               Supabase Connection Status
             </div>
             <Badge variant={diagnostics.overallStatus === 'healthy' ? 'default' : 'destructive'}>
@@ -93,12 +93,12 @@ const SupabaseDiagnosticsPanel = () => {
 
           {/* Offline Support Status */}
           {!isOnline && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-              <div className="flex items-center gap-2 text-blue-700">
+            <div className="bg-chart-4/5 border border-chart-4/20 rounded-lg p-3 mb-4">
+              <div className="flex items-center gap-2 text-chart-4">
                 <WifiOff className="h-4 w-4" />
                 <span className="font-medium">Offline Mode Active</span>
               </div>
-              <p className="text-sm text-blue-600 mt-1">
+              <p className="text-sm text-chart-4/80 mt-1">
                 Using cached data. {queuedOperations > 0 && `${queuedOperations} operations queued for sync.`}
               </p>
             </div>
@@ -142,7 +142,7 @@ const SupabaseDiagnosticsPanel = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-yellow-500" />
+              <AlertTriangle className="h-5 w-5 text-chart-3" />
               Recommendations
             </CardTitle>
           </CardHeader>
@@ -150,7 +150,7 @@ const SupabaseDiagnosticsPanel = () => {
             <ul className="space-y-2">
               {getRecommendations().map((recommendation, index) => (
                 <li key={index} className="flex items-start gap-2">
-                  <span className="text-yellow-500 mt-1">•</span>
+                  <span className="text-chart-3 mt-1">•</span>
                   <span className="text-sm">{recommendation}</span>
                 </li>
               ))}

@@ -174,7 +174,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent 
-        className="sm:max-w-[420px] bg-white/98 dark:bg-neutral-900/98 backdrop-blur-2xl border-white/30 dark:border-white/10 shadow-2xl overflow-hidden"
+        className="sm:max-w-[420px] bg-card/98 backdrop-blur-2xl border-border/30 shadow-2xl overflow-hidden"
         autoClose={false}
       >
         <AnimatePresence mode="wait">
@@ -224,9 +224,9 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                     exit={{ opacity: 0, height: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/30">
+                    <Alert variant="destructive" className="bg-destructive/5 border-destructive/20">
                       <AlertTriangle className="h-4 w-4" />
-                      <AlertDescription className="text-red-700 dark:text-red-300">{error}</AlertDescription>
+                      <AlertDescription className="text-destructive">{error}</AlertDescription>
                     </Alert>
                   </motion.div>
                 )}

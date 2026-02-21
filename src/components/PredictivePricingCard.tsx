@@ -16,12 +16,12 @@ const PredictivePricingCard = ({ loading, prediction }: PredictivePricingCardPro
     if (!prediction) return 'text-muted-foreground';
     switch (prediction.trend) {
       case 'up':
-        return 'text-green-500';
+        return 'text-chart-1';
       case 'down':
-        return 'text-red-500';
+        return 'text-destructive';
       case 'stable':
       default:
-        return 'text-yellow-500';
+        return 'text-chart-3';
     }
   };
 
@@ -29,7 +29,7 @@ const PredictivePricingCard = ({ loading, prediction }: PredictivePricingCardPro
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-blue-500" />
+          <TrendingUp className="h-5 w-5 text-gold-primary" />
           Predictive Pricing
         </CardTitle>
       </CardHeader>
