@@ -145,7 +145,7 @@ export const TwoFactorSetupDialog = ({ open, onOpenChange, currentSettings }: Tw
         {step === 'setup' && method === 'totp' && (
           <div className="space-y-4">
             <div className="p-4 rounded-lg bg-muted/50 border text-center">
-              <div className="w-48 h-48 mx-auto mb-3 bg-white rounded-lg flex items-center justify-center">
+              <div className="w-48 h-48 mx-auto mb-3 bg-background rounded-lg flex items-center justify-center border">
                 {/* In production, generate actual QR code */}
                 <div className="text-xs text-muted-foreground">QR Code Here</div>
               </div>
@@ -222,14 +222,14 @@ export const TwoFactorSetupDialog = ({ open, onOpenChange, currentSettings }: Tw
 
         {step === 'verify' && (
           <div className="space-y-4">
-            <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-500/20">
+            <div className="p-4 rounded-lg bg-chart-1/5 border border-chart-1/20">
               <div className="flex items-center gap-2 mb-3">
-                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
-                <h3 className="font-bold text-sm text-green-900 dark:text-green-100">
+                <CheckCircle className="h-5 w-5 text-chart-1" />
+                <h3 className="font-bold text-sm text-foreground">
                   2FA Enabled Successfully!
                 </h3>
               </div>
-              <p className="text-xs text-green-700 dark:text-green-300">
+              <p className="text-xs text-muted-foreground">
                 Save these backup codes in a secure location. You can use them if you lose access to your authentication method.
               </p>
             </div>

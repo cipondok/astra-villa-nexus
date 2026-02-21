@@ -86,13 +86,13 @@ const AgentNotifications = () => {
   const getPriorityColor = (priority: Notification['priority']) => {
     switch (priority) {
       case 'high':
-        return 'bg-red-500';
+        return 'bg-destructive';
       case 'medium':
-        return 'bg-yellow-500';
+        return 'bg-chart-3';
       case 'low':
-        return 'bg-green-500';
+        return 'bg-chart-1';
       default:
-        return 'bg-gray-500';
+        return 'bg-muted-foreground';
     }
   };
 

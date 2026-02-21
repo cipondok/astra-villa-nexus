@@ -123,7 +123,7 @@ export const PasswordChange = () => {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-1.5 mb-1">
-        <Lock className="h-3.5 w-3.5 text-orange-500" />
+        <Lock className="h-3.5 w-3.5 text-chart-3" />
         <span className="text-xs font-semibold">Password</span>
       </div>
 

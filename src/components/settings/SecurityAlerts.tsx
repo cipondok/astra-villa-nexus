@@ -21,14 +21,14 @@ export const SecurityAlerts = () => {
   if (alerts.length === 0) {
     return (
       <div className="flex items-center gap-2 py-2">
-        <div className="w-7 h-7 rounded-md bg-green-500/10 flex items-center justify-center flex-shrink-0">
-          <CheckCircle2 className="h-4 w-4 text-green-500" />
+        <div className="w-7 h-7 rounded-md bg-chart-1/10 flex items-center justify-center flex-shrink-0">
+          <CheckCircle2 className="h-4 w-4 text-chart-1" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs font-semibold text-foreground">All Clear</p>
           <p className="text-[10px] text-muted-foreground">No security alerts</p>
         </div>
-        <Badge variant="outline" className="text-[10px] bg-green-500/10 text-green-600 border-green-500/20">
+        <Badge variant="outline" className="text-[10px] bg-chart-1/10 text-chart-1 border-chart-1/20">
           Secure
         </Badge>
       </div>
@@ -39,7 +39,7 @@ export const SecurityAlerts = () => {
     <div className="space-y-1.5">
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-1.5">
-          <Shield className="h-3.5 w-3.5 text-red-500" />
+          <Shield className="h-3.5 w-3.5 text-destructive" />
           <span className="text-xs font-semibold">Security Alerts</span>
         </div>
         {unreadCount > 0 && (
@@ -59,8 +59,8 @@ export const SecurityAlerts = () => {
             >
               <div className="flex items-center gap-1.5">
                 <AlertTriangle className={`h-3 w-3 flex-shrink-0 ${
-                  alert.severity === 'critical' ? 'text-red-500' :
-                  alert.severity === 'high' ? 'text-orange-500' : 'text-yellow-500'
+                  alert.severity === 'critical' ? 'text-destructive' :
+                  alert.severity === 'high' ? 'text-chart-3' : 'text-chart-4'
                 }`} />
                 <span className="font-medium truncate flex-1">{alert.title}</span>
                 <div className="flex gap-0.5">
