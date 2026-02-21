@@ -7,8 +7,7 @@ import { Eye, Key, Building, Bed, Bath, Maximize, Plus, MapPin, Camera } from "l
 import { useNavigate } from "react-router-dom";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { Badge } from "@/components/ui/badge";
-import UserStatusBadge from "@/components/ui/UserStatusBadge";
-import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
+import BrandedStatusBadge from "@/components/ui/BrandedStatusBadge";
 
 interface PropertiesForRentSectionProps {
   language: "en" | "id";
@@ -216,8 +215,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
                       </div>
                     )}
                     <span className="text-[9px] text-foreground/70 font-medium truncate">{property.posted_by.name}</span>
-                    <UserStatusBadge status={property.posted_by.verification_status} size="xs" />
-                    <VIPLevelBadge level={property.posted_by.user_level} size="xs" />
+                    <BrandedStatusBadge verificationStatus={property.posted_by.verification_status} userLevel={property.posted_by.user_level} size="xs" />
                   </div>
                 )}
               </div>

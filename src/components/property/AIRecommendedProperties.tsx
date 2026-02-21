@@ -3,8 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight, Key, Tag, Building, Clock, Maximize } from 'lucide-react';
-import UserStatusBadge from "@/components/ui/UserStatusBadge";
-import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
+import BrandedStatusBadge from "@/components/ui/BrandedStatusBadge";
 import { formatDistanceToNow } from 'date-fns';
 
 // Helper to capitalize first letter
@@ -316,8 +315,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
                 </div>
               )}
               <span className="text-[9px] text-foreground/70 font-medium truncate">{property.posted_by.name}</span>
-              <UserStatusBadge status={property.posted_by.verification_status} size="xs" />
-              <VIPLevelBadge level={property.posted_by.user_level} size="xs" />
+              <BrandedStatusBadge verificationStatus={property.posted_by.verification_status} userLevel={property.posted_by.user_level} size="xs" />
             </div>
           )}
         </div>
