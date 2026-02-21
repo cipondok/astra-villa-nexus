@@ -71,11 +71,11 @@ const AstraVillaFeatures: React.FC<AstraVillaFeaturesProps> = ({ variant = 'defa
     <div className={`rounded-xl md:rounded-2xl ${isHero ? 'p-0' : 'p-1.5 sm:p-2 md:p-3'}`}>
       {/* Section Header - Compact */}
       <div className={`flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 ${isHero ? 'mb-2' : 'mb-2 sm:mb-2.5 md:mb-3'}`}>
-        <Sparkles className={`${isHero ? 'h-3 w-3 text-primary drop-shadow-sm dark:text-yellow-400' : 'h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-primary'}`} />
-        <h2 className={`font-bold ${isHero ? 'text-[10px] md:text-xs text-foreground drop-shadow-sm dark:text-white/90 dark:drop-shadow-md' : 'text-[9px] sm:text-xs md:text-sm text-foreground'}`}>
+        <Sparkles className={`${isHero ? 'h-3 w-3 text-gold-primary drop-shadow-sm' : 'h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-gold-primary'}`} />
+        <h2 className={`font-bold ${isHero ? 'text-[10px] md:text-xs text-white drop-shadow-sm' : 'text-[9px] sm:text-xs md:text-sm text-white'}`}>
           AI Tools & Features
         </h2>
-        <Sparkles className={`${isHero ? 'h-3 w-3 text-primary drop-shadow-sm dark:text-yellow-400' : 'h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-primary'}`} />
+        <Sparkles className={`${isHero ? 'h-3 w-3 text-gold-primary drop-shadow-sm' : 'h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-gold-primary'}`} />
       </div>
 
       {/* Features Grid - Single horizontal line */}
@@ -120,8 +120,8 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
     <div onClick={handleClick} className="group cursor-pointer relative">
       <div className={`relative overflow-hidden rounded-lg md:rounded-xl h-full flex flex-col items-center text-center transition-all duration-300 active:scale-95 md:hover:scale-[1.03] ${
         isHero 
-          ? 'border border-white/20 hover:border-white/40 p-2 md:p-2' 
-          : 'border border-border/20 dark:border-white/10 hover:border-primary/40 p-2 md:p-3'
+          ? 'border border-white/20 hover:border-white/40 p-2 md:p-2 bg-white/10 backdrop-blur-sm' 
+          : 'border border-white/15 hover:border-white/30 p-2 md:p-3 bg-white/10 backdrop-blur-sm'
       }`}>
         {/* Icon Container - Touch friendly */}
         <div className="relative">
@@ -132,8 +132,8 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
           }`}>
             <IconComponent className={`${
               isHero 
-                ? 'w-5 h-5 md:w-5 md:h-5 lg:w-6 lg:h-6 text-foreground dark:text-white' 
-                : `w-5 h-5 md:w-7 md:h-7 lg:w-8 lg:h-8 ${feature.color}`
+                ? 'w-5 h-5 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white' 
+                : `w-5 h-5 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white`
             }`} strokeWidth={1.5} />
           </div>
           {/* AI Badge */}
@@ -145,10 +145,10 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
         </div>
 
         {/* Title - Hidden on mobile, visible on md+ */}
-        <h3 className={`leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200 hidden md:block ${
+        <h3 className={`leading-tight line-clamp-2 group-hover:text-gold-primary transition-colors duration-200 hidden md:block ${
           isHero 
-            ? 'mt-1 text-[8px] lg:text-[9px] font-medium text-foreground/90 dark:text-white/90' 
-            : 'mt-2 text-[9px] lg:text-[11px] font-semibold text-foreground'
+            ? 'mt-1 text-[8px] lg:text-[9px] font-medium text-white/90' 
+            : 'mt-2 text-[9px] lg:text-[11px] font-semibold text-white/90'
         }`}>
           {feature.title}
         </h3>
