@@ -217,7 +217,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
                         {property.posted_by.name.charAt(0).toUpperCase()}
                       </div>
                     )}
-                    <span className="text-[9px] text-foreground/70 font-medium truncate">{property.posted_by.name}</span>
+                    {/* Name removed */}
                   </div>
                 )}
               </div>
