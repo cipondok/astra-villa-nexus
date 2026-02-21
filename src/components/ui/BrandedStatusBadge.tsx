@@ -61,9 +61,9 @@ const LEVEL_CONFIG: Record<string, {label: string; shieldColor: string; shieldLi
 };
 
 const SIZE_MAP = {
-  xs: { width: 18, height: 21, logoSize: 8, logoY: 9, fontSize: "text-[8px]", gap: "gap-0.5" },
-  sm: { width: 22, height: 26, logoSize: 10, logoY: 11, fontSize: "text-[9px]", gap: "gap-1" },
-  md: { width: 28, height: 32, logoSize: 13, logoY: 13, fontSize: "text-[10px]", gap: "gap-1" }
+  xs: { width: 18, height: 21, logoSize: 12, logoY: 7, fontSize: "text-[8px]", gap: "gap-0.5" },
+  sm: { width: 22, height: 26, logoSize: 15, logoY: 8, fontSize: "text-[9px]", gap: "gap-1" },
+  md: { width: 28, height: 32, logoSize: 19, logoY: 10, fontSize: "text-[10px]", gap: "gap-1" }
 };
 
 const getLevelConfig = (level?: string) => {
@@ -139,17 +139,13 @@ const Shield3DIcon = ({ color, lightColor, darkColor, width, height, logoUrl, lo
         opacity="0.08"
       />
 
-      {/* Inner white circle for logo */}
-      <circle cx="16" cy={logoY + logoSize / 2 + 1} r={logoSize / 2 + 2} fill="white" opacity="0.95" />
-
-      {/* Logo image */}
+      {/* Logo image - no background, transparent */}
       <image
         href={logoUrl}
         x={16 - logoSize / 2}
         y={logoY}
         width={logoSize}
         height={logoSize}
-        style={{ borderRadius: '50%' }}
       />
 
       {/* Checkmark at bottom */}
