@@ -13842,7 +13842,15 @@ export type Database = {
           virtual_tour_url?: string | null
           wna_eligible?: boolean | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "properties_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       property_answers: {
         Row: {
