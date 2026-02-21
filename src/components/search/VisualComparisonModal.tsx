@@ -32,15 +32,15 @@ export const VisualComparisonModal = ({
 }: VisualComparisonModalProps) => {
   
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600";
-    return "text-orange-600";
+    if (score >= 80) return "text-chart-1";
+    if (score >= 60) return "text-chart-3";
+    return "text-chart-5";
   };
 
   const getScoreBgColor = (score: number) => {
-    if (score >= 80) return "bg-green-100 dark:bg-green-900/30";
-    if (score >= 60) return "bg-yellow-100 dark:bg-yellow-900/30";
-    return "bg-orange-100 dark:bg-orange-900/30";
+    if (score >= 80) return "bg-chart-1/10";
+    if (score >= 60) return "bg-chart-3/10";
+    return "bg-chart-5/10";
   };
 
   return (
@@ -50,7 +50,7 @@ export const VisualComparisonModal = ({
           <div className="flex items-start justify-between">
             <div>
               <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-purple-500" />
+                <Sparkles className="h-5 w-5 text-gold-primary" />
                 Visual Comparison
               </DialogTitle>
               <p className="text-sm text-muted-foreground mt-1">
@@ -105,7 +105,7 @@ export const VisualComparisonModal = ({
                     Reference
                   </Badge>
                 </div>
-                <div className="relative aspect-[4/3] rounded-lg overflow-hidden border-2 border-purple-500 shadow-lg">
+                <div className="relative aspect-[4/3] rounded-lg overflow-hidden border-2 border-accent shadow-lg">
                   <img
                     src={searchImage}
                     alt="Search reference"
@@ -113,7 +113,7 @@ export const VisualComparisonModal = ({
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
                   <div className="absolute bottom-2 left-2 right-2">
-                    <Badge className="bg-purple-500 text-white">
+                    <Badge className="bg-accent text-accent-foreground">
                       Search Reference
                     </Badge>
                   </div>
@@ -148,7 +148,7 @@ export const VisualComparisonModal = ({
             {similarityBreakdown && (
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-purple-500" />
+                  <Sparkles className="h-4 w-4 text-gold-primary" />
                   Similarity Breakdown
                 </h3>
                 <div className="space-y-2">
@@ -168,8 +168,8 @@ export const VisualComparisonModal = ({
                           <div
                             className={cn(
                               "h-full transition-all duration-500 rounded-full",
-                              value >= 80 ? "bg-green-500" :
-                              value >= 60 ? "bg-yellow-500" : "bg-orange-500"
+                              value >= 80 ? "bg-chart-1" :
+                              value >= 60 ? "bg-chart-3" : "bg-chart-5"
                             )}
                             style={{ width: `${value}%` }}
                           />
