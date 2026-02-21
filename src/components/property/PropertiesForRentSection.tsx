@@ -146,6 +146,13 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
                   </div>
                 )}
 
+                {/* Branded Status Badge on image */}
+                {property.posted_by && (
+                  <div className="absolute bottom-1.5 left-1.5 z-10">
+                    <BrandedStatusBadge verificationStatus={property.posted_by.verification_status} userLevel={property.posted_by.user_level} size="sm" />
+                  </div>
+                )}
+
                 {/* Hover eye */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="h-10 w-10 rounded-full bg-white/80 backdrop-blur-xl flex items-center justify-center shadow-xl ring-2 ring-blue-400/50 ring-offset-2 ring-offset-transparent">
@@ -211,7 +218,6 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
                       </div>
                     )}
                     <span className="text-[9px] text-foreground/70 font-medium truncate">{property.posted_by.name}</span>
-                    <BrandedStatusBadge verificationStatus={property.posted_by.verification_status} userLevel={property.posted_by.user_level} size="xs" />
                   </div>
                 )}
               </div>
