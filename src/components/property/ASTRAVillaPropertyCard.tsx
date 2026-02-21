@@ -133,10 +133,10 @@ const ASTRAVillaPropertyCard = ({
         {/* Top Row */}
         <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
           <span className={cn(
-            "flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold text-white shadow-sm",
+            "flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold text-primary-foreground shadow-sm",
             isRent
-              ? "bg-blue-500/90 backdrop-blur-sm"
-              : "bg-emerald-500/90 backdrop-blur-sm"
+              ? "bg-primary/90 backdrop-blur-sm"
+              : "bg-accent/90 backdrop-blur-sm"
           )}>
             <ListingIcon className="h-2.5 w-2.5" />
             {getListingLabel(property.listing_type)}
@@ -155,11 +155,11 @@ const ASTRAVillaPropertyCard = ({
             "absolute top-9 right-2 h-7 w-7 rounded-full",
             "bg-black/20 backdrop-blur-md hover:bg-black/40 border border-white/10",
             "transition-all duration-200",
-            isLiked && "bg-red-500/30 border-red-400/30"
+            isLiked && "bg-destructive/30 border-destructive/30"
           )}
           onClick={handleLike}
         >
-          <Heart className={cn("h-3.5 w-3.5 transition-colors", isLiked ? "fill-red-400 text-red-400" : "text-white/80")} />
+          <Heart className={cn("h-3.5 w-3.5 transition-colors", isLiked ? "fill-destructive text-destructive" : "text-white/80")} />
         </Button>
 
         {/* Image Count Badge */}
@@ -176,7 +176,7 @@ const ASTRAVillaPropertyCard = ({
             "h-10 w-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center",
             "shadow-lg scale-75 group-hover:scale-100 transition-transform duration-300"
           )}>
-            <Eye className={cn("h-4.5 w-4.5", isRent ? "text-blue-600" : "text-emerald-600")} />
+            <Eye className="h-4.5 w-4.5 text-foreground" />
           </div>
         </div>
       </div>
@@ -187,19 +187,19 @@ const ASTRAVillaPropertyCard = ({
         <div className={cn(
           "flex items-baseline gap-1 rounded-lg px-2.5 py-2 border flex-wrap",
           isRent
-            ? "bg-blue-500/5 border-blue-500/15"
-            : "bg-emerald-500/5 border-emerald-500/15"
+            ? "bg-primary/5 border-primary/15"
+            : "bg-accent/5 border-accent/15"
         )}>
           <span className={cn(
             "text-base font-black leading-none tracking-tight",
-            isRent ? "text-blue-600 dark:text-blue-400" : "text-emerald-600 dark:text-emerald-400"
+            isRent ? "text-primary" : "text-accent-foreground"
           )}>
             {priceInfo.main}
           </span>
           {priceInfo.suffix && (
             <span className={cn(
               "text-[11px] font-extrabold opacity-60",
-              isRent ? "text-blue-600 dark:text-blue-400" : "text-emerald-600 dark:text-emerald-400"
+              isRent ? "text-primary" : "text-accent-foreground"
             )}>
               {priceInfo.suffix}
             </span>
