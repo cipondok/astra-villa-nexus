@@ -107,7 +107,7 @@ export function StickyHeaderSearch({
           transition={{ duration: 0.3, ease: 'easeOut' }}
           className={cn(
             "fixed top-[40px] sm:top-[44px] md:top-[48px] left-0 right-0 z-[9999]",
-            "bg-background/95 dark:bg-card/95 backdrop-blur-2xl border-b border-border/50",
+            "bg-primary-foreground/5 backdrop-blur-2xl border-b border-gold-primary/15",
             "shadow-lg shadow-black/5 dark:shadow-black/20",
             className
           )}
@@ -117,7 +117,7 @@ export function StickyHeaderSearch({
               
               {/* Tab Pills - compact */}
               {onTabChange && (
-                <div className="hidden md:flex items-center gap-0.5 bg-muted/50 rounded-lg p-0.5 border border-border/30">
+                <div className="hidden md:flex items-center gap-0.5 bg-primary-foreground/5 rounded-lg p-0.5 border border-gold-primary/10">
                   {tabs.map((tab) => (
                     <button
                       key={tab.value}
@@ -126,8 +126,8 @@ export function StickyHeaderSearch({
                       className={cn(
                         "flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md transition-all",
                         activeTab === tab.value
-                          ? "bg-primary text-primary-foreground shadow-sm"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                          ? "bg-gold-primary text-background shadow-sm"
+                          : "text-muted-foreground hover:text-foreground hover:bg-gold-primary/10"
                       )}
                     >
                       <tab.icon className="h-3 w-3" />
@@ -146,7 +146,7 @@ export function StickyHeaderSearch({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t.placeholder}
-                  className="pl-9 pr-8 h-9 text-xs md:text-sm bg-muted/30 dark:bg-muted/20 border-border/40 rounded-lg focus:bg-background transition-colors"
+                  className="pl-9 pr-8 h-9 text-xs md:text-sm bg-background/90 border-gold-primary/15 focus:border-gold-primary/40 focus:ring-2 focus:ring-gold-primary/15 rounded-lg transition-colors"
                 />
                 {searchQuery && (
                   <Button
@@ -165,7 +165,7 @@ export function StickyHeaderSearch({
               <Button
                 type="submit"
                 size="sm"
-                className="h-9 px-3 rounded-lg bg-primary hover:bg-primary/90 shrink-0"
+                className="h-9 px-3 rounded-lg bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:opacity-90 text-background shadow-md shadow-gold-primary/20 shrink-0"
               >
                 <Search className="h-3.5 w-3.5 md:mr-1.5" />
                 <span className="hidden md:inline text-xs">{t.search}</span>
@@ -178,7 +178,7 @@ export function StickyHeaderSearch({
                   variant="outline"
                   size="sm"
                   onClick={() => window.location.href = '/location'}
-                  className="h-9 w-9 p-0 rounded-lg border-border/40 relative group"
+                  className="h-9 w-9 p-0 rounded-lg border-gold-primary/15 hover:bg-gold-primary/10 hover:border-gold-primary/30 relative group"
                 >
                   <MapPin className="h-3.5 w-3.5" />
                   <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-0.5 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
@@ -190,7 +190,7 @@ export function StickyHeaderSearch({
                   variant="outline"
                   size="sm"
                   onClick={() => window.location.href = '/vr-tour'}
-                  className="h-9 w-9 p-0 rounded-lg border-border/40 relative group"
+                  className="h-9 w-9 p-0 rounded-lg border-gold-primary/15 hover:bg-gold-primary/10 hover:border-gold-primary/30 relative group"
                 >
                   <Glasses className="h-3.5 w-3.5" />
                   <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-popover text-popover-foreground border border-border shadow-lg px-2 py-0.5 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
@@ -206,7 +206,7 @@ export function StickyHeaderSearch({
                   variant="outline"
                   size="sm"
                   onClick={onOpenFilters}
-                  className="h-9 px-2.5 rounded-lg border-border/40 shrink-0 relative"
+                  className="h-9 px-2.5 rounded-lg border-gold-primary/15 hover:bg-gold-primary/10 hover:border-gold-primary/30 shrink-0 relative"
                 >
                   <SlidersHorizontal className="h-3.5 w-3.5" />
                   {activeFiltersCount > 0 && (
