@@ -112,7 +112,7 @@ const BrandedStatusBadge = ({
   const activeGlow = levelConfig?.glow || statusConfig.glow;
   const activeBg = levelConfig?.bg || "bg-white dark:bg-slate-800";
   const tooltipLabel = levelConfig ?
-  `${levelConfig.label} · ${statusConfig.label}` :
+  `Verified · ${levelConfig.label}` :
   statusConfig.label;
 
   const badge =
