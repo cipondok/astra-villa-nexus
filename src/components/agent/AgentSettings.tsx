@@ -246,10 +246,10 @@ const AgentSettings = () => {
                         value={formData.full_name}
                         onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
                         disabled={!editMode}
-                        className={!formData.full_name && editMode ? "border-orange-300" : ""}
+                        className={!formData.full_name && editMode ? "border-chart-3/50" : ""}
                       />
                       {!formData.full_name && editMode && (
-                        <p className="text-xs text-orange-600 mt-1">Required for client trust</p>
+                        <p className="text-xs text-chart-3 mt-1">Required for client trust</p>
                       )}
                     </div>
                     <div>
@@ -262,17 +262,17 @@ const AgentSettings = () => {
                           value={formData.phone}
                           onChange={(e) => handlePhoneChange(e.target.value)}
                           disabled={!editMode}
-                          className={`pl-10 ${phoneError ? "border-red-300" : ""} ${!formData.phone && editMode ? "border-orange-300" : ""}`}
+                          className={`pl-10 ${phoneError ? "border-destructive/50" : ""} ${!formData.phone && editMode ? "border-chart-3/50" : ""}`}
                         />
                       </div>
                       {phoneError && (
-                        <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
+                        <p className="text-xs text-destructive mt-1 flex items-center gap-1">
                           <AlertCircle className="h-3 w-3" />
                           {phoneError}
                         </p>
                       )}
                       {!phoneError && formData.phone && isValidIndonesianPhone(formData.phone) && (
-                        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                        <p className="text-xs text-chart-1 mt-1 flex items-center gap-1">
                           <CheckCircle className="h-3 w-3" />
                           Valid Indonesian mobile number
                         </p>
@@ -296,10 +296,10 @@ const AgentSettings = () => {
                         value={formData.company_name}
                         onChange={(e) => setFormData(prev => ({ ...prev, company_name: e.target.value }))}
                         disabled={!editMode}
-                        className={!formData.company_name && editMode ? "border-orange-300" : ""}
+                        className={!formData.company_name && editMode ? "border-chart-3/50" : ""}
                       />
                       {!formData.company_name && editMode && (
-                        <p className="text-xs text-orange-600 mt-1">Builds professional credibility</p>
+                        <p className="text-xs text-chart-3 mt-1">Builds professional credibility</p>
                       )}
                     </div>
                     <div>
@@ -312,11 +312,11 @@ const AgentSettings = () => {
                           value={formData.license_number}
                           onChange={(e) => setFormData(prev => ({ ...prev, license_number: e.target.value }))}
                           disabled={!editMode}
-                          className={`pl-10 ${!formData.license_number && editMode ? "border-orange-300" : ""}`}
+                          className={`pl-10 ${!formData.license_number && editMode ? "border-chart-3/50" : ""}`}
                         />
                       </div>
                       {!formData.license_number && editMode && (
-                        <p className="text-xs text-orange-600 mt-1">Required for verified agent badge (+20% leads)</p>
+                        <p className="text-xs text-chart-3 mt-1">Required for verified agent badge (+20% leads)</p>
                       )}
                     </div>
                     <div>
@@ -339,15 +339,15 @@ const AgentSettings = () => {
                             setFormData(prev => ({ ...prev, npwp_number: formatted }));
                           }}
                           disabled={!editMode}
-                          className={`pl-10 ${!formData.npwp_number && editMode ? "border-orange-300" : ""}`}
+                          className={`pl-10 ${!formData.npwp_number && editMode ? "border-chart-3/50" : ""}`}
                           maxLength={20}
                         />
                       </div>
                       {!formData.npwp_number && editMode && (
-                        <p className="text-xs text-orange-600 mt-1">Required for tax compliance and payouts</p>
+                        <p className="text-xs text-chart-3 mt-1">Required for tax compliance and payouts</p>
                       )}
                       {formData.npwp_number && formData.npwp_number.replace(/\D/g, '').length === 15 && (
-                        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                        <p className="text-xs text-chart-1 mt-1 flex items-center gap-1">
                           <CheckCircle className="h-3 w-3" />
                           Valid NPWP format
                         </p>
@@ -429,9 +429,9 @@ const AgentSettings = () => {
 
                 {/* Completion Alert */}
                 {editMode && (
-                  <Alert className="border-green-200 bg-green-50">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <AlertDescription className="text-green-800">
+                  <Alert className="border-chart-1/30 bg-chart-1/5">
+                    <CheckCircle className="h-4 w-4 text-chart-1" />
+                    <AlertDescription className="text-foreground">
                       <strong>Complete your profile to unlock:</strong> 3x more leads, verified agent badge, 
                       premium placement, and commission discounts up to 50%!
                     </AlertDescription>
