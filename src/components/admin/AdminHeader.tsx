@@ -26,7 +26,7 @@ interface AdminHeaderProps {
 
 const priorityColor = (priority: string) => {
   if (priority === "high") return "bg-destructive/10 text-destructive";
-  if (priority === "medium") return "bg-orange-500/10 text-orange-600";
+  if (priority === "medium") return "bg-chart-3/10 text-chart-3";
   return "bg-primary/10 text-primary";
 };
 
