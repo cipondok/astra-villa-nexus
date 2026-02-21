@@ -5,7 +5,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import astraLogo from "@/assets/astra-logo-optimized.png";
+import { useHeaderLogo } from "@/hooks/useBrandingLogo";
 
 interface BrandedStatusBadgeProps {
   verificationStatus?: string;
@@ -103,6 +103,7 @@ const BrandedStatusBadge = ({
   size = "xs",
   className,
 }: BrandedStatusBadgeProps) => {
+  const { logoUrl: brandLogo } = useHeaderLogo();
   const statusConfig = STATUS_RING[verificationStatus?.toLowerCase() || ""] || STATUS_RING.unverified;
   const levelConfig = getLevelConfig(userLevel);
   const sizeConfig = SIZE_MAP[size];
@@ -136,7 +137,7 @@ const BrandedStatusBadge = ({
         />
       )}
       <img
-        src={astraLogo}
+        src={brandLogo}
         alt="Astra"
         className={cn(sizeConfig.img, "object-contain rounded-full relative z-10")}
         loading="lazy"
