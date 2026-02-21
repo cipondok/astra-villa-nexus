@@ -319,7 +319,7 @@ const Search = () => {
       </div>
 
       {/* Slim Search Header */}
-      <div className="bg-background/80 backdrop-blur-sm border-b sticky top-11 md:top-12 z-40">
+      <div className="bg-background/90 backdrop-blur-xl border-b border-border/40 sticky top-11 md:top-12 z-40 shadow-sm">
         <div className="container mx-auto px-2 md:px-3 py-2">
           <div className="space-y-2">
             {/* Search Input */}
@@ -419,10 +419,19 @@ const Search = () => {
 
         {/* Loading State */}
         {isLoading && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="bg-muted rounded-lg h-40 md:h-48"></div>
+              <div key={i} className="animate-pulse rounded-xl overflow-hidden border border-border/30">
+                <div className="bg-muted aspect-[4/3]" />
+                <div className="p-3 space-y-2">
+                  <div className="h-4 bg-muted rounded-md w-3/4" />
+                  <div className="h-3 bg-muted rounded-md w-1/2" />
+                  <div className="flex gap-2 pt-1">
+                    <div className="h-3 bg-muted rounded-md w-10" />
+                    <div className="h-3 bg-muted rounded-md w-10" />
+                    <div className="h-3 bg-muted rounded-md w-12" />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -430,7 +439,7 @@ const Search = () => {
 
         {/* Compact Results Grid */}
         {!isLoading && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
             {properties.map((property) => {
               const isNew = newPropertyIds.has(property.id);
               
