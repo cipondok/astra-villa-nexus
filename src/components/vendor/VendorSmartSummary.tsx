@@ -132,11 +132,11 @@ const VendorSmartSummary = () => {
   const getBPJSBadge = () => {
     switch (stats.bpjsStatus) {
       case 'active':
-        return <Badge className="bg-green-100 text-green-800">✅ BPJS Aktif</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1">✅ BPJS Aktif</Badge>;
       case 'expired':
         return <Badge variant="destructive">⏰ BPJS Kedaluwarsa</Badge>;
       default:
-        return <Badge className="bg-orange-100 text-orange-800">⚠️ Butuh Verifikasi</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3">⚠️ Butuh Verifikasi</Badge>;
     }
   };
 

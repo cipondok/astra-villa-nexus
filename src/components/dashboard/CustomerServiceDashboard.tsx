@@ -467,27 +467,27 @@ const CustomerServiceDashboard = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-6 h-8 p-0.5 bg-muted/50">
-          <TabsTrigger value="dashboard" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-700 dark:data-[state=active]:text-cyan-400">
+          <TabsTrigger value="dashboard" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-gold-primary/15 data-[state=active]:text-gold-primary">
             <BarChart3 className="h-3 w-3" />
             Dashboard
           </TabsTrigger>
-          <TabsTrigger value="my-tickets" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-700 dark:data-[state=active]:text-orange-400">
+          <TabsTrigger value="my-tickets" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-gold-primary/15 data-[state=active]:text-gold-primary">
             <FileText className="h-3 w-3" />
             My Tickets ({myOpenTickets})
           </TabsTrigger>
-          <TabsTrigger value="inquiries" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-700 dark:data-[state=active]:text-blue-400">
+          <TabsTrigger value="inquiries" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-gold-primary/15 data-[state=active]:text-gold-primary">
             <MessageSquare className="h-3 w-3" />
             Inquiries ({pendingInquiries})
           </TabsTrigger>
-          <TabsTrigger value="available" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">
+          <TabsTrigger value="available" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-gold-primary/15 data-[state=active]:text-gold-primary">
             <Clock className="h-3 w-3" />
             Available ({availableTickets})
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-700 dark:data-[state=active]:text-green-400">
+          <TabsTrigger value="analytics" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-gold-primary/15 data-[state=active]:text-gold-primary">
             <BarChart3 className="h-3 w-3" />
             Analytics
           </TabsTrigger>
-          <TabsTrigger value="settings" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-slate-500/20 data-[state=active]:text-slate-700 dark:data-[state=active]:text-slate-400">
+          <TabsTrigger value="settings" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-gold-primary/15 data-[state=active]:text-gold-primary">
             <Settings className="h-3 w-3" />
             Settings
           </TabsTrigger>
@@ -505,21 +505,21 @@ const CustomerServiceDashboard = () => {
                   <span className="text-sm text-muted-foreground">Tickets Resolved</span>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">{myResolvedToday}</span>
-                    <Award className="h-4 w-4 text-green-500" />
+                    <Award className="h-4 w-4 text-chart-1" />
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Response Time</span>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">15 min</span>
-                    <Timer className="h-4 w-4 text-blue-500" />
+                    <Timer className="h-4 w-4 text-chart-4" />
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Customer Rating</span>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">4.8</span>
-                    <Star className="h-4 w-4 text-yellow-500" />
+                    <Star className="h-4 w-4 text-gold-primary" />
                   </div>
                 </div>
               </CardContent>
@@ -610,7 +610,7 @@ const CustomerServiceDashboard = () => {
                   <span className="text-sm text-muted-foreground">Total Tickets Handled</span>
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-2xl">{myTickets?.length || 0}</span>
-                    <FileText className="h-4 w-4 text-blue-500" />
+                    <FileText className="h-4 w-4 text-chart-4" />
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
@@ -619,21 +619,21 @@ const CustomerServiceDashboard = () => {
                     <span className="font-bold text-2xl">
                       {myTickets?.length ? Math.round((myTickets.filter(t => t.status === 'resolved').length / myTickets.length) * 100) : 0}%
                     </span>
-                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    <TrendingUp className="h-4 w-4 text-chart-1" />
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Average Response Time</span>
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-2xl">12 min</span>
-                    <Timer className="h-4 w-4 text-orange-500" />
+                    <Timer className="h-4 w-4 text-chart-3" />
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Customer Satisfaction</span>
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-2xl">4.7</span>
-                    <Star className="h-4 w-4 text-yellow-500" />
+                    <Star className="h-4 w-4 text-gold-primary" />
                   </div>
                 </div>
               </CardContent>
@@ -655,9 +655,9 @@ const CustomerServiceDashboard = () => {
                         <span className="text-sm text-muted-foreground">{count} tickets</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                        <div className="w-24 bg-muted rounded-full h-2">
                           <div 
-                            className="bg-blue-600 h-2 rounded-full" 
+                            className="bg-primary h-2 rounded-full" 
                             style={{ width: `${percentage}%` }}
                           ></div>
                         </div>
@@ -755,7 +755,7 @@ const CustomerServiceDashboard = () => {
                 ].map((item, i) => (
                   <div key={i} className="p-4 border rounded-lg hover:bg-muted cursor-pointer">
                     <div className="flex items-start gap-3">
-                      <item.icon className="h-5 w-5 text-blue-500 mt-0.5" />
+                      <item.icon className="h-5 w-5 text-gold-primary mt-0.5" />
                       <div>
                         <h4 className="font-medium text-sm">{item.title}</h4>
                         <p className="text-xs text-muted-foreground">{item.desc}</p>

@@ -429,19 +429,19 @@ const VendorOnboardingSystem = () => {
 
     const getStatusIcon = (status: string) => {
       switch (status) {
-        case 'approved': return <CheckCircle className="h-5 w-5 text-green-600" />;
-        case 'rejected': return <XCircle className="h-5 w-5 text-red-600" />;
-        case 'under_review': return <Clock className="h-5 w-5 text-yellow-600" />;
-        default: return <AlertTriangle className="h-5 w-5 text-blue-600" />;
+        case 'approved': return <CheckCircle className="h-5 w-5 text-chart-1" />;
+        case 'rejected': return <XCircle className="h-5 w-5 text-destructive" />;
+        case 'under_review': return <Clock className="h-5 w-5 text-chart-3" />;
+        default: return <AlertTriangle className="h-5 w-5 text-chart-4" />;
       }
     };
 
     const getStatusColor = (status: string) => {
       switch (status) {
-        case 'approved': return 'text-green-600';
-        case 'rejected': return 'text-red-600';
-        case 'under_review': return 'text-yellow-600';
-        default: return 'text-blue-600';
+        case 'approved': return 'text-chart-1';
+        case 'rejected': return 'text-destructive';
+        case 'under_review': return 'text-chart-3';
+        default: return 'text-chart-4';
       }
     };
 

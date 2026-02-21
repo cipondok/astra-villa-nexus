@@ -143,7 +143,7 @@ const EnhancedVendorDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-orange-500" />
+                  <Clock className="h-5 w-5 text-chart-3" />
                   Pending Bookings
                 </CardTitle>
               </CardHeader>
@@ -156,7 +156,7 @@ const EnhancedVendorDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <CheckCircle className="h-5 w-5 text-chart-1" />
                   Completed
                 </CardTitle>
               </CardHeader>
@@ -169,7 +169,7 @@ const EnhancedVendorDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-red-500" />
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
                   Cancelled
                 </CardTitle>
               </CardHeader>
