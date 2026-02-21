@@ -13,11 +13,9 @@ interface LoadingProgressPopupProps {
 const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
   const { isLoading, progress, message, showPopup, setShowPopup } = useGlobalLoading();
 
-  // Fetch loading page logo from branding settings (try loadingPageLogo first, then welcomeScreenLogo)
   const { data: loadingLogoUrl } = useQuery({
     queryKey: ['branding', 'loadingPageLogo'],
     queryFn: async () => {
-      // First try loadingPageLogo
       const { data: loadingData } = await supabase
         .from('system_settings')
         .select('value')
@@ -29,7 +27,6 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
         return loadingData.value;
       }
       
-      // Fallback to welcomeScreenLogo
       const { data: welcomeData } = await supabase
         .from('system_settings')
         .select('value')
@@ -59,20 +56,20 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
           )}
         >
           <div className="bg-background/95 backdrop-blur-xl rounded-2xl border border-border/50 shadow-2xl shadow-primary/10 overflow-hidden">
-            {/* Gradient Top Accent */}
-            <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500" />
+            {/* Top accent line */}
+            <div className="h-1 bg-gradient-to-r from-primary via-accent to-primary" />
             
             {/* Header with Logo & Brand */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-border/30">
               <div className="flex items-center gap-3">
-                {/* Logo with Glow Effect */}
+                {/* Logo with glow */}
                 <motion.div
                   className="relative"
                   animate={{ 
                     boxShadow: [
-                      '0 0 0px rgba(127, 90, 240, 0)',
-                      '0 0 12px rgba(127, 90, 240, 0.4)',
-                      '0 0 0px rgba(127, 90, 240, 0)'
+                      '0 0 0px hsl(var(--primary) / 0)',
+                      '0 0 12px hsl(var(--primary) / 0.4)',
+                      '0 0 0px hsl(var(--primary) / 0)'
                     ]
                   }}
                   transition={{ duration: 2, repeat: Infinity }}
@@ -81,12 +78,8 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
                     src={logoUrl} 
                     alt="ASTRA" 
                     className="w-8 h-8 object-contain rounded-lg"
-                    style={{ 
-                      imageRendering: 'crisp-edges',
-                      background: 'transparent'
-                    }}
+                    style={{ imageRendering: 'crisp-edges', background: 'transparent' }}
                   />
-                  {/* Spinning Ring */}
                   <motion.div
                     className="absolute inset-0 rounded-lg border-2 border-transparent border-t-primary/50"
                     animate={{ rotate: 360 }}
@@ -94,7 +87,6 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
                   />
                 </motion.div>
                 
-                {/* Brand Name */}
                 <div className="flex flex-col">
                   <motion.h3 
                     className="text-sm font-bold leading-tight"
@@ -102,9 +94,7 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
                   >
-                    <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
-                      ASTRA
-                    </span>
+                    <span className="text-primary">ASTRA</span>
                     <span className="text-foreground ml-1">Villa</span>
                   </motion.h3>
                   <span className="text-[8px] uppercase tracking-[0.15em] text-muted-foreground">
@@ -144,24 +134,24 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
                 </AnimatePresence>
               </div>
 
-              {/* Progress bar container */}
+              {/* Progress bar */}
               <div className="relative h-2.5 bg-muted/50 rounded-full overflow-hidden">
-                {/* Glow effect */}
+                {/* Glow */}
                 <motion.div
                   className="absolute inset-y-0 left-0 rounded-full blur-sm"
                   style={{
-                    background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #f97316)',
+                    background: 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)))',
                   }}
                   initial={{ width: '0%' }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.3, ease: 'easeOut' }}
                 />
                 
-                {/* Progress fill with gradient */}
+                {/* Fill */}
                 <motion.div
                   className="absolute inset-y-0 left-0 rounded-full"
                   style={{
-                    background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #f97316, #3b82f6)',
+                    background: 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--primary)))',
                     backgroundSize: '300% 100%'
                   }}
                   initial={{ width: '0%' }}
@@ -175,11 +165,11 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
                   }}
                 />
                 
-                {/* Shimmer effect */}
+                {/* Shimmer */}
                 <motion.div
                   className="absolute inset-0"
                   style={{
-                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)',
+                    background: 'linear-gradient(90deg, transparent 0%, hsl(var(--primary-foreground) / 0.4) 50%, transparent 100%)',
                     width: '40%'
                   }}
                   animate={{ x: ['-100%', '350%'] }}
@@ -187,21 +177,18 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
                 />
               </div>
 
-              {/* Percentage with animated glow */}
+              {/* Percentage */}
               <div className="flex items-center justify-between mt-2.5">
                 <div className="flex items-center gap-1">
-                  {/* Mini progress dots */}
                   <div className="flex gap-0.5">
                     {[0, 1, 2].map((i) => (
                       <motion.div
                         key={i}
-                        className="w-1 h-1 rounded-full"
-                        style={{
-                          background: i === 0 ? '#3b82f6' : i === 1 ? '#8b5cf6' : '#f97316'
-                        }}
+                        className="w-1 h-1 rounded-full bg-primary"
+                        style={{ opacity: 0.4 + i * 0.2 }}
                         animate={{
                           scale: [0.8, 1.2, 0.8],
-                          opacity: [0.5, 1, 0.5]
+                          opacity: [0.4, 1, 0.4]
                         }}
                         transition={{
                           duration: 0.6,
@@ -218,32 +205,26 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
                   className="flex items-center gap-1"
                   animate={{ 
                     textShadow: [
-                      '0 0 0px rgba(139, 92, 246, 0)',
-                      '0 0 8px rgba(139, 92, 246, 0.5)',
-                      '0 0 0px rgba(139, 92, 246, 0)'
+                      '0 0 0px hsl(var(--primary) / 0)',
+                      '0 0 8px hsl(var(--primary) / 0.5)',
+                      '0 0 0px hsl(var(--primary) / 0)'
                     ]
                   }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
-                  <span className="text-sm font-bold tabular-nums bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+                  <span className="text-sm font-bold tabular-nums text-primary">
                     {Math.round(progress)}%
                   </span>
                 </motion.div>
               </div>
             </div>
 
-            {/* Bottom wave animation */}
+            {/* Bottom wave */}
             <div className="h-1 relative overflow-hidden">
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-orange-500/30"
-                animate={{
-                  x: ['-100%', '100%']
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'linear'
-                }}
+                className="absolute inset-0 bg-gradient-to-r from-primary/30 via-accent/30 to-primary/30"
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
               />
             </div>
           </div>
