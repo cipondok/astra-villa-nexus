@@ -99,10 +99,10 @@ const Notifications = () => {
 
   const getIcon = (type: string) => {
     switch (type) {
-      case 'property': return <Building2 className="h-4 w-4 text-blue-500" />;
-      case 'user': return <User className="h-4 w-4 text-green-500" />;
-      case 'system': return <AlertTriangle className="h-4 w-4 text-orange-500" />;
-      case 'message': return <Mail className="h-4 w-4 text-purple-500" />;
+      case 'property': return <Building2 className="h-4 w-4 text-gold-primary" />;
+      case 'user': return <User className="h-4 w-4 text-primary" />;
+      case 'system': return <AlertTriangle className="h-4 w-4 text-destructive" />;
+      case 'message': return <Mail className="h-4 w-4 text-accent-foreground" />;
       default: return <Bell className="h-4 w-4 text-muted-foreground" />;
     }
   };
@@ -118,7 +118,7 @@ const Notifications = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Compact Header with Back Button */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 sm:py-4">
+      <div className="bg-gradient-to-r from-gold-primary/20 via-gold-primary/10 to-gold-primary/5 border-b border-gold-primary/15 py-3 sm:py-4">
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
@@ -126,18 +126,18 @@ const Notifications = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate(-1)}
-                className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-primary-foreground hover:bg-white/20"
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-foreground hover:bg-gold-primary/10"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
-              <BellRing className="h-4 w-4 sm:h-5 sm:w-5" />
+              <BellRing className="h-4 w-4 sm:h-5 sm:w-5 text-gold-primary" />
               <div>
-                <h1 className="text-sm sm:text-lg font-bold">Notifications</h1>
-                <p className="text-[9px] sm:text-xs opacity-80 hidden sm:block">Stay updated with your activities</p>
+                <h1 className="text-sm sm:text-lg font-bold text-foreground">Notifications</h1>
+                <p className="text-[9px] sm:text-xs text-muted-foreground hidden sm:block">Stay updated with your activities</p>
               </div>
             </div>
             {unreadCount > 0 && (
-              <Badge variant="secondary" className="bg-white/20 text-primary-foreground text-[10px] sm:text-xs px-2 py-0.5">
+              <Badge className="bg-gold-primary/90 text-background text-[10px] sm:text-xs px-2 py-0.5">
                 {unreadCount} new
               </Badge>
             )}
@@ -204,8 +204,8 @@ const Notifications = () => {
                 {filteredNotifications.map((notification) => (
                   <Card 
                     key={notification.id} 
-                    className={`transition-all border-border/50 hover:border-border ${
-                      !notification.is_read ? 'bg-primary/5 border-primary/20' : ''
+                    className={`transition-all backdrop-blur-xl border-border/50 hover:border-gold-primary/20 ${
+                      !notification.is_read ? 'bg-gold-primary/5 border-gold-primary/20' : 'bg-card/60'
                     }`}
                   >
                     <CardContent className="p-2.5 sm:p-3">
@@ -221,9 +221,9 @@ const Notifications = () => {
                                 <h4 className={`text-xs sm:text-sm truncate ${!notification.is_read ? 'font-semibold text-foreground' : 'font-medium text-foreground/90'}`}>
                                   {notification.title}
                                 </h4>
-                                {!notification.is_read && (
-                                  <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                                )}
+                                 {!notification.is_read && (
+                                   <span className="w-1.5 h-1.5 rounded-full bg-gold-primary shrink-0" />
+                                 )}
                               </div>
                               <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-1 sm:line-clamp-2 mb-1">
                                 {notification.message}
