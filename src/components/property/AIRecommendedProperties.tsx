@@ -211,75 +211,84 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     return (
       <div
         onClick={() => onPropertyClick(property)}
-        className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px] cursor-pointer group/card overflow-hidden bg-card border border-border rounded-md hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+        className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px] cursor-pointer group/card rounded-xl border border-white/30 dark:border-white/15 bg-white/60 dark:bg-white/5 backdrop-blur-xl shadow-lg shadow-purple-500/5 hover:shadow-2xl hover:shadow-purple-500/15 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-purple-400/5 before:via-transparent before:to-cyan-400/5 before:pointer-events-none before:rounded-xl"
       >
         {/* Image */}
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden bg-muted">
           <img
             src={getPropertyImage(property.images, property.thumbnail_url)}
             alt={property.title}
             loading="lazy"
-            className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700"
           />
 
-          {/* Save Button */}
-          <button className="absolute top-1.5 right-1.5 h-6 w-6 sm:h-7 sm:w-7 p-0 bg-background/90 hover:bg-background rounded-full shadow-md flex items-center justify-center">
-            <Eye className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
-          </button>
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-          {/* Badges */}
-          <div className="absolute top-1.5 left-1.5 flex flex-wrap gap-1">
-            <span className={cn(
-              "flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-semibold rounded text-white",
-              isRent ? "bg-primary" : "bg-green-600"
-            )}>
-              <ListingIcon className="h-2.5 w-2.5" />
-              {isRent ? 'Sewa' : 'Jual'}
-            </span>
-            <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-medium rounded bg-purple-500/90 text-white">
-              <Sparkles className="h-2 w-2" />
-              AI
-            </span>
+          {/* Top Badges */}
+          <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between">
+            <div className="flex gap-1">
+              <span className={cn(
+                "flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full text-white shadow-lg ring-1 ring-white/30",
+                isRent ? "bg-gradient-to-r from-blue-400 to-cyan-500 shadow-blue-500/40" : "bg-gradient-to-r from-emerald-400 to-cyan-500 shadow-emerald-500/40"
+              )}>
+                <ListingIcon className="h-2 w-2" />
+                {isRent ? 'Sewa' : 'Jual'}
+              </span>
+              <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/40 ring-1 ring-white/30">
+                <Sparkles className="h-2 w-2" />
+                AI
+              </span>
+            </div>
+          </div>
+
+          {/* Hover eye */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300">
+            <div className="h-10 w-10 rounded-full bg-white/80 backdrop-blur-xl flex items-center justify-center shadow-xl ring-2 ring-purple-400/50 ring-offset-2 ring-offset-transparent">
+              <Eye className="h-4 w-4 text-purple-600" />
+            </div>
           </div>
         </div>
 
-        {/* Content - Matching Dijual style */}
-        <div className="p-2 sm:p-2.5">
+        {/* Content */}
+        <div className="p-2 sm:p-2.5 space-y-1.5 relative">
           {/* Price */}
-          <p className="text-xs sm:text-sm font-bold text-primary mb-0.5 leading-tight">
-            {formatPriceClean(property.price || 0)}
-            {isRent && <span className="text-[9px] font-medium text-muted-foreground">/bln</span>}
-          </p>
+          <div className="bg-gradient-to-r from-purple-500/15 via-pink-500/10 to-cyan-500/15 border border-purple-400/25 dark:border-purple-400/20 rounded-lg px-2 py-1 backdrop-blur-sm">
+            <p className="text-xs sm:text-sm font-black bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 dark:from-purple-400 dark:via-pink-400 dark:to-cyan-400 bg-clip-text text-transparent leading-tight">
+              {formatPriceClean(property.price || 0)}
+              {isRent && <span className="text-[9px] font-bold text-purple-500/60 dark:text-purple-400/60">/bln</span>}
+            </p>
+          </div>
 
           {/* Title */}
-          <h3 className="text-[10px] sm:text-xs font-semibold text-foreground line-clamp-1 mb-0.5">
+          <h3 className="text-[10px] sm:text-[11px] font-semibold text-foreground truncate leading-snug group-hover/card:text-purple-600 dark:group-hover/card:text-purple-400 transition-colors group-hover/card:whitespace-normal group-hover/card:overflow-visible" title={property.title}>
             {property.title}
           </h3>
 
           {/* Location */}
-          <div className="flex items-center gap-0.5 text-muted-foreground mb-1.5">
-            <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
-            <span className="text-[9px] sm:text-[10px] truncate">{property.city || property.location || 'Indonesia'}</span>
+          <div className="flex items-center gap-0.5 rounded-lg bg-gradient-to-r from-purple-500/10 via-pink-500/8 to-cyan-500/10 border border-purple-400/25 px-1.5 py-0.5 backdrop-blur-sm">
+            <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-purple-500 dark:text-purple-400" />
+            <span className="text-[9px] sm:text-[10px] text-foreground/70 font-medium truncate">{property.city || property.location || 'Indonesia'}</span>
           </div>
 
-          {/* Property Details */}
-          <div className="flex items-center gap-2 text-[9px] sm:text-[10px] text-muted-foreground border-t border-border pt-1.5">
+          {/* Specs */}
+          <div className="flex items-center gap-1 pt-1.5 border-t border-purple-400/15">
             {property.bedrooms && property.bedrooms > 0 && (
-              <div className="flex items-center gap-0.5">
-                <Bed className="h-2.5 w-2.5" />
-                <span>{property.bedrooms}</span>
+              <div className="flex items-center gap-0.5 bg-gradient-to-br from-violet-500/15 to-purple-500/15 border border-violet-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-violet-500/10">
+                <Bed className="h-2.5 w-2.5 text-violet-500 dark:text-violet-400" />
+                <span className="text-[9px] font-bold text-foreground/80">{property.bedrooms}</span>
               </div>
             )}
             {property.bathrooms && property.bathrooms > 0 && (
-              <div className="flex items-center gap-0.5">
-                <Bath className="h-2.5 w-2.5" />
-                <span>{property.bathrooms}</span>
+              <div className="flex items-center gap-0.5 bg-gradient-to-br from-sky-500/15 to-blue-500/15 border border-sky-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-sky-500/10">
+                <Bath className="h-2.5 w-2.5 text-sky-500 dark:text-sky-400" />
+                <span className="text-[9px] font-bold text-foreground/80">{property.bathrooms}</span>
               </div>
             )}
             {property.area_sqm && (
-              <div className="flex items-center gap-0.5">
-                <Maximize className="h-2.5 w-2.5" />
-                <span>{property.area_sqm}m²</span>
+              <div className="flex items-center gap-0.5 bg-gradient-to-br from-amber-500/15 to-orange-500/15 border border-amber-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-amber-500/10">
+                <Maximize className="h-2.5 w-2.5 text-amber-500 dark:text-amber-400" />
+                <span className="text-[9px] font-bold text-foreground/80">{property.area_sqm}m²</span>
               </div>
             )}
           </div>
