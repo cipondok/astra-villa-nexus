@@ -5,6 +5,7 @@ import {
   TooltipProvider,
   TooltipTrigger } from
 "@/components/ui/tooltip";
+import { useHeaderLogo } from "@/hooks/useBrandingLogo";
 
 interface BrandedStatusBadgeProps {
   verificationStatus?: string;
@@ -13,60 +14,56 @@ interface BrandedStatusBadgeProps {
   className?: string;
 }
 
-const STATUS_RING: Record<string, {ring: string;glow: string;label: string;}> = {
-  verified: {
-    ring: "ring-emerald-400 dark:ring-emerald-500",
-    glow: "shadow-[0_0_6px_rgba(52,211,153,0.5)]",
-    label: "Verified"
-  },
-  approved: {
-    ring: "ring-emerald-400 dark:ring-emerald-500",
-    glow: "shadow-[0_0_6px_rgba(52,211,153,0.5)]",
-    label: "Verified"
-  },
-  pending: {
-    ring: "ring-amber-400 dark:ring-amber-500",
-    glow: "shadow-[0_0_4px_rgba(251,191,36,0.3)]",
-    label: "Pending"
-  },
-  unverified: {
-    ring: "ring-slate-300 dark:ring-slate-600",
-    glow: "",
-    label: "Unverified"
-  }
+const STATUS_RING: Record<string, {label: string;}> = {
+  verified: { label: "Verified" },
+  approved: { label: "Verified" },
+  pending: { label: "Pending" },
+  unverified: { label: "Unverified" }
 };
 
-const LEVEL_CONFIG: Record<string, {label: string; shieldColor: string;}> = {
+const LEVEL_CONFIG: Record<string, {label: string; shieldColor: string; shieldLight: string; shieldDark: string;}> = {
   diamond: {
     label: "Diamond",
-    shieldColor: "#38bdf8", // sky-400
+    shieldColor: "#38bdf8",
+    shieldLight: "#7dd3fc",
+    shieldDark: "#0284c7",
   },
   platinum: {
     label: "Platinum",
-    shieldColor: "#22d3ee", // cyan-400
+    shieldColor: "#22d3ee",
+    shieldLight: "#67e8f9",
+    shieldDark: "#0891b2",
   },
   gold: {
     label: "Gold",
-    shieldColor: "#d4a017", // gold
+    shieldColor: "#d4a017",
+    shieldLight: "#facc15",
+    shieldDark: "#a16207",
   },
   vip: {
     label: "VIP",
-    shieldColor: "#a855f7", // purple
+    shieldColor: "#a855f7",
+    shieldLight: "#c084fc",
+    shieldDark: "#7c3aed",
   },
   silver: {
     label: "Silver",
-    shieldColor: "#94a3b8", // slate-400
+    shieldColor: "#94a3b8",
+    shieldLight: "#cbd5e1",
+    shieldDark: "#64748b",
   },
   premium: {
     label: "Premium",
-    shieldColor: "#8b5cf6", // violet
+    shieldColor: "#8b5cf6",
+    shieldLight: "#a78bfa",
+    shieldDark: "#6d28d9",
   }
 };
 
 const SIZE_MAP = {
-  xs: { width: 16, height: 18, fontSize: "text-[8px]", gap: "gap-0.5" },
-  sm: { width: 20, height: 23, fontSize: "text-[9px]", gap: "gap-1" },
-  md: { width: 24, height: 28, fontSize: "text-[10px]", gap: "gap-1" }
+  xs: { width: 18, height: 21, logoSize: 8, logoY: 9, fontSize: "text-[8px]", gap: "gap-0.5" },
+  sm: { width: 22, height: 26, logoSize: 10, logoY: 11, fontSize: "text-[9px]", gap: "gap-1" },
+  md: { width: 28, height: 32, logoSize: 13, logoY: 13, fontSize: "text-[10px]", gap: "gap-1" }
 };
 
 const getLevelConfig = (level?: string) => {
@@ -78,37 +75,90 @@ const getLevelConfig = (level?: string) => {
   return null;
 };
 
-// Shield with dove SVG component
-const ShieldDoveIcon = ({ color, width, height }: { color: string; width: number; height: number }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 32 37"
-    width={width}
-    height={height}
-    style={{ display: 'block' }}
-  >
-    {/* Shield */}
-    <path
-      d="M16 1L2 7.5v10c0 9 6.2 17.4 14 19.5 7.8-2.1 14-10.5 14-19.5v-10L16 1z"
-      fill={color}
-    />
-    {/* Dove body */}
-    <path
-      d="M16 10c-1.8 0-3.2 1.2-3.8 2.8-.3-.1-.7-.2-1-.2-1.5 0-2.7 1-2.7 2.3 0 .8.4 1.5 1.1 2l4.8 4.2c.5.4 1 .7 1.6.7s1.1-.3 1.6-.7l4.8-4.2c.7-.5 1.1-1.2 1.1-2 0-1.3-1.2-2.3-2.7-2.3-.3 0-.7.1-1 .2-.6-1.6-2-2.8-3.8-2.8z"
-      fill="white"
-    />
-    {/* Left wing */}
-    <path
-      d="M9.5 15.5c-.8-.3-2.2.5-2.5 1.5-.1.4.1.7.4.6 1-.3 2.2-1.2 2.1-2.1z"
-      fill="rgba(255,255,255,0.85)"
-    />
-    {/* Right wing */}
-    <path
-      d="M22.5 15.5c.8-.3 2.2.5 2.5 1.5.1.4-.1.7-.4.6-1-.3-2.2-1.2-2.1-2.1z"
-      fill="rgba(255,255,255,0.85)"
-    />
-  </svg>
-);
+// 3D Shield with embedded logo
+const Shield3DIcon = ({ color, lightColor, darkColor, width, height, logoUrl, logoSize, logoY }: {
+  color: string; lightColor: string; darkColor: string;
+  width: number; height: number; logoUrl: string; logoSize: number; logoY: number;
+}) => {
+  const gradId = `shield-grad-${color.replace('#', '')}`;
+  const glossId = `shield-gloss-${color.replace('#', '')}`;
+  const shadowId = `shield-shadow-${color.replace('#', '')}`;
+
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 32 38"
+      width={width}
+      height={height}
+      style={{ display: 'block', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.25))' }}
+    >
+      <defs>
+        {/* 3D gradient */}
+        <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={lightColor} />
+          <stop offset="50%" stopColor={color} />
+          <stop offset="100%" stopColor={darkColor} />
+        </linearGradient>
+        {/* Gloss highlight */}
+        <linearGradient id={glossId} x1="0.5" y1="0" x2="0.5" y2="1">
+          <stop offset="0%" stopColor="white" stopOpacity="0.45" />
+          <stop offset="50%" stopColor="white" stopOpacity="0.08" />
+          <stop offset="100%" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+        {/* Inner shadow */}
+        <radialGradient id={shadowId} cx="0.5" cy="1" r="0.7">
+          <stop offset="0%" stopColor="black" stopOpacity="0.15" />
+          <stop offset="100%" stopColor="black" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* Shield base - 3D shape */}
+      <path
+        d="M16 1L2 7v11c0 9.5 6.2 17.4 14 19.5 7.8-2.1 14-10 14-19.5V7L16 1z"
+        fill={`url(#${gradId})`}
+        stroke={darkColor}
+        strokeWidth="0.8"
+      />
+
+      {/* Gloss overlay for 3D effect */}
+      <path
+        d="M16 1L2 7v11c0 9.5 6.2 17.4 14 19.5 7.8-2.1 14-10 14-19.5V7L16 1z"
+        fill={`url(#${glossId})`}
+      />
+
+      {/* Bottom shadow for depth */}
+      <path
+        d="M16 1L2 7v11c0 9.5 6.2 17.4 14 19.5 7.8-2.1 14-10 14-19.5V7L16 1z"
+        fill={`url(#${shadowId})`}
+      />
+
+      {/* Edge highlight - left */}
+      <path
+        d="M3 7.5L16 2v35c-7-2-13-10-13-19V7.5z"
+        fill="white"
+        opacity="0.08"
+      />
+
+      {/* Inner white circle for logo */}
+      <circle cx="16" cy={logoY + logoSize / 2 + 1} r={logoSize / 2 + 2} fill="white" opacity="0.95" />
+
+      {/* Logo image */}
+      <image
+        href={logoUrl}
+        x={16 - logoSize / 2}
+        y={logoY}
+        width={logoSize}
+        height={logoSize}
+        style={{ borderRadius: '50%' }}
+      />
+
+      {/* Checkmark at bottom */}
+      <circle cx="24" cy="28" r="5" fill="white" />
+      <circle cx="24" cy="28" r="4" fill="#22c55e" />
+      <path d="M22 28l1.5 1.5 3-3" stroke="white" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+};
 
 const BrandedStatusBadge = ({
   verificationStatus,
@@ -116,12 +166,14 @@ const BrandedStatusBadge = ({
   size = "xs",
   className
 }: BrandedStatusBadgeProps) => {
+  const { logoUrl: brandLogo } = useHeaderLogo();
   const statusConfig = STATUS_RING[verificationStatus?.toLowerCase() || ""] || STATUS_RING.unverified;
   const levelConfig = getLevelConfig(userLevel);
   const sizeConfig = SIZE_MAP[size];
 
-  // Default blue shield for verified, level color if available
-  const shieldColor = levelConfig?.shieldColor || "#2563eb"; // blue-600 default
+  const shieldColor = levelConfig?.shieldColor || "#2563eb";
+  const shieldLight = levelConfig?.shieldLight || "#60a5fa";
+  const shieldDark = levelConfig?.shieldDark || "#1d4ed8";
   const tooltipLabel = levelConfig
     ? `Verified · ${levelConfig.label}`
     : statusConfig.label;
@@ -134,10 +186,15 @@ const BrandedStatusBadge = ({
         className
       )}
     >
-      <ShieldDoveIcon
+      <Shield3DIcon
         color={shieldColor}
+        lightColor={shieldLight}
+        darkColor={shieldDark}
         width={sizeConfig.width}
         height={sizeConfig.height}
+        logoUrl={brandLogo}
+        logoSize={sizeConfig.logoSize}
+        logoY={sizeConfig.logoY}
       />
       {size !== "xs" && (
         <span className={cn(
