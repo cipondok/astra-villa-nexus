@@ -523,35 +523,35 @@ const Index = () => {
           </div>
           
           {/* Seamless fade into search section */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-24 bg-gradient-to-t from-[hsl(210,55%,25%)] dark:from-[hsl(210,55%,8%)] to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-24 bg-gradient-to-t from-hero-from to-transparent pointer-events-none" />
         </section>
 
         {/* Search Section */}
-        <section className="w-full bg-gradient-to-b from-[hsl(210,55%,25%)] via-[hsl(210,50%,30%)] to-[hsl(210,45%,35%)] dark:from-[hsl(210,55%,8%)] dark:via-[hsl(210,50%,10%)] dark:to-[hsl(210,45%,12%)] py-4 sm:py-6 md:py-8">
+        <section className="w-full bg-gradient-to-b from-hero-from via-hero-via to-hero-to py-4 sm:py-6 md:py-8">
           <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
             {/* AI Badge */}
             <div className="text-center mb-4 sm:mb-5">
               <div className={cn(
                 "inline-flex items-center gap-1.5 mb-3 sm:mb-4",
                 "px-4 py-1.5 sm:px-5 sm:py-2",
-                "bg-white/10 backdrop-blur-md",
-                "rounded-full border border-white/15",
+                "bg-primary-foreground/10 backdrop-blur-md",
+                "rounded-full border border-primary-foreground/15",
                 "shadow-sm",
                 "animate-in fade-in-50 slide-in-from-bottom-2 duration-700"
               )}>
                 <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
-                <span className="text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-widest">
+                <span className="text-[10px] sm:text-xs font-semibold text-primary-foreground/90 uppercase tracking-widest">
                   AI-Powered Search
                 </span>
               </div>
               
               <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black leading-tight mb-2 sm:mb-3 animate-in fade-in-50 slide-in-from-bottom-3 duration-700 delay-150">
-                <span className="bg-gradient-to-r from-white via-white/95 to-white/80 bg-clip-text text-transparent drop-shadow-lg">
+                <span className="bg-gradient-to-r from-primary-foreground via-primary-foreground/95 to-primary-foreground/80 bg-clip-text text-transparent drop-shadow-lg">
                   {t.findYour}
                 </span>
               </h2>
-              <p className="flex text-xs sm:text-sm md:text-base text-white/50 items-center justify-center gap-2 font-medium animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-300">
-                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/40" />
+              <p className="flex text-xs sm:text-sm md:text-base text-primary-foreground/50 items-center justify-center gap-2 font-medium animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-300">
+                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary-foreground/40" />
                 {t.searchPowered}
               </p>
             </div>
@@ -593,8 +593,8 @@ const Index = () => {
               <div className="flex gap-2 px-3 overflow-hidden justify-center">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="flex-shrink-0 w-[130px] md:w-[160px] animate-pulse">
-                    <div className="h-16 md:h-24 bg-white/10 rounded-lg mb-1" />
-                    <div className="h-2 bg-white/10 rounded w-3/4" />
+                    <div className="h-16 md:h-24 bg-primary-foreground/10 rounded-lg mb-1" />
+                    <div className="h-2 bg-primary-foreground/10 rounded w-3/4" />
                   </div>
                 ))}
               </div>
@@ -648,7 +648,7 @@ const Index = () => {
         )}
 
         {/* AI Tools & Features */}
-        <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-[hsl(210,45%,35%)] via-[hsl(210,40%,40%)] to-[hsl(210,35%,45%)] dark:from-[hsl(210,45%,12%)] dark:via-[hsl(210,40%,14%)] dark:to-[hsl(210,35%,16%)]" style={{ contain: 'layout', minHeight: '120px' }}>
+        <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-hero-to via-hero-mid to-hero-end" style={{ contain: 'layout', minHeight: '120px' }}>
           <div className="w-full">
             <LazyRender minHeight="96px" rootMargin="400px" fallback={
               <div className="flex gap-2 justify-center py-3" style={{ minHeight: '96px' }}>
@@ -668,7 +668,7 @@ const Index = () => {
         </div>
 
         {/* Global Investment Platform */}
-        <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-[hsl(210,35%,45%)] to-[hsl(210,30%,50%)] dark:from-[hsl(210,35%,16%)] dark:to-[hsl(210,30%,18%)]" style={{ contain: 'layout', minHeight: '80px' }}>
+        <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-hero-end to-hero-fade" style={{ contain: 'layout', minHeight: '80px' }}>
           <div className="w-full">
             <LazyRender minHeight="64px" rootMargin="400px" fallback={
               <div className="flex gap-3 justify-center py-3" style={{ minHeight: '64px' }}>
@@ -683,7 +683,7 @@ const Index = () => {
         </div>
 
         {/* Property Display Section */}
-        <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-[hsl(210,30%,50%)] via-[hsl(210,25%,60%)] to-background dark:from-[hsl(210,30%,18%)] dark:via-[hsl(210,25%,14%)] dark:to-background">
+        <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-hero-fade via-hero-fade/60 to-background">
           <div className="w-full space-y-4">
             {hasSearched ? (
               <section className="bg-primary/10 backdrop-blur-sm rounded-xl shadow-md border border-primary/15 dark:bg-primary/5 dark:border-primary/10">

@@ -252,6 +252,14 @@ html {
     --text-light: 210 60% 12%;
     --text-muted: 210 20% 45%;
     
+    /* Hero & Search Section Gradients - Light Mode */
+    --hero-from: 210 55% 25%;
+    --hero-via: 210 50% 30%;
+    --hero-to: 210 45% 35%;
+    --hero-mid: 210 40% 40%;
+    --hero-end: 210 35% 45%;
+    --hero-fade: 210 30% 50%;
+    
     /* Glassy effect colors - Light Mode */
     --glass-bg: 200 100% 98%;
     --glass-border: 200 35% 85%;
@@ -294,6 +302,14 @@ html {
     --dark-card: 210 45% 10%;
     --text-light: 0 0% 100%;
     --text-muted: 200 15% 60%;
+    
+    /* Hero & Search Section Gradients - Dark Mode */
+    --hero-from: 210 55% 8%;
+    --hero-via: 210 50% 10%;
+    --hero-to: 210 45% 12%;
+    --hero-mid: 210 40% 14%;
+    --hero-end: 210 35% 16%;
+    --hero-fade: 210 30% 18%;
     
     /* Glassy effect colors - Dark Mode */
     --glass-bg: 210 50% 10%;
