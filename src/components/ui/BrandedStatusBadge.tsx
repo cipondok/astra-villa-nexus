@@ -185,10 +185,13 @@ const BrandedStatusBadge = ({
         checkColor={checkColor}
       />
       {size !== "xs" && (
-        <span className={cn(
-          sizeConfig.fontSize,
-          "font-bold tracking-tight leading-none text-foreground/80 whitespace-nowrap"
-        )}>
+        <span
+          className={cn(
+            sizeConfig.fontSize,
+            "font-bold tracking-tight leading-none whitespace-nowrap px-1.5 py-0.5 rounded-full text-white"
+          )}
+          style={{ backgroundColor: shieldColor }}
+        >
           Verified Partner
         </span>
       )}
