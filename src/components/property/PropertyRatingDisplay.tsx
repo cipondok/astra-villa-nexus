@@ -47,15 +47,15 @@ const PropertyRatingDisplay: React.FC<PropertyRatingDisplayProps> = ({
         stars.push(
           <Star 
             key={i} 
-            className={cn(config.star, 'fill-yellow-400 text-yellow-400')} 
+            className={cn(config.star, 'fill-gold-primary text-gold-primary')} 
           />
         );
       } else if (i === fullStars && hasHalfStar) {
         stars.push(
           <div key={i} className="relative">
-            <Star className={cn(config.star, 'text-gray-300')} />
+            <Star className={cn(config.star, 'text-muted-foreground/30')} />
             <div className="absolute inset-0 overflow-hidden w-1/2">
-              <Star className={cn(config.star, 'fill-yellow-400 text-yellow-400')} />
+              <Star className={cn(config.star, 'fill-gold-primary text-gold-primary')} />
             </div>
           </div>
         );
@@ -63,7 +63,7 @@ const PropertyRatingDisplay: React.FC<PropertyRatingDisplayProps> = ({
         stars.push(
           <Star 
             key={i} 
-            className={cn(config.star, 'text-gray-300')} 
+            className={cn(config.star, 'text-muted-foreground/30')} 
           />
         );
       }
@@ -77,7 +77,7 @@ const PropertyRatingDisplay: React.FC<PropertyRatingDisplayProps> = ({
       <div className={cn('flex items-center', config.gap, className)}>
         <div className="flex">
           {[...Array(5)].map((_, i) => (
-            <Star key={i} className={cn(config.star, 'text-gray-300')} />
+            <Star key={i} className={cn(config.star, 'text-muted-foreground/30')} />
           ))}
         </div>
         <span className={cn(config.text, 'text-muted-foreground')}>

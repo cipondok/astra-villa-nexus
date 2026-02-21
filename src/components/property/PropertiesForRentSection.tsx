@@ -155,8 +155,8 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
 
                 {/* Hover eye */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="h-10 w-10 rounded-full bg-white/80 backdrop-blur-xl flex items-center justify-center shadow-xl ring-2 ring-blue-400/50 ring-offset-2 ring-offset-transparent">
-                    <Eye className="h-4 w-4 text-blue-600" />
+                  <div className="h-10 w-10 rounded-full bg-card/80 backdrop-blur-xl flex items-center justify-center shadow-xl ring-2 ring-primary/50 ring-offset-2 ring-offset-transparent">
+                    <Eye className="h-4 w-4 text-primary" />
                   </div>
                 </div>
               </div>
@@ -164,16 +164,16 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
               {/* Content */}
               <div className="p-2.5 space-y-1.5 relative">
                 {/* Price */}
-                <div className="flex items-baseline gap-1 bg-gradient-to-r from-blue-500/15 via-cyan-500/10 to-sky-500/15 border border-blue-400/25 dark:border-blue-400/20 rounded-lg px-2 py-1.5 backdrop-blur-sm">
-                  <span className="text-base font-black bg-gradient-to-r from-blue-500 via-cyan-500 to-sky-500 dark:from-blue-400 dark:via-cyan-400 dark:to-sky-400 bg-clip-text text-transparent leading-none tracking-tight">{priceInfo.main}</span>
+                <div className="flex items-baseline gap-1 bg-gradient-to-r from-primary/15 via-primary/10 to-primary/15 border border-primary/25 rounded-lg px-2 py-1.5 backdrop-blur-sm">
+                  <span className="text-base font-black bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent leading-none tracking-tight">{priceInfo.main}</span>
                   {priceInfo.suffix && (
-                    <span className="text-[11px] font-extrabold text-blue-600/70 dark:text-blue-400/70">{priceInfo.suffix}</span>
+                    <span className="text-[11px] font-extrabold text-primary/70">{priceInfo.suffix}</span>
                   )}
-                  <span className="text-[9px] text-blue-500/70 font-bold ml-auto bg-white/40 dark:bg-white/10 backdrop-blur-sm rounded-full px-1.5 border border-white/30 dark:border-white/10">/bln</span>
+                  <span className="text-[9px] text-primary/70 font-bold ml-auto bg-card/40 backdrop-blur-sm rounded-full px-1.5 border border-border/30">/bln</span>
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[11px] font-semibold text-foreground truncate leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:whitespace-normal group-hover:overflow-visible" title={property.title}>
+                <h3 className="text-[11px] font-semibold text-foreground truncate leading-snug group-hover:text-primary transition-colors group-hover:whitespace-normal group-hover:overflow-visible" title={property.title}>
                   {property.title}
                 </h3>
 
@@ -218,12 +218,12 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
           <div
             key={`empty-${i}`}
             onClick={() => navigate('/add-property')}
-            className="group cursor-pointer rounded-xl overflow-hidden border-2 border-dashed border-blue-400/20 hover:border-blue-400/50 bg-blue-500/5 hover:bg-blue-500/10 transition-all duration-200 flex flex-col items-center justify-center gap-2 min-h-[200px]"
+            className="group cursor-pointer rounded-xl overflow-hidden border-2 border-dashed border-primary/20 hover:border-primary/50 bg-primary/5 hover:bg-primary/10 transition-all duration-200 flex flex-col items-center justify-center gap-2 min-h-[200px]"
           >
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 group-hover:from-blue-500/40 group-hover:to-cyan-500/40 flex items-center justify-center transition-colors border border-blue-400/30">
-              <Plus className="h-5 w-5 text-blue-500/60 group-hover:text-blue-500 transition-colors" />
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 group-hover:from-primary/40 group-hover:to-primary/20 flex items-center justify-center transition-colors border border-primary/30">
+              <Plus className="h-5 w-5 text-primary/60 group-hover:text-primary transition-colors" />
             </div>
-            <span className="text-[10px] text-blue-500/50 group-hover:text-blue-500 transition-colors font-semibold">
+            <span className="text-[10px] text-primary/50 group-hover:text-primary transition-colors font-semibold">
               Tambah Properti
             </span>
           </div>

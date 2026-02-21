@@ -184,7 +184,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
             <Badge 
               className={`${listing_type === 'sale' 
-                ? 'bg-green-600 text-white' 
+                ? 'bg-chart-1 text-primary-foreground' 
                 : 'bg-primary text-primary-foreground'
               } text-xs font-semibold px-2 py-0.5 rounded`}
             >
@@ -196,12 +196,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               </Badge>
             )}
             {development_status === 'pre_launching' && (
-              <Badge className="bg-purple-600 text-white text-xs font-medium px-2 py-0.5 rounded">
+              <Badge className="bg-accent text-accent-foreground text-xs font-medium px-2 py-0.5 rounded">
                 Pre-Launch
               </Badge>
             )}
             {(three_d_model_url || virtual_tour_url) && (
-              <Badge className="bg-blue-600 text-white text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1">
+              <Badge className="bg-chart-4 text-primary-foreground text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1">
                 <Box className="h-3 w-3" />
                 3D
               </Badge>
