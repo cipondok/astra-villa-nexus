@@ -125,13 +125,13 @@ const VendorDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* iPhone-Style Header */}
-      <div className="header-ios">
+      {/* Dashboard Header */}
+      <div className="bg-gradient-to-r from-gold-primary/20 via-gold-primary/10 to-gold-primary/5 border-b border-gold-primary/15">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="animate-in fade-in slide-in-from-left duration-500">
-              <h1 className="text-3xl font-bold text-white tracking-tight">Vendor Dashboard</h1>
-              <p className="text-white/80 mt-1 font-medium">
+              <h1 className="text-3xl font-bold text-foreground tracking-tight">Vendor Dashboard</h1>
+              <p className="text-muted-foreground mt-1 font-medium">
                 Manage your business and grow your services
               </p>
             </div>
@@ -139,7 +139,7 @@ const VendorDashboard = () => {
               <Button
                 variant="ghost"
                 onClick={handleLogout}
-                className="header-button-ios"
+                className="text-foreground hover:bg-gold-primary/10"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
@@ -147,7 +147,7 @@ const VendorDashboard = () => {
               <Button
                 variant="ghost"
                 onClick={handleBackClick}
-                className="header-button-ios"
+                className="text-foreground hover:bg-gold-primary/10"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back
@@ -155,7 +155,7 @@ const VendorDashboard = () => {
               <Button
                 variant="ghost"
                 onClick={handleHomeClick}
-                className="header-button-ios"
+                className="text-foreground hover:bg-gold-primary/10"
               >
                 <Home className="h-4 w-4 mr-2" />
                 Home
@@ -199,18 +199,17 @@ const VendorDashboard = () => {
           </TabsList>
 
           <TabsContent value="overview" className="tab-content-wrapper">
-            {/* Enhanced Overview with Samsung Gradient */}
-            <Card className="samsung-gradient border-0 shadow-xl mb-8 card-smooth">
+            {/* Welcome Card */}
+            <Card className="bg-gradient-to-r from-gold-primary/15 via-gold-primary/10 to-gold-primary/5 border-gold-primary/20 shadow-xl mb-8 backdrop-blur-xl">
               <CardContent className="p-8">
                 <div className="flex items-center justify-between">
                   <div className="animate-in fade-in slide-in-from-left duration-700">
-                    <h3 className="text-2xl font-bold text-white">Welcome Back!</h3>
-                    <p className="text-white/80 mt-1 text-lg">Manage your services and grow your business</p>
+                    <h3 className="text-2xl font-bold text-foreground">Welcome Back!</h3>
+                    <p className="text-muted-foreground mt-1 text-lg">Manage your services and grow your business</p>
                   </div>
                   <div className="flex gap-3 animate-in fade-in slide-in-from-right duration-700">
                     <Button 
-                      variant="outline" 
-                      className="bg-white/15 border-white/30 text-white hover:bg-white/25 hover:scale-105 transition-all duration-300"
+                      className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-md shadow-gold-primary/20 hover:opacity-90 transition-all duration-300"
                       onClick={() => navigate('/vendor-registration')}
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -222,10 +221,10 @@ const VendorDashboard = () => {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <Card className="card-smooth hover:shadow-2xl transition-all duration-500">
+              <Card className="border-gold-primary/10 bg-card/60 backdrop-blur-xl hover:border-gold-primary/20 transition-all duration-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Services</CardTitle>
-                  <Store className="h-4 w-4 text-muted-foreground" />
+                  <Store className="h-4 w-4 text-gold-primary" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">0</div>
@@ -233,10 +232,10 @@ const VendorDashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card className="card-smooth hover:shadow-2xl transition-all duration-500">
+              <Card className="border-gold-primary/10 bg-card/60 backdrop-blur-xl hover:border-gold-primary/20 transition-all duration-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Active Bookings</CardTitle>
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <Calendar className="h-4 w-4 text-gold-primary" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">0</div>
@@ -244,10 +243,10 @@ const VendorDashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card className="card-smooth hover:shadow-2xl transition-all duration-500">
+              <Card className="border-gold-primary/10 bg-card/60 backdrop-blur-xl hover:border-gold-primary/20 transition-all duration-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <Users className="h-4 w-4 text-gold-primary" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">0</div>
@@ -255,10 +254,10 @@ const VendorDashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card className="card-smooth hover:shadow-2xl transition-all duration-500">
+              <Card className="border-gold-primary/10 bg-card/60 backdrop-blur-xl hover:border-gold-primary/20 transition-all duration-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <DollarSign className="h-4 w-4 text-gold-primary" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{formatIDR(0)}</div>
