@@ -189,7 +189,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     variant="ghost"
                     size="sm"
                     title={currentText.admin}
-                    className="bg-ios-red/10 hover:bg-ios-red/20 text-ios-red hover:text-ios-red border-ios-red/30 hover:border-ios-red/50 transition-all duration-300 h-8 px-2.5 md:h-9 md:px-3"
+                    className="bg-destructive/10 hover:bg-destructive/20 text-destructive hover:text-destructive border-destructive/30 hover:border-destructive/50 transition-all duration-300 h-8 px-2.5 md:h-9 md:px-3"
                   >
                     <Shield className="h-3.5 w-3.5 md:h-4 md:w-4 md:mr-2" />
                     <span className="hidden sm:inline text-xs md:text-sm">{currentText.admin}</span>
@@ -202,7 +202,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     variant="default"
                     size="sm"
                     title="Customer Service Dashboard"
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm h-8 px-2.5 text-xs md:h-9 md:px-4 md:text-sm"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-sm h-8 px-2.5 text-xs md:h-9 md:px-4 md:text-sm"
                   >
                     <Headphones className="h-3.5 w-3.5 md:h-4 md:w-4 md:mr-2" />
                     <span className="hidden sm:inline">CS</span>
@@ -277,7 +277,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     onClick={handleAdminClick}
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-start bg-ios-red/10 hover:bg-ios-red/20 text-ios-red h-9 text-sm"
+                    className="w-full justify-start bg-destructive/10 hover:bg-destructive/20 text-destructive h-9 text-sm"
                   >
                     <Shield className="h-4 w-4 mr-2" />
                     {currentText.admin}
@@ -292,7 +292,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     }}
                     variant="default"
                     size="sm"
-                    className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white font-medium h-9 text-sm"
+                    className="w-full justify-start bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-9 text-sm"
                   >
                     <Headphones className="h-4 w-4 mr-2" />
                     CS Dashboard
