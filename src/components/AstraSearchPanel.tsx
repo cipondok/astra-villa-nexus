@@ -2221,7 +2221,7 @@ const AstraSearchPanel = ({
           <Button
             onClick={handleSearch}
             size="lg"
-            className="h-11 flex-1 rounded-xl flex items-center justify-center gap-2 bg-gradient-to-r from-primary via-primary to-orange-500 hover:opacity-90 text-white shadow-lg"
+            className="h-11 flex-1 rounded-xl flex items-center justify-center gap-2 bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:opacity-90 text-background shadow-lg shadow-gold-primary/20"
           >
             <Search className="h-4 w-4" />
             <span className="text-sm font-semibold">{currentText.search}</span>
@@ -2482,8 +2482,8 @@ const AstraSearchPanel = ({
       {/* Transparent Full-Width Container */}
       <div className="relative bg-transparent overflow-visible rounded-none border-b border-white/10 dark:border-white/5">
         {/* Subtle top shine line */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/20 pointer-events-none" />
-        <div className={cn("relative space-y-1.5 overflow-visible bg-card/95 backdrop-blur-xl border border-border/40 rounded-2xl shadow-lg", isMobile ? "p-1.5" : "p-2.5 lg:p-3.5 xl:p-4")}>
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-primary/30 to-transparent pointer-events-none" />
+        <div className={cn("relative space-y-1.5 overflow-visible bg-primary-foreground/5 backdrop-blur-xl border border-gold-primary/15 rounded-2xl shadow-lg", isMobile ? "p-1.5" : "p-2.5 lg:p-3.5 xl:p-4")}>
           
           {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
           <div className="flex justify-center">
@@ -2593,7 +2593,7 @@ const AstraSearchPanel = ({
                   }
                 }}
                 className={cn(
-                  "w-full bg-background/90 border border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/15 rounded-xl transition-all duration-300 shadow-sm font-medium",
+                  "w-full bg-background/90 border border-gold-primary/15 focus:border-gold-primary/40 focus:ring-2 focus:ring-gold-primary/15 rounded-xl transition-all duration-300 shadow-sm font-medium",
                   "text-foreground placeholder:text-muted-foreground/50",
                   isMobile ? "pl-8 pr-24 h-10 text-xs" : "pl-11 pr-32 h-11 text-sm"
                 )} 
@@ -2601,7 +2601,7 @@ const AstraSearchPanel = ({
               
               {/* Action buttons inside input - right side */}
               <div className={cn(
-                "absolute right-1.5 top-1/2 transform -translate-y-1/2 flex items-center bg-white/60 dark:bg-white/5 rounded-lg border border-primary/10",
+                "absolute right-1.5 top-1/2 transform -translate-y-1/2 flex items-center bg-primary-foreground/5 rounded-lg border border-gold-primary/10",
                 isMobile ? "gap-0 px-0.5 py-0.5" : "gap-0.5 px-1 py-0.5"
               )}>
                 <ImageSearchButton
@@ -2657,7 +2657,7 @@ const AstraSearchPanel = ({
               {showSuggestions && (
                 <div
                   ref={suggestionsRef}
-                  className="absolute top-full left-0 right-0 mt-0.5 bg-white dark:bg-card/95 backdrop-blur-2xl border border-border/40 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[100001] max-h-80 overflow-y-auto"
+                  className="absolute top-full left-0 right-0 mt-0.5 bg-card/95 backdrop-blur-2xl border border-gold-primary/15 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[100001] max-h-80 overflow-y-auto"
                 >
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
