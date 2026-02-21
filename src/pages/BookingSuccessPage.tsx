@@ -129,7 +129,7 @@ const BookingSuccessPage = () => {
         <Navigation />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
-            <Clock className="h-12 w-12 mx-auto mb-4 animate-spin text-primary" />
+            <Clock className="h-12 w-12 mx-auto mb-4 animate-spin text-gold-primary" />
             <h2 className="text-xl font-semibold mb-2">Memverifikasi Pembayaran...</h2>
             <p className="text-muted-foreground">Mohon tunggu sebentar</p>
           </div>
@@ -177,8 +177,8 @@ const BookingSuccessPage = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Success Header */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-10 w-10 text-primary" />
+          <div className="w-20 h-20 bg-gold-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-10 w-10 text-gold-primary" />
           </div>
           
           <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -207,7 +207,7 @@ const BookingSuccessPage = () => {
 
         {/* Booking Summary */}
         {bookingData && (
-          <Card className="mb-8">
+          <Card className="mb-8 border-gold-primary/15 bg-card/60 backdrop-blur-xl">
             <CardHeader>
               <CardTitle>Ringkasan Booking</CardTitle>
             </CardHeader>
