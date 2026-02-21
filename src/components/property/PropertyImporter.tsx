@@ -203,14 +203,14 @@ const PropertyImporter = ({ onImport }: PropertyImporterProps) => {
           <div className="border border-border rounded-xl p-4 space-y-4 bg-muted/30">
             <div className="flex items-center justify-between gap-2 flex-wrap">
               <h4 className="font-semibold text-sm sm:text-base flex items-center gap-2 text-foreground">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                <CheckCircle2 className="h-4 w-4 text-chart-1" />
                 {t.preview}
               </h4>
               <div className="flex gap-1.5">
                 <Badge variant="secondary" className="text-[10px] sm:text-xs bg-muted text-muted-foreground">
                   {extractedData.property_type}
                 </Badge>
-                <Badge className={`text-[10px] sm:text-xs ${extractedData.listing_type === 'sale' ? 'bg-emerald-500 text-white' : 'bg-blue-500 text-white'}`}>
+                <Badge className={`text-[10px] sm:text-xs ${extractedData.listing_type === 'sale' ? 'bg-chart-1 text-primary-foreground' : 'bg-chart-4 text-primary-foreground'}`}>
                   {extractedData.listing_type === 'sale' ? 'Dijual' : 'Disewa'}
                 </Badge>
               </div>

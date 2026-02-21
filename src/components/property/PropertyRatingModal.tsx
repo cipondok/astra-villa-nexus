@@ -107,10 +107,10 @@ const PropertyRatingModal: React.FC<PropertyRatingModalProps> = ({
                 {[5, 4, 3, 2, 1].map((star) => (
                   <div key={star} className="flex items-center gap-2 text-sm">
                     <span className="w-3">{star}</span>
-                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                    <div className="flex-1 bg-gray-200 rounded-full h-2">
+                    <Star className="w-3 h-3 fill-gold-primary text-gold-primary" />
+                    <div className="flex-1 bg-muted rounded-full h-2">
                       <div
-                        className="bg-yellow-400 h-2 rounded-full"
+                        className="bg-gold-primary h-2 rounded-full"
                         style={{
                           width: `${aggregate.total_ratings > 0 
                             ? (aggregate.rating_distribution[star.toString() as keyof typeof aggregate.rating_distribution] / aggregate.total_ratings) * 100 
@@ -148,8 +148,8 @@ const PropertyRatingModal: React.FC<PropertyRatingModalProps> = ({
                       className={cn(
                         'w-6 h-6 transition-colors',
                         (hoveredRating >= star || selectedRating >= star)
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
+                          ? 'fill-gold-primary text-gold-primary'
+                          : 'text-muted-foreground/30'
                       )}
                     />
                   </button>
@@ -229,7 +229,7 @@ const PropertyRatingModal: React.FC<PropertyRatingModalProps> = ({
                         />
                         
                         {rating.review_text && (
-                          <p className="text-sm text-gray-700 dark:text-gray-300">
+                          <p className="text-sm text-muted-foreground">
                             {rating.review_text}
                           </p>
                         )}
