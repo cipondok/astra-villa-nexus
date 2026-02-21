@@ -188,15 +188,15 @@ const EnhancedImageUpload = ({
   const getStatusIcon = () => {
     switch (uploadStatus) {
       case 'uploading':
-        return <Upload className="h-8 w-8 text-blue-500" />;
+        return <Upload className="h-8 w-8 text-primary" />;
       case 'processing':
-        return <AlertTriangle className="h-8 w-8 text-yellow-500" />;
+        return <AlertTriangle className="h-8 w-8 text-chart-3" />;
       case 'success':
-        return <CheckCircle className="h-8 w-8 text-green-500" />;
+        return <CheckCircle className="h-8 w-8 text-chart-1" />;
       case 'error':
-        return <X className="h-8 w-8 text-red-500" />;
+        return <X className="h-8 w-8 text-destructive" />;
       default:
-        return <Upload className="h-8 w-8 text-gray-400" />;
+        return <Upload className="h-8 w-8 text-muted-foreground" />;
     }
   };
 
@@ -228,12 +228,12 @@ const EnhancedImageUpload = ({
         <div
           className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
             dragActive 
-              ? 'border-blue-500 bg-blue-50' 
+              ? 'border-primary bg-primary/5' 
               : uploadStatus === 'error'
-              ? 'border-red-300 bg-red-50'
+              ? 'border-destructive/30 bg-destructive/5'
               : uploadStatus === 'success'
-              ? 'border-green-300 bg-green-50'
-              : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+              ? 'border-chart-1/30 bg-chart-1/5'
+              : 'border-border hover:border-border/80 hover:bg-muted/30'
           }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
@@ -252,9 +252,9 @@ const EnhancedImageUpload = ({
           />
           
           <div className="space-y-4">
-            <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+            <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center">
               {uploading ? (
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
               ) : (
                 getStatusIcon()
               )}
@@ -262,23 +262,23 @@ const EnhancedImageUpload = ({
             
             {/* Progress Bar */}
             {uploading && uploadProgress > 0 && (
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-muted rounded-full h-2">
                 <div 
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  className="bg-primary h-2 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
             )}
             
             <div>
-              <p className="text-lg font-medium text-gray-900">
+              <p className="text-lg font-medium text-foreground">
                 {getStatusMessage()}
               </p>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Format: JPG, PNG, WebP. Maksimal 5MB per file
               </p>
               {uploadStatus === 'processing' && (
-                <p className="text-xs text-yellow-600 mt-2">
+                <p className="text-xs text-chart-3 mt-2">
                   Sistem sedang memvalidasi konten gambar...
                 </p>
               )}
@@ -321,10 +321,10 @@ const EnhancedImageUpload = ({
         {images.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium text-gray-900">
+              <h4 className="font-medium text-foreground">
                 Galeri Foto ({images.length})
               </h4>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Klik gambar untuk mengatur sebagai thumbnail
               </p>
             </div>

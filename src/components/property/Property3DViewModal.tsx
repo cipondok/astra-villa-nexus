@@ -54,9 +54,9 @@ const Property3DViewModal = ({
       />
       
       {/* Modal Content */}
-      <div className="relative w-full max-w-6xl h-[85vh] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in-0 scale-in-95 duration-300">
+      <div className="relative w-full max-w-6xl h-[85vh] bg-card/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in-0 scale-in-95 duration-300">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200/50 dark:border-gray-700/50 bg-white/50 dark:bg-gray-900/50">
+        <div className="flex items-center justify-between p-4 border-b border-border/50 bg-card/50">
           <Button
             onClick={handleBackToHome}
             variant="outline"
