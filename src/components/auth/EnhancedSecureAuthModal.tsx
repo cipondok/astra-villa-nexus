@@ -355,39 +355,39 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
 
   const getEmailIcon = () => {
     if (emailValidation.isChecking) {
-      return <Loader2 className="w-4 h-4 animate-spin text-[#2A5C8A]" />;
+      return <Loader2 className="w-4 h-4 animate-spin text-gold-primary" />;
     }
     if (emailValidation.type === "success") {
-      return <CheckCircle className="h-4 w-4 text-[#2ECC71]" />;
+      return <CheckCircle className="h-4 w-4 text-chart-1" />;
     }
     if (emailValidation.type === "error") {
-      return <XCircle className="h-4 w-4 text-[#E74C3C]" />;
+      return <XCircle className="h-4 w-4 text-destructive" />;
     }
     if (emailValidation.type === "warning") {
-      return <AlertTriangle className="h-4 w-4 text-[#F39C12]" />;
+      return <AlertTriangle className="h-4 w-4 text-chart-3" />;
     }
-    return <Mail className="h-4 w-4 text-gray-400" />;
+    return <Mail className="h-4 w-4 text-muted-foreground" />;
   };
 
   const getPasswordMatchIcon = () => {
     if (!registerData.confirmPassword) return null;
     
     return passwordsMatch ? 
-      <CheckCircle className="h-4 w-4 text-[#2ECC71]" /> :
-      <XCircle className="h-4 w-4 text-[#E74C3C]" />;
+      <CheckCircle className="h-4 w-4 text-chart-1" /> :
+      <XCircle className="h-4 w-4 text-destructive" />;
   };
 
   if (!isOpen) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md bg-[#F9F9F9] border-0 shadow-xl" ref={mouseTrackingRef}>
+      <DialogContent className="max-w-md bg-card/95 backdrop-blur-2xl border-gold-primary/15 shadow-xl" ref={mouseTrackingRef}>
         <DialogHeader className="text-center">
-          <DialogTitle className="flex items-center justify-center gap-2 text-2xl font-bold text-[#2A5C8A]">
+          <DialogTitle className="flex items-center justify-center gap-2 text-2xl font-bold text-gold-primary">
             <Shield className="h-6 w-6" />
             Astra Villa
           </DialogTitle>
-          <DialogDescription className="text-gray-600">
+          <DialogDescription className="text-muted-foreground">
             {activeTab === "login" ? currentText.signInAccount : currentText.createAccount}
           </DialogDescription>
         </DialogHeader>
@@ -409,16 +409,16 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
           }} />
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-white">
+            <TabsList className="grid w-full grid-cols-2 bg-muted/50">
               <TabsTrigger 
                 value="login" 
-                className="data-[state=active]:bg-[#2A5C8A] data-[state=active]:text-white"
+                className="data-[state=active]:bg-gold-primary data-[state=active]:text-background"
               >
                 {currentText.login}
               </TabsTrigger>
               <TabsTrigger 
                 value="register"
-                className="data-[state=active]:bg-[#2A5C8A] data-[state=active]:text-white"
+                className="data-[state=active]:bg-gold-primary data-[state=active]:text-background"
               >
                 {currentText.register}
               </TabsTrigger>
@@ -427,7 +427,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
             <TabsContent value="login" className="space-y-6 mt-6">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="email" className="text-sm font-medium text-foreground">
                     {currentText.email}
                   </Label>
                   <div className="relative">
@@ -436,21 +436,21 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                       type="email"
                       value={loginData.email}
                       onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
-                      className="pl-10 pr-10 h-12 border-2 border-gray-200 focus:border-[#2A5C8A] focus:ring-2 focus:ring-[#2A5C8A]/20 transition-all duration-200 bg-white"
+                      className="pl-10 pr-10 h-12 border-2 border-border focus:border-gold-primary focus:ring-2 focus:ring-gold-primary/20 transition-all duration-200 bg-background"
                       disabled={isLoading}
                       placeholder="Enter your email"
                     />
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       {getEmailIcon()}
                     </div>
                   </div>
                   {emailValidation.message && (
                     <p className={`text-xs flex items-center gap-1 font-medium ${
-                      emailValidation.type === "error" ? "text-[#E74C3C]" :
-                      emailValidation.type === "warning" ? "text-[#F39C12]" :
-                      emailValidation.type === "success" ? "text-[#2ECC71]" :
-                      "text-gray-500"
+                      emailValidation.type === "error" ? "text-destructive" :
+                      emailValidation.type === "warning" ? "text-chart-3" :
+                      emailValidation.type === "success" ? "text-chart-1" :
+                      "text-muted-foreground"
                     }`}>
                       {emailValidation.message}
                     </p>
@@ -458,7 +458,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="password" className="text-sm font-medium text-foreground">
                     {currentText.password}
                   </Label>
                   <div className="relative">
@@ -467,11 +467,11 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                       type={showPassword ? "text" : "password"}
                       value={loginData.password}
                       onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
-                      className="pl-10 pr-10 h-12 border-2 border-gray-200 focus:border-[#2A5C8A] focus:ring-2 focus:ring-[#2A5C8A]/20 transition-all duration-200 bg-white"
+                      className="pl-10 pr-10 h-12 border-2 border-border focus:border-gold-primary focus:ring-2 focus:ring-gold-primary/20 transition-all duration-200 bg-background"
                       disabled={isLoading}
                       placeholder="Enter your password"
                     />
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Button
                       type="button"
                       variant="ghost"
@@ -490,9 +490,9 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                       id="remember"
                       checked={rememberMe}
                       onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                      className="border-2 border-[#2A5C8A]"
+                      className="border-2 border-gold-primary"
                     />
-                    <Label htmlFor="remember" className="text-sm text-gray-600">
+                    <Label htmlFor="remember" className="text-sm text-muted-foreground">
                       {currentText.rememberMe}
                     </Label>
                   </div>
@@ -511,7 +511,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
 
                 <Button 
                   type="submit" 
-                  className="w-full h-12 bg-[#2A5C8A] hover:bg-[#1e4a73] text-white font-medium transition-all duration-200 disabled:opacity-50"
+                  className="w-full h-12 bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background font-medium transition-all duration-200 disabled:opacity-50 shadow-md shadow-gold-primary/20"
                   disabled={isLoading || !emailValidation.isValid}
                 >
                   {isLoading ? (
@@ -528,12 +528,12 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
               </form>
 
               <div className="text-center">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   {currentText.needAccount}{" "}
                   <button
                     type="button"
                     onClick={() => setActiveTab("register")}
-                    className="text-[#2A5C8A] hover:underline font-medium"
+                    className="text-gold-primary hover:underline font-medium"
                   >
                     {currentText.switchToRegister}
                   </button>
@@ -544,7 +544,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
             <TabsContent value="register" className="space-y-6 mt-6">
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="fullName" className="text-sm font-medium text-foreground">
                     {currentText.fullName}
                   </Label>
                   <div className="relative">
@@ -552,16 +552,16 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                       id="fullName"
                       value={registerData.fullName}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, fullName: e.target.value }))}
-                      className="pl-10 h-12 border-2 border-gray-200 focus:border-[#2A5C8A] focus:ring-2 focus:ring-[#2A5C8A]/20 transition-all duration-200 bg-white"
+                      className="pl-10 h-12 border-2 border-border focus:border-gold-primary focus:ring-2 focus:ring-gold-primary/20 transition-all duration-200 bg-background"
                       disabled={isLoading}
                       placeholder="Enter your full name"
                     />
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="register-email" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="register-email" className="text-sm font-medium text-foreground">
                     {currentText.email}
                   </Label>
                   <div className="relative">
@@ -570,21 +570,21 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                       type="email"
                       value={registerData.email}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
-                      className="pl-10 pr-10 h-12 border-2 border-gray-200 focus:border-[#2A5C8A] focus:ring-2 focus:ring-[#2A5C8A]/20 transition-all duration-200 bg-white"
+                      className="pl-10 pr-10 h-12 border-2 border-border focus:border-gold-primary focus:ring-2 focus:ring-gold-primary/20 transition-all duration-200 bg-background"
                       disabled={isLoading}
                       placeholder="Enter your email"
                     />
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       {getEmailIcon()}
                     </div>
                   </div>
                   {emailValidation.message && (
                     <p className={`text-xs flex items-center gap-1 font-medium ${
-                      emailValidation.type === "error" ? "text-[#E74C3C]" :
-                      emailValidation.type === "warning" ? "text-[#F39C12]" :
-                      emailValidation.type === "success" ? "text-[#2ECC71]" :
-                      "text-gray-500"
+                      emailValidation.type === "error" ? "text-destructive" :
+                      emailValidation.type === "warning" ? "text-chart-3" :
+                      emailValidation.type === "success" ? "text-chart-1" :
+                      "text-muted-foreground"
                     }`}>
                       {emailValidation.message}
                     </p>
@@ -592,7 +592,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="register-password" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="register-password" className="text-sm font-medium text-foreground">
                     {currentText.password}
                   </Label>
                   <div className="relative">
@@ -601,11 +601,11 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                       type={showPassword ? "text" : "password"}
                       value={registerData.password}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))}
-                      className="pl-10 pr-10 h-12 border-2 border-gray-200 focus:border-[#2A5C8A] focus:ring-2 focus:ring-[#2A5C8A]/20 transition-all duration-200 bg-white"
+                      className="pl-10 pr-10 h-12 border-2 border-border focus:border-gold-primary focus:ring-2 focus:ring-gold-primary/20 transition-all duration-200 bg-background"
                       disabled={isLoading}
                       placeholder="Create a strong password"
                     />
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Button
                       type="button"
                       variant="ghost"
@@ -624,7 +624,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">
                     {currentText.confirmPassword}
                   </Label>
                   <div className="relative">
@@ -633,11 +633,11 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                       type={showConfirmPassword ? "text" : "password"}
                       value={registerData.confirmPassword}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                      className="pl-10 pr-16 h-12 border-2 border-gray-200 focus:border-[#2A5C8A] focus:ring-2 focus:ring-[#2A5C8A]/20 transition-all duration-200 bg-white"
+                      className="pl-10 pr-16 h-12 border-2 border-border focus:border-gold-primary focus:ring-2 focus:ring-gold-primary/20 transition-all duration-200 bg-background"
                       disabled={isLoading}
                       placeholder="Confirm your password"
                     />
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <div className="absolute right-12 top-1/2 transform -translate-y-1/2">
                       {getPasswordMatchIcon()}
                     </div>
@@ -653,7 +653,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                   </div>
                   {registerData.confirmPassword && (
                     <p className={`text-xs flex items-center gap-1 font-medium ${
-                      passwordsMatch ? "text-[#2ECC71]" : "text-[#E74C3C]"
+                      passwordsMatch ? "text-chart-1" : "text-destructive"
                     }`}>
                       {passwordsMatch ? currentText.passwordsMatch : currentText.passwordsDontMatch}
                     </p>
@@ -673,7 +673,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
 
                 <Button 
                   type="submit" 
-                  className="w-full h-12 bg-[#2A5C8A] hover:bg-[#1e4a73] text-white font-medium transition-all duration-200 disabled:opacity-50"
+                  className="w-full h-12 bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background font-medium transition-all duration-200 disabled:opacity-50 shadow-md shadow-gold-primary/20"
                   disabled={
                     isLoading || 
                     !emailValidation.isValid || 
@@ -696,12 +696,12 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
               </form>
 
               <div className="text-center">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   {currentText.alreadyHaveAccount}{" "}
                   <button
                     type="button"
                     onClick={() => setActiveTab("login")}
-                    className="text-[#2A5C8A] hover:underline font-medium"
+                    className="text-gold-primary hover:underline font-medium"
                   >
                     {currentText.switchToLogin}
                   </button>
@@ -712,16 +712,16 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
         )}
 
         {/* Security Status Footer */}
-        <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-gray-200">
+        <div className="flex items-center justify-between text-xs text-muted-foreground pt-4 border-t border-border/50">
           <div className="flex items-center gap-2">
-            <Shield className="h-3 w-3 text-[#2A5C8A]" />
+            <Shield className="h-3 w-3 text-gold-primary" />
             <span>Enterprise Security</span>
           </div>
           <div className="flex items-center gap-1">
             <div className={`w-2 h-2 rounded-full ${
-              riskLevel === "low" ? "bg-[#2ECC71]" :
-              riskLevel === "medium" ? "bg-[#F39C12]" :
-              "bg-[#E74C3C]"
+              riskLevel === "low" ? "bg-chart-1" :
+              riskLevel === "medium" ? "bg-chart-3" :
+              "bg-destructive"
             }`} />
             <span className="uppercase font-medium">{riskLevel} Risk</span>
           </div>
