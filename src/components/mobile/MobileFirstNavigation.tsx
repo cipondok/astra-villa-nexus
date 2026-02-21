@@ -97,7 +97,7 @@ const MobileFirstNavigation: React.FC = () => {
             transition={{ type: 'spring', damping: 22, stiffness: 300 }}
             className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50"
           >
-            <div className="flex gap-3 p-3 bg-card/95 backdrop-blur-xl rounded-2xl shadow-xl border border-border/40">
+            <div className="flex gap-3 p-3 bg-primary-foreground/5 backdrop-blur-2xl rounded-2xl shadow-xl border border-gold-primary/15">
               {quickActions.map((action, idx) => (
                 <motion.button
                   key={action.path}
@@ -127,7 +127,7 @@ const MobileFirstNavigation: React.FC = () => {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-16 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border/30 rounded-t-2xl shadow-xl"
+            className="fixed bottom-16 left-0 right-0 z-50 bg-primary-foreground/5 backdrop-blur-2xl border-t border-gold-primary/15 rounded-t-2xl shadow-xl"
           >
             <div className="flex justify-center pt-2.5 pb-1.5">
               <div className="w-8 h-1 rounded-full bg-muted-foreground/20" />
@@ -142,8 +142,8 @@ const MobileFirstNavigation: React.FC = () => {
                     "flex flex-col items-center gap-1.5 p-2.5 rounded-xl",
                     "active:scale-95 transition-all duration-200",
                     isActive(item.path) 
-                      ? "bg-primary/10 text-primary" 
-                      : "text-muted-foreground hover:bg-muted/50"
+                      ? "bg-gold-primary/10 text-gold-primary" 
+                      : "text-muted-foreground hover:bg-gold-primary/5"
                   )}
                 >
                   <item.icon className="h-5 w-5" />
@@ -157,7 +157,7 @@ const MobileFirstNavigation: React.FC = () => {
 
       {/* Primary Bottom Navigation Bar */}
       <nav 
-        className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border/20"
+        className="fixed bottom-0 left-0 right-0 z-50 bg-primary-foreground/5 backdrop-blur-2xl border-t border-gold-primary/15"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 8px)' }}
       >
         <div className="flex items-center justify-around px-1 h-16 min-h-[64px]">
@@ -177,12 +177,12 @@ const MobileFirstNavigation: React.FC = () => {
             className={cn(
               "relative -mt-5 flex items-center justify-center",
               "w-13 h-13 rounded-full flex-shrink-0",
-              "bg-primary shadow-md shadow-primary/25",
+              "bg-gradient-to-r from-gold-primary to-gold-primary/80 shadow-md shadow-gold-primary/25",
               "active:scale-95 transition-all duration-200",
               showQuickActions && "rotate-45"
             )}
           >
-            <Plus className="h-6 w-6 text-primary-foreground" />
+            <Plus className="h-6 w-6 text-background" />
           </button>
 
           {primaryNav.slice(2, 4).map((item) => (
@@ -201,7 +201,7 @@ const MobileFirstNavigation: React.FC = () => {
             className={cn(
               "flex flex-col items-center gap-0.5 py-2 px-1 min-w-[44px] min-h-[44px] flex-1",
               "active:scale-95 transition-all duration-200",
-              isExpanded ? "text-primary" : "text-muted-foreground"
+              isExpanded ? "text-gold-primary" : "text-muted-foreground"
             )}
           >
             <ChevronUp className={cn(
@@ -228,7 +228,7 @@ const NavButton: React.FC<{
     className={cn(
       "relative flex flex-col items-center gap-0.5 py-2 px-1 min-w-[44px] min-h-[44px] flex-1",
       "active:scale-95 transition-all duration-200",
-      isActive ? "text-primary" : "text-muted-foreground"
+      isActive ? "text-gold-primary" : "text-muted-foreground"
     )}
   >
     <div className="relative">
@@ -248,7 +248,7 @@ const NavButton: React.FC<{
     {isActive && (
       <motion.div
         layoutId="activeNavIndicator"
-        className="absolute -bottom-1 w-4 h-1 rounded-full bg-primary"
+        className="absolute -bottom-1 w-4 h-1 rounded-full bg-gold-primary"
       />
     )}
   </button>
