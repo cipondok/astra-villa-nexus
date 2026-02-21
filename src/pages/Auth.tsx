@@ -231,15 +231,15 @@ const Auth = () => {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gold-primary/5 via-background to-accent/5 px-4 py-12">
       <SEOHead
         title="Login & Daftar"
         description="Masuk atau daftar akun ASTRA Villa Realty untuk akses properti premium, simpan favorit, dan kelola transaksi Anda."
         noIndex={true}
       />
-      <Card className="w-full max-w-md shadow-xl border-border/40 bg-card/95 backdrop-blur-xl">
+      <Card className="w-full max-w-md shadow-xl border-gold-primary/15 bg-primary-foreground/5 backdrop-blur-2xl">
         <CardHeader className="text-center pb-4">
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent">
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-gold-primary to-gold-primary/70 bg-clip-text text-transparent">
             Astra Villa
           </CardTitle>
           <CardDescription>
@@ -254,9 +254,9 @@ const Auth = () => {
           }} />
           
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-muted/50 rounded-lg">
-              <TabsTrigger value="login" className="rounded-md data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Login</TabsTrigger>
-              <TabsTrigger value="register" className="rounded-md data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Register</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-primary-foreground/5 rounded-lg border border-gold-primary/10">
+              <TabsTrigger value="login" className="rounded-md data-[state=active]:bg-gold-primary data-[state=active]:text-background">Login</TabsTrigger>
+              <TabsTrigger value="register" className="rounded-md data-[state=active]:bg-gold-primary data-[state=active]:text-background">Register</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login" className="space-y-4 mt-4">
@@ -265,7 +265,7 @@ const Auth = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-11 rounded-lg border-border/40 hover:bg-muted/50 transition-colors"
+                  className="w-full h-11 rounded-lg border-gold-primary/15 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-colors"
                   onClick={() => handleSocialLogin('google')}
                 >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -279,7 +279,7 @@ const Auth = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-11 rounded-lg border-border/40 hover:bg-muted/50 transition-colors"
+                  className="w-full h-11 rounded-lg border-gold-primary/15 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-colors"
                   onClick={() => handleSocialLogin('facebook')}
                 >
                   <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -309,7 +309,7 @@ const Auth = () => {
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="h-11 rounded-lg border-border/40 focus:border-primary/50 transition-colors"
+                    className="h-11 rounded-lg border-gold-primary/15 focus:border-gold-primary/40 focus:ring-2 focus:ring-gold-primary/15 transition-colors"
                     required
                   />
                 </div>
@@ -322,7 +322,7 @@ const Auth = () => {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="h-11 rounded-lg border-border/40 focus:border-primary/50 pr-10 transition-colors"
+                      className="h-11 rounded-lg border-gold-primary/15 focus:border-gold-primary/40 focus:ring-2 focus:ring-gold-primary/15 pr-10 transition-colors"
                       required
                     />
                     <button
@@ -350,7 +350,7 @@ const Auth = () => {
                   
                   <Dialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
                     <DialogTrigger asChild>
-                      <Button variant="link" className="px-0 h-auto text-sm text-primary">
+                      <Button variant="link" className="px-0 h-auto text-sm text-gold-primary hover:text-gold-primary/80">
                         Forgot password?
                       </Button>
                     </DialogTrigger>
@@ -387,7 +387,7 @@ const Auth = () => {
 
                 <Button
                   type="submit"
-                  className="w-full h-11 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all"
+                  className="w-full h-11 rounded-lg bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:opacity-90 text-background font-semibold shadow-md shadow-gold-primary/20 hover:shadow-lg hover:shadow-gold-primary/30 transition-all"
                   disabled={loading}
                 >
                   {loading ? "Signing in..." : "Sign In"}
@@ -401,7 +401,7 @@ const Auth = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-11 rounded-lg border-border/40 hover:bg-muted/50 transition-colors"
+                  className="w-full h-11 rounded-lg border-gold-primary/15 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-colors"
                   onClick={() => handleSocialLogin('google')}
                 >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -415,7 +415,7 @@ const Auth = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-11 rounded-lg border-border/40 hover:bg-muted/50 transition-colors"
+                  className="w-full h-11 rounded-lg border-gold-primary/15 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-colors"
                   onClick={() => handleSocialLogin('facebook')}
                 >
                   <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -445,7 +445,7 @@ const Auth = () => {
                     value={registerName}
                     onChange={(e) => setRegisterName(e.target.value)}
                     placeholder="John Doe"
-                    className="h-11 rounded-lg border-border/40 focus:border-primary/50 transition-colors"
+                    className="h-11 rounded-lg border-gold-primary/15 focus:border-gold-primary/40 focus:ring-2 focus:ring-gold-primary/15 transition-colors"
                     required
                   />
                 </div>
@@ -457,7 +457,7 @@ const Auth = () => {
                     value={registerEmail}
                     onChange={(e) => setRegisterEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="h-11 rounded-lg border-border/40 focus:border-primary/50 transition-colors"
+                    className="h-11 rounded-lg border-gold-primary/15 focus:border-gold-primary/40 focus:ring-2 focus:ring-gold-primary/15 transition-colors"
                     required
                   />
                   <EmailValidationIndicator email={registerEmail} />
@@ -471,7 +471,7 @@ const Auth = () => {
                       value={registerPassword}
                       onChange={(e) => setRegisterPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="h-11 rounded-lg border-border/40 focus:border-primary/50 pr-10 transition-colors"
+                      className="h-11 rounded-lg border-gold-primary/15 focus:border-gold-primary/40 focus:ring-2 focus:ring-gold-primary/15 pr-10 transition-colors"
                       required
                     />
                     <button
@@ -492,7 +492,7 @@ const Auth = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="h-11 rounded-lg border-border/40 focus:border-primary/50 transition-colors"
+                    className="h-11 rounded-lg border-gold-primary/15 focus:border-gold-primary/40 focus:ring-2 focus:ring-gold-primary/15 transition-colors"
                     required
                   />
                   {confirmPassword && registerPassword !== confirmPassword && (
@@ -504,7 +504,7 @@ const Auth = () => {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full h-11 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all"
+                  className="w-full h-11 rounded-lg bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:opacity-90 text-background font-semibold shadow-md shadow-gold-primary/20 hover:shadow-lg hover:shadow-gold-primary/30 transition-all"
                   disabled={loading}
                 >
                   {loading ? "Creating account..." : "Create Account"}
