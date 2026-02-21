@@ -16,57 +16,57 @@ const CSQuickStats = ({
 }: CSQuickStatsProps) => {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-      <Card className="border-orange-200/50 dark:border-orange-800/30 bg-gradient-to-br from-orange-50/50 to-background dark:from-orange-950/20">
+      <Card className="border-chart-3/30 bg-gradient-to-br from-chart-3/10 to-background">
         <CardContent className="p-3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] text-muted-foreground">My Open Tickets</p>
-              <p className="text-lg font-bold text-orange-600">{myOpenTickets}</p>
+              <p className="text-lg font-bold text-chart-3">{myOpenTickets}</p>
             </div>
-            <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
-              <FileText className="h-4 w-4 text-orange-600" />
+            <div className="w-8 h-8 bg-chart-3/20 rounded-lg flex items-center justify-center">
+              <FileText className="h-4 w-4 text-chart-3" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-green-200/50 dark:border-green-800/30 bg-gradient-to-br from-green-50/50 to-background dark:from-green-950/20">
+      <Card className="border-chart-1/30 bg-gradient-to-br from-chart-1/10 to-background">
         <CardContent className="p-3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] text-muted-foreground">Resolved Today</p>
-              <p className="text-lg font-bold text-green-600">{myResolvedToday}</p>
+              <p className="text-lg font-bold text-chart-1">{myResolvedToday}</p>
             </div>
-            <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
-              <CheckCircle className="h-4 w-4 text-green-600" />
+            <div className="w-8 h-8 bg-chart-1/20 rounded-lg flex items-center justify-center">
+              <CheckCircle className="h-4 w-4 text-chart-1" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-blue-200/50 dark:border-blue-800/30 bg-gradient-to-br from-blue-50/50 to-background dark:from-blue-950/20">
+      <Card className="border-chart-4/30 bg-gradient-to-br from-chart-4/10 to-background">
         <CardContent className="p-3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] text-muted-foreground">Pending Inquiries</p>
-              <p className="text-lg font-bold text-blue-600">{pendingInquiries}</p>
+              <p className="text-lg font-bold text-chart-4">{pendingInquiries}</p>
             </div>
-            <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-              <MessageSquare className="h-4 w-4 text-blue-600" />
+            <div className="w-8 h-8 bg-chart-4/20 rounded-lg flex items-center justify-center">
+              <MessageSquare className="h-4 w-4 text-chart-4" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-purple-200/50 dark:border-purple-800/30 bg-gradient-to-br from-purple-50/50 to-background dark:from-purple-950/20">
+      <Card className="border-chart-5/30 bg-gradient-to-br from-chart-5/10 to-background">
         <CardContent className="p-3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] text-muted-foreground">Available Tickets</p>
-              <p className="text-lg font-bold text-purple-600">{availableTickets}</p>
+              <p className="text-lg font-bold text-chart-5">{availableTickets}</p>
             </div>
-            <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-              <Clock className="h-4 w-4 text-purple-600" />
+            <div className="w-8 h-8 bg-chart-5/20 rounded-lg flex items-center justify-center">
+              <Clock className="h-4 w-4 text-chart-5" />
             </div>
           </div>
         </CardContent>
