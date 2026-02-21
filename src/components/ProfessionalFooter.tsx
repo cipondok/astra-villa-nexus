@@ -17,7 +17,6 @@ interface DockItem {
 
 /**
  * macOS-style Dock with proximity magnification.
- * Uses useEffect + refs so getBoundingClientRect is read outside render.
  */
 const Dock = ({ items }: { items: DockItem[] }) => {
   const dockRef = useRef<HTMLDivElement>(null);
@@ -70,12 +69,11 @@ const Dock = ({ items }: { items: DockItem[] }) => {
       ref={dockRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative flex items-end gap-2 md:gap-3 px-3 md:px-5 py-2 pt-6 md:pt-8 rounded-2xl
+      className="relative flex items-end gap-1.5 md:gap-2.5 px-3 md:px-5 py-2.5 pt-7 md:pt-9 rounded-2xl
         overflow-x-auto overflow-y-visible md:overflow-visible md:justify-center
         scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
-        bg-[hsl(200,40%,85%/0.6)] border border-[hsl(200,50%,75%/0.5)] backdrop-blur-md
-        dark:bg-[hsl(210,40%,10%/0.6)] dark:border-[hsl(200,35%,25%/0.5)]
-        shadow-[0_4px_20px_hsl(200,50%,50%/0.15)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
+        bg-background/60 border border-border/50 backdrop-blur-xl
+        shadow-[0_4px_24px_hsl(var(--primary)/0.08)]"
     >
       {items.map((item, i) => {
         const scale = scales[i] ?? 1;
@@ -95,8 +93,7 @@ const Dock = ({ items }: { items: DockItem[] }) => {
             {/* Tooltip label */}
             <span
               className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md text-[10px] font-medium whitespace-nowrap pointer-events-none z-50
-                bg-[hsl(210,30%,15%)] text-white dark:bg-[hsl(200,20%,85%)] dark:text-[hsl(210,50%,15%)]
-                shadow-lg"
+                bg-foreground text-background shadow-lg"
               style={{
                 opacity: isHovered ? 1 : 0,
                 transform: `scale(${isHovered ? 1 / scale : 0.8})`,
@@ -104,28 +101,27 @@ const Dock = ({ items }: { items: DockItem[] }) => {
               }}
             >
               {item.label}
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45
-                bg-[hsl(210,30%,15%)] dark:bg-[hsl(200,20%,85%)]" />
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 bg-foreground" />
             </span>
 
             {/* Icon box */}
             <div
               className="w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center flex-shrink-0
-                bg-[hsl(200,60%,92%)] border border-[hsl(200,50%,80%)] shadow-md
-                dark:bg-[hsl(210,40%,16%)] dark:border-[hsl(200,35%,28%)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]
+                bg-muted/80 border border-border/60 shadow-sm
+                hover:bg-primary/10 hover:border-primary/30
                 transition-colors duration-150"
             >
-              <item.icon className="w-4 h-4 md:w-5 md:h-5 text-[hsl(210,60%,30%)] dark:text-[hsl(200,50%,72%)]" />
+              <item.icon className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground group-hover:text-primary" />
             </div>
           </div>
         );
 
         return item.to ? (
-          <Link key={item.label} to={item.to} className="no-underline">
+          <Link key={item.label} to={item.to} className="no-underline group">
             {iconEl}
           </Link>
         ) : (
-          <div key={item.label}>{iconEl}</div>
+          <div key={item.label} className="group">{iconEl}</div>
         );
       })}
     </div>
@@ -186,15 +182,13 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
 
   return (
     <footer
-      className="w-full border-t backdrop-blur-xl px-4 md:px-8 py-6 transition-colors duration-200
-        border-[hsl(200,60%,75%)] bg-gradient-to-br from-[hsl(200,85%,72%)] via-[hsl(200,90%,80%)] to-[hsl(195,80%,68%)]
-        dark:border-[hsl(210,40%,20%)] dark:from-[hsl(210,55%,8%)] dark:via-[hsl(200,50%,10%)] dark:to-[hsl(210,45%,6%)]
-        shadow-[0_-8px_30px_-10px_hsl(200,70%,50%/0.25)] dark:shadow-[0_-10px_40px_-15px_rgba(0,10,20,0.5)]"
+      className="w-full border-t border-border/50 backdrop-blur-xl px-4 md:px-8 py-6 transition-colors duration-200
+        bg-card/95 shadow-[0_-4px_20px_hsl(var(--primary)/0.05)]"
       style={{ contain: 'layout', minHeight: '120px' }}
     >
       {/* Logo + Dock */}
-      <div className="flex flex-col md:flex-row items-center md:items-end gap-4 mb-4">
-        <div className="flex-shrink-0 opacity-70 mix-blend-luminosity dark:mix-blend-screen dark:opacity-60 hidden md:block">
+      <div className="flex flex-col md:flex-row items-center md:items-end gap-4 mb-5">
+        <div className="flex-shrink-0 opacity-60 hidden md:block">
           <AnimatedLogo src={footerLogoUrl} size="lg" />
         </div>
         <div className="w-full md:flex-1 flex justify-center">
@@ -202,45 +196,37 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         </div>
       </div>
 
-      {/* Row 2: Social + Copyright - centered */}
-      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-        <div className="flex items-center gap-2">
-          {allSocialLinks.map((s, i) => (
-            <a
-              key={i}
-              href={getSocialHref(s)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:scale-110 transition-transform inline-flex items-center justify-center w-8 h-8 rounded-full shadow-sm
-                bg-[hsl(200,60%,90%)] border border-[hsl(200,50%,70%)] text-[hsl(210,50%,25%)]
-                dark:bg-[hsl(210,40%,15%)] dark:border-[hsl(200,40%,30%)] dark:text-[hsl(200,30%,70%)]"
-              aria-label={s.label}
-              title={s.label}
-            >
-              {s.icon}
-            </a>
-          ))}
-          <span className="text-xs text-[hsl(210,40%,30%)] dark:text-[hsl(200,20%,60%)]">@astravilla</span>
-        </div>
+      {/* Divider */}
+      <div className="w-full max-w-md mx-auto h-px bg-gradient-to-r from-transparent via-border to-transparent mb-4" />
 
-        <span className="text-[hsl(200,40%,55%)] dark:text-[hsl(200,40%,30%)]">|</span>
+      {/* Social + Copyright */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+        {allSocialLinks.length > 0 && (
+          <div className="flex items-center gap-1.5">
+            {allSocialLinks.map((s, i) => (
+              <a
+                key={i}
+                href={getSocialHref(s)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full
+                  bg-muted/60 border border-border/40 text-muted-foreground
+                  hover:bg-primary/10 hover:border-primary/30 hover:text-primary
+                  hover:scale-110 transition-all duration-200"
+                aria-label={s.label}
+                title={s.label}
+              >
+                {s.icon}
+              </a>
+            ))}
+          </div>
+        )}
 
-        <span className="text-xs font-medium text-[hsl(210,40%,30%)] dark:text-[hsl(200,20%,60%)]">
+        <span className="hidden sm:inline text-border">|</span>
+
+        <span className="text-xs font-medium text-muted-foreground">
           © {new Date().getFullYear()} {currentText.company}. {currentText.allRights}
         </span>
-
-        <span className="text-xs text-[hsl(200,70%,40%)] dark:text-[hsl(200,60%,45%)]">✦ Astra Villa ✦</span>
-
-        <div className="flex items-center gap-1.5">
-          {[1, 2, 3, 4, 5, 6, 7].map((_, i) => (
-            <div
-              key={i}
-              className="w-2 h-2 rounded-full
-                bg-[hsl(200,60%,60%/0.4)] dark:bg-[hsl(200,60%,50%/0.4)]
-                shadow-[inset_0_1px_3px_hsl(200,60%,80%/0.5)]"
-            />
-          ))}
-        </div>
       </div>
     </footer>
   );
