@@ -108,25 +108,25 @@ const AgentLeaderboard = () => {
   const myRank = myStats?.rank || rankings.length + 1;
 
   const getRankIcon = (rank: number) => {
-    if (rank === 1) return <Crown className="h-4 w-4 text-yellow-500" />;
-    if (rank === 2) return <Medal className="h-4 w-4 text-gray-400" />;
-    if (rank === 3) return <Medal className="h-4 w-4 text-amber-600" />;
+    if (rank === 1) return <Crown className="h-4 w-4 text-gold-primary" />;
+    if (rank === 2) return <Medal className="h-4 w-4 text-muted-foreground" />;
+    if (rank === 3) return <Medal className="h-4 w-4 text-chart-3" />;
     return <span className="text-xs font-bold text-muted-foreground">#{rank}</span>;
   };
 
   const getRankChangeIcon = (change: number) => {
-    if (change > 0) return <ArrowUp className="h-3 w-3 text-emerald-500" />;
-    if (change < 0) return <ArrowDown className="h-3 w-3 text-red-500" />;
+    if (change > 0) return <ArrowUp className="h-3 w-3 text-chart-1" />;
+    if (change < 0) return <ArrowDown className="h-3 w-3 text-destructive" />;
     return <Minus className="h-3 w-3 text-muted-foreground" />;
   };
 
   const getLevelColor = (level: string) => {
     const colors: Record<string, string> = {
-      'Basic': 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
-      'Verified': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
-      'Gold': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
-      'Platinum': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
-      'Diamond': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300',
+      'Basic': 'bg-muted text-muted-foreground',
+      'Verified': 'bg-chart-2/10 text-chart-2',
+      'Gold': 'bg-gold-primary/10 text-gold-primary',
+      'Platinum': 'bg-primary/10 text-primary',
+      'Diamond': 'bg-accent/10 text-accent-foreground',
     };
     return colors[level] || colors['Basic'];
   };
@@ -153,17 +153,17 @@ const AgentLeaderboard = () => {
                 <div className="text-[9px] text-muted-foreground">Current Rank</div>
               </div>
               <div className="text-center p-2 bg-card/50 rounded-lg">
-                <Eye className="h-3.5 w-3.5 mx-auto mb-1 text-blue-500" />
+                <Eye className="h-3.5 w-3.5 mx-auto mb-1 text-chart-2" />
                 <div className="text-lg font-bold">{myStats.total_views}</div>
                 <div className="text-[9px] text-muted-foreground">Total Views</div>
               </div>
               <div className="text-center p-2 bg-card/50 rounded-lg">
-                <MessageSquare className="h-3.5 w-3.5 mx-auto mb-1 text-emerald-500" />
+                <MessageSquare className="h-3.5 w-3.5 mx-auto mb-1 text-chart-1" />
                 <div className="text-lg font-bold">{myStats.total_inquiries}</div>
                 <div className="text-[9px] text-muted-foreground">Inquiries</div>
               </div>
               <div className="text-center p-2 bg-card/50 rounded-lg">
-                <Target className="h-3.5 w-3.5 mx-auto mb-1 text-orange-500" />
+                <Target className="h-3.5 w-3.5 mx-auto mb-1 text-chart-3" />
                 <div className="text-lg font-bold">{myStats.conversion_rate}%</div>
                 <div className="text-[9px] text-muted-foreground">Conversion</div>
               </div>
@@ -220,7 +220,7 @@ const AgentLeaderboard = () => {
                           className="w-7 h-7 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xs font-bold">
+                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground text-xs font-bold">
                           {agent.name.charAt(0).toUpperCase()}
                         </div>
                       )}
@@ -253,7 +253,7 @@ const AgentLeaderboard = () => {
 
                     {/* Rating */}
                     <div className="flex items-center gap-0.5">
-                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-3 w-3 fill-gold-primary text-gold-primary" />
                       <span className="text-xs font-medium">{agent.rating.toFixed(1)}</span>
                     </div>
 
