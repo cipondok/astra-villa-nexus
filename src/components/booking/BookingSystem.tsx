@@ -485,7 +485,7 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
                 <div
                   key={m.id}
                   className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                    paymentMethod === m.id ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
+                    paymentMethod === m.id ? 'border-gold-primary bg-gold-primary/5' : 'border-border hover:border-gold-primary/50'
                   }`}
                   onClick={() => setPaymentMethod(m.id)}
                 >
@@ -513,7 +513,7 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
               <div
                 key={m.id}
                 className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                  paymentMethod === m.id ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
+                  paymentMethod === m.id ? 'border-gold-primary bg-gold-primary/5' : 'border-border hover:border-gold-primary/50'
                 }`}
                 onClick={() => setPaymentMethod(m.id)}
               >
@@ -533,7 +533,7 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
           <div className="grid grid-cols-1 gap-3">
             <div
               className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                paymentMethod === 'credit_card' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
+                paymentMethod === 'credit_card' ? 'border-gold-primary bg-gold-primary/5' : 'border-border hover:border-gold-primary/50'
               }`}
               onClick={() => setPaymentMethod('credit_card')}
             >
@@ -574,8 +574,8 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
       return (
         <div className="space-y-6">
           <div className="text-center">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="h-8 w-8 text-primary" />
+            <div className="w-16 h-16 bg-gold-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="h-8 w-8 text-gold-primary" />
             </div>
             <h3 className="text-xl font-semibold mb-2">Booking Berhasil Dibuat!</h3>
             <p className="text-muted-foreground mb-6">
@@ -598,8 +598,8 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
 
     return (
       <div className="text-center space-y-6">
-        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-          <CheckCircle className="h-8 w-8 text-primary" />
+        <div className="w-16 h-16 bg-gold-primary/10 rounded-full flex items-center justify-center mx-auto">
+          <CheckCircle className="h-8 w-8 text-gold-primary" />
         </div>
         
         <div>
@@ -627,7 +627,7 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full max-w-4xl mx-auto border-gold-primary/15 bg-card/60 backdrop-blur-xl">
       <CardHeader>
         <CardTitle className="text-center">
           Booking {property.title}
@@ -638,9 +638,9 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
           {[1, 2, 3, 4].map((stepNum) => (
             <div
               key={stepNum}
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
                 step >= stepNum 
-                  ? 'bg-primary text-primary-foreground' 
+                  ? 'bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-sm shadow-gold-primary/20' 
                   : 'bg-muted text-muted-foreground'
               }`}
             >
@@ -669,6 +669,7 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
             <Button
               onClick={handleNextStep}
               disabled={loading}
+              className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-sm shadow-gold-primary/20 hover:opacity-90"
             >
               {loading ? (
                 <>
