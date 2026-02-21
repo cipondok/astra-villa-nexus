@@ -351,26 +351,26 @@ const PropertyDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         {/* Header always visible during loading */}
-        <div className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-2 shadow-md">
+        <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/20 shadow-sm">
           <div className="max-w-7xl mx-auto px-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 h-10">
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate(-1)}
-                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
               >
-                <ArrowLeft className="h-3 w-3 mr-1" />
-                Kembali
+                <ArrowLeft className="h-3.5 w-3.5 mr-1" />
+                Back
               </Button>
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate('/')}
-                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
               >
-                <Home className="h-3 w-3 mr-1" />
-                Beranda
+                <Home className="h-3.5 w-3.5 mr-1" />
+                Home
               </Button>
             </div>
           </div>
@@ -394,35 +394,35 @@ const PropertyDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         {/* Header always visible on error */}
-        <div className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-2 shadow-md">
+        <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/20 shadow-sm">
           <div className="max-w-7xl mx-auto px-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 h-10">
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate(-1)}
-                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
               >
-                <ArrowLeft className="h-3 w-3 mr-1" />
-                Kembali
+                <ArrowLeft className="h-3.5 w-3.5 mr-1" />
+                Back
               </Button>
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate('/')}
-                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
               >
-                <Home className="h-3 w-3 mr-1" />
-                Beranda
+                <Home className="h-3.5 w-3.5 mr-1" />
+                Home
               </Button>
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate('/properties')}
-                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
               >
-                <MapPin className="h-3 w-3 mr-1" />
-                Properti
+                <MapPin className="h-3.5 w-3.5 mr-1" />
+                Properties
               </Button>
             </div>
           </div>
@@ -452,7 +452,7 @@ const PropertyDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20">
+    <div className="min-h-screen bg-background">
       {property && (
         <SEOHead
           title={property.title}
@@ -482,8 +482,8 @@ const PropertyDetail: React.FC = () => {
       )}
       {/* Agent/Developer Header - Glassy Style with Membership Badge */}
       {property?.posted_by && (
-        <div className="relative bg-gradient-to-r from-primary/8 via-accent/5 to-secondary/8 backdrop-blur-md border-b border-primary/10 shadow-sm">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-2.5 sm:py-4">
+        <div className="relative bg-card/80 backdrop-blur-md border-b border-border/20">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-2.5 sm:py-3">
             <div className="flex items-center justify-between gap-3">
               {/* Agent Profile - Enhanced */}
               <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
@@ -528,7 +528,7 @@ const PropertyDetail: React.FC = () => {
                 
               <Button 
                 size="sm"
-                className="flex-shrink-0 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 h-9 px-4 text-xs font-semibold shadow-lg shadow-green-500/20"
+                className="flex-shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white border-0 h-9 px-4 text-xs font-semibold shadow-sm"
                 onClick={() => {
                   if (user && property.posted_by?.whatsapp_number) {
                     window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
@@ -649,7 +649,7 @@ const PropertyDetail: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-6 py-2 sm:py-3 bg-gradient-to-b from-background via-primary/5 to-background min-h-screen">
+      <div className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-6 py-2 sm:py-3 min-h-screen">
         
         {/* Admin Edit Form */}
         {isAdmin && isEditMode && (
@@ -878,9 +878,9 @@ const PropertyDetail: React.FC = () => {
                   
                   {/* Price Display - Slim */}
                   <div className="w-full sm:w-auto">
-                    <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5 rounded-lg p-2 sm:p-3 border border-primary/15 backdrop-blur-sm">
+                    <div className="bg-primary/5 rounded-lg p-2 sm:p-3 border border-border/30">
                       <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5">Price</p>
-                      <div className="text-base sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                      <div className="text-base sm:text-2xl font-bold text-primary">
                         {formatPrice(property.price)}
                       </div>
                       {property.listing_type === 'rent' && (
