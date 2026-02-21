@@ -72,7 +72,7 @@ const Dock = ({ items }: { items: DockItem[] }) => {
       className="relative flex items-end gap-1.5 md:gap-2.5 px-3 md:px-5 py-2.5 pt-7 md:pt-9 rounded-2xl
         overflow-x-auto overflow-y-visible md:overflow-visible md:justify-center
         scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
-        bg-muted/40 border border-border/30 backdrop-blur-xl
+        bg-primary-foreground/5 border border-primary-foreground/10 backdrop-blur-xl
         shadow-sm"
     >
       {items.map((item, i) => {
@@ -107,11 +107,11 @@ const Dock = ({ items }: { items: DockItem[] }) => {
             {/* Icon box */}
             <div
               className="w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center flex-shrink-0
-                bg-muted/80 border border-border/60 shadow-sm
-                hover:bg-primary/10 hover:border-primary/30
+                bg-primary-foreground/8 border border-primary-foreground/10 shadow-sm
+                hover:bg-gold-primary/10 hover:border-gold-primary/30
                 transition-colors duration-150"
             >
-              <item.icon className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground group-hover:text-primary" />
+              <item.icon className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground group-hover:text-gold-primary" />
             </div>
           </div>
         );
@@ -182,8 +182,8 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
 
   return (
     <footer
-      className="w-full border-t border-border/50 backdrop-blur-xl px-4 md:px-8 py-6 transition-colors duration-200
-        bg-card/95 shadow-[0_-4px_20px_hsl(var(--primary)/0.05)]"
+      className="w-full border-t border-gold-primary/15 backdrop-blur-xl px-4 md:px-8 py-6 transition-colors duration-200
+        bg-card/95 shadow-[0_-4px_20px_hsl(var(--gold-primary)/0.05)]"
       style={{ contain: 'layout', minHeight: '120px' }}
     >
       {/* Logo + Dock */}
@@ -197,7 +197,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       </div>
 
       {/* Divider */}
-      <div className="w-full max-w-md mx-auto h-px bg-gradient-to-r from-transparent via-border to-transparent mb-4" />
+      <div className="w-full max-w-md mx-auto h-px bg-gradient-to-r from-transparent via-gold-primary/20 to-transparent mb-4" />
 
       {/* Social + Copyright */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
@@ -210,8 +210,8 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center w-8 h-8 rounded-full
-                  bg-muted/60 border border-border/40 text-muted-foreground
-                  hover:bg-primary/10 hover:border-primary/30 hover:text-primary
+                  bg-primary-foreground/8 border border-primary-foreground/10 text-muted-foreground
+                  hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:text-gold-primary
                   hover:scale-110 transition-all duration-200"
                 aria-label={s.label}
                 title={s.label}

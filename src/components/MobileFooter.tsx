@@ -33,8 +33,8 @@ const MobileFooter = () => {
       className={cn(
         "w-full rounded-t-3xl",
         "bg-card/95 backdrop-blur-xl",
-        "border-t border-border/30",
-        "shadow-[0_-4px_20px_hsl(var(--primary)/0.06)]",
+        "border-t border-gold-primary/15",
+        "shadow-[0_-4px_20px_hsl(var(--gold-primary)/0.06)]",
         "px-4 pt-4"
       )}
       style={{ paddingBottom: 'calc(4rem + max(env(safe-area-inset-bottom), 8px) + 0.75rem)' }}
@@ -44,14 +44,14 @@ const MobileFooter = () => {
         <div className="flex items-center gap-2">
           <a
             href="tel:+6285716008080"
-            className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-muted/60 border border-border/40 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-primary-foreground/8 border border-primary-foreground/10 text-muted-foreground hover:bg-gold-primary/10 hover:text-gold-primary transition-all duration-200"
             aria-label="Call us"
           >
             <Phone className="h-4 w-4" />
           </a>
           <a
             href="mailto:info@astravilla.com"
-            className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-muted/60 border border-border/40 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-primary-foreground/8 border border-primary-foreground/10 text-muted-foreground hover:bg-gold-primary/10 hover:text-gold-primary transition-all duration-200"
             aria-label="Email us"
           >
             <Mail className="h-4 w-4" />
@@ -66,7 +66,7 @@ const MobileFooter = () => {
               href={getHref(link)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-muted/60 border border-border/40 text-muted-foreground hover:bg-primary/10 hover:border-primary/30 hover:text-primary active:scale-95 transition-all duration-200"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-primary-foreground/8 border border-primary-foreground/10 text-muted-foreground hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:text-gold-primary active:scale-95 transition-all duration-200"
               aria-label={link.label}
             >
               <link.Icon className="h-4 w-4" />
@@ -81,7 +81,7 @@ const MobileFooter = () => {
       {/* Subtle divider dots */}
       <div className="flex justify-center gap-1.5 mt-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="w-1.5 h-1.5 rounded-full bg-border/60" />
+          <div key={i} className="w-1.5 h-1.5 rounded-full bg-gold-primary/20" />
         ))}
       </div>
     </footer>
