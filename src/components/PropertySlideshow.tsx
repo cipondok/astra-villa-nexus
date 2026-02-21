@@ -143,8 +143,8 @@ const PropertySlideshow = () => {
         size="icon"
         onClick={scrollLeft}
         className={cn(
-          "absolute left-2 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-card/95 hover:bg-card backdrop-blur-md shadow-lg border border-border/50 transition-all duration-300",
-          isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+          "absolute left-3 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-background/90 hover:bg-background backdrop-blur-lg shadow-xl border border-border/40 transition-all duration-300",
+          isHovering ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
         )}
       >
         <ChevronLeft className="h-4 w-4 text-foreground" />
@@ -155,16 +155,20 @@ const PropertySlideshow = () => {
         size="icon"
         onClick={scrollRight}
         className={cn(
-          "absolute right-2 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-card/95 hover:bg-card backdrop-blur-md shadow-lg border border-border/50 transition-all duration-300",
-          isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+          "absolute right-3 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-background/90 hover:bg-background backdrop-blur-lg shadow-xl border border-border/40 transition-all duration-300",
+          isHovering ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2'
         )}
       >
         <ChevronRight className="h-4 w-4 text-foreground" />
       </Button>
 
+      {/* Edge fade overlays */}
+      <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-[5] pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-[5] pointer-events-none" />
+
       <div 
         ref={containerRef}
-        className="flex gap-3 overflow-x-auto scrollbar-hide px-4 py-1 relative z-10"
+        className="flex gap-3.5 overflow-x-auto scrollbar-hide px-6 py-1 relative z-[1]"
         style={{ scrollBehavior: 'auto' }}
       >
         {displayProperties.map((property, idx) => {
@@ -179,28 +183,29 @@ const PropertySlideshow = () => {
               onClick={() => handlePropertyClick(property.id)}
               className="flex-shrink-0 w-[200px] md:w-[220px] lg:w-[240px] group/card cursor-pointer"
             >
-              {/* Rumah123-Style Card */}
-              <div className="rounded-lg bg-card/70 backdrop-blur-md border border-primary/10 dark:border-primary/15 shadow-[0_2px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.1)] hover:border-primary/25 transition-all duration-300 overflow-hidden">
+              <div className="rounded-xl bg-card border border-border/40 hover:border-primary/30 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-400 ease-out overflow-hidden">
                 {/* Image */}
                 <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                   <img
                     src={getPropertyImage(property.images, property.thumbnail_url)}
                     alt={property.title}
-                    className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-600 ease-out"
                     loading="lazy"
                   />
                   
                   {/* Top Badges */}
                   <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
                     <Badge className={cn(
-                      "flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md shadow-sm",
-                      isRent ? "bg-primary text-primary-foreground" : "bg-accent text-accent-foreground"
+                      "flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md shadow-sm backdrop-blur-sm",
+                      isRent 
+                        ? "bg-blue-600/90 text-white border border-blue-500/30" 
+                        : "bg-emerald-600/90 text-white border border-emerald-500/30"
                     )}>
                       <ListingIcon className="h-2.5 w-2.5" />
                       {getListingLabel(property.listing_type, isRent)}
                     </Badge>
                     
-                    <Badge className="flex items-center gap-0.5 bg-card/90 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded-md shadow-sm border border-border/50">
+                    <Badge className="flex items-center gap-0.5 bg-background/85 backdrop-blur-sm text-foreground/80 text-[10px] px-1.5 py-0.5 rounded-md shadow-sm border border-border/30">
                       <Building className="h-2.5 w-2.5" />
                       {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
                     </Badge>
@@ -208,69 +213,78 @@ const PropertySlideshow = () => {
 
                   {/* Image Count */}
                   {imageCount > 1 && (
-                    <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded">
+                    <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded-md">
                       <Camera className="h-2.5 w-2.5" />
                       <span>{imageCount}</span>
                     </div>
                   )}
 
-                  {/* Hover Eye */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 bg-black/10 dark:bg-black/20">
-                    <div className="h-8 w-8 rounded-full bg-card/95 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/20 to-transparent">
+                    <div className="h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center shadow-lg scale-90 group-hover/card:scale-100 transition-transform duration-300">
                       <Eye className="h-4 w-4 text-primary" />
                     </div>
                   </div>
                 </div>
 
                 {/* Content */}
-                <div className="p-2.5 space-y-1.5">
+                <div className="p-3 space-y-2">
                   {/* Price */}
-                  <div className="border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
+                  <div className={cn(
+                    "rounded-lg px-2.5 py-1.5 border",
+                    isRent 
+                      ? "bg-blue-500/5 border-blue-500/15" 
+                      : "bg-emerald-500/5 border-emerald-500/15"
+                  )}>
                     <div className="flex items-baseline gap-1 flex-nowrap overflow-hidden whitespace-nowrap">
-                      <span className="text-sm font-black text-primary tracking-tight">{priceInfo.main}</span>
+                      <span className={cn(
+                        "text-sm font-black tracking-tight",
+                        isRent ? "text-blue-600 dark:text-blue-400" : "text-emerald-600 dark:text-emerald-400"
+                      )}>{priceInfo.main}</span>
                       {priceInfo.suffix && (
-                        <span className="text-xs font-extrabold text-primary/70">{priceInfo.suffix}</span>
+                        <span className={cn(
+                          "text-xs font-bold",
+                          isRent ? "text-blue-500/70" : "text-emerald-500/70"
+                        )}>{priceInfo.suffix}</span>
                       )}
                       {isRent && (
-                        <span className="text-[9px] text-primary/60 font-bold">/bln</span>
+                        <span className="text-[9px] text-muted-foreground font-medium">/bln</span>
                       )}
                       {!isRent && (
-                        <span className="text-[9px] text-muted-foreground/60 font-medium bg-muted/40 rounded-full px-1.5 py-px">≈ {formatMonthly(property.price)}</span>
+                        <span className="text-[9px] text-muted-foreground font-medium ml-auto">≈ {formatMonthly(property.price)}</span>
                       )}
                     </div>
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-[11px] font-semibold text-foreground line-clamp-1 leading-snug group-hover/card:text-primary transition-colors">
+                  <h3 className="text-[11px] font-semibold text-foreground line-clamp-1 leading-snug group-hover/card:text-primary transition-colors duration-300">
                     {property.title}
                   </h3>
 
                   {/* Location */}
-                  <div className="flex items-center gap-1 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
-                    <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-primary/70" />
-                    <span className="text-[10px] text-foreground/70 font-medium line-clamp-1">{getLocation(property)}</span>
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-muted-foreground" />
+                    <span className="text-[10px] text-muted-foreground font-medium line-clamp-1">{getLocation(property)}</span>
                   </div>
 
                   {/* Specs */}
-                  <div className="flex items-center gap-2 pt-1.5 border-t border-primary/10">
+                  <div className="flex items-center gap-2.5 pt-2 border-t border-border/40">
                     {property.bedrooms > 0 && (
-                      <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
-                        <Bed className="h-3 w-3 text-primary/60" />
-                        <span className="text-[10px] text-foreground/80 font-bold">{property.bedrooms}</span>
-                        <span className="text-[8px] text-muted-foreground/70 font-semibold">KT</span>
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <Bed className="h-3 w-3" />
+                        <span className="text-[10px] font-semibold text-foreground/80">{property.bedrooms}</span>
                       </div>
                     )}
                     {property.bathrooms > 0 && (
-                      <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
-                        <Bath className="h-3 w-3 text-primary/60" />
-                        <span className="text-[10px] text-foreground/80 font-bold">{property.bathrooms}</span>
-                        <span className="text-[8px] text-muted-foreground/70 font-semibold">KM</span>
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <Bath className="h-3 w-3" />
+                        <span className="text-[10px] font-semibold text-foreground/80">{property.bathrooms}</span>
                       </div>
                     )}
                     {property.area_sqm > 0 && (
-                      <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
-                        <span className="text-[8px] text-primary/60 font-bold">LB</span>
-                        <span className="text-[10px] text-foreground/80 font-bold">{property.area_sqm}m²</span>
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <Maximize className="h-3 w-3" />
+                        <span className="text-[10px] font-semibold text-foreground/80">{property.area_sqm}m²</span>
                       </div>
                     )}
                   </div>
