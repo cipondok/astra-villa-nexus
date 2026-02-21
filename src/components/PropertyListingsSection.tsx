@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
+import { Building2, RefreshCw, ArrowRight, Sparkles } from "lucide-react";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 import AutoScrollCarousel from "@/components/property/AutoScrollCarousel";
@@ -102,13 +102,14 @@ const PropertyListingsSection = ({
       <section className="py-3 sm:py-4 min-h-[300px]">
         <div className="w-full px-2 sm:px-4">
           <div className="text-center p-8 rounded-2xl max-w-sm mx-auto
-            bg-card/90 border border-gold-primary/20 backdrop-blur-xl shadow-xl">
-            <div className="relative w-12 h-12 mx-auto mb-4">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gold-primary to-gold-secondary animate-spin" />
-              <div className="absolute inset-1 rounded-full bg-card" />
-              <div className="absolute inset-2 rounded-full bg-gradient-to-r from-gold-primary/50 to-gold-secondary/50 animate-pulse" />
+            bg-primary-foreground/5 backdrop-blur-xl border border-primary-foreground/10 shadow-xl">
+            <div className="relative w-14 h-14 mx-auto mb-4">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gold-primary to-gold-primary/60 animate-spin" />
+              <div className="absolute inset-1 rounded-full bg-background" />
+              <div className="absolute inset-2.5 rounded-full bg-gradient-to-r from-gold-primary/40 to-gold-primary/20 animate-pulse" />
+              <Sparkles className="absolute inset-0 m-auto w-4 h-4 text-gold-primary" />
             </div>
-            <p className="text-sm sm:text-base font-medium bg-gradient-to-r from-gold-primary to-gold-secondary bg-clip-text text-transparent">
+            <p className="text-sm sm:text-base font-semibold text-gold-primary">
               {currentText.loadingProperties}
             </p>
             <p className="text-xs text-muted-foreground mt-2">This should only take a few seconds...</p>
@@ -126,28 +127,31 @@ const PropertyListingsSection = ({
         <div className="w-full px-1 sm:px-2 md:px-4">
           {!hideTitle && (
             <div className="text-center mb-3 sm:mb-4">
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 bg-gradient-to-r from-gold-primary to-gold-secondary bg-clip-text text-transparent">
-                {sectionData.sectionTitle}
-              </h2>
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <div className="h-px w-6 sm:w-10 bg-gradient-to-r from-transparent to-gold-primary/30" />
+                <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gold-primary uppercase tracking-wider">
+                  {sectionData.sectionTitle}
+                </h2>
+                <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />
+                <div className="h-px w-6 sm:w-10 bg-gradient-to-l from-transparent to-gold-primary/30" />
+              </div>
               {sectionData.sectionSubtitle && (
                 <p className="text-sm sm:text-base text-muted-foreground">{sectionData.sectionSubtitle}</p>
               )}
-              <div className="w-24 h-0.5 mx-auto mt-2 bg-gradient-to-r from-transparent via-gold-primary to-transparent rounded-full" />
             </div>
           )}
 
           {!displayProperties || displayProperties.length === 0 ? (
             <div className="text-center py-6 sm:py-8">
               <div className="max-w-md mx-auto px-4 p-6 rounded-2xl
-                bg-card/90 border border-gold-primary/20 backdrop-blur-xl shadow-xl">
+                bg-primary-foreground/5 backdrop-blur-xl border border-primary-foreground/10 shadow-xl">
                 <div className="mb-4">
-                  <div className="w-16 h-16 mx-auto mb-3 bg-gold-primary/10 rounded-full flex items-center justify-center border border-gold-primary/30">
-                    <svg className="w-8 h-8 text-gold-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
+                  <div className="w-14 h-14 mx-auto mb-3 bg-primary-foreground/8 rounded-xl flex items-center justify-center border border-primary-foreground/10">
+                    <Building2 className="w-7 h-7 text-gold-primary/70" strokeWidth={1.5} />
                   </div>
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold mb-3 bg-gradient-to-r from-gold-primary to-gold-secondary bg-clip-text text-transparent">
+                <h3 className="text-base sm:text-lg font-semibold mb-2 text-gold-primary">
                   {hasSearched ? currentText.noResults : currentText.noFeaturedProperties}
                 </h3>
                 {hasSearched && (
@@ -159,15 +163,17 @@ const PropertyListingsSection = ({
                   <Button
                     onClick={() => window.location.reload()}
                     variant="outline"
-                    className="w-full text-sm border-gold-primary/30 hover:bg-gold-primary/10 hover:border-gold-primary/50 transition-all duration-300"
+                    className="w-full text-sm border-primary-foreground/15 hover:bg-primary-foreground/5 hover:border-gold-primary/30 transition-all duration-300"
                   >
+                    <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
                     Refresh
                   </Button>
                   <Button
                     onClick={() => navigate('/dijual')}
-                    className="w-full text-sm bg-gradient-to-r from-gold-primary to-gold-secondary hover:from-gold-primary/90 hover:to-gold-secondary/90 text-foreground shadow-lg"
+                    className="w-full text-sm bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-background shadow-md hover:shadow-lg hover:shadow-gold-primary/20 transition-all"
                   >
                     {currentText.browseAll}
+                    <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-3">{currentText.connectionIssue}</p>
