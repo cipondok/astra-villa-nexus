@@ -109,9 +109,9 @@ const ASTRAVillaPropertyCard = ({
     <Card
       className={cn(
         "group relative overflow-hidden rounded-xl",
-        "bg-background/80 backdrop-blur-md",
-        "border border-border/40 hover:border-primary/30",
-        "shadow-sm hover:shadow-xl hover:shadow-primary/5",
+        "bg-card/60 backdrop-blur-xl",
+        "border border-gold-primary/15 hover:border-gold-primary/40",
+        "shadow-sm hover:shadow-xl hover:shadow-gold-primary/10",
         "hover:-translate-y-1 transition-all duration-500 ease-out cursor-pointer",
         className
       )}
@@ -133,10 +133,10 @@ const ASTRAVillaPropertyCard = ({
         {/* Top Row */}
         <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
           <span className={cn(
-            "flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold text-primary-foreground shadow-sm",
+            "flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold shadow-sm",
             isRent
-              ? "bg-primary/90 backdrop-blur-sm"
-              : "bg-accent/90 backdrop-blur-sm"
+              ? "bg-gold-primary/90 text-background backdrop-blur-sm"
+              : "bg-gold-primary backdrop-blur-sm text-background"
           )}>
             <ListingIcon className="h-2.5 w-2.5" />
             {getListingLabel(property.listing_type)}
@@ -173,10 +173,10 @@ const ASTRAVillaPropertyCard = ({
         {/* View Icon on Hover */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
           <div className={cn(
-            "h-10 w-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center",
-            "shadow-lg scale-75 group-hover:scale-100 transition-transform duration-300"
+            "h-10 w-10 rounded-full bg-gold-primary/90 backdrop-blur-sm flex items-center justify-center",
+            "shadow-lg shadow-gold-primary/30 scale-75 group-hover:scale-100 transition-transform duration-300"
           )}>
-            <Eye className="h-4.5 w-4.5 text-foreground" />
+            <Eye className="h-4.5 w-4.5 text-background" />
           </div>
         </div>
       </div>
@@ -186,21 +186,13 @@ const ASTRAVillaPropertyCard = ({
         {/* Price Section */}
         <div className={cn(
           "flex items-baseline gap-1 rounded-lg px-2.5 py-2 border flex-wrap",
-          isRent
-            ? "bg-primary/5 border-primary/15"
-            : "bg-accent/5 border-accent/15"
+          "bg-gold-primary/5 border-gold-primary/15"
         )}>
-          <span className={cn(
-            "text-base font-black leading-none tracking-tight",
-            isRent ? "text-primary" : "text-accent-foreground"
-          )}>
+          <span className="text-base font-black leading-none tracking-tight text-gold-primary">
             {priceInfo.main}
           </span>
           {priceInfo.suffix && (
-            <span className={cn(
-              "text-[11px] font-extrabold opacity-60",
-              isRent ? "text-primary" : "text-accent-foreground"
-            )}>
+            <span className="text-[11px] font-extrabold text-gold-primary/60">
               {priceInfo.suffix}
             </span>
           )}
@@ -215,7 +207,7 @@ const ASTRAVillaPropertyCard = ({
         </div>
 
         {/* Title */}
-        <h3 className="text-[11px] font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-200">
+        <h3 className="text-[11px] font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-gold-primary transition-colors duration-200">
           {property.title}
         </h3>
 
@@ -226,7 +218,7 @@ const ASTRAVillaPropertyCard = ({
         </div>
 
         {/* Specs */}
-        <div className="flex items-center flex-wrap gap-1.5 pt-2 border-t border-border/30">
+        <div className="flex items-center flex-wrap gap-1.5 pt-2 border-t border-gold-primary/10">
           {property.bedrooms !== undefined && Number(property.bedrooms) > 0 && (
             <div className="flex items-center gap-0.5 text-muted-foreground">
               <Bed className="h-3 w-3" />

@@ -147,7 +147,7 @@ const ModernPropertyCard = ({
 
   return (
     <Card 
-      className="group relative overflow-hidden rounded-xl border-0 bg-transparent shadow-none hover:shadow-lg transition-all duration-300 cursor-pointer"
+      className="group relative overflow-hidden rounded-xl border border-gold-primary/15 bg-card/60 backdrop-blur-xl shadow-none hover:shadow-xl hover:shadow-gold-primary/10 hover:border-gold-primary/40 transition-all duration-300 cursor-pointer"
       onClick={handleClick}
     >
       {/* Image Container */}
@@ -164,7 +164,7 @@ const ModernPropertyCard = ({
         {/* Top Badges */}
         <div className="absolute top-1.5 left-1.5 right-1.5 flex justify-between items-start">
           <div className="flex gap-1">
-            <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded-md font-semibold">
+            <Badge className="bg-gold-primary text-background text-[10px] px-1.5 py-0.5 rounded-md font-semibold">
               {getTypeLabel()}
             </Badge>
             {hasVirtualTour && (
@@ -195,8 +195,8 @@ const ModernPropertyCard = ({
 
         {/* View Icon - Center on hover */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-          <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
-            <Eye className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+          <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gold-primary/90 backdrop-blur-sm flex items-center justify-center shadow-xl shadow-gold-primary/30">
+            <Eye className="h-5 w-5 md:h-6 md:w-6 text-background" />
           </div>
         </div>
 
@@ -204,13 +204,13 @@ const ModernPropertyCard = ({
         <div className="absolute bottom-0 left-0 right-0 p-2">
           {/* Price with Gradient Badge */}
           <div className="flex items-center gap-1.5 flex-wrap mb-1">
-            <div className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-gradient-to-r from-primary via-primary/90 to-accent shadow-lg backdrop-blur-sm">
-              <Tag className="h-3 w-3 text-primary-foreground" />
-              <span className="text-primary-foreground font-bold text-sm sm:text-base leading-tight">
+            <div className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-gradient-to-r from-gold-primary to-gold-primary/80 shadow-lg shadow-gold-primary/30 backdrop-blur-sm">
+              <Tag className="h-3 w-3 text-background" />
+              <span className="text-background font-bold text-sm sm:text-base leading-tight">
                 {formatPrice(property.price)}
               </span>
               {(property.listing_type === 'rent' || property.type === 'rent') && (
-                <span className="text-primary-foreground/80 text-[9px] font-medium">/mo</span>
+                <span className="text-background/80 text-[9px] font-medium">/mo</span>
               )}
             </div>
             
@@ -245,7 +245,7 @@ const ModernPropertyCard = ({
                 <span>{area}m²</span>
               </div>
             )}
-            <div className="flex items-center gap-0.5 bg-amber-500/80 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-[10px] ml-auto">
+            <div className="flex items-center gap-0.5 bg-gold-primary/80 backdrop-blur-sm text-background px-1.5 py-0.5 rounded text-[10px] ml-auto">
               <Star className="h-2.5 w-2.5 fill-current" />
               <span>{rating.toFixed(1)}</span>
             </div>
@@ -257,7 +257,7 @@ const ModernPropertyCard = ({
       <div className="p-2">
         {/* Title & Posted Time */}
         <div className="flex items-start justify-between gap-1 mb-1">
-          <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors flex-1">
+          <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-1 group-hover:text-gold-primary transition-colors flex-1">
             {property.title}
           </h3>
           {postedAgo && (
@@ -276,20 +276,20 @@ const ModernPropertyCard = ({
 
         {/* Owner/Agent Info - Compact */}
         {ownerInfo && (
-          <div className="flex items-center gap-1.5 p-1.5 bg-muted/50 rounded-lg border border-border/30">
+          <div className="flex items-center gap-1.5 p-1.5 bg-gold-primary/5 rounded-lg border border-gold-primary/10">
             {/* Avatar */}
             {ownerInfo.avatar_url ? (
               <img 
                 src={ownerInfo.avatar_url} 
                 alt={ownerInfo.name}
-                className="w-5 h-5 rounded-full object-cover ring-1 ring-primary/20"
+              className="w-5 h-5 rounded-full object-cover ring-1 ring-gold-primary/20"
               />
             ) : (
-              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-gold-primary to-gold-primary/60 flex items-center justify-center">
                 {ownerInfo.type === 'company' ? (
-                  <Building2 className="h-2.5 w-2.5 text-primary-foreground" />
+                  <Building2 className="h-2.5 w-2.5 text-background" />
                 ) : (
-                  <User className="h-2.5 w-2.5 text-primary-foreground" />
+                  <User className="h-2.5 w-2.5 text-background" />
                 )}
               </div>
             )}
@@ -318,9 +318,9 @@ const ModernPropertyCard = ({
 
             {/* Rating */}
             {ownerInfo.rating && (
-              <div className="flex items-center gap-0.5 bg-amber-100 dark:bg-amber-900/30 px-1 py-0.5 rounded">
-                <Star className="h-2.5 w-2.5 fill-amber-500 text-amber-500" />
-                <span className="text-[10px] font-semibold text-amber-700 dark:text-amber-400">
+              <div className="flex items-center gap-0.5 bg-gold-primary/10 px-1 py-0.5 rounded">
+                <Star className="h-2.5 w-2.5 fill-gold-primary text-gold-primary" />
+                <span className="text-[10px] font-semibold text-gold-primary">
                   {ownerInfo.rating.toFixed(1)}
                 </span>
               </div>
