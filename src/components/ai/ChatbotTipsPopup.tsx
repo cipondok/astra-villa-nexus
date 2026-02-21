@@ -4,18 +4,18 @@ import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 
 const TIPS = [
-  "💡 Drag the chat button to reposition it anywhere!",
-  "🏠 Ask me about property prices in any area",
-  "🔍 I can help you find properties by your criteria",
-  "📊 Get market insights and investment tips",
-  "🗺️ Ask about neighborhood details & amenities",
-  "💰 I can calculate mortgage estimates for you",
-  "📸 Use image search to find similar properties",
-  "⌨️ Press Ctrl+K to quickly open chat",
-  "🔔 Enable notifications for new listings",
-  "📋 I can compare multiple properties for you",
-  "🏡 Ask about foreign ownership regulations",
-  "📈 Get rental yield estimates instantly",
+  "🏠 Ask me to find villas, apartments, or land in any area",
+  "💰 Get instant mortgage & ROI calculations for any listing",
+  "📊 Ask for market trends and price comparisons by district",
+  "🗺️ I know neighborhood amenities, schools & transport links",
+  "🔍 Describe your dream property — I'll match listings for you",
+  "📸 Share a property image and I'll find similar ones",
+  "🏡 Ask about foreign ownership rules & visa requirements",
+  "📈 Get rental yield estimates for investment properties",
+  "📋 I can compare multiple properties side by side",
+  "🏗️ Ask about upcoming developments & off-plan projects",
+  "💡 Need staging or renovation tips? Just ask!",
+  "⚖️ I can explain purchase processes & legal requirements",
 ];
 
 interface ChatbotTipsPopupProps {
