@@ -226,7 +226,7 @@ const Navigation = () => {
           "fixed top-0 left-0 right-0 w-full z-[10000] transition-all duration-500 ease-out",
           isHomePage && !scrolled
             ? "bg-transparent border-b border-white/10 shadow-none"
-            : "bg-background/80 backdrop-blur-2xl border-b border-border/40 shadow-sm",
+            : "bg-background/80 backdrop-blur-2xl border-b border-gold-primary/10 shadow-sm",
           pastHero ? "h-12 md:h-13 lg:h-14" : "h-10 md:h-11 lg:h-12"
         )} 
         style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
@@ -267,10 +267,10 @@ const Navigation = () => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-8 px-3 text-xs font-medium rounded-xl bg-muted/40 border border-border/50 hover:bg-primary/10 hover:border-primary/30 hover:scale-105 transition-all duration-300 text-foreground/80"
+                className="h-8 px-3 text-xs font-medium rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/80"
                 onClick={() => navigate('/')}
               >
-                <HomeIcon className="h-4 w-4 xl:mr-1.5 text-primary" />
+                <HomeIcon className="h-4 w-4 xl:mr-1.5 text-gold-primary" />
                 <span className="hidden xl:inline">{currentText.home}</span>
               </Button>
 
@@ -329,7 +329,7 @@ const Navigation = () => {
                     <ChevronDown className="h-3 w-3 ml-1 hidden xl:inline text-muted-foreground" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-52 bg-popover/95 backdrop-blur-xl border-border/50 shadow-xl z-[10001]">
+                <DropdownMenuContent align="end" className="w-52 bg-popover/95 backdrop-blur-xl border-gold-primary/15 shadow-xl z-[10001]">
                   <DropdownMenuItem 
                     onClick={() => navigate('/foreign-investment')}
                     className="cursor-pointer text-foreground/80 hover:text-primary rounded-lg"
@@ -392,10 +392,10 @@ const Navigation = () => {
                       value={headerSearchQuery}
                       onChange={(e) => setHeaderSearchQuery(e.target.value)}
                       placeholder="Search..."
-                      className="px-3 h-7 sm:h-8 w-24 sm:w-32 lg:w-44 xl:w-56 text-[11px] sm:text-xs bg-muted/30 border-border/40 rounded-lg focus:bg-background focus:w-36 sm:focus:w-44 lg:focus:w-56 transition-all duration-300"
+                      className="px-3 h-7 sm:h-8 w-24 sm:w-32 lg:w-44 xl:w-56 text-[11px] sm:text-xs bg-primary-foreground/5 border-primary-foreground/10 rounded-lg focus:bg-background focus:border-gold-primary/30 focus:w-36 sm:focus:w-44 lg:focus:w-56 transition-all duration-300"
                     />
                   </div>
-                  <Button type="submit" size="sm" className="h-7 sm:h-8 w-7 sm:w-8 p-0 rounded-lg bg-primary hover:bg-primary/90 shrink-0">
+                  <Button type="submit" size="sm" className="h-7 sm:h-8 w-7 sm:w-8 p-0 rounded-lg bg-gold-primary hover:bg-gold-primary/90 text-background shrink-0">
                     <Search className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   </Button>
                 </form>
@@ -406,12 +406,12 @@ const Navigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="w-8 h-8 p-0 rounded-xl bg-muted/40 border border-border/50 hover:bg-primary/10 hover:border-primary/30 hover:scale-105 transition-all duration-300"
+                className="w-8 h-8 p-0 rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300"
               >
                 {theme === "light" ? (
                   <Moon className="h-4 w-4 text-foreground/70" />
                 ) : (
-                  <Sun className="h-4 w-4 text-primary" />
+                  <Sun className="h-4 w-4 text-gold-primary" />
                 )}
               </Button>
 
@@ -432,7 +432,7 @@ const Navigation = () => {
                     onClick={() => setShowAuthModal(true)}
                     variant="ghost"
                     size="sm"
-                    className="w-8 h-8 p-0 rounded-xl bg-muted/40 border border-border/50 hover:bg-primary/10 hover:border-primary/30 hover:scale-105 transition-all duration-300 text-foreground/70 hover:text-primary"
+                    className="w-8 h-8 p-0 rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/70 hover:text-gold-primary"
                   >
                     <User className="h-4 w-4" />
                   </Button>
@@ -449,7 +449,7 @@ const Navigation = () => {
                   ref={menuButtonRef}
                   variant="ghost"
                   size="sm"
-                  className="w-8 h-8 p-0 rounded-xl bg-muted/40 border border-border/50 hover:bg-primary/10 hover:border-primary/30 transition-all duration-300 text-foreground/70"
+                  className="w-8 h-8 p-0 rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-all duration-300 text-foreground/70"
                   onClick={toggleMenu}
                 >
                   {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -467,7 +467,7 @@ const Navigation = () => {
                 onTouchEnd={(e) => { e.preventDefault(); setIsMenuOpen(false); }}
               />
               
-              <div ref={menuRef} className="lg:hidden absolute top-full right-0 w-52 bg-popover/95 backdrop-blur-2xl border border-border/50 shadow-2xl z-[9999] rounded-b-2xl rounded-tl-lg overflow-hidden animate-in slide-in-from-top-2 fade-in duration-300 origin-top-right">
+              <div ref={menuRef} className="lg:hidden absolute top-full right-0 w-52 bg-popover/95 backdrop-blur-2xl border border-gold-primary/15 shadow-2xl z-[9999] rounded-b-2xl rounded-tl-lg overflow-hidden animate-in slide-in-from-top-2 fade-in duration-300 origin-top-right">
                 <div className="p-2 space-y-0.5">
                   <MobileNavButton icon={HomeIcon} label={currentText.home} onClick={() => { navigate('/'); toggleMenu(); }} />
 
@@ -488,7 +488,7 @@ const Navigation = () => {
                   <MobileNavButton icon={Plus} label="Add Property" onClick={() => { navigate('/add-property'); toggleMenu(); }} />
 
                   {/* Investment Section */}
-                  <div className="border-t border-border/50 pt-1.5 mt-1.5">
+                  <div className="border-t border-gold-primary/10 pt-1.5 mt-1.5">
                     <div className="px-2 py-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Investment
                     </div>
@@ -506,7 +506,7 @@ const Navigation = () => {
                     <MobileNavButton icon={Settings} label="Vendor Dashboard" colorClass="text-violet-600 dark:text-violet-400" onClick={() => { navigate('/vendor'); toggleMenu(); }} />
                   )}
                   
-                  <div className="flex items-center justify-between pt-1.5 border-t border-border/50">
+                  <div className="flex items-center justify-between pt-1.5 border-t border-gold-primary/10">
                     <Button
                       variant="ghost"
                       size="sm"
