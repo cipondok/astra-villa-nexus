@@ -436,7 +436,7 @@ const AdvancedFiltersDialog = ({
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <Alert className="bg-yellow-500/10 border-yellow-500/50 text-yellow-500">
+                <Alert className="bg-chart-3/10 border-chart-3/50 text-chart-3">
                   <AlertTriangle className="h-4 w-4" />
                   <AlertDescription className="text-sm">
                     <ul className="list-disc pl-4 space-y-1">
@@ -462,7 +462,7 @@ const AdvancedFiltersDialog = ({
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <Alert className="bg-green-500/10 border-green-500/50 text-green-500">
+                <Alert className="bg-chart-1/10 border-chart-1/50 text-chart-1">
                   <CheckCircle2 className="h-4 w-4" />
                   <AlertDescription className="text-sm">
                     {language === "en" 

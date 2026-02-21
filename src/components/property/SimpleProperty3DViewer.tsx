@@ -61,10 +61,10 @@ const SimpleProperty3DViewer: React.FC<SimpleProperty3DViewerProps> = ({
   const handleIframeLoad = useCallback(() => setIsLoading(false), []);
 
   const getPlatformBadge = (platform: Platform) => ({
-    matterport: { label: 'Matterport', color: 'bg-red-500/20 text-red-300 border-red-500/30' },
-    sketchfab: { label: 'Sketchfab', color: 'bg-blue-500/20 text-blue-300 border-blue-500/30' },
-    kuula: { label: 'Kuula 360°', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' },
-    generic: { label: '3D View', color: 'bg-gray-500/20 text-gray-300 border-gray-500/30' }
+    matterport: { label: 'Matterport', color: 'bg-destructive/20 text-destructive border-destructive/30' },
+    sketchfab: { label: 'Sketchfab', color: 'bg-chart-4/20 text-chart-4 border-chart-4/30' },
+    kuula: { label: 'Kuula 360°', color: 'bg-accent/20 text-accent-foreground border-accent/30' },
+    generic: { label: '3D View', color: 'bg-muted/50 text-muted-foreground border-border' }
   }[platform]);
 
   const renderEmptyState = (type: 'tour' | 'model') => (
@@ -104,7 +104,7 @@ const SimpleProperty3DViewer: React.FC<SimpleProperty3DViewerProps> = ({
       
       {/* Quick Actions */}
       <div className="absolute bottom-4 right-4 flex gap-2">
-        <Button size="sm" variant="ghost" className={`glass-effect h-9 w-9 p-0 ${isSaved ? 'text-red-400' : ''}`} onClick={() => setIsSaved(!isSaved)}>
+        <Button size="sm" variant="ghost" className={`glass-effect h-9 w-9 p-0 ${isSaved ? 'text-destructive' : ''}`} onClick={() => setIsSaved(!isSaved)}>
           <Heart className={`h-4 w-4 ${isSaved ? 'fill-current' : ''}`} />
         </Button>
         <Button size="sm" variant="ghost" className="glass-effect h-9 w-9 p-0"><Share2 className="h-4 w-4" /></Button>
@@ -171,9 +171,9 @@ const SimpleProperty3DViewer: React.FC<SimpleProperty3DViewerProps> = ({
         {!isFullscreen && (
           <div className="px-4 py-4 bg-navy-secondary/50 border-t border-glass-border">
             <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="glass-effect p-3 rounded-xl"><div className="w-2 h-2 rounded-full bg-red-400 mx-auto mb-1" /><div className="text-xs font-medium text-text-light">Matterport</div></div>
-              <div className="glass-effect p-3 rounded-xl"><div className="w-2 h-2 rounded-full bg-blue-400 mx-auto mb-1" /><div className="text-xs font-medium text-text-light">Sketchfab</div></div>
-              <div className="glass-effect p-3 rounded-xl"><div className="w-2 h-2 rounded-full bg-purple-400 mx-auto mb-1" /><div className="text-xs font-medium text-text-light">Kuula 360°</div></div>
+              <div className="glass-effect p-3 rounded-xl"><div className="w-2 h-2 rounded-full bg-destructive mx-auto mb-1" /><div className="text-xs font-medium text-text-light">Matterport</div></div>
+              <div className="glass-effect p-3 rounded-xl"><div className="w-2 h-2 rounded-full bg-chart-4 mx-auto mb-1" /><div className="text-xs font-medium text-text-light">Sketchfab</div></div>
+              <div className="glass-effect p-3 rounded-xl"><div className="w-2 h-2 rounded-full bg-accent mx-auto mb-1" /><div className="text-xs font-medium text-text-light">Kuula 360°</div></div>
             </div>
           </div>
         )}
