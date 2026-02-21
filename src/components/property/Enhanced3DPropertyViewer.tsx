@@ -358,7 +358,7 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
                     variant="ghost" 
                     size="sm" 
                     onClick={() => setShowMeasurements(!showMeasurements)}
-                    className={showMeasurements ? 'bg-blue-100' : ''}
+                    className={showMeasurements ? 'bg-primary/10' : ''}
                   >
                     <Ruler className="h-4 w-4" />
                   </Button>
@@ -366,7 +366,7 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
                     variant="ghost" 
                     size="sm"
                     onClick={() => setShowWireframe(!showWireframe)}
-                    className={showWireframe ? 'bg-blue-100' : ''}
+                    className={showWireframe ? 'bg-primary/10' : ''}
                   >
                     <Settings className="h-4 w-4" />
                   </Button>
@@ -386,7 +386,7 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
               </div>
               
               {/* Property Info Overlay */}
-              <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-4 max-w-xs">
+              <div className="absolute bottom-4 left-4 bg-card/90 backdrop-blur-sm rounded-lg p-4 max-w-xs">
                 <h3 className="font-semibold text-lg mb-2">{property.title}</h3>
                 <div className="text-sm space-y-1">
                   <div className="flex justify-between">
@@ -407,7 +407,7 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
           </TabsContent>
           
           <TabsContent value="virtual-tour" className="m-0">
-            <div className={`${isFullscreen ? 'h-screen' : 'h-96'} bg-gray-100 flex items-center justify-center`}>
+            <div className={`${isFullscreen ? 'h-screen' : 'h-96'} bg-muted flex items-center justify-center`}>
               {virtualTourUrl ? (
                 <iframe 
                   src={virtualTourUrl} 
@@ -416,10 +416,10 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
                 />
               ) : (
                 <div className="text-center space-y-4">
-                  <Eye className="h-16 w-16 text-gray-400 mx-auto" />
+                  <Eye className="h-16 w-16 text-muted-foreground mx-auto" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-600">Virtual Tour Available Soon</h3>
-                    <p className="text-gray-500">Interactive 360° virtual tour coming soon</p>
+                    <h3 className="text-lg font-semibold text-foreground">Virtual Tour Available Soon</h3>
+                    <p className="text-muted-foreground">Interactive 360° virtual tour coming soon</p>
                   </div>
                   <Button variant="outline">
                     Request Virtual Tour
@@ -446,7 +446,7 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
                   >
                     {showMeasurements ? 'Hide' : 'Show'} Distance Measurement
                   </Button>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-muted-foreground">
                     Click two points in the 3D view to measure distance between them.
                   </div>
                 </CardContent>
@@ -470,7 +470,7 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
                       step={0.1}
                       className="w-full"
                     />
-                    <div className="text-xs text-gray-500 mt-1">Current: {validModelScale}x</div>
+                    <div className="text-xs text-muted-foreground mt-1">Current: {validModelScale}x</div>
                   </div>
                   
                   <Button variant="outline" className="w-full" onClick={resetCamera}>

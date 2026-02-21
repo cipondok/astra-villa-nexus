@@ -16,9 +16,9 @@ const typeIcon = {
 };
 
 const typeBadgeStyle: Record<Partner["type"], string> = {
-  bank: "bg-blue-500/10 border-blue-400/30 text-blue-600 dark:text-blue-400",
-  corporate: "bg-violet-500/10 border-violet-400/30 text-violet-600 dark:text-violet-400",
-  university: "bg-emerald-500/10 border-emerald-400/30 text-emerald-600 dark:text-emerald-400",
+  bank: "bg-chart-4/10 border-chart-4/30 text-chart-4",
+  corporate: "bg-accent/10 border-accent/30 text-accent-foreground",
+  university: "bg-chart-1/10 border-chart-1/30 text-chart-1",
 };
 
 // Fallback partners shown when DB tables are empty

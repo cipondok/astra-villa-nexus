@@ -116,8 +116,8 @@ export const TrendingSearchesWidget = ({ onSearchClick }: TrendingSearchesWidget
                       variant={trend.change > 0 ? "default" : "secondary"}
                       className={`text-[8px] md:text-[10px] px-1 py-0 ${
                         trend.change > 0 
-                          ? 'bg-green-500/10 text-green-600 border-green-500/20 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/30' 
-                          : 'bg-red-500/10 text-red-600 border-red-500/20 dark:bg-red-500/20 dark:text-red-400 dark:border-red-500/30'
+                          ? 'bg-chart-1/10 text-chart-1 border-chart-1/20' 
+                          : 'bg-destructive/10 text-destructive border-destructive/20'
                       }`}
                     >
                       {trend.change > 0 ? <TrendingUp className="h-2 w-2 md:h-2.5 md:w-2.5" /> : <TrendingDown className="h-2 w-2 md:h-2.5 md:w-2.5" />}
