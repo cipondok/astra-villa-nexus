@@ -2,6 +2,8 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { QuickAction } from "./types";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface AIChatQuickActionsProps {
   quickActions: QuickAction[];
@@ -10,22 +12,34 @@ interface AIChatQuickActionsProps {
 
 const AIChatQuickActions = ({ quickActions, onActionClick }: AIChatQuickActionsProps) => {
   return (
-    <div className="p-3 border-t border-border/40 dark:border-border/30 bg-muted/40 dark:bg-muted/20 backdrop-blur-sm">
-      <div className="text-xs text-foreground/70 dark:text-foreground/60 mb-2 font-semibold tracking-wide uppercase">AI Tools & Features:</div>
-      <div className="flex flex-wrap gap-2">
+    <div className="px-4 py-3 border-t border-border/30 bg-muted/20 backdrop-blur-sm">
+      <p className="text-[10px] text-muted-foreground mb-2.5 font-semibold uppercase tracking-widest">Quick Actions</p>
+      <div className="grid grid-cols-2 gap-2">
         {quickActions.map((action, index) => (
-          <Button
+          <motion.div
             key={index}
-            variant="ghost"
-            size="sm"
-            className="justify-start text-xs h-9 px-3 gap-2 bg-card dark:bg-card/80 border border-border/50 dark:border-border/40 hover:border-primary/50 hover:bg-primary/10 dark:hover:bg-primary/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
-            onClick={() => onActionClick(action.action)}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05, duration: 0.2 }}
           >
-            <div className="p-1.5 rounded-lg bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30">
-              <action.icon className="h-3.5 w-3.5 text-primary" />
-            </div>
-            <span className="text-foreground dark:text-foreground/90">{action.text}</span>
-          </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "w-full justify-start text-xs h-auto py-2.5 px-3 gap-2.5",
+                "bg-background/60 border border-border/40",
+                "hover:border-primary/40 hover:bg-primary/5",
+                "rounded-xl transition-all duration-200",
+                "group"
+              )}
+              onClick={() => onActionClick(action.action)}
+            >
+              <div className="p-1.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                <action.icon className="h-3.5 w-3.5 text-primary" />
+              </div>
+              <span className="text-foreground/80 group-hover:text-foreground transition-colors text-left leading-tight">{action.text}</span>
+            </Button>
+          </motion.div>
         ))}
       </div>
     </div>
