@@ -520,11 +520,11 @@ const Index = () => {
           </div>
           
           {/* Bottom gradient fade into next section - using CSS var to prevent CLS */}
-          <div className="absolute bottom-0 left-0 right-0 h-8 sm:h-12 bg-gradient-to-t from-primary dark:from-primary to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-8 sm:h-12 bg-gradient-to-t from-[hsl(210,55%,25%)] dark:from-[hsl(210,55%,8%)] to-transparent pointer-events-none" />
         </section>
 
         {/* Search Section - Blue themed */}
-        <section className="w-full bg-gradient-to-b from-navy-primary/90 via-navy-primary to-navy-secondary dark:from-background dark:via-background dark:to-muted/30 py-4 sm:py-6 md:py-8">
+        <section className="w-full bg-gradient-to-b from-[hsl(210,55%,25%)] via-[hsl(210,50%,30%)] to-[hsl(210,45%,35%)] dark:from-[hsl(210,55%,8%)] dark:via-[hsl(210,50%,10%)] dark:to-[hsl(210,45%,12%)] py-4 sm:py-6 md:py-8">
           <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
             {/* AI Badge */}
             <div className="text-center mb-3 sm:mb-4 animate-in fade-in-50 duration-500">
@@ -542,11 +542,11 @@ const Index = () => {
               </div>
               
               <h2 className="text-lg sm:text-xl md:text-3xl lg:text-4xl font-extrabold leading-tight mb-1 sm:mb-2">
-                <span className="bg-gradient-to-r from-gold-primary via-white to-gold-primary bg-clip-text text-transparent drop-shadow-lg">
+                <span className="bg-gradient-to-r from-[hsl(48,100%,55%)] via-[hsl(0,0%,100%)] to-[hsl(200,100%,70%)] bg-clip-text text-transparent drop-shadow-lg">
                   {t.findYour}
                 </span>
               </h2>
-              <p className="flex text-xs sm:text-sm md:text-base text-primary-foreground/90 items-center justify-center gap-1.5 font-medium">
+              <p className="flex text-xs sm:text-sm md:text-base text-white/80 items-center justify-center gap-1.5 font-medium">
                 <Search className="h-3 w-3 sm:h-4 sm:w-4" />
                 {t.searchPowered}
               </p>
@@ -644,7 +644,7 @@ const Index = () => {
         )}
 
         {/* AI Tools & Features */}
-        <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-muted/60 via-muted/40 to-muted/20 dark:from-card/80 dark:via-card/60 dark:to-card/40" style={{ contain: 'layout', minHeight: '120px' }}>
+        <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-[hsl(210,45%,35%)] via-[hsl(210,40%,40%)] to-[hsl(210,35%,45%)] dark:from-[hsl(210,45%,12%)] dark:via-[hsl(210,40%,14%)] dark:to-[hsl(210,35%,16%)]" style={{ contain: 'layout', minHeight: '120px' }}>
           <div className="w-full">
             <LazyRender minHeight="96px" rootMargin="400px" fallback={
               <div className="flex gap-2 justify-center py-3" style={{ minHeight: '96px' }}>
@@ -664,7 +664,7 @@ const Index = () => {
         </div>
 
         {/* Global Investment Platform */}
-        <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-[hsl(210,80%,65%)] to-[hsl(210,70%,70%)] dark:from-[hsl(210,35%,24%)] dark:to-[hsl(210,30%,18%)]" style={{ contain: 'layout', minHeight: '80px' }}>
+        <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-[hsl(210,35%,45%)] to-[hsl(210,30%,50%)] dark:from-[hsl(210,35%,16%)] dark:to-[hsl(210,30%,18%)]" style={{ contain: 'layout', minHeight: '80px' }}>
           <div className="w-full">
             <LazyRender minHeight="64px" rootMargin="400px" fallback={
               <div className="flex gap-3 justify-center py-3" style={{ minHeight: '64px' }}>
@@ -679,7 +679,7 @@ const Index = () => {
         </div>
 
         {/* Property Display Section */}
-        <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-[hsl(210,70%,70%)] via-[hsl(210,60%,75%)] to-background dark:from-[hsl(210,30%,18%)] dark:via-[hsl(210,35%,14%)] dark:to-background">
+        <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-[hsl(210,30%,50%)] via-[hsl(210,25%,60%)] to-background dark:from-[hsl(210,30%,18%)] dark:via-[hsl(210,25%,14%)] dark:to-background">
           <div className="w-full space-y-4">
             {hasSearched ? (
               <section className="bg-primary/10 backdrop-blur-sm rounded-xl shadow-md border border-primary/15 dark:bg-primary/5 dark:border-primary/10">
