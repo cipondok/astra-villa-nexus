@@ -164,7 +164,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[11px] font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                <h3 className="text-[11px] font-semibold text-foreground truncate leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors group-hover:whitespace-normal group-hover:overflow-visible" title={property.title}>
                   {property.title}
                 </h3>
 
