@@ -226,7 +226,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                         {property.posted_by.name.charAt(0).toUpperCase()}
                       </div>
                     )}
-                    <span className="text-[9px] text-foreground/70 font-medium truncate">{property.posted_by.name}</span>
+                    {/* Name removed - show badge only */}
                   </div>
                 )}
               </div>
