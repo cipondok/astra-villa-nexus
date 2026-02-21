@@ -347,14 +347,14 @@ const Profile = () => {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-        <Card className="w-full max-w-sm border-border">
+        <Card className="w-full max-w-sm border-gold-primary/15 bg-card/60 backdrop-blur-xl">
           <CardContent className="pt-8 pb-6 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <User className="h-8 w-8 text-primary" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gold-primary/10 flex items-center justify-center">
+              <User className="h-8 w-8 text-gold-primary" />
             </div>
             <h1 className="text-xl font-bold mb-2">{t.profile}</h1>
             <p className="text-sm text-muted-foreground mb-6">{t.signInPrompt}</p>
-            <Button onClick={() => navigate('/auth')} className="w-full">
+            <Button onClick={() => navigate('/auth')} className="w-full bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-md shadow-gold-primary/20">
               {t.signIn}
             </Button>
           </CardContent>
@@ -398,8 +398,8 @@ const Profile = () => {
         </div>
 
         {/* Profile Header Card */}
-        <Card className="mb-4 border-border overflow-hidden">
-          <div className="h-20 bg-gradient-to-r from-primary/20 via-primary/10 to-accent/20"></div>
+        <Card className="mb-4 border-gold-primary/15 bg-card/60 backdrop-blur-xl overflow-hidden">
+          <div className="h-20 bg-gradient-to-r from-gold-primary/20 via-gold-primary/10 to-gold-primary/5"></div>
           <CardContent className="pt-0 pb-4 px-4">
           <div className="flex items-end gap-4 -mt-10">
               {/* Avatar with TikTok/FB style badge */}
@@ -435,18 +435,18 @@ const Profile = () => {
             <div className="grid grid-cols-3 gap-3 mt-4">
               <button 
                 onClick={() => navigate('/membership')}
-                className="p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors text-left"
+                className="p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10 hover:bg-gold-primary/10 transition-colors text-left"
               >
                 <p className="text-xs text-muted-foreground mb-0.5">{t.membership}</p>
                 <p className={cn("text-sm font-semibold", levelConfig.color)}>
                   {levelConfig.shortLabel}
                 </p>
               </button>
-              <div className="p-3 rounded-lg bg-muted/50">
+              <div className="p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10">
                 <p className="text-xs text-muted-foreground mb-0.5">{t.verification}</p>
                 <p className={cn(
                   "text-sm font-semibold flex items-center gap-1",
-                  verificationStatus === 'verified' ? 'text-primary' : 'text-muted-foreground'
+                  verificationStatus === 'verified' ? 'text-gold-primary' : 'text-muted-foreground'
                 )}>
                   {verificationStatus === 'verified' ? (
                     <><CheckCircle className="h-3.5 w-3.5" /> {t.verified}</>
@@ -457,10 +457,10 @@ const Profile = () => {
               </div>
               <button 
                 onClick={() => setActiveTab('roles')}
-                className="p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors text-left"
+                className="p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10 hover:bg-gold-primary/10 transition-colors text-left"
               >
                 <p className="text-xs text-muted-foreground mb-0.5">{t.roles}</p>
-                <p className="text-sm font-semibold text-primary flex items-center gap-1">
+                <p className="text-sm font-semibold text-gold-primary flex items-center gap-1">
                   <Sparkles className="h-3.5 w-3.5" /> Upgrade
                 </p>
               </button>
@@ -483,7 +483,7 @@ const Profile = () => {
 
           {/* Profile Tab */}
           <TabsContent value="profile" className="space-y-4 mt-0">
-            <Card className="border-border">
+            <Card className="border-gold-primary/15 bg-card/60 backdrop-blur-xl">
               <CardHeader className="pb-2 flex flex-row items-center justify-between">
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-muted-foreground" />
@@ -597,9 +597,9 @@ const Profile = () => {
                       )}
                       
                       {/* Location & Address Section */}
-                      <div className="space-y-1.5 p-3 rounded-lg bg-muted/30 border border-border/50">
+                       <div className="space-y-1.5 p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10">
                         <div className="flex items-center gap-2 mb-2">
-                          <MapPin className="h-4 w-4 text-primary" />
+                          <MapPin className="h-4 w-4 text-gold-primary" />
                           <Label className="text-xs font-medium">{t.address}</Label>
                         </div>
                         <ProfileLocationSelector
@@ -643,7 +643,7 @@ const Profile = () => {
                     </div>
 
                     <div className="flex gap-2 pt-2">
-                      <Button onClick={handleSave} disabled={isSaving} className="flex-1 h-9">
+                      <Button onClick={handleSave} disabled={isSaving} className="flex-1 h-9 bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-md shadow-gold-primary/20">
                         <Save className="h-4 w-4 mr-1.5" />
                         {isSaving ? t.saving : t.save}
                       </Button>
