@@ -175,7 +175,7 @@ const ModernPropertyCard = ({
             )}
           </div>
           {/* Property Type Badge */}
-          <Badge className="flex items-center gap-0.5 bg-white/60 dark:bg-black/60 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded-md font-semibold">
+          <Badge className="flex items-center gap-0.5 bg-background/60 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded-md font-semibold">
             <Building className="h-2.5 w-2.5" />
             {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
           </Badge>
@@ -185,7 +185,7 @@ const ModernPropertyCard = ({
         <Button
           variant="ghost"
           size="icon"
-          className={`absolute top-8 right-1.5 h-6 w-6 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm hover:bg-white/80 dark:hover:bg-black/80 ${
+          className={`absolute top-8 right-1.5 h-6 w-6 rounded-full bg-background/60 backdrop-blur-sm hover:bg-background/80 ${
             isLiked ? 'text-destructive' : 'text-muted-foreground'
           }`}
           onClick={handleLike}
@@ -228,19 +228,19 @@ const ModernPropertyCard = ({
           {/* Property Stats Pills */}
           <div className="flex gap-1 flex-wrap">
             {property.bedrooms && (
-              <div className="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-[10px]">
+              <div className="flex items-center gap-0.5 bg-gold-primary/20 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-[10px]">
                 <Bed className="h-2.5 w-2.5" />
                 <span>{property.bedrooms}</span>
               </div>
             )}
             {property.bathrooms && (
-              <div className="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-[10px]">
+              <div className="flex items-center gap-0.5 bg-gold-primary/15 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-[10px]">
                 <Bath className="h-2.5 w-2.5" />
                 <span>{property.bathrooms}</span>
               </div>
             )}
             {area && (
-              <div className="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-[10px]">
+              <div className="flex items-center gap-0.5 bg-muted/30 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-[10px]">
                 <Square className="h-2.5 w-2.5" />
                 <span>{area}m²</span>
               </div>
