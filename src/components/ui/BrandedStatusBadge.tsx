@@ -84,8 +84,8 @@ const LEVEL_CONFIG: Record<string, { ring: string; glow: string; label: string; 
 
 const SIZE_MAP = {
   xs: { container: "h-4 w-4", ring: "ring-[1.5px]", img: "h-2.5 w-2.5" },
-  sm: { container: "h-5 w-5", ring: "ring-2", img: "h-3 w-3" },
-  md: { container: "h-6 w-6", ring: "ring-2", img: "h-3.5 w-3.5" },
+  sm: { container: "h-5 min-w-5 px-1", ring: "ring-2", img: "h-3 w-3" },
+  md: { container: "h-6 min-w-6 px-1.5", ring: "ring-2", img: "h-3.5 w-3.5" },
 };
 
 const getLevelConfig = (level?: string) => {
@@ -118,7 +118,7 @@ const BrandedStatusBadge = ({
   const badge = (
     <div
       className={cn(
-        "relative inline-flex items-center justify-center rounded-full transition-all duration-300 hover:scale-125",
+        "relative inline-flex items-center justify-center gap-1 rounded-full transition-all duration-300 hover:scale-110 cursor-pointer",
         sizeConfig.container,
         sizeConfig.ring,
         activeRing,
@@ -142,6 +142,11 @@ const BrandedStatusBadge = ({
         className={cn(sizeConfig.img, "object-contain rounded-full relative z-10")}
         loading="lazy"
       />
+      {size !== "xs" && (
+        <span className="relative z-10 text-[8px] font-bold tracking-tight leading-none text-foreground/80 pr-1">
+          ASTRA
+        </span>
+      )}
     </div>
   );
 
