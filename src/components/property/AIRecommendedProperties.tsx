@@ -287,13 +287,13 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
           {/* Specs */}
           <div className="flex items-center gap-1 pt-1.5 border-t border-purple-400/15">
-            {property.bedrooms && property.bedrooms > 0 && (
+            {Number(property.bedrooms) > 0 && (
               <div className="flex items-center gap-0.5 bg-gradient-to-br from-violet-500/15 to-purple-500/15 border border-violet-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-violet-500/10">
                 <Bed className="h-2.5 w-2.5 text-violet-500 dark:text-violet-400" />
                 <span className="text-[9px] font-bold text-foreground/80">{property.bedrooms}</span>
               </div>
             )}
-            {property.bathrooms && property.bathrooms > 0 && (
+            {Number(property.bathrooms) > 0 && (
               <div className="flex items-center gap-0.5 bg-gradient-to-br from-sky-500/15 to-blue-500/15 border border-sky-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-sky-500/10">
                 <Bath className="h-2.5 w-2.5 text-sky-500 dark:text-sky-400" />
                 <span className="text-[9px] font-bold text-foreground/80">{property.bathrooms}</span>
