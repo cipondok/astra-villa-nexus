@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
 import VoiceRecordButton from "./VoiceRecordButton";
+import { cn } from "@/lib/utils";
 
 interface AIChatInputProps {
   message: string;
@@ -32,15 +33,15 @@ const AIChatInput = ({
   onStopRecording,
 }: AIChatInputProps) => {
   return (
-    <div className="border-t p-3">
-      <div className="flex gap-2">
+    <div className="border-t border-border/50 p-3 bg-background/50 backdrop-blur-sm">
+      <div className="flex gap-2 items-center">
         <Input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Ask me anything about properties..."
           onKeyPress={(e) => e.key === 'Enter' && !isRecording && onSendMessage()}
           disabled={isLoading || isRecording}
-          className="flex-1 text-sm bg-white/95 dark:bg-slate-800/95 border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm"
+          className="flex-1 text-sm bg-muted/40 border-border/50 backdrop-blur-sm focus-visible:ring-primary/30 rounded-xl"
         />
         {onStartRecording && onStopRecording && (
           <VoiceRecordButton
@@ -55,9 +56,14 @@ const AIChatInput = ({
           onClick={onSendMessage}
           disabled={isLoading || !message.trim() || isRecording}
           size="icon"
-          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 h-8 w-8 macos-smooth-click"
+          className={cn(
+            "h-9 w-9 rounded-xl shrink-0",
+            "bg-primary hover:bg-primary/90 text-primary-foreground",
+            "shadow-md shadow-primary/20 transition-all duration-200",
+            "disabled:opacity-40 disabled:shadow-none"
+          )}
         >
-          <Send className="h-3.5 w-3.5" />
+          <Send className="h-4 w-4" />
         </Button>
       </div>
     </div>
