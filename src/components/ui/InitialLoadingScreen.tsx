@@ -13,7 +13,8 @@ const InitialLoadingScreen = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [logoUrl, setLogoUrl] = useState<string>(astraLogoFallback);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoLoaded, setLogoLoaded] = useState(false);
   const { toast } = useToast();
 
   // Fetch dynamic logo from system settings (check both "general" and "branding" categories)
@@ -63,10 +64,18 @@ const InitialLoadingScreen = () => {
         }
       } catch (error) {
         console.error('Error fetching logo:', error);
+        setLogoUrl(astraLogoFallback);
       }
     };
 
+    // Small delay to allow DB fetch before falling back
+    const timeout = setTimeout(() => {
+      setLogoUrl((prev) => prev ?? astraLogoFallback);
+    }, 1500);
+
     fetchLogo();
+
+    return () => clearTimeout(timeout);
   }, []);
 
   useEffect(() => {
@@ -317,14 +326,16 @@ const InitialLoadingScreen = () => {
               }}
               transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <img 
-                src={logoUrl} 
-                alt="ASTRA Villa Logo" 
-                className="w-16 h-16 object-contain"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = astraLogoFallback;
-                }}
-              />
+              {logoUrl && (
+                <img 
+                  src={logoUrl} 
+                  alt="ASTRA Villa Logo" 
+                  className="w-16 h-16 object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = astraLogoFallback;
+                  }}
+                />
+              )}
             </motion.div>
           </motion.div>
 
