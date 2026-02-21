@@ -115,17 +115,17 @@ const PropertyDetailModal = ({
   return (
     <div className="fixed inset-0 z-[10001] flex items-center justify-center p-2 lg:p-4" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       {/* Backdrop - blocks all interaction */}
-      <div 
-        className="absolute inset-0 bg-black/80 backdrop-blur-md"
+       <div 
+        className="absolute inset-0 bg-background/80 backdrop-blur-md"
         onClick={onClose}
       />
       
-      {/* Modal Content - 95% of screen */}
-      <div className="relative w-[95%] max-w-7xl h-[95vh] bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in-0 scale-in-95 duration-300 z-[10002]"
+      {/* Modal Content */}
+      <div className="relative w-[95%] max-w-7xl h-[95vh] bg-card/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-gold-primary/10 border border-gold-primary/15 overflow-hidden animate-in fade-in-0 scale-in-95 duration-300 z-[10002]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-gray-700/50">
+        <div className="flex items-center justify-between p-6 border-b border-gold-primary/15">
           <Button
             onClick={handleBackToHome}
             variant="outline"
@@ -226,7 +226,7 @@ const PropertyDetailModal = ({
               <div>
                 <h1 className="text-3xl lg:text-4xl font-bold mb-3">{property.title}</h1>
                 <div className="flex items-center justify-between mb-4">
-                  <div className="text-4xl font-bold text-primary">
+                  <div className="text-4xl font-bold text-gold-primary">
                     {formatPrice(property.price)}
                     {property.listing_type === 'rent' && (
                       <span className="text-xl font-normal text-muted-foreground">/month</span>
@@ -242,29 +242,29 @@ const PropertyDetailModal = ({
               {/* Property Stats Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {property.bedrooms && (
-                  <div className="text-center p-4 bg-gray-100/70 dark:bg-gray-800/70 rounded-xl">
-                    <Bed className="h-8 w-8 text-primary mx-auto mb-2" />
+                  <div className="text-center p-4 bg-gold-primary/5 border border-gold-primary/10 rounded-xl">
+                    <Bed className="h-8 w-8 text-gold-primary mx-auto mb-2" />
                     <div className="text-2xl font-bold">{property.bedrooms}</div>
                     <div className="text-sm text-muted-foreground">{currentText.bedrooms}</div>
                   </div>
                 )}
                 {property.bathrooms && (
-                  <div className="text-center p-4 bg-gray-100/70 dark:bg-gray-800/70 rounded-xl">
-                    <Bath className="h-8 w-8 text-primary mx-auto mb-2" />
+                  <div className="text-center p-4 bg-gold-primary/5 border border-gold-primary/10 rounded-xl">
+                    <Bath className="h-8 w-8 text-gold-primary mx-auto mb-2" />
                     <div className="text-2xl font-bold">{property.bathrooms}</div>
                     <div className="text-sm text-muted-foreground">{currentText.bathrooms}</div>
                   </div>
                 )}
                 {property.area_sqm && (
-                  <div className="text-center p-4 bg-gray-100/70 dark:bg-gray-800/70 rounded-xl">
-                    <Square className="h-8 w-8 text-primary mx-auto mb-2" />
+                  <div className="text-center p-4 bg-gold-primary/5 border border-gold-primary/10 rounded-xl">
+                    <Square className="h-8 w-8 text-gold-primary mx-auto mb-2" />
                     <div className="text-2xl font-bold">{property.area_sqm}</div>
                     <div className="text-sm text-muted-foreground">{currentText.area}</div>
                   </div>
                 )}
                 {property.property_features?.parking && (
-                  <div className="text-center p-4 bg-gray-100/70 dark:bg-gray-800/70 rounded-xl">
-                    <Car className="h-8 w-8 text-primary mx-auto mb-2" />
+                  <div className="text-center p-4 bg-gold-primary/5 border border-gold-primary/10 rounded-xl">
+                    <Car className="h-8 w-8 text-gold-primary mx-auto mb-2" />
                     <div className="text-2xl font-bold">{property.property_features.parking}</div>
                     <div className="text-sm text-muted-foreground">{currentText.parking}</div>
                   </div>
@@ -273,7 +273,7 @@ const PropertyDetailModal = ({
 
               {/* Full Description */}
               {property.description && (
-                <div className="bg-gray-50/70 dark:bg-gray-800/70 rounded-xl p-6">
+                <div className="bg-gold-primary/5 border border-gold-primary/10 rounded-xl p-6">
                   <h2 className="font-bold text-xl mb-4">{currentText.description}</h2>
                   <div className="prose max-w-none dark:prose-invert">
                     <p className="text-muted-foreground leading-relaxed text-lg">{property.description}</p>
@@ -283,13 +283,13 @@ const PropertyDetailModal = ({
 
               {/* All Features */}
               {property.property_features && (
-                <div className="bg-gray-50/70 dark:bg-gray-800/70 rounded-xl p-6">
+                <div className="bg-gold-primary/5 border border-gold-primary/10 rounded-xl p-6">
                   <h2 className="font-bold text-xl mb-4">{currentText.features}</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {Object.entries(property.property_features)
                       .filter(([key, value]) => value)
                       .map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-700/50 rounded-lg">
+                        <div key={key} className="flex items-center justify-between p-3 bg-card/50 border border-border/30 rounded-lg">
                           <span className="font-medium capitalize">{key.replace('_', ' ')}</span>
                           <span className="text-muted-foreground">{String(value)}</span>
                         </div>
@@ -302,10 +302,10 @@ const PropertyDetailModal = ({
             {/* Sidebar - Right column */}
             <div className="lg:col-span-1 space-y-6">
               {/* Contact Actions */}
-              <div className="sticky top-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 space-y-4">
+              <div className="sticky top-6 bg-card/80 backdrop-blur-xl rounded-xl p-6 space-y-4 border border-gold-primary/15">
                 <h3 className="font-bold text-lg">Contact Agent</h3>
                 <div className="space-y-3">
-                  <Button className="w-full" size="lg">
+                  <Button className="w-full bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-md shadow-gold-primary/20 hover:shadow-lg" size="lg">
                     <Phone className="h-5 w-5 mr-2" />
                     Call Now
                   </Button>
@@ -334,11 +334,11 @@ const PropertyDetailModal = ({
               </div>
 
               {/* Property Owner/Agent Info */}
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-6">
+              <div className="bg-card/80 backdrop-blur-xl rounded-xl p-6 border border-gold-primary/15">
                 <h3 className="font-bold text-lg mb-4">Listed By</h3>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                    <User className="h-6 w-6 text-primary" />
+                  <div className="w-12 h-12 bg-gold-primary/10 rounded-full flex items-center justify-center">
+                    <User className="h-6 w-6 text-gold-primary" />
                   </div>
                   <div>
                     <div className="font-semibold">Real Estate Agent</div>
@@ -353,17 +353,16 @@ const PropertyDetailModal = ({
           </div>
 
           {/* Related Properties Section */}
-          <div className="border-t border-gray-200/50 dark:border-gray-700/50 bg-gray-50/30 dark:bg-gray-900/30">
+          <div className="border-t border-gold-primary/15 bg-card/30">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6">Related Properties</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Placeholder for related properties - will be populated with actual data */}
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white/70 dark:bg-gray-800/70 rounded-xl p-4 space-y-3">
-                    <div className="aspect-[4/3] bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                  <div key={i} className="bg-card/50 border border-border/30 rounded-xl p-4 space-y-3">
+                    <div className="aspect-[4/3] bg-muted rounded-lg"></div>
                     <div className="space-y-2">
-                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                      <div className="h-4 bg-muted rounded w-3/4"></div>
+                      <div className="h-4 bg-muted rounded w-1/2"></div>
                     </div>
                   </div>
                 ))}
@@ -372,17 +371,16 @@ const PropertyDetailModal = ({
           </div>
 
           {/* Same Owner Properties Section */}
-          <div className="border-t border-gray-200/50 dark:border-gray-700/50 bg-white/30 dark:bg-gray-800/30">
+          <div className="border-t border-gold-primary/15 bg-card/20">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6">More from this Agent</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Placeholder for same owner properties */}
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white/70 dark:bg-gray-800/70 rounded-xl p-4 space-y-3">
-                    <div className="aspect-[4/3] bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                  <div key={i} className="bg-card/50 border border-border/30 rounded-xl p-4 space-y-3">
+                    <div className="aspect-[4/3] bg-muted rounded-lg"></div>
                     <div className="space-y-2">
-                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                      <div className="h-4 bg-muted rounded w-3/4"></div>
+                      <div className="h-4 bg-muted rounded w-1/2"></div>
                     </div>
                   </div>
                 ))}
