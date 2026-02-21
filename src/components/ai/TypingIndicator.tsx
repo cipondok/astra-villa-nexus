@@ -10,12 +10,12 @@ interface TypingIndicatorProps {
 
 const TypingIndicator = ({ className, status = "AI is thinking", logoUrl }: TypingIndicatorProps) => {
   const dotVariants = {
-    initial: { y: 0 },
-    animate: { y: -8 },
+    initial: { y: 0, opacity: 0.4 },
+    animate: { y: -6, opacity: 1 },
   };
 
   const dotTransition = {
-    duration: 0.5,
+    duration: 0.45,
     repeat: Infinity,
     repeatType: "reverse" as const,
     ease: "easeInOut" as const,
@@ -26,19 +26,16 @@ const TypingIndicator = ({ className, status = "AI is thinking", logoUrl }: Typi
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className={cn(
-        "flex justify-start",
-        className
-      )}
+      className={cn("flex justify-start", className)}
     >
-      <div className="max-w-xs p-3 rounded-lg bg-background/80 backdrop-blur-sm border border-primary/20">
-        <div className="flex items-center gap-2 mb-1">
-          <Icons.aiLogo className="h-5 w-5" logoUrl={logoUrl} />
-          <span className="text-xs font-medium bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ASTRA AI</span>
+      <div className="max-w-xs p-3 rounded-2xl rounded-bl-md bg-muted/60 backdrop-blur-sm border border-border/50">
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <Icons.aiLogo className="h-3.5 w-3.5" logoUrl={logoUrl} />
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">ASTRA AI</span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <motion.span 
-            className="text-sm text-muted-foreground"
+            className="text-xs text-muted-foreground"
             key={status}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -46,7 +43,7 @@ const TypingIndicator = ({ className, status = "AI is thinking", logoUrl }: Typi
           >
             {status}
           </motion.span>
-          <div className="flex gap-1 ml-1">
+          <div className="flex gap-1 ml-0.5">
             {[0, 1, 2].map((index) => (
               <motion.div
                 key={index}
@@ -57,7 +54,7 @@ const TypingIndicator = ({ className, status = "AI is thinking", logoUrl }: Typi
                   ...dotTransition,
                   delay: index * 0.15,
                 }}
-                className="w-1.5 h-1.5 rounded-full bg-primary"
+                className="w-1.5 h-1.5 rounded-full bg-primary/70"
               />
             ))}
           </div>
