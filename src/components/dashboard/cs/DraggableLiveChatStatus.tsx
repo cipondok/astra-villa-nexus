@@ -133,12 +133,12 @@ const DraggableLiveChatStatus = ({
           onMouseDown={handleMouseDown}
         >
           <GripVertical className="h-3 w-3 text-muted-foreground" />
-          <Badge className={`${isOnline ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'} text-white`}>
+          <Badge className={`${isOnline ? 'bg-chart-1 hover:bg-chart-1/90' : 'bg-destructive hover:bg-destructive/90'} text-primary-foreground`}>
             <Users className="h-3 w-3 mr-1" />
             {isOnline ? 'Online' : 'Offline'}
           </Badge>
           {activeChatCount > 0 && (
-            <Badge className="bg-blue-500 text-white text-xs">
+            <Badge className="bg-primary text-primary-foreground text-xs">
               {activeChatCount}
             </Badge>
           )}
@@ -188,7 +188,7 @@ const DraggableLiveChatStatus = ({
               Active: {mySessions.length} | Waiting: {waitingSessions.length}
             </div>
             {waitingSessions.length > 0 && (
-              <div className="bg-orange-50 dark:bg-orange-900/20 p-2 rounded text-xs text-orange-700 dark:text-orange-300 text-center">
+              <div className="bg-chart-3/10 p-2 rounded text-xs text-chart-3 text-center">
                 {waitingSessions.length} customer{waitingSessions.length > 1 ? 's' : ''} waiting!
               </div>
             )}
@@ -238,7 +238,7 @@ const DraggableLiveChatStatus = ({
               <div className="space-y-3">
                 <h3 className="font-medium">My Active Chats ({mySessions.length})</h3>
                 {mySessions.map((session) => (
-                  <div key={session.id} className="border rounded-lg p-4 bg-green-50 dark:bg-green-900/10">
+                  <div key={session.id} className="border rounded-lg p-4 bg-chart-1/5">
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium">{session.customer_name || 'Anonymous Customer'}</h4>

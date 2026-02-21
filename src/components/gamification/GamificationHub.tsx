@@ -35,7 +35,7 @@ const GamificationHub = ({ variant = 'full', className }: GamificationHubProps) 
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-yellow-500" />
+              <Trophy className="h-4 w-4 text-gold-primary" />
               <span className="font-semibold text-sm">Your Progress</span>
             </div>
             <Badge variant="outline" className="text-[10px]">
@@ -56,7 +56,7 @@ const GamificationHub = ({ variant = 'full', className }: GamificationHubProps) 
       <Card className={className}>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Trophy className="h-4 w-4 text-yellow-500" />
+            <Trophy className="h-4 w-4 text-gold-primary" />
             Gamification
           </CardTitle>
         </CardHeader>
@@ -71,7 +71,7 @@ const GamificationHub = ({ variant = 'full', className }: GamificationHubProps) 
           </div>
 
           {stats?.current_streak && stats.current_streak > 0 && (
-            <div className="flex items-center gap-2 p-2 rounded-lg bg-orange-500/10">
+            <div className="flex items-center gap-2 p-2 rounded-lg bg-chart-3/10">
               <span className="text-lg">🔥</span>
               <span className="text-sm font-medium">{stats.current_streak} day streak!</span>
             </div>
@@ -90,7 +90,7 @@ const GamificationHub = ({ variant = 'full', className }: GamificationHubProps) 
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                <Trophy className="h-6 w-6 text-yellow-500" />
+                <Trophy className="h-6 w-6 text-gold-primary" />
                 Your Achievements
               </h2>
               <p className="text-muted-foreground text-sm mt-1">
@@ -175,8 +175,8 @@ const GamificationHub = ({ variant = 'full', className }: GamificationHubProps) 
                         <Badge className={cn(
                           "font-bold",
                           tx.xp_amount > 0 
-                            ? "bg-green-500/10 text-green-600" 
-                            : "bg-red-500/10 text-red-600"
+                            ? "bg-chart-1/10 text-chart-1" 
+                            : "bg-destructive/10 text-destructive"
                         )}>
                           {tx.xp_amount > 0 ? '+' : ''}{tx.xp_amount} XP
                         </Badge>

@@ -82,10 +82,10 @@ const SmartRecommendations = ({ type = 'properties', limit = 4, className = "" }
     return (
       <Card className={`${className}`}>
         <CardContent className="p-6 text-center">
-          <Sparkles className="h-12 w-12 text-purple-500 mx-auto mb-4" />
+          <Sparkles className="h-12 w-12 text-accent-foreground mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">AI-Powered Recommendations</h3>
-          <p className="text-gray-600 mb-4">Sign in to get personalized property and vendor recommendations based on your preferences.</p>
-          <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+          <p className="text-muted-foreground mb-4">Sign in to get personalized property and vendor recommendations based on your preferences.</p>
+          <Button className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background hover:from-gold-primary/90 hover:to-gold-primary/70">
             Sign In for Smart Recommendations
           </Button>
         </CardContent>
@@ -98,9 +98,9 @@ const SmartRecommendations = ({ type = 'properties', limit = 4, className = "" }
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-purple-600" />
+            <Sparkles className="h-5 w-5 text-gold-primary" />
             Smart Recommendations
-            <Badge className="bg-purple-100 text-purple-800">AI</Badge>
+            <Badge className="bg-gold-primary/10 text-gold-primary">AI</Badge>
           </CardTitle>
           <Button
             onClick={fetchRecommendations}
@@ -116,7 +116,7 @@ const SmartRecommendations = ({ type = 'properties', limit = 4, className = "" }
         
         {userPreferences.propertyTypes?.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-2">
-            <span className="text-xs text-gray-600">Based on your interest in:</span>
+            <span className="text-xs text-muted-foreground">Based on your interest in:</span>
             {userPreferences.propertyTypes.slice(0, 3).map((type: string) => (
               <Badge key={type} variant="secondary" className="text-xs">
                 {type}
@@ -131,9 +131,9 @@ const SmartRecommendations = ({ type = 'properties', limit = 4, className = "" }
           <div className="p-6 space-y-4">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-32 bg-gray-200 rounded-lg mb-3"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-32 bg-muted rounded-lg mb-3"></div>
+                <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+                <div className="h-3 bg-muted rounded w-1/2"></div>
               </div>
             ))}
           </div>
@@ -144,7 +144,7 @@ const SmartRecommendations = ({ type = 'properties', limit = 4, className = "" }
                 key={property.id}
                 to={`/property/${property.id}`}
                 onClick={() => trackPropertyView(property.id, property)}
-                className="block p-4 hover:bg-gray-50 transition-colors border-b last:border-b-0"
+                className="block p-4 hover:bg-muted/50 transition-colors border-b last:border-b-0"
               >
                 <div className="flex gap-3">
                   <div className="relative">
@@ -154,7 +154,7 @@ const SmartRecommendations = ({ type = 'properties', limit = 4, className = "" }
                       className="w-20 h-20 object-cover rounded-lg"
                     />
                     {property.score && property.score > 50 && (
-                      <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs">
+                      <Badge className="absolute -top-2 -right-2 bg-chart-1 text-primary-foreground text-xs">
                         <TrendingUp className="h-3 w-3 mr-1" />
                         {Math.round(property.score)}%
                       </Badge>
@@ -162,25 +162,25 @@ const SmartRecommendations = ({ type = 'properties', limit = 4, className = "" }
                   </div>
                   
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-sm text-gray-900 truncate">
+                    <h4 className="font-semibold text-sm text-foreground truncate">
                       {property.title}
                     </h4>
-                    <div className="flex items-center gap-1 text-xs text-gray-600 mt-1">
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                       <MapPin className="h-3 w-3" />
                       {property.location}
                     </div>
-                    <div className="flex items-center gap-1 text-xs text-gray-600 mt-1">
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                       <Home className="h-3 w-3" />
                       {property.property_type}
                     </div>
-                    <div className="text-sm font-bold text-purple-600 mt-2">
+                    <div className="text-sm font-bold text-gold-primary mt-2">
                       ${property.price?.toLocaleString()}
                     </div>
                   </div>
                   
                   <div className="flex flex-col items-center justify-center">
-                    <Eye className="h-4 w-4 text-gray-400" />
-                    <span className="text-xs text-gray-500 mt-1">View</span>
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground mt-1">View</span>
                   </div>
                 </div>
               </Link>
@@ -188,8 +188,8 @@ const SmartRecommendations = ({ type = 'properties', limit = 4, className = "" }
           </div>
         ) : (
           <div className="p-6 text-center">
-            <div className="text-gray-500 mb-2">No recommendations yet</div>
-            <div className="text-sm text-gray-400">
+            <div className="text-muted-foreground mb-2">No recommendations yet</div>
+            <div className="text-sm text-muted-foreground/70">
               Browse some properties to get personalized recommendations!
             </div>
           </div>
