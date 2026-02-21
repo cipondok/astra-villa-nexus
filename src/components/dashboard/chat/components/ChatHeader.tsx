@@ -12,20 +12,20 @@ const ChatHeader = memo<ChatHeaderProps>(({
 }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'waiting': return 'bg-yellow-500';
-      case 'active': return 'bg-green-500';
-      case 'resolved': return 'bg-gray-500';
-      default: return 'bg-gray-500';
+      case 'waiting': return 'bg-chart-3';
+      case 'active': return 'bg-chart-1';
+      case 'resolved': return 'bg-muted';
+      default: return 'bg-muted';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-blue-500';
-      case 'low': return 'bg-gray-500';
-      default: return 'bg-gray-500';
+      case 'urgent': return 'bg-destructive';
+      case 'high': return 'bg-chart-3';
+      case 'medium': return 'bg-chart-4';
+      case 'low': return 'bg-muted';
+      default: return 'bg-muted';
     }
   };
 
@@ -42,7 +42,7 @@ const ChatHeader = memo<ChatHeaderProps>(({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <User className="h-5 w-5 text-blue-600" />
+            <User className="h-5 w-5 text-primary" />
             <div>
               <h4 className="font-semibold">{session.customer_name}</h4>
               <p className="text-sm text-muted-foreground">
@@ -54,7 +54,7 @@ const ChatHeader = memo<ChatHeaderProps>(({
         </div>
         
         <div className="flex items-center gap-2">
-          <Badge className={`${getStatusColor(session.status)} text-white`}>
+          <Badge className={`${getStatusColor(session.status)} text-primary-foreground`}>
             {session.status}
           </Badge>
           
@@ -67,16 +67,16 @@ const ChatHeader = memo<ChatHeaderProps>(({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="low">
-                <Badge className="bg-gray-500 text-white text-xs">Low</Badge>
+                <Badge className="bg-muted text-muted-foreground text-xs">Low</Badge>
               </SelectItem>
               <SelectItem value="medium">
-                <Badge className="bg-blue-500 text-white text-xs">Medium</Badge>
+                <Badge className="bg-chart-4 text-primary-foreground text-xs">Medium</Badge>
               </SelectItem>
               <SelectItem value="high">
-                <Badge className="bg-orange-500 text-white text-xs">High</Badge>
+                <Badge className="bg-chart-3 text-primary-foreground text-xs">High</Badge>
               </SelectItem>
               <SelectItem value="urgent">
-                <Badge className="bg-red-500 text-white text-xs">Urgent</Badge>
+                <Badge className="bg-destructive text-destructive-foreground text-xs">Urgent</Badge>
               </SelectItem>
             </SelectContent>
           </Select>

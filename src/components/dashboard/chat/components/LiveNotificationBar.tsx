@@ -61,7 +61,7 @@ const LiveNotificationBar = memo<LiveNotificationBarProps>(({
                 </div>
               )}
               {waitingCount === 0 && (
-                <div className="text-green-600">All chats handled</div>
+                <div className="text-chart-1">All chats handled</div>
               )}
             </div>
           </div>

@@ -21,20 +21,20 @@ const ChatSessionItem = memo(({
 }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'waiting': return 'bg-yellow-500';
-      case 'active': return 'bg-green-500';
-      case 'resolved': return 'bg-gray-500';
-      default: return 'bg-gray-500';
+      case 'waiting': return 'bg-chart-3';
+      case 'active': return 'bg-chart-1';
+      case 'resolved': return 'bg-muted';
+      default: return 'bg-muted';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-blue-500';
-      case 'low': return 'bg-gray-500';
-      default: return 'bg-gray-500';
+      case 'urgent': return 'bg-destructive';
+      case 'high': return 'bg-chart-3';
+      case 'medium': return 'bg-chart-4';
+      case 'low': return 'bg-muted';
+      default: return 'bg-muted';
     }
   };
 
@@ -50,7 +50,7 @@ const ChatSessionItem = memo(({
     <div 
       className={`p-3 border rounded-lg cursor-pointer transition-colors ${
         isSelected 
-          ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' 
+          ? 'bg-primary/10 border-primary/30' 
           : 'hover:bg-muted'
       }`}
       onClick={() => onSelect(session)}
@@ -61,10 +61,10 @@ const ChatSessionItem = memo(({
           <span className="text-sm font-medium">{session.customer_name}</span>
         </div>
         <div className="flex items-center gap-1">
-          <Badge className={`${getStatusColor(session.status)} text-white text-xs`}>
+          <Badge className={`${getStatusColor(session.status)} text-primary-foreground text-xs`}>
             {session.status}
           </Badge>
-          <Badge className={`${getPriorityColor(session.priority)} text-white text-xs`}>
+          <Badge className={`${getPriorityColor(session.priority)} text-primary-foreground text-xs`}>
             {session.priority}
           </Badge>
         </div>
@@ -122,7 +122,7 @@ const ChatSessionList = memo<ChatSessionListProps>(({
         <Badge variant="outline">
           {sessions.length} active
           {waitingCount > 0 && (
-            <span className="ml-1 bg-red-500 text-white rounded-full px-1 text-xs">
+            <span className="ml-1 bg-destructive text-destructive-foreground rounded-full px-1 text-xs">
               {waitingCount} waiting
             </span>
           )}
