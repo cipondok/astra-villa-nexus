@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { ChevronRight } from "lucide-react";
 
 const TIPS = [
   "💡 Drag the chat button to reposition it anywhere!",
@@ -27,6 +28,11 @@ const ChatbotTipsPopup = ({ isVisible, onClose, className }: ChatbotTipsPopupPro
   const [currentTipIndex, setCurrentTipIndex] = useState(() => 
     Math.floor(Math.random() * TIPS.length)
   );
+
+  const nextTip = useCallback((e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setCurrentTipIndex((prev) => (prev + 1) % TIPS.length);
+  }, []);
 
   // Auto-rotate tips every 5 seconds
   useEffect(() => {
@@ -56,32 +62,48 @@ const ChatbotTipsPopup = ({ isVisible, onClose, className }: ChatbotTipsPopupPro
           <div className="relative">
             {/* Glassy Royal Border Popup */}
             <div className="bg-background/80 backdrop-blur-xl rounded-2xl px-4 py-3 border border-primary/40 shadow-xl shadow-primary/20 min-w-[260px] max-w-[300px]">
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={currentTipIndex}
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-xs text-foreground leading-relaxed"
+              <div className="flex items-center gap-2">
+                <div className="flex-1">
+                  <AnimatePresence mode="wait">
+                    <motion.p
+                      key={currentTipIndex}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-xs text-foreground leading-relaxed"
+                    >
+                      {TIPS[currentTipIndex]}
+                    </motion.p>
+                  </AnimatePresence>
+                </div>
+                <button
+                  onClick={nextTip}
+                  className="flex-shrink-0 p-1 rounded-full hover:bg-primary/10 transition-colors text-primary/60 hover:text-primary"
+                  aria-label="Next tip"
                 >
-                  {TIPS[currentTipIndex]}
-                </motion.p>
-              </AnimatePresence>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
               
-              {/* Tip indicator dots */}
-              <div className="flex justify-center gap-1 mt-2">
-                {[0, 1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className={cn(
-                      "w-1.5 h-1.5 rounded-full transition-all duration-300",
-                      currentTipIndex % 3 === i
-                        ? "bg-primary w-3"
-                        : "bg-primary/30"
-                    )}
-                  />
-                ))}
+              {/* Tip counter */}
+              <div className="flex items-center justify-between mt-2">
+                <div className="flex gap-1">
+                  {[0, 1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className={cn(
+                        "w-1.5 h-1.5 rounded-full transition-all duration-300",
+                        currentTipIndex % 3 === i
+                          ? "bg-primary w-3"
+                          : "bg-primary/30"
+                      )}
+                    />
+                  ))}
+                </div>
+                <span className="text-[10px] text-muted-foreground">
+                  {currentTipIndex + 1}/{TIPS.length}
+                </span>
               </div>
             </div>
 
