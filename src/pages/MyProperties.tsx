@@ -62,7 +62,7 @@ const MyProperties = () => {
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 w-7 p-0 text-primary-foreground hover:bg-white/20"
+              className="h-7 w-7 p-0 text-primary-foreground hover:bg-primary-foreground/20"
               onClick={() => navigate('/dashboard/property-owner')}
             >
               <ArrowLeft className="h-4 w-4" />
@@ -76,7 +76,7 @@ const MyProperties = () => {
           </div>
           <Button 
             size="sm"
-            className="h-7 px-2 text-[10px] bg-white/20 hover:bg-white/30"
+            className="h-7 px-2 text-[10px] bg-primary-foreground/20 hover:bg-primary-foreground/30"
             onClick={() => navigate('/add-property')}
           >
             <Plus className="h-3 w-3 mr-1" />

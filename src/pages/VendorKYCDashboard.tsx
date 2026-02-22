@@ -247,13 +247,13 @@ const VendorKYCDashboard = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'verified':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-chart-1" />;
       case 'rejected':
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       case 'pending':
-        return <Clock className="h-4 w-4 text-yellow-600" />;
+        return <Clock className="h-4 w-4 text-gold-primary" />;
       default:
-        return <AlertTriangle className="h-4 w-4 text-gray-400" />;
+        return <AlertTriangle className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -358,25 +358,25 @@ const VendorKYCDashboard = () => {
           <Progress value={completionPercentage} className="mb-4" />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-lg font-semibold text-green-600">
+              <div className="text-lg font-semibold text-chart-1">
                 {documentVerifications?.filter(doc => doc.verification_status === 'verified').length || 0}
               </div>
               <div className="text-sm text-muted-foreground">Verified Docs</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-semibold text-yellow-600">
+              <div className="text-lg font-semibold text-gold-primary">
                 {documentVerifications?.filter(doc => doc.verification_status === 'pending').length || 0}
               </div>
               <div className="text-sm text-muted-foreground">Pending</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-semibold text-blue-600">
+              <div className="text-lg font-semibold text-primary">
                 {bpjsVerifications && bpjsVerifications.length > 0 && bpjsVerifications[0].is_fully_verified ? 2 : 0}
               </div>
               <div className="text-sm text-muted-foreground">BPJS Verified</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-semibold text-purple-600">
+              <div className="text-lg font-semibold text-accent">
                 {completionPercentage === 100 ? '✓' : '⏳'}
               </div>
               <div className="text-sm text-muted-foreground">Status</div>

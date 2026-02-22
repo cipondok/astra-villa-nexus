@@ -150,17 +150,17 @@ const Properties = () => {
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => navigate('/location')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/location')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20 h-6 px-2 text-[10px]">
                   <ArrowLeft className="h-3 w-3 mr-1" />
                   Peta
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20 h-6 px-2 text-[10px]">
                   <Home className="h-3 w-3 mr-1" />
                   Beranda
                 </Button>
               </div>
               <h1 className="text-sm font-semibold">Properti di {locationFilter}</h1>
-              <Badge className="bg-white/20 text-primary-foreground text-[10px] px-2">
+              <Badge className="bg-primary-foreground/20 text-primary-foreground text-[10px] px-2">
                 {locationFilter}
               </Badge>
             </div>
@@ -192,11 +192,11 @@ const Properties = () => {
         <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 shadow-md">
           <div className="container mx-auto px-4">
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={() => navigate('/location')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]">
+              <Button variant="ghost" size="sm" onClick={() => navigate('/location')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20 h-6 px-2 text-[10px]">
                 <ArrowLeft className="h-3 w-3 mr-1" />
                 Peta
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]">
+              <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20 h-6 px-2 text-[10px]">
                 <Home className="h-3 w-3 mr-1" />
                 Beranda
               </Button>
@@ -234,7 +234,7 @@ const Properties = () => {
           <div className="fixed left-0 right-0 top-[40px] md:top-[44px] lg:top-[48px] z-40 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-1">
             <div className="container mx-auto px-2 sm:px-4">
               <div className="flex items-center justify-between gap-1">
-                <Button variant="ghost" size="sm" onClick={() => navigate('/location')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-5 px-1.5 text-[9px] sm:text-[10px]">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/location')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20 h-5 px-1.5 text-[9px] sm:text-[10px]">
                   <ArrowLeft className="h-2.5 w-2.5" />
                 </Button>
 
@@ -244,7 +244,7 @@ const Properties = () => {
                   </h1>
                 </div>
 
-                <Badge variant="secondary" className="bg-white/20 text-primary-foreground border-0 px-1.5 py-0 h-5 cursor-pointer hover:bg-white/30 text-[8px] sm:text-[10px]" onClick={handleClearLocationFilter}>
+                <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground border-0 px-1.5 py-0 h-5 cursor-pointer hover:bg-primary-foreground/30 text-[8px] sm:text-[10px]" onClick={handleClearLocationFilter}>
                   <X className="h-2.5 w-2.5" />
                 </Badge>
               </div>

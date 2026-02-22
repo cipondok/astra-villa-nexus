@@ -18,8 +18,8 @@ const CategoryRequiredMessage = ({
     <Card className="max-w-2xl mx-auto">
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
-            <Building2 className="w-8 h-8 text-orange-600" />
+          <div className="w-16 h-16 bg-gold-primary/10 rounded-full flex items-center justify-center">
+            <Building2 className="w-8 h-8 text-gold-primary" />
           </div>
         </div>
         <CardTitle className="text-xl">{title}</CardTitle>
@@ -28,9 +28,9 @@ const CategoryRequiredMessage = ({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Alert className="border-orange-200 bg-orange-50">
-          <AlertTriangle className="h-4 w-4 text-orange-600" />
-          <AlertDescription className="text-orange-800">
+        <Alert className="border-gold-primary/20 bg-gold-primary/5">
+          <AlertTriangle className="h-4 w-4 text-gold-primary" />
+          <AlertDescription className="text-foreground">
             Untuk mengakses fitur ini, Anda harus terlebih dahulu memilih kategori bisnis utama di profil bisnis Anda.
           </AlertDescription>
         </Alert>

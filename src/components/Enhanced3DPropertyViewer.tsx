@@ -478,7 +478,7 @@ const Enhanced3DPropertyViewer = ({
   return (
     <div className={cn("relative w-full h-[70vh] bg-gradient-to-br from-muted to-primary/10 dark:from-background dark:to-primary/20", className)}>
       {/* Top-left controls */}
-      <div className="absolute top-4 left-4 z-10 bg-white/95 dark:bg-black/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-white/20">
+      <div className="absolute top-4 left-4 z-10 bg-background/95 dark:bg-card/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-border/20">
         <div className="space-y-2">
           <h3 className="text-xs font-bold text-foreground">Controls</h3>
           
@@ -529,7 +529,7 @@ const Enhanced3DPropertyViewer = ({
       </div>
 
       {/* Top-right view presets */}
-      <div className="absolute top-4 right-4 z-10 bg-white/95 dark:bg-black/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-white/20">
+      <div className="absolute top-4 right-4 z-10 bg-background/95 dark:bg-card/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-border/20">
         <h3 className="text-xs font-bold text-foreground mb-2">Views</h3>
         <div className="grid grid-cols-2 gap-1">
           {Object.keys(cameraPresets).map((view) => (
@@ -547,7 +547,7 @@ const Enhanced3DPropertyViewer = ({
       </div>
 
       {/* Property info panel */}
-      <div className="absolute bottom-4 left-4 z-10 bg-white/95 dark:bg-black/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-white/20">
+      <div className="absolute bottom-4 left-4 z-10 bg-background/95 dark:bg-card/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-border/20">
         <h3 className="text-xs font-bold text-foreground mb-2">ASTRA Villa</h3>
         <div className="space-y-1 text-xs text-muted-foreground">
           <div className="flex justify-between gap-3">
@@ -570,7 +570,7 @@ const Enhanced3DPropertyViewer = ({
       </div>
 
       {/* Instructions */}
-      <div className="absolute bottom-4 right-4 z-10 bg-white/95 dark:bg-black/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-white/20">
+      <div className="absolute bottom-4 right-4 z-10 bg-background/95 dark:bg-card/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-border/20">
         <div className="text-xs text-muted-foreground space-y-1">
           <p><strong>Drag:</strong> Rotate</p>
           <p><strong>Scroll:</strong> Zoom</p>

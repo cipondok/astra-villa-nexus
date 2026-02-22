@@ -33,9 +33,9 @@ export const MEMBERSHIP_LEVELS: Record<MembershipLevel, MembershipConfig> = {
     label: 'Basic Member',
     shortLabel: 'Basic',
     icon: '👤',
-    color: 'text-slate-600 dark:text-slate-400',
-    bgColor: 'bg-slate-100 dark:bg-slate-800',
-    borderColor: 'border-slate-300 dark:border-slate-600',
+    color: 'text-muted-foreground',
+    bgColor: 'bg-muted',
+    borderColor: 'border-border',
     glowColor: '',
     priority: 0,
     benefits: ['Browse properties', 'Save favorites', 'Basic search']
@@ -82,7 +82,7 @@ export const MEMBERSHIP_LEVELS: Record<MembershipLevel, MembershipConfig> = {
     shortLabel: 'Platinum',
     icon: '💎',
     color: 'text-cyan-600 dark:text-cyan-300',
-    bgColor: 'bg-gradient-to-r from-slate-100 to-cyan-50 dark:from-slate-900/50 dark:to-cyan-950/50',
+    bgColor: 'bg-gradient-to-r from-muted to-cyan-50 dark:from-muted/50 dark:to-cyan-950/50',
     borderColor: 'border-cyan-400 dark:border-cyan-500',
     glowColor: 'shadow-cyan-500/50',
     priority: 4,
@@ -123,8 +123,8 @@ export const VERIFICATION_STATUS_CONFIG: Record<VerificationStatus, { label: str
   },
   suspended: {
     label: 'Suspended',
-    color: 'text-gray-600',
-    bgColor: 'bg-gray-100 dark:bg-gray-800',
+    color: 'text-muted-foreground',
+    bgColor: 'bg-muted dark:bg-muted/50',
     icon: '⚠'
   }
 };

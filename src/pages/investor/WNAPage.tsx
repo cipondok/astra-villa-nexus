@@ -182,7 +182,7 @@ const WNAPage = () => {
         
         <div className="relative max-w-7xl mx-auto px-4 py-8 sm:py-12">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-3 bg-white/20 dark:bg-black/30 border border-white/30 rounded-full backdrop-blur-xl">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-3 bg-background/20 dark:bg-background/30 border border-border/30 rounded-full backdrop-blur-xl">
               <span className="text-base">🌍</span>
               <span className="text-xs font-semibold text-foreground uppercase tracking-wide">{t.badge}</span>
             </div>
@@ -225,8 +225,8 @@ const WNAPage = () => {
                   transition={{ delay: idx * 0.03, duration: 0.3 }}
                   className={cn(
                     "relative overflow-hidden rounded-lg p-3 sm:p-4",
-                    "bg-white/70 dark:bg-white/5",
-                    "border-2 border-border/50 dark:border-white/10",
+                    "bg-card/70 dark:bg-muted/10",
+                    "border-2 border-border/50 dark:border-border/20",
                     "hover:border-accent/40 active:scale-95",
                     "transition-all duration-200 group flex flex-col items-center text-center"
                   )}
@@ -255,7 +255,7 @@ const WNAPage = () => {
         <div className="max-w-7xl mx-auto">
           <div className={cn(
             "rounded-xl p-4 sm:p-6",
-            "bg-white/50 dark:bg-white/5",
+            "bg-card/50 dark:bg-muted/10",
             "border-2 border-border/50 dark:border-accent/20",
             "backdrop-blur-sm"
           )}>
@@ -367,7 +367,7 @@ const WNAPage = () => {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {t.vipFeatures.map((feature, idx) => (
-                <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-white/50 dark:bg-white/5 border border-border/30">
+                <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-card/50 dark:bg-muted/10 border border-border/30">
                   <CheckCircle className="h-4 w-4 text-chart-1 flex-shrink-0" />
                   <span className="text-xs sm:text-sm text-foreground">{feature}</span>
                 </div>

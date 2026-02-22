@@ -177,7 +177,7 @@ const PaymentInstructions = ({ paymentData, onPaymentConfirmed }: PaymentInstruc
               </h4>
               
               {/* Virtual Account */}
-              <div className="bg-gray-50 p-4 rounded-lg mb-4">
+              <div className="bg-muted/50 p-4 rounded-lg mb-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium">Nomor Virtual Account</p>
