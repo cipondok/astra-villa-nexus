@@ -88,7 +88,7 @@ export function NotificationSettings({ className, showHistory = true }: Notifica
               <CardTitle className="text-lg">Push Notifications</CardTitle>
             </div>
             {isSubscribed && (
-              <Badge className="bg-green-100 text-green-700">
+              <Badge className="bg-chart-1/10 text-chart-1">
                 <Check className="h-3 w-3 mr-1" />
                 Enabled
               </Badge>
@@ -107,13 +107,13 @@ export function NotificationSettings({ className, showHistory = true }: Notifica
               </p>
             </div>
           ) : permission === 'denied' ? (
-            <div className="flex items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-              <BellOff className="h-5 w-5 text-red-500" />
+            <div className="flex items-center gap-2 p-4 bg-destructive/5 rounded-lg">
+              <BellOff className="h-5 w-5 text-destructive" />
               <div>
-                <p className="text-sm font-medium text-red-700 dark:text-red-400">
+                <p className="text-sm font-medium text-destructive">
                   Notifications Blocked
                 </p>
-                <p className="text-xs text-red-600 dark:text-red-300">
+                <p className="text-xs text-destructive/80">
                   Enable notifications in your browser settings
                 </p>
               </div>

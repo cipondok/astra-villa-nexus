@@ -127,9 +127,9 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
-                className="w-8 h-8 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 flex items-center justify-center flex-shrink-0"
+                className="w-8 h-8 rounded-full bg-gradient-to-br from-chart-1/10 to-chart-1/20 flex items-center justify-center flex-shrink-0"
               >
-                <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <CheckCircle className="h-4 w-4 text-chart-1" />
               </motion.div>
               <div className="min-w-0">
                 <h3 className="text-[10px] sm:text-xs font-bold text-foreground truncate">
@@ -265,9 +265,9 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                 >
-                  <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/30 py-2">
+                  <Alert variant="destructive" className="bg-destructive/5 border-destructive/30 py-2">
                     <AlertTriangle className="h-3 w-3" />
-                    <AlertDescription className="text-[10px] sm:text-xs text-red-700 dark:text-red-300">{error}</AlertDescription>
+                    <AlertDescription className="text-[10px] sm:text-xs text-destructive">{error}</AlertDescription>
                   </Alert>
                 </motion.div>
               )}
@@ -277,9 +277,9 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                 >
-                  <Alert className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800/30 py-2">
-                    <CheckCircle className="h-3 w-3 text-green-600" />
-                    <AlertDescription className="text-[10px] sm:text-xs text-green-700 dark:text-green-300">{success}</AlertDescription>
+                  <Alert className="bg-chart-1/5 border-chart-1/30 py-2">
+                    <CheckCircle className="h-3 w-3 text-chart-1" />
+                    <AlertDescription className="text-[10px] sm:text-xs text-chart-1">{success}</AlertDescription>
                   </Alert>
                 </motion.div>
               )}
