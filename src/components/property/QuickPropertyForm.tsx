@@ -231,14 +231,14 @@ const QuickPropertyForm = ({ onComplete }: QuickPropertyFormProps) => {
                 isCurrent 
                   ? 'border-primary bg-primary/10 shadow-sm' 
                   : isCompleted
-                    ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20'
+                    ? 'border-chart-1/30 bg-chart-1/10'
                     : 'border-border bg-muted/20 opacity-60'
               }`}
             >
               <div className="flex items-center gap-1.5">
                 <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
                   isCompleted 
-                    ? 'bg-emerald-500 text-white' 
+                    ? 'bg-chart-1 text-primary-foreground' 
                     : isCurrent 
                       ? 'bg-primary text-primary-foreground' 
                       : 'bg-muted'
@@ -342,9 +342,9 @@ const QuickPropertyForm = ({ onComplete }: QuickPropertyFormProps) => {
               />
 
               {formData.images.length > 0 && (
-                <Alert className="border-emerald-200 bg-emerald-50/50">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                  <AlertDescription className="text-sm text-emerald-800">
+                <Alert className="border-chart-1/20 bg-chart-1/10">
+                  <CheckCircle2 className="h-4 w-4 text-chart-1" />
+                  <AlertDescription className="text-sm text-foreground">
                     {formData.images.length} photo{formData.images.length > 1 ? 's' : ''} uploaded
                   </AlertDescription>
                 </Alert>

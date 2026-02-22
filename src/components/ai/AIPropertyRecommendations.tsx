@@ -129,9 +129,9 @@ const AIPropertyRecommendations = ({
   };
 
   const getMatchColor = (score: number) => {
-    if (score >= 80) return 'text-green-600 dark:text-green-400';
-    if (score >= 60) return 'text-yellow-600 dark:text-yellow-400';
-    return 'text-orange-600 dark:text-orange-400';
+    if (score >= 80) return 'text-chart-1';
+    if (score >= 60) return 'text-chart-3';
+    return 'text-destructive';
   };
 
   if (!user) {
@@ -253,12 +253,12 @@ const AIPropertyRecommendations = ({
                 {/* Match Badge */}
                 <div className="absolute top-2 left-2">
                   {property.isDiscovery ? (
-                    <Badge className="bg-purple-600 text-white">
+                    <Badge className="bg-accent text-accent-foreground">
                       <TrendingUp className="h-3 w-3 mr-1" />
                       Discovery
                     </Badge>
                   ) : (
-                    <Badge className="bg-green-600 text-white">
+                    <Badge className="bg-chart-1 text-primary-foreground">
                       <Star className="h-3 w-3 mr-1" />
                       {property.matchPercentage}% Match
                     </Badge>
@@ -274,7 +274,7 @@ const AIPropertyRecommendations = ({
                           e.stopPropagation();
                           handleShowExplanation(property);
                         }}
-                        className="absolute top-2 right-2 p-1.5 bg-white/90 dark:bg-black/70 rounded-full hover:bg-white transition-colors"
+                        className="absolute top-2 right-2 p-1.5 bg-background/90 rounded-full hover:bg-background transition-colors"
                       >
                         <Info className="h-4 w-4 text-primary" />
                       </button>
@@ -429,9 +429,9 @@ const AIPropertyRecommendations = ({
 
               {/* Discovery Badge */}
               {selectedProperty.isDiscovery && (
-                <div className="flex items-center gap-2 p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                  <TrendingUp className="h-4 w-4 text-purple-600" />
-                  <span className="text-sm text-purple-700 dark:text-purple-300">
+                <div className="flex items-center gap-2 p-2 bg-accent/10 rounded-lg">
+                  <TrendingUp className="h-4 w-4 text-accent-foreground" />
+                  <span className="text-sm text-accent-foreground">
                     Discovery pick - something different you might like!
                   </span>
                 </div>
