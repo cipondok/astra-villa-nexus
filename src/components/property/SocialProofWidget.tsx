@@ -66,7 +66,7 @@ const SocialProofWidget = ({
         {isHot && (
           <Badge 
             variant="destructive" 
-            className="text-[9px] px-1.5 py-0 h-4 bg-gradient-to-r from-orange-500 to-red-500 animate-pulse"
+            className="text-[9px] px-1.5 py-0 h-4 bg-gradient-to-r from-destructive/80 to-destructive animate-pulse"
           >
             <Flame className="h-2.5 w-2.5 mr-0.5" />
             Hot
@@ -84,7 +84,7 @@ const SocialProofWidget = ({
         {metrics.inquiries > 0 && (
           <Badge 
             variant="secondary" 
-            className="text-[9px] px-1.5 py-0 h-4 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
+            className="text-[9px] px-1.5 py-0 h-4 bg-chart-1/10 text-chart-1"
           >
             <MessageSquare className="h-2.5 w-2.5 mr-0.5" />
             {metrics.inquiries}
@@ -94,7 +94,7 @@ const SocialProofWidget = ({
         {metrics.watching > 1 && (
           <Badge 
             variant="secondary" 
-            className="text-[9px] px-1.5 py-0 h-4 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+            className="text-[9px] px-1.5 py-0 h-4 bg-chart-4/10 text-chart-4"
           >
             <Users className="h-2.5 w-2.5 mr-0.5" />
             {metrics.watching} viewing
@@ -113,7 +113,7 @@ const SocialProofWidget = ({
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           {isHot && (
-            <div className="flex items-center gap-1 text-orange-500">
+            <div className="flex items-center gap-1 text-destructive">
               <Flame className="h-3.5 w-3.5 animate-pulse" />
               <span className="text-[10px] font-semibold">In Demand</span>
             </div>
@@ -125,7 +125,7 @@ const SocialProofWidget = ({
           </div>
           
           {metrics.recentViews > 0 && (
-            <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+            <div className="flex items-center gap-1 text-chart-1">
               <TrendingUp className="h-3 w-3" />
               <span className="text-[10px]">+{metrics.recentViews} today</span>
             </div>
@@ -141,7 +141,7 @@ const SocialProofWidget = ({
           )}
           
           {metrics.watching > 0 && (
-            <div className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+            <div className="flex items-center gap-1 text-chart-4">
               <Users className="h-3 w-3" />
               <span className="text-[10px]">{metrics.watching} viewing now</span>
             </div>

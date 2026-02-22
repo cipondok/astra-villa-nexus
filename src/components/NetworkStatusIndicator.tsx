@@ -38,9 +38,9 @@ export const NetworkStatusIndicator = ({ className, onStatusChange }: NetworkSta
           </AlertDescription>
         </Alert>
       ) : speed === 'slow' && isSlowConnection ? (
-        <Alert className="rounded-none border-x-0 border-t-0 bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
-          <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-          <AlertDescription className="flex items-center justify-between text-amber-900 dark:text-amber-100">
+        <Alert className="rounded-none border-x-0 border-t-0 bg-chart-3/10 border-chart-3/30">
+          <AlertTriangle className="h-4 w-4 text-chart-3" />
+          <AlertDescription className="flex items-center justify-between text-foreground">
             <span className="font-medium">Slow connection detected</span>
             {downloadSpeed && (
               <span className="text-xs opacity-80">{downloadSpeed.toFixed(1)} Mbps</span>
