@@ -640,10 +640,10 @@ const PaymentGatewaySetup = () => {
         <Card>
           <CardContent className="p-6">
             <div className="text-center space-y-4">
-              <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                <h4 className="font-semibold text-green-800 dark:text-green-200">Ready to Go Live!</h4>
-                <p className="text-sm text-green-600 dark:text-green-300">
+              <div className="p-4 bg-chart-1/10 rounded-lg border border-chart-1/30">
+                <CheckCircle className="h-8 w-8 text-chart-1 mx-auto mb-2" />
+                <h4 className="font-semibold text-chart-1">Ready to Go Live!</h4>
+                <p className="text-sm text-chart-1/80">
                   {gateway.name} is configured and tested successfully
                 </p>
               </div>
@@ -662,7 +662,7 @@ const PaymentGatewaySetup = () => {
                 <Button 
                   onClick={() => enableGateway(gateway.id)}
                   disabled={loading}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-chart-1 hover:bg-chart-1/90 text-primary-foreground"
                 >
                   {loading ? (
                     <>
