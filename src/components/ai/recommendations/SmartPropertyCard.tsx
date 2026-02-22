@@ -116,7 +116,7 @@ const SmartPropertyCard = ({ recommendation, onSave }: SmartPropertyCardProps) =
               handleFeedback('liked');
             }}
           >
-            <ThumbsUp className="h-4 w-4 text-green-600" />
+            <ThumbsUp className="h-4 w-4 text-chart-1" />
           </Button>
           <Button
             size="icon"
@@ -127,7 +127,7 @@ const SmartPropertyCard = ({ recommendation, onSave }: SmartPropertyCardProps) =
               handleFeedback('disliked');
             }}
           >
-            <ThumbsDown className="h-4 w-4 text-red-600" />
+            <ThumbsDown className="h-4 w-4 text-destructive" />
           </Button>
           <Button
             size="icon"
@@ -138,7 +138,7 @@ const SmartPropertyCard = ({ recommendation, onSave }: SmartPropertyCardProps) =
               onSave?.();
             }}
           >
-            <Heart className="h-4 w-4 text-pink-600" />
+            <Heart className="h-4 w-4 text-accent-foreground" />
           </Button>
         </div>
       </div>
@@ -260,7 +260,7 @@ const MatchDetailsPanel = ({
       {discoveryReasons && discoveryReasons.length > 0 && (
         <div>
           <h4 className="font-medium mb-3 flex items-center gap-2">
-            <Lightbulb className="h-4 w-4 text-purple-500" />
+            <Lightbulb className="h-4 w-4 text-accent-foreground" />
             Why Discover This?
           </h4>
           <div className="space-y-2">

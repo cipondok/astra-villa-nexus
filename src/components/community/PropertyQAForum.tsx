@@ -315,7 +315,7 @@ const PropertyQAForum: React.FC<PropertyQAForumProps> = ({ propertyId, className
                           {question.category}
                         </Badge>
                         {question.is_resolved && (
-                          <Badge className="bg-green-100 text-green-700 text-xs">
+                          <Badge className="bg-chart-1/20 text-chart-1 text-xs">
                             <CheckCircle2 className="h-3 w-3 mr-1" />
                             Resolved
                           </Badge>
@@ -372,10 +372,10 @@ const PropertyQAForum: React.FC<PropertyQAForumProps> = ({ propertyId, className
                                      answer.is_resident_response ? 'Current Resident' : 'User'}
                                   </span>
                                   {answer.is_owner_response && (
-                                    <Badge className="bg-blue-100 text-blue-700 text-xs">Owner</Badge>
+                                    <Badge className="bg-chart-4/20 text-chart-4 text-xs">Owner</Badge>
                                   )}
                                   {answer.is_resident_response && (
-                                    <Badge className="bg-green-100 text-green-700 text-xs">Resident</Badge>
+                                    <Badge className="bg-chart-1/20 text-chart-1 text-xs">Resident</Badge>
                                   )}
                                   {answer.is_accepted && (
                                     <Badge className="bg-primary text-primary-foreground text-xs">

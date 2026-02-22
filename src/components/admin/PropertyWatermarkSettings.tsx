@@ -305,7 +305,7 @@ const PropertyWatermarkSettings = () => {
                 Live Preview
               </Label>
               <div 
-                className="relative bg-gradient-to-br from-gray-50 to-gray-100 h-40 rounded-xl border overflow-hidden shadow-inner"
+                className="relative bg-gradient-to-br from-muted/50 to-muted h-40 rounded-xl border overflow-hidden shadow-inner"
                 style={{ borderColor: `${themeSettings.primaryColor}20` }}
               >
                 <div className="absolute inset-0 flex items-center justify-center">

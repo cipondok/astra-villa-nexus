@@ -44,7 +44,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ data, className }) => {
           className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-3"
         >
           <div className="flex items-center gap-2 mb-1">
-            <DollarSign className="h-4 w-4 text-green-500" />
+            <DollarSign className="h-4 w-4 text-chart-1" />
             <span className="text-[10px] text-muted-foreground">Total Revenue</span>
           </div>
           <p className="text-lg font-bold text-foreground">{formatCurrency(data.totalRevenue)}</p>
@@ -60,7 +60,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ data, className }) => {
             <PiggyBank className="h-4 w-4 text-primary" />
             <span className="text-[10px] text-muted-foreground">Net Profit</span>
           </div>
-          <p className="text-lg font-bold text-green-500">{formatCurrency(data.netProfit)}</p>
+          <p className="text-lg font-bold text-chart-1">{formatCurrency(data.netProfit)}</p>
         </motion.div>
 
         <motion.div
@@ -75,7 +75,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ data, className }) => {
           </div>
           <div className="flex items-center gap-2">
             <p className="text-xl font-bold text-primary">{data.roi.toFixed(1)}%</p>
-            <ArrowUpRight className="h-4 w-4 text-green-500" />
+            <ArrowUpRight className="h-4 w-4 text-chart-1" />
           </div>
         </motion.div>
       </div>
@@ -166,14 +166,14 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ data, className }) => {
             <div>
               <div className="flex justify-between items-center mb-1">
                 <span className="text-xs text-muted-foreground">Profit Margin</span>
-                <span className="text-sm font-bold text-green-500">{profitMargin}%</span>
+                <span className="text-sm font-bold text-chart-1">{profitMargin}%</span>
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${profitMargin}%` }}
                   transition={{ duration: 1 }}
-                  className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full"
+                  className="h-full bg-gradient-to-r from-chart-1 to-chart-1/70 rounded-full"
                 />
               </div>
             </div>

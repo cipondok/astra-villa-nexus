@@ -79,13 +79,13 @@ const RoleUpgradeModal = ({ isOpen, onClose }: RoleUpgradeModalProps) => {
           {!canUpgrade && restrictionReason && (
             <div className={`p-3 sm:p-4 rounded-lg flex items-start gap-3 ${
               hasPendingApplication 
-                ? 'bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-800' 
-                : 'bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-800'
+                ? 'bg-chart-3/10 border border-chart-3/30' 
+                : 'bg-chart-4/10 border border-chart-4/30'
             }`}>
               {hasPendingApplication ? (
-                <Clock className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+                <Clock className="h-5 w-5 text-chart-3 flex-shrink-0 mt-0.5" />
               ) : (
-                <Lock className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                <Lock className="h-5 w-5 text-chart-4 flex-shrink-0 mt-0.5" />
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-foreground">
@@ -98,7 +98,7 @@ const RoleUpgradeModal = ({ isOpen, onClose }: RoleUpgradeModalProps) => {
                   <div className="mt-3 flex items-center gap-2">
                     <div className="h-2 flex-1 bg-background/50 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-blue-500 rounded-full transition-all"
+                        className="h-full bg-primary rounded-full transition-all"
                         style={{ width: `${((30 - daysUntilCanUpgrade) / 30) * 100}%` }}
                       />
                     </div>
@@ -133,7 +133,7 @@ const RoleUpgradeModal = ({ isOpen, onClose }: RoleUpgradeModalProps) => {
                 >
                   <CardHeader className="p-3 sm:p-4 pb-2">
                     <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                      <Key className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
+                      <Key className="h-4 w-4 sm:h-5 sm:w-5 text-chart-1" />
                       Property Owner
                     </CardTitle>
                     <CardDescription className="text-xs sm:text-sm">
@@ -158,7 +158,7 @@ const RoleUpgradeModal = ({ isOpen, onClose }: RoleUpgradeModalProps) => {
                 >
                   <CardHeader className="p-3 sm:p-4 pb-2">
                     <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                      <Home className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+                      <Home className="h-4 w-4 sm:h-5 sm:w-5 text-chart-4" />
                       Real Estate Agent
                     </CardTitle>
                     <CardDescription className="text-xs sm:text-sm">
@@ -183,7 +183,7 @@ const RoleUpgradeModal = ({ isOpen, onClose }: RoleUpgradeModalProps) => {
                 >
                   <CardHeader className="p-3 sm:p-4 pb-2">
                     <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                      <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
+                      <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-chart-3" />
                       Service Vendor
                     </CardTitle>
                     <CardDescription className="text-xs sm:text-sm">

@@ -30,35 +30,35 @@ const NotificationPreferencesPanel: React.FC = () => {
       icon: TrendingDown,
       title: 'Price Changes',
       description: 'Be the first to know when prices change on properties you follow',
-      iconColor: 'text-green-500',
+      iconColor: 'text-chart-1',
     },
     {
       key: 'messages' as const,
       icon: MessageSquare,
       title: 'Messages',
       description: 'Get notified when you receive new messages from agents or buyers',
-      iconColor: 'text-blue-500',
+      iconColor: 'text-chart-4',
     },
     {
       key: 'booking_updates' as const,
       icon: Calendar,
       title: 'Booking Updates',
       description: 'Receive updates for scheduled property viewings and appointments',
-      iconColor: 'text-orange-500',
+      iconColor: 'text-chart-3',
     },
     {
       key: 'system_alerts' as const,
       icon: Bell,
       title: 'System Alerts',
       description: 'Important system notifications and security alerts',
-      iconColor: 'text-red-500',
+      iconColor: 'text-destructive',
     },
     {
       key: 'promotions' as const,
       icon: Megaphone,
       title: 'Promotions',
       description: 'Special offers, new features, and platform updates',
-      iconColor: 'text-pink-500',
+      iconColor: 'text-accent-foreground',
     },
   ];
 
@@ -68,14 +68,14 @@ const NotificationPreferencesPanel: React.FC = () => {
       icon: Mail,
       title: 'Email Notifications',
       description: 'Receive notifications via email',
-      iconColor: 'text-blue-500',
+      iconColor: 'text-chart-4',
     },
     {
       key: 'sms_enabled' as const,
       icon: Smartphone,
       title: 'SMS Notifications',
       description: 'Receive notifications via SMS',
-      iconColor: 'text-green-500',
+      iconColor: 'text-chart-1',
     },
   ];
 
@@ -155,7 +155,7 @@ const NotificationPreferencesPanel: React.FC = () => {
           
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3">
-              <div className="mt-0.5 text-purple-500">
+              <div className="mt-0.5 text-accent-foreground">
                 <Clock className="h-5 w-5" />
               </div>
               <div className="space-y-0.5">
