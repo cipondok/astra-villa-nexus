@@ -391,7 +391,7 @@ const RealisticModernVilla = ({ isNightMode, showDimensions }: { isNightMode: bo
             </mesh>
             <Html position={[0, -0.5, 0]}>
               <div className="bg-white/95 dark:bg-black/95 px-3 py-2 rounded-lg border shadow-lg text-center">
-                <div className="font-bold text-red-600">14.0m</div>
+                <div className="font-bold text-destructive">14.0m</div>
                 <div className="text-xs text-muted-foreground">Length</div>
               </div>
             </Html>
@@ -405,7 +405,7 @@ const RealisticModernVilla = ({ isNightMode, showDimensions }: { isNightMode: bo
             </mesh>
             <Html position={[0, -0.5, 0]} rotation={[0, -Math.PI/2, 0]}>
               <div className="bg-white/95 dark:bg-black/95 px-3 py-2 rounded-lg border shadow-lg text-center">
-                <div className="font-bold text-green-600">10.0m</div>
+                <div className="font-bold text-chart-1">10.0m</div>
                 <div className="text-xs text-muted-foreground">Width</div>
               </div>
             </Html>
@@ -419,7 +419,7 @@ const RealisticModernVilla = ({ isNightMode, showDimensions }: { isNightMode: bo
             </mesh>
             <Html position={[0, -0.5, 0]} rotation={[0, 0, -Math.PI/2]}>
               <div className="bg-white/95 dark:bg-black/95 px-3 py-2 rounded-lg border shadow-lg text-center">
-                <div className="font-bold text-blue-600">8.0m</div>
+                <div className="font-bold text-chart-4">8.0m</div>
                 <div className="text-xs text-muted-foreground">Height</div>
               </div>
             </Html>
@@ -476,11 +476,11 @@ const Enhanced3DPropertyViewer = ({
   };
 
   return (
-    <div className={cn("relative w-full h-[70vh] bg-gradient-to-br from-slate-50 to-blue-100 dark:from-gray-900 dark:to-blue-900", className)}>
+    <div className={cn("relative w-full h-[70vh] bg-gradient-to-br from-muted to-primary/10 dark:from-background dark:to-primary/20", className)}>
       {/* Top-left controls */}
       <div className="absolute top-4 left-4 z-10 bg-white/95 dark:bg-black/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-white/20">
         <div className="space-y-2">
-          <h3 className="text-xs font-bold text-gray-800 dark:text-gray-200">Controls</h3>
+          <h3 className="text-xs font-bold text-foreground">Controls</h3>
           
           {/* Day/Night toggle */}
           <Button
@@ -530,7 +530,7 @@ const Enhanced3DPropertyViewer = ({
 
       {/* Top-right view presets */}
       <div className="absolute top-4 right-4 z-10 bg-white/95 dark:bg-black/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-white/20">
-        <h3 className="text-xs font-bold text-gray-800 dark:text-gray-200 mb-2">Views</h3>
+        <h3 className="text-xs font-bold text-foreground mb-2">Views</h3>
         <div className="grid grid-cols-2 gap-1">
           {Object.keys(cameraPresets).map((view) => (
             <Button
@@ -548,8 +548,8 @@ const Enhanced3DPropertyViewer = ({
 
       {/* Property info panel */}
       <div className="absolute bottom-4 left-4 z-10 bg-white/95 dark:bg-black/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-white/20">
-        <h3 className="text-xs font-bold text-gray-800 dark:text-gray-200 mb-2">ASTRA Villa</h3>
-        <div className="space-y-1 text-xs text-gray-600 dark:text-gray-300">
+        <h3 className="text-xs font-bold text-foreground mb-2">ASTRA Villa</h3>
+        <div className="space-y-1 text-xs text-muted-foreground">
           <div className="flex justify-between gap-3">
             <span>Size:</span>
             <span className="font-mono">{propertyData.length}×{propertyData.width}m</span>
@@ -571,7 +571,7 @@ const Enhanced3DPropertyViewer = ({
 
       {/* Instructions */}
       <div className="absolute bottom-4 right-4 z-10 bg-white/95 dark:bg-black/95 backdrop-blur-md rounded-xl p-3 shadow-xl border border-white/20">
-        <div className="text-xs text-gray-600 dark:text-gray-300 space-y-1">
+        <div className="text-xs text-muted-foreground space-y-1">
           <p><strong>Drag:</strong> Rotate</p>
           <p><strong>Scroll:</strong> Zoom</p>
           <p><strong>Right:</strong> Pan</p>

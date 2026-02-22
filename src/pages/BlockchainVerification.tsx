@@ -89,25 +89,25 @@ const BlockchainVerification = () => {
       icon: Shield,
       title: t.escrow,
       description: t.escrowDesc,
-      color: 'from-blue-500 to-blue-600',
+      color: 'from-chart-4 to-chart-4/80',
     },
     {
       icon: FileText,
       title: t.deeds,
       description: t.deedsDesc,
-      color: 'from-purple-500 to-purple-600',
+      color: 'from-accent to-accent/80',
     },
     {
       icon: Coins,
       title: t.tokenization,
       description: t.tokenizationDesc,
-      color: 'from-green-500 to-green-600',
+      color: 'from-chart-1 to-chart-1/80',
     },
     {
       icon: LinkIcon,
       title: t.commission,
       description: t.commissionDesc,
-      color: 'from-orange-500 to-orange-600',
+      color: 'from-chart-3 to-chart-3/80',
     },
   ];
 
@@ -122,7 +122,7 @@ const BlockchainVerification = () => {
 
         {/* Hero Section */}
         <section className="relative pt-20 pb-12 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-background to-blue-500/10" />
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-background to-primary/10" />
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM4QjVDRjYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyem0wLTRWMjhoLTEydjJoMTJ6bTAtOFYyMGgtMTJ2Mmgxel0iLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50" />
           
           <div className="container mx-auto px-4 relative z-10">
@@ -143,15 +143,15 @@ const BlockchainVerification = () => {
               className="max-w-3xl"
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-accent to-primary">
                   <Shield className="h-8 w-8 text-white" />
                 </div>
-                <Badge variant="outline" className="bg-purple-500/10 border-purple-500/30 text-purple-700">
+                <Badge variant="outline" className="bg-accent/10 border-accent/30 text-accent-foreground">
                   {t.network}
                 </Badge>
               </div>
               
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-accent via-primary to-accent bg-clip-text text-transparent">
                 {t.title}
               </h1>
               <p className="text-lg text-muted-foreground mb-6">
@@ -199,12 +199,12 @@ const BlockchainVerification = () => {
         </section>
 
         {/* Benefits Banner */}
-        <section className="py-8 bg-gradient-to-r from-purple-500/10 via-blue-500/5 to-purple-500/10 border-y border-border/50">
+        <section className="py-8 bg-gradient-to-r from-accent/10 via-primary/5 to-accent/10 border-y border-border/50">
           <div className="container mx-auto px-4">
             <div className="flex flex-wrap justify-center gap-4 md:gap-8">
               {t.benefits.map((benefit, index) => (
                 <div key={index} className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <CheckCircle2 className="h-4 w-4 text-chart-1" />
                   <span>{benefit}</span>
                 </div>
               ))}

@@ -38,7 +38,7 @@ const VoiceRecordButton: React.FC<VoiceRecordButtonProps> = ({
               <motion.div
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ repeat: Infinity, duration: 1 }}
-                className="w-2 h-2 bg-red-500 rounded-full"
+                className="w-2 h-2 bg-destructive rounded-full"
               />
               <span className="text-xs text-muted-foreground font-mono">
                 {formatDuration(recordingDuration)}
@@ -54,7 +54,7 @@ const VoiceRecordButton: React.FC<VoiceRecordButtonProps> = ({
         size="icon"
         className={`h-9 w-9 transition-all ${
           isRecording 
-            ? 'bg-red-500 hover:bg-red-600 text-white' 
+            ? 'bg-destructive hover:bg-destructive/90 text-destructive-foreground' 
             : 'hover:bg-primary/10'
         }`}
         onClick={isRecording ? onStopRecording : onStartRecording}

@@ -158,7 +158,7 @@ const ConstructionCostCalculator = () => {
         <div className="text-center mb-3 md:mb-4">
           <div className="flex items-center justify-center gap-2 mb-1">
             <Calculator className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-            <Hammer className="h-3 w-3 md:h-4 md:w-4 text-amber-500" />
+            <Hammer className="h-3 w-3 md:h-4 md:w-4 text-chart-3" />
           </div>
           <h1 className="text-sm md:text-lg font-bold text-foreground">Construction Cost Calculator</h1>
           <p className="text-[10px] md:text-xs text-muted-foreground">Estimate your building construction costs in Indonesia</p>

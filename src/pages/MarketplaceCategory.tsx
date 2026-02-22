@@ -192,7 +192,7 @@ const MarketplaceCategory = () => {
                       </div>
                       <div className="flex items-center gap-2 mt-1">
                         <div className="flex items-center">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <Star className="w-4 h-4 fill-chart-3 text-chart-3" />
                           <span className="ml-1 text-sm font-medium">{vendor.rating}</span>
                         </div>
                         <span className="text-xs text-muted-foreground">
