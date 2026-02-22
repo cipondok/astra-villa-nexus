@@ -286,7 +286,7 @@ const VideoVerificationSession: React.FC<VideoVerificationSessionProps> = ({
                 />
                 <Badge className="absolute bottom-2 left-2" variant="secondary">Agent</Badge>
                 {isRecording && (
-                  <Badge className="absolute top-2 right-2 bg-red-500 animate-pulse">
+                  <Badge className="absolute top-2 right-2 bg-destructive animate-pulse">
                     Recording
                   </Badge>
                 )}
@@ -370,7 +370,7 @@ const VideoVerificationSession: React.FC<VideoVerificationSessionProps> = ({
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <CheckCircle className="h-16 w-16 mx-auto text-green-500 mb-4" />
+              <CheckCircle className="h-16 w-16 mx-auto text-chart-1 mb-4" />
               <h3 className="text-xl font-semibold">Review & Submit</h3>
               <p className="text-muted-foreground mt-2">
                 Please review your uploaded documents before submitting.
@@ -386,7 +386,7 @@ const VideoVerificationSession: React.FC<VideoVerificationSessionProps> = ({
                   {uploadedDocs.map((doc) => (
                     <div key={doc.id} className="flex items-center justify-between p-2 bg-muted rounded">
                       <div className="flex items-center gap-2">
-                        <FileCheck className="h-4 w-4 text-green-500" />
+                        <FileCheck className="h-4 w-4 text-chart-1" />
                         <span className="text-sm">{doc.document_name || doc.document_type}</span>
                       </div>
                       <Badge variant="outline">{doc.verification_status}</Badge>
@@ -413,7 +413,7 @@ const VideoVerificationSession: React.FC<VideoVerificationSessionProps> = ({
       case 'complete':
         return (
           <div className="text-center space-y-6">
-            <CheckCircle className="h-20 w-20 mx-auto text-green-500" />
+            <CheckCircle className="h-20 w-20 mx-auto text-chart-1" />
             <div>
               <h3 className="text-2xl font-semibold">Verification Submitted!</h3>
               <p className="text-muted-foreground mt-2">

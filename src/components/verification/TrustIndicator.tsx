@@ -103,7 +103,7 @@ export const CompactTrustBadge: React.FC<CompactTrustBadgeProps> = ({
   if (!verified) {
     return (
       <div className={cn(
-        'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-500',
+        'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground',
         className
       )}>
         <AlertCircle className="h-3 w-3" />

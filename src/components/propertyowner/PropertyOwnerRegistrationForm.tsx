@@ -84,10 +84,10 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
   const renderFieldIndicator = (field: keyof typeof fieldValidation) => {
     const status = getFieldStatus(field);
     if (status === 'valid') {
-      return <Check className="h-3 w-3 text-green-500" />;
+      return <Check className="h-3 w-3 text-chart-1" />;
     }
     if (status === 'invalid') {
-      return <AlertCircle className="h-3 w-3 text-red-500" />;
+      return <AlertCircle className="h-3 w-3 text-destructive" />;
     }
     return null;
   };
@@ -518,7 +518,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
             {/* Owner Type Selection */}
             <div className="space-y-2">
               <Label className="text-xs sm:text-sm font-medium flex items-center gap-1">
-                Registration Type <span className="text-red-500">*</span>
+                Registration Type <span className="text-destructive">*</span>
                 {renderFieldIndicator('owner_type')}
               </Label>
               <div className="grid grid-cols-2 gap-2">
@@ -529,8 +529,8 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                     handleFieldChange('owner_type', 'individual');
                   }}
                   className={`h-12 sm:h-14 flex flex-col gap-1 ${
-                    getFieldStatus('owner_type') === 'invalid' ? 'border-red-500' : 
-                    formData.owner_type === 'individual' ? 'border-green-500' : ''
+                    getFieldStatus('owner_type') === 'invalid' ? 'border-destructive' : 
+                    formData.owner_type === 'individual' ? 'border-chart-1' : ''
                   }`}
                 >
                   <User className="h-4 w-4" />
@@ -543,8 +543,8 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                     handleFieldChange('owner_type', 'business');
                   }}
                   className={`h-12 sm:h-14 flex flex-col gap-1 ${
-                    getFieldStatus('owner_type') === 'invalid' ? 'border-red-500' : 
-                    formData.owner_type === 'business' ? 'border-green-500' : ''
+                    getFieldStatus('owner_type') === 'invalid' ? 'border-destructive' : 
+                    formData.owner_type === 'business' ? 'border-chart-1' : ''
                   }`}
                 >
                   <Briefcase className="h-4 w-4" />
@@ -552,7 +552,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                 </Button>
               </div>
               {getFieldStatus('owner_type') === 'invalid' && (
-                <p className="text-xs text-red-500 flex items-center gap-1">
+                <p className="text-xs text-destructive flex items-center gap-1">
                   <AlertCircle className="h-3 w-3" /> Please select a registration type
                 </p>
               )}
@@ -562,7 +562,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label htmlFor="full_name" className="text-xs flex items-center gap-1">
-                  Full Name <span className="text-red-500">*</span>
+                  Full Name <span className="text-destructive">*</span>
                   {renderFieldIndicator('full_name')}
                 </Label>
                 <Input
@@ -572,12 +572,12 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                   onBlur={() => setTouchedFields(prev => ({ ...prev, full_name: true }))}
                   placeholder="Your full name"
                   className={`h-8 sm:h-9 text-xs sm:text-sm ${
-                    getFieldStatus('full_name') === 'invalid' ? 'border-red-500' : 
-                    getFieldStatus('full_name') === 'valid' ? 'border-green-500' : ''
+                    getFieldStatus('full_name') === 'invalid' ? 'border-destructive' : 
+                    getFieldStatus('full_name') === 'valid' ? 'border-chart-1' : ''
                   }`}
                 />
                 {getFieldStatus('full_name') === 'invalid' && (
-                  <p className="text-xs text-red-500 flex items-center gap-1">
+                  <p className="text-xs text-destructive flex items-center gap-1">
                     <AlertCircle className="h-3 w-3" /> Full Name is required (min 2 characters)
                   </p>
                 )}
@@ -586,20 +586,20 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
               <div className="space-y-1">
                 <Label htmlFor="email" className="text-xs flex items-center gap-1">
                   Email *
-                  <Check className="h-3 w-3 text-green-500" />
+                  <Check className="h-3 w-3 text-chart-1" />
                 </Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   disabled
-                  className="h-8 sm:h-9 text-xs sm:text-sm bg-muted border-green-500"
+                  className="h-8 sm:h-9 text-xs sm:text-sm bg-muted border-chart-1"
                 />
               </div>
 
               <div className="space-y-1">
                 <Label htmlFor="phone" className="text-xs flex items-center gap-1">
-                  Phone Number <span className="text-red-500">*</span>
+                  Phone Number <span className="text-destructive">*</span>
                   {renderFieldIndicator('phone')}
                 </Label>
                 <Input
@@ -609,12 +609,12 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                   onBlur={() => setTouchedFields(prev => ({ ...prev, phone: true }))}
                   placeholder="+62..."
                   className={`h-8 sm:h-9 text-xs sm:text-sm ${
-                    getFieldStatus('phone') === 'invalid' ? 'border-red-500' : 
-                    getFieldStatus('phone') === 'valid' ? 'border-green-500' : ''
+                    getFieldStatus('phone') === 'invalid' ? 'border-destructive' : 
+                    getFieldStatus('phone') === 'valid' ? 'border-chart-1' : ''
                   }`}
                 />
                 {getFieldStatus('phone') === 'invalid' && (
-                  <p className="text-xs text-red-500 flex items-center gap-1">
+                  <p className="text-xs text-destructive flex items-center gap-1">
                     <AlertCircle className="h-3 w-3" /> Phone Number is required (min 8 digits)
                   </p>
                 )}
@@ -625,7 +625,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                     onCheckedChange={(checked) => setFormData({ ...formData, whatsapp_available: checked as boolean })}
                   />
                   <Label htmlFor="whatsapp" className="text-[10px] sm:text-xs flex items-center gap-1 cursor-pointer">
-                    <MessageCircle className="h-3 w-3 text-green-600" />
+                    <MessageCircle className="h-3 w-3 text-chart-1" />
                     WhatsApp available
                   </Label>
                 </div>
@@ -656,7 +656,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
             {/* Property Types */}
             <div className="space-y-1.5">
               <Label className="text-xs flex items-center gap-1">
-                Property Types <span className="text-red-500">*</span>
+                Property Types <span className="text-destructive">*</span>
                 {renderFieldIndicator('property_types')}
               </Label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
@@ -671,7 +671,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                       setTouchedFields(prev => ({ ...prev, property_types: true }));
                     }}
                     className={`h-7 sm:h-8 text-[10px] sm:text-xs justify-start px-2 ${
-                      formData.property_types.includes(type.value) ? 'border-green-500' : ''
+                      formData.property_types.includes(type.value) ? 'border-chart-1' : ''
                     }`}
                   >
                     <Building className="h-3 w-3 mr-1" />
@@ -680,7 +680,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                 ))}
               </div>
               {getFieldStatus('property_types') === 'invalid' && (
-                <p className="text-xs text-red-500 flex items-center gap-1">
+                <p className="text-xs text-destructive flex items-center gap-1">
                   <AlertCircle className="h-3 w-3" /> Select at least one property type
                 </p>
               )}
@@ -692,7 +692,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                 <MapPin className="h-3 w-3 text-primary" />
                 Property Location *
                 {(getFieldStatus('province') === 'valid' && getFieldStatus('city') === 'valid') && (
-                  <Check className="h-3 w-3 text-green-500" />
+                  <Check className="h-3 w-3 text-chart-1" />
                 )}
               </Label>
               
@@ -710,8 +710,8 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                     }}
                   >
                     <SelectTrigger className={`h-8 text-xs ${
-                      getFieldStatus('province') === 'invalid' ? 'border-red-500' : 
-                      getFieldStatus('province') === 'valid' ? 'border-green-500' : ''
+                      getFieldStatus('province') === 'invalid' ? 'border-destructive' : 
+                      getFieldStatus('province') === 'valid' ? 'border-chart-1' : ''
                     }`}>
                       <SelectValue placeholder={locationsLoading ? "Loading..." : "Select Province"} />
                     </SelectTrigger>
@@ -724,7 +724,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                     </SelectContent>
                   </Select>
                   {getFieldStatus('province') === 'invalid' && (
-                    <p className="text-[10px] text-red-500 flex items-center gap-1">
+                     <p className="text-[10px] text-destructive flex items-center gap-1">
                       <AlertCircle className="h-2.5 w-2.5" /> Required
                     </p>
                   )}
@@ -744,8 +744,8 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                     disabled={!formData.province}
                   >
                     <SelectTrigger className={`h-8 text-xs ${
-                      getFieldStatus('city') === 'invalid' ? 'border-red-500' : 
-                      getFieldStatus('city') === 'valid' ? 'border-green-500' : ''
+                      getFieldStatus('city') === 'invalid' ? 'border-destructive' : 
+                      getFieldStatus('city') === 'valid' ? 'border-chart-1' : ''
                     }`}>
                       <SelectValue placeholder="Select City" />
                     </SelectTrigger>
@@ -758,7 +758,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                     </SelectContent>
                   </Select>
                   {getFieldStatus('city') === 'invalid' && (
-                    <p className="text-[10px] text-red-500 flex items-center gap-1">
+                    <p className="text-[10px] text-destructive flex items-center gap-1">
                       <AlertCircle className="h-2.5 w-2.5" /> Required
                     </p>
                   )}
@@ -825,7 +825,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                   />
                 </div>
                 {formData.gps_lat && formData.gps_lng && (
-                  <p className="text-[9px] text-green-600 flex items-center gap-1">
+                  <p className="text-[9px] text-chart-1 flex items-center gap-1">
                     <CheckCircle className="h-2.5 w-2.5" />
                     GPS location captured
                   </p>
@@ -969,7 +969,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                       />
                     </div>
                     {formData.business_gps_lat && formData.business_gps_lng && (
-                      <p className="text-[9px] text-green-600 flex items-center gap-1">
+                      <p className="text-[9px] text-chart-1 flex items-center gap-1">
                         <CheckCircle className="h-2.5 w-2.5" />
                         GPS location captured
                       </p>
