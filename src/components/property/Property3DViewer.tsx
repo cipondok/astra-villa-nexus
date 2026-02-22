@@ -86,9 +86,9 @@ const Property3DViewer = ({
   };
 
   const getPlatformBadge = (platform: Platform) => ({
-    matterport: { label: 'Matterport', color: 'bg-red-500/10 text-red-500 border-red-500/30' },
-    sketchfab: { label: 'Sketchfab', color: 'bg-blue-500/10 text-blue-500 border-blue-500/30' },
-    kuula: { label: 'Kuula 360°', color: 'bg-purple-500/10 text-purple-500 border-purple-500/30' },
+    matterport: { label: 'Matterport', color: 'bg-destructive/10 text-destructive border-destructive/30' },
+    sketchfab: { label: 'Sketchfab', color: 'bg-chart-4/10 text-chart-4 border-chart-4/30' },
+    kuula: { label: 'Kuula 360°', color: 'bg-accent/10 text-accent-foreground border-accent/30' },
     generic: { label: 'Generic', color: 'bg-muted text-muted-foreground border-border' },
     unknown: { label: 'Unknown', color: 'bg-muted text-muted-foreground border-border' }
   }[platform]);
@@ -166,14 +166,14 @@ const Property3DViewer = ({
                   onChange={(e) => handleModelChange(e.target.value)}
                   placeholder="https://sketchfab.com/models/... or https://my.matterport.com/..."
                   className={`pr-10 ${
-                    modelValidation?.isValid ? 'border-emerald-500/50' : 
+                    modelValidation?.isValid ? 'border-chart-1/50' : 
                     modelValidation?.isValid === false ? 'border-destructive/50' : ''
                   }`}
                 />
                 {modelValidation && (
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
                     {modelValidation.isValid ? (
-                      <CheckCircle className="h-4 w-4 text-emerald-500" />
+                      <CheckCircle className="h-4 w-4 text-chart-1" />
                     ) : (
                       <AlertCircle className="h-4 w-4 text-destructive" />
                     )}
@@ -181,8 +181,8 @@ const Property3DViewer = ({
                 )}
               </div>
               {modelValidation && modelValidation.message && (
-                <Alert className={`py-2 ${modelValidation.isValid ? 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20' : 'border-destructive/30 bg-destructive/5'}`}>
-                  <AlertDescription className={`text-sm ${modelValidation.isValid ? 'text-emerald-600' : 'text-destructive'}`}>
+                <Alert className={`py-2 ${modelValidation.isValid ? 'border-chart-1/30 bg-chart-1/5' : 'border-destructive/30 bg-destructive/5'}`}>
+                  <AlertDescription className={`text-sm ${modelValidation.isValid ? 'text-chart-1' : 'text-destructive'}`}>
                     {modelValidation.message}
                   </AlertDescription>
                 </Alert>
@@ -194,13 +194,13 @@ const Property3DViewer = ({
 
             {renderUrlPreview(threeDModelUrl, modelValidation, 'model')}
 
-            <Card className="bg-blue-500/5 border-blue-500/20">
+            <Card className="bg-chart-4/5 border-chart-4/20">
               <CardContent className="p-4">
-                <h4 className="font-medium text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-2">
+                <h4 className="font-medium text-chart-4 mb-2 flex items-center gap-2">
                   <Box className="h-4 w-4" />
                   How to add 3D models
                 </h4>
-                <ul className="text-sm text-blue-600/80 dark:text-blue-400/80 space-y-1.5">
+                <ul className="text-sm text-chart-4/80 space-y-1.5">
                   <li className="flex items-center gap-2">• Upload to Sketchfab and get embed URL</li>
                   <li className="flex items-center gap-2">• Use Matterport 3D virtual tours</li>
                   <li className="flex items-center gap-2">• Upload GLB/GLTF files to cloud storage</li>
@@ -223,14 +223,14 @@ const Property3DViewer = ({
                   onChange={(e) => handleTourChange(e.target.value)}
                   placeholder="https://my.matterport.com/show/... or https://kuula.co/share/..."
                   className={`pr-10 ${
-                    tourValidation?.isValid ? 'border-emerald-500/50' : 
+                    tourValidation?.isValid ? 'border-chart-1/50' : 
                     tourValidation?.isValid === false ? 'border-destructive/50' : ''
                   }`}
                 />
                 {tourValidation && (
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
                     {tourValidation.isValid ? (
-                      <CheckCircle className="h-4 w-4 text-emerald-500" />
+                      <CheckCircle className="h-4 w-4 text-chart-1" />
                     ) : (
                       <AlertCircle className="h-4 w-4 text-destructive" />
                     )}
@@ -238,8 +238,8 @@ const Property3DViewer = ({
                 )}
               </div>
               {tourValidation && tourValidation.message && (
-                <Alert className={`py-2 ${tourValidation.isValid ? 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20' : 'border-destructive/30 bg-destructive/5'}`}>
-                  <AlertDescription className={`text-sm ${tourValidation.isValid ? 'text-emerald-600' : 'text-destructive'}`}>
+                <Alert className={`py-2 ${tourValidation.isValid ? 'border-chart-1/30 bg-chart-1/5' : 'border-destructive/30 bg-destructive/5'}`}>
+                  <AlertDescription className={`text-sm ${tourValidation.isValid ? 'text-chart-1' : 'text-destructive'}`}>
                     {tourValidation.message}
                   </AlertDescription>
                 </Alert>
@@ -251,13 +251,13 @@ const Property3DViewer = ({
 
             {renderUrlPreview(virtualTourUrl, tourValidation, 'tour')}
 
-            <Card className="bg-emerald-500/5 border-emerald-500/20">
+            <Card className="bg-chart-1/5 border-chart-1/20">
               <CardContent className="p-4">
-                <h4 className="font-medium text-emerald-700 dark:text-emerald-300 mb-2 flex items-center gap-2">
+                <h4 className="font-medium text-chart-1 mb-2 flex items-center gap-2">
                   <Eye className="h-4 w-4" />
                   Virtual tour options
                 </h4>
-                <ul className="text-sm text-emerald-600/80 dark:text-emerald-400/80 space-y-1.5">
+                <ul className="text-sm text-chart-1/80 space-y-1.5">
                   <li className="flex items-center gap-2">• Matterport 3D virtual tours</li>
                   <li className="flex items-center gap-2">• Kuula 360° photo galleries</li>
                   <li className="flex items-center gap-2">• Interactive floor plans</li>

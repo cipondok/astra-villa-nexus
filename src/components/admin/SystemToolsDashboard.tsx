@@ -255,7 +255,7 @@ const SystemToolsDashboard = () => {
               <Card className="border-0 shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Bug className="h-5 w-5 text-red-500" />
+                    <Bug className="h-5 w-5 text-destructive" />
                     Recent Issues
                   </CardTitle>
                 </CardHeader>

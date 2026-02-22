@@ -210,8 +210,8 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
 
       <div>
         <Label htmlFor="description">{t.description} *</Label>
-        <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-md">
-          <p className="text-sm text-blue-900 dark:text-blue-100 font-medium">
+        <div className="mt-2 p-3 bg-chart-4/5 border border-chart-4/20 rounded-md">
+          <p className="text-sm text-chart-4 font-medium">
             {t.descriptionGuide}
           </p>
         </div>
@@ -241,9 +241,9 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
           className="mt-2"
         />
         {showCensorWarning && (
-          <div className="flex items-start gap-2 mt-2 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-md">
-            <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0 text-amber-600 dark:text-amber-400" />
-            <p className="text-sm text-amber-900 dark:text-amber-100">{t.censorWarning}</p>
+          <div className="flex items-start gap-2 mt-2 p-3 bg-chart-3/5 border border-chart-3/20 rounded-md">
+            <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0 text-chart-3" />
+            <p className="text-sm text-chart-3">{t.censorWarning}</p>
           </div>
         )}
         <p className="text-sm text-muted-foreground mt-1">

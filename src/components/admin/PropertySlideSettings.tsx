@@ -208,11 +208,11 @@ const PropertySlideSettings = () => {
       </div>
 
       {/* Connection Status Warning */}
-      <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-2">
+      <div className="bg-chart-3/10 border border-chart-3/30 rounded-lg p-2">
         <div className="flex items-center gap-2">
-          <AlertCircle className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+          <AlertCircle className="h-3.5 w-3.5 text-chart-3 shrink-0" />
           <div>
-            <p className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">Database Connection</p>
+            <p className="text-[10px] text-chart-3 font-medium">Database Connection</p>
             <p className="text-[9px] text-muted-foreground">
               If saving takes too long, check your connection.
             </p>
@@ -389,9 +389,9 @@ const PropertySlideSettings = () => {
         </TabsContent>
 
         <TabsContent value="preview" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
+          <Card className="bg-card/50 border-border/50">
             <CardHeader>
-              <CardTitle className="text-white flex items-center justify-between">
+              <CardTitle className="text-foreground flex items-center justify-between">
                 <span>Live Preview</span>
                 <Badge variant={isPreviewMode ? "default" : "secondary"}>
                   {isPreviewMode ? "Active" : "Inactive"}
@@ -400,9 +400,9 @@ const PropertySlideSettings = () => {
             </CardHeader>
             <CardContent>
               {isPreviewMode ? (
-                <div className="bg-slate-900/50 rounded-lg p-4 min-h-[400px]">
+                <div className="bg-muted/50 rounded-lg p-4 min-h-[400px]">
                   <div className="mb-4">
-                    <p className="text-sm text-gray-400 mb-2">
+                    <p className="text-sm text-muted-foreground mb-2">
                       Current Settings Applied:
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -423,16 +423,16 @@ const PropertySlideSettings = () => {
                       </Badge>
                     </div>
                   </div>
-                  <div className="border border-slate-700 rounded-lg overflow-hidden bg-white">
+                  <div className="border border-border rounded-lg overflow-hidden bg-background">
                     <PropertySlideshow key={previewKey} />
                   </div>
                 </div>
               ) : (
-                <div className="bg-slate-900/50 rounded-lg p-8 min-h-[400px] flex items-center justify-center">
+                <div className="bg-muted/50 rounded-lg p-8 min-h-[400px] flex items-center justify-center">
                   <div className="text-center">
-                    <Play className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-white mb-2">Preview Mode Inactive</h3>
-                    <p className="text-gray-400 mb-4">Click "Live Preview" to see changes in real-time</p>
+                    <Play className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-foreground mb-2">Preview Mode Inactive</h3>
+                    <p className="text-muted-foreground mb-4">Click "Live Preview" to see changes in real-time</p>
                     <Button onClick={togglePreviewMode} variant="outline">
                       <Play className="h-4 w-4 mr-2" />
                       Start Live Preview
@@ -450,7 +450,7 @@ const PropertySlideSettings = () => {
         <Button
           onClick={saveSettings}
           disabled={loading}
-          className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+          className="bg-primary hover:bg-primary/90 disabled:opacity-50"
         >
           {loading ? (
             <>
