@@ -260,7 +260,7 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
   const emptyLogos = ALL_LOGO_KEYS.filter(item => !settings[item.key]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 max-w-5xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
