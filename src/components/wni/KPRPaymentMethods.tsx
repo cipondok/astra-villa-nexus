@@ -136,10 +136,10 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
 
   const getMethodColor = (color: string) => {
     switch (color) {
-      case 'blue': return 'from-blue-500/20 to-blue-600/20 border-blue-500/30';
-      case 'purple': return 'from-purple-500/20 to-purple-600/20 border-purple-500/30';
-      case 'green': return 'from-green-500/20 to-green-600/20 border-green-500/30';
-      case 'amber': return 'from-amber-500/20 to-amber-600/20 border-amber-500/30';
+      case 'blue': return 'from-chart-4/20 to-chart-4/20 border-chart-4/30';
+      case 'purple': return 'from-accent/20 to-accent/20 border-accent/30';
+      case 'green': return 'from-chart-1/20 to-chart-1/20 border-chart-1/30';
+      case 'amber': return 'from-chart-3/20 to-chart-3/20 border-chart-3/30';
       default: return 'from-muted to-muted border-border';
     }
   };
@@ -238,15 +238,15 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
         </div>
 
         {/* Important Notes */}
-        <div className="p-2 bg-amber-500/10 border border-amber-500/20 rounded-md">
+        <div className="p-2 bg-chart-3/10 border border-chart-3/20 rounded-md">
           <div className="flex items-start gap-1">
-            <Info className="h-3 w-3 text-amber-500 flex-shrink-0 mt-0.5" />
+            <Info className="h-3 w-3 text-chart-3 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-[9px] sm:text-xs font-medium text-amber-600">{t.importantNotes}</p>
+              <p className="text-[9px] sm:text-xs font-medium text-chart-3">{t.importantNotes}</p>
               <ul className="mt-0.5 space-y-0.5">
                 {t.notes.slice(0, 2).map((note, idx) => (
                   <li key={idx} className="flex items-start gap-0.5 text-[8px] sm:text-[9px] text-muted-foreground">
-                    <CheckCircle className="h-2 w-2 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-2 w-2 text-chart-3 flex-shrink-0 mt-0.5" />
                     <span className="line-clamp-1">{note}</span>
                   </li>
                 ))}

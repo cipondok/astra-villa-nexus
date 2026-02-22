@@ -49,7 +49,7 @@ export const ActivityLog = () => {
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <History className="h-3.5 w-3.5 text-indigo-500" />
+          <History className="h-3.5 w-3.5 text-accent-foreground" />
           <span className="text-xs font-semibold">Activity</span>
         </div>
         <Button variant="ghost" size="icon" onClick={loadActivityLogs} className="h-5 w-5">

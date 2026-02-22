@@ -138,7 +138,7 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
 
         {/* Rating Badge */}
         <div className="absolute bottom-1.5 right-1.5 bg-background/90 text-foreground px-1.5 py-0.5 rounded-md flex items-center gap-1 backdrop-blur-sm">
-          <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
+          <Star className="h-2.5 w-2.5 fill-chart-3 text-chart-3" />
           <span className="text-xs font-medium">{property.rating}</span>
         </div>
 

@@ -186,7 +186,7 @@ const CommunityEvents: React.FC<CommunityEventsProps> = ({ city, className }) =>
                 </Badge>
               )}
               {event.is_online && (
-                <Badge variant="secondary" className="bg-blue-500 text-white">
+                <Badge variant="secondary" className="bg-chart-4 text-primary-foreground">
                   <Video className="h-3 w-3 mr-1" />
                   Online
                 </Badge>

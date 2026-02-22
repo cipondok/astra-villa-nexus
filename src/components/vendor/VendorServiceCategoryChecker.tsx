@@ -222,18 +222,18 @@ const VendorServiceCategoryChecker = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   {vendorProfile.main_category_locked && (
-                    <Badge variant="outline" className="text-orange-600 border-orange-300">
+                    <Badge variant="outline" className="text-chart-5 border-chart-5/30">
                       <Lock className="h-3 w-3 mr-1" />
                       Terkunci
                     </Badge>
                   )}
                   {vendorProfile.vendor_main_categories.discount_eligible ? (
-                    <Badge variant="outline" className="text-green-600 border-green-300">
+                    <Badge variant="outline" className="text-chart-1 border-chart-1/30">
                       <Percent className="h-3 w-3 mr-1" />
                       Diskon Tersedia
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="text-gray-500 border-gray-300">
+                    <Badge variant="outline" className="text-muted-foreground border-border">
                       Diskon Tidak Tersedia
                     </Badge>
                   )}
@@ -242,7 +242,7 @@ const VendorServiceCategoryChecker = () => {
             </div>
           ) : (
             <div className="text-center py-8">
-              <AlertTriangle className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
+              <AlertTriangle className="h-12 w-12 mx-auto text-chart-3 mb-4" />
               <p className="text-muted-foreground">
                 Kategori utama belum dipilih. Silakan lengkapi profil vendor Anda.
               </p>
@@ -282,12 +282,12 @@ const VendorServiceCategoryChecker = () => {
                     <div className="flex items-center gap-2">
                       <h4 className="font-medium">{service.service_name}</h4>
                       {service.is_active ? (
-                        <Badge variant="outline" className="text-green-600 border-green-300">
+                        <Badge variant="outline" className="text-chart-1 border-chart-1/30">
                           <CheckCircle className="h-3 w-3 mr-1" />
                           Aktif
                         </Badge>
                       ) : (
-                        <Badge variant="outline" className="text-red-600 border-red-300">
+                        <Badge variant="outline" className="text-destructive border-destructive/30">
                           <XCircle className="h-3 w-3 mr-1" />
                           Tidak Aktif
                         </Badge>
@@ -347,12 +347,12 @@ const VendorServiceCategoryChecker = () => {
                         Sub-kategori • {subcategoryServices.length} layanan
                       </Badge>
                       {subcategory.discount_eligible ? (
-                        <Badge variant="outline" className="text-green-600 border-green-300 text-xs">
+                        <Badge variant="outline" className="text-chart-1 border-chart-1/30 text-xs">
                           <Percent className="h-2 w-2 mr-1" />
                           Diskon OK
                         </Badge>
                       ) : (
-                        <Badge variant="outline" className="text-gray-500 border-gray-300 text-xs">
+                        <Badge variant="outline" className="text-muted-foreground border-border text-xs">
                           Tanpa Diskon
                         </Badge>
                       )}
@@ -364,12 +364,12 @@ const VendorServiceCategoryChecker = () => {
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-medium">{service.service_name}</span>
                             {service.is_active ? (
-                              <Badge variant="outline" className="text-green-600 border-green-300 text-xs">
+                              <Badge variant="outline" className="text-chart-1 border-chart-1/30 text-xs">
                                 <CheckCircle className="h-2 w-2 mr-1" />
                                 Aktif
                               </Badge>
                             ) : (
-                              <Badge variant="outline" className="text-red-600 border-red-300 text-xs">
+                              <Badge variant="outline" className="text-destructive border-destructive/30 text-xs">
                                 <XCircle className="h-2 w-2 mr-1" />
                                 Tidak Aktif
                               </Badge>
@@ -429,7 +429,7 @@ const VendorServiceCategoryChecker = () => {
       {vendorServices.length === 0 && (
         <Card>
           <CardContent className="text-center py-8">
-            <AlertTriangle className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
+            <AlertTriangle className="h-12 w-12 mx-auto text-chart-3 mb-4" />
             <h3 className="font-semibold mb-2">Belum Ada Layanan</h3>
             <p className="text-muted-foreground mb-4">
               Anda belum menambahkan layanan apapun. Mulai dengan menambahkan layanan pertama Anda.

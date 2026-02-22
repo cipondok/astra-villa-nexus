@@ -230,9 +230,9 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg"
+                className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-chart-3 to-chart-5 flex items-center justify-center shadow-lg"
               >
-                <Gift className="h-10 w-10 text-white" />
+                <Gift className="h-10 w-10 text-primary-foreground" />
               </motion.div>
 
               <h3 className="text-xl font-bold mb-1">Daily Login Reward!</h3>
@@ -243,7 +243,7 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
               {/* Current Streak */}
               {currentStreak > 0 && (
                 <div className="flex items-center justify-center gap-2 mb-4">
-                  <Badge className="bg-orange-500/10 text-orange-600 px-3 py-1">
+                  <Badge className="bg-chart-5/10 text-chart-5 px-3 py-1">
                     <Flame className="h-3 w-3 mr-1" />
                     {currentStreak} Day Streak!
                   </Badge>
@@ -267,7 +267,7 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
               <Button
                 onClick={handleClaim}
                 disabled={claimDailyLogin.isPending}
-                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                className="w-full bg-gradient-to-r from-chart-3 to-chart-5 hover:from-chart-3/90 hover:to-chart-5/90"
               >
                 {claimDailyLogin.isPending ? (
                   <span className="flex items-center gap-2">
@@ -292,9 +292,9 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", damping: 10 }}
-                className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-lg"
+                className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-chart-1 to-chart-1 flex items-center justify-center shadow-lg"
               >
-                <Check className="h-10 w-10 text-white" />
+                <Check className="h-10 w-10 text-primary-foreground" />
               </motion.div>
 
               <h3 className="text-xl font-bold mb-1">Reward Claimed!</h3>
@@ -310,7 +310,7 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
                   +{claimResult?.xp_earned || 5} XP
                 </div>
                 {claimResult?.streak_bonus > 0 && (
-                  <Badge className="bg-orange-500/10 text-orange-600">
+                  <Badge className="bg-chart-5/10 text-chart-5">
                     <Flame className="h-3 w-3 mr-1" />
                     Includes {claimResult.streak_bonus} XP streak bonus!
                   </Badge>
@@ -319,7 +319,7 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
 
               {/* Streak Info */}
               <div className="text-sm text-muted-foreground mb-4">
-                <Flame className="h-4 w-4 inline mr-1 text-orange-500" />
+                <Flame className="h-4 w-4 inline mr-1 text-chart-5" />
                 Current streak: <strong>{claimResult?.current_streak || currentStreak} days</strong>
               </div>
 

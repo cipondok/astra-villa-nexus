@@ -156,7 +156,7 @@ const PropertyList = () => {
           <CardContent className="pt-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
-              <p className="text-gray-600 mb-4">Please log in to view properties.</p>
+              <p className="text-muted-foreground mb-4">Please log in to view properties.</p>
               <Button onClick={() => navigate('/')}>Go to Home</Button>
             </div>
           </CardContent>
@@ -166,9 +166,9 @@ const PropertyList = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Fixed Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b shadow-sm">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-card border-b shadow-sm">
         <AuthenticatedNavigation
           language={language}
           onLanguageToggle={() => setLanguage(language === "en" ? "id" : "en")}
@@ -184,11 +184,11 @@ const PropertyList = () => {
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
                   <Building2 className="h-8 w-8" />
                   My Properties
                 </h1>
-                <p className="text-gray-600 dark:text-gray-300 mt-2">
+                <p className="text-muted-foreground mt-2">
                   Manage your property listings and view analytics
                 </p>
               </div>
@@ -206,7 +206,7 @@ const PropertyList = () => {
             <CardContent className="pt-6">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
                     placeholder="Search properties..."
                     value={searchTerm}
@@ -262,9 +262,9 @@ const PropertyList = () => {
                 <div className="text-center py-8">Loading properties...</div>
               ) : filteredProperties.length === 0 ? (
                 <div className="text-center py-8">
-                  <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No properties found</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4">
+                  <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-foreground mb-2">No properties found</h3>
+                  <p className="text-muted-foreground mb-4">
                     {canCreateProperty ? "Get started by adding your first property." : "No properties available."}
                   </p>
                   {canCreateProperty && (
@@ -294,7 +294,7 @@ const PropertyList = () => {
                           <TableCell>
                             <div>
                               <div className="font-medium">{property.title}</div>
-                              <div className="text-sm text-gray-500">
+                              <div className="text-sm text-muted-foreground">
                                 {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}m²
                               </div>
                             </div>
@@ -303,7 +303,7 @@ const PropertyList = () => {
                           <TableCell>{property.location}</TableCell>
                           <TableCell>
                             {property.price ? formatIDR(property.price) : 'N/A'}
-                            <div className="text-xs text-gray-500 capitalize">{property.listing_type}</div>
+                            <div className="text-xs text-muted-foreground capitalize">{property.listing_type}</div>
                           </TableCell>
                           <TableCell>{getStatusBadge(property.status)}</TableCell>
                           <TableCell>{new Date(property.created_at).toLocaleDateString()}</TableCell>
