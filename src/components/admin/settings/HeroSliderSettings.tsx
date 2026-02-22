@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -13,12 +14,19 @@ import { toast } from 'sonner';
 import { 
   Monitor, Smartphone, Save, RotateCcw, Eye, EyeOff,
   Layers, Sparkles, Box, Image as ImageIcon, Zap, 
-  SunMedium, Palette, Move3D, Wind
+  SunMedium, Palette, Move3D, Wind, Upload, Trash2, Info
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import villaCommunityDaylight from '@/assets/villa-community-daylight.jpg';
 
 interface HeroSliderConfig {
+  // Banner images (URLs from storage)
+  bannerImages: string[];
+  sliderHeight: number; // px
+  sliderMinHeight: number; // px
+  sliderMaxHeight: number; // px
+  autoSlideInterval: number; // seconds
+  
   // Image settings
   backgroundImage: string;
   imageBrightness: number;
@@ -56,6 +64,11 @@ interface HeroSliderConfig {
 }
 
 const defaultConfig: HeroSliderConfig = {
+  bannerImages: [],
+  sliderHeight: 550,
+  sliderMinHeight: 400,
+  sliderMaxHeight: 650,
+  autoSlideInterval: 5,
   backgroundImage: '',
   imageBrightness: 110,
   imageSaturation: 110,
@@ -88,6 +101,8 @@ const HeroSliderSettings: React.FC = () => {
   const [config, setConfig] = useState<HeroSliderConfig>(defaultConfig);
   const [previewDevice, setPreviewDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [showPreview, setShowPreview] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch saved settings
   const { data: savedConfig, isLoading } = useQuery({
@@ -139,6 +154,51 @@ const HeroSliderSettings: React.FC = () => {
     toast.info('Settings reset to defaults');
   };
 
+  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+    
+    setUploading(true);
+    try {
+      const fileName = `banner-${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from('hero-banners')
+        .upload(fileName, file, { upsert: true });
+      
+      if (uploadError) throw uploadError;
+      
+      const { data: urlData } = supabase.storage
+        .from('hero-banners')
+        .getPublicUrl(fileName);
+      
+      const newImages = [...(config.bannerImages || []), urlData.publicUrl];
+      updateConfig('bannerImages', newImages);
+      toast.success('Banner image uploaded!');
+    } catch (err: any) {
+      toast.error('Upload failed: ' + err.message);
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRemoveBanner = async (index: number) => {
+    const url = config.bannerImages[index];
+    // Extract file name from URL
+    const parts = url.split('/hero-banners/');
+    if (parts[1]) {
+      await supabase.storage.from('hero-banners').remove([parts[1]]);
+    }
+    const newImages = config.bannerImages.filter((_, i) => i !== index);
+    updateConfig('bannerImages', newImages);
+    toast.success('Banner removed');
+  };
+
   // Compute preview styles dynamically
   const previewImageStyle: React.CSSProperties = {
     filter: `brightness(${config.imageBrightness}%) saturate(${config.imageSaturation}%) blur(${config.imageBlur}px)`,
@@ -171,7 +231,111 @@ const HeroSliderSettings: React.FC = () => {
         {/* Controls Panel */}
         <div className="space-y-3 order-2 xl:order-1">
 
-          {/* Image Settings */}
+          {/* Banner Images Management */}
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader className="py-2 px-3">
+              <CardTitle className="text-xs font-semibold flex items-center gap-2">
+                <Upload className="h-3.5 w-3.5 text-primary" /> Banner Images
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-3 pb-3 pt-0 space-y-3">
+              {/* Info box */}
+              <div className="flex items-start gap-2 p-2 rounded-lg bg-muted/50 border border-border">
+                <Info className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />
+                <div className="text-[10px] text-muted-foreground leading-relaxed">
+                  <p className="font-semibold text-foreground mb-0.5">Recommended Image Size:</p>
+                  <p>• Width: <span className="font-mono text-primary">1920px</span></p>
+                  <p>• Height: <span className="font-mono text-primary">600–800px</span></p>
+                  <p>• Aspect Ratio: <span className="font-mono text-primary">~3:1</span> (landscape)</p>
+                  <p>• Format: JPG/PNG, max 5MB</p>
+                </div>
+              </div>
+
+              {/* Current banners */}
+              {config.bannerImages && config.bannerImages.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-[11px]">Current Banners ({config.bannerImages.length})</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {config.bannerImages.map((url, index) => (
+                      <div key={index} className="relative group rounded-lg overflow-hidden border border-border">
+                        <img src={url} alt={`Banner ${index + 1}`} className="w-full h-20 object-cover" />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="h-6 text-[10px]"
+                            onClick={() => handleRemoveBanner(index)}
+                          >
+                            <Trash2 className="h-3 w-3 mr-1" /> Remove
+                          </Button>
+                        </div>
+                        <div className="absolute top-1 left-1">
+                          <Badge variant="secondary" className="text-[8px] px-1 py-0 h-4">
+                            Slide {index + 1}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Upload button */}
+              <div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBannerUpload}
+                  className="hidden"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full h-8 text-xs"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                >
+                  <Upload className="h-3 w-3 mr-1" />
+                  {uploading ? 'Uploading...' : 'Upload Banner Image'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Slider Size Settings */}
+          <Card className="border-border/50">
+            <CardHeader className="py-2 px-3">
+              <CardTitle className="text-xs font-semibold flex items-center gap-2">
+                <Move3D className="h-3.5 w-3.5 text-primary" /> Slider Size
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-3 pb-3 pt-0 space-y-3">
+              <div className="space-y-2">
+                <Label className="text-[11px]">Height ({config.sliderHeight}px)</Label>
+                <Slider value={[config.sliderHeight]} onValueChange={([v]) => updateConfig('sliderHeight', v)} min={200} max={800} step={10} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[11px]">Min Height ({config.sliderMinHeight}px)</Label>
+                <Slider value={[config.sliderMinHeight]} onValueChange={([v]) => updateConfig('sliderMinHeight', v)} min={150} max={500} step={10} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[11px]">Max Height ({config.sliderMaxHeight}px)</Label>
+                <Slider value={[config.sliderMaxHeight]} onValueChange={([v]) => updateConfig('sliderMaxHeight', v)} min={400} max={1000} step={10} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[11px]">Auto-Slide Interval ({config.autoSlideInterval}s)</Label>
+                <Slider value={[config.autoSlideInterval]} onValueChange={([v]) => updateConfig('autoSlideInterval', v)} min={2} max={15} step={1} />
+              </div>
+              <div className="flex items-start gap-2 p-2 rounded-lg bg-muted/50 border border-border">
+                <Info className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />
+                <p className="text-[10px] text-muted-foreground">
+                  Height uses <span className="font-mono">clamp(minHeight, height, maxHeight)</span> for responsive sizing.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="border-border/50">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs font-semibold flex items-center gap-2">
