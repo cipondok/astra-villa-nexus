@@ -63,12 +63,12 @@ const Users = () => {
 
   const getRoleIcon = (role: string) => {
     switch (role) {
-      case 'admin': return <Crown className="h-4 w-4 text-yellow-500" />;
-      case 'agent': return <Building2 className="h-4 w-4 text-blue-500" />;
-      case 'vendor': return <Wrench className="h-4 w-4 text-green-500" />;
-      case 'customer_service': return <Headphones className="h-4 w-4 text-purple-500" />;
-      case 'property_owner': return <Building2 className="h-4 w-4 text-orange-500" />;
-      default: return <User className="h-4 w-4 text-gray-500" />;
+      case 'admin': return <Crown className="h-4 w-4 text-chart-5" />;
+      case 'agent': return <Building2 className="h-4 w-4 text-primary" />;
+      case 'vendor': return <Wrench className="h-4 w-4 text-chart-3" />;
+      case 'customer_service': return <Headphones className="h-4 w-4 text-chart-4" />;
+      case 'property_owner': return <Building2 className="h-4 w-4 text-chart-1" />;
+      default: return <User className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -87,7 +87,7 @@ const Users = () => {
     }
     
     switch (status) {
-      case 'approved': return <Badge variant="default" className="bg-green-500">Verified</Badge>;
+      case 'approved': return <Badge variant="default" className="bg-chart-1">Verified</Badge>;
       case 'pending': return <Badge variant="secondary">Pending</Badge>;
       case 'rejected': return <Badge variant="destructive">Rejected</Badge>;
       default: return <Badge variant="outline">Unknown</Badge>;
@@ -115,7 +115,7 @@ const Users = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-12">
+      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-12">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">
             <UsersIcon className="h-8 w-8" />
@@ -136,31 +136,31 @@ const Users = () => {
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-yellow-600">{stats.admins}</div>
+              <div className="text-2xl font-bold text-chart-5">{stats.admins}</div>
               <div className="text-sm text-muted-foreground">Admins</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">{stats.agents}</div>
+              <div className="text-2xl font-bold text-primary">{stats.agents}</div>
               <div className="text-sm text-muted-foreground">Agents</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-green-600">{stats.vendors}</div>
+              <div className="text-2xl font-bold text-chart-3">{stats.vendors}</div>
               <div className="text-sm text-muted-foreground">Vendors</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-gray-600">{stats.customers}</div>
+              <div className="text-2xl font-bold text-muted-foreground">{stats.customers}</div>
               <div className="text-sm text-muted-foreground">Customers</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-red-600">{stats.suspended}</div>
+              <div className="text-2xl font-bold text-destructive">{stats.suspended}</div>
               <div className="text-sm text-muted-foreground">Suspended</div>
             </CardContent>
           </Card>
@@ -254,7 +254,7 @@ const Users = () => {
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gradient-to-r from-primary to-primary/80 rounded-full flex items-center justify-center text-white font-semibold">
+                          <div className="w-10 h-10 bg-gradient-to-r from-primary to-primary/80 rounded-full flex items-center justify-center text-primary-foreground font-semibold">
                             {user.full_name ? user.full_name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                           </div>
                           <div>

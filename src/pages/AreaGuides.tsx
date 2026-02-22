@@ -203,10 +203,10 @@ const AreaGuides = () => {
   };
 
   const amenities = [
-    { icon: School, name: t.schools, count: '500+', color: 'text-blue-500' },
-    { icon: Hospital, name: t.hospitals, count: '200+', color: 'text-red-500' },
-    { icon: ShoppingCart, name: t.shopping, count: '350+', color: 'text-purple-500' },
-    { icon: Trees, name: t.parks, count: '180+', color: 'text-green-500' }
+    { icon: School, name: t.schools, count: '500+', color: 'text-chart-4' },
+    { icon: Hospital, name: t.hospitals, count: '200+', color: 'text-destructive' },
+    { icon: ShoppingCart, name: t.shopping, count: '350+', color: 'text-chart-5' },
+    { icon: Trees, name: t.parks, count: '180+', color: 'text-chart-1' }
   ];
 
   return (
