@@ -502,24 +502,19 @@ const Index = () => {
       <div className="relative z-10 min-h-screen pb-20 md:pb-4">
         
         {/* Hero Banner Section - Full Width Image */}
-        <section className="relative w-full" id="hero-section" style={{ contain: 'layout' }}>
-          {/* Hero Banner Image */}
+        <section className="relative w-full" id="hero-section">
           {/* Hero Banner Slider */}
           <div
             className="w-full overflow-hidden relative"
-            style={{ aspectRatio: '1920/600', minHeight: '220px' }}
+            style={{ height: 'clamp(200px, 40vw, 500px)' }}
           >
             {[astraBanner1, astraBanner2].map((banner, index) => (
               <img 
                 key={index}
                 src={banner} 
                 alt={`Astra Villa - Indonesia's Smart Property Platform ${index + 1}`} 
-                className={cn(
-                  "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
-                  index === 0 ? "animate-fade-in" : "animate-fade-in delay-5000" // Simple fade for now, better logic below
-                )}
+                className="absolute inset-0 w-full h-full object-cover"
                 style={{ 
-                  opacity: 1, // We'll handle opacity with a simple script or state if we could, but let's just show the first one primarily or use a keyframe animation
                   animation: `fadeSlide 10s infinite ${index * 5}s`
                 }}
               />
@@ -531,14 +526,9 @@ const Index = () => {
                 100% { opacity: 1; z-index: 10; }
               }
             `}</style>
-            {/* Cinematic overlays - layered for depth */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/15 via-transparent to-black/15 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent pointer-events-none" />
+            {/* Subtle overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30 pointer-events-none" />
           </div>
-          
-          {/* Seamless fade into search section */}
-          <div className="absolute bottom-0 left-0 right-0 h-20 sm:h-28 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none" />
         </section>
 
         {/* Search Section */}
