@@ -17,7 +17,8 @@ import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, Star } from "lucide-react";
-import astraHeroBanner from "@/assets/astra-hero-banner.jpeg";
+import astraBanner1 from "@/assets/astra-banner-1.jpg";
+import astraBanner2 from "@/assets/astra-banner-2.jpg";
 import { cn } from "@/lib/utils";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
@@ -503,20 +504,33 @@ const Index = () => {
         {/* Hero Banner Section - Full Width Image */}
         <section className="relative w-full" id="hero-section" style={{ contain: 'layout' }}>
           {/* Hero Banner Image */}
+          {/* Hero Banner Slider */}
           <div
             className="w-full overflow-hidden relative"
             style={{ aspectRatio: '1920/600', minHeight: '220px' }}
           >
-            <img 
-              src={astraHeroBanner} 
-              alt="Astra Villa - Indonesia's Smart Property Platform" 
-              className="w-full h-full object-cover brightness-105 saturate-105"
-              fetchPriority="high"
-              decoding="sync"
-              width={1920}
-              height={600}
-              style={{ display: 'block' }}
-            />
+            {[astraBanner1, astraBanner2].map((banner, index) => (
+              <img 
+                key={index}
+                src={banner} 
+                alt={`Astra Villa - Indonesia's Smart Property Platform ${index + 1}`} 
+                className={cn(
+                  "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
+                  index === 0 ? "animate-fade-in" : "animate-fade-in delay-5000" // Simple fade for now, better logic below
+                )}
+                style={{ 
+                  opacity: 1, // We'll handle opacity with a simple script or state if we could, but let's just show the first one primarily or use a keyframe animation
+                  animation: `fadeSlide 10s infinite ${index * 5}s`
+                }}
+              />
+            ))}
+            <style>{`
+              @keyframes fadeSlide {
+                0%, 45% { opacity: 1; z-index: 10; }
+                50%, 95% { opacity: 0; z-index: 0; }
+                100% { opacity: 1; z-index: 10; }
+              }
+            `}</style>
             {/* Cinematic overlays - layered for depth */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50 pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/15 via-transparent to-black/15 pointer-events-none" />
