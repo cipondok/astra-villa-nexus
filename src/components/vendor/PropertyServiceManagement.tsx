@@ -89,13 +89,13 @@ const PropertyServiceManagement: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     const colors = {
-      'pending': 'bg-yellow-100 text-yellow-800',
-      'confirmed': 'bg-blue-100 text-blue-800',
-      'in_progress': 'bg-purple-100 text-purple-800',
-      'completed': 'bg-green-100 text-green-800',
-      'cancelled': 'bg-red-100 text-red-800'
+      'pending': 'bg-chart-3/10 text-chart-3',
+      'confirmed': 'bg-chart-4/10 text-chart-4',
+      'in_progress': 'bg-accent/10 text-accent-foreground',
+      'completed': 'bg-chart-1/10 text-chart-1',
+      'cancelled': 'bg-destructive/10 text-destructive'
     };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[status as keyof typeof colors] || 'bg-muted text-muted-foreground';
   };
 
   const getStatusIcon = (status: string) => {
@@ -159,7 +159,7 @@ const PropertyServiceManagement: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Pending</p>
                 <p className="text-2xl font-bold">{pendingBookings.length}</p>
               </div>
-              <AlertCircle className="h-8 w-8 text-yellow-500" />
+              <AlertCircle className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -171,7 +171,7 @@ const PropertyServiceManagement: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Active</p>
                 <p className="text-2xl font-bold">{activeBookings.length}</p>
               </div>
-              <Clock className="h-8 w-8 text-blue-500" />
+              <Clock className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -183,7 +183,7 @@ const PropertyServiceManagement: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Completed</p>
                 <p className="text-2xl font-bold">{completedBookings.length}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -257,7 +257,7 @@ const PropertyServiceManagement: React.FC = () => {
             <TabsContent value="pending" className="mt-6">
               <div className="space-y-4">
                 {pendingBookings.map((booking: any) => (
-                  <Card key={booking.id} className="border-l-4 border-l-yellow-500">
+                  <Card key={booking.id} className="border-l-4 border-l-chart-3">
                     <CardContent className="p-6">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex-1">
@@ -333,7 +333,7 @@ const PropertyServiceManagement: React.FC = () => {
             <TabsContent value="active" className="mt-6">
               <div className="space-y-4">
                 {activeBookings.map((booking: any) => (
-                  <Card key={booking.id} className="border-l-4 border-l-blue-500">
+                  <Card key={booking.id} className="border-l-4 border-l-chart-4">
                     <CardContent className="p-6">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex-1">
@@ -381,7 +381,7 @@ const PropertyServiceManagement: React.FC = () => {
             <TabsContent value="completed" className="mt-6">
               <div className="space-y-4">
                 {completedBookings.map((booking: any) => (
-                  <Card key={booking.id} className="border-l-4 border-l-green-500">
+                  <Card key={booking.id} className="border-l-4 border-l-chart-1">
                     <CardContent className="p-6">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex-1">
@@ -389,7 +389,7 @@ const PropertyServiceManagement: React.FC = () => {
                           <p className="text-muted-foreground">{booking.service_address}</p>
                           {booking.customer_rating && (
                             <div className="flex items-center gap-1 mt-2">
-                              <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                              <Star className="h-4 w-4 text-chart-3 fill-current" />
                               <span className="text-sm">{booking.customer_rating}/5</span>
                               {booking.customer_review && (
                                 <span className="text-sm text-muted-foreground ml-2">

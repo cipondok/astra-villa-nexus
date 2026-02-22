@@ -57,9 +57,9 @@ const EnhancedPictureUploadStep: React.FC<EnhancedPictureUploadStepProps> = ({
 
       {/* Category-specific guidance */}
       {isProductCategory ? (
-        <Alert className="border-purple-200 bg-purple-50">
-          <Package className="h-4 w-4 text-purple-600" />
-          <AlertDescription className="text-purple-800">
+        <Alert className="border-accent/30 bg-accent/5">
+          <Package className="h-4 w-4 text-accent-foreground" />
+          <AlertDescription className="text-accent-foreground">
             <strong>Product Photography Tips:</strong>
             <ul className="mt-2 space-y-1 text-sm">
               <li>• Use well-lit, neutral backgrounds for best background removal results</li>

@@ -115,7 +115,7 @@ const VendorAnalytics = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -129,8 +129,8 @@ const VendorAnalytics = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Analytics</h2>
-        <p className="text-gray-600 dark:text-gray-400">Track your business performance and insights</p>
+        <h2 className="text-2xl font-bold text-foreground">Analytics</h2>
+        <p className="text-muted-foreground">Track your business performance and insights</p>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
@@ -187,13 +187,13 @@ const VendorAnalytics = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Pending</span>
-                    <span className="text-sm text-yellow-600 font-semibold">
+                    <span className="text-sm text-chart-3 font-semibold">
                       {analytics.pendingBookings}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Completed</span>
-                    <span className="text-sm text-green-600 font-semibold">
+                    <span className="text-sm text-chart-1 font-semibold">
                       {analytics.completedBookings}
                     </span>
                   </div>
@@ -216,7 +216,7 @@ const VendorAnalytics = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-blue-600" />
+                      <Calendar className="h-4 w-4 text-chart-4" />
                       <span className="text-sm font-medium">Bookings</span>
                     </div>
                     <span className="text-sm font-semibold">
@@ -225,7 +225,7 @@ const VendorAnalytics = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-green-600" />
+                      <DollarSign className="h-4 w-4 text-chart-1" />
                       <span className="text-sm font-medium">Revenue</span>
                     </div>
                     <span className="text-sm font-semibold">
@@ -234,7 +234,7 @@ const VendorAnalytics = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4 text-purple-600" />
+                      <TrendingUp className="h-4 w-4 text-accent-foreground" />
                       <span className="text-sm font-medium">Avg per Booking</span>
                     </div>
                     <span className="text-sm font-semibold">
@@ -255,32 +255,32 @@ const VendorAnalytics = () => {
             <CardContent>
               <div className="space-y-3">
                 {analytics.totalServices === 0 && (
-                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <p className="text-sm text-blue-800 dark:text-blue-200">
+                  <div className="p-3 bg-chart-4/5 rounded-lg">
+                    <p className="text-sm text-chart-4">
                       💡 Add your first service to start receiving bookings
                     </p>
                   </div>
                 )}
                 
                 {analytics.averageRating < 4 && analytics.totalReviews > 0 && (
-                  <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                    <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                  <div className="p-3 bg-chart-3/5 rounded-lg">
+                    <p className="text-sm text-chart-3">
                       ⚠️ Consider improving service quality to increase your rating
                     </p>
                   </div>
                 )}
                 
                 {analytics.pendingBookings > 0 && (
-                  <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                    <p className="text-sm text-orange-800 dark:text-orange-200">
+                  <div className="p-3 bg-chart-3/5 rounded-lg">
+                    <p className="text-sm text-chart-3">
                       📋 You have {analytics.pendingBookings} pending booking{analytics.pendingBookings === 1 ? '' : 's'} to review
                     </p>
                   </div>
                 )}
                 
                 {analytics.averageRating >= 4.5 && analytics.totalReviews >= 5 && (
-                  <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <p className="text-sm text-green-800 dark:text-green-200">
+                  <div className="p-3 bg-chart-1/5 rounded-lg">
+                    <p className="text-sm text-chart-1">
                       🌟 Excellent work! Your high rating will attract more customers
                     </p>
                   </div>

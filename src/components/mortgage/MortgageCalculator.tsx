@@ -143,10 +143,10 @@ const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({
     const ratio = calculationResult.affordabilityRatio;
     if (!ratio) return null;
     
-    if (ratio <= 30) return { status: 'excellent', label: 'Excellent', color: 'text-green-600' };
-    if (ratio <= 40) return { status: 'good', label: 'Good', color: 'text-blue-600' };
-    if (ratio <= 50) return { status: 'moderate', label: 'Moderate', color: 'text-yellow-600' };
-    return { status: 'high', label: 'High Risk', color: 'text-red-600' };
+    if (ratio <= 30) return { status: 'excellent', label: 'Excellent', color: 'text-chart-1' };
+    if (ratio <= 40) return { status: 'good', label: 'Good', color: 'text-chart-4' };
+    if (ratio <= 50) return { status: 'moderate', label: 'Moderate', color: 'text-chart-3' };
+    return { status: 'high', label: 'High Risk', color: 'text-destructive' };
   };
 
   const affordabilityStatus = getAffordabilityStatus();
@@ -281,7 +281,7 @@ const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({
                         <Percent className="h-4 w-4" />
                         {rate.rate_name} - {rate.interest_rate_year1}%
                         {rate.rate_type === 'promotional' && (
-                          <Badge className="ml-2 text-xs bg-green-500">Promo</Badge>
+                          <Badge className="ml-2 text-xs bg-chart-1">Promo</Badge>
                         )}
                       </div>
                     </SelectItem>
@@ -390,12 +390,12 @@ const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({
                   {comparisons.slice(0, 20).map((comparison, index) => (
                     <TableRow 
                       key={`${comparison.bank_id}-${comparison.rate_id}`}
-                      className={index === 0 ? 'bg-green-50 dark:bg-green-950/20' : ''}
+                      className={index === 0 ? 'bg-chart-1/5' : ''}
                     >
                       <TableCell>
                         <div className="flex items-center gap-2">
                           {index === 0 && (
-                            <Badge className="bg-green-500 text-xs">Best</Badge>
+                            <Badge className="bg-chart-1 text-xs">Best</Badge>
                           )}
                           <span className="font-medium">{comparison.bank_name}</span>
                         </div>
@@ -462,7 +462,7 @@ const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({
                       <TableCell className="text-right font-mono">
                         {formatCurrency(year.totalPaid)}
                       </TableCell>
-                      <TableCell className="text-right text-green-600">
+                      <TableCell className="text-right text-chart-1">
                         {formatCurrency(year.principalPaid)}
                       </TableCell>
                       <TableCell className="text-right text-muted-foreground">
