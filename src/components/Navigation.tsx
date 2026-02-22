@@ -168,41 +168,34 @@ const Navigation = () => {
   const currentText = text[language] || text.en;
 
   // Property navigation items
+  const navIconStyle = 'bg-primary-foreground/5 border-primary-foreground/10 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 hover:shadow-md transition-all duration-300';
+  const navIconColor = 'text-foreground/70';
+
   const propertyNavItems = [
     { 
       icon: Building, 
       label: currentText.buyProperties, 
       path: '/dijual',
-      color: 'text-chart-1',
-      bg: 'bg-chart-1/10 border-chart-1/30 hover:bg-chart-1/20 hover:border-chart-1/50 hover:shadow-chart-1/20'
     },
     { 
       icon: Key, 
       label: currentText.rentProperties, 
       path: '/disewa',
-      color: 'text-chart-4',
-      bg: 'bg-chart-4/10 border-chart-4/30 hover:bg-chart-4/20 hover:border-chart-4/50 hover:shadow-chart-4/20'
     },
     { 
       icon: Rocket, 
       label: currentText.preLaunch, 
       path: '/pre-launching',
-      color: 'text-accent-foreground',
-      bg: 'bg-accent/10 border-accent/30 hover:bg-accent/20 hover:border-accent/50 hover:shadow-accent/20'
     },
     { 
       icon: Hammer, 
       label: currentText.newProjects, 
       path: '/new-projects',
-      color: 'text-chart-3',
-      bg: 'bg-chart-3/10 border-chart-3/30 hover:bg-chart-3/20 hover:border-chart-3/50 hover:shadow-chart-3/20'
     },
     { 
       icon: Box, 
       label: 'VR Tours', 
       path: '/vr-tour',
-      color: 'text-primary',
-      bg: 'bg-primary/10 border-primary/30 hover:bg-primary/20 hover:border-primary/50 hover:shadow-primary/20'
     }
   ];
 
@@ -280,10 +273,10 @@ const Navigation = () => {
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className={`w-8 h-8 p-0 rounded-xl border hover:scale-105 hover:shadow-md transition-all duration-300 ${item.bg}`}
+                    className={`w-8 h-8 p-0 rounded-xl border ${navIconStyle}`}
                     onClick={() => navigate(item.path)}
                   >
-                    <item.icon className={`h-4 w-4 ${item.color}`} />
+                    <item.icon className={`h-4 w-4 ${navIconColor}`} />
                   </Button>
                   <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-foreground text-background text-[10px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
                     {item.label}
@@ -296,10 +289,10 @@ const Navigation = () => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="w-8 h-8 p-0 rounded-xl bg-secondary/10 border border-secondary/20 hover:bg-secondary/20 hover:border-secondary/40 hover:scale-105 hover:shadow-md transition-all duration-300"
+                  className={`w-8 h-8 p-0 rounded-xl border ${navIconStyle}`}
                   onClick={() => navigate('/services')}
                 >
-                  <Settings2 className="h-4 w-4 text-secondary-foreground" />
+                  <Settings2 className={`h-4 w-4 ${navIconColor}`} />
                 </Button>
                 <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-foreground text-background text-[10px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
                   {currentText.services}
@@ -311,9 +304,9 @@ const Navigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate('/add-property')}
-                className="h-8 px-3 text-xs font-medium rounded-xl bg-destructive/10 border border-destructive/20 hover:bg-destructive/20 hover:border-destructive/40 hover:scale-105 hover:shadow-md transition-all duration-300"
+                className={`h-8 px-3 text-xs font-medium rounded-xl border ${navIconStyle}`}
               >
-                <Plus className="h-4 w-4 xl:mr-1.5 text-destructive" />
+                <Plus className={`h-4 w-4 xl:mr-1.5 ${navIconColor}`} />
                 <span className="hidden xl:inline text-foreground/80">Add Property</span>
               </Button>
 
@@ -322,9 +315,9 @@ const Navigation = () => {
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className="h-8 px-3 text-xs font-medium rounded-xl bg-gold-primary/10 border border-gold-primary/20 hover:bg-gold-primary/20 hover:border-gold-primary/40 hover:scale-105 hover:shadow-md transition-all duration-300"
+                    className={`h-8 px-3 text-xs font-medium rounded-xl border ${navIconStyle}`}
                   >
-                    <TrendingUp className="h-4 w-4 xl:mr-1.5 text-gold-primary" />
+                    <TrendingUp className={`h-4 w-4 xl:mr-1.5 ${navIconColor}`} />
                     <span className="hidden xl:inline text-foreground/80">Investment</span>
                     <ChevronDown className="h-3 w-3 ml-1 hidden xl:inline text-muted-foreground" />
                   </Button>
@@ -477,7 +470,7 @@ const Navigation = () => {
                       key={item.path}
                       icon={item.icon} 
                       label={item.label} 
-                      colorClass={item.color}
+                      colorClass={navIconColor}
                       onClick={() => { navigate(item.path); toggleMenu(); }}
                     />
                   ))}
