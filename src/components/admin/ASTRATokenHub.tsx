@@ -302,7 +302,7 @@ const ASTRATokenHub = () => {
   return (
     <div className="space-y-3 animate-in fade-in duration-300">
       {/* Header - Same style as Dashboard Overview */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-yellow-500/5 rounded-xl border border-border/30 px-4 py-3">
+      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-gold-primary/5 rounded-xl border border-border/30 px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-chart-3/10">
             <Coins className="h-5 w-5 text-chart-3" />

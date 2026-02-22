@@ -144,18 +144,18 @@ const VendorReviews = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Reviews</h2>
-        <p className="text-gray-600 dark:text-gray-400">Manage and respond to customer reviews</p>
+        <h2 className="text-2xl font-bold text-foreground">Reviews</h2>
+        <p className="text-muted-foreground">Manage and respond to customer reviews</p>
       </div>
 
       {reviews.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <MessageSquare className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            <MessageSquare className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               No reviews yet
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-muted-foreground">
               Reviews from customers will appear here
             </p>
           </CardContent>
@@ -180,7 +180,7 @@ const VendorReviews = () => {
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     <span>{review.customer.full_name}</span>
-                    <span className="text-gray-500">•</span>
+                    <span className="text-muted-foreground">•</span>
                     <span>{new Date(review.created_at).toLocaleDateString()}</span>
                   </div>
                 </CardDescription>
@@ -189,18 +189,18 @@ const VendorReviews = () => {
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <p className="text-gray-800 dark:text-gray-200">
+                    <p className="text-foreground">
                       {review.review_text}
                     </p>
                   </div>
                   
                   {review.response_text ? (
-                    <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                    <div className="bg-muted/50 p-4 rounded-lg">
                       <h4 className="font-medium text-sm mb-2">Your Response:</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground">
                         {review.response_text}
                       </p>
-                      <p className="text-xs text-gray-500 mt-2">
+                      <p className="text-xs text-muted-foreground mt-2">
                         Responded on {new Date(review.response_date).toLocaleDateString()}
                       </p>
                     </div>
