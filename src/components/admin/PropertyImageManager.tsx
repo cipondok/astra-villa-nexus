@@ -926,7 +926,7 @@ const PropertyImageManager = () => {
                     const isAiChecking = aiCheckingUrl === img;
                     
                     return (
-                      <div key={idx} className={`rounded-lg overflow-hidden border ${isBroken ? 'border-destructive border-2' : ai && !ai.relevant ? 'border-yellow-500 border-2' : ''}`}>
+                      <div key={idx} className={`rounded-lg overflow-hidden border ${isBroken ? 'border-destructive border-2' : ai && !ai.relevant ? 'border-chart-3 border-2' : ''}`}>
                         {/* Image */}
                         <div className="aspect-video bg-muted relative group/img">
                           {isBroken ? (

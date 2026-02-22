@@ -207,9 +207,9 @@ const PropertyInsertForm = () => {
         <CardDescription>
           Create a new property listing in the system
           {!isAuthorizedForRestrictedTypes() && (
-            <div className="mt-2 flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-              <AlertTriangle className="h-4 w-4 text-amber-600" />
-              <span className="text-sm text-amber-700">
+            <div className="mt-2 flex items-center gap-2 p-3 bg-chart-3/10 border border-chart-3/20 rounded-lg">
+              <AlertTriangle className="h-4 w-4 text-chart-3" />
+              <span className="text-sm text-chart-3">
                 Note: Only admins, agents, and property owners can create "New Project" or "Pre-Launching" properties.
               </span>
             </div>
@@ -401,14 +401,14 @@ const PropertyInsertForm = () => {
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                         {['new_project', 'pre_launching'].includes(option.value) && !isAuthorizedForRestrictedTypes() && (
-                          <span className="text-xs text-amber-600 ml-2">(Restricted)</span>
+                          <span className="text-xs text-chart-3 ml-2">(Restricted)</span>
                         )}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 {['new_project', 'pre_launching'].includes(formData.development_status) && (
-                  <p className="text-xs text-amber-600 mt-1">
+                  <p className="text-xs text-chart-3 mt-1">
                     This option is restricted to authorized users only.
                   </p>
                 )}

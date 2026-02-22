@@ -179,10 +179,10 @@ const PropertyManagementAdvanced = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Properties</p>
+                <p className="text-sm font-medium text-muted-foreground">Total Properties</p>
                 <p className="text-2xl font-bold">567</p>
               </div>
-              <Building2 className="h-8 w-8 text-blue-500" />
+              <Building2 className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -191,10 +191,10 @@ const PropertyManagementAdvanced = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Pending Review</p>
+                <p className="text-sm font-medium text-muted-foreground">Pending Review</p>
                 <p className="text-2xl font-bold">23</p>
               </div>
-              <Clock className="h-8 w-8 text-yellow-500" />
+              <Clock className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -203,10 +203,10 @@ const PropertyManagementAdvanced = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Flagged</p>
+                <p className="text-sm font-medium text-muted-foreground">Flagged</p>
                 <p className="text-2xl font-bold">5</p>
               </div>
-              <Flag className="h-8 w-8 text-red-500" />
+              <Flag className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -215,10 +215,10 @@ const PropertyManagementAdvanced = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Views</p>
+                <p className="text-sm font-medium text-muted-foreground">Total Views</p>
                 <p className="text-2xl font-bold">15.2K</p>
               </div>
-              <Eye className="h-8 w-8 text-green-500" />
+              <Eye className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -227,10 +227,10 @@ const PropertyManagementAdvanced = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Avg. Value</p>
+                <p className="text-sm font-medium text-muted-foreground">Avg. Value</p>
                 <p className="text-2xl font-bold">1.8B</p>
               </div>
-              <DollarSign className="h-8 w-8 text-purple-500" />
+              <DollarSign className="h-8 w-8 text-accent-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -351,7 +351,7 @@ const PropertyManagementAdvanced = () => {
                             <>
                               <Button 
                                 size="sm" 
-                                className="bg-green-600 hover:bg-green-700"
+                                className="bg-chart-1 hover:bg-chart-1/90 text-primary-foreground"
                                 onClick={() => handleApproveProperty(property.id)}
                               >
                                 <CheckCircle className="h-3 w-3" />
@@ -413,7 +413,7 @@ const PropertyManagementAdvanced = () => {
                           <Eye className="h-3 w-3 mr-1" />
                           Review
                         </Button>
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                        <Button size="sm" className="bg-chart-1 hover:bg-chart-1/90 text-primary-foreground">
                           <CheckCircle className="h-3 w-3 mr-1" />
                           Approve
                         </Button>

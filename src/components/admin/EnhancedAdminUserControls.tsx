@@ -252,7 +252,7 @@ const EnhancedAdminUserControls = ({ user, onUserUpdate }: EnhancedAdminUserCont
           onClick={() => unsuspendUserMutation.mutate()}
           disabled={unsuspendUserMutation.isPending}
           title="Unsuspend user"
-          className="border-green-300 text-green-700 hover:bg-green-50"
+          className="border-chart-1/30 text-chart-1 hover:bg-chart-1/10"
         >
           <Unlock className="h-4 w-4" />
         </Button>
@@ -263,7 +263,7 @@ const EnhancedAdminUserControls = ({ user, onUserUpdate }: EnhancedAdminUserCont
               size="sm"
               variant="outline"
               title="Suspend user"
-              className="border-red-300 text-red-700 hover:bg-red-50"
+              className="border-destructive/30 text-destructive hover:bg-destructive/10"
             >
               <Lock className="h-4 w-4" />
             </Button>
@@ -459,8 +459,8 @@ const EnhancedAdminUserControls = ({ user, onUserUpdate }: EnhancedAdminUserCont
             {user.is_suspended && user.suspension_reason && (
               <div>
                 <Label className="text-sm font-medium">Suspension Details</Label>
-                <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-800">{user.suspension_reason}</p>
+                <div className="mt-2 p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
+                  <p className="text-sm text-destructive">{user.suspension_reason}</p>
                 </div>
               </div>
             )}
