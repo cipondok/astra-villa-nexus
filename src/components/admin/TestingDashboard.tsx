@@ -127,10 +127,10 @@ const TestingDashboard = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'passed': return 'text-green-600 bg-green-500/10 border-green-500/30';
-      case 'failed': return 'text-red-600 bg-red-500/10 border-red-500/30';
-      case 'pending': return 'text-yellow-600 bg-yellow-500/10 border-yellow-500/30';
-      case 'warning': return 'text-orange-600 bg-orange-500/10 border-orange-500/30';
+      case 'passed': return 'text-chart-1 bg-chart-1/10 border-chart-1/30';
+      case 'failed': return 'text-destructive bg-destructive/10 border-destructive/30';
+      case 'pending': return 'text-chart-3 bg-chart-3/10 border-chart-3/30';
+      case 'warning': return 'text-chart-3 bg-chart-3/10 border-chart-3/30';
       case 'skipped': return 'text-muted-foreground bg-muted/50 border-border';
       default: return 'text-muted-foreground';
     }
@@ -138,10 +138,10 @@ const TestingDashboard = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'passed': return <CheckCircle2 className="h-4 w-4 text-green-600" />;
-      case 'failed': return <XCircle className="h-4 w-4 text-red-600" />;
-      case 'pending': return <Clock className="h-4 w-4 text-yellow-600" />;
-      case 'warning': return <AlertTriangle className="h-4 w-4 text-orange-600" />;
+      case 'passed': return <CheckCircle2 className="h-4 w-4 text-chart-1" />;
+      case 'failed': return <XCircle className="h-4 w-4 text-destructive" />;
+      case 'pending': return <Clock className="h-4 w-4 text-chart-3" />;
+      case 'warning': return <AlertTriangle className="h-4 w-4 text-chart-3" />;
       default: return <Clock className="h-4 w-4 text-muted-foreground" />;
     }
   };
@@ -194,50 +194,50 @@ const TestingDashboard = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20">
+        <Card className="bg-gradient-to-br from-chart-1/10 to-chart-1/5 border-chart-1/20">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Pass Rate</p>
-                <p className="text-2xl font-bold text-green-600">{overallPassRate}%</p>
+                <p className="text-2xl font-bold text-chart-1">{overallPassRate}%</p>
               </div>
-              <CheckCircle2 className="h-8 w-8 text-green-600/50" />
+              <CheckCircle2 className="h-8 w-8 text-chart-1/50" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20">
+        <Card className="bg-gradient-to-br from-chart-4/10 to-chart-4/5 border-chart-4/20">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Tests</p>
-                <p className="text-2xl font-bold text-blue-600">{totalTests}</p>
+                <p className="text-2xl font-bold text-chart-4">{totalTests}</p>
               </div>
-              <Layers className="h-8 w-8 text-blue-600/50" />
+              <Layers className="h-8 w-8 text-chart-4/50" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-500/10 to-purple-500/5 border-purple-500/20">
+        <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Coverage</p>
-                <p className="text-2xl font-bold text-purple-600">78.5%</p>
+                <p className="text-2xl font-bold text-accent-foreground">78.5%</p>
               </div>
-              <Target className="h-8 w-8 text-purple-600/50" />
+              <Target className="h-8 w-8 text-accent-foreground/50" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-red-500/10 to-red-500/5 border-red-500/20">
+        <Card className="bg-gradient-to-br from-destructive/10 to-destructive/5 border-destructive/20">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Failed</p>
-                <p className="text-2xl font-bold text-red-600">{totalFailed}</p>
+                <p className="text-2xl font-bold text-destructive">{totalFailed}</p>
               </div>
-              <XCircle className="h-8 w-8 text-red-600/50" />
+              <XCircle className="h-8 w-8 text-destructive/50" />
             </div>
           </CardContent>
         </Card>

@@ -170,9 +170,9 @@ const SimpleUserManagement = () => {
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      approved: "bg-green-100 text-green-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      rejected: "bg-red-100 text-red-800"
+      approved: "bg-chart-1/10 text-chart-1",
+      pending: "bg-chart-3/10 text-chart-3",
+      rejected: "bg-destructive/10 text-destructive"
     };
     return (
       <Badge className={colors[status as keyof typeof colors] || colors.pending}>
@@ -183,12 +183,12 @@ const SimpleUserManagement = () => {
 
   const getRoleBadge = (role: string) => {
     const colors = {
-      admin: "bg-red-100 text-red-800",
-      agent: "bg-blue-100 text-blue-800",
-      vendor: "bg-purple-100 text-purple-800",
-      property_owner: "bg-orange-100 text-orange-800",
-      customer_service: "bg-cyan-100 text-cyan-800",
-      general_user: "bg-gray-100 text-gray-800"
+      admin: "bg-destructive/10 text-destructive",
+      agent: "bg-chart-4/10 text-chart-4",
+      vendor: "bg-accent/10 text-accent-foreground",
+      property_owner: "bg-chart-3/10 text-chart-3",
+      customer_service: "bg-chart-5/10 text-chart-5",
+      general_user: "bg-muted text-muted-foreground"
     };
     return (
       <Badge className={colors[role as keyof typeof colors] || colors.general_user}>

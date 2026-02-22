@@ -383,7 +383,7 @@ const OptimizedImageUpload: React.FC<OptimizedImageUploadProps> = ({
                   {/* Background removed indicator */}
                   {result.backgroundRemovedFile && (
                     <div className="absolute top-2 right-2">
-                      <Badge variant="outline" className="text-xs bg-green-100 text-green-800">
+                      <Badge variant="outline" className="text-xs bg-chart-1/10 text-chart-1">
                         BG Removed
                       </Badge>
                     </div>
@@ -397,7 +397,7 @@ const OptimizedImageUpload: React.FC<OptimizedImageUploadProps> = ({
                   <div className="flex justify-between text-xs text-muted-foreground">
                     <span>{formatFileSize(result.originalFile.size)}</span>
                     <span>→</span>
-                    <span className="text-green-600">
+                    <span className="text-chart-1">
                       {formatFileSize(result.optimizedFile.size)}
                     </span>
                   </div>
@@ -430,13 +430,13 @@ const OptimizedImageUpload: React.FC<OptimizedImageUploadProps> = ({
       )}
 
       {/* Guidelines */}
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="bg-chart-4/5 border-chart-4/20">
         <CardContent className="p-4">
-          <h4 className="font-medium text-blue-900 mb-2 flex items-center">
+          <h4 className="font-medium text-foreground mb-2 flex items-center">
             <Camera className="h-4 w-4 mr-2" />
             Optimization Tips
           </h4>
-          <ul className="text-sm text-blue-800 space-y-1">
+          <ul className="text-sm text-muted-foreground space-y-1">
             <li>• Higher quality settings preserve more detail but create larger files</li>
             <li>• Background removal works best with clear subjects and simple backgrounds</li>
             <li>• WebP format provides better compression than JPEG/PNG</li>
