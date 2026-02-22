@@ -115,6 +115,7 @@ const Index = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [isLoadingPanel, setIsLoadingPanel] = useState(true);
   const [isOnline, setIsOnline] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const { speed: connectionSpeed } = useConnectionSpeed();
 
   // Wrap search function with retry logic
@@ -280,6 +281,14 @@ const Index = () => {
   useEffect(() => {
     const timer = setTimeout(() => setIsLoadingPanel(false), 500);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Auto-slide hero banner
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % 2);
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
   const [showShortcutsPanel, setShowShortcutsPanel] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -501,93 +510,98 @@ const Index = () => {
       {/* Content Layer - full width edge-to-edge */}
       <div className="relative z-10 min-h-screen pb-20 md:pb-4">
         
-        {/* Hero Banner Section - Full Width Image */}
+        {/* Hero Banner + Search Overlay Section */}
         <section className="relative w-full" id="hero-section">
           {/* Hero Banner Slider */}
           <div
             className="w-full overflow-hidden relative"
-            style={{ height: 'clamp(200px, 40vw, 500px)' }}
+            style={{ height: 'clamp(400px, 60vw, 650px)' }}
           >
             {[astraBanner1, astraBanner2].map((banner, index) => (
               <img 
                 key={index}
                 src={banner} 
                 alt={`Astra Villa - Indonesia's Smart Property Platform ${index + 1}`} 
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ 
-                  animation: `fadeSlide 10s infinite ${index * 5}s`
-                }}
+                className={cn(
+                  "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out",
+                  currentSlide === index ? "opacity-100 z-10" : "opacity-0 z-0"
+                )}
               />
             ))}
-            <style>{`
-              @keyframes fadeSlide {
-                0%, 45% { opacity: 1; z-index: 10; }
-                50%, 95% { opacity: 0; z-index: 0; }
-                100% { opacity: 1; z-index: 10; }
-              }
-            `}</style>
-            {/* Subtle overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30 pointer-events-none" />
+            {/* Dark overlay for readability */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/60 z-20 pointer-events-none" />
+            
+            {/* Slide indicators */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+              {[0, 1].map((i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentSlide(i)}
+                  className={cn(
+                    "w-8 h-1.5 rounded-full transition-all duration-300",
+                    currentSlide === i ? "bg-white w-12" : "bg-white/50"
+                  )}
+                />
+              ))}
+            </div>
           </div>
-        </section>
-
-        {/* Search Section */}
-        <section className="w-full bg-background py-5 sm:py-7 md:py-10">
-          <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
-            {/* AI Badge */}
-            <div className="text-center mb-5 sm:mb-6">
-              <div className={cn(
-                "inline-flex items-center gap-2 mb-3 sm:mb-4",
-                "px-4 py-1.5 sm:px-6 sm:py-2",
-                "bg-foreground/5 backdrop-blur-xl dark:bg-primary-foreground/8",
-                "rounded-full border border-gold-primary/25",
-                "shadow-[0_0_20px_-5px_hsl(var(--gold-primary)/0.15)]",
-                "animate-in fade-in-50 slide-in-from-bottom-2 duration-700"
-              )}>
-                <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
-                <span className="text-[10px] sm:text-xs font-semibold text-gold-primary/90 uppercase tracking-[0.2em]">
-                  AI-Powered Search
-                </span>
-                <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
+          
+          {/* Search Panel Overlay - centered on slider */}
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none">
+            <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 pointer-events-auto">
+              {/* Title */}
+              <div className="text-center mb-4 sm:mb-6">
+                <div className={cn(
+                  "inline-flex items-center gap-2 mb-3",
+                  "px-4 py-1.5 sm:px-6 sm:py-2",
+                  "bg-white/10 backdrop-blur-md",
+                  "rounded-full border border-white/20",
+                )}>
+                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
+                  <span className="text-[10px] sm:text-xs font-semibold text-white uppercase tracking-[0.2em]">
+                    AI-Powered Search
+                  </span>
+                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
+                </div>
+                
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white drop-shadow-lg">
+                  {t.findYour}
+                </h2>
+                <p className="flex text-xs sm:text-sm text-white/80 items-center justify-center gap-2 font-medium">
+                  <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  {t.searchPowered}
+                </p>
               </div>
               
-              <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black leading-[1.1] mb-2.5 sm:mb-3 animate-in fade-in-50 slide-in-from-bottom-3 duration-700 delay-150">
-                <span className="bg-gradient-to-r from-foreground via-foreground to-foreground/70 dark:from-primary-foreground dark:via-primary-foreground dark:to-primary-foreground/70 bg-clip-text text-transparent drop-shadow-lg">
-                  {t.findYour}
-                </span>
-              </h2>
-              <p className="flex text-xs sm:text-sm md:text-base text-muted-foreground items-center justify-center gap-2 font-medium tracking-wide animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-300">
-                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
-                {t.searchPowered}
-              </p>
+              {/* Search Panel */}
+              <Suspense fallback={<SearchPanelSkeleton />}>
+                <SearchErrorBoundary>
+                  <AstraSearchPanel
+                    language={language}
+                    onSearch={(searchData) => {
+                      setQuickSearch(searchData.searchQuery || "");
+                      handleQuickSearch(searchData);
+                    }}
+                    onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                    resultsCount={hasSearched ? searchResults.length : undefined}
+                  />
+                </SearchErrorBoundary>
+              </Suspense>
             </div>
-            
-            {/* Search Panel */}
-            <Suspense fallback={<SearchPanelSkeleton />}>
-              <SearchErrorBoundary>
-                <AstraSearchPanel
-                  language={language}
-                  onSearch={(searchData) => {
-                    setQuickSearch(searchData.searchQuery || "");
-                    handleQuickSearch(searchData);
-                  }}
-                  onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                  resultsCount={hasSearched ? searchResults.length : undefined}
-                />
-              </SearchErrorBoundary>
-            </Suspense>
-            
-            {/* Retry Indicator */}
-            {isRetrying && (
-              <div className="mt-2 bg-gold-primary text-foreground px-3 py-1.5 rounded-lg shadow-lg flex items-center justify-center gap-2 animate-in slide-in-from-bottom-2">
-                <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                <span className="text-xs font-bold">Retrying... ({retryCount}/3)</span>
-              </div>
-            )}
           </div>
+        </section>
+            
+        {/* Retry Indicator */}
+        {isRetrying && (
+          <div className="mt-2 bg-gold-primary text-foreground px-3 py-1.5 rounded-lg shadow-lg flex items-center justify-center gap-2 animate-in slide-in-from-bottom-2">
+            <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+            <span className="text-xs font-bold">Retrying... ({retryCount}/3)</span>
+          </div>
+        )}
 
-          {/* Featured Properties Slideshow */}
-          <div className="w-full mt-5 md:mt-8">
+        {/* Featured Properties Slideshow */}
+        <section className="w-full bg-background py-5 md:py-8">
+          <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
             <div className="flex items-center justify-center gap-2.5 mb-3">
               <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent to-gold-primary/40" />
               <Star className="h-3 w-3 md:h-3.5 md:w-3.5 text-gold-primary fill-gold-primary/40" />
