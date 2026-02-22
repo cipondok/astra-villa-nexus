@@ -260,11 +260,11 @@ const WNAPropertyTypes: React.FC = () => {
   const t = copy[language];
 
   const colorClasses = {
-    blue: { bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-400', border: 'border-blue-200 dark:border-blue-800' },
-    green: { bg: 'bg-green-100 dark:bg-green-900/50', text: 'text-green-600 dark:text-green-400', border: 'border-green-200 dark:border-green-800' },
-    purple: { bg: 'bg-purple-100 dark:bg-purple-900/50', text: 'text-purple-600 dark:text-purple-400', border: 'border-purple-200 dark:border-purple-800' },
-    amber: { bg: 'bg-amber-100 dark:bg-amber-900/50', text: 'text-amber-600 dark:text-amber-400', border: 'border-amber-200 dark:border-amber-800' },
-    red: { bg: 'bg-red-100 dark:bg-red-900/50', text: 'text-red-600 dark:text-red-400', border: 'border-red-200 dark:border-red-800' }
+    blue: { bg: 'bg-chart-4/10', text: 'text-chart-4', border: 'border-chart-4/20' },
+    green: { bg: 'bg-chart-1/10', text: 'text-chart-1', border: 'border-chart-1/20' },
+    purple: { bg: 'bg-accent/10', text: 'text-accent', border: 'border-accent/20' },
+    amber: { bg: 'bg-chart-3/10', text: 'text-chart-3', border: 'border-chart-3/20' },
+    red: { bg: 'bg-destructive/10', text: 'text-destructive', border: 'border-destructive/20' }
   };
 
   return (
@@ -296,8 +296,8 @@ const WNAPropertyTypes: React.FC = () => {
                 "bg-white/60 dark:bg-white/5",
                 "border-2",
                 isProhibited 
-                  ? "border-red-300 dark:border-red-800" 
-                  : "border-border/50 dark:border-white/10 hover:border-accent/40"
+                  ? "border-destructive/30" 
+                  : "border-border/50 hover:border-accent/40"
               )}
             >
               {/* Header */}
@@ -309,9 +309,9 @@ const WNAPropertyTypes: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <h4 className="text-xs sm:text-sm font-bold text-foreground">{property.name}</h4>
                     {isProhibited ? (
-                      <XCircle className="h-4 w-4 text-red-500" />
+                      <XCircle className="h-4 w-4 text-destructive" />
                     ) : (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4 text-chart-1" />
                     )}
                   </div>
                   <p className={cn("text-[10px] sm:text-xs", colors.text)}>{property.ownership}</p>

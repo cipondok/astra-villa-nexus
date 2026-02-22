@@ -270,7 +270,7 @@ const LiveAuctionPlatform = ({ auctionId }: LiveAuctionPlatformProps) => {
           </div>
         </div>
         {timeLeft < 300 && isLive && (
-          <div className="mt-2 flex items-center gap-2 text-yellow-200">
+          <div className="mt-2 flex items-center gap-2 text-chart-3">
             <AlertTriangle className="h-4 w-4" />
             <span className="text-sm">Ending soon! Bids may extend auction.</span>
           </div>
@@ -317,9 +317,9 @@ const LiveAuctionPlatform = ({ auctionId }: LiveAuctionPlatformProps) => {
           </div>
 
           {isWinning && (
-            <div className="mt-4 p-3 bg-green-50 dark:bg-green-950 rounded-lg flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-green-500" />
-              <span className="text-green-700 dark:text-green-300 font-medium">
+            <div className="mt-4 p-3 bg-chart-1/10 rounded-lg flex items-center gap-2">
+              <Trophy className="h-5 w-5 text-chart-1" />
+              <span className="text-chart-1 font-medium">
                 You're the highest bidder!
               </span>
             </div>
@@ -338,11 +338,11 @@ const LiveAuctionPlatform = ({ auctionId }: LiveAuctionPlatformProps) => {
             <div 
               key={bid.id} 
               className={`flex items-center justify-between p-2 rounded-lg ${
-                i === 0 ? "bg-green-50 dark:bg-green-950" : "bg-muted/50"
+                i === 0 ? "bg-chart-1/10" : "bg-muted/50"
               }`}
             >
               <div className="flex items-center gap-2">
-                {i === 0 && <Trophy className="h-4 w-4 text-yellow-500" />}
+                {i === 0 && <Trophy className="h-4 w-4 text-chart-3" />}
                 <span className="text-sm">
                   {bid.bidder_id === user?.id ? "You" : (bid.profiles as any)?.full_name || "Anonymous"}
                 </span>

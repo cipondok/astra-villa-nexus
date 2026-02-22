@@ -140,11 +140,11 @@ const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <div className="flex items-center gap-3 mb-4 sm:mb-0">
             <div className="relative">
-              <Zap className="h-6 w-6 text-red-500 animate-bounce" />
-              <div className="absolute inset-0 w-6 h-6 bg-red-500/20 rounded-full animate-ping"></div>
+              <Zap className="h-6 w-6 text-destructive animate-bounce" />
+              <div className="absolute inset-0 w-6 h-6 bg-destructive/20 rounded-full animate-ping"></div>
             </div>
             <div>
-              <h2 className="text-xl font-bold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
+              <h2 className="text-xl font-bold bg-gradient-to-r from-destructive to-chart-3 bg-clip-text text-transparent">
                 {currentText.title}
               </h2>
               <p className="text-sm text-muted-foreground">{currentText.subtitle}</p>
@@ -152,8 +152,8 @@ const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {
           </div>
           
           <div className="flex items-center gap-2">
-            <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 animate-pulse">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+            <Badge className="bg-chart-1/10 text-chart-1 animate-pulse">
+              <div className="w-2 h-2 bg-chart-1 rounded-full mr-1"></div>
               {currentText.liveNow}
             </Badge>
             <Badge variant="outline" className="flex items-center gap-1">
@@ -177,8 +177,8 @@ const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {
               onClick={() => setActiveFilter(filter.key as any)}
               className={`transition-all duration-300 ${
                 activeFilter === filter.key 
-                  ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white' 
-                  : 'hover:bg-red-50 dark:hover:bg-red-900/20'
+                  ? 'bg-gradient-to-r from-destructive to-chart-3 text-primary-foreground' 
+                  : 'hover:bg-destructive/5'
               }`}
             >
               {filter.label}
@@ -198,11 +198,11 @@ const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {
       {endingSoonAuctions.length > 0 && (
         <section className="p-3 md:p-4">
           <div className="flex items-center gap-2 mb-4">
-            <Clock className="h-5 w-5 text-orange-500 animate-pulse" />
-            <h3 className="text-lg font-bold text-orange-600">
+            <Clock className="h-5 w-5 text-chart-3 animate-pulse" />
+            <h3 className="text-lg font-bold text-chart-3">
               {currentText.endingSoon}
             </h3>
-            <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 animate-bounce">
+            <Badge className="bg-chart-3/10 text-chart-3 animate-bounce">
               Urgent
             </Badge>
           </div>
