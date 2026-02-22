@@ -168,7 +168,7 @@ const GroupBuyingDeals: React.FC<GroupBuyingDealsProps> = ({ city, className }) 
         <Card className={cn(
           'overflow-hidden transition-shadow hover:shadow-lg',
           featured && 'ring-2 ring-primary',
-          isTargetMet && 'ring-2 ring-green-500'
+          isTargetMet && 'ring-2 ring-chart-1'
         )}>
           <div className="relative">
             <img
@@ -244,7 +244,7 @@ const GroupBuyingDeals: React.FC<GroupBuyingDealsProps> = ({ city, className }) 
               </div>
               <Progress 
                 value={progress} 
-                className={cn('h-2', isTargetMet && '[&>div]:bg-green-500')} 
+                className={cn('h-2', isTargetMet && '[&>div]:bg-chart-1')} 
               />
               {!isTargetMet && (
                 <p className="text-xs text-muted-foreground text-center">

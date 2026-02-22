@@ -135,7 +135,7 @@ const Property3DShowcase = () => {
             </Button>
           </div>
           
-          <Badge variant="outline" className="bg-blue-50 text-blue-700">
+          <Badge variant="outline" className="bg-chart-4/10 text-chart-4">
             <Box className="h-3 w-3 mr-1" />
             3D Showcase
           </Badge>
@@ -157,7 +157,7 @@ const Property3DShowcase = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <Card className="text-center">
               <CardContent className="p-6">
-                <Eye className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+                <Eye className="h-12 w-12 text-chart-4 mx-auto mb-4" />
                 <h3 className="font-semibold mb-2">Virtual Tours</h3>
                 <p className="text-sm text-muted-foreground">
                   Professional Matterport 3D scans with VR support
@@ -167,7 +167,7 @@ const Property3DShowcase = () => {
             
             <Card className="text-center">
               <CardContent className="p-6">
-                <Box className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                <Box className="h-12 w-12 text-chart-1 mx-auto mb-4" />
                 <h3 className="font-semibold mb-2">3D Models</h3>
                 <p className="text-sm text-muted-foreground">
                   Interactive architectural models with HD textures
@@ -177,7 +177,7 @@ const Property3DShowcase = () => {
             
             <Card className="text-center">
               <CardContent className="p-6">
-                <Camera className="h-12 w-12 text-purple-500 mx-auto mb-4" />
+                <Camera className="h-12 w-12 text-accent mx-auto mb-4" />
                 <h3 className="font-semibold mb-2">Virtual Staging</h3>
                 <p className="text-sm text-muted-foreground">
                   AI-powered furniture and decor placement
@@ -249,7 +249,7 @@ const Property3DShowcase = () => {
                           {property.property_type}
                         </Badge>
                         {(property.virtual_tour_url || property.three_d_model_url) && (
-                          <Badge className="bg-blue-600 text-white">
+                          <Badge className="bg-primary text-primary-foreground">
                             3D Available
                           </Badge>
                         )}
@@ -330,32 +330,32 @@ const Property3DShowcase = () => {
           <h2 className="text-2xl font-bold text-center mb-8">3D Technology Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="bg-blue-100 dark:bg-blue-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Eye className="h-8 w-8 text-blue-600" />
+              <div className="bg-chart-4/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Eye className="h-8 w-8 text-chart-4" />
               </div>
               <h3 className="font-semibold mb-2">Matterport Integration</h3>
               <p className="text-sm text-muted-foreground">Professional 3D scans with dollhouse and floor plan views</p>
             </div>
             
             <div className="text-center">
-              <div className="bg-green-100 dark:bg-green-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Box className="h-8 w-8 text-green-600" />
+              <div className="bg-chart-1/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Box className="h-8 w-8 text-chart-1" />
               </div>
               <h3 className="font-semibold mb-2">Sketchfab Models</h3>
               <p className="text-sm text-muted-foreground">Interactive 3D architectural models with real-time rendering</p>
             </div>
             
             <div className="text-center">
-              <div className="bg-purple-100 dark:bg-purple-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Play className="h-8 w-8 text-purple-600" />
+              <div className="bg-accent/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Play className="h-8 w-8 text-accent" />
               </div>
               <h3 className="font-semibold mb-2">VR Compatible</h3>
               <p className="text-sm text-muted-foreground">Experience properties in virtual reality for ultimate immersion</p>
             </div>
             
             <div className="text-center">
-              <div className="bg-orange-100 dark:bg-orange-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Camera className="h-8 w-8 text-orange-600" />
+              <div className="bg-chart-3/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Camera className="h-8 w-8 text-chart-3" />
               </div>
               <h3 className="font-semibold mb-2">HD Textures</h3>
               <p className="text-sm text-muted-foreground">High-definition materials and lighting for photorealistic results</p>
