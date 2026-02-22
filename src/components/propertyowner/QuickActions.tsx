@@ -69,42 +69,42 @@ const QuickActions = () => {
       title: "Add Property",
       description: "List a new property",
       icon: PlusCircle,
-      color: "bg-blue-500 hover:bg-blue-600",
+      color: "bg-primary hover:bg-primary/90",
       onClick: handleAddProperty
     },
     {
       title: "View Analytics",
       description: "Check performance",
       icon: BarChart3,
-      color: "bg-green-500 hover:bg-green-600",
+      color: "bg-chart-1 hover:bg-chart-1/90",
       onClick: handleViewAnalytics
     },
     {
       title: "Messages",
       description: "Reply to inquiries",
       icon: MessageSquare,
-      color: "bg-orange-500 hover:bg-orange-600",
+      color: "bg-chart-3 hover:bg-chart-3/90",
       onClick: handleMessages
     },
     {
       title: "Schedule Tour",
       description: "Set up viewing",
       icon: Calendar,
-      color: "bg-purple-500 hover:bg-purple-600",
+      color: "bg-accent hover:bg-accent/90",
       onClick: handleScheduleTour
     },
     {
       title: "Upload Photos",
       description: "Add new images",
       icon: Camera,
-      color: "bg-pink-500 hover:bg-pink-600",
+      color: "bg-chart-5 hover:bg-chart-5/90",
       onClick: handleUploadPhotos
     },
     {
       title: "Settings",
       description: "Manage account",
       icon: Settings,
-      color: "bg-gray-500 hover:bg-gray-600",
+      color: "bg-muted-foreground hover:bg-muted-foreground/90",
       onClick: handleSettings
     }
   ];

@@ -173,11 +173,11 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
 
   // Define propertyType options for the toggle group and keep the existing text usage
   const propertyTypeOptions = [
-    { value: "", label: currentText.allTypes, colorClass: "bg-gradient-to-r from-blue-400 to-blue-600 text-white" },
-    { value: "apartment", label: currentText.apartment, colorClass: "bg-gradient-to-r from-purple-400 to-purple-600 text-white" },
-    { value: "house", label: currentText.house, colorClass: "bg-gradient-to-r from-pink-400 to-pink-600 text-white" },
-    { value: "villa", label: currentText.villa, colorClass: "bg-gradient-to-r from-orange-400 to-orange-600 text-white" },
-    { value: "townhouse", label: currentText.townhouse, colorClass: "bg-gradient-to-r from-green-400 to-green-600 text-white" },
+    { value: "", label: currentText.allTypes, colorClass: "bg-gradient-to-r from-primary/80 to-primary text-primary-foreground" },
+    { value: "apartment", label: currentText.apartment, colorClass: "bg-gradient-to-r from-accent/80 to-accent text-accent-foreground" },
+    { value: "house", label: currentText.house, colorClass: "bg-gradient-to-r from-chart-5/80 to-chart-5 text-primary-foreground" },
+    { value: "villa", label: currentText.villa, colorClass: "bg-gradient-to-r from-chart-3/80 to-chart-3 text-primary-foreground" },
+    { value: "townhouse", label: currentText.townhouse, colorClass: "bg-gradient-to-r from-chart-1/80 to-chart-1 text-primary-foreground" },
   ];
 
   // Smart filter options

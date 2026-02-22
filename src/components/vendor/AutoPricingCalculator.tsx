@@ -297,7 +297,7 @@ const AutoPricingCalculator = ({
     if (input.type === 'select') {
       return (
         <div key={input.name} className="space-y-2">
-          <Label>{input.label} {input.required && <span className="text-red-500">*</span>}</Label>
+          <Label>{input.label} {input.required && <span className="text-destructive">*</span>}</Label>
           <Select onValueChange={(value) => handleInputChange(input.name, value)}>
             <SelectTrigger>
               <SelectValue placeholder={`Pilih ${input.label}`} />
@@ -317,7 +317,7 @@ const AutoPricingCalculator = ({
     return (
       <div key={input.name} className="space-y-2">
         <Label htmlFor={input.name}>
-          {input.label} {input.required && <span className="text-red-500">*</span>}
+          {input.label} {input.required && <span className="text-destructive">*</span>}
         </Label>
         <div className="flex">
           <Input
@@ -356,14 +356,14 @@ const AutoPricingCalculator = ({
 
         {/* Price Display */}
         <div className="border-t pt-6">
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-lg">
+          <div className="bg-gradient-to-r from-chart-1/10 to-chart-4/10 p-6 rounded-lg">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-lg font-semibold">Estimated Price</h3>
                 <p className="text-sm text-muted-foreground">Based on your inputs</p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-green-600">
+                <div className="text-3xl font-bold text-chart-1">
                   {IndonesianValidator.formatIDR(calculatedPrice)}
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -388,14 +388,14 @@ const AutoPricingCalculator = ({
 
           {/* Recommendations */}
           {recommendations.length > 0 && (
-            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+            <div className="mt-4 p-4 bg-chart-4/10 rounded-lg">
               <h4 className="font-medium text-sm mb-2 flex items-center gap-1">
                 <TrendingUp className="h-4 w-4" />
                 Pricing Recommendations:
               </h4>
               <ul className="space-y-1">
                 {recommendations.map((rec, index) => (
-                  <li key={index} className="text-sm text-blue-700">
+                  <li key={index} className="text-sm text-chart-4">
                     • {rec}
                   </li>
                 ))}
@@ -405,8 +405,8 @@ const AutoPricingCalculator = ({
 
           {/* Location Info */}
           {location && (
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="mt-4 p-3 bg-muted rounded-lg">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4" />
                 <span>Location: {location.city}, {location.province}</span>
                 {PROVINCE_MINIMUM_WAGES.find(p => p.code === location.province) && (

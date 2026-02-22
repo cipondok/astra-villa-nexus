@@ -75,15 +75,15 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
 
   const getColor = (type: string) => {
     switch (type) {
-      case 'school': return 'bg-blue-500';
-      case 'hospital': return 'bg-red-500';
-      case 'restaurant': return 'bg-orange-500';
-      case 'shopping': return 'bg-purple-500';
-      case 'park': return 'bg-green-500';
-      case 'beach': return 'bg-cyan-500';
-      case 'temple': return 'bg-yellow-500';
-      case 'market': return 'bg-pink-500';
-      default: return 'bg-gray-500';
+      case 'school': return 'bg-chart-4';
+      case 'hospital': return 'bg-destructive';
+      case 'restaurant': return 'bg-chart-3';
+      case 'shopping': return 'bg-accent';
+      case 'park': return 'bg-chart-1';
+      case 'beach': return 'bg-primary';
+      case 'temple': return 'bg-chart-3';
+      case 'market': return 'bg-accent';
+      default: return 'bg-muted-foreground';
     }
   };
 
@@ -96,8 +96,8 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
       <div className={cn(
         "relative rounded-xl overflow-hidden lg:col-span-3 border border-border",
         isDayMode 
-          ? "bg-gradient-to-b from-sky-100 to-emerald-50" 
-          : "bg-gradient-to-b from-slate-800 to-slate-900",
+          ? "bg-gradient-to-b from-primary/10 to-chart-1/10" 
+          : "bg-gradient-to-b from-card to-card/80",
         isFullscreen ? "h-[600px]" : "h-[300px] sm:h-[400px]"
       )}>
         {/* Grid lines for visual effect */}
@@ -114,11 +114,11 @@ const NeighborhoodVRExplorer: React.FC<NeighborhoodVRExplorerProps> = ({
         {/* Roads */}
         <div className={cn(
           "absolute top-1/2 left-0 right-0 h-8 -translate-y-1/2",
-          isDayMode ? "bg-gray-400" : "bg-gray-600"
+          isDayMode ? "bg-muted-foreground/40" : "bg-muted-foreground/60"
         )} />
         <div className={cn(
           "absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2",
-          isDayMode ? "bg-gray-400" : "bg-gray-600"
+          isDayMode ? "bg-muted-foreground/40" : "bg-muted-foreground/60"
         )} />
 
         {/* Property marker (center) */}

@@ -51,7 +51,7 @@ const WalletPage = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{formatIDR(0)}</div>
+              <div className="text-2xl font-bold text-chart-1">{formatIDR(0)}</div>
               <p className="text-sm text-muted-foreground">Available balance</p>
             </CardContent>
           </Card>

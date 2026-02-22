@@ -3820,36 +3820,36 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               </div>
               
               <div className="grid grid-cols-2 gap-4">
-                <div className="border border-red-200 rounded-lg p-3 space-y-2 bg-red-50/30">
-                  <div className="aspect-video bg-gradient-to-br from-gray-300 to-gray-200 rounded flex items-center justify-center text-xs text-muted-foreground">
+                <div className="border border-destructive/20 rounded-lg p-3 space-y-2 bg-destructive/5">
+                  <div className="aspect-video bg-gradient-to-br from-muted to-muted/80 rounded flex items-center justify-center text-xs text-muted-foreground">
                     <div className="text-center opacity-50">
                       <ImageIcon className="h-8 w-8 mx-auto mb-2" />
                       Too dark or blurry
                     </div>
                   </div>
-                  <p className="text-sm font-medium text-red-700">Poor Quality</p>
+                  <p className="text-sm font-medium text-destructive">Poor Quality</p>
                   <p className="text-xs text-muted-foreground">Blurry, dark, or low-resolution images</p>
                 </div>
 
-                <div className="border border-red-200 rounded-lg p-3 space-y-2 bg-red-50/30">
-                  <div className="aspect-video bg-gradient-to-br from-gray-300 to-gray-200 rounded flex items-center justify-center text-xs text-muted-foreground">
+                <div className="border border-destructive/20 rounded-lg p-3 space-y-2 bg-destructive/5">
+                  <div className="aspect-video bg-gradient-to-br from-muted to-muted/80 rounded flex items-center justify-center text-xs text-muted-foreground">
                     <div className="text-center opacity-50">
                       <ImageIcon className="h-8 w-8 mx-auto mb-2" />
                       Only small detail
                     </div>
                   </div>
-                  <p className="text-sm font-medium text-red-700">Partial View</p>
+                  <p className="text-sm font-medium text-destructive">Partial View</p>
                   <p className="text-xs text-muted-foreground">Only showing a door, window, or small detail</p>
                 </div>
 
-                <div className="border border-red-200 rounded-lg p-3 space-y-2 bg-red-50/30">
-                  <div className="aspect-video bg-gradient-to-br from-gray-300 to-gray-200 rounded flex items-center justify-center text-xs text-muted-foreground">
+                <div className="border border-destructive/20 rounded-lg p-3 space-y-2 bg-destructive/5">
+                  <div className="aspect-video bg-gradient-to-br from-muted to-muted/80 rounded flex items-center justify-center text-xs text-muted-foreground">
                     <div className="text-center opacity-50">
                       <ImageIcon className="h-8 w-8 mx-auto mb-2" />
                       Interior only
                     </div>
                   </div>
-                  <p className="text-sm font-medium text-red-700">Interior Photos</p>
+                  <p className="text-sm font-medium text-destructive">Interior Photos</p>
                   <p className="text-xs text-muted-foreground">Room interiors work poorly for matching property type</p>
                 </div>
 
