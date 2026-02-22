@@ -227,10 +227,10 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
           {/* Primary Search Bar */}
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <Input
                 placeholder={currentText.search}
-                className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                className="pl-10 h-12 border-border focus:border-primary focus:ring-primary"
                 value={searchQuery}
                 onChange={(e) => {
                   console.log("🔤 SEARCH INPUT CHANGED:", e.target.value);
@@ -244,7 +244,7 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
                 <CollapsibleTrigger asChild>
                   <Button 
                     variant="outline" 
-                    className="h-12 px-4 border-gray-200 hover:bg-gray-50 relative"
+                    className="h-12 px-4 border-border hover:bg-muted/50 relative"
                   >
                     <SlidersHorizontal className="h-4 w-4 mr-2" />
                     {currentText.filters}
@@ -264,7 +264,7 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
               
               <Button 
                 onClick={handleSearch}
-                className="h-12 px-6 bg-blue-600 hover:bg-blue-700"
+                className="h-12 px-6 bg-primary hover:bg-primary/90"
               >
                 <Search className="h-4 w-4 mr-2" />
                 {currentText.searchBtn}
@@ -274,9 +274,9 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
 
           {/* Active Filters Display */}
           {activeFilterCount > 0 && (
-            <div className="mt-4 pt-4 border-t border-gray-100">
+            <div className="mt-4 pt-4 border-t border-border">
               <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-medium text-gray-700">
+                <h4 className="text-sm font-medium text-muted-foreground">
                   {currentText.activeFilters} ({activeFilterCount})
                 </h4>
                 <Button 
@@ -309,8 +309,8 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
           {/* Advanced Filters */}
           <Collapsible open={showAdvancedFilters} onOpenChange={setShowAdvancedFilters}>
             <CollapsibleContent className="animate-accordion-down">
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+              <div className="mt-4 pt-4 border-t border-border">
+                <h4 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
                   <SlidersHorizontal className="h-4 w-4" />
                   {currentText.advancedFilters}
                 </h4>
@@ -319,17 +319,17 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                   {/* State Selection */}
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                       <MapPin className="h-3 w-3 inline mr-1" />
                       {currentText.state}
                     </label>
                     <Select value={selectedState} onValueChange={setSelectedState}>
-                      <SelectTrigger className="h-10 bg-white border-gray-200">
+                      <SelectTrigger className="h-10 bg-background border-border">
                         <SelectValue placeholder={currentText.state} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                      <SelectContent className="bg-background border border-border shadow-lg z-50">
                         {indonesianStates.map((state) => (
-                          <SelectItem key={state} value={state} className="hover:bg-blue-50">
+                          <SelectItem key={state} value={state} className="hover:bg-primary/10">
                             {state}
                           </SelectItem>
                         ))}
@@ -339,17 +339,17 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
 
                   {/* Property Type */}
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                       <Home className="h-3 w-3 inline mr-1" />
                       {currentText.type}
                     </label>
                     <Select value={propertyType} onValueChange={setPropertyType}>
-                      <SelectTrigger className="h-10 bg-white border-gray-200">
+                      <SelectTrigger className="h-10 bg-background border-border">
                         <SelectValue placeholder={currentText.allTypes} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                      <SelectContent className="bg-background border border-border shadow-lg z-50">
                         {propertyTypes.map((type) => (
-                          <SelectItem key={type.value} value={type.value} className="hover:bg-blue-50">
+                          <SelectItem key={type.value} value={type.value} className="hover:bg-primary/10">
                             {type.label}
                           </SelectItem>
                         ))}
@@ -359,38 +359,38 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
 
                   {/* Bedrooms */}
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                       <Bed className="h-3 w-3 inline mr-1" />
                       {currentText.bedrooms}
                     </label>
                     <Select value={bedrooms} onValueChange={setBedrooms}>
-                      <SelectTrigger className="h-10 bg-white border-gray-200">
+                      <SelectTrigger className="h-10 bg-background border-border">
                         <SelectValue placeholder={currentText.anyBedroom} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                        <SelectItem value="1" className="hover:bg-blue-50">1</SelectItem>
-                        <SelectItem value="2" className="hover:bg-blue-50">2</SelectItem>
-                        <SelectItem value="3" className="hover:bg-blue-50">3</SelectItem>
-                        <SelectItem value="4+" className="hover:bg-blue-50">4+</SelectItem>
+                      <SelectContent className="bg-background border border-border shadow-lg z-50">
+                        <SelectItem value="1" className="hover:bg-primary/10">1</SelectItem>
+                        <SelectItem value="2" className="hover:bg-primary/10">2</SelectItem>
+                        <SelectItem value="3" className="hover:bg-primary/10">3</SelectItem>
+                        <SelectItem value="4+" className="hover:bg-primary/10">4+</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   {/* Bathrooms */}
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                       <Bath className="h-3 w-3 inline mr-1" />
                       {currentText.bathrooms}
                     </label>
                     <Select value={bathrooms} onValueChange={setBathrooms}>
-                      <SelectTrigger className="h-10 bg-white border-gray-200">
+                      <SelectTrigger className="h-10 bg-background border-border">
                         <SelectValue placeholder={currentText.anyBathroom} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                        <SelectItem value="1" className="hover:bg-blue-50">1</SelectItem>
-                        <SelectItem value="2" className="hover:bg-blue-50">2</SelectItem>
-                        <SelectItem value="3" className="hover:bg-blue-50">3</SelectItem>
-                        <SelectItem value="4+" className="hover:bg-blue-50">4+</SelectItem>
+                      <SelectContent className="bg-background border border-border shadow-lg z-50">
+                        <SelectItem value="1" className="hover:bg-primary/10">1</SelectItem>
+                        <SelectItem value="2" className="hover:bg-primary/10">2</SelectItem>
+                        <SelectItem value="3" className="hover:bg-primary/10">3</SelectItem>
+                        <SelectItem value="4+" className="hover:bg-primary/10">4+</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -400,34 +400,34 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   {/* Price Range */}
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                       {currentText.price}
                     </label>
                     <Select value={priceRange} onValueChange={setPriceRange}>
-                      <SelectTrigger className="h-10 bg-white border-gray-200">
+                      <SelectTrigger className="h-10 bg-background border-border">
                         <SelectValue placeholder={currentText.anyPrice} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                        <SelectItem value="0-1b" className="hover:bg-blue-50">Under Rp 1B</SelectItem>
-                        <SelectItem value="1b-5b" className="hover:bg-blue-50">Rp 1B - 5B</SelectItem>
-                        <SelectItem value="5b+" className="hover:bg-blue-50">Rp 5B+</SelectItem>
+                      <SelectContent className="bg-background border border-border shadow-lg z-50">
+                        <SelectItem value="0-1b" className="hover:bg-primary/10">Under Rp 1B</SelectItem>
+                        <SelectItem value="1b-5b" className="hover:bg-primary/10">Rp 1B - 5B</SelectItem>
+                        <SelectItem value="5b+" className="hover:bg-primary/10">Rp 5B+</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   {/* Furnishing */}
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                       {currentText.furnishing}
                     </label>
                     <Select value={furnishing} onValueChange={setFurnishing}>
-                      <SelectTrigger className="h-10 bg-white border-gray-200">
+                      <SelectTrigger className="h-10 bg-background border-border">
                         <SelectValue placeholder={currentText.anyFurnishing} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                        <SelectItem value="furnished" className="hover:bg-blue-50">{currentText.furnished}</SelectItem>
-                        <SelectItem value="unfurnished" className="hover:bg-blue-50">{currentText.unfurnished}</SelectItem>
-                        <SelectItem value="partial" className="hover:bg-blue-50">{currentText.partiallyFurnished}</SelectItem>
+                      <SelectContent className="bg-background border border-border shadow-lg z-50">
+                        <SelectItem value="furnished" className="hover:bg-primary/10">{currentText.furnished}</SelectItem>
+                        <SelectItem value="unfurnished" className="hover:bg-primary/10">{currentText.unfurnished}</SelectItem>
+                        <SelectItem value="partial" className="hover:bg-primary/10">{currentText.partiallyFurnished}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -435,7 +435,7 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
 
                 {/* Amenities */}
                 <div className="space-y-3">
-                  <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                     {currentText.amenities}
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -447,8 +447,8 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
                         onClick={() => toggleAmenity(amenity.key)}
                         className={`h-9 px-3 ${
                           amenities.includes(amenity.key)
-                            ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                            : 'border-gray-200 hover:bg-blue-50 hover:border-blue-300'
+                            ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                            : 'border-border hover:bg-primary/10 hover:border-primary/30'
                         }`}
                       >
                         <amenity.icon className="h-4 w-4 mr-1" />
