@@ -227,7 +227,7 @@ const AIToolsTabBar: React.FC<AIToolsTabBarProps> = ({ className }) => {
                   'border whitespace-nowrap',
                   active 
                     ? 'bg-primary/10 border-primary/40 text-primary shadow-sm' 
-                    : 'bg-transparent dark:bg-white/5 border-border/20 dark:border-white/10 hover:border-primary/30 hover:bg-primary/5'
+                    : 'bg-transparent dark:bg-muted/20 border-border/20 dark:border-border/30 hover:border-primary/30 hover:bg-primary/5'
                 )}
               >
                 <div className={cn(

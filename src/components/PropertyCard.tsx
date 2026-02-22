@@ -161,7 +161,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             variant="ghost"
             size="sm"
             className={`absolute bottom-1.5 right-1.5 w-7 h-7 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 transition-all duration-300 ${
-              isLiked ? 'text-binance-red' : 'text-white'
+              isLiked ? 'text-binance-red' : 'text-primary-foreground'
             }`}
             onClick={(e) => {
               e.stopPropagation();

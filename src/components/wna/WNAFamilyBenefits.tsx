@@ -467,7 +467,7 @@ const WNAFamilyBenefits: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className={cn(
                 "rounded-lg overflow-hidden transition-all duration-200",
-                "bg-white/60 dark:bg-white/5",
+                "bg-background/60 dark:bg-muted/20",
                 "border-2",
                 isExpanded ? "border-accent/50 shadow-md" : "border-border/50"
               )}
@@ -563,7 +563,7 @@ const WNAFamilyBenefits: React.FC = () => {
 
                       {/* School Types for Education */}
                       {member.schoolTypes && (
-                        <div className="p-2.5 rounded-lg bg-white/50 dark:bg-white/5 border border-border/50">
+                        <div className="p-2.5 rounded-lg bg-background/50 dark:bg-muted/20 border border-border/50">
                           <h5 className="text-[10px] sm:text-xs font-semibold text-foreground mb-2 flex items-center gap-1">
                             <BookOpen className="h-3.5 w-3.5" />
                             {language === 'en' ? 'School Options & Fees' : 'Opsi Sekolah & Biaya'}
@@ -584,7 +584,7 @@ const WNAFamilyBenefits: React.FC = () => {
 
                       {/* Hospitals for Healthcare */}
                       {member.hospitals && (
-                        <div className="p-2.5 rounded-lg bg-white/50 dark:bg-white/5 border border-border/50">
+                        <div className="p-2.5 rounded-lg bg-background/50 dark:bg-muted/20 border border-border/50">
                           <h5 className="text-[10px] sm:text-xs font-semibold text-foreground mb-2 flex items-center gap-1">
                             <Hospital className="h-3.5 w-3.5" />
                             {language === 'en' ? 'Recommended Hospitals' : 'Rumah Sakit Rekomendasi'}
@@ -599,7 +599,7 @@ const WNAFamilyBenefits: React.FC = () => {
 
                       {/* Work Options for Work Rights */}
                       {member.workOptions && (
-                        <div className="p-2.5 rounded-lg bg-white/50 dark:bg-white/5 border border-border/50">
+                        <div className="p-2.5 rounded-lg bg-background/50 dark:bg-muted/20 border border-border/50">
                           <h5 className="text-[10px] sm:text-xs font-semibold text-foreground mb-2 flex items-center gap-1">
                             <Briefcase className="h-3.5 w-3.5" />
                             {language === 'en' ? 'Work Options' : 'Opsi Kerja'}
@@ -626,7 +626,7 @@ const WNAFamilyBenefits: React.FC = () => {
       {/* Visa Process */}
       <div className={cn(
         "rounded-lg p-3",
-        "bg-white/60 dark:bg-white/5",
+        "bg-background/60 dark:bg-muted/20",
         "border-2 border-accent/30"
       )}>
         <h4 className="text-xs sm:text-sm font-bold text-foreground mb-3 flex items-center gap-2">
@@ -649,7 +649,7 @@ const WNAFamilyBenefits: React.FC = () => {
       {/* Costs */}
       <div className={cn(
         "rounded-lg p-3",
-        "bg-white/60 dark:bg-white/5",
+        "bg-background/60 dark:bg-muted/20",
         "border-2 border-border/50"
       )}>
         <h4 className="text-xs sm:text-sm font-bold text-foreground mb-2 flex items-center gap-2">

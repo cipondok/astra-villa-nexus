@@ -228,7 +228,7 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
   };
 
   return (
-    <Card className={cn("border border-primary/10 bg-transparent dark:bg-white/5 backdrop-blur-xl shadow-sm", className)}>
+    <Card className={cn("border border-primary/10 bg-transparent dark:bg-muted/20 backdrop-blur-xl shadow-sm", className)}>
       <CardHeader className="pb-2 pt-3 px-3">
         <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
           <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-chart-3/20 to-primary/20 flex items-center justify-center">

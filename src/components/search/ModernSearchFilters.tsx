@@ -221,7 +221,7 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
   return (
     <div className="w-full max-w-6xl mx-auto space-y-4">
       {/* Main Search Card */}
-      <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-0">
+      <Card className="bg-background/95 backdrop-blur-sm shadow-xl border-0">
         <CardContent className="p-4">
 
           {/* Primary Search Bar */}
