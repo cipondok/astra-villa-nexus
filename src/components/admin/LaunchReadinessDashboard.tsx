@@ -610,7 +610,7 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
               <div className="space-y-3">
                 {/* Critical */}
                 <div>
-                  <p className="text-[10px] font-semibold text-red-500 mb-2 flex items-center gap-1">
+                  <p className="text-[10px] font-semibold text-destructive mb-2 flex items-center gap-1">
                     <XCircle className="h-3 w-3" /> Critical (Must Fix)
                   </p>
                   <div className="space-y-1.5 pl-4">
@@ -623,7 +623,7 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
 
                 {/* Important */}
                 <div>
-                  <p className="text-[10px] font-semibold text-orange-500 mb-2 flex items-center gap-1">
+                  <p className="text-[10px] font-semibold text-chart-3 mb-2 flex items-center gap-1">
                     <AlertTriangle className="h-3 w-3" /> Important (Recommended)
                   </p>
                   <div className="space-y-1.5 pl-4">
@@ -636,7 +636,7 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
 
                 {/* Testing */}
                 <div>
-                  <p className="text-[10px] font-semibold text-blue-500 mb-2 flex items-center gap-1">
+                  <p className="text-[10px] font-semibold text-chart-4 mb-2 flex items-center gap-1">
                     <TestTube className="h-3 w-3" /> Testing Required
                   </p>
                   <div className="space-y-1.5 pl-4">
@@ -651,7 +651,7 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
 
                 {/* Complete */}
                 <div>
-                  <p className="text-[10px] font-semibold text-green-500 mb-2 flex items-center gap-1">
+                  <p className="text-[10px] font-semibold text-chart-1 mb-2 flex items-center gap-1">
                     <CheckCircle2 className="h-3 w-3" /> Completed
                   </p>
                   <div className="space-y-1.5 pl-4">
@@ -678,9 +678,9 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
 const ChecklistItem = ({ text, status }: { text: string; status: 'complete' | 'pending' | 'in_progress' }) => (
   <div className="flex items-center gap-2">
     {status === 'complete' ? (
-      <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+      <CheckCircle2 className="h-3.5 w-3.5 text-chart-1 flex-shrink-0" />
     ) : status === 'in_progress' ? (
-      <Clock className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" />
+      <Clock className="h-3.5 w-3.5 text-chart-4 flex-shrink-0" />
     ) : (
       <div className="h-3.5 w-3.5 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
     )}
