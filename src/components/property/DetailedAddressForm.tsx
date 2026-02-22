@@ -48,13 +48,13 @@ const DetailedAddressForm = ({ onAddressChange, initialData }: DetailedAddressFo
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-blue-600" />
+            <MapPin className="h-5 w-5 text-chart-4" />
             Alamat Lengkap
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="streetAddress" className="text-gray-700 font-medium">
+            <Label htmlFor="streetAddress" className="text-foreground font-medium">
               Alamat Jalan *
             </Label>
             <Input
@@ -62,29 +62,29 @@ const DetailedAddressForm = ({ onAddressChange, initialData }: DetailedAddressFo
               value={addressData.streetAddress}
               onChange={(e) => handleInputChange('streetAddress', e.target.value)}
               placeholder="Contoh: Jl. Sudirman No. 123"
-              className="bg-white border-gray-300 text-gray-900"
+              className="bg-background border-border text-foreground"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="blockNumber" className="text-gray-700 font-medium">
+              <Label htmlFor="blockNumber" className="text-foreground font-medium">
                 Nomor Blok
               </Label>
               <div className="relative">
-                <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   id="blockNumber"
                   value={addressData.blockNumber}
                   onChange={(e) => handleInputChange('blockNumber', e.target.value)}
                   placeholder="Contoh: A, B1, C-12"
-                  className="bg-white border-gray-300 text-gray-900 pl-10"
+                  className="bg-background border-border text-foreground pl-10"
                 />
               </div>
             </div>
 
             <div>
-              <Label htmlFor="postalCode" className="text-gray-700 font-medium">
+              <Label htmlFor="postalCode" className="text-foreground font-medium">
                 Kode Pos
               </Label>
               <Input
@@ -92,7 +92,7 @@ const DetailedAddressForm = ({ onAddressChange, initialData }: DetailedAddressFo
                 value={addressData.postalCode}
                 onChange={(e) => handleInputChange('postalCode', e.target.value)}
                 placeholder="Contoh: 12110"
-                className="bg-white border-gray-300 text-gray-900"
+                className="bg-background border-border text-foreground"
               />
             </div>
           </div>
@@ -103,14 +103,14 @@ const DetailedAddressForm = ({ onAddressChange, initialData }: DetailedAddressFo
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
-            <Building className="h-5 w-5 text-green-600" />
+            <Building className="h-5 w-5 text-chart-1" />
             Detail Bangunan
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="buildingName" className="text-gray-700 font-medium">
+              <Label htmlFor="buildingName" className="text-foreground font-medium">
                 Nama Gedung/Kompleks
               </Label>
               <Input
@@ -118,12 +118,12 @@ const DetailedAddressForm = ({ onAddressChange, initialData }: DetailedAddressFo
                 value={addressData.buildingName}
                 onChange={(e) => handleInputChange('buildingName', e.target.value)}
                 placeholder="Contoh: Gedung Wisma Central"
-                className="bg-white border-gray-300 text-gray-900"
+                className="bg-background border-border text-foreground"
               />
             </div>
 
             <div>
-              <Label htmlFor="apartmentName" className="text-gray-700 font-medium">
+              <Label htmlFor="apartmentName" className="text-foreground font-medium">
                 Nama Apartemen/Perumahan
               </Label>
               <Input
@@ -131,30 +131,30 @@ const DetailedAddressForm = ({ onAddressChange, initialData }: DetailedAddressFo
                 value={addressData.apartmentName}
                 onChange={(e) => handleInputChange('apartmentName', e.target.value)}
                 placeholder="Contoh: Apartemen Taman Anggrek"
-                className="bg-white border-gray-300 text-gray-900"
+                className="bg-background border-border text-foreground"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="floorNumber" className="text-gray-700 font-medium">
+              <Label htmlFor="floorNumber" className="text-foreground font-medium">
                 Nomor Lantai
               </Label>
               <div className="relative">
-                <Layers className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Layers className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   id="floorNumber"
                   value={addressData.floorNumber}
                   onChange={(e) => handleInputChange('floorNumber', e.target.value)}
                   placeholder="Contoh: 5, LG, Mezzanine"
-                  className="bg-white border-gray-300 text-gray-900 pl-10"
+                  className="bg-background border-border text-foreground pl-10"
                 />
               </div>
             </div>
 
             <div>
-              <Label htmlFor="unitNumber" className="text-gray-700 font-medium">
+              <Label htmlFor="unitNumber" className="text-foreground font-medium">
                 Nomor Unit/Kamar
               </Label>
               <Input
@@ -162,7 +162,7 @@ const DetailedAddressForm = ({ onAddressChange, initialData }: DetailedAddressFo
                 value={addressData.unitNumber}
                 onChange={(e) => handleInputChange('unitNumber', e.target.value)}
                 placeholder="Contoh: 501, A12, Studio-5"
-                className="bg-white border-gray-300 text-gray-900"
+                className="bg-background border-border text-foreground"
               />
             </div>
           </div>
@@ -173,7 +173,7 @@ const DetailedAddressForm = ({ onAddressChange, initialData }: DetailedAddressFo
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-purple-600" />
+            <MapPin className="h-5 w-5 text-chart-5" />
             Informasi Tambahan
           </CardTitle>
         </CardHeader>

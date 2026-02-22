@@ -232,7 +232,7 @@ const IndonesianVendorManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <Building className="h-8 w-8 text-blue-500" />
+              <Building className="h-8 w-8 text-chart-4" />
               <div>
                 <p className="text-sm text-muted-foreground">
                   {language === 'id' ? 'Nama Usaha' : 'Business Name'}
@@ -246,7 +246,7 @@ const IndonesianVendorManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <FileText className="h-8 w-8 text-green-500" />
+              <FileText className="h-8 w-8 text-chart-1" />
               <div>
                 <p className="text-sm text-muted-foreground">
                   {language === 'id' ? 'Tipe Vendor' : 'Vendor Type'}
@@ -260,7 +260,7 @@ const IndonesianVendorManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <TrendingUp className="h-8 w-8 text-purple-500" />
+              <TrendingUp className="h-8 w-8 text-chart-5" />
               <div>
                 <p className="text-sm text-muted-foreground">
                   {language === 'id' ? 'Skor Kelengkapan' : 'Completion Score'}
@@ -512,7 +512,7 @@ const IndonesianVendorManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <Users className="h-8 w-8 text-blue-500" />
+              <Users className="h-8 w-8 text-chart-4" />
               <div>
                 <p className="text-sm text-muted-foreground">
                   {language === 'id' ? 'Total Aplikasi' : 'Total Applications'}
@@ -526,7 +526,7 @@ const IndonesianVendorManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <Clock className="h-8 w-8 text-yellow-500" />
+              <Clock className="h-8 w-8 text-chart-3" />
               <div>
                 <p className="text-sm text-muted-foreground">
                   {language === 'id' ? 'Menunggu Review' : 'Pending Review'}
@@ -542,7 +542,7 @@ const IndonesianVendorManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
               <div>
                 <p className="text-sm text-muted-foreground">
                   {language === 'id' ? 'Disetujui' : 'Approved'}
@@ -558,7 +558,7 @@ const IndonesianVendorManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <Banknote className="h-8 w-8 text-green-600" />
+              <Banknote className="h-8 w-8 text-chart-1" />
               <div>
                 <p className="text-sm text-muted-foreground">
                   {language === 'id' ? 'Dengan BPJS' : 'With BPJS'}
@@ -719,7 +719,7 @@ const IndonesianVendorManagement = () => {
                                 setReviewAction('approve');
                                 setReviewDialogOpen(true);
                               }}
-                              className="text-green-600 hover:text-green-700"
+                              className="text-chart-1 hover:text-chart-1/80"
                             >
                               <CheckCircle className="h-4 w-4" />
                             </Button>
@@ -731,7 +731,7 @@ const IndonesianVendorManagement = () => {
                                 setReviewAction('reject');
                                 setReviewDialogOpen(true);
                               }}
-                              className="text-red-600 hover:text-red-700"
+                              className="text-destructive hover:text-destructive/80"
                             >
                               <XCircle className="h-4 w-4" />
                             </Button>
