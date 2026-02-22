@@ -335,7 +335,7 @@ const VendorBusinessProfile = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -558,7 +558,7 @@ const VendorBusinessProfile = () => {
             </div>
             
             {profile.gps_coordinates && (
-              <div className="p-3 bg-white dark:bg-gray-900 rounded border">
+              <div className="p-3 bg-background rounded border">
                 <p className="text-sm font-medium">Koordinat GPS:</p>
                 <p className="text-sm text-muted-foreground">{profile.gps_coordinates}</p>
                 {profile.gps_address && (
