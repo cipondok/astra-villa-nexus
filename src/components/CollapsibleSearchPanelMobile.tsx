@@ -74,22 +74,22 @@ export const CollapsibleSearchPanelMobile: React.FC<CollapsibleSearchPanelMobile
                 <div className={cn(
                   "flex items-center justify-center",
                   "w-9 h-9 rounded-xl",
-                  "bg-white/20 backdrop-blur-sm"
+                  "bg-primary-foreground/20 backdrop-blur-sm"
                 )}>
-                  <Search className="h-4.5 w-4.5 text-white" />
+                  <Search className="h-4.5 w-4.5 text-primary-foreground" />
                 </div>
                 <div className="flex flex-col items-start">
-                  <span className="text-[15px] font-semibold text-white leading-tight drop-shadow-md">
+                  <span className="text-[15px] font-semibold text-primary-foreground leading-tight drop-shadow-md">
                     Search Properties
                   </span>
-                  <span className="text-[11px] text-white/80 leading-tight mt-0.5 drop-shadow-sm">
+                  <span className="text-[11px] text-primary-foreground/80 leading-tight mt-0.5 drop-shadow-sm">
                     Find your dream home
                   </span>
                 </div>
                 {activeFiltersCount > 0 && (
                   <span className={cn(
                     "ml-1 px-2.5 py-1 rounded-full",
-                    "bg-white text-primary",
+                    "bg-primary-foreground text-primary",
                     "text-[11px] font-bold leading-none",
                     "min-w-[22px] text-center",
                     "shadow-lg"
@@ -102,12 +102,12 @@ export const CollapsibleSearchPanelMobile: React.FC<CollapsibleSearchPanelMobile
                 <div className={cn(
                   "flex items-center justify-center",
                   "w-8 h-8 rounded-lg",
-                  "bg-white/20 backdrop-blur-sm",
+                  "bg-primary-foreground/20 backdrop-blur-sm",
                   "transition-colors duration-200"
                 )}>
                   <ChevronDown 
                     className={cn(
-                      "h-4.5 w-4.5 text-white",
+                      "h-4.5 w-4.5 text-primary-foreground",
                       "transition-transform duration-300 ease-out",
                       !isCollapsed && "rotate-180"
                     )} 

@@ -156,17 +156,17 @@ const VirtualTourBooking: React.FC<VirtualTourBookingProps> = ({
       <CardHeader className="bg-gradient-to-r from-accent to-primary text-primary-foreground">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/20 rounded-xl">
+            <div className="p-2 bg-primary-foreground/20 rounded-xl">
               <Video className="h-6 w-6" />
             </div>
             <div>
               <CardTitle>Book a Tour</CardTitle>
-              <p className="text-sm text-white/80 mt-1">
+              <p className="text-sm text-primary-foreground/80 mt-1">
                 {propertyTitle}
               </p>
             </div>
           </div>
-          <Badge variant="secondary" className="bg-white/20 text-white">
+          <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground">
             <Sparkles className="h-3 w-3 mr-1" />
             Free
           </Badge>

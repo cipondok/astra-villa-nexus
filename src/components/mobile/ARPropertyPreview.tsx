@@ -139,9 +139,9 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-black z-50">
+    <div className="fixed inset-0 bg-background z-50">
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/70 to-transparent">
+      <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-background/70 to-transparent">
         <div className="flex items-center justify-between">
           <Button 
             variant="ghost" 
@@ -150,7 +150,7 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
               trackSession.mutate();
               onClose?.();
             }}
-            className="text-white hover:bg-white/20"
+            className="text-foreground hover:bg-foreground/20"
           >
             <X className="h-6 w-6" />
           </Button>
@@ -160,7 +160,7 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
               <Camera className="h-3 w-3" />
               {isARMode ? "AR Active" : "Preview"}
             </Badge>
-            <Badge variant="outline" className="text-white border-white/30">
+            <Badge variant="outline" className="text-foreground border-foreground/30">
               {placedFurniture.length} items
             </Badge>
           </div>
@@ -170,7 +170,7 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
               variant="ghost" 
               size="icon"
               onClick={handleScreenshot}
-              className="text-white hover:bg-white/20"
+              className="text-foreground hover:bg-foreground/20"
             >
               <Download className="h-5 w-5" />
             </Button>
@@ -178,7 +178,7 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
               variant="ghost" 
               size="icon"
               onClick={handleShare}
-              className="text-white hover:bg-white/20"
+              className="text-foreground hover:bg-foreground/20"
             >
               <Share2 className="h-5 w-5" />
             </Button>
@@ -201,7 +201,7 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
             <div className="text-center text-foreground">
               <Camera className="h-16 w-16 mx-auto mb-4 animate-pulse" />
               <p className="text-lg font-medium">AR Camera Active</p>
-              <p className="text-sm text-white/60">Point at a flat surface</p>
+              <p className="text-sm text-foreground/60">Point at a flat surface</p>
             </div>
           </div>
         ) : propertyImages[currentImageIndex] ? (
@@ -237,7 +237,7 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
               }}
               onClick={() => setSelectedFurniture(item.id)}
             >
-              <div className="bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg">
+              <div className="bg-background/90 backdrop-blur-sm p-3 rounded-xl shadow-lg">
                 <FurnitureIcon className="h-8 w-8 text-primary" />
               </div>
               {selectedFurniture === item.id && (
@@ -266,7 +266,7 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
               key={index}
               onClick={() => setCurrentImageIndex(index)}
               className={`w-2 h-2 rounded-full transition-all ${
-                index === currentImageIndex ? "bg-white w-6" : "bg-white/50"
+                index === currentImageIndex ? "bg-primary-foreground w-6" : "bg-primary-foreground/50"
               }`}
             />
           ))}
@@ -274,7 +274,7 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
       )}
 
       {/* Bottom toolbar */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 pb-8">
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 to-transparent p-4 pb-8">
         {/* Furniture palette */}
         <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
           {FURNITURE_ITEMS.map((item) => {
@@ -300,14 +300,14 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
             variant="ghost"
             size="icon"
             onClick={() => setIsDayMode(!isDayMode)}
-            className="text-white hover:bg-white/20"
+            className="text-foreground hover:bg-foreground/20"
           >
             {isDayMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
 
           {/* Zoom control */}
           <div className="flex items-center gap-2 flex-1 max-w-48">
-            <ZoomOut className="h-4 w-4 text-white/60" />
+            <ZoomOut className="h-4 w-4 text-foreground/60" />
             <Slider
               value={[zoom]}
               onValueChange={([v]) => setZoom(v)}
@@ -316,7 +316,7 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
               step={10}
               className="flex-1"
             />
-            <ZoomIn className="h-4 w-4 text-white/60" />
+            <ZoomIn className="h-4 w-4 text-foreground/60" />
           </div>
 
           {/* Reset button */}
@@ -328,7 +328,7 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
               setZoom(100);
               setIsDayMode(true);
             }}
-            className="text-white hover:bg-white/20"
+            className="text-foreground hover:bg-foreground/20"
           >
             <RotateCcw className="h-5 w-5" />
           </Button>

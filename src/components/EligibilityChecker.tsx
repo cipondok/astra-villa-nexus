@@ -298,8 +298,8 @@ export const EligibilityChecker = () => {
           </div>
 
           {/* KPR Eligibility */}
-          <Alert className={result.kprEligible ? "border-green-500 bg-green-50 dark:bg-green-950" : "border-red-500 bg-red-50 dark:bg-red-950"}>
-            {result.kprEligible ? <CheckCircle2 className="h-4 w-4 text-green-600" /> : <XCircle className="h-4 w-4 text-red-600" />}
+          <Alert className={result.kprEligible ? "border-chart-1 bg-chart-1/10 dark:bg-chart-1/5" : "border-destructive bg-destructive/10 dark:bg-destructive/5"}>
+            {result.kprEligible ? <CheckCircle2 className="h-4 w-4 text-chart-1" /> : <XCircle className="h-4 w-4 text-destructive" />}
             <AlertTitle>
               {language === "id" ? "Kelayakan KPR (Mortgage)" : "Mortgage (KPR) Eligibility"}
             </AlertTitle>
@@ -315,8 +315,8 @@ export const EligibilityChecker = () => {
           </Alert>
 
           {/* Investment Eligibility */}
-          <Alert className={result.investmentEligible ? "border-green-500 bg-green-50 dark:bg-green-950" : "border-orange-500 bg-orange-50 dark:bg-orange-950"}>
-            {result.investmentEligible ? <CheckCircle2 className="h-4 w-4 text-green-600" /> : <AlertCircle className="h-4 w-4 text-orange-600" />}
+          <Alert className={result.investmentEligible ? "border-chart-1 bg-chart-1/10 dark:bg-chart-1/5" : "border-chart-3 bg-chart-3/10 dark:bg-chart-3/5"}>
+            {result.investmentEligible ? <CheckCircle2 className="h-4 w-4 text-chart-1" /> : <AlertCircle className="h-4 w-4 text-chart-3" />}
             <AlertTitle>
               {language === "id" ? "Kelayakan Investasi Tunai" : "Cash Investment Eligibility"}
             </AlertTitle>

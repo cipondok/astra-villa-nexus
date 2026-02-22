@@ -326,7 +326,7 @@ const VideoReviewPanel: React.FC<VideoReviewPanelProps> = ({
           <TabsContent value="recording" className="p-4">
             {session.recording_url ? (
               <div className="space-y-4">
-                <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                <div className="aspect-video bg-background rounded-lg overflow-hidden">
                   <video 
                     src={session.recording_url} 
                     controls 

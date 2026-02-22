@@ -141,7 +141,7 @@ const ASTRAVillaPropertyCard = ({
             <ListingIcon className="h-2.5 w-2.5" />
             {getListingLabel(property.listing_type)}
           </span>
-          <span className="flex items-center gap-0.5 bg-black/30 backdrop-blur-md text-white/90 text-[9px] px-1.5 py-0.5 rounded-full">
+          <span className="flex items-center gap-0.5 bg-background/30 backdrop-blur-md text-foreground/90 text-[9px] px-1.5 py-0.5 rounded-full">
             <Building className="h-2.5 w-2.5" />
             {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : "Property"}
           </span>
@@ -153,18 +153,18 @@ const ASTRAVillaPropertyCard = ({
           size="icon"
           className={cn(
             "absolute top-9 right-2 h-7 w-7 rounded-full",
-            "bg-black/20 backdrop-blur-md hover:bg-black/40 border border-white/10",
+            "bg-background/20 backdrop-blur-md hover:bg-background/40 border border-primary-foreground/10",
             "transition-all duration-200",
             isLiked && "bg-destructive/30 border-destructive/30"
           )}
           onClick={handleLike}
         >
-          <Heart className={cn("h-3.5 w-3.5 transition-colors", isLiked ? "fill-destructive text-destructive" : "text-white/80")} />
+          <Heart className={cn("h-3.5 w-3.5 transition-colors", isLiked ? "fill-destructive text-destructive" : "text-primary-foreground/80")} />
         </Button>
 
         {/* Image Count Badge */}
         {imageCount > 1 && (
-          <div className="absolute bottom-2 right-2 flex items-center gap-0.5 bg-black/30 backdrop-blur-md text-white text-[9px] px-1.5 py-0.5 rounded-full">
+          <div className="absolute bottom-2 right-2 flex items-center gap-0.5 bg-background/30 backdrop-blur-md text-foreground text-[9px] px-1.5 py-0.5 rounded-full">
             <Camera className="h-2.5 w-2.5" />
             <span>{imageCount}</span>
           </div>

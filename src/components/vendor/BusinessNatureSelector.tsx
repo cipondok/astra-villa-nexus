@@ -269,7 +269,7 @@ const BusinessNatureSelector = ({
                     <SelectItem 
                       key={subCategory.id} 
                       value={subCategory.id}
-                      className="text-gray-900 hover:bg-blue-50"
+                      className="text-foreground hover:bg-primary/10"
                     >
                       <div>
                         <div className="font-medium">{subCategory.name}</div>

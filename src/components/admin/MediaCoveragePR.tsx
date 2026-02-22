@@ -139,8 +139,8 @@ const MediaCoveragePR = () => {
 
   const getTierBadge = (tier: string) => {
     switch (tier) {
-      case 'tier1': return <Badge className="bg-gold-primary text-white">Tier 1</Badge>;
-      case 'tier2': return <Badge className="bg-muted-foreground text-white">Tier 2</Badge>;
+      case 'tier1': return <Badge className="bg-gold-primary text-primary-foreground">Tier 1</Badge>;
+      case 'tier2': return <Badge className="bg-muted-foreground text-primary-foreground">Tier 2</Badge>;
       case 'tier3': return <Badge variant="outline">Tier 3</Badge>;
       default: return null;
     }

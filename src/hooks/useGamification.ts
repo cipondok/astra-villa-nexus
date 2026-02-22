@@ -80,10 +80,10 @@ export const LEVEL_THRESHOLDS = [0, 100, 300, 600, 1000, 2000, 4000, 7500, 12000
 // Profile frame colors by level
 export const PROFILE_FRAMES = {
   1: { name: 'default', color: 'border-muted' },
-  2: { name: 'bronze', color: 'border-amber-600' },
-  3: { name: 'bronze', color: 'border-amber-600' },
-  4: { name: 'silver', color: 'border-slate-400' },
-  5: { name: 'silver', color: 'border-slate-400' },
+  2: { name: 'bronze', color: 'border-chart-3' },
+  3: { name: 'bronze', color: 'border-chart-3' },
+  4: { name: 'silver', color: 'border-muted-foreground' },
+  5: { name: 'silver', color: 'border-muted-foreground' },
   6: { name: 'gold', color: 'border-gold-primary' },
   7: { name: 'gold', color: 'border-gold-primary' },
   8: { name: 'platinum', color: 'border-chart-4' },

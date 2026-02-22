@@ -280,11 +280,11 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
             {isVendor && (
               <>
                 <button onClick={() => { navigate('/vendor'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <Settings className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-purple-500 shrink-0" />
+                  <Settings className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-accent shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">Vendor Panel</span>
                 </button>
                 <button onClick={() => { navigate('/services'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-blue-500 shrink-0" />
+                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-primary shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">My Services</span>
                 </button>
               </>
@@ -293,19 +293,19 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
             {!isAdmin && !isAgent && !isVendor && (
               <>
                 <button onClick={() => { navigate('/dashboard/user'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <BarChart3 className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-blue-500 shrink-0" />
+                  <BarChart3 className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-primary shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">Dashboard</span>
                 </button>
                 <button onClick={() => { navigate('/saved'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <Heart className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-red-500 shrink-0" />
+                  <Heart className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-destructive shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">Saved</span>
                 </button>
                 <button onClick={() => { navigate('/search'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <Building2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-green-500 shrink-0" />
+                  <Building2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-chart-1 shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">Browse</span>
                 </button>
                 <button onClick={() => { navigate('/notifications'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <MessageSquare className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-purple-500 shrink-0" />
+                  <MessageSquare className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-accent shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">Messages</span>
                 </button>
               </>

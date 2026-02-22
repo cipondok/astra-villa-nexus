@@ -228,19 +228,19 @@ const ModernPropertyCard = ({
           {/* Property Stats Pills */}
           <div className="flex gap-1 flex-wrap">
             {property.bedrooms && (
-              <div className="flex items-center gap-0.5 bg-gold-primary/20 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-[10px]">
+              <div className="flex items-center gap-0.5 bg-gold-primary/20 backdrop-blur-sm text-primary-foreground px-1.5 py-0.5 rounded text-[10px]">
                 <Bed className="h-2.5 w-2.5" />
                 <span>{property.bedrooms}</span>
               </div>
             )}
             {property.bathrooms && (
-              <div className="flex items-center gap-0.5 bg-gold-primary/15 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-[10px]">
+              <div className="flex items-center gap-0.5 bg-gold-primary/15 backdrop-blur-sm text-primary-foreground px-1.5 py-0.5 rounded text-[10px]">
                 <Bath className="h-2.5 w-2.5" />
                 <span>{property.bathrooms}</span>
               </div>
             )}
             {area && (
-              <div className="flex items-center gap-0.5 bg-muted/30 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-[10px]">
+              <div className="flex items-center gap-0.5 bg-muted/30 backdrop-blur-sm text-primary-foreground px-1.5 py-0.5 rounded text-[10px]">
                 <Square className="h-2.5 w-2.5" />
                 <span>{area}m²</span>
               </div>
