@@ -96,13 +96,13 @@ const IndonesianPaymentMerchantConfig = () => {
   };
 
   const merchantColors: Record<keyof MerchantConfigs, string> = {
-    gopay: 'border-l-emerald-500',
-    ovo: 'border-l-purple-500',
-    dana: 'border-l-blue-500',
-    linkaja: 'border-l-red-500',
-    shopeepay: 'border-l-orange-500',
-    bank_transfer: 'border-l-cyan-500',
-    virtual_account: 'border-l-teal-500'
+    gopay: 'border-l-chart-1',
+    ovo: 'border-l-accent',
+    dana: 'border-l-primary',
+    linkaja: 'border-l-destructive',
+    shopeepay: 'border-l-chart-5',
+    bank_transfer: 'border-l-chart-4',
+    virtual_account: 'border-l-chart-2'
   };
 
   useEffect(() => {

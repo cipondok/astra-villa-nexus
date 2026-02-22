@@ -364,15 +364,15 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Active</Badge>;
+        return <Badge className="bg-chart-1/20 text-chart-1"><CheckCircle className="h-3 w-3 mr-1" />Active</Badge>;
       case 'sold':
-        return <Badge className="bg-blue-100 text-blue-800"><CheckCircle className="h-3 w-3 mr-1" />Sold</Badge>;
+        return <Badge className="bg-chart-4/20 text-chart-4"><CheckCircle className="h-3 w-3 mr-1" />Sold</Badge>;
       case 'rented':
-        return <Badge className="bg-purple-100 text-purple-800"><CheckCircle className="h-3 w-3 mr-1" />Rented</Badge>;
+        return <Badge className="bg-accent/20 text-accent-foreground"><CheckCircle className="h-3 w-3 mr-1" />Rented</Badge>;
       case 'pending_approval':
-        return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge className="bg-chart-3/20 text-chart-3"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
       case 'inactive':
-        return <Badge className="bg-gray-100 text-gray-800"><XCircle className="h-3 w-3 mr-1" />Inactive</Badge>;
+        return <Badge className="bg-muted text-muted-foreground"><XCircle className="h-3 w-3 mr-1" />Inactive</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -455,38 +455,38 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
 
   return (
     <TooltipProvider>
-      <div className="space-y-8 p-6 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950 min-h-screen">
+      <div className="space-y-8 p-6 bg-gradient-to-br from-background to-muted/50 min-h-screen">
         
         {/* Enhanced Header Section */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 p-8 text-white shadow-2xl">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary via-accent to-primary/90 p-8 text-primary-foreground shadow-2xl">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="relative z-10">
             <div className="flex items-center justify-between">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                  <div className="p-3 bg-primary-foreground/20 rounded-xl backdrop-blur-sm">
                     <Building2 className="h-8 w-8" />
                   </div>
                   <div>
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-primary-foreground to-primary-foreground/80 bg-clip-text text-transparent">
                       Enhanced Property Management
                     </h1>
-                    <p className="text-blue-100 text-lg">
+                    <p className="text-primary-foreground/70 text-lg">
                       Advanced property administration with bulk operations
                     </p>
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-6 text-sm">
-                  <div className="flex items-center gap-2 bg-white/10 rounded-lg px-4 py-2">
+                  <div className="flex items-center gap-2 bg-primary-foreground/10 rounded-lg px-4 py-2">
                     <div className="w-2 h-2 bg-chart-1 rounded-full animate-pulse"></div>
                     <span>{properties.length} Properties Loaded</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-white/10 rounded-lg px-4 py-2">
+                  <div className="flex items-center gap-2 bg-primary-foreground/10 rounded-lg px-4 py-2">
                     <Eye className="h-4 w-4" />
                     <span>View & Edit</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-white/10 rounded-lg px-4 py-2">
+                  <div className="flex items-center gap-2 bg-primary-foreground/10 rounded-lg px-4 py-2">
                     <CheckSquare className="h-4 w-4" />
                     <span>Bulk Operations</span>
                   </div>
@@ -499,7 +499,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                   onAddProperty?.();
                 }}
                 size="lg"
-                className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm px-8 py-3 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                className="bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground border-primary-foreground/30 backdrop-blur-sm px-8 py-3 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
               >
                 <Plus className="h-5 w-5 mr-2" />
                 Add New Property
@@ -508,8 +508,8 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
           </div>
           
           {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
-          <div className="absolute bottom-0 left-1/4 w-24 h-24 bg-white/5 rounded-full translate-y-12"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary-foreground/5 rounded-full -translate-y-16 translate-x-16"></div>
+          <div className="absolute bottom-0 left-1/4 w-24 h-24 bg-primary-foreground/5 rounded-full translate-y-12"></div>
         </div>
 
         {/* Enhanced Search & Filters */}
@@ -574,11 +574,11 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
 
       {/* Bulk Actions Bar */}
       {showBulkActions && (
-        <Card className="border-blue-200 bg-blue-50">
+        <Card className="border-primary/20 bg-primary/5">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="text-sm font-medium text-blue-800">
+                <div className="text-sm font-medium text-primary">
                   {selectedProperties.size} properties selected
                 </div>
                 <Button
@@ -588,7 +588,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                     setSelectedProperties(new Set());
                     setShowBulkActions(false);
                   }}
-                  className="text-blue-600 border-blue-300 hover:bg-blue-100"
+                  className="text-primary border-primary/30 hover:bg-primary/10"
                 >
                   Clear Selection
                 </Button>
@@ -602,7 +602,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                         variant="outline"
                         size="sm"
                         onClick={handleExportSelected}
-                        className="text-green-600 border-green-300 hover:bg-green-100"
+                        className="text-chart-1 border-chart-1/30 hover:bg-chart-1/10"
                       >
                         <Download className="h-4 w-4 mr-1" />
                         Export
@@ -630,7 +630,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                   size="sm"
                   onClick={handleBulkDelete}
                   disabled={bulkDeleteMutation.isPending}
-                  className="bg-red-600 hover:bg-red-700"
+                  className="bg-destructive hover:bg-destructive/90"
                 >
                   {bulkDeleteMutation.isPending ? (
                     <Loader2 className="h-4 w-4 mr-1 animate-spin" />
@@ -646,12 +646,12 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
       )}
 
       {/* Enhanced Properties Table */}
-      <Card className="border-0 shadow-2xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-blue-900 border-b">
+      <Card className="border-0 shadow-2xl bg-card/90 backdrop-blur-sm overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-muted/50 to-primary/5 border-b">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+              <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-3">
+                <div className="p-2 bg-primary/10 rounded-lg">
                   <Building2 className="h-6 w-6 text-primary" />
                 </div>
                 Properties Database ({properties.length})
@@ -690,7 +690,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                     <Button 
                       onClick={onAddProperty} 
                       size="lg" 
-                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                     >
                       <Plus className="h-5 w-5 mr-2" />
                       Create Your First Property
@@ -703,7 +703,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                         setStatusFilter("all");
                         setTypeFilter("all");
                       }}
-                      className="border-2 border-gray-300 hover:border-blue-500 text-gray-700 hover:text-blue-600 px-6 py-3 rounded-xl font-semibold transition-all duration-300"
+                      className="border-2 border-border hover:border-primary text-muted-foreground hover:text-primary px-6 py-3 rounded-xl font-semibold transition-all duration-300"
                     >
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Clear All Filters
@@ -716,8 +716,8 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
             <div className="overflow-hidden">
               <div className="overflow-x-auto max-h-[600px]">
                 <Table>
-                  <TableHeader className="sticky top-0 z-10 bg-gradient-to-r from-slate-100 to-blue-100 dark:from-slate-700 dark:to-blue-800">
-                    <TableRow className="border-b-2 border-blue-200 dark:border-blue-700">
+                  <TableHeader className="sticky top-0 z-10 bg-gradient-to-r from-muted to-primary/10">
+                    <TableRow className="border-b-2 border-primary/20">
                       <TableHead className="w-12 text-center py-4">
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -725,19 +725,19 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                               checked={selectedProperties.size === properties.length && properties.length > 0}
                               onCheckedChange={handleSelectAll}
                               aria-label="Select all properties"
-                              className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                              className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                             />
                           </TooltipTrigger>
                           <TooltipContent>Select all visible properties</TooltipContent>
                         </Tooltip>
                       </TableHead>
-                      <TableHead className="font-bold text-gray-900 dark:text-white py-4">Property Details</TableHead>
-                      <TableHead className="font-bold text-gray-900 dark:text-white py-4">Type</TableHead>
-                      <TableHead className="font-bold text-gray-900 dark:text-white py-4">Location</TableHead>
-                      <TableHead className="font-bold text-gray-900 dark:text-white py-4">Price & Listing</TableHead>
-                      <TableHead className="font-bold text-gray-900 dark:text-white py-4">Status</TableHead>
-                      <TableHead className="font-bold text-gray-900 dark:text-white py-4">Created</TableHead>
-                      <TableHead className="font-bold text-gray-900 dark:text-white py-4 text-center">Actions</TableHead>
+                      <TableHead className="font-bold text-foreground py-4">Property Details</TableHead>
+                      <TableHead className="font-bold text-foreground py-4">Type</TableHead>
+                      <TableHead className="font-bold text-foreground py-4">Location</TableHead>
+                      <TableHead className="font-bold text-foreground py-4">Price & Listing</TableHead>
+                      <TableHead className="font-bold text-foreground py-4">Status</TableHead>
+                      <TableHead className="font-bold text-foreground py-4">Created</TableHead>
+                      <TableHead className="font-bold text-foreground py-4 text-center">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -745,10 +745,10 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                       <TableRow 
                         key={property.id} 
                         className={`
-                          hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 
-                          transition-all duration-300 border-b border-gray-100 dark:border-gray-700
-                          ${selectedProperties.has(property.id) ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200' : ''}
-                          ${index % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-gray-50/50 dark:bg-slate-800/50'}
+                          hover:bg-gradient-to-r hover:from-primary/5 hover:to-accent/5 
+                          transition-all duration-300 border-b border-border
+                          ${selectedProperties.has(property.id) ? 'bg-primary/5 border-primary/20' : ''}
+                          ${index % 2 === 0 ? 'bg-card' : 'bg-muted/20'}
                         `}
                       >
                         <TableCell className="w-12 text-center py-4">
@@ -756,7 +756,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                             checked={selectedProperties.has(property.id)}
                             onCheckedChange={(checked) => handleSelectProperty(property.id, checked as boolean)}
                             aria-label={`Select ${property.title}`}
-                            className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                            className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                           />
                         </TableCell>
                         
@@ -805,14 +805,14 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                         
                         <TableCell className="py-4">
                           <div className="space-y-1">
-                            <div className="font-bold text-lg text-gray-900 dark:text-white">
+                            <div className="font-bold text-lg text-foreground">
                               {property.price ? formatIDR(property.price) : (
-                                <span className="text-gray-400 dark:text-gray-500 text-sm">Price not set</span>
+                                <span className="text-muted-foreground text-sm">Price not set</span>
                               )}
                             </div>
                             <Badge 
                               variant="secondary" 
-                              className="capitalize text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"
+                              className="capitalize text-xs bg-primary/10 text-primary"
                             >
                               {property.listing_type}
                             </Badge>
@@ -824,7 +824,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                         </TableCell>
                         
                         <TableCell className="py-4">
-                          <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                          <div className="text-sm font-medium text-muted-foreground">
                             {new Date(property.created_at).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'short',
@@ -841,7 +841,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                                   variant="outline" 
                                   size="sm"
                                   onClick={() => handleView(property)}
-                                  className="h-9 w-9 p-0 hover:bg-blue-50 dark:hover:bg-blue-900 border-blue-200 dark:border-blue-700 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200 hover:scale-105"
+                                  className="h-9 w-9 p-0 hover:bg-primary/10 border-primary/20 text-primary hover:text-primary/80 transition-all duration-200 hover:scale-105"
                                 >
                                   <Eye className="h-4 w-4" />
                                 </Button>
@@ -855,7 +855,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                                   variant="outline" 
                                   size="sm"
                                   onClick={() => handleEdit(property)}
-                                  className="h-9 w-9 p-0 hover:bg-green-50 dark:hover:bg-green-900 border-green-200 dark:border-green-700 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-all duration-200 hover:scale-105"
+                                  className="h-9 w-9 p-0 hover:bg-chart-1/10 border-chart-1/20 text-chart-1 hover:text-chart-1/80 transition-all duration-200 hover:scale-105"
                                 >
                                   <Edit className="h-4 w-4" />
                                 </Button>
@@ -869,7 +869,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                                   variant="outline"
                                   size="sm"
                                   onClick={() => handleDelete(property.id, property.title)}
-                                  className="h-9 w-9 p-0 hover:bg-red-50 dark:hover:bg-red-900 border-red-200 dark:border-red-700 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-all duration-200 hover:scale-105"
+                                  className="h-9 w-9 p-0 hover:bg-destructive/10 border-destructive/20 text-destructive hover:text-destructive/80 transition-all duration-200 hover:scale-105"
                                   disabled={deletePropertyMutation.isPending}
                                 >
                                   {deletePropertyMutation.isPending ? (
