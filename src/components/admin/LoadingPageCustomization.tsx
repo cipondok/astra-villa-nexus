@@ -230,7 +230,7 @@ const LoadingPageCustomization = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Loading Page Customization</h2>
-          <p className="text-gray-600">Customize the loading screen experience with images and positioning</p>
+          <p className="text-muted-foreground">Customize the loading screen experience with images and positioning</p>
         </div>
         <div className="flex gap-2">
           <Button 
@@ -408,7 +408,7 @@ const LoadingPageCustomization = () => {
                       />
                       <label
                         htmlFor="logo-upload"
-                        className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
+                        className="flex items-center gap-2 px-4 py-2 border border-border rounded-md cursor-pointer hover:bg-muted"
                       >
                         {uploadingImage ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -434,7 +434,7 @@ const LoadingPageCustomization = () => {
                           alt="Logo preview" 
                           className="w-16 h-16 object-contain border rounded"
                         />
-                        <span className="text-sm text-gray-500">Current logo image</span>
+                        <span className="text-sm text-muted-foreground">Current logo image</span>
                       </div>
                     )}
                   </div>
