@@ -124,19 +124,19 @@ const Virtual3DStep = ({ formData, onUpdate }: Virtual3DStepProps) => {
     const info = {
       matterport: { 
         name: 'Matterport', 
-        color: 'bg-red-500/10 text-red-500 border-red-500/30',
+        color: 'bg-destructive/10 text-destructive border-destructive/30',
         icon: '🏠',
         description: 'Premium 3D virtual tours with dollhouse view'
       },
       sketchfab: { 
         name: 'Sketchfab', 
-        color: 'bg-blue-500/10 text-blue-500 border-blue-500/30',
+        color: 'bg-chart-4/10 text-chart-4 border-chart-4/30',
         icon: '🎮',
         description: 'Interactive 3D models with annotations'
       },
       kuula: { 
         name: 'Kuula 360°', 
-        color: 'bg-purple-500/10 text-purple-500 border-purple-500/30',
+        color: 'bg-accent/10 text-accent-foreground border-accent/30',
         icon: '📷',
         description: '360° photo tours and panoramas'
       },
@@ -172,7 +172,7 @@ const Virtual3DStep = ({ formData, onUpdate }: Virtual3DStepProps) => {
           placeholder={placeholder}
           className={`pr-10 ${
             validation?.isValid === true 
-              ? 'border-emerald-500/50 focus:border-emerald-500' 
+              ? 'border-chart-1/50 focus:border-chart-1' 
               : validation?.isValid === false 
                 ? 'border-destructive/50 focus:border-destructive'
                 : ''
@@ -182,7 +182,7 @@ const Virtual3DStep = ({ formData, onUpdate }: Virtual3DStepProps) => {
           {isValidating ? (
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
           ) : validation?.isValid === true ? (
-            <CheckCircle className="h-4 w-4 text-emerald-500" />
+            <CheckCircle className="h-4 w-4 text-chart-1" />
           ) : validation?.isValid === false ? (
             <AlertCircle className="h-4 w-4 text-destructive" />
           ) : null}
@@ -190,14 +190,14 @@ const Virtual3DStep = ({ formData, onUpdate }: Virtual3DStepProps) => {
       </div>
       
       {validation && (
-        <Alert className={`py-2 ${validation.isValid ? 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20' : 'border-destructive/30 bg-destructive/5'}`}>
+        <Alert className={`py-2 ${validation.isValid ? 'border-chart-1/30 bg-chart-1/10' : 'border-destructive/30 bg-destructive/5'}`}>
           <div className="flex items-center gap-2">
             {validation.isValid ? (
-              <CheckCircle className="h-4 w-4 text-emerald-500" />
+              <CheckCircle className="h-4 w-4 text-chart-1" />
             ) : (
               <AlertCircle className="h-4 w-4 text-destructive" />
             )}
-            <AlertDescription className={`text-sm ${validation.isValid ? 'text-emerald-700 dark:text-emerald-400' : 'text-destructive'}`}>
+            <AlertDescription className={`text-sm ${validation.isValid ? 'text-chart-1' : 'text-destructive'}`}>
               {validation.message}
             </AlertDescription>
             {validation.platform !== 'unknown' && (
@@ -343,10 +343,10 @@ const Virtual3DStep = ({ formData, onUpdate }: Virtual3DStepProps) => {
           
           {renderPreview(formData.three_d_model_url, 'model')}
           
-          <Card className="bg-blue-500/5 border-blue-500/20">
+          <Card className="bg-chart-4/5 border-chart-4/20">
             <CardContent className="p-4 space-y-3">
               <h4 className="font-medium flex items-center gap-2">
-                <Box className="h-4 w-4 text-blue-500" />
+                <Box className="h-4 w-4 text-chart-4" />
                 Supported 3D Model Platforms
               </h4>
               <div className="grid gap-2">
