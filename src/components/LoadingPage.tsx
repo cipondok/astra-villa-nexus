@@ -48,19 +48,19 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
 
   const getConnectionInfo = () => {
     if (speed === 'slow') {
-      return { message: t.slowInternet, color: 'text-orange-400', bgColor: 'bg-orange-400', Icon: AlertCircle };
+      return { message: t.slowInternet, color: 'text-chart-3', bgColor: 'bg-chart-3', Icon: AlertCircle };
     }
     if (speed === 'offline') {
-      return { message: t.noInternet, color: 'text-red-400', bgColor: 'bg-red-400', Icon: WifiOff };
+      return { message: t.noInternet, color: 'text-destructive', bgColor: 'bg-destructive', Icon: WifiOff };
     }
 
     switch (connectionStatus) {
       case 'connecting':
-        return { message: t.checkingDatabase, color: 'text-yellow-400', bgColor: 'bg-yellow-400', Icon: Wifi };
+        return { message: t.checkingDatabase, color: 'text-chart-3', bgColor: 'bg-chart-3', Icon: Wifi };
       case 'connected':
-        return { message: t.databaseReady, color: 'text-green-400', bgColor: 'bg-green-400', Icon: CheckCircle };
+        return { message: t.databaseReady, color: 'text-chart-1', bgColor: 'bg-chart-1', Icon: CheckCircle };
       case 'error':
-        return { message: t.databaseUnavailable, color: 'text-red-400', bgColor: 'bg-red-400', Icon: AlertCircle };
+        return { message: t.databaseUnavailable, color: 'text-destructive', bgColor: 'bg-destructive', Icon: AlertCircle };
       case 'offline':
         return { message: t.workingOffline, color: 'text-muted-foreground', bgColor: 'bg-muted-foreground', Icon: WifiOff };
       default:
@@ -111,7 +111,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-accent to-chart-3 bg-clip-text text-transparent">
               ASTRA
             </span>
             <span className="text-foreground ml-2">Villa</span>
@@ -131,10 +131,10 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
           {[0, 1, 2, 3, 4].map((i) => (
             <motion.div
               key={i}
-              className="w-2 h-2 rounded-full"
-              style={{
-                background: i % 3 === 0 ? '#3b82f6' : i % 3 === 1 ? '#8b5cf6' : '#f97316'
-              }}
+              className={cn(
+                "w-2 h-2 rounded-full",
+                i % 3 === 0 ? 'bg-primary' : i % 3 === 1 ? 'bg-accent' : 'bg-chart-3'
+              )}
               animate={{
                 y: [0, -8, 0],
                 opacity: [0.4, 1, 0.4],
@@ -186,7 +186,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
           transition={{ delay: 0.6 }}
         >
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500"
+            className="h-full rounded-full bg-gradient-to-r from-primary via-accent to-chart-3"
             initial={{ width: '0%' }}
             animate={{ width: '100%' }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
