@@ -127,9 +127,9 @@ const VendorUserManagement = () => {
     }
     
     const colors = {
-      approved: "bg-green-100 text-green-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      rejected: "bg-red-100 text-red-800"
+      approved: "bg-chart-1/10 text-chart-1",
+      pending: "bg-chart-3/10 text-chart-3",
+      rejected: "bg-destructive/10 text-destructive"
     };
     
     return (
@@ -169,7 +169,7 @@ const VendorUserManagement = () => {
           <div className="flex gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder="Search vendors..."
                   value={searchTerm}
@@ -317,7 +317,7 @@ const VendorUserManagement = () => {
               {selectedVendor.is_suspended && (
                 <div>
                   <Label>Suspension Reason</Label>
-                  <p className="text-red-600">{selectedVendor.suspension_reason}</p>
+                  <p className="text-destructive">{selectedVendor.suspension_reason}</p>
                 </div>
               )}
             </div>
