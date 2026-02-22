@@ -546,8 +546,8 @@ const Index = () => {
             </div>
           </div>
           
-          {/* Search Panel Overlay - centered on slider */}
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none">
+          {/* Search Panel Overlay - positioned at bottom of slider */}
+          <div className="absolute inset-x-0 bottom-8 z-30 flex flex-col items-center pointer-events-none">
             <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 pointer-events-auto">
               {/* Title */}
               <div className="text-center mb-4 sm:mb-6">
