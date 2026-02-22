@@ -302,7 +302,7 @@ const DataExchangeManagement: React.FC = () => {
                         <Badge variant="outline" className="capitalize">{network.type}</Badge>
                       </TableCell>
                       <TableCell>{network.listings}</TableCell>
-                      <TableCell className="text-green-600">+{network.leads}</TableCell>
+                      <TableCell className="text-chart-1">+{network.leads}</TableCell>
                       <TableCell>
                         <Badge variant="default">Active</Badge>
                       </TableCell>
@@ -347,7 +347,7 @@ const DataExchangeManagement: React.FC = () => {
                 </div>
                 <div className="p-4 rounded-xl border">
                   <div className="flex items-center gap-2 mb-3">
-                    <Users className="h-5 w-5 text-blue-500" />
+                    <Users className="h-5 w-5 text-chart-4" />
                     <h4 className="font-medium">Buyer Demographics</h4>
                   </div>
                   <p className="text-sm text-muted-foreground">
@@ -357,7 +357,7 @@ const DataExchangeManagement: React.FC = () => {
                 </div>
                 <div className="p-4 rounded-xl border">
                   <div className="flex items-center gap-2 mb-3">
-                    <BarChart3 className="h-5 w-5 text-green-500" />
+                    <BarChart3 className="h-5 w-5 text-chart-1" />
                     <h4 className="font-medium">Price Analytics</h4>
                   </div>
                   <p className="text-sm text-muted-foreground">
@@ -411,7 +411,7 @@ const DataExchangeManagement: React.FC = () => {
                       </TableCell>
                       <TableCell>{deal.city}</TableCell>
                       <TableCell className="font-medium">{formatCurrency(deal.price)}</TableCell>
-                      <TableCell className="text-green-600">-{deal.discount}%</TableCell>
+                      <TableCell className="text-chart-1">-{deal.discount}%</TableCell>
                       <TableCell>{deal.interest} investors</TableCell>
                       <TableCell>
                         <Badge variant={deal.status === 'available' ? 'default' : 'secondary'}>
@@ -471,7 +471,7 @@ const DataExchangeManagement: React.FC = () => {
                         </Badge>
                       </TableCell>
                       <TableCell>{pkg.subscribers}</TableCell>
-                      <TableCell className="text-green-600">{formatCurrency(pkg.revenue)}</TableCell>
+                      <TableCell className="text-chart-1">{formatCurrency(pkg.revenue)}</TableCell>
                       <TableCell>
                         <Badge variant="default">Active</Badge>
                       </TableCell>

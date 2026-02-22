@@ -177,21 +177,21 @@ const InnovationLabManagement = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "running": return "bg-green-500";
-      case "paused": return "bg-yellow-500";
-      case "completed": return "bg-blue-500";
-      case "failed": return "bg-red-500";
+      case "running": return "bg-chart-1";
+      case "paused": return "bg-chart-3";
+      case "completed": return "bg-chart-4";
+      case "failed": return "bg-destructive";
       default: return "bg-muted";
     }
   };
 
   const getFeedbackIcon = (type: string) => {
     switch (type) {
-      case "bug": return <XCircle className="h-4 w-4 text-red-500" />;
-      case "feature_request": return <Zap className="h-4 w-4 text-blue-500" />;
-      case "improvement": return <TrendingUp className="h-4 w-4 text-green-500" />;
-      case "praise": return <ThumbsUp className="h-4 w-4 text-yellow-500" />;
-      case "complaint": return <ThumbsDown className="h-4 w-4 text-orange-500" />;
+      case "bug": return <XCircle className="h-4 w-4 text-destructive" />;
+      case "feature_request": return <Zap className="h-4 w-4 text-chart-4" />;
+      case "improvement": return <TrendingUp className="h-4 w-4 text-chart-1" />;
+      case "praise": return <ThumbsUp className="h-4 w-4 text-chart-3" />;
+      case "complaint": return <ThumbsDown className="h-4 w-4 text-chart-3" />;
       default: return <MessageSquare className="h-4 w-4 text-muted-foreground" />;
     }
   };
@@ -218,8 +218,8 @@ const InnovationLabManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-500/10 rounded-lg">
-                <Play className="h-5 w-5 text-green-500" />
+              <div className="p-2 bg-chart-1/10 rounded-lg">
+                <Play className="h-5 w-5 text-chart-1" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Running Tests</p>
@@ -244,8 +244,8 @@ const InnovationLabManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-500/10 rounded-lg">
-                <Users className="h-5 w-5 text-blue-500" />
+              <div className="p-2 bg-chart-4/10 rounded-lg">
+                <Users className="h-5 w-5 text-chart-4" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Total Users Tested</p>
@@ -257,8 +257,8 @@ const InnovationLabManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-yellow-500/10 rounded-lg">
-                <MessageSquare className="h-5 w-5 text-yellow-500" />
+              <div className="p-2 bg-chart-3/10 rounded-lg">
+                <MessageSquare className="h-5 w-5 text-chart-3" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">New Feedback</p>
@@ -427,7 +427,7 @@ const InnovationLabManagement = () => {
                         </Button>
                       )}
                       {exp.winner_variant && (
-                        <Badge variant="outline" className="text-green-600 border-green-600">
+                        <Badge variant="outline" className="text-chart-1 border-chart-1">
                           Winner: {exp.winner_variant}
                         </Badge>
                       )}

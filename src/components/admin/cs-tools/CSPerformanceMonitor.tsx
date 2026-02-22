@@ -52,20 +52,20 @@ const CSPerformanceMonitor = () => {
   });
 
   const getSLAColor = (percentage: number) => {
-    if (percentage >= 95) return "text-green-600";
-    if (percentage >= 85) return "text-yellow-600";
-    return "text-red-600";
+    if (percentage >= 95) return "text-chart-1";
+    if (percentage >= 85) return "text-chart-3";
+    return "text-destructive";
   };
 
   const getWorkloadColor = (workload: number) => {
-    if (workload <= 5) return "text-green-600";
-    if (workload <= 10) return "text-yellow-600";
-    return "text-red-600";
+    if (workload <= 5) return "text-chart-1";
+    if (workload <= 10) return "text-chart-3";
+    return "text-destructive";
   };
 
   if (isLoading) {
     return (
-      <Card className="border-cyan-200/50 dark:border-cyan-800/30">
+      <Card className="border-border/40">
         <CardContent className="p-4">
           <div className="text-center text-[10px] text-muted-foreground">Loading performance metrics...</div>
         </CardContent>
@@ -76,14 +76,14 @@ const CSPerformanceMonitor = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-cyan-500/10 via-teal-500/10 to-emerald-500/10 rounded-lg border border-cyan-200/50 dark:border-cyan-800/50">
-        <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-lg flex items-center justify-center">
-          <Gauge className="h-4 w-4 text-white" />
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-chart-4/10 via-primary/10 to-chart-1/10 rounded-lg border border-border/40">
+        <div className="w-8 h-8 bg-gradient-to-br from-chart-4 to-primary rounded-lg flex items-center justify-center">
+          <Gauge className="h-4 w-4 text-primary-foreground" />
         </div>
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold">Performance Monitor</h2>
-            <Badge className="bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 text-[9px] px-1.5 py-0 h-4">Live</Badge>
+            <Badge className="bg-chart-4/20 text-chart-4 text-[9px] px-1.5 py-0 h-4">Live</Badge>
           </div>
           <p className="text-[10px] text-muted-foreground">Real-time CS performance metrics and KPIs</p>
         </div>
@@ -91,67 +91,67 @@ const CSPerformanceMonitor = () => {
 
       {/* Real-time Metrics Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-        <Card className="border-orange-200/50 dark:border-orange-800/30">
+        <Card className="border-chart-3/30">
           <CardContent className="p-2">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] text-muted-foreground">Open Tickets</p>
-                <p className="text-sm font-bold text-orange-600">{metrics?.openTickets}</p>
+                <p className="text-sm font-bold text-chart-3">{metrics?.openTickets}</p>
                 <p className="text-[8px] text-muted-foreground">of {metrics?.totalTickets} total</p>
               </div>
-              <div className="w-6 h-6 bg-orange-500/20 rounded flex items-center justify-center">
-                <AlertTriangle className="h-3 w-3 text-orange-600" />
+              <div className="w-6 h-6 bg-chart-3/20 rounded flex items-center justify-center">
+                <AlertTriangle className="h-3 w-3 text-chart-3" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-green-200/50 dark:border-green-800/30">
+        <Card className="border-chart-1/30">
           <CardContent className="p-2">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] text-muted-foreground">Resolved Today</p>
-                <p className="text-sm font-bold text-green-600">{metrics?.resolvedToday}</p>
-                <div className="flex items-center gap-0.5 text-[8px] text-green-600">
+                <p className="text-sm font-bold text-chart-1">{metrics?.resolvedToday}</p>
+                <div className="flex items-center gap-0.5 text-[8px] text-chart-1">
                   <TrendingUp className="h-2 w-2" />
                   +12%
                 </div>
               </div>
-              <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
-                <CheckCircle className="h-3 w-3 text-green-600" />
+              <div className="w-6 h-6 bg-chart-1/20 rounded flex items-center justify-center">
+                <CheckCircle className="h-3 w-3 text-chart-1" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-blue-200/50 dark:border-blue-800/30">
+        <Card className="border-chart-4/30">
           <CardContent className="p-2">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] text-muted-foreground">Active Chats</p>
-                <p className="text-sm font-bold text-blue-600">{metrics?.activeChatSessions}</p>
+                <p className="text-sm font-bold text-chart-4">{metrics?.activeChatSessions}</p>
                 <p className="text-[8px] text-muted-foreground">{metrics?.waitingChatSessions} waiting</p>
               </div>
-              <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
-                <MessageSquare className="h-3 w-3 text-blue-600" />
+              <div className="w-6 h-6 bg-chart-4/20 rounded flex items-center justify-center">
+                <MessageSquare className="h-3 w-3 text-chart-4" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-purple-200/50 dark:border-purple-800/30">
+        <Card className="border-chart-5/30">
           <CardContent className="p-2">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] text-muted-foreground">Avg Response</p>
-                <p className="text-sm font-bold text-purple-600">{metrics?.avgResponseTime}h</p>
-                <div className="flex items-center gap-0.5 text-[8px] text-green-600">
+                <p className="text-sm font-bold text-chart-5">{metrics?.avgResponseTime}h</p>
+                <div className="flex items-center gap-0.5 text-[8px] text-chart-1">
                   <TrendingDown className="h-2 w-2" />
                   -5%
                 </div>
               </div>
-              <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
-                <Clock className="h-3 w-3 text-purple-600" />
+              <div className="w-6 h-6 bg-chart-5/20 rounded flex items-center justify-center">
+                <Clock className="h-3 w-3 text-chart-5" />
               </div>
             </div>
           </CardContent>
@@ -160,11 +160,11 @@ const CSPerformanceMonitor = () => {
 
       {/* SLA Dashboard */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <Card className="border-teal-200/50 dark:border-teal-800/30">
+        <Card className="border-border/40">
           <CardHeader className="p-3 pb-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-teal-500/20 rounded flex items-center justify-center">
-                <Target className="h-3 w-3 text-teal-600" />
+              <div className="w-6 h-6 bg-primary/20 rounded flex items-center justify-center">
+                <Target className="h-3 w-3 text-primary" />
               </div>
               <CardTitle className="text-xs">SLA Performance</CardTitle>
             </div>
@@ -195,7 +195,7 @@ const CSPerformanceMonitor = () => {
             <div>
               <div className="flex justify-between items-center mb-1">
                 <span className="text-[10px]">Customer Satisfaction</span>
-                <span className="text-[10px] font-bold text-green-600">
+                <span className="text-[10px] font-bold text-chart-1">
                   {metrics?.customerSatisfaction}/5.0
                 </span>
               </div>
@@ -205,11 +205,11 @@ const CSPerformanceMonitor = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-indigo-200/50 dark:border-indigo-800/30">
+        <Card className="border-border/40">
           <CardHeader className="p-3 pb-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-indigo-500/20 rounded flex items-center justify-center">
-                <Users className="h-3 w-3 text-indigo-600" />
+              <div className="w-6 h-6 bg-chart-5/20 rounded flex items-center justify-center">
+                <Users className="h-3 w-3 text-chart-5" />
               </div>
               <CardTitle className="text-xs">Team Performance</CardTitle>
             </div>
@@ -217,7 +217,7 @@ const CSPerformanceMonitor = () => {
           <CardContent className="p-3 pt-0 space-y-2">
             <div className="flex items-center justify-between p-2 bg-muted/30 rounded-lg">
               <span className="text-[10px]">Active Agents</span>
-              <Badge className="bg-green-500/20 text-green-700 dark:text-green-400 text-[9px] px-1.5 py-0 h-4">
+              <Badge className="bg-chart-1/20 text-chart-1 text-[9px] px-1.5 py-0 h-4">
                 {metrics?.totalAgents} online
               </Badge>
             </div>
@@ -249,19 +249,19 @@ const CSPerformanceMonitor = () => {
       </div>
 
       {/* Live Activity Feed */}
-      <Card className="border-emerald-200/50 dark:border-emerald-800/30">
+      <Card className="border-border/40">
         <CardHeader className="p-3 pb-2">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-emerald-500/20 rounded flex items-center justify-center">
-              <Timer className="h-3 w-3 text-emerald-600" />
+            <div className="w-6 h-6 bg-chart-1/20 rounded flex items-center justify-center">
+              <Timer className="h-3 w-3 text-chart-1" />
             </div>
             <CardTitle className="text-xs">Live Activity Feed</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="p-3 pt-0">
           <div className="space-y-2">
-            <div className="flex items-center gap-2 p-2 bg-blue-50/50 dark:bg-blue-950/20 rounded-lg border border-blue-200/50 dark:border-blue-800/30">
-              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
+            <div className="flex items-center gap-2 p-2 bg-chart-4/10 rounded-lg border border-chart-4/30">
+              <div className="w-1.5 h-1.5 bg-chart-4 rounded-full animate-pulse"></div>
               <div className="flex-1">
                 <p className="text-[10px] font-medium">New live chat session started</p>
                 <p className="text-[8px] text-muted-foreground">Customer: sarah@example.com • 2 min ago</p>
@@ -269,8 +269,8 @@ const CSPerformanceMonitor = () => {
               <Badge variant="outline" className="text-[8px] h-4 px-1.5">Live Chat</Badge>
             </div>
 
-            <div className="flex items-center gap-2 p-2 bg-green-50/50 dark:bg-green-950/20 rounded-lg border border-green-200/50 dark:border-green-800/30">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+            <div className="flex items-center gap-2 p-2 bg-chart-1/10 rounded-lg border border-chart-1/30">
+              <div className="w-1.5 h-1.5 bg-chart-1 rounded-full"></div>
               <div className="flex-1">
                 <p className="text-[10px] font-medium">Ticket #1247 resolved</p>
                 <p className="text-[8px] text-muted-foreground">Agent: John Smith • 5 min ago</p>
@@ -278,8 +278,8 @@ const CSPerformanceMonitor = () => {
               <Badge variant="outline" className="text-[8px] h-4 px-1.5">Resolved</Badge>
             </div>
 
-            <div className="flex items-center gap-2 p-2 bg-orange-50/50 dark:bg-orange-950/20 rounded-lg border border-orange-200/50 dark:border-orange-800/30">
-              <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+            <div className="flex items-center gap-2 p-2 bg-chart-3/10 rounded-lg border border-chart-3/30">
+              <div className="w-1.5 h-1.5 bg-chart-3 rounded-full"></div>
               <div className="flex-1">
                 <p className="text-[10px] font-medium">High priority ticket assigned</p>
                 <p className="text-[8px] text-muted-foreground">Ticket #1248 • Agent: Maria • 8 min ago</p>
