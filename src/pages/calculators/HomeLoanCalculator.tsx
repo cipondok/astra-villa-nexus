@@ -736,7 +736,7 @@ const HomeLoanCalculator = () => {
                     : 'Additional costs: provision, admin fees, appraisal, notary, BPHTB, insurance'}
                 </li>
                 {applicantType === 'foreign' && (
-                  <li className="font-semibold text-amber-600">
+                  <li className="font-semibold text-gold-primary">
                     {language === 'id'
                       ? 'WNA wajib memiliki KITAS/KITAP dan properti harus Hak Pakai (bukan Hak Milik)'
                       : 'Foreigners must have KITAS/KITAP and property must be under Hak Pakai (not Hak Milik)'}
@@ -751,11 +751,11 @@ const HomeLoanCalculator = () => {
             </div>
 
             {applicantType === 'foreign' && (
-              <div className="bg-amber-50 dark:bg-amber-950 p-3 rounded-md border border-amber-200 dark:border-amber-800">
-                <p className="font-semibold mb-2 text-amber-900 dark:text-amber-100">
+              <div className="bg-gold-primary/10 dark:bg-gold-primary/20 p-3 rounded-md border border-gold-primary/30">
+                <p className="font-semibold mb-2 text-foreground">
                   {language === 'id' ? 'Informasi Khusus WNA:' : 'Foreign Investor Information:'}
                 </p>
-                <ul className="list-disc list-inside space-y-1 text-amber-900 dark:text-amber-100">
+                <ul className="list-disc list-inside space-y-1 text-foreground/80">
                   <li>
                     {language === 'id'
                       ? 'Hak Pakai berlaku 30 tahun (dapat diperpanjang 20 tahun, lalu 30 tahun)'
