@@ -205,8 +205,8 @@ const BuyerOnboarding = ({
             <Card className="border-dashed">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                    <Heart className="h-5 w-5 text-orange-600" />
+                  <div className="w-10 h-10 rounded-full bg-chart-3/10 flex items-center justify-center">
+                    <Heart className="h-5 w-5 text-chart-3" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold">First Action</p>
@@ -219,9 +219,9 @@ const BuyerOnboarding = ({
             </Card>
 
             <div className="flex items-center justify-center gap-2 flex-wrap">
-              <Badge className="bg-orange-100 text-orange-700">+25 ASTRA</Badge>
-              <Badge className="bg-blue-100 text-blue-700">KPR Calculator</Badge>
-              <Badge className="bg-purple-100 text-purple-700">AI Assistant</Badge>
+              <Badge className="bg-chart-3/10 text-chart-3">+25 ASTRA</Badge>
+              <Badge className="bg-chart-4/10 text-chart-4">KPR Calculator</Badge>
+              <Badge className="bg-chart-5/10 text-chart-5">AI Assistant</Badge>
             </div>
           </div>
         );

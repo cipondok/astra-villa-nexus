@@ -37,13 +37,11 @@ const FeedbackFlow = ({
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Initial feedback state
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState('');
   const [showDetailed, setShowDetailed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Detailed feedback state
   const [serviceAspects, setServiceAspects] = useState<ServiceAspect[]>([
     { id: 'service_quality', label: 'Service quality', checked: false },
     { id: 'contactless_delivery', label: 'Contactless delivery', checked: false },
@@ -135,30 +133,28 @@ const FeedbackFlow = ({
   };
 
   const handleDismiss = () => {
-    // Track dismissal for analytics
     console.log('Feedback dismissed - track for completion rate analytics');
     onClose();
   };
 
   const handleCompleteLater = () => {
-    // Track "complete later" for analytics
     console.log('Feedback postponed - track for completion rate analytics');
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+      <DialogContent className="max-w-lg bg-card border-border">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-gray-900 dark:text-white">
+            <DialogTitle className="text-foreground">
               How was your service?
             </DialogTitle>
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={handleDismiss}
-              className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+              className="text-muted-foreground hover:text-foreground"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -168,7 +164,7 @@ const FeedbackFlow = ({
         <CardContent className="space-y-6 p-0">
           {/* Initial Rating Section */}
           <div className="text-center space-y-4">
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-muted-foreground">
               Please rate your overall experience
             </p>
             
@@ -184,8 +180,8 @@ const FeedbackFlow = ({
                   <Star
                     className={`h-8 w-8 ${
                       star <= rating
-                        ? 'fill-yellow-400 text-yellow-400'
-                        : 'text-gray-300 dark:text-gray-600'
+                        ? 'fill-gold-primary text-gold-primary'
+                        : 'text-muted'
                     }`}
                   />
                 </button>
@@ -198,7 +194,7 @@ const FeedbackFlow = ({
                 placeholder="Tell us about your experience (optional)"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
+                className="bg-muted/50 border-border"
                 rows={3}
                 disabled={isSubmitting}
               />
@@ -207,11 +203,11 @@ const FeedbackFlow = ({
 
           {/* Detailed Feedback Toggle */}
           {rating > 0 && !isSubmitting && (
-            <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
+            <div className="border-t border-border pt-4">
               <Button
                 variant="ghost"
                 onClick={() => setShowDetailed(!showDetailed)}
-                className="w-full justify-between text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                className="w-full justify-between text-primary hover:bg-primary/5"
               >
                 <span className="flex items-center gap-2">
                   <ThumbsUp className="h-4 w-4" />
@@ -222,7 +218,7 @@ const FeedbackFlow = ({
 
               {/* Detailed Feedback Section */}
               {showDetailed && (
-                <div className="mt-4 space-y-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div className="mt-4 space-y-4 p-4 bg-muted/50 rounded-lg">
                   <div className="grid grid-cols-1 gap-3">
                     {serviceAspects.map((aspect) => (
                       <div key={aspect.id} className="flex items-center space-x-2">
@@ -232,11 +228,11 @@ const FeedbackFlow = ({
                           onCheckedChange={(checked) => 
                             handleAspectChange(aspect.id, checked as boolean)
                           }
-                          className="border-gray-300 dark:border-gray-500"
+                          className="border-border"
                         />
                         <label
                           htmlFor={aspect.id}
-                          className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer"
+                          className="text-sm font-medium text-foreground cursor-pointer"
                         >
                           {aspect.label}
                         </label>
@@ -248,7 +244,7 @@ const FeedbackFlow = ({
                     placeholder="Any additional comments?"
                     value={additionalComments}
                     onChange={(e) => setAdditionalComments(e.target.value)}
-                    className="bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500"
+                    className="bg-background border-border"
                     rows={2}
                   />
                 </div>
@@ -269,7 +265,7 @@ const FeedbackFlow = ({
             <Button
               onClick={handleSubmit}
               disabled={rating === 0 || isSubmitting}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+              className="flex-1"
             >
               {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
             </Button>

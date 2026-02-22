@@ -112,10 +112,10 @@ const EnhancedPropertyCard = ({
 
   const getListingTypeColor = (type: string) => {
     switch (type) {
-      case 'sale': return 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg';
-      case 'rent': return 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg';
-      case 'lease': return 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg';
-      default: return 'bg-gradient-to-r from-accent to-accent-foreground text-accent-foreground shadow-lg';
+      case 'sale': return 'bg-gradient-to-r from-chart-1 to-chart-1/80 text-white shadow-lg';
+      case 'rent': return 'bg-gradient-to-r from-chart-4 to-chart-4/80 text-white shadow-lg';
+      case 'lease': return 'bg-gradient-to-r from-chart-5 to-chart-5/80 text-white shadow-lg';
+      default: return 'bg-gradient-to-r from-accent to-accent/80 text-accent-foreground shadow-lg';
     }
   };
 
@@ -193,7 +193,7 @@ const EnhancedPropertyCard = ({
 
           {/* Property Type Badge - Secondary */}
           <div className="absolute top-3 left-3 mt-10 z-20">
-            <Badge variant="outline" className="bg-white/95 backdrop-blur-sm text-gray-800 border-white/50 capitalize font-semibold text-xs px-2 py-1">
+            <Badge variant="outline" className="bg-white/95 backdrop-blur-sm text-foreground border-white/50 capitalize font-semibold text-xs px-2 py-1">
               {property.property_type}
             </Badge>
           </div>
@@ -204,7 +204,7 @@ const EnhancedPropertyCard = ({
               <Button
                 size="lg"
                 variant="secondary"
-                className="bg-white/90 hover:bg-white text-blue-600 shadow-xl rounded-full p-4 backdrop-blur-sm border-2 border-white/50 transform hover:scale-110 transition-all duration-300"
+                className="bg-white/90 hover:bg-white text-primary shadow-xl rounded-full p-4 backdrop-blur-sm border-2 border-white/50 transform hover:scale-110 transition-all duration-300"
                 onClick={handleView3D}
                 aria-label="Open 3D View"
               >
@@ -265,13 +265,13 @@ const EnhancedPropertyCard = ({
               onClick={handleLikeToggle}
               aria-label={isSaved ? "Remove from favorites" : "Save property"}
             >
-              <Heart className={`h-4 w-4 transition-all duration-300 ${isSaved ? 'fill-red-500 text-red-500 scale-110' : 'text-gray-600'}`} />
+              <Heart className={`h-4 w-4 transition-all duration-300 ${isSaved ? 'fill-destructive text-destructive scale-110' : 'text-muted-foreground'}`} />
             </Button>
             {/* Share button */}
             <Button
               size="sm"
               variant="ghost"
-              className="bg-white/90 hover:bg-white text-gray-600 shadow-lg rounded-full p-2 transition-all duration-300 hover:scale-110"
+              className="bg-white/90 hover:bg-white text-muted-foreground shadow-lg rounded-full p-2 transition-all duration-300 hover:scale-110"
               onClick={handleShare}
               aria-label="Share property"
             >
