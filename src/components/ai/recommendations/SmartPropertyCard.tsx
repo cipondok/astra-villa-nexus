@@ -99,7 +99,7 @@ const SmartPropertyCard = ({ recommendation, onSave }: SmartPropertyCardProps) =
 
         {/* Discovery Badge */}
         {isDiscoveryMatch && (
-          <Badge className="absolute top-2 right-2 bg-chart-5 text-white">
+          <Badge className="absolute top-2 right-2 bg-chart-5 text-primary-foreground">
             <Lightbulb className="h-3 w-3 mr-1" />
             Discovery
           </Badge>
@@ -110,7 +110,7 @@ const SmartPropertyCard = ({ recommendation, onSave }: SmartPropertyCardProps) =
           <Button
             size="icon"
             variant="secondary"
-            className="h-8 w-8 rounded-full bg-white/90"
+            className="h-8 w-8 rounded-full bg-background/90"
             onClick={(e) => {
               e.preventDefault();
               handleFeedback('liked');
@@ -121,7 +121,7 @@ const SmartPropertyCard = ({ recommendation, onSave }: SmartPropertyCardProps) =
           <Button
             size="icon"
             variant="secondary"
-            className="h-8 w-8 rounded-full bg-white/90"
+            className="h-8 w-8 rounded-full bg-background/90"
             onClick={(e) => {
               e.preventDefault();
               handleFeedback('disliked');
@@ -132,7 +132,7 @@ const SmartPropertyCard = ({ recommendation, onSave }: SmartPropertyCardProps) =
           <Button
             size="icon"
             variant="secondary"
-            className="h-8 w-8 rounded-full bg-white/90"
+            className="h-8 w-8 rounded-full bg-background/90"
             onClick={(e) => {
               e.preventDefault();
               onSave?.();

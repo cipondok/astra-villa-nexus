@@ -240,7 +240,7 @@ const MobileFeatureHub: React.FC = () => {
                       "w-20 flex items-center justify-center",
                       `bg-gradient-to-br ${feature.color}`
                     )}>
-                      <feature.icon className="h-8 w-8 text-white" />
+                      <feature.icon className="h-8 w-8 text-primary-foreground" />
                     </div>
 
                     {/* Content Section */}
@@ -321,7 +321,7 @@ const MobileFeatureHub: React.FC = () => {
                         "w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center",
                         `bg-gradient-to-br ${feature?.color || 'from-primary to-primary/80'}`
                       )}>
-                        {feature && <feature.icon className="h-8 w-8 text-white" />}
+                        {feature && <feature.icon className="h-8 w-8 text-primary-foreground" />}
                       </div>
                       <h2 className="text-xl font-bold">{product?.name || 'Premium Feature'}</h2>
                       <p className="text-sm text-muted-foreground mt-1">

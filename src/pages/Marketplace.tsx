@@ -292,7 +292,7 @@ const Marketplace = () => {
         )}
 
         {/* Bottom CTA */}
-        <div className="mt-6 md:mt-12 p-4 md:p-8 rounded-xl md:rounded-2xl bg-gradient-to-r from-primary/10 to-purple-500/10 dark:from-primary/20 dark:to-purple-500/20 border border-primary/20 dark:border-primary/30">
+        <div className="mt-6 md:mt-12 p-4 md:p-8 rounded-xl md:rounded-2xl bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 border border-primary/20 dark:border-primary/30">
           <div className="text-center max-w-2xl mx-auto">
             <h3 className="text-base md:text-2xl font-bold text-foreground mb-1 md:mb-2">
               Are you a service provider?

@@ -325,7 +325,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
 
           <DropdownMenuItem 
             onClick={handleSignOut}
-            className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md cursor-pointer text-red-600 dark:text-red-400 hover:bg-red-50/50 dark:hover:bg-red-950/30"
+            className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md cursor-pointer text-destructive hover:bg-destructive/5"
           >
             <LogOut className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 shrink-0" />
             <span className="text-[10px] sm:text-xs lg:text-xs">Sign Out</span>

@@ -157,18 +157,18 @@ const BusinessNatureSelector = ({
       </CardHeader>
       <CardContent className="space-y-6">
         {!canChange && currentNatureId && !forceAllowSelection && (
-          <Alert className="border-orange-200 bg-orange-50">
-            <Lock className="h-4 w-4 text-orange-600" />
-            <AlertDescription className="text-orange-800">
+          <Alert className="border-chart-3/30 bg-chart-3/5">
+            <Lock className="h-4 w-4 text-chart-3" />
+            <AlertDescription className="text-chart-3">
               Kategori bisnis Anda sudah dipilih dan terkunci. Hubungi customer service untuk perubahan.
             </AlertDescription>
           </Alert>
         )}
 
         {!currentNatureId && (
-          <Alert className="border-blue-200 bg-blue-50">
-            <Building2 className="h-4 w-4 text-blue-600" />
-            <AlertDescription className="text-blue-800">
+          <Alert className="border-primary/30 bg-primary/5">
+            <Building2 className="h-4 w-4 text-primary" />
+            <AlertDescription className="text-primary">
               Silakan pilih kategori utama bisnis Anda untuk melanjutkan pengaturan layanan dan fitur lainnya.
             </AlertDescription>
           </Alert>
@@ -197,7 +197,7 @@ const BusinessNatureSelector = ({
                 {currentCategoryInfo.type === 'products' ? 'Produk' : 'Layanan'}
               </Badge>
               {!canChange && (
-                <Badge variant="outline" className="text-orange-600 border-orange-300">
+                <Badge variant="outline" className="text-chart-3 border-chart-3/30">
                   <Lock className="h-3 w-3 mr-1" />
                   Terkunci
                 </Badge>

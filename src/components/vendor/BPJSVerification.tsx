@@ -111,7 +111,7 @@ const BPJSVerification = ({
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'verified':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-chart-1" />;
       case 'failed':
         return <X className="h-4 w-4 text-destructive" />;
       case 'pending':
@@ -153,7 +153,7 @@ const BPJSVerification = ({
           <AlertDescription>
             {isCommercialRequired ? (
               <div className="space-y-2">
-                <p className="font-semibold text-orange-700">
+                <p className="font-semibold text-chart-3">
                   🏢 Komersial - BPJS Ketenagakerjaan Wajib
                 </p>
                 <p className="text-sm">
@@ -163,7 +163,7 @@ const BPJSVerification = ({
               </div>
             ) : (
               <div>
-                <p className="font-semibold text-green-700">
+                <p className="font-semibold text-chart-1">
                   🏠 Perumahan - BPJS Opsional
                 </p>
                 <p className="text-sm">
