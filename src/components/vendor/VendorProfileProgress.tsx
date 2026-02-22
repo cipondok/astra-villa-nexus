@@ -210,26 +210,26 @@ const VendorProfileProgress = () => {
   return (
     <div className="space-y-6">
       {/* User Level & ID Card */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-l-4 border-l-blue-500">
+      <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-l-4 border-l-primary">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 dark:bg-blue-800 rounded-lg">
-                <User className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              <div className="p-2 bg-primary/20 rounded-lg">
+                <User className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <CardTitle className="text-xl flex items-center gap-2">
                   {profile?.full_name || 'Vendor Profile'}
                   <Badge 
                     variant="outline" 
-                    className="text-xs bg-green-100 text-green-800 border-green-300"
+                    className="text-xs bg-chart-1/20 text-chart-1 border-chart-1/30"
                   >
                     Online
                   </Badge>
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-1">
-                  <Hash className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm font-mono text-gray-600 dark:text-gray-400">
+                  <Hash className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-mono text-muted-foreground">
                     {formatUserIdHash(user?.id || '')}
                   </span>
                 </div>
@@ -239,17 +239,17 @@ const VendorProfileProgress = () => {
               <Badge 
                 variant="outline" 
                 className={`px-3 py-1 text-sm font-medium ${
-                  userLevel === 'Expert' ? 'bg-green-100 text-green-800 border-green-300' :
-                  userLevel === 'Advanced' ? 'bg-blue-100 text-blue-800 border-blue-300' :
-                  userLevel === 'Intermediate' ? 'bg-purple-100 text-purple-800 border-purple-300' :
-                  userLevel === 'Beginner' ? 'bg-orange-100 text-orange-800 border-orange-300' :
-                  'bg-gray-100 text-gray-800 border-gray-300'
+                  userLevel === 'Expert' ? 'bg-chart-1/20 text-chart-1 border-chart-1/30' :
+                  userLevel === 'Advanced' ? 'bg-chart-4/20 text-chart-4 border-chart-4/30' :
+                  userLevel === 'Intermediate' ? 'bg-chart-5/20 text-chart-5 border-chart-5/30' :
+                  userLevel === 'Beginner' ? 'bg-chart-3/20 text-chart-3 border-chart-3/30' :
+                  'bg-muted text-muted-foreground border-border'
                 }`}
               >
                 <Star className="h-3 w-3 mr-1" />
                 {userLevel} Level
               </Badge>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-muted-foreground">
                 Current Level
               </div>
             </div>

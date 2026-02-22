@@ -195,18 +195,18 @@ const EnhancedAutoPricingCalculator = ({
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4">
             {/* Base Residential Pricing */}
-            <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-900/20">
+            <div className="p-4 border rounded-lg bg-chart-1/10">
               <div className="flex justify-between items-center">
                 <div>
-                  <h4 className="font-semibold text-green-800 dark:text-green-200">
+                  <h4 className="font-semibold text-chart-1">
                     🏠 Residential Rate
                   </h4>
-                  <p className="text-sm text-green-600 dark:text-green-300">
+                  <p className="text-sm text-chart-1/70">
                     Standard pricing for home services
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-bold text-green-800 dark:text-green-200">
+                  <p className="text-lg font-bold text-chart-1">
                     {formatCurrency(pricingData.basePrice)}
                   </p>
                 </div>
@@ -214,18 +214,18 @@ const EnhancedAutoPricingCalculator = ({
             </div>
 
             {/* Commercial Pricing */}
-            <div className="p-4 border rounded-lg bg-orange-50 dark:bg-orange-900/20">
+            <div className="p-4 border rounded-lg bg-chart-3/10">
               <div className="flex justify-between items-center">
                 <div>
-                  <h4 className="font-semibold text-orange-800 dark:text-orange-200">
+                  <h4 className="font-semibold text-chart-3">
                     🏢 Commercial Rate
                   </h4>
-                  <p className="text-sm text-orange-600 dark:text-orange-300">
+                  <p className="text-sm text-chart-3/70">
                     {pricingData.multiplier}x multiplier (+{((pricingData.multiplier - 1) * 100).toFixed(0)}%)
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-bold text-orange-800 dark:text-orange-200">
+                  <p className="text-lg font-bold text-chart-3">
                     {formatCurrency(pricingData.commercialPrice)}
                   </p>
                 </div>
@@ -280,8 +280,8 @@ const EnhancedAutoPricingCalculator = ({
 
         {/* Commercial Notice */}
         {propertyType === 'commercial' && (
-          <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200">
-            <p className="text-sm text-blue-700 dark:text-blue-300">
+          <div className="p-3 bg-chart-4/10 rounded-lg border border-chart-4/20">
+            <p className="text-sm text-chart-4">
               <strong>Commercial Pricing Note:</strong> Higher rates account for business insurance, 
               commercial compliance requirements, and increased service complexity.
             </p>
