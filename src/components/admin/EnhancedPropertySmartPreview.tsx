@@ -508,7 +508,7 @@ const EnhancedPropertySmartPreview = () => {
             )}
             
             {previewSettings.showLocation && (
-              <div className="flex items-center text-gray-600">
+              <div className="flex items-center text-muted-foreground">
                 <MapPin className="h-4 w-4 mr-1" />
                 {property.location}
               </div>
@@ -521,13 +521,13 @@ const EnhancedPropertySmartPreview = () => {
             )}
             
             {previewSettings.showDescription && property.description && (
-              <p className="text-gray-600 text-sm line-clamp-2">
+              <p className="text-muted-foreground text-sm line-clamp-2">
                 {property.description}
               </p>
             )}
             
             {(previewSettings.showBedrooms || previewSettings.showBathrooms || previewSettings.showArea) && (
-              <div className="flex items-center space-x-4 text-sm text-gray-600">
+              <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                 {previewSettings.showBedrooms && property.bedrooms && (
                   <div className="flex items-center">
                     <Bed className="h-4 w-4 mr-1" />
@@ -982,7 +982,7 @@ const EnhancedPropertySmartPreview = () => {
                     step={10}
                     className="w-full"
                   />
-                  <div className="flex justify-between text-xs text-gray-400">
+                  <div className="flex justify-between text-xs text-muted-foreground">
                     <span>100px</span>
                     <span>400px</span>
                   </div>
@@ -1003,7 +1003,7 @@ const EnhancedPropertySmartPreview = () => {
                     step={1}
                     className="w-full"
                   />
-                  <div className="flex justify-between text-xs text-gray-400">
+                  <div className="flex justify-between text-xs text-muted-foreground">
                     <span>12px</span>
                     <span>32px</span>
                   </div>
@@ -1024,7 +1024,7 @@ const EnhancedPropertySmartPreview = () => {
                     step={1}
                     className="w-full"
                   />
-                  <div className="flex justify-between text-xs text-gray-400">
+                  <div className="flex justify-between text-xs text-muted-foreground">
                     <span>14px</span>
                     <span>36px</span>
                   </div>
@@ -1045,7 +1045,7 @@ const EnhancedPropertySmartPreview = () => {
                     step={1}
                     className="w-full"
                   />
-                  <div className="flex justify-between text-xs text-gray-400">
+                  <div className="flex justify-between text-xs text-muted-foreground">
                     <span>0px (Square)</span>
                     <span>24px (Very Round)</span>
                   </div>
@@ -1054,16 +1054,16 @@ const EnhancedPropertySmartPreview = () => {
             </Card>
 
             {/* Enhanced Color Settings */}
-            <Card className="bg-slate-800/50 border-slate-700/50">
+            <Card className="bg-card/50 border-border/50">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
+                <CardTitle className="text-foreground flex items-center">
                   <Palette className="h-5 w-5 mr-2" />
                   Colors
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-white">Background Color</Label>
+                  <Label className="text-foreground">Background Color</Label>
                   <div className="flex items-center space-x-3">
                     <Input
                       type="color"
@@ -1075,14 +1075,14 @@ const EnhancedPropertySmartPreview = () => {
                       type="text"
                       value={previewSettings.backgroundColor}
                       onChange={(e) => updateBackgroundColor(e.target.value)}
-                      className="flex-1 bg-slate-700/50 border-slate-600 text-white"
+                      className="flex-1 bg-muted/50 border-border text-foreground"
                       placeholder="#ffffff"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">Text Color</Label>
+                  <Label className="text-foreground">Text Color</Label>
                   <div className="flex items-center space-x-3">
                     <Input
                       type="color"
@@ -1094,14 +1094,14 @@ const EnhancedPropertySmartPreview = () => {
                       type="text"
                       value={previewSettings.textColor}
                       onChange={(e) => updateTextColor(e.target.value)}
-                      className="flex-1 bg-slate-700/50 border-slate-600 text-white"
+                      className="flex-1 bg-muted/50 border-border text-foreground"
                       placeholder="#1f2937"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">Accent Color</Label>
+                  <Label className="text-foreground">Accent Color</Label>
                   <div className="flex items-center space-x-3">
                     <Input
                       type="color"
@@ -1113,7 +1113,7 @@ const EnhancedPropertySmartPreview = () => {
                       type="text"
                       value={previewSettings.accentColor}
                       onChange={(e) => updateAccentColor(e.target.value)}
-                      className="flex-1 bg-slate-700/50 border-slate-600 text-white"
+                      className="flex-1 bg-muted/50 border-border text-foreground"
                       placeholder="#3b82f6"
                     />
                   </div>
@@ -1121,7 +1121,7 @@ const EnhancedPropertySmartPreview = () => {
 
                 {/* Color Preset Buttons */}
                 <div className="pt-2">
-                  <Label className="text-white text-sm mb-2 block">Quick Color Presets</Label>
+                  <Label className="text-foreground text-sm mb-2 block">Quick Color Presets</Label>
                   <div className="grid grid-cols-4 gap-2">
                     {[
                       { name: 'Default', bg: '#ffffff', text: '#1f2937', accent: '#3b82f6' },
@@ -1156,9 +1156,9 @@ const EnhancedPropertySmartPreview = () => {
         <TabsContent value="settings" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Settings Management */}
-            <Card className="bg-slate-800/50 border-slate-700/50">
+            <Card className="bg-card/50 border-border/50">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
+                <CardTitle className="text-foreground flex items-center">
                   <Settings className="h-5 w-5 mr-2" />
                   Settings Management
                 </CardTitle>
@@ -1166,7 +1166,7 @@ const EnhancedPropertySmartPreview = () => {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-white font-medium">Save Current Settings</h3>
+                    <h3 className="text-foreground font-medium">Save Current Settings</h3>
                     <p className="text-muted-foreground text-sm">Save these settings as default for the property preview</p>
                   </div>
                   <Button 
@@ -1179,9 +1179,9 @@ const EnhancedPropertySmartPreview = () => {
                   </Button>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-slate-600">
+                <div className="flex items-center justify-between pt-4 border-t border-border">
                   <div>
-                    <h3 className="text-white font-medium">Reset to Defaults</h3>
+                    <h3 className="text-foreground font-medium">Reset to Defaults</h3>
                     <p className="text-muted-foreground text-sm">Restore all settings to their default values</p>
                   </div>
                   <Button onClick={resetToDefaults} variant="outline">
@@ -1190,9 +1190,9 @@ const EnhancedPropertySmartPreview = () => {
                   </Button>
                 </div>
 
-                <div className="pt-4 border-t border-slate-600">
+                <div className="pt-4 border-t border-border">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-white font-medium">Export Settings</h3>
+                    <h3 className="text-foreground font-medium">Export Settings</h3>
                     <Button onClick={exportSettingsToJSON} variant="outline" size="sm">
                       {isSettingsCopied ? <Check className="h-4 w-4 mr-2" /> : <Download className="h-4 w-4 mr-2" />}
                       {isSettingsCopied ? 'Copied!' : 'Export'}
@@ -1203,7 +1203,7 @@ const EnhancedPropertySmartPreview = () => {
                     <Textarea
                       value={exportedSettings}
                       readOnly
-                      className="bg-slate-700/50 border-slate-600 text-white text-xs font-mono"
+                      className="bg-muted/50 border-border text-foreground text-xs font-mono"
                       rows={6}
                     />
                   )}
@@ -1212,22 +1212,22 @@ const EnhancedPropertySmartPreview = () => {
             </Card>
 
             {/* Import & Advanced Options */}
-            <Card className="bg-slate-800/50 border-slate-700/50">
+            <Card className="bg-card/50 border-border/50">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
+                <CardTitle className="text-foreground flex items-center">
                   <Upload className="h-5 w-5 mr-2" />
                   Import & Advanced
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label className="text-white font-medium">Import Settings</Label>
+                  <Label className="text-foreground font-medium">Import Settings</Label>
                   <p className="text-muted-foreground text-sm mb-3">Paste JSON settings to import configuration</p>
                   <Textarea
                     value={importSettings}
                     onChange={(e) => setImportSettings(e.target.value)}
                     placeholder="Paste JSON settings here..."
-                    className="bg-slate-700/50 border-slate-600 text-white text-xs font-mono mb-2"
+                    className="bg-muted/50 border-border text-foreground text-xs font-mono mb-2"
                     rows={6}
                   />
                   <Button 
