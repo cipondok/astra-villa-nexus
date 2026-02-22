@@ -567,7 +567,7 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
           <span className="text-muted-foreground font-medium">
             {t.formProgress || 'Form Progress'}
           </span>
-          <span className={`font-bold ${totalProgress >= 60 ? 'text-green-600' : totalProgress >= 30 ? 'text-amber-600' : 'text-destructive'}`}>
+          <span className={`font-bold ${totalProgress >= 60 ? 'text-chart-1' : totalProgress >= 30 ? 'text-chart-3' : 'text-destructive'}`}>
             {totalProgress}%
           </span>
         </div>
@@ -575,12 +575,12 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
         
         {/* Status indicator - compact */}
         {!isFormValid ?
-        <div className="flex items-center gap-1 text-[8px] text-amber-600">
+        <div className="flex items-center gap-1 text-[8px] text-chart-3">
             <AlertCircle className="h-2.5 w-2.5 shrink-0" />
             <span>{t.requiredFields || 'Required'}: {missingRequired.map((f) => f.name).join(', ')}</span>
           </div> :
 
-        <div className="flex items-center gap-1 text-[8px] text-green-600">
+        <div className="flex items-center gap-1 text-[8px] text-chart-1">
             <Check className="h-2.5 w-2.5 shrink-0" />
             <span>{t.readyToSend || 'Ready to send!'}</span>
           </div>
