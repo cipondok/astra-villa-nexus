@@ -174,31 +174,31 @@ const AstraTokenHub = () => {
 
   const getTransactionIcon = (type: string) => {
     switch (type) {
-      case 'welcome_bonus': return <Gift className="h-4 w-4 text-blue-600" />;
-      case 'daily_checkin': return <Calendar className="h-4 w-4 text-green-600" />;
-      case 'transaction_reward': return <TrendingUp className="h-4 w-4 text-orange-600" />;
-      case 'referral': return <Users className="h-4 w-4 text-purple-600" />;
-      case 'spend': return <ExternalLink className="h-4 w-4 text-red-600" />;
-      default: return <Coins className="h-4 w-4 text-gray-600" />;
+      case 'welcome_bonus': return <Gift className="h-4 w-4 text-chart-4" />;
+      case 'daily_checkin': return <Calendar className="h-4 w-4 text-chart-1" />;
+      case 'transaction_reward': return <TrendingUp className="h-4 w-4 text-chart-3" />;
+      case 'referral': return <Users className="h-4 w-4 text-chart-5" />;
+      case 'spend': return <ExternalLink className="h-4 w-4 text-destructive" />;
+      default: return <Coins className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getTransactionColor = (type: string, amount: number) => {
-    if (amount < 0) return 'text-red-600';
+    if (amount < 0) return 'text-destructive';
     switch (type) {
-      case 'welcome_bonus': return 'text-blue-600';
-      case 'daily_checkin': return 'text-green-600';
-      case 'transaction_reward': return 'text-orange-600';
-      case 'referral': return 'text-purple-600';
-      default: return 'text-green-600';
+      case 'welcome_bonus': return 'text-chart-4';
+      case 'daily_checkin': return 'text-chart-1';
+      case 'transaction_reward': return 'text-chart-3';
+      case 'referral': return 'text-chart-5';
+      default: return 'text-chart-1';
     }
   };
 
   const getStreakReward = (streak: number) => {
-    if (streak >= 30) return { multiplier: '3x', color: 'text-purple-600' };
-    if (streak >= 14) return { multiplier: '2x', color: 'text-orange-600' };
-    if (streak >= 7) return { multiplier: '1.5x', color: 'text-blue-600' };
-    return { multiplier: '1x', color: 'text-green-600' };
+    if (streak >= 30) return { multiplier: '3x', color: 'text-chart-5' };
+    if (streak >= 14) return { multiplier: '2x', color: 'text-chart-3' };
+    if (streak >= 7) return { multiplier: '1.5x', color: 'text-chart-4' };
+    return { multiplier: '1x', color: 'text-chart-1' };
   };
 
   const copyReferralLink = () => {
@@ -222,7 +222,7 @@ const AstraTokenHub = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Coins className="h-8 w-8 text-yellow-600" />
+            <Coins className="h-8 w-8 text-gold-primary" />
             ASTRA Token Hub
           </h2>
           <p className="text-muted-foreground">Earn, manage, and track your ASTRA tokens</p>
@@ -237,7 +237,7 @@ const AstraTokenHub = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Coins className="h-8 w-8 text-yellow-600" />
+              <Coins className="h-8 w-8 text-gold-primary" />
               <div>
                 <p className="text-sm text-muted-foreground">Available Tokens</p>
                 <p className="text-2xl font-bold">{formatTokenAmount(balance?.available_tokens || 0)}</p>
@@ -249,7 +249,7 @@ const AstraTokenHub = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Award className="h-8 w-8 text-green-600" />
+              <Award className="h-8 w-8 text-chart-1" />
               <div>
                 <p className="text-sm text-muted-foreground">Lifetime Earned</p>
                 <p className="text-2xl font-bold">{formatTokenAmount(balance?.lifetime_earned || 0)}</p>
@@ -261,7 +261,7 @@ const AstraTokenHub = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Clock className="h-8 w-8 text-orange-600" />
+              <Clock className="h-8 w-8 text-chart-3" />
               <div>
                 <p className="text-sm text-muted-foreground">Locked Tokens</p>
                 <p className="text-2xl font-bold">{formatTokenAmount(balance?.locked_tokens || 0)}</p>
@@ -359,8 +359,8 @@ const AstraTokenHub = () => {
                   </div>
                   
                   {checkinStatus?.hasCheckedInToday && checkinStatus.todayCheckin && (
-                    <div className="bg-green-50 p-3 rounded-lg">
-                      <p className="text-sm text-green-800">
+                    <div className="bg-chart-1/10 p-3 rounded-lg">
+                      <p className="text-sm text-chart-1">
                         ✅ Earned {formatTokenAmount(checkinStatus.todayCheckin.tokens_earned)} ASTRA tokens today!
                         {checkinStatus.todayCheckin.bonus_multiplier > 1 && (
                           <span className="font-medium"> ({checkinStatus.todayCheckin.bonus_multiplier}x streak bonus)</span>
@@ -391,7 +391,7 @@ const AstraTokenHub = () => {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Star className="h-5 w-5 text-amber-500" />
+                      <Star className="h-5 w-5 text-gold-primary" />
                       Upcoming Rewards
                     </CardTitle>
                     <CardDescription>
@@ -402,54 +402,54 @@ const AstraTokenHub = () => {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                            <Users className="h-4 w-4 text-purple-500" />
+                          <div className="h-8 w-8 rounded-full bg-chart-5/20 flex items-center justify-center">
+                            <Users className="h-4 w-4 text-chart-5" />
                           </div>
                           <div>
                             <p className="text-sm font-medium">Refer a Friend</p>
                             <p className="text-xs text-muted-foreground">Invite someone to join</p>
                           </div>
                         </div>
-                        <Badge variant="outline" className="text-amber-500 border-amber-500/50">+100 ASTRA</Badge>
+                        <Badge variant="outline" className="text-gold-primary border-gold-primary/50">+100 ASTRA</Badge>
                       </div>
                       
                       <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                            <CheckCircle className="h-4 w-4 text-blue-500" />
+                          <div className="h-8 w-8 rounded-full bg-chart-4/20 flex items-center justify-center">
+                            <CheckCircle className="h-4 w-4 text-chart-4" />
                           </div>
                           <div>
                             <p className="text-sm font-medium">Complete Profile</p>
                             <p className="text-xs text-muted-foreground">Add all your details</p>
                           </div>
                         </div>
-                        <Badge variant="outline" className="text-amber-500 border-amber-500/50">+50 ASTRA</Badge>
+                        <Badge variant="outline" className="text-gold-primary border-gold-primary/50">+50 ASTRA</Badge>
                       </div>
                       
                       <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                            <TrendingUp className="h-4 w-4 text-green-500" />
+                          <div className="h-8 w-8 rounded-full bg-chart-1/20 flex items-center justify-center">
+                            <TrendingUp className="h-4 w-4 text-chart-1" />
                           </div>
                           <div>
                             <p className="text-sm font-medium">First Transaction</p>
                             <p className="text-xs text-muted-foreground">Make your first purchase</p>
                           </div>
                         </div>
-                        <Badge variant="outline" className="text-amber-500 border-amber-500/50">+25 ASTRA</Badge>
+                        <Badge variant="outline" className="text-gold-primary border-gold-primary/50">+25 ASTRA</Badge>
                       </div>
                       
                       <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-orange-500/20 flex items-center justify-center">
-                            <Calendar className="h-4 w-4 text-orange-500" />
+                          <div className="h-8 w-8 rounded-full bg-chart-3/20 flex items-center justify-center">
+                            <Calendar className="h-4 w-4 text-chart-3" />
                           </div>
                           <div>
                             <p className="text-sm font-medium">7-Day Streak</p>
                             <p className="text-xs text-muted-foreground">Check in for 7 days</p>
                           </div>
                         </div>
-                        <Badge variant="outline" className="text-amber-500 border-amber-500/50">1.5x Bonus</Badge>
+                        <Badge variant="outline" className="text-gold-primary border-gold-primary/50">1.5x Bonus</Badge>
                       </div>
                     </div>
                   </CardContent>
