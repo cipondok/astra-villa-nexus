@@ -496,10 +496,10 @@ const ToolsManagementDashboard = () => {
                           <td className="p-1.5 md:p-2">
                             <div className="flex items-center gap-1">
                               <StatusIcon className={`h-3 w-3 ${
-                                tool.status === 'healthy' ? 'text-green-500' :
-                                tool.status === 'warning' ? 'text-yellow-500' :
-                                tool.status === 'error' ? 'text-red-500' :
-                                'text-gray-500'
+                                tool.status === 'healthy' ? 'text-chart-1' :
+                                tool.status === 'warning' ? 'text-chart-3' :
+                                tool.status === 'error' ? 'text-destructive' :
+                                'text-muted-foreground'
                               }`} />
                               <span className="capitalize hidden xs:inline">{tool.status}</span>
                             </div>
