@@ -261,20 +261,20 @@ const VendorBookings = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-gray-500" />
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
                       <span>{new Date(booking.booking_date).toLocaleDateString()}</span>
                     </div>
                     
                     {booking.booking_time && (
                       <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-gray-500" />
+                        <Clock className="h-4 w-4 text-muted-foreground" />
                         <span>{booking.booking_time}</span>
                       </div>
                     )}
                     
                     {booking.location_address && (
                       <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-gray-500" />
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">{booking.location_address}</span>
                       </div>
                     )}
@@ -282,20 +282,20 @@ const VendorBookings = () => {
                   
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-gray-500" />
+                      <User className="h-4 w-4 text-muted-foreground" />
                       <span>{booking.customer?.full_name || 'Unknown Customer'}</span>
                     </div>
                     
                     {booking.contact_email && (
                       <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-gray-500" />
+                        <Mail className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">{booking.contact_email}</span>
                       </div>
                     )}
                     
                     {booking.contact_phone && (
                       <div className="flex items-center gap-2">
-                        <Phone className="h-4 w-4 text-gray-500" />
+                        <Phone className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">{booking.contact_phone}</span>
                       </div>
                     )}
@@ -303,9 +303,9 @@ const VendorBookings = () => {
                 </div>
                 
                 {booking.customer_notes && (
-                  <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                   <div className="mt-4 p-3 bg-muted/50 rounded-lg">
                     <h4 className="font-medium text-sm mb-1">Customer Notes:</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground">
                       {booking.customer_notes}
                     </p>
                   </div>

@@ -414,39 +414,39 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
             </CardHeader>
             <CardContent className="p-3 pt-0">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div className="flex items-start gap-2 p-2 rounded-lg bg-red-500/5 border border-red-500/20">
-                  <div className="h-5 w-5 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[10px] font-bold text-red-500">1</span>
+                <div className="flex items-start gap-2 p-2 rounded-lg bg-destructive/5 border border-destructive/20">
+                  <div className="h-5 w-5 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[10px] font-bold text-destructive">1</span>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-red-600">Critical: Security Fixes</p>
+                    <p className="text-xs font-medium text-destructive">Critical: Security Fixes</p>
                     <p className="text-[10px] text-muted-foreground">Enable leaked password protection, update Postgres version</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-2 p-2 rounded-lg bg-orange-500/5 border border-orange-500/20">
-                  <div className="h-5 w-5 rounded-full bg-orange-500/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[10px] font-bold text-orange-500">2</span>
+                <div className="flex items-start gap-2 p-2 rounded-lg bg-chart-3/5 border border-chart-3/20">
+                  <div className="h-5 w-5 rounded-full bg-chart-3/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[10px] font-bold text-chart-3">2</span>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-orange-600">Important: Payment Gateway</p>
+                    <p className="text-xs font-medium text-chart-3">Important: Payment Gateway</p>
                     <p className="text-[10px] text-muted-foreground">Configure payment gateway credentials for live payments</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-2 p-2 rounded-lg bg-yellow-500/5 border border-yellow-500/20">
-                  <div className="h-5 w-5 rounded-full bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[10px] font-bold text-yellow-500">3</span>
+                <div className="flex items-start gap-2 p-2 rounded-lg bg-gold-primary/5 border border-gold-primary/20">
+                  <div className="h-5 w-5 rounded-full bg-gold-primary/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[10px] font-bold text-gold-primary">3</span>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-yellow-600">Configure: Email Service</p>
+                    <p className="text-xs font-medium text-gold-primary">Configure: Email Service</p>
                     <p className="text-[10px] text-muted-foreground">Set up SMTP credentials for transactional emails</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-2 p-2 rounded-lg bg-blue-500/5 border border-blue-500/20">
-                  <div className="h-5 w-5 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[10px] font-bold text-blue-500">4</span>
+                <div className="flex items-start gap-2 p-2 rounded-lg bg-chart-4/5 border border-chart-4/20">
+                  <div className="h-5 w-5 rounded-full bg-chart-4/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[10px] font-bold text-chart-4">4</span>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-blue-600">Testing: End-to-End</p>
+                    <p className="text-xs font-medium text-chart-4">Testing: End-to-End</p>
                     <p className="text-[10px] text-muted-foreground">Complete user journey testing for all roles</p>
                   </div>
                 </div>

@@ -114,8 +114,8 @@ const OnboardingComplete = ({ userType, rewards, onAction }: OnboardingCompleteP
                   transition={{ delay: 0.5 + index * 0.1 }}
                   className="flex items-center gap-2 p-2 rounded-lg bg-background/50"
                 >
-                  <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                    <Sparkles className="h-3 w-3 text-emerald-600" />
+                  <div className="w-6 h-6 rounded-full bg-chart-1/10 flex items-center justify-center">
+                    <Sparkles className="h-3 w-3 text-chart-1" />
                   </div>
                   <span className="text-sm font-medium">{reward}</span>
                 </motion.div>
