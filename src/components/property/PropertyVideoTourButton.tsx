@@ -68,10 +68,10 @@ const PropertyVideoTourButton: React.FC<PropertyVideoTourButtonProps> = ({
               </div>
             )}
             
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/50 transition-colors">
-              <div className="flex flex-col items-center text-white">
-                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                  <Play className="h-8 w-8 text-white ml-1" />
+            <div className="absolute inset-0 bg-foreground/40 flex items-center justify-center group-hover:bg-foreground/50 transition-colors">
+              <div className="flex flex-col items-center text-primary-foreground">
+                <div className="w-16 h-16 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                  <Play className="h-8 w-8 text-primary-foreground ml-1" />
                 </div>
                 <span className="text-sm font-medium">360° Virtual Tour</span>
                 <span className="text-xs opacity-80">{tour.view_count} views</span>
