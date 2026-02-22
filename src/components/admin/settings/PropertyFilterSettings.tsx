@@ -475,7 +475,7 @@ const PropertyFilterSettings = () => {
         {[
           { label: 'Sale Filters', value: saleCount, emoji: '🏷️', accent: 'border-l-primary' },
           { label: 'Rent Filters', value: rentCount, emoji: '🏠', accent: 'border-l-accent' },
-          { label: 'Active', value: activeCount, emoji: '✅', accent: 'border-l-green-500' },
+          { label: 'Active', value: activeCount, emoji: '✅', accent: 'border-l-chart-1' },
           { label: 'Inactive', value: inactiveCount, emoji: '⏸️', accent: 'border-l-muted-foreground' },
         ].map(s => (
           <Card key={s.label} className={`border-l-4 ${s.accent}`}>

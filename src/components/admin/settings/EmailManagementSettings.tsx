@@ -611,7 +611,7 @@ const EmailManagementSettings: React.FC = () => {
 
         {/* Configuration Tab */}
         <TabsContent value="config" className="space-y-3 mt-3">
-          <Card className="bg-card/50 border-border/50 border-l-4 border-l-blue-500">
+          <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs text-foreground flex items-center gap-2">
                 <Mail className="h-3.5 w-3.5" />
@@ -744,7 +744,7 @@ const EmailManagementSettings: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 border-border/50 border-l-4 border-l-purple-500">
+          <Card className="bg-card/50 border-border/50 border-l-4 border-l-accent">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs text-foreground flex items-center gap-2">
                 <Link className="h-3.5 w-3.5" />
@@ -805,7 +805,7 @@ const EmailManagementSettings: React.FC = () => {
 
         {/* Branding Tab */}
         <TabsContent value="branding" className="space-y-3 mt-3">
-          <Card className="bg-card/50 border-border/50 border-l-4 border-l-amber-500">
+          <Card className="bg-card/50 border-border/50 border-l-4 border-l-gold-primary">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs text-foreground flex items-center gap-2">
                 <Image className="h-3.5 w-3.5" />
@@ -886,7 +886,7 @@ const EmailManagementSettings: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 border-border/50 border-l-4 border-l-pink-500">
+          <Card className="bg-card/50 border-border/50 border-l-4 border-l-destructive">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs text-foreground flex items-center gap-2">
                 <Palette className="h-3.5 w-3.5" />
@@ -947,7 +947,7 @@ const EmailManagementSettings: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 border-border/50 border-l-4 border-l-cyan-500">
+          <Card className="bg-card/50 border-border/50 border-l-4 border-l-chart-4">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs text-foreground flex items-center gap-2">
                 <Sparkles className="h-3.5 w-3.5" />
@@ -1291,7 +1291,7 @@ const EmailManagementSettings: React.FC = () => {
             </CardHeader>
             <CardContent className="px-3 pb-3">
               <div 
-                className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-4 max-h-[500px] overflow-auto"
+                className="bg-gradient-to-br from-gold-primary/10 to-gold-primary/5 rounded-lg p-4 max-h-[500px] overflow-auto"
                 style={{ fontFamily: 'Inter, sans-serif' }}
               >
                 <div className="max-w-xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
@@ -1302,23 +1302,23 @@ const EmailManagementSettings: React.FC = () => {
                   />
                   
                   {/* Logo */}
-                  <div className="text-center py-6 bg-gradient-to-b from-amber-50/50 to-white">
+                  <div className="text-center py-6 bg-gradient-to-b from-gold-primary/5 to-background">
                     {branding.companyLogoUrl ? (
                       <img src={branding.companyLogoUrl} alt={branding.companyName} className="h-12 mx-auto" />
                     ) : (
                       <div>
                         <span style={{ color: branding.primaryColor }} className="text-2xl font-bold">ASTRA</span>
-                        <span className="text-2xl font-light text-gray-800 ml-1">Villa</span>
+                        <span className="text-2xl font-light text-foreground ml-1">Villa</span>
                       </div>
                     )}
                   </div>
 
                   {/* Content */}
                   <div className="px-8 py-6">
-                    <h1 className="text-xl font-semibold text-gray-800 text-center mb-4">
+                    <h1 className="text-xl font-semibold text-foreground text-center mb-4">
                       {currentTemplate.headerText || 'Email Header'}
                     </h1>
-                    <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">
+                    <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
                       {currentTemplate.body.replace(/\{\{[^}]+\}\}/g, '[Variable]') || 'Email body content...'}
                     </p>
                     
@@ -1335,26 +1335,26 @@ const EmailManagementSettings: React.FC = () => {
                   </div>
 
                   {/* Footer */}
-                  <div className="bg-gray-50 px-8 py-6 text-center">
-                    <p className="text-xs text-gray-500 italic">{branding.footerText}</p>
-                    <p className="text-xs text-gray-400 mt-2">{branding.companyAddress}</p>
-                    <p className="text-xs text-gray-400 mt-1">
+                  <div className="bg-muted/50 px-8 py-6 text-center">
+                    <p className="text-xs text-muted-foreground italic">{branding.footerText}</p>
+                    <p className="text-xs text-muted-foreground/70 mt-2">{branding.companyAddress}</p>
+                    <p className="text-xs text-muted-foreground/70 mt-1">
                       <span style={{ color: branding.primaryColor }}>{branding.companyPhone}</span>
                       {' • '}
                       <span style={{ color: branding.primaryColor }}>{branding.supportEmail}</span>
                     </p>
                     
                     {currentTemplate.showSocialLinks && (branding.socialFacebook || branding.socialInstagram) && (
-                      <div className="mt-4 pt-4 border-t border-gray-200 flex justify-center gap-4">
+                      <div className="mt-4 pt-4 border-t border-border flex justify-center gap-4">
                         {branding.socialFacebook && <span style={{ color: branding.primaryColor }} className="text-xs">Facebook</span>}
                         {branding.socialInstagram && <span style={{ color: branding.primaryColor }} className="text-xs">Instagram</span>}
                         {branding.socialTwitter && <span style={{ color: branding.primaryColor }} className="text-xs">Twitter</span>}
                       </div>
                     )}
                     
-                    <p className="text-[10px] text-gray-400 mt-4">{branding.copyrightText}</p>
+                    <p className="text-[10px] text-muted-foreground/70 mt-4">{branding.copyrightText}</p>
                     {currentTemplate.showUnsubscribe && (
-                      <p className="text-[10px] text-gray-400 mt-1 underline cursor-pointer">Unsubscribe from emails</p>
+                      <p className="text-[10px] text-muted-foreground/70 mt-1 underline cursor-pointer">Unsubscribe from emails</p>
                     )}
                   </div>
 

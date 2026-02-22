@@ -291,7 +291,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               </div>
               {posted_by.rating && (
                 <div className="flex items-center gap-0.5">
-                  <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                  <Star className="h-3 w-3 fill-chart-3 text-chart-3" />
                   <span className="text-xs font-medium">{posted_by.rating.toFixed(1)}</span>
                 </div>
               )}
@@ -302,7 +302,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           {aggregate && aggregate.total_ratings > 0 && (
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
               <div className="flex items-center gap-1">
-                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                <Star className="h-4 w-4 fill-chart-3 text-chart-3" />
                 <span className="text-sm font-semibold">{aggregate.average_rating.toFixed(1)}</span>
               </div>
               <span className="text-xs text-muted-foreground">({aggregate.total_ratings} reviews)</span>

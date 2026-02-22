@@ -478,12 +478,12 @@ const MultiStepPropertyForm = () => {
                   hover:bg-accent/50
                   data-[state=active]:bg-primary
                   data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm
-                  ${isCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}
+                  ${isCompleted ? 'text-chart-1' : 'text-muted-foreground'}
                 `}
               >
                 {isCompleted && (
-                  <span className="absolute -top-1 -right-1 h-3.5 w-3.5 bg-emerald-500 rounded-full flex items-center justify-center shadow-sm border-2 border-background">
-                    <CheckCircle2 className="h-2 w-2 text-white" />
+                  <span className="absolute -top-1 -right-1 h-3.5 w-3.5 bg-chart-1 rounded-full flex items-center justify-center shadow-sm border-2 border-background">
+                    <CheckCircle2 className="h-2 w-2 text-primary-foreground" />
                   </span>
                 )}
                 <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />

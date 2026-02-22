@@ -76,9 +76,9 @@ export function PropertyValuationCard({
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case 'rising':
-        return <TrendingUp className="h-4 w-4 text-green-500" />;
+        return <TrendingUp className="h-4 w-4 text-chart-1" />;
       case 'declining':
-        return <TrendingDown className="h-4 w-4 text-red-500" />;
+        return <TrendingDown className="h-4 w-4 text-destructive" />;
       default:
         return <Minus className="h-4 w-4 text-muted-foreground" />;
     }
@@ -192,11 +192,11 @@ export function PropertyValuationCard({
                   <div className="text-right">
                     <span className="font-medium">{formatCurrency(currentPrice)}</span>
                     {currentPrice > valuation.estimatedValue ? (
-                      <span className="ml-2 text-xs text-red-500">
+                      <span className="ml-2 text-xs text-destructive">
                         ({Math.round((currentPrice - valuation.estimatedValue) / valuation.estimatedValue * 100)}% above)
                       </span>
                     ) : currentPrice < valuation.estimatedValue ? (
-                      <span className="ml-2 text-xs text-green-500">
+                      <span className="ml-2 text-xs text-chart-1">
                         ({Math.round((valuation.estimatedValue - currentPrice) / valuation.estimatedValue * 100)}% below)
                       </span>
                     ) : (
@@ -246,8 +246,8 @@ export function PropertyValuationCard({
                               </div>
                               <span className={cn(
                                 "font-medium",
-                                factor.impact === 'positive' && "text-green-600",
-                                factor.impact === 'negative' && "text-red-600"
+                                factor.impact === 'positive' && "text-chart-1",
+                                factor.impact === 'negative' && "text-destructive"
                               )}>
                                 {factor.impact === 'positive' ? '+' : ''}{Math.round(factor.weight * 100)}%
                               </span>
