@@ -106,10 +106,10 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
   return (
     <section className="w-full p-3">
       <div className="mb-3 flex items-center justify-center gap-2">
-        <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-md shadow-emerald-500/30">
-          <Home className="h-3.5 w-3.5 text-white" />
+        <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-chart-1 to-primary flex items-center justify-center shadow-md shadow-chart-1/30">
+          <Home className="h-3.5 w-3.5 text-primary-foreground" />
         </div>
-        <h2 className="text-sm font-bold bg-gradient-to-r from-emerald-600 via-teal-500 to-green-500 bg-clip-text text-transparent">Properti Dijual</h2>
+        <h2 className="text-sm font-bold bg-gradient-to-r from-chart-1 via-primary to-chart-1 bg-clip-text text-transparent">Properti Dijual</h2>
       </div>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3">
@@ -121,7 +121,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
             <div
               key={property.id}
               onClick={() => onPropertyClick(property)}
-              className="group cursor-pointer rounded-xl border border-white/30 dark:border-white/15 bg-white/60 dark:bg-white/5 backdrop-blur-xl shadow-lg shadow-emerald-500/5 hover:shadow-2xl hover:shadow-emerald-500/15 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-emerald-400/5 before:via-transparent before:to-cyan-400/5 before:pointer-events-none before:rounded-xl"
+              className="group cursor-pointer rounded-xl border border-border/30 dark:border-border/15 bg-card/60 dark:bg-card/5 backdrop-blur-xl shadow-lg shadow-chart-1/5 hover:shadow-2xl hover:shadow-chart-1/15 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-chart-1/5 before:via-transparent before:to-primary/5 before:pointer-events-none before:rounded-xl"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -137,11 +137,11 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
 
                 {/* Top Badges */}
                 <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between">
-                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gradient-to-r from-emerald-400 to-cyan-500 text-white shadow-lg shadow-emerald-500/40 ring-1 ring-white/30">
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gradient-to-r from-chart-1 to-primary text-primary-foreground shadow-lg shadow-chart-1/40 ring-1 ring-background/30">
                     <Tag className="h-2 w-2" />
                     JUAL
                   </span>
-                  <span className="flex items-center gap-0.5 bg-white/20 backdrop-blur-lg text-white text-[9px] px-1.5 py-0.5 rounded-full border border-white/30 shadow-sm">
+                  <span className="flex items-center gap-0.5 bg-background/20 backdrop-blur-lg text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full border border-background/30 shadow-sm">
                     <Building className="h-2 w-2" />
                     {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
                   </span>
@@ -149,7 +149,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
 
                 {/* Image count badge */}
                 {imageCount > 1 && (
-                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 bg-white/15 backdrop-blur-lg text-white text-[9px] px-1.5 py-0.5 rounded-full border border-white/25 shadow-sm">
+                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 bg-background/15 backdrop-blur-lg text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full border border-background/25 shadow-sm">
                     <Camera className="h-2 w-2" />
                     {imageCount}
                   </div>
@@ -164,8 +164,8 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
 
                 {/* Hover eye */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="h-10 w-10 rounded-full bg-white/80 backdrop-blur-xl flex items-center justify-center shadow-xl ring-2 ring-emerald-400/50 ring-offset-2 ring-offset-transparent">
-                    <Eye className="h-4 w-4 text-emerald-600" />
+                  <div className="h-10 w-10 rounded-full bg-background/80 backdrop-blur-xl flex items-center justify-center shadow-xl ring-2 ring-chart-1/50 ring-offset-2 ring-offset-transparent">
+                    <Eye className="h-4 w-4 text-chart-1" />
                   </div>
                 </div>
               </div>
@@ -173,22 +173,22 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
               {/* Content */}
               <div className="p-2.5 space-y-1.5 relative">
                 {/* Price */}
-                <div className="flex items-baseline gap-1 bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-cyan-500/15 border border-emerald-400/25 dark:border-emerald-400/20 rounded-lg px-2 py-1.5 flex-wrap backdrop-blur-sm">
-                  <span className="text-base font-black bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-400 bg-clip-text text-transparent leading-none tracking-tight">{priceInfo.main}</span>
+                <div className="flex items-baseline gap-1 bg-gradient-to-r from-chart-1/15 via-primary/10 to-chart-4/15 border border-chart-1/25 dark:border-chart-1/20 rounded-lg px-2 py-1.5 flex-wrap backdrop-blur-sm">
+                  <span className="text-base font-black bg-gradient-to-r from-chart-1 via-primary to-chart-4 bg-clip-text text-transparent leading-none tracking-tight">{priceInfo.main}</span>
                   {priceInfo.suffix && (
-                    <span className="text-[11px] font-extrabold text-emerald-600/70 dark:text-emerald-400/70">{priceInfo.suffix}</span>
+                    <span className="text-[11px] font-extrabold text-chart-1/70">{priceInfo.suffix}</span>
                   )}
-                  <span className="text-[9px] text-muted-foreground/60 font-medium bg-white/40 dark:bg-white/10 backdrop-blur-sm rounded-full px-1.5 ml-auto border border-white/30 dark:border-white/10">≈ {formatMonthly(property.price)}</span>
+                  <span className="text-[9px] text-muted-foreground/60 font-medium bg-background/40 dark:bg-background/10 backdrop-blur-sm rounded-full px-1.5 ml-auto border border-border/30 dark:border-border/10">≈ {formatMonthly(property.price)}</span>
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[11px] font-semibold text-foreground truncate leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors group-hover:whitespace-normal group-hover:overflow-visible" title={property.title}>
+                <h3 className="text-[11px] font-semibold text-foreground truncate leading-snug group-hover:text-chart-1 transition-colors group-hover:whitespace-normal group-hover:overflow-visible" title={property.title}>
                   {property.title}
                 </h3>
 
                 {/* Location */}
-                <div className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-teal-500/10 via-cyan-500/8 to-emerald-500/10 border border-teal-400/25 px-1.5 py-0.5 backdrop-blur-sm" title={getLocation(property)}>
-                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-teal-500 dark:text-teal-400" />
+                <div className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-primary/10 via-chart-4/8 to-chart-1/10 border border-primary/25 px-1.5 py-0.5 backdrop-blur-sm" title={getLocation(property)}>
+                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-primary" />
                   <span className="text-[10px] text-foreground/70 font-medium truncate">{getLocation(property)}</span>
                 </div>
 
@@ -227,12 +227,12 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
           <div
             key={`empty-${i}`}
             onClick={() => navigate('/add-property')}
-            className="group cursor-pointer rounded-xl overflow-hidden border-2 border-dashed border-emerald-400/20 hover:border-emerald-400/50 bg-emerald-500/5 hover:bg-emerald-500/10 transition-all duration-200 flex flex-col items-center justify-center gap-2 min-h-[200px]"
+            className="group cursor-pointer rounded-xl overflow-hidden border-2 border-dashed border-chart-1/20 hover:border-chart-1/50 bg-chart-1/5 hover:bg-chart-1/10 transition-all duration-200 flex flex-col items-center justify-center gap-2 min-h-[200px]"
           >
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/20 group-hover:from-emerald-500/40 group-hover:to-teal-500/40 flex items-center justify-center transition-colors border border-emerald-400/30">
-              <Plus className="h-5 w-5 text-emerald-500/60 group-hover:text-emerald-500 transition-colors" />
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-chart-1/20 to-primary/20 group-hover:from-chart-1/40 group-hover:to-primary/40 flex items-center justify-center transition-colors border border-chart-1/30">
+              <Plus className="h-5 w-5 text-chart-1/60 group-hover:text-chart-1 transition-colors" />
             </div>
-            <span className="text-[10px] text-emerald-500/50 group-hover:text-emerald-500 transition-colors font-semibold">
+            <span className="text-[10px] text-chart-1/50 group-hover:text-chart-1 transition-colors font-semibold">
               Tambah Properti
             </span>
           </div>

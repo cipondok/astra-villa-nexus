@@ -107,17 +107,17 @@ const PropertyTypeToggleDemo = () => {
                   <ul className="space-y-1">
                     {propertyType === 'commercial' ? (
                       <>
-                        <li className="text-orange-600">• Surat Izin Usaha required</li>
-                        <li className="text-orange-600">• +50% pricing multiplier</li>
-                        <li className="text-orange-600">• Additional insurance needed</li>
-                        <li className="text-orange-600">• Extended review process</li>
+                        <li className="text-chart-3">• Surat Izin Usaha required</li>
+                        <li className="text-chart-3">• +50% pricing multiplier</li>
+                        <li className="text-chart-3">• Additional insurance needed</li>
+                        <li className="text-chart-3">• Extended review process</li>
                       </>
                     ) : (
                       <>
-                        <li className="text-green-600">• Standard documents only</li>
-                        <li className="text-green-600">• Base pricing applied</li>
-                        <li className="text-green-600">• Basic insurance sufficient</li>
-                        <li className="text-green-600">• Faster approval process</li>
+                        <li className="text-chart-1">• Standard documents only</li>
+                        <li className="text-chart-1">• Base pricing applied</li>
+                        <li className="text-chart-1">• Basic insurance sufficient</li>
+                        <li className="text-chart-1">• Faster approval process</li>
                       </>
                     )}
                   </ul>
@@ -125,7 +125,7 @@ const PropertyTypeToggleDemo = () => {
 
                 <div className="space-y-2">
                   <h4 className="font-semibold">Category Requirements:</h4>
-                  <ul className="space-y-1 text-gray-600">
+                  <ul className="space-y-1 text-muted-foreground">
                     <li>• Specific certifications</li>
                     <li>• Equipment validation</li>
                     <li>• Experience verification</li>
@@ -135,7 +135,7 @@ const PropertyTypeToggleDemo = () => {
 
                 <div className="space-y-2">
                   <h4 className="font-semibold">Compliance Checks:</h4>
-                  <ul className="space-y-1 text-blue-600">
+                  <ul className="space-y-1 text-primary">
                     <li>• Indonesian document format</li>
                     <li>• Provincial minimum wage</li>
                     <li>• File size & type validation</li>

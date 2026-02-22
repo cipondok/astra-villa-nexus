@@ -23,7 +23,7 @@ const SimpleThemeToggle = ({ className = "" }: SimpleThemeToggleProps) => {
       variant="ghost"
       size="sm"
       onClick={toggleTheme}
-      className={`flex items-center gap-2 backdrop-blur-xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-yellow-500/30 hover:bg-white/20 dark:hover:bg-yellow-500/10 hover:border-white/30 dark:hover:border-yellow-500/40 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 rounded-xl ${className}`}
+      className={`flex items-center gap-2 backdrop-blur-xl bg-background/10 dark:bg-background/20 border border-border/20 dark:border-chart-3/30 hover:bg-background/20 dark:hover:bg-chart-3/10 hover:border-border/30 dark:hover:border-chart-3/40 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 rounded-xl ${className}`}
     >
       {theme === "dark" ? (
         <>

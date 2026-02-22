@@ -391,9 +391,9 @@ const ForeignInvestment = () => {
               <CardContent className="p-4 sm:p-6 pt-0 space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   {/* Can Invest */}
-                  <Card className="border-emerald-500/30 bg-emerald-500/5">
+                  <Card className="border-chart-1/30 bg-chart-1/5">
                     <CardHeader className="p-4">
-                      <CardTitle className="text-sm sm:text-base flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                      <CardTitle className="text-sm sm:text-base flex items-center gap-2 text-chart-1">
                         <CheckCircle2 className="h-5 w-5" />
                         ✅ {t.canInvest}
                       </CardTitle>
@@ -401,15 +401,15 @@ const ForeignInvestment = () => {
                     <CardContent className="p-4 pt-0">
                       <ul className="space-y-2">
                         <li className="flex items-start gap-2 p-2.5 rounded-lg bg-background/50 text-xs sm:text-sm">
-                          <Home className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                          <Home className="h-4 w-4 text-chart-1 mt-0.5 flex-shrink-0" />
                           <span><strong>Apartments & Condos</strong> - Strata Title (SHMRS)</span>
                         </li>
                         <li className="flex items-start gap-2 p-2.5 rounded-lg bg-background/50 text-xs sm:text-sm">
-                          <Key className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                          <Key className="h-4 w-4 text-chart-1 mt-0.5 flex-shrink-0" />
                           <span><strong>Houses</strong> - Hak Pakai (30 years, renewable)</span>
                         </li>
                         <li className="flex items-start gap-2 p-2.5 rounded-lg bg-background/50 text-xs sm:text-sm">
-                          <Building2 className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                          <Building2 className="h-4 w-4 text-chart-1 mt-0.5 flex-shrink-0" />
                           <span><strong>Villas</strong> - Tourist destinations like Bali</span>
                         </li>
                       </ul>
@@ -539,10 +539,10 @@ const ForeignInvestment = () => {
                   <div className="p-3 rounded-lg bg-muted/50 text-xs sm:text-sm">
                     <p className="font-semibold mb-2">📋 Requirements:</p>
                     <ul className="space-y-1.5 text-muted-foreground">
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Valid passport</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> KITAS/KITAP permit</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> NPWP tax ID</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Meet minimum value</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1" /> Valid passport</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1" /> KITAS/KITAP permit</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1" /> NPWP tax ID</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1" /> Meet minimum value</li>
                     </ul>
                   </div>
                   <Badge className="bg-primary text-primary-foreground text-xs">⭐ Most Popular Choice</Badge>
@@ -570,10 +570,10 @@ const ForeignInvestment = () => {
                   <div className="p-3 rounded-lg bg-muted/50 text-xs sm:text-sm">
                     <p className="font-semibold mb-2">📋 Requirements:</p>
                     <ul className="space-y-1.5 text-muted-foreground">
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Valid passport</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> KITAS/KITAP</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> NPWP</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Min. IDR 3 billion</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1" /> Valid passport</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1" /> KITAS/KITAP</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1" /> NPWP</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1" /> Min. IDR 3 billion</li>
                     </ul>
                   </div>
                   <Badge className="bg-primary text-primary-foreground text-xs">🏙️ Urban Living</Badge>
@@ -672,7 +672,7 @@ const ForeignInvestment = () => {
                       <ul className="space-y-2">
                         {["Valid Passport 🛂", "KITAS or KITAP 🏠", "NPWP 📊", "Proof of Address 📍", "Marriage Certificate 💑"].map((doc, i) => (
                           <li key={i} className="flex items-start gap-2 p-2 rounded-lg bg-background/50 text-xs sm:text-sm">
-                            <CheckCircle2 className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                            <CheckCircle2 className="h-4 w-4 text-chart-1 mt-0.5 flex-shrink-0" />
                             <span>{doc}</span>
                           </li>
                         ))}
