@@ -138,7 +138,7 @@ export function KYCVerificationFlow({ onComplete, className }: KYCVerificationFl
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">Standard</span>
-                      <Badge className="text-xs bg-green-100 text-green-700">Recommended</Badge>
+                      <Badge className="text-xs bg-chart-1/20 text-chart-1">Recommended</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">
                       ID document + live selfie for liveness detection.
@@ -154,7 +154,7 @@ export function KYCVerificationFlow({ onComplete, className }: KYCVerificationFl
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">Enhanced</span>
-                      <Badge className="text-xs bg-purple-100 text-purple-700">Full KYC</Badge>
+                      <Badge className="text-xs bg-accent/20 text-accent-foreground">Full KYC</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">
                       Complete verification with document, liveness, and face matching.
@@ -392,11 +392,11 @@ export function KYCVerificationFlow({ onComplete, className }: KYCVerificationFl
             className="space-y-6 py-4 text-center"
           >
             {isVerified ? (
-              <CheckCircle className="h-16 w-16 mx-auto text-green-500" />
+              <CheckCircle className="h-16 w-16 mx-auto text-chart-1" />
             ) : isReview ? (
-              <AlertCircle className="h-16 w-16 mx-auto text-yellow-500" />
+              <AlertCircle className="h-16 w-16 mx-auto text-chart-3" />
             ) : (
-              <XCircle className="h-16 w-16 mx-auto text-red-500" />
+              <XCircle className="h-16 w-16 mx-auto text-destructive" />
             )}
             
             <div className="space-y-2">
@@ -431,7 +431,7 @@ export function KYCVerificationFlow({ onComplete, className }: KYCVerificationFl
                 {result.details.liveness && (
                   <div className="flex justify-between text-xs">
                     <span>Liveness Check</span>
-                    <span className={result.details.liveness.passed ? 'text-green-600' : 'text-red-600'}>
+                    <span className={result.details.liveness.passed ? 'text-chart-1' : 'text-destructive'}>
                       {result.details.liveness.passed ? 'Passed' : 'Failed'} ({result.details.liveness.score}%)
                     </span>
                   </div>
@@ -439,7 +439,7 @@ export function KYCVerificationFlow({ onComplete, className }: KYCVerificationFl
                 {result.details.face_match && (
                   <div className="flex justify-between text-xs">
                     <span>Face Match</span>
-                    <span className={result.details.face_match.passed ? 'text-green-600' : 'text-red-600'}>
+                    <span className={result.details.face_match.passed ? 'text-chart-1' : 'text-destructive'}>
                       {result.details.face_match.passed ? 'Passed' : 'Failed'} ({result.details.face_match.score}%)
                     </span>
                   </div>

@@ -37,7 +37,7 @@ const PropertySocialActions: React.FC<PropertySocialActionsProps> = ({
       key: 'commerce',
       icon: ShoppingBag,
       label: 'Shop',
-      color: 'bg-gradient-to-r from-pink-500 to-purple-500',
+      color: 'bg-gradient-to-r from-accent to-primary',
       description: 'Buy via social platforms'
     },
     {
@@ -51,7 +51,7 @@ const PropertySocialActions: React.FC<PropertySocialActionsProps> = ({
       key: 'booking',
       icon: Video,
       label: 'Tour',
-      color: 'bg-gradient-to-r from-violet-500 to-purple-600',
+      color: 'bg-gradient-to-r from-accent to-primary',
       description: 'Book virtual/in-person'
     }
   ];
