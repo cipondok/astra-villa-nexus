@@ -43,8 +43,8 @@ const HomeownerOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
-                <Home className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-chart-1 to-chart-1/70 flex items-center justify-center">
+                <Home className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Let's Get Your Property Sold!</h3>
               <p className="text-sm text-muted-foreground">Quick profile setup - takes 30 seconds</p>
@@ -97,17 +97,17 @@ const HomeownerOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
-                <Camera className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-chart-1 to-chart-1/70 flex items-center justify-center">
+                <Camera className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Add Your Property</h3>
               <p className="text-sm text-muted-foreground">60-second quick listing</p>
             </div>
 
-            <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200">
+            <Card className="bg-chart-4/10 border-chart-4/30">
               <CardContent className="p-3 flex items-start gap-2">
-                <Lightbulb className="h-4 w-4 text-blue-600 mt-0.5" />
-                <p className="text-xs text-blue-700 dark:text-blue-300">
+                <Lightbulb className="h-4 w-4 text-chart-4 mt-0.5" />
+                <p className="text-xs text-chart-4">
                   Properties with photos get <strong>10x more views</strong>
                 </p>
               </CardContent>
@@ -171,8 +171,8 @@ const HomeownerOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
-                <TrendingUp className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-chart-1 to-chart-1/70 flex items-center justify-center">
+                <TrendingUp className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Your Property is Ready!</h3>
               <p className="text-sm text-muted-foreground">Here's your instant market analysis</p>
@@ -201,7 +201,7 @@ const HomeownerOnboarding = ({
                   </div>
                   <div className="p-2 rounded-lg bg-background/50">
                     <div className="text-[10px] text-muted-foreground">Demand Level</div>
-                    <div className="text-sm font-bold text-emerald-600">High</div>
+                    <div className="text-sm font-bold text-chart-1">High</div>
                   </div>
                 </div>
               </CardContent>
@@ -211,8 +211,8 @@ const HomeownerOnboarding = ({
             <Card className="border-dashed">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                    <Share2 className="h-5 w-5 text-green-600" />
+                  <div className="w-10 h-10 rounded-full bg-chart-1/10 flex items-center justify-center">
+                    <Share2 className="h-5 w-5 text-chart-1" />
                   </div>
                   <div className="flex-1">
                     <div className="text-sm font-semibold">Share on WhatsApp</div>
@@ -220,7 +220,7 @@ const HomeownerOnboarding = ({
                       Complete this to unlock your Featured boost!
                     </div>
                   </div>
-                  <Badge className="bg-emerald-100 text-emerald-700">+50 ASTRA</Badge>
+                  <Badge className="bg-chart-1/10 text-chart-1">+50 ASTRA</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -260,7 +260,7 @@ const HomeownerOnboarding = ({
         <Button 
           onClick={step === 2 ? onComplete : nextStep} 
           disabled={!canProceed()}
-          className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600"
+          className="flex-1 bg-gradient-to-r from-chart-1 to-chart-1/70"
         >
           {step === 2 ? "Complete Setup" : "Continue"}
           <ChevronRight className="h-4 w-4 ml-1" />

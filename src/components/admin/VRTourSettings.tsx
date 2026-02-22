@@ -620,8 +620,8 @@ const VRTourSettings: React.FC = () => {
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-purple-500/10">
-                    <Sparkles className="h-5 w-5 text-purple-500" />
+                  <div className="p-2 rounded-lg bg-accent/10">
+                    <Sparkles className="h-5 w-5 text-accent-foreground" />
                   </div>
                   <div>
                     <Label className="text-base">AI Virtual Staging</Label>
@@ -638,8 +638,8 @@ const VRTourSettings: React.FC = () => {
 
               <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-blue-500/10">
-                    <Ruler className="h-5 w-5 text-blue-500" />
+                  <div className="p-2 rounded-lg bg-chart-4/10">
+                    <Ruler className="h-5 w-5 text-chart-4" />
                   </div>
                   <div>
                     <Label className="text-base">Distance Measurement</Label>
@@ -656,8 +656,8 @@ const VRTourSettings: React.FC = () => {
 
               <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-orange-500/10">
-                    <Sun className="h-5 w-5 text-orange-500" />
+                  <div className="p-2 rounded-lg bg-chart-3/10">
+                    <Sun className="h-5 w-5 text-chart-3" />
                   </div>
                   <div>
                     <Label className="text-base">Day/Night Toggle</Label>
@@ -674,8 +674,8 @@ const VRTourSettings: React.FC = () => {
 
               <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-green-500/10">
-                    <MapPin className="h-5 w-5 text-green-500" />
+                  <div className="p-2 rounded-lg bg-chart-1/10">
+                    <MapPin className="h-5 w-5 text-chart-1" />
                   </div>
                   <div>
                     <Label className="text-base">Neighborhood Explorer</Label>
