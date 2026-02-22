@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -65,10 +64,10 @@ const VendorRegistration = () => {
 
   if (loading || requestLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Loading...</h2>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <h2 className="text-lg font-semibold text-foreground">Loading...</h2>
         </div>
       </div>
     );
@@ -81,31 +80,31 @@ const VendorRegistration = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Clock className="h-5 w-5 text-yellow-500" />;
+        return <Clock className="h-5 w-5 text-chart-3" />;
       case 'approved':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-chart-1" />;
       case 'rejected':
-        return <XCircle className="h-5 w-5 text-red-500" />;
+        return <XCircle className="h-5 w-5 text-destructive" />;
       default:
-        return <Clock className="h-5 w-5 text-gray-500" />;
+        return <Clock className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-yellow-500';
+        return 'bg-chart-3';
       case 'approved':
-        return 'bg-green-500';
+        return 'bg-chart-1';
       case 'rejected':
-        return 'bg-red-500';
+        return 'bg-destructive';
       default:
-        return 'bg-gray-500';
+        return 'bg-muted';
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       <AuthenticatedNavigation
         language={language}
         onLanguageToggle={toggleLanguage}
@@ -118,10 +117,10 @@ const VendorRegistration = () => {
           {vendorRequest ? (
             <div className="space-y-6">
               <div className="text-center">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                <h1 className="text-3xl font-bold text-foreground mb-2">
                   Vendor Application Status
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-muted-foreground">
                   Track the progress of your vendor application
                 </p>
               </div>
@@ -145,19 +144,19 @@ const VendorRegistration = () => {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label className="text-sm font-medium text-gray-600">Business Name</Label>
-                      <p className="text-gray-900 dark:text-white">{vendorRequest.business_name}</p>
+                      <Label className="text-sm font-medium text-muted-foreground">Business Name</Label>
+                      <p className="text-foreground">{vendorRequest.business_name}</p>
                     </div>
                     <div>
-                      <Label className="text-sm font-medium text-gray-600">Business Type</Label>
-                      <p className="text-gray-900 dark:text-white">{vendorRequest.business_type}</p>
+                      <Label className="text-sm font-medium text-muted-foreground">Business Type</Label>
+                      <p className="text-foreground">{vendorRequest.business_type}</p>
                     </div>
                   </div>
                   
                   {vendorRequest.review_notes && (
-                    <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <Label className="text-sm font-medium text-gray-600">Review Notes</Label>
-                      <p className="text-gray-700 dark:text-gray-300 mt-1">
+                    <div className="p-4 bg-muted rounded-lg">
+                      <Label className="text-sm font-medium text-muted-foreground">Review Notes</Label>
+                      <p className="text-foreground/80 mt-1">
                         {vendorRequest.review_notes}
                       </p>
                     </div>
@@ -165,17 +164,17 @@ const VendorRegistration = () => {
                   
                   <div className="pt-4 border-t">
                     {vendorRequest.status === 'pending' && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground">
                         Your application is being reviewed. We'll notify you once a decision is made.
                       </p>
                     )}
                     {vendorRequest.status === 'approved' && (
-                      <p className="text-sm text-green-600 dark:text-green-400">
+                      <p className="text-sm text-chart-1">
                         Congratulations! Your application has been approved. You can now access your vendor dashboard.
                       </p>
                     )}
                     {vendorRequest.status === 'rejected' && (
-                      <p className="text-sm text-red-600 dark:text-red-400">
+                      <p className="text-sm text-destructive">
                         Your application was not approved at this time. Please review the notes above and consider reapplying.
                       </p>
                     )}
@@ -186,10 +185,10 @@ const VendorRegistration = () => {
           ) : (
             <div className="space-y-6">
               <div className="text-center">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                <h1 className="text-3xl font-bold text-foreground mb-2">
                   Become a Vendor
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-muted-foreground">
                   Join our marketplace and start offering your services
                 </p>
               </div>

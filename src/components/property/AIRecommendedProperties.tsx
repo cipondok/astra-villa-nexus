@@ -218,7 +218,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     return (
       <div
         onClick={() => onPropertyClick(property)}
-        className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px] cursor-pointer group/card rounded-xl border border-white/30 dark:border-white/15 bg-white/60 dark:bg-white/5 backdrop-blur-xl shadow-lg shadow-accent/5 hover:shadow-2xl hover:shadow-accent/15 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-accent/5 before:via-transparent before:to-chart-4/5 before:pointer-events-none before:rounded-xl"
+        className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px] cursor-pointer group/card rounded-xl border border-border/30 dark:border-border/15 bg-card/60 dark:bg-card/5 backdrop-blur-xl shadow-lg shadow-accent/5 hover:shadow-2xl hover:shadow-accent/15 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-accent/5 before:via-transparent before:to-chart-4/5 before:pointer-events-none before:rounded-xl"
       >
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -236,13 +236,13 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
           <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between">
             <div className="flex gap-1">
               <span className={cn(
-                "flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full text-white shadow-lg ring-1 ring-white/30",
+                "flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full text-primary-foreground shadow-lg ring-1 ring-background/30",
                 isRent ? "bg-gradient-to-r from-chart-4 to-chart-4/80 shadow-chart-4/40" : "bg-gradient-to-r from-chart-1 to-chart-4/80 shadow-chart-1/40"
               )}>
                 <ListingIcon className="h-2 w-2" />
                 {isRent ? 'Sewa' : 'Jual'}
               </span>
-              <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-gradient-to-r from-accent to-primary text-white shadow-lg shadow-accent/40 ring-1 ring-white/30">
+              <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-gradient-to-r from-accent to-primary text-primary-foreground shadow-lg shadow-accent/40 ring-1 ring-background/30">
                 <Sparkles className="h-2 w-2" />
                 AI
               </span>
@@ -258,7 +258,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
           {/* Hover eye */}
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300">
-            <div className="h-10 w-10 rounded-full bg-white/80 backdrop-blur-xl flex items-center justify-center shadow-xl ring-2 ring-accent/50 ring-offset-2 ring-offset-transparent">
+            <div className="h-10 w-10 rounded-full bg-background/80 backdrop-blur-xl flex items-center justify-center shadow-xl ring-2 ring-accent/50 ring-offset-2 ring-offset-transparent">
               <Eye className="h-4 w-4 text-accent-foreground" />
             </div>
           </div>
@@ -317,11 +317,11 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       onClick={() => navigate('/search')}
       className="flex-shrink-0 w-[120px] sm:w-[140px] md:w-[160px] lg:w-[180px] cursor-pointer group/card bg-gradient-to-br from-primary via-primary/90 to-accent rounded-lg border border-primary/30 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col items-center justify-center min-h-[180px] sm:min-h-[200px]"
     >
-      <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/20 flex items-center justify-center mb-2 group-hover/card:scale-110 transition-transform duration-300">
-        <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+      <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-primary-foreground/20 flex items-center justify-center mb-2 group-hover/card:scale-110 transition-transform duration-300">
+        <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
       </div>
-      <h3 className="text-xs sm:text-sm font-bold text-white">View All</h3>
-      <p className="text-[9px] sm:text-[10px] text-white/80 mt-0.5">Explore more</p>
+      <h3 className="text-xs sm:text-sm font-bold text-primary-foreground">View All</h3>
+      <p className="text-[9px] sm:text-[10px] text-primary-foreground/80 mt-0.5">Explore more</p>
     </div>
   );
 
