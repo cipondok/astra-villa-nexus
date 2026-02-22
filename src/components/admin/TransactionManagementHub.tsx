@@ -221,9 +221,9 @@ const TransactionManagementHub = () => {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'property_sale': return <Building className="h-4 w-4 text-blue-500" />;
-      case 'property_rental': return <Home className="h-4 w-4 text-green-500" />;
-      case 'vendor_service': return <Wrench className="h-4 w-4 text-orange-500" />;
+      case 'property_sale': return <Building className="h-4 w-4 text-chart-4" />;
+      case 'property_rental': return <Home className="h-4 w-4 text-chart-1" />;
+      case 'vendor_service': return <Wrench className="h-4 w-4 text-chart-3" />;
       default: return <DollarSign className="h-4 w-4" />;
     }
   };
@@ -244,8 +244,8 @@ const TransactionManagementHub = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="flex items-center gap-1.5 text-xs h-6 px-2 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 border-green-300">
-                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <Badge variant="outline" className="flex items-center gap-1.5 text-xs h-6 px-2 bg-chart-1/10 text-chart-1 border-chart-1/30">
+                <span className="w-2 h-2 bg-chart-1 rounded-full animate-pulse" />
                 {t.realTimeActive}
               </Badge>
               <Button variant="outline" size="sm" className="h-7 text-xs" onClick={fetchTransactions}>
@@ -263,73 +263,73 @@ const TransactionManagementHub = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
+        <Card className="bg-gradient-to-br from-chart-4/10 to-chart-4/5 border-chart-4/30">
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
-              <DollarSign className="h-4 w-4 text-blue-600" />
-              <span className="text-xs text-blue-700 dark:text-blue-300">{t.totalTransactions}</span>
+              <DollarSign className="h-4 w-4 text-chart-4" />
+              <span className="text-xs text-chart-4">{t.totalTransactions}</span>
             </div>
-            <p className="text-lg font-bold text-blue-900 dark:text-blue-100 mt-1">{stats.total}</p>
+            <p className="text-lg font-bold text-foreground mt-1">{stats.total}</p>
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900 border-yellow-200 dark:border-yellow-800">
+        <Card className="bg-gradient-to-br from-chart-3/10 to-chart-3/5 border-chart-3/30">
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
-              <Clock className="h-4 w-4 text-yellow-600" />
-              <span className="text-xs text-yellow-700 dark:text-yellow-300">{t.pendingPayments}</span>
+              <Clock className="h-4 w-4 text-chart-3" />
+              <span className="text-xs text-chart-3">{t.pendingPayments}</span>
             </div>
-            <p className="text-lg font-bold text-yellow-900 dark:text-yellow-100 mt-1">{stats.pending}</p>
+            <p className="text-lg font-bold text-foreground mt-1">{stats.pending}</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
+        <Card className="bg-gradient-to-br from-chart-1/10 to-chart-1/5 border-chart-1/30">
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <span className="text-xs text-green-700 dark:text-green-300">{t.completed}</span>
+              <CheckCircle className="h-4 w-4 text-chart-1" />
+              <span className="text-xs text-chart-1">{t.completed}</span>
             </div>
-            <p className="text-lg font-bold text-green-900 dark:text-green-100 mt-1">{stats.completed}</p>
+            <p className="text-lg font-bold text-foreground mt-1">{stats.completed}</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950 dark:to-red-900 border-red-200 dark:border-red-800">
+        <Card className="bg-gradient-to-br from-destructive/10 to-destructive/5 border-destructive/30">
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
-              <XCircle className="h-4 w-4 text-red-600" />
-              <span className="text-xs text-red-700 dark:text-red-300">{t.cancelled}</span>
+              <XCircle className="h-4 w-4 text-destructive" />
+              <span className="text-xs text-destructive">{t.cancelled}</span>
             </div>
-            <p className="text-lg font-bold text-red-900 dark:text-red-100 mt-1">{stats.cancelled}</p>
+            <p className="text-lg font-bold text-foreground mt-1">{stats.cancelled}</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800">
+        <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/30">
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
-              <TrendingUp className="h-4 w-4 text-purple-600" />
-              <span className="text-xs text-purple-700 dark:text-purple-300">{t.totalRevenue}</span>
+              <TrendingUp className="h-4 w-4 text-accent-foreground" />
+              <span className="text-xs text-accent-foreground">{t.totalRevenue}</span>
             </div>
-            <p className="text-sm font-bold text-purple-900 dark:text-purple-100 mt-1">{formatIDR(stats.totalRevenue)}</p>
+            <p className="text-sm font-bold text-foreground mt-1">{formatIDR(stats.totalRevenue)}</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-950 dark:to-indigo-900 border-indigo-200 dark:border-indigo-800">
+        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30">
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
-              <Building className="h-4 w-4 text-indigo-600" />
-              <span className="text-xs text-indigo-700 dark:text-indigo-300">{t.taxCollected}</span>
+              <Building className="h-4 w-4 text-primary" />
+              <span className="text-xs text-primary">{t.taxCollected}</span>
             </div>
-            <p className="text-sm font-bold text-indigo-900 dark:text-indigo-100 mt-1">{formatIDR(stats.totalTax)}</p>
+            <p className="text-sm font-bold text-foreground mt-1">{formatIDR(stats.totalTax)}</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 border-orange-200 dark:border-orange-800">
+        <Card className="bg-gradient-to-br from-chart-3/10 to-chart-3/5 border-chart-3/30">
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
-              <Wrench className="h-4 w-4 text-orange-600" />
-              <span className="text-xs text-orange-700 dark:text-orange-300">{t.serviceCharges}</span>
+              <Wrench className="h-4 w-4 text-chart-3" />
+              <span className="text-xs text-chart-3">{t.serviceCharges}</span>
             </div>
-            <p className="text-sm font-bold text-orange-900 dark:text-orange-100 mt-1">{formatIDR(stats.totalServiceCharges)}</p>
+            <p className="text-sm font-bold text-foreground mt-1">{formatIDR(stats.totalServiceCharges)}</p>
           </CardContent>
         </Card>
       </div>
@@ -445,7 +445,7 @@ const TransactionManagementHub = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Building className="h-5 w-5 text-blue-500" />
+                <Building className="h-5 w-5 text-chart-4" />
                 {t.propertySales}
               </CardTitle>
               <CardDescription>
@@ -469,7 +469,7 @@ const TransactionManagementHub = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Home className="h-5 w-5 text-green-500" />
+                <Home className="h-5 w-5 text-chart-1" />
                 {t.rentals}
               </CardTitle>
               <CardDescription>
@@ -492,7 +492,7 @@ const TransactionManagementHub = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Wrench className="h-5 w-5 text-orange-500" />
+                <Wrench className="h-5 w-5 text-chart-3" />
                 {t.vendorServices}
               </CardTitle>
               <CardDescription>
@@ -515,7 +515,7 @@ const TransactionManagementHub = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Bell className="h-5 w-5 text-yellow-500" />
+                <Bell className="h-5 w-5 text-chart-3" />
                 {t.alerts}
               </CardTitle>
             </CardHeader>

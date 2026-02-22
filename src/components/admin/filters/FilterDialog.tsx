@@ -248,7 +248,7 @@ export const FilterDialog = ({ open, onClose, filter, onSave }: FilterDialogProp
                 id="is_active"
                 checked={watch('is_active')}
                 onCheckedChange={(checked) => setValue('is_active', checked)}
-                className="data-[state=checked]:bg-green-600"
+                className="data-[state=checked]:bg-chart-1"
               />
             </div>
           </div>

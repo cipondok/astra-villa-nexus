@@ -23,7 +23,7 @@ const AlertMonitoringProvider: React.FC<AlertMonitoringProviderProps> = ({ child
       {profile?.role === 'admin' && isMonitoring && (
         <div className="fixed bottom-4 right-4 z-50">
           <div className="bg-chart-1 text-background px-3 py-1 rounded-full text-xs flex items-center gap-2">
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+            <div className="w-2 h-2 bg-background rounded-full animate-pulse" />
             Real-time monitoring active
           </div>
         </div>
