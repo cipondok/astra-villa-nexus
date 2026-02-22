@@ -98,13 +98,13 @@ const VendorControlPanel = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <Badge className="bg-green-100 text-green-800">Approved</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1">Approved</Badge>;
       case 'pending':
-        return <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3">Pending</Badge>;
       case 'rejected':
         return <Badge variant="destructive">Rejected</Badge>;
       case 'suspended':
-        return <Badge className="bg-red-100 text-red-800">Suspended</Badge>;
+        return <Badge className="bg-destructive/10 text-destructive">Suspended</Badge>;
       default:
         return <Badge variant="outline">Unknown</Badge>;
     }
@@ -113,9 +113,9 @@ const VendorControlPanel = () => {
   const getVerificationBadge = (verification: string) => {
     switch (verification) {
       case 'verified':
-        return <Badge className="bg-blue-100 text-blue-800">Verified</Badge>;
+        return <Badge className="bg-chart-4/10 text-chart-4">Verified</Badge>;
       case 'pending':
-        return <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3">Pending</Badge>;
       case 'failed':
         return <Badge variant="destructive">Failed</Badge>;
       default:
@@ -128,9 +128,9 @@ const VendorControlPanel = () => {
       case 'high':
         return <Badge variant="destructive">High</Badge>;
       case 'medium':
-        return <Badge className="bg-yellow-100 text-yellow-800">Medium</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3">Medium</Badge>;
       case 'low':
-        return <Badge className="bg-green-100 text-green-800">Low</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1">Low</Badge>;
       default:
         return <Badge variant="outline">Normal</Badge>;
     }
@@ -154,7 +154,7 @@ const VendorControlPanel = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Vendor Control Panel</h2>
-          <p className="text-gray-600">Manage vendor registrations, approvals, and performance</p>
+          <p className="text-muted-foreground">Manage vendor registrations, approvals, and performance</p>
         </div>
         <Button>
           <UserCheck className="h-4 w-4 mr-2" />
@@ -168,11 +168,11 @@ const VendorControlPanel = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Vendors</p>
+                <p className="text-sm font-medium text-muted-foreground">Total Vendors</p>
                 <p className="text-2xl font-bold">89</p>
-                <p className="text-xs text-green-600">+12 this month</p>
+                <p className="text-xs text-chart-1">+12 this month</p>
               </div>
-              <Store className="h-8 w-8 text-blue-500" />
+              <Store className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -181,11 +181,11 @@ const VendorControlPanel = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Pending Approval</p>
+                <p className="text-sm font-medium text-muted-foreground">Pending Approval</p>
                 <p className="text-2xl font-bold">15</p>
-                <p className="text-xs text-yellow-600">Requires action</p>
+                <p className="text-xs text-chart-3">Requires action</p>
               </div>
-              <Clock className="h-8 w-8 text-yellow-500" />
+              <Clock className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -194,11 +194,11 @@ const VendorControlPanel = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Active Vendors</p>
+                <p className="text-sm font-medium text-muted-foreground">Active Vendors</p>
                 <p className="text-2xl font-bold">67</p>
-                <p className="text-xs text-green-600">92% approval rate</p>
+                <p className="text-xs text-chart-1">92% approval rate</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -207,11 +207,11 @@ const VendorControlPanel = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+                <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
                 <p className="text-2xl font-bold">{formatIDR(2400000000)}</p>
-                <p className="text-xs text-green-600">+18% from last month</p>
+                <p className="text-xs text-chart-1">+18% from last month</p>
               </div>
-              <DollarSign className="h-8 w-8 text-purple-500" />
+              <DollarSign className="h-8 w-8 text-accent-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -281,7 +281,7 @@ const VendorControlPanel = () => {
                        <TableCell>
                          <div>
                            <div className="font-medium">{vendor.name}</div>
-                           <div className="text-sm text-gray-500">{vendor.email}</div>
+                           <div className="text-sm text-muted-foreground">{vendor.email}</div>
                          </div>
                        </TableCell>
                       <TableCell>{vendor.category}</TableCell>
@@ -289,7 +289,7 @@ const VendorControlPanel = () => {
                       <TableCell>{getVerificationBadge(vendor.verification)}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <Star className="h-4 w-4 text-yellow-500" />
+                          <Star className="h-4 w-4 text-chart-3" />
                           <span>{vendor.rating}</span>
                         </div>
                       </TableCell>
@@ -314,7 +314,7 @@ const VendorControlPanel = () => {
                             <>
                               <Button 
                                 size="sm" 
-                                className="bg-green-600 hover:bg-green-700"
+                                className="bg-chart-1 hover:bg-chart-1/80"
                                 onClick={() => handleApproveVendor(vendor.id)}
                               >
                                 <CheckCircle className="h-3 w-3" />
@@ -351,13 +351,13 @@ const VendorControlPanel = () => {
                   <div key={approval.id} className="p-4 border rounded-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <Store className="h-6 w-6 text-blue-600" />
+                        <div className="w-12 h-12 bg-chart-4/10 rounded-lg flex items-center justify-center">
+                          <Store className="h-6 w-6 text-chart-4" />
                         </div>
                         <div>
                           <div className="font-medium">{approval.vendorName}</div>
-                          <div className="text-sm text-gray-500">{approval.type}</div>
-                          <div className="text-xs text-gray-400">Submitted: {approval.submittedDate}</div>
+                          <div className="text-sm text-muted-foreground">{approval.type}</div>
+                          <div className="text-xs text-muted-foreground/70">Submitted: {approval.submittedDate}</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -386,10 +386,10 @@ const VendorControlPanel = () => {
                     <div key={vendor.id} className="flex items-center justify-between p-3 border rounded">
                       <div>
                         <div className="font-medium">{vendor.name}</div>
-                        <div className="text-sm text-gray-500">{vendor.completedJobs} jobs completed</div>
+                        <div className="text-sm text-muted-foreground">{vendor.completedJobs} jobs completed</div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Star className="h-4 w-4 text-yellow-500" />
+                        <Star className="h-4 w-4 text-chart-3" />
                         <span>{vendor.rating}</span>
                       </div>
                     </div>
@@ -403,7 +403,7 @@ const VendorControlPanel = () => {
                 <CardTitle>Revenue Analytics</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64 flex items-center justify-center text-gray-500">
+                <div className="h-64 flex items-center justify-center text-muted-foreground">
                   Revenue Chart Placeholder
                   <br />
                   (Integrate with charting library)
@@ -430,19 +430,19 @@ const VendorControlPanel = () => {
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-500">Business License:</span>
+                        <span className="text-muted-foreground">Business License:</span>
                         <span className="ml-2">
                           {vendor.documents.includes('business_license') ? '✅' : '❌'}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-500">Tax Certificate:</span>
+                        <span className="text-muted-foreground">Tax Certificate:</span>
                         <span className="ml-2">
                           {vendor.documents.includes('tax_certificate') ? '✅' : '❌'}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-500">Insurance:</span>
+                        <span className="text-muted-foreground">Insurance:</span>
                         <span className="ml-2">
                           {vendor.documents.includes('insurance') ? '✅' : '❌'}
                         </span>

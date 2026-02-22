@@ -77,21 +77,21 @@ const UserManagementHub = ({ onNavigate }: { onNavigate?: (section: string) => v
   });
 
   const statCards = [
-    { title: "Total Users", value: stats?.totalUsers ?? 0, icon: Users, color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-950/30" },
-    { title: "Verified", value: stats?.verifiedUsers ?? 0, icon: UserCheck, color: "text-green-600", bg: "bg-green-50 dark:bg-green-950/30" },
-    { title: "Suspended", value: stats?.suspendedUsers ?? 0, icon: UserX, color: "text-red-600", bg: "bg-red-50 dark:bg-red-950/30" },
-    { title: "New (30d)", value: stats?.newUsers30d ?? 0, icon: TrendingUp, color: "text-purple-600", bg: "bg-purple-50 dark:bg-purple-950/30" },
-    { title: "New (7d)", value: stats?.newUsers7d ?? 0, icon: Clock, color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-950/30" },
-    { title: "Activity (24h)", value: stats?.activities24h ?? 0, icon: Activity, color: "text-indigo-600", bg: "bg-indigo-50 dark:bg-indigo-950/30" },
+    { title: "Total Users", value: stats?.totalUsers ?? 0, icon: Users, color: "text-chart-4", bg: "bg-chart-4/10" },
+    { title: "Verified", value: stats?.verifiedUsers ?? 0, icon: UserCheck, color: "text-chart-1", bg: "bg-chart-1/10" },
+    { title: "Suspended", value: stats?.suspendedUsers ?? 0, icon: UserX, color: "text-destructive", bg: "bg-destructive/10" },
+    { title: "New (30d)", value: stats?.newUsers30d ?? 0, icon: TrendingUp, color: "text-accent-foreground", bg: "bg-accent/10" },
+    { title: "New (7d)", value: stats?.newUsers7d ?? 0, icon: Clock, color: "text-chart-3", bg: "bg-chart-3/10" },
+    { title: "Activity (24h)", value: stats?.activities24h ?? 0, icon: Activity, color: "text-primary", bg: "bg-primary/10" },
   ];
 
   const roleColors: Record<string, string> = {
-    admin: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
-    agent: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-    property_owner: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-    vendor: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
-    general_user: "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300",
-    customer_service: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
+    admin: "bg-destructive/10 text-destructive",
+    agent: "bg-chart-4/10 text-chart-4",
+    property_owner: "bg-chart-1/10 text-chart-1",
+    vendor: "bg-chart-3/10 text-chart-3",
+    general_user: "bg-muted text-muted-foreground",
+    customer_service: "bg-accent/10 text-accent-foreground",
   };
 
   return (
