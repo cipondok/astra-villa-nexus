@@ -477,7 +477,7 @@ const HeroSliderSettings: React.FC = () => {
                 {/* Parallax indicator */}
                 {config.enableParallax && (
                   <div className="absolute bottom-2 right-2 z-10">
-                    <Badge className="text-[8px] h-4 bg-blue-500/80 text-white border-0">
+                    <Badge className="text-[8px] h-4 bg-chart-4/80 text-primary-foreground border-0">
                       <Wind className="h-2.5 w-2.5 mr-0.5" /> Parallax
                     </Badge>
                   </div>

@@ -117,7 +117,7 @@ const WebSettingsControl = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Web Settings Control</h2>
-          <p className="text-gray-600">Global website settings and configuration</p>
+          <p className="text-muted-foreground">Global website settings and configuration</p>
         </div>
         <Button onClick={saveSettings} disabled={loading}>
           <Settings className="h-4 w-4 mr-2" />
