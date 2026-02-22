@@ -1189,7 +1189,7 @@ const EmailManagementSettings: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <div className={cn(
                           "w-2 h-2 rounded-full",
-                          schedule.isActive ? "bg-green-500" : "bg-gray-400"
+                          schedule.isActive ? "bg-chart-1" : "bg-muted-foreground"
                         )} />
                         <span className="text-xs font-medium">{schedule.name}</span>
                         <Badge variant="outline" className="text-[8px] px-1.5 py-0">
@@ -1236,7 +1236,7 @@ const EmailManagementSettings: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 border-border/50 border-l-4 border-l-green-500">
+          <Card className="bg-card/50 border-border/50 border-l-4 border-l-chart-1">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs text-foreground flex items-center gap-2">
                 <Users className="h-3.5 w-3.5" />
