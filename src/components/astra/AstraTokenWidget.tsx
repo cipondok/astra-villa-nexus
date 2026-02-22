@@ -269,12 +269,12 @@ const AstraTokenWidget: React.FC<AstraTokenWidgetProps> = ({
 
         {/* Transaction Bonus Info */}
         {showTransactionBonus && (
-          <div className="bg-orange-100 p-3 rounded-lg">
+          <div className="bg-chart-3/10 p-3 rounded-lg">
             <div className="flex items-center gap-2 mb-1">
-              <TrendingUp className="h-4 w-4 text-orange-600" />
-              <span className="text-sm font-medium text-orange-800">Transaction Bonus</span>
+              <TrendingUp className="h-4 w-4 text-chart-3" />
+              <span className="text-sm font-medium text-foreground">Transaction Bonus</span>
             </div>
-            <p className="text-xs text-orange-700">
+            <p className="text-xs text-muted-foreground">
               Earn tokens automatically on every purchase and transaction!
             </p>
           </div>

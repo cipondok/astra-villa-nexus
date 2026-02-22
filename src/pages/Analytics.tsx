@@ -118,7 +118,7 @@ const Analytics = () => {
 
   const chartData = generateChartData(timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90);
 
-  const pieColors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff00'];
+  const pieColors = ['hsl(var(--primary))', 'hsl(var(--chart-1))', 'hsl(var(--chart-3))', 'hsl(var(--chart-5))', 'hsl(var(--chart-2))'];
 
   const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -219,12 +219,12 @@ const Analytics = () => {
                   <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Total Users</p>
                   <div className="text-sm md:text-lg font-bold text-foreground">{analyticsData?.users.total}</div>
                   <div className="flex items-center text-[8px] md:text-[10px]">
-                    <TrendingUp className="h-2.5 w-2.5 text-green-500 mr-0.5" />
-                    <span className="text-green-500">+{analyticsData?.users.new_today} today</span>
+                    <TrendingUp className="h-2.5 w-2.5 text-chart-1 mr-0.5" />
+                    <span className="text-chart-1">+{analyticsData?.users.new_today} today</span>
                   </div>
                 </div>
-                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                  <Users className="h-4 w-4 md:h-5 md:w-5 text-blue-500" />
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-chart-4/10 flex items-center justify-center">
+                  <Users className="h-4 w-4 md:h-5 md:w-5 text-chart-4" />
                 </div>
               </div>
             </CardContent>
@@ -237,12 +237,12 @@ const Analytics = () => {
                   <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Total Properties</p>
                   <div className="text-sm md:text-lg font-bold text-foreground">{analyticsData?.properties.total}</div>
                   <div className="flex items-center text-[8px] md:text-[10px]">
-                    <TrendingUp className="h-2.5 w-2.5 text-green-500 mr-0.5" />
-                    <span className="text-green-500">+{analyticsData?.properties.new_today} today</span>
+                    <TrendingUp className="h-2.5 w-2.5 text-chart-1 mr-0.5" />
+                    <span className="text-chart-1">+{analyticsData?.properties.new_today} today</span>
                   </div>
                 </div>
-                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                  <Building2 className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-chart-1/10 flex items-center justify-center">
+                  <Building2 className="h-4 w-4 md:h-5 md:w-5 text-chart-1" />
                 </div>
               </div>
             </CardContent>
@@ -255,12 +255,12 @@ const Analytics = () => {
                   <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Page Views</p>
                   <div className="text-sm md:text-lg font-bold text-foreground">{analyticsData?.engagement.page_views.toLocaleString()}</div>
                   <div className="flex items-center text-[8px] md:text-[10px]">
-                    <Eye className="h-2.5 w-2.5 text-purple-500 mr-0.5" />
-                    <span className="text-purple-500">This month</span>
+                    <Eye className="h-2.5 w-2.5 text-accent mr-0.5" />
+                    <span className="text-accent">This month</span>
                   </div>
                 </div>
-                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                  <Eye className="h-4 w-4 md:h-5 md:w-5 text-purple-500" />
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                  <Eye className="h-4 w-4 md:h-5 md:w-5 text-accent" />
                 </div>
               </div>
             </CardContent>
@@ -273,12 +273,12 @@ const Analytics = () => {
                   <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Avg. Session</p>
                   <div className="text-sm md:text-lg font-bold text-foreground">{formatDuration(analyticsData?.engagement.avg_session_duration || 0)}</div>
                   <div className="flex items-center text-[8px] md:text-[10px]">
-                    <Clock className="h-2.5 w-2.5 text-orange-500 mr-0.5" />
-                    <span className="text-orange-500">Duration</span>
+                    <Clock className="h-2.5 w-2.5 text-chart-3 mr-0.5" />
+                    <span className="text-chart-3">Duration</span>
                   </div>
                 </div>
-                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                  <Clock className="h-4 w-4 md:h-5 md:w-5 text-orange-500" />
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-chart-3/10 flex items-center justify-center">
+                  <Clock className="h-4 w-4 md:h-5 md:w-5 text-chart-3" />
                 </div>
               </div>
             </CardContent>
@@ -324,7 +324,7 @@ const Analytics = () => {
                       <XAxis dataKey="date" tick={{ fontSize: 10 }} />
                       <YAxis tick={{ fontSize: 10 }} />
                       <Tooltip />
-                      <Bar dataKey="properties" fill="#82ca9d" />
+                      <Bar dataKey="properties" fill="hsl(var(--chart-1))" />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -364,7 +364,7 @@ const Analytics = () => {
                       <XAxis dataKey="date" tick={{ fontSize: 10 }} />
                       <YAxis tick={{ fontSize: 10 }} />
                       <Tooltip />
-                      <Bar dataKey="properties" fill="#82ca9d" />
+                      <Bar dataKey="properties" fill="hsl(var(--chart-1))" />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -384,7 +384,7 @@ const Analytics = () => {
                         labelLine={false}
                         label={({ type, percent }) => `${type} ${(percent * 100).toFixed(0)}%`}
                         outerRadius={60}
-                        fill="#8884d8"
+                        fill="hsl(var(--primary))"
                         dataKey="count"
                       >
                         {analyticsData?.properties.by_type.map((entry, index) => (
@@ -403,8 +403,8 @@ const Analytics = () => {
             <div className="grid grid-cols-3 gap-2 md:gap-3 mb-3">
               <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
                 <CardContent className="p-2 md:p-3 text-center">
-                  <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                    <Globe className="h-4 w-4 text-blue-500" />
+                  <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-chart-4/10 flex items-center justify-center">
+                    <Globe className="h-4 w-4 text-chart-4" />
                   </div>
                   <div className="text-sm md:text-lg font-bold">{analyticsData?.engagement.unique_visitors.toLocaleString()}</div>
                   <div className="text-[9px] md:text-xs text-muted-foreground">Unique Visitors</div>
@@ -413,8 +413,8 @@ const Analytics = () => {
               
               <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
                 <CardContent className="p-2 md:p-3 text-center">
-                  <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                    <MousePointer className="h-4 w-4 text-green-500" />
+                  <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-chart-1/10 flex items-center justify-center">
+                    <MousePointer className="h-4 w-4 text-chart-1" />
                   </div>
                   <div className="text-sm md:text-lg font-bold">{analyticsData?.engagement.bounce_rate}%</div>
                   <div className="text-[9px] md:text-xs text-muted-foreground">Bounce Rate</div>
@@ -423,8 +423,8 @@ const Analytics = () => {
               
               <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
                 <CardContent className="p-2 md:p-3 text-center">
-                  <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                    <Activity className="h-4 w-4 text-purple-500" />
+                  <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-accent/10 flex items-center justify-center">
+                    <Activity className="h-4 w-4 text-accent" />
                   </div>
                   <div className="text-sm md:text-lg font-bold">{formatDuration(analyticsData?.engagement.avg_session_duration || 0)}</div>
                   <div className="text-[9px] md:text-xs text-muted-foreground">Avg. Duration</div>
@@ -443,7 +443,7 @@ const Analytics = () => {
                     <XAxis dataKey="date" tick={{ fontSize: 10 }} />
                     <YAxis tick={{ fontSize: 10 }} />
                     <Tooltip />
-                    <Line type="monotone" dataKey="pageViews" stroke="#ff7300" strokeWidth={2} />
+                    <Line type="monotone" dataKey="pageViews" stroke="hsl(var(--chart-3))" strokeWidth={2} />
                   </LineChart>
                 </ResponsiveContainer>
               </CardContent>
