@@ -338,7 +338,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
           <Button
             variant="outline"
             size="icon"
-            className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-white/80 dark:bg-black/50 border-accent/50 dark:border-accent/30"
+            className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-background/80 dark:bg-background/50 border-accent/50 dark:border-accent/30"
             onClick={scrollLeft}
           >
             <ChevronLeft className="h-3 w-3 md:h-4 md:w-4 text-accent-foreground dark:text-accent" />
@@ -346,7 +346,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
           <Button
             variant="outline"
             size="icon"
-            className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-white/80 dark:bg-black/50 border-accent/50 dark:border-accent/30"
+            className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-background/80 dark:bg-background/50 border-accent/50 dark:border-accent/30"
             onClick={scrollRight}
           >
             <ChevronRight className="h-3 w-3 md:h-4 md:w-4 text-accent-foreground dark:text-accent" />

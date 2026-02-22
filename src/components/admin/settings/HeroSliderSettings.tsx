@@ -486,8 +486,8 @@ const HeroSliderSettings: React.FC = () => {
                 {/* Sample content overlay */}
                 <div className="absolute inset-0 flex items-center justify-center z-20">
                   <div className="text-center space-y-1">
-                    <div className="text-white font-bold text-sm drop-shadow-lg">ASTRA Villa</div>
-                    <div className="text-white/80 text-[10px] drop-shadow">Premium Real Estate</div>
+                    <div className="text-primary-foreground font-bold text-sm drop-shadow-lg">ASTRA Villa</div>
+                    <div className="text-primary-foreground/80 text-[10px] drop-shadow">Premium Real Estate</div>
                   </div>
                 </div>
               </div>

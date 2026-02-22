@@ -73,7 +73,7 @@ const ChatBubble = ({ messages, onSendMessage, currentUserId }: ChatBubbleProps)
             >
               <MessageCircle className="h-6 w-6" />
               {unreadCount > 0 && (
-                <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <div className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {unreadCount}
                 </div>
               )}

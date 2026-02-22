@@ -1561,7 +1561,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     {[...Array(5)].map((_, i) => (
                       <div
                         key={i}
-                        className="w-1 bg-white rounded-full"
+                        className="w-1 bg-primary-foreground rounded-full"
                         style={{
                           animation: `waveform 1s ease-in-out infinite`,
                           animationDelay: `${i * 0.1}s`,
@@ -3931,30 +3931,30 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             </div>
 
             {/* Pro Tips */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2">
-              <h3 className="font-semibold flex items-center gap-2 text-blue-900">
+            <div className="bg-chart-4/10 border border-chart-4/20 rounded-lg p-4 space-y-2">
+              <h3 className="font-semibold flex items-center gap-2 text-chart-4">
                 <Lightbulb className="h-4 w-4" />
                 Pro Tips
               </h3>
-              <ul className="space-y-1.5 text-sm text-blue-900">
+              <ul className="space-y-1.5 text-sm text-foreground">
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600">•</span>
+                  <span className="text-chart-4">•</span>
                   <span>Use professional listing photos for best accuracy</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600">•</span>
+                  <span className="text-chart-4">•</span>
                   <span>Outdoor facade photos work better than interior shots</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600">•</span>
+                  <span className="text-chart-4">•</span>
                   <span>Make sure the entire building is visible in the frame</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600">•</span>
+                  <span className="text-chart-4">•</span>
                   <span>Adjust similarity weights to prioritize what matters most to you</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600">•</span>
+                  <span className="text-chart-4">•</span>
                   <span>Try different photos of the same property to compare results</span>
                 </li>
               </ul>
@@ -4041,9 +4041,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                       <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                         <div 
                           className={`h-full transition-all duration-500 ${
-                            percentage >= 80 ? 'bg-green-500' : 
-                            percentage >= 50 ? 'bg-orange-500' : 
-                            'bg-gray-400'
+                            percentage >= 80 ? 'bg-chart-1' : 
+                            percentage >= 50 ? 'bg-chart-3' : 
+                            'bg-muted-foreground'
                           }`}
                           style={{ width: `${percentage}%` }}
                         />
@@ -4121,10 +4121,10 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                   
                   {/* Tooltip with arrow */}
                   <div className="absolute top-1/2 right-full mr-6 -translate-y-1/2 pointer-events-auto">
-                    <div className="relative bg-white dark:bg-gray-800 p-4 rounded-lg shadow-2xl border border-primary/20 animate-fade-in w-72">
+                    <div className="relative bg-card p-4 rounded-lg shadow-2xl border border-primary/20 animate-fade-in w-72">
                       {/* Arrow pointing right */}
                       <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full">
-                        <div className="w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-white dark:border-l-gray-800" />
+                        <div className="w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-card" />
                       </div>
                       
                       <div className="flex items-start gap-3">
