@@ -179,7 +179,7 @@ const fileCategories = [
     id: 'system',
     name: 'System Configuration',
     icon: Cog,
-    color: 'bg-gray-500',
+    color: 'bg-muted-foreground',
     section: 'settings',
     files: [
       { name: 'SMTP Settings', section: 'smtp' },
@@ -577,23 +577,13 @@ export const MacOSAdminDesktop = () => {
                 onClick={() => setShowAlerts(false)}
               >
                 <div 
-                  className={`absolute top-8 right-16 backdrop-blur-md rounded-lg shadow-2xl border w-96 max-h-96 overflow-y-auto z-50 ${
-                    theme === 'dark'
-                      ? 'bg-blue-950/95 border-blue-700'
-                      : 'bg-white/95 border-blue-200'
-                  }`}
+                   className="absolute top-8 right-16 backdrop-blur-md rounded-lg shadow-2xl border border-border w-96 max-h-96 overflow-y-auto z-50 bg-card/95"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className={`p-4 border-b ${
-                    theme === 'dark' ? 'border-blue-700' : 'border-blue-200'
-                  }`}>
+                  <div className="p-4 border-b border-border">
                     <div className="flex items-center justify-between">
-                      <h3 className={`font-semibold ${
-                        theme === 'dark' ? 'text-blue-200' : 'text-gray-800'
-                      }`}>System Alerts</h3>
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        theme === 'dark' ? 'bg-blue-800 text-blue-200' : 'bg-blue-100 text-blue-800'
-                      }`}>
+                      <h3 className="font-semibold text-foreground">System Alerts</h3>
+                      <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
                         {unreadCount} unread
                       </span>
                     </div>
@@ -602,12 +592,8 @@ export const MacOSAdminDesktop = () => {
                   <div className="max-h-80 overflow-y-auto">
                     {alerts.length === 0 ? (
                       <div className="p-4 text-center">
-                        <Bell className={`w-8 h-8 mx-auto mb-2 ${
-                          theme === 'dark' ? 'text-blue-400' : 'text-gray-400'
-                        }`} />
-                        <p className={`text-sm ${
-                          theme === 'dark' ? 'text-blue-300' : 'text-gray-600'
-                        }`}>No alerts at this time</p>
+                       <Bell className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">No alerts at this time</p>
                       </div>
                     ) : (
                       alerts.map(alert => {
@@ -615,39 +601,29 @@ export const MacOSAdminDesktop = () => {
                         return (
                           <div
                             key={alert.id}
-                            className={`p-3 border-b cursor-pointer transition-colors ${
-                              theme === 'dark' 
-                                ? 'border-blue-800 hover:bg-blue-900/50' 
-                                : 'border-gray-100 hover:bg-gray-50'
-                            } ${!alert.read ? (theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-50/50') : ''}`}
+                            className={`p-3 border-b border-border cursor-pointer transition-colors hover:bg-muted/50 ${!alert.read ? 'bg-primary/5' : ''}`}
                             onClick={() => markAlertAsRead(alert.id)}
                           >
                             <div className="flex items-start space-x-3">
                               <AlertIcon className={`w-4 h-4 mt-0.5 ${getAlertColor(alert.severity, alert.type)}`} />
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between">
-                                  <h4 className={`text-sm font-medium truncate ${
-                                    theme === 'dark' ? 'text-blue-200' : 'text-gray-900'
-                                  }`}>
+                                  <h4 className="text-sm font-medium truncate text-foreground">
                                     {alert.title}
                                   </h4>
                                   <span className={`text-xs px-2 py-0.5 rounded-full ml-2 ${getSeverityBadge(alert.severity)}`}>
                                     {alert.severity}
                                   </span>
                                 </div>
-                                <p className={`text-xs mt-1 ${
-                                  theme === 'dark' ? 'text-blue-300' : 'text-gray-600'
-                                }`}>
+                                <p className="text-xs mt-1 text-muted-foreground">
                                   {alert.message}
                                 </p>
-                                <p className={`text-xs mt-1 ${
-                                  theme === 'dark' ? 'text-blue-400' : 'text-gray-500'
-                                }`}>
+                                <p className="text-xs mt-1 text-muted-foreground/70">
                                   {alert.timestamp.toLocaleString()}
                                 </p>
                               </div>
                               {!alert.read && (
-                                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
                               )}
                             </div>
                           </div>
@@ -656,19 +632,13 @@ export const MacOSAdminDesktop = () => {
                     )}
                   </div>
                   
-                  <div className={`p-3 border-t ${
-                    theme === 'dark' ? 'border-blue-700' : 'border-blue-200'
-                  }`}>
+                  <div className="p-3 border-t border-border">
                     <button
                       onClick={() => {
                         openSection('system-alerts', 'System Alerts');
                         setShowAlerts(false);
                       }}
-                      className={`w-full text-xs text-center py-2 rounded ${
-                        theme === 'dark' 
-                          ? 'text-blue-300 hover:bg-blue-800/50' 
-                          : 'text-blue-600 hover:bg-blue-50'
-                      }`}
+                      className="w-full text-xs text-center py-2 rounded text-primary hover:bg-primary/5"
                     >
                       View All Alerts
                     </button>
@@ -681,9 +651,7 @@ export const MacOSAdminDesktop = () => {
           <div className="relative">
             <button
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className={`flex items-center space-x-1 px-2 py-1 rounded ${
-                theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
-              }`}
+              className="flex items-center space-x-1 px-2 py-1 rounded hover:bg-primary/10"
             >
               <User className="w-3 h-3" />
               <span className="hidden md:inline">{user?.email?.split('@')[0] || 'Admin'}</span>
@@ -696,33 +664,19 @@ export const MacOSAdminDesktop = () => {
                 onClick={() => setShowProfileMenu(false)}
               >
                 <div 
-                  className={`absolute top-8 right-4 backdrop-blur-md rounded-lg shadow-2xl border w-48 z-50 ${
-                    theme === 'dark'
-                      ? 'bg-blue-950/95 border-blue-700'
-                      : 'bg-white/95 border-blue-200'
-                  }`}
+                  className="absolute top-8 right-4 backdrop-blur-md rounded-lg shadow-2xl border border-border w-48 z-50 bg-card/95"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className={`p-3 border-b ${
-                    theme === 'dark' ? 'border-blue-700' : 'border-blue-200'
-                  }`}>
+                  <div className="p-3 border-b border-border">
                     <div className="flex items-center space-x-2">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        theme === 'dark' ? 'bg-blue-700' : 'bg-blue-100'
-                      }`}>
-                        <User className={`w-4 h-4 ${
-                          theme === 'dark' ? 'text-blue-200' : 'text-blue-600'
-                        }`} />
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center bg-primary/10">
+                        <User className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <p className={`text-sm font-medium ${
-                          theme === 'dark' ? 'text-blue-200' : 'text-gray-800'
-                        }`}>
+                        <p className="text-sm font-medium text-foreground">
                           {user?.email?.split('@')[0] || 'Admin'}
                         </p>
-                        <p className={`text-xs ${
-                          theme === 'dark' ? 'text-blue-300' : 'text-gray-600'
-                        }`}>
+                        <p className="text-xs text-muted-foreground">
                           {user?.email}
                         </p>
                       </div>
@@ -735,14 +689,10 @@ export const MacOSAdminDesktop = () => {
                         openSection('admin-profile', 'Profile Settings');
                         setShowProfileMenu(false);
                       }}
-                      className={`w-full flex items-center space-x-2 p-2 rounded text-left ${
-                        theme === 'dark' ? 'hover:bg-blue-800/50' : 'hover:bg-gray-100'
-                      }`}
+                      className="w-full flex items-center space-x-2 p-2 rounded text-left hover:bg-muted"
                     >
                       <Settings className="w-4 h-4" />
-                      <span className={`text-sm ${
-                        theme === 'dark' ? 'text-blue-200' : 'text-gray-700'
-                      }`}>Profile Settings</span>
+                      <span className="text-sm text-foreground">Profile Settings</span>
                     </button>
                     
                     <button
@@ -750,12 +700,10 @@ export const MacOSAdminDesktop = () => {
                         handleLogout();
                         setShowProfileMenu(false);
                       }}
-                      className={`w-full flex items-center space-x-2 p-2 rounded text-left ${
-                        theme === 'dark' ? 'hover:bg-red-900/50' : 'hover:bg-red-50'
-                      }`}
+                      className="w-full flex items-center space-x-2 p-2 rounded text-left hover:bg-destructive/10"
                     >
-                      <LogOut className="w-4 h-4 text-red-500" />
-                      <span className={`text-sm text-red-500`}>Logout</span>
+                      <LogOut className="w-4 h-4 text-destructive" />
+                      <span className="text-sm text-destructive">Logout</span>
                     </button>
                   </div>
                 </div>
@@ -779,12 +727,8 @@ export const MacOSAdminDesktop = () => {
           .map(window => (
           <div
             key={window.id}
-            className={`absolute rounded-lg shadow-2xl border overflow-hidden ${
+            className={`absolute rounded-lg shadow-2xl border border-border overflow-hidden bg-card ${
               activeWindow === window.id ? 'z-50' : 'z-40'
-            } ${
-              theme === 'dark' 
-                ? 'bg-blue-950 border-blue-800' 
-                : 'bg-white border-blue-200'
             }`}
             style={{
               left: window.position.x,
@@ -796,11 +740,7 @@ export const MacOSAdminDesktop = () => {
           >
             {/* Window Title Bar */}
             <div 
-              className={`h-8 border-b flex items-center justify-between px-3 cursor-move ${
-                theme === 'dark'
-                  ? 'bg-blue-900 border-blue-700'
-                  : 'bg-blue-100 border-blue-200'
-              }`}
+              className="h-8 border-b border-border flex items-center justify-between px-3 cursor-move bg-muted/50"
               onMouseDown={(e) => handleMouseDown(e, window.id)}
             >
               <div className="flex items-center space-x-2">
@@ -810,7 +750,7 @@ export const MacOSAdminDesktop = () => {
                       e.stopPropagation();
                       closeWindow(window.id);
                     }}
-                    className="w-4 h-4 bg-red-500 rounded-full hover:bg-red-600 flex items-center justify-center transition-colors duration-200 hover:scale-110"
+                    className="w-4 h-4 bg-destructive rounded-full hover:bg-destructive/80 flex items-center justify-center transition-colors duration-200 hover:scale-110"
                     title="Close"
                   >
                     <X className="w-3 h-3 text-white font-bold" />
@@ -820,7 +760,7 @@ export const MacOSAdminDesktop = () => {
                       e.stopPropagation();
                       minimizeWindow(window.id);
                     }}
-                    className="w-4 h-4 bg-yellow-500 rounded-full hover:bg-yellow-600 flex items-center justify-center transition-colors duration-200 hover:scale-110"
+                    className="w-4 h-4 bg-chart-3 rounded-full hover:bg-chart-3/80 flex items-center justify-center transition-colors duration-200 hover:scale-110"
                     title="Minimize"
                   >
                     <Minimize2 className="w-3 h-3 text-white" />
@@ -830,22 +770,18 @@ export const MacOSAdminDesktop = () => {
                       e.stopPropagation();
                       maximizeWindow(window.id);
                     }}
-                    className="w-4 h-4 bg-green-500 rounded-full hover:bg-green-600 flex items-center justify-center transition-colors duration-200 hover:scale-110"
+                    className="w-4 h-4 bg-chart-1 rounded-full hover:bg-chart-1/80 flex items-center justify-center transition-colors duration-200 hover:scale-110"
                     title="Maximize"
                   >
                     <Maximize2 className="w-3 h-3 text-white" />
                   </button>
                 </div>
-                <span className={`text-sm font-medium ${
-                  theme === 'dark' ? 'text-blue-200' : 'text-blue-800'
-                }`}>{window.title}</span>
+                <span className="text-sm font-medium text-foreground">{window.title}</span>
               </div>
             </div>
             
             {/* Window Content */}
-            <div className={`h-[calc(100%-2rem)] overflow-auto ${
-              theme === 'dark' ? 'bg-blue-950' : 'bg-blue-50'
-            }`}>
+            <div className="h-[calc(100%-2rem)] overflow-auto bg-background">
               {window.section === 'settings' ? (
                 <SystemSettings />
               ) : (
@@ -861,19 +797,15 @@ export const MacOSAdminDesktop = () => {
 
       {/* Window Tabs Bar */}
       {openWindows.length > 0 && (
-        <div className={`absolute bottom-20 left-1/2 transform -translate-x-1/2 backdrop-blur-md rounded-2xl px-4 py-2 border ${
-          theme === 'dark'
-            ? 'bg-blue-900/40 border-blue-600/30'
-            : 'bg-blue-100/40 border-blue-300/40'
-        }`}>
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 backdrop-blur-md rounded-2xl px-4 py-2 border border-border/30 bg-card/40">
           <div className="flex items-center space-x-2">
             {openWindows.map((window) => (
               <div
                 key={window.id}
                 className={`flex items-center space-x-2 px-3 py-2 rounded-xl transition-all duration-200 ${
                   activeWindow === window.id
-                    ? (theme === 'dark' ? 'bg-blue-600/50 text-white' : 'bg-blue-200/60 text-blue-900')
-                    : (theme === 'dark' ? 'bg-blue-800/30 text-blue-200 hover:bg-blue-700/40' : 'bg-white/40 text-blue-800 hover:bg-white/60')
+                    ? 'bg-primary/20 text-foreground'
+                    : 'bg-muted/30 text-muted-foreground hover:bg-muted/50'
                 } ${window.isMinimized ? 'opacity-60' : ''}`}
               >
                 <button
@@ -893,11 +825,7 @@ export const MacOSAdminDesktop = () => {
                     e.stopPropagation();
                     closeWindow(window.id);
                   }}
-                  className={`w-4 h-4 rounded-full flex items-center justify-center transition-colors ${
-                    theme === 'dark' 
-                      ? 'hover:bg-red-500/80 text-red-300 hover:text-white' 
-                      : 'hover:bg-red-500 text-red-600 hover:text-white'
-                  }`}
+                  className="w-4 h-4 rounded-full flex items-center justify-center transition-colors hover:bg-destructive text-destructive hover:text-destructive-foreground"
                   title={`Close ${window.title}`}
                 >
                   <X className="w-3 h-3" />
@@ -907,11 +835,7 @@ export const MacOSAdminDesktop = () => {
           </div>
         </div>
       )}
-      <div className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 backdrop-blur-md rounded-2xl px-4 py-3 border ${
-        theme === 'dark'
-          ? 'bg-blue-900/40 border-blue-600/30'
-          : 'bg-blue-100/40 border-blue-300/40'
-      }`}>
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 backdrop-blur-md rounded-2xl px-4 py-3 border border-border/30 bg-card/40">
         <div className="flex items-center space-x-3">
           {desktopApps.map((app) => {
             const Icon = app.icon;
@@ -944,9 +868,9 @@ export const MacOSAdminDesktop = () => {
                 <TooltipContent>
                   <div className="text-center">
                     <p className="font-medium">{app.name}</p>
-                    <p className="text-xs text-gray-400 mt-1">{app.description}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{app.description}</p>
                     {(app as any).badge && (
-                      <p className="text-xs text-green-400 mt-1 font-medium">✨ {(app as any).badge}</p>
+                      <p className="text-xs text-chart-1 mt-1 font-medium">✨ {(app as any).badge}</p>
                     )}
                   </div>
                 </TooltipContent>
@@ -957,7 +881,7 @@ export const MacOSAdminDesktop = () => {
           {/* File Explorer */}
           <button
             onClick={() => openSection('file-explorer', 'File Explorer')}
-            className="w-12 h-12 bg-blue-700 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-200"
+            className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-primary-foreground hover:scale-110 transition-all duration-200"
             title="File Explorer"
           >
             <Folder className="w-6 h-6" />
@@ -971,7 +895,7 @@ export const MacOSAdminDesktop = () => {
             <button
               key={window.id}
               onClick={() => restoreWindow(window.id)}
-              className="w-12 h-12 bg-gray-500 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-200"
+              className="w-12 h-12 bg-muted-foreground rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-200"
               title={`Restore ${window.title}`}
             >
               <Minimize2 className="w-4 h-4" />
@@ -987,25 +911,15 @@ export const MacOSAdminDesktop = () => {
           onClick={() => setShowStartMenu(false)}
         >
           <div 
-            className={`absolute top-8 left-4 backdrop-blur-md rounded-lg shadow-2xl border w-80 max-h-96 overflow-y-auto z-50 ${
-              theme === 'dark'
-                ? 'bg-blue-950/95 border-blue-700'
-                : 'bg-white/95 border-blue-200'
-            }`}
+            className="absolute top-8 left-4 backdrop-blur-md rounded-lg shadow-2xl border border-border w-80 max-h-96 overflow-y-auto z-50 bg-card/95"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={`p-4 border-b ${
-              theme === 'dark' ? 'border-blue-700' : 'border-blue-200'
-            }`}>
+            <div className="p-4 border-b border-border">
               <div className="flex items-center space-x-2 mb-2">
                 <AnimatedLogo className="scale-75" />
               </div>
-              <h3 className={`font-semibold ${
-                theme === 'dark' ? 'text-blue-200' : 'text-gray-800'
-              }`}>ASTRA Admin</h3>
-              <p className={`text-sm ${
-                theme === 'dark' ? 'text-blue-300' : 'text-gray-600'
-              }`}>Project Management & Configuration</p>
+              <h3 className="font-semibold text-foreground">ASTRA Admin</h3>
+              <p className="text-sm text-muted-foreground">Project Management & Configuration</p>
             </div>
             
             <div className="p-2">
@@ -1013,20 +927,16 @@ export const MacOSAdminDesktop = () => {
                 <div key={category.id} className="mb-2">
                   <button
                     onClick={() => toggleCategory(category.id)}
-                    className={`w-full flex items-center justify-between p-3 rounded-lg text-left ${
-                      theme === 'dark' ? 'hover:bg-blue-800/50' : 'hover:bg-gray-100'
-                    }`}
+                    className="w-full flex items-center justify-between p-3 rounded-lg text-left hover:bg-muted"
                   >
                     <div className="flex items-center space-x-3">
                       <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${category.color}`}>
                         <category.icon className="w-3 h-3 text-white" />
                       </div>
-                      <span className={`text-sm font-medium ${
-                        theme === 'dark' ? 'text-blue-200' : 'text-gray-800'
-                      }`}>{category.name}</span>
+                      <span className="text-sm font-medium text-foreground">{category.name}</span>
                     </div>
                     <ChevronRight 
-                      className={`w-4 h-4 text-gray-400 transition-transform ${
+                      className={`w-4 h-4 text-muted-foreground transition-transform ${
                         expandedCategories.includes(category.id) ? 'rotate-90' : ''
                       }`} 
                     />
@@ -1038,10 +948,10 @@ export const MacOSAdminDesktop = () => {
                         <button
                           key={idx}
                           onClick={() => openSection(file.section, file.name)}
-                          className="w-full flex items-center space-x-2 p-2 hover:bg-gray-50 rounded text-left"
+                          className="w-full flex items-center space-x-2 p-2 hover:bg-muted rounded text-left"
                         >
-                          <FileText className="w-3 h-3 text-gray-400" />
-                          <span className="text-xs text-gray-600">{file.name}</span>
+                          <FileText className="w-3 h-3 text-muted-foreground" />
+                          <span className="text-xs text-muted-foreground">{file.name}</span>
                         </button>
                       ))}
                     </div>
@@ -1056,12 +966,12 @@ export const MacOSAdminDesktop = () => {
       {/* System Configurations Panel */}
       {showConfigurations && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-2xl w-96 max-h-96 overflow-y-auto">
-            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="font-semibold text-gray-800">System Configurations</h3>
+          <div className="bg-card rounded-lg shadow-2xl w-96 max-h-96 overflow-y-auto">
+            <div className="p-4 border-b border-border flex items-center justify-between">
+              <h3 className="font-semibold text-foreground">System Configurations</h3>
               <button 
                 onClick={() => setShowConfigurations(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1073,13 +983,13 @@ export const MacOSAdminDesktop = () => {
                   openSection('settings', 'System Settings');
                   setShowConfigurations(false);
                 }}
-                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                className="w-full flex items-center justify-between p-3 border border-border rounded-lg hover:bg-muted"
               >
                 <div className="flex items-center space-x-3">
-                  <Settings className="w-5 h-5 text-gray-500" />
+                  <Settings className="w-5 h-5 text-muted-foreground" />
                   <span className="text-sm">System Settings</span>
                 </div>
-                <span className="text-blue-600 text-sm">Configure</span>
+                <span className="text-primary text-sm">Configure</span>
               </button>
               
               <button 
@@ -1087,13 +997,13 @@ export const MacOSAdminDesktop = () => {
                   openSection('database', 'Database Management');
                   setShowConfigurations(false);
                 }}
-                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                className="w-full flex items-center justify-between p-3 border border-border rounded-lg hover:bg-muted"
               >
                 <div className="flex items-center space-x-3">
-                  <Database className="w-5 h-5 text-green-500" />
+                  <Database className="w-5 h-5 text-chart-1" />
                   <span className="text-sm">Database Management</span>
                 </div>
-                <span className="text-green-600 text-sm">Manage</span>
+                <span className="text-chart-1 text-sm">Manage</span>
               </button>
               
               <button 
@@ -1101,13 +1011,13 @@ export const MacOSAdminDesktop = () => {
                   openSection('payment-system', 'Payment System');
                   setShowConfigurations(false);
                 }}
-                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                className="w-full flex items-center justify-between p-3 border border-border rounded-lg hover:bg-muted"
               >
                 <div className="flex items-center space-x-3">
-                  <CreditCard className="w-5 h-5 text-orange-500" />
+                  <CreditCard className="w-5 h-5 text-chart-5" />
                   <span className="text-sm">Payment System</span>
                 </div>
-                <span className="text-orange-600 text-sm">Status</span>
+                <span className="text-chart-5 text-sm">Status</span>
               </button>
               
               <button 
@@ -1115,13 +1025,13 @@ export const MacOSAdminDesktop = () => {
                   openSection('image-optimization', 'Image Optimization');
                   setShowConfigurations(false);
                 }}
-                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                className="w-full flex items-center justify-between p-3 border border-border rounded-lg hover:bg-muted"
               >
                 <div className="flex items-center space-x-3">
-                  <Database className="w-5 h-5 text-purple-500" />
+                  <Database className="w-5 h-5 text-accent-foreground" />
                   <span className="text-sm">Image Optimization</span>
                 </div>
-                <span className="text-purple-600 text-sm">Optimize</span>
+                <span className="text-accent-foreground text-sm">Optimize</span>
               </button>
               
               <button 
@@ -1129,13 +1039,13 @@ export const MacOSAdminDesktop = () => {
                   openSection('monitoring', 'System Monitoring');
                   setShowConfigurations(false);
                 }}
-                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                className="w-full flex items-center justify-between p-3 border border-border rounded-lg hover:bg-muted"
               >
                 <div className="flex items-center space-x-3">
-                  <Monitor className="w-5 h-5 text-blue-500" />
+                  <Monitor className="w-5 h-5 text-primary" />
                   <span className="text-sm">System Monitoring</span>
                 </div>
-                <span className="text-blue-600 text-sm">View</span>
+                <span className="text-primary text-sm">View</span>
               </button>
               
               <button 
@@ -1143,13 +1053,13 @@ export const MacOSAdminDesktop = () => {
                   openSection('ai-diagnostics', 'AI Diagnostics');
                   setShowConfigurations(false);
                 }}
-                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                className="w-full flex items-center justify-between p-3 border border-border rounded-lg hover:bg-muted"
               >
                 <div className="flex items-center space-x-3">
-                  <Brain className="w-5 h-5 text-purple-500" />
+                  <Brain className="w-5 h-5 text-accent-foreground" />
                   <span className="text-sm">AI Diagnostics</span>
                 </div>
-                <span className="text-purple-600 text-sm">Analyze</span>
+                <span className="text-accent-foreground text-sm">Analyze</span>
               </button>
             </div>
           </div>
@@ -1159,24 +1069,24 @@ export const MacOSAdminDesktop = () => {
       {/* Spotlight Search */}
       {showSpotlight && (
         <div className="fixed inset-0 bg-black/50 flex items-start justify-center pt-20 z-50">
-          <div className="bg-white/90 backdrop-blur-md rounded-lg w-96 max-w-md">
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+          <div className="bg-card/90 backdrop-blur-md rounded-lg w-96 max-w-md">
+            <div className="flex items-center justify-between p-4 border-b border-border">
               <div className="flex items-center flex-1">
-                <Search className="w-5 h-5 text-gray-400 mr-3" />
+                <Search className="w-5 h-5 text-muted-foreground mr-3" />
                 <input
                   type="text"
                   placeholder="Search admin functions..."
-                  className="flex-1 bg-transparent border-none outline-none text-gray-800"
+                  className="flex-1 bg-transparent border-none outline-none text-foreground"
                   autoFocus
                   onKeyDown={(e) => e.key === 'Escape' && setShowSpotlight(false)}
                 />
               </div>
               <button
                 onClick={() => setShowSpotlight(false)}
-                className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors ml-3"
+                className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors ml-3"
                 title="Close search"
               >
-                <X className="w-4 h-4 text-gray-600" />
+                <X className="w-4 h-4 text-muted-foreground" />
               </button>
             </div>
             <div className="p-2 max-h-64 overflow-y-auto">
@@ -1187,12 +1097,12 @@ export const MacOSAdminDesktop = () => {
                     openApp(app);
                     setShowSpotlight(false);
                   }}
-                  className="w-full flex items-center p-3 hover:bg-gray-100 rounded-lg text-left"
+                  className="w-full flex items-center p-3 hover:bg-muted rounded-lg text-left"
                 >
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 ${app.color}`}>
                     <app.icon className="w-4 h-4 text-white" />
                   </div>
-                  <span className="text-gray-800">{app.name}</span>
+                  <span className="text-foreground">{app.name}</span>
                 </button>
               ))}
             </div>
