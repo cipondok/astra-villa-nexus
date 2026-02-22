@@ -4,7 +4,7 @@ import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
-import astraLogo from '@/assets/astra-logo.svg';
+import { useWelcomeScreenLogo } from '@/hooks/useBrandingLogo';
 
 interface LoadingPageProps {
   message?: string;
@@ -42,46 +42,16 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
 }) => {
   const { language } = useLanguage();
   const t = text[language];
-  const [logoUrl, setLogoUrl] = useState<string>(astraLogo);
+  const { logoUrl: brandingLogo } = useWelcomeScreenLogo();
+  const [logoUrl, setLogoUrl] = useState<string>(brandingLogo);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Fetch logo from settings with proper category filter
-    // Welcome Screen hierarchy: welcomeScreenLogo → headerLogo → fallback
-    const loadLogo = async () => {
-      try {
-        // Try welcomeScreenLogo first (this is the Welcome Screen, not Loading Popup)
-        const { data: welcomeLogoData } = await supabase
-          .from('system_settings')
-          .select('value')
-          .eq('category', 'branding')
-          .eq('key', 'welcomeScreenLogo')
-          .maybeSingle();
+    setLogoUrl(brandingLogo);
+  }, [brandingLogo]);
 
-        if (welcomeLogoData?.value && typeof welcomeLogoData.value === 'string' && welcomeLogoData.value.trim() !== '') {
-          setLogoUrl(welcomeLogoData.value);
-          return;
-        }
-
-        // Fallback to headerLogo
-        const { data: headerLogoData } = await supabase
-          .from('system_settings')
-          .select('value')
-          .eq('category', 'branding')
-          .eq('key', 'headerLogo')
-          .maybeSingle();
-        
-        if (headerLogoData?.value && typeof headerLogoData.value === 'string' && headerLogoData.value.trim() !== '') {
-          setLogoUrl(headerLogoData.value);
-        }
-      } catch (error) {
-        console.error('Error loading logo:', error);
-      }
-    };
-
-    loadLogo();
-
-    // Animate progress
+  // Animate progress
+  useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) return 100;

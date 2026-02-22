@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import astraLogo from '@/assets/astra-logo.svg';
+import { useLoadingPageLogo } from '@/hooks/useBrandingLogo';
 
 interface InlineLoadingIndicatorProps {
   message?: string;
@@ -11,13 +11,14 @@ interface InlineLoadingIndicatorProps {
   fullScreen?: boolean;
 }
 
-const InlineLoadingIndicator = ({ 
+const InlineLoadingIndicator = ({
   message = 'Loading...', 
   showLogo = true,
   size = 'md',
   className,
   fullScreen = false
 }: InlineLoadingIndicatorProps) => {
+  const { logoUrl: loadingLogo } = useLoadingPageLogo();
   const sizeClasses = {
     sm: { logo: 'w-8 h-8', text: 'text-sm', dots: 'w-1.5 h-1.5', gap: 'gap-3' },
     md: { logo: 'w-12 h-12', text: 'text-base', dots: 'w-2 h-2', gap: 'gap-4' },
@@ -42,7 +43,7 @@ const InlineLoadingIndicator = ({
           transition={{ duration: 0.3 }}
         >
           <img 
-            src={astraLogo} 
+            src={loadingLogo} 
             alt="ASTRA Villa" 
             className={cn(s.logo, "object-contain rounded-xl")}
           />

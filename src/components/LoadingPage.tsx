@@ -4,7 +4,7 @@ import { Loader2, Wifi, WifiOff, AlertCircle, CheckCircle } from 'lucide-react';
 import { useConnectionSpeed } from '@/hooks/useConnectionSpeed';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
-import astraLogo from '@/assets/astra-logo.svg';
+import { useLoadingPageLogo } from '@/hooks/useBrandingLogo';
 
 interface LoadingPageProps {
   message?: string;
@@ -42,6 +42,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
 }) => {
   const { speed } = useConnectionSpeed();
   const { language } = useLanguage();
+  const { logoUrl: loadingLogo } = useLoadingPageLogo();
   const t = text[language];
 
   const displayMessage = message || t.defaultMessage;
@@ -91,7 +92,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
           transition={{ duration: 2, repeat: Infinity }}
         >
           <img 
-            src={astraLogo} 
+            src={loadingLogo} 
             alt="ASTRA Villa" 
             className="w-20 h-20 object-contain rounded-2xl"
           />
