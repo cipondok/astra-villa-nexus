@@ -179,7 +179,7 @@ const DetailedAddressForm = ({ onAddressChange, initialData }: DetailedAddressFo
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="landmark" className="text-gray-700 font-medium">
+            <Label htmlFor="landmark" className="text-foreground font-medium">
               Patokan/Landmark Terdekat
             </Label>
             <Input
@@ -187,12 +187,12 @@ const DetailedAddressForm = ({ onAddressChange, initialData }: DetailedAddressFo
               value={addressData.landmark}
               onChange={(e) => handleInputChange('landmark', e.target.value)}
               placeholder="Contoh: Dekat Mall Grand Indonesia, Samping Bank BCA"
-              className="bg-white border-gray-300 text-gray-900"
+              className="bg-background border-border text-foreground"
             />
           </div>
 
           <div>
-            <Label htmlFor="additionalNotes" className="text-gray-700 font-medium">
+            <Label htmlFor="additionalNotes" className="text-foreground font-medium">
               Catatan Alamat Tambahan
             </Label>
             <Textarea
@@ -201,7 +201,7 @@ const DetailedAddressForm = ({ onAddressChange, initialData }: DetailedAddressFo
               onChange={(e) => handleInputChange('additionalNotes', e.target.value)}
               placeholder="Informasi tambahan untuk memudahkan pencarian lokasi..."
               rows={3}
-              className="bg-white border-gray-300 text-gray-900"
+              className="bg-background border-border text-foreground"
             />
           </div>
         </CardContent>

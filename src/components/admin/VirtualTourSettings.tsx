@@ -100,10 +100,10 @@ const VirtualTourSettings = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Active': return 'bg-green-100 text-green-800';
-      case 'Draft': return 'bg-yellow-100 text-yellow-800';
-      case 'Inactive': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Active': return 'bg-chart-1/20 text-chart-1';
+      case 'Draft': return 'bg-chart-3/20 text-chart-3';
+      case 'Inactive': return 'bg-destructive/20 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -127,7 +127,7 @@ const VirtualTourSettings = () => {
                     <p className="text-sm font-medium text-muted-foreground">Total Tours</p>
                     <p className="text-2xl font-bold">{tours.length}</p>
                   </div>
-                  <Camera className="h-8 w-8 text-blue-500" />
+                  <Camera className="h-8 w-8 text-chart-4" />
                 </div>
               </CardContent>
             </Card>
@@ -141,7 +141,7 @@ const VirtualTourSettings = () => {
                       {tours.filter(t => t.status === 'Active').length}
                     </p>
                   </div>
-                  <Eye className="h-8 w-8 text-green-500" />
+                  <Eye className="h-8 w-8 text-chart-1" />
                 </div>
               </CardContent>
             </Card>
@@ -155,7 +155,7 @@ const VirtualTourSettings = () => {
                       {tours.reduce((sum, t) => sum + t.views, 0).toLocaleString()}
                     </p>
                   </div>
-                  <Monitor className="h-8 w-8 text-purple-500" />
+                  <Monitor className="h-8 w-8 text-accent-foreground" />
                 </div>
               </CardContent>
             </Card>
@@ -167,7 +167,7 @@ const VirtualTourSettings = () => {
                     <p className="text-sm font-medium text-muted-foreground">Storage Used</p>
                     <p className="text-2xl font-bold">155.8 MB</p>
                   </div>
-                  <Layers className="h-8 w-8 text-orange-500" />
+                  <Layers className="h-8 w-8 text-chart-5" />
                 </div>
               </CardContent>
             </Card>
@@ -184,8 +184,8 @@ const VirtualTourSettings = () => {
                 {tours.map((tour) => (
                   <div key={tour.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                        <Camera className="h-8 w-8 text-gray-400" />
+                      <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center">
+                        <Camera className="h-8 w-8 text-muted-foreground" />
                       </div>
                       <div>
                         <h4 className="font-semibold">{tour.name}</h4>
@@ -552,14 +552,14 @@ const VirtualTourSettings = () => {
                     <Label htmlFor="primary-color">Primary Color</Label>
                     <div className="flex gap-2">
                       <Input id="primary-color" value="#0077be" />
-                      <div className="w-10 h-10 bg-blue-500 rounded border"></div>
+                      <div className="w-10 h-10 bg-primary rounded border"></div>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="background-color">Background Color</Label>
                     <div className="flex gap-2">
                       <Input id="background-color" value="#1a1a1a" />
-                      <div className="w-10 h-10 bg-gray-900 rounded border"></div>
+                      <div className="w-10 h-10 bg-foreground rounded border"></div>
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -615,7 +615,7 @@ const VirtualTourSettings = () => {
                     <p className="text-sm font-medium text-muted-foreground">Total Views</p>
                     <p className="text-2xl font-bold">12,450</p>
                   </div>
-                  <Eye className="h-8 w-8 text-blue-500" />
+                  <Eye className="h-8 w-8 text-chart-4" />
                 </div>
               </CardContent>
             </Card>
@@ -627,7 +627,7 @@ const VirtualTourSettings = () => {
                     <p className="text-sm font-medium text-muted-foreground">Avg Session</p>
                     <p className="text-2xl font-bold">4:32</p>
                   </div>
-                  <Play className="h-8 w-8 text-green-500" />
+                  <Play className="h-8 w-8 text-chart-1" />
                 </div>
               </CardContent>
             </Card>
@@ -639,7 +639,7 @@ const VirtualTourSettings = () => {
                     <p className="text-sm font-medium text-muted-foreground">Mobile Views</p>
                     <p className="text-2xl font-bold">68%</p>
                   </div>
-                  <Smartphone className="h-8 w-8 text-purple-500" />
+                  <Smartphone className="h-8 w-8 text-accent-foreground" />
                 </div>
               </CardContent>
             </Card>
@@ -651,7 +651,7 @@ const VirtualTourSettings = () => {
                     <p className="text-sm font-medium text-muted-foreground">VR Sessions</p>
                     <p className="text-2xl font-bold">342</p>
                   </div>
-                  <Monitor className="h-8 w-8 text-orange-500" />
+                  <Monitor className="h-8 w-8 text-chart-5" />
                 </div>
               </CardContent>
             </Card>
@@ -666,36 +666,36 @@ const VirtualTourSettings = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Smartphone className="h-5 w-5 text-blue-500" />
+                    <Smartphone className="h-5 w-5 text-chart-4" />
                     <span>Mobile</span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="w-32 bg-gray-200 rounded-full h-2">
-                      <div className="bg-blue-500 h-2 rounded-full" style={{ width: '68%' }}></div>
+                    <div className="w-32 bg-muted rounded-full h-2">
+                      <div className="bg-chart-4 h-2 rounded-full" style={{ width: '68%' }}></div>
                     </div>
                     <span className="text-sm font-medium">68%</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Monitor className="h-5 w-5 text-green-500" />
+                    <Monitor className="h-5 w-5 text-chart-1" />
                     <span>Desktop</span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="w-32 bg-gray-200 rounded-full h-2">
-                      <div className="bg-green-500 h-2 rounded-full" style={{ width: '24%' }}></div>
+                    <div className="w-32 bg-muted rounded-full h-2">
+                      <div className="bg-chart-1 h-2 rounded-full" style={{ width: '24%' }}></div>
                     </div>
                     <span className="text-sm font-medium">24%</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Tablet className="h-5 w-5 text-purple-500" />
+                    <Tablet className="h-5 w-5 text-accent-foreground" />
                     <span>Tablet</span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="w-32 bg-gray-200 rounded-full h-2">
-                      <div className="bg-purple-500 h-2 rounded-full" style={{ width: '8%' }}></div>
+                    <div className="w-32 bg-muted rounded-full h-2">
+                      <div className="bg-accent-foreground h-2 rounded-full" style={{ width: '8%' }}></div>
                     </div>
                     <span className="text-sm font-medium">8%</span>
                   </div>
