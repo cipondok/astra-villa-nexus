@@ -162,7 +162,7 @@ const AIFooterBot = () => {
         <div className="fixed inset-0 md:inset-auto md:bottom-6 md:right-6 md:w-[400px] z-[9999]">
           <Card className="modal-surface shadow-2xl h-full md:h-auto md:max-h-[85vh] flex flex-col md:rounded-2xl overflow-hidden border-primary/20">
             {/* Professional Header with Logo */}
-            <CardHeader className="relative bg-gradient-to-r from-[hsl(220,60%,15%)] via-[hsl(220,55%,18%)] to-[hsl(220,50%,20%)] text-white p-0 sticky top-0 z-10 overflow-hidden">
+            <CardHeader className="relative bg-gradient-to-r from-[hsl(220,60%,15%)] via-[hsl(220,55%,18%)] to-[hsl(220,50%,20%)] text-primary-foreground p-0 sticky top-0 z-10 overflow-hidden">
               {/* Decorative gold accent line */}
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
               
@@ -197,7 +197,7 @@ const AIFooterBot = () => {
                       <h3 className="text-base font-bold tracking-wide bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                         ASTRA VILLA
                       </h3>
-                      <p className="text-[10px] text-white/70 font-medium tracking-widest uppercase">
+                      <p className="text-[10px] text-primary-foreground/70 font-medium tracking-widest uppercase">
                         AI Assistant
                       </p>
                     </div>
@@ -208,7 +208,7 @@ const AIFooterBot = () => {
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsOpen(false)}
-                    className="text-white/80 hover:text-white hover:bg-white/10 transition-colors rounded-full h-8 w-8"
+                    className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 transition-colors rounded-full h-8 w-8"
                     aria-label="Close chat"
                   >
                     <X className="h-4 w-4" />
@@ -219,10 +219,10 @@ const AIFooterBot = () => {
                 <div className="flex items-center gap-2 mt-3 px-1">
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 bg-chart-1 rounded-full animate-pulse shadow-sm shadow-chart-1/50" />
-                    <span className="text-xs text-white/80">Online</span>
+                    <span className="text-xs text-primary-foreground/80">Online</span>
                   </div>
-                  <span className="text-white/40">•</span>
-                  <span className="text-xs text-white/60">24/7 Support</span>
+                  <span className="text-primary-foreground/40">•</span>
+                  <span className="text-xs text-primary-foreground/60">24/7 Support</span>
                 </div>
               </div>
             </CardHeader>

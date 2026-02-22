@@ -144,12 +144,12 @@ const AdminAlertBadge = () => {
       <Button
         onClick={handleAlertClick}
         variant="ghost"
-        className="relative p-2 hover:bg-white/20"
+        className="relative p-2 hover:bg-primary-foreground/20"
       >
         {unreadCount > 0 ? (
-          <BellRing className="h-5 w-5 text-white" />
+          <BellRing className="h-5 w-5 text-primary-foreground" />
         ) : (
-          <Bell className="h-5 w-5 text-white" />
+          <Bell className="h-5 w-5 text-primary-foreground" />
         )}
         {unreadCount > 0 && (
           <Badge 

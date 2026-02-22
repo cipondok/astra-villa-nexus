@@ -280,7 +280,7 @@ const AdminTopMenu = ({
   ];
 
   return (
-    <div className="sticky top-0 left-0 right-0 z-[10000] header-ios border-b border-white/10 backdrop-blur-xl shadow-lg transform-gpu will-change-transform mb-6">
+    <div className="sticky top-0 left-0 right-0 z-[10000] header-ios border-b border-border/10 backdrop-blur-xl shadow-lg transform-gpu will-change-transform mb-6">
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-16">
         {/* Top Row - Title and User Info */}
         <div className="flex items-center justify-between h-14">

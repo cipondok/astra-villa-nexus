@@ -405,8 +405,8 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                     
                     {/* Badges */}
                     <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
-                      <span className={`flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded text-white ${
-                        property.listing_type === 'rent' ? 'bg-primary' : 'bg-green-600'
+                      <span className={`flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded text-primary-foreground ${
+                        property.listing_type === 'rent' ? 'bg-primary' : 'bg-chart-1'
                       }`}>
                         {property.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
                         {property.listing_type === 'rent' ? 'Sewa' : 'Jual'}

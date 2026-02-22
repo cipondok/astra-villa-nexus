@@ -122,7 +122,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                 {/* Main Icon - Membership Status Icon when logged in */}
                 <div 
                   className={
-                    `w-full h-full rounded-full flex items-center justify-center shadow-md border border-white/50 ` +
+                    `w-full h-full rounded-full flex items-center justify-center shadow-md border border-primary-foreground/50 ` +
                     (membershipLevel === 'diamond' ? 'animate-pulse' : '')
                   }
                   style={{ 
@@ -134,7 +134,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                 >
                   <MembershipIcon
                     className={
-                      `h-3.5 w-3.5 sm:h-4 sm:w-4 text-white drop-shadow-sm ` +
+                      `h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary-foreground drop-shadow-sm ` +
                       (membershipLevel === 'diamond' ? 'animate-[spin_6s_linear_infinite]' : '')
                     }
                   />
@@ -162,7 +162,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                   className="w-6 h-6 rounded-full flex items-center justify-center"
                   style={{ backgroundColor: membershipConfig.color }}
                 >
-                  <MembershipIcon className="h-3.5 w-3.5 text-white" />
+                  <MembershipIcon className="h-3.5 w-3.5 text-primary-foreground" />
                 </div>
                 <div>
                   <p className="text-[10px] font-semibold text-foreground">{membershipConfig.label} Member</p>
@@ -212,7 +212,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
             >
               <MembershipIcon
                 className={
-                  `h-5 w-5 text-white drop-shadow-md ` +
+                  `h-5 w-5 text-primary-foreground drop-shadow-md ` +
                   (membershipLevel === 'diamond' ? 'animate-[spin_6s_linear_infinite]' : '')
                 }
               />
@@ -246,19 +246,19 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
             {isAdmin && (
               <>
                 <button onClick={() => { navigate('/admin-dashboard'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <Crown className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-blue-500 shrink-0" />
+                  <Crown className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-chart-4 shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">Admin Panel</span>
                 </button>
                 <button onClick={() => { navigate('/dijual'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <Building2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-green-500 shrink-0" />
+                  <Building2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-chart-1 shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">Properties</span>
                 </button>
                 <button onClick={() => { navigate('/users'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-purple-500 shrink-0" />
+                  <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-accent shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">Users</span>
                 </button>
                 <button onClick={() => { navigate('/analytics'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <BarChart3 className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-orange-500 shrink-0" />
+                  <BarChart3 className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-chart-3 shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">Analytics</span>
                 </button>
               </>
@@ -267,11 +267,11 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
             {isAgent && (
               <>
                 <button onClick={() => { navigate('/agent-dashboard'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-green-500 shrink-0" />
+                  <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-chart-1 shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">Agent Hub</span>
                 </button>
                 <button onClick={() => { navigate('/listings'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
-                  <Building2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-blue-500 shrink-0" />
+                  <Building2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-chart-4 shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">My Listings</span>
                 </button>
               </>

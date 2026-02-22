@@ -280,7 +280,7 @@ export const DocumentOCR: React.FC<DocumentOCRProps> = ({
                   >
                     {isProcessing ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                        <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
                         Processing...
                       </>
                     ) : (

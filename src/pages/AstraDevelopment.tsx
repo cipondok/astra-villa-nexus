@@ -292,24 +292,24 @@ const AstraDevelopment = () => {
                     <Badge 
                       className={`absolute top-2 left-2 text-[10px] px-2 py-0.5 ${
                         project.status === 'Completed' 
-                          ? 'bg-emerald-500/90 text-white' 
+                          ? 'bg-chart-1/90 text-primary-foreground' 
                           : project.status === 'New Project'
-                          ? 'bg-blue-500/90 text-white animate-pulse'
-                          : 'bg-amber-500/90 text-white'
+                          ? 'bg-primary/90 text-primary-foreground animate-pulse'
+                          : 'bg-chart-3/90 text-primary-foreground'
                       }`}
                     >
                       {project.status}
                     </Badge>
 
                     {/* Category Badge */}
-                    <Badge className="absolute top-2 right-2 text-[10px] px-2 py-0.5 bg-black/50 text-white backdrop-blur-sm">
+                    <Badge className="absolute top-2 right-2 text-[10px] px-2 py-0.5 bg-background/50 text-foreground backdrop-blur-sm">
                       {project.category}
                     </Badge>
 
                     {/* Price & Location */}
                     <div className="absolute bottom-2 left-2 right-2">
-                      <h3 className="text-white font-bold text-sm mb-0.5 drop-shadow-lg">{project.title}</h3>
-                      <div className="flex items-center gap-1 text-white/90 text-[10px]">
+                      <h3 className="text-primary-foreground font-bold text-sm mb-0.5 drop-shadow-lg">{project.title}</h3>
+                      <div className="flex items-center gap-1 text-primary-foreground/90 text-[10px]">
                         <MapPin className="h-3 w-3" />
                         <span>{project.location}</span>
                       </div>
@@ -317,11 +317,11 @@ const AstraDevelopment = () => {
 
                     {/* Play Button for Virtual Tour */}
                     <motion.button
-                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/30"
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-primary-foreground/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-primary-foreground/30"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <Play className="h-5 w-5 text-white fill-white" />
+                      <Play className="h-5 w-5 text-primary-foreground fill-primary-foreground" />
                     </motion.button>
                   </div>
 

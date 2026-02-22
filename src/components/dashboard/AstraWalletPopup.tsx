@@ -92,15 +92,15 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
         <div className="relative bg-gradient-to-r from-gold-primary via-chart-5 to-gold-primary p-4 text-primary-foreground">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yIDItNCAyLTRzMiAyIDIgNC0yIDQtMiA0LTItMi0yLTR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
           <div className="relative flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <div className="h-12 w-12 rounded-full bg-primary-foreground/20 backdrop-blur-sm flex items-center justify-center">
               <Wallet className="h-6 w-6" />
             </div>
             <div>
               <h2 className="text-lg font-bold">ASTRA Wallet</h2>
-              <p className="text-white/80 text-xs">Your token balance & rewards</p>
+              <p className="text-primary-foreground/80 text-xs">Your token balance & rewards</p>
             </div>
             {isVerified && (
-              <Badge className="absolute top-0 right-0 bg-white/20 text-white border-white/30 text-[10px]">
+              <Badge className="absolute top-0 right-0 bg-primary-foreground/20 text-primary-foreground border-primary-foreground/30 text-[10px]">
                 <ShieldCheck className="h-3 w-3 mr-1" />
                 Verified
               </Badge>

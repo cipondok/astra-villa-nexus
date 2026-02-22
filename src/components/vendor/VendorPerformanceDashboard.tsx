@@ -142,14 +142,14 @@ const VendorPerformanceDashboard = () => {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold flex items-center gap-2 text-white">
+              <h2 className="text-2xl font-bold flex items-center gap-2 text-primary-foreground">
                 <BarChart3 className="h-6 w-6" />
                 Performance Dashboard
               </h2>
-              <p className="text-white/80">Real-time analytics and performance insights</p>
+              <p className="text-primary-foreground/80">Real-time analytics and performance insights</p>
             </div>
             <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-              <SelectTrigger className="w-40 bg-white/20 border-white/30 text-white">
+              <SelectTrigger className="w-40 bg-primary-foreground/20 border-primary-foreground/30 text-primary-foreground">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

@@ -289,8 +289,8 @@ const VerificationManagement = () => {
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <Building2 className="h-6 w-6 text-white" />
+              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Building2 className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
                 <CardTitle className="text-base">{vendor.business_name}</CardTitle>

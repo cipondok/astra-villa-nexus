@@ -84,11 +84,11 @@ export const PROFILE_FRAMES = {
   3: { name: 'bronze', color: 'border-amber-600' },
   4: { name: 'silver', color: 'border-slate-400' },
   5: { name: 'silver', color: 'border-slate-400' },
-  6: { name: 'gold', color: 'border-yellow-500' },
-  7: { name: 'gold', color: 'border-yellow-500' },
-  8: { name: 'platinum', color: 'border-cyan-400' },
-  9: { name: 'diamond', color: 'border-purple-500' },
-  10: { name: 'diamond', color: 'border-purple-500 ring-2 ring-purple-300' }
+  6: { name: 'gold', color: 'border-gold-primary' },
+  7: { name: 'gold', color: 'border-gold-primary' },
+  8: { name: 'platinum', color: 'border-chart-4' },
+  9: { name: 'diamond', color: 'border-accent' },
+  10: { name: 'diamond', color: 'border-accent ring-2 ring-accent/30' }
 };
 
 export const useGamification = () => {

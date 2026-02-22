@@ -220,15 +220,15 @@ const BusinessNatureSelector = ({
               onValueChange={handleMainCategorySelect}
               disabled={!canChange && !forceAllowSelection}
             >
-              <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+              <SelectTrigger className="bg-background border-border text-foreground">
                 <SelectValue placeholder="Pilih kategori utama bisnis" />
               </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 shadow-lg z-[100]">
+              <SelectContent className="bg-popover border border-border shadow-lg z-[100]">
                 {mainCategories.map((category) => (
                   <SelectItem 
                     key={category.id} 
                     value={category.id}
-                    className="text-gray-900 hover:bg-blue-50"
+                    className="text-foreground hover:bg-accent/50"
                   >
                     <div className="flex items-center gap-2">
                       {category.type === 'products' ? (
@@ -258,11 +258,11 @@ const BusinessNatureSelector = ({
                  onValueChange={handleSubCategorySelect}
                  disabled={!canChange && !forceAllowSelection}
                >
-                <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                <SelectTrigger className="bg-background border-border text-foreground">
                   <SelectValue placeholder="Pilih sub-kategori (opsional)" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border border-gray-200 shadow-lg z-[100]">
-                  <SelectItem value="" className="text-gray-900 hover:bg-blue-50">
+                <SelectContent className="bg-popover border border-border shadow-lg z-[100]">
+                  <SelectItem value="" className="text-foreground hover:bg-accent/50">
                     <div className="text-muted-foreground">Tidak ada sub-kategori</div>
                   </SelectItem>
                   {getSubCategoriesForMain(selectedMainCategory).map((subCategory) => (

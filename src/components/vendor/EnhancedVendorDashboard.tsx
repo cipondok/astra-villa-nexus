@@ -128,10 +128,10 @@ const EnhancedVendorDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-white">Booking Overview</h3>
-                  <p className="text-white/80">Quick view of your booking status</p>
+                  <h3 className="text-xl font-bold text-primary-foreground">Booking Overview</h3>
+                  <p className="text-primary-foreground/80">Quick view of your booking status</p>
                 </div>
-                <Badge className="bg-white/20 border-white/30 text-white">
+                <Badge className="bg-primary-foreground/20 border-primary-foreground/30 text-primary-foreground">
                   {dashboardData.totalBookings} Total
                 </Badge>
               </div>

@@ -419,7 +419,7 @@ const CustomerSupport = () => {
                           <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
                             <User className="h-6 w-6 text-muted-foreground" />
                           </div>
-                          <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${getAgentStatusColor(agent.status)}`}></div>
+                          <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background ${getAgentStatusColor(agent.status)}`}></div>
                         </div>
                         <div>
                           <h4 className="font-semibold">{agent.name}</h4>

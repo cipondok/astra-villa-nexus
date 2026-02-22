@@ -566,7 +566,7 @@ const VirtualTourSettings = () => {
                     <Label htmlFor="text-color">Text Color</Label>
                     <div className="flex gap-2">
                       <Input id="text-color" value="#ffffff" />
-                      <div className="w-10 h-10 bg-white rounded border"></div>
+                      <div className="w-10 h-10 bg-background rounded border"></div>
                     </div>
                   </div>
                 </div>

@@ -37,11 +37,11 @@ const ThemeToggleSwitch = ({ language = "en", className = "", showLabel = true }
   const getCurrentThemeData = () => {
     switch (theme) {
       case "light":
-        return { icon: Sun, label: currentText.light, color: "text-yellow-500" };
+        return { icon: Sun, label: currentText.light, color: "text-gold-primary" };
       case "dark":
-        return { icon: Moon, label: currentText.dark, color: "text-blue-400" };
+        return { icon: Moon, label: currentText.dark, color: "text-chart-4" };
       default:
-        return { icon: Sun, label: currentText.light, color: "text-yellow-500" };
+        return { icon: Sun, label: currentText.light, color: "text-gold-primary" };
     }
   };
 

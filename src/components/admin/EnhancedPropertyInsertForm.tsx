@@ -881,7 +881,7 @@ const EnhancedPropertyInsertForm = () => {
                           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                             <div className="w-full px-4">
                               <Progress value={image.progress} className="w-full" />
-                              <p className="text-white text-xs mt-1 text-center">{image.progress}%</p>
+                              <p className="text-primary-foreground text-xs mt-1 text-center">{image.progress}%</p>
                             </div>
                           </div>
                         )}
