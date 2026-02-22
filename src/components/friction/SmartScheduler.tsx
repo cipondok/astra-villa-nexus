@@ -234,7 +234,7 @@ const SmartScheduler: React.FC<SmartSchedulerProps> = ({
                     {slot.time}
                   </span>
                   {slot.popular && slot.available && selectedTime !== slot.time && (
-                    <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-accent text-[8px] text-white rounded-full font-medium">
+                    <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-accent text-[8px] text-accent-foreground rounded-full font-medium">
                       Popular
                     </span>
                   )}

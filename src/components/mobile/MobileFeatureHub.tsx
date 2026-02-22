@@ -34,7 +34,7 @@ const MOBILE_FEATURES: MobileFeature[] = [
     path: '/mobile/ar-preview',
     isPremium: true,
     productId: 'ar_preview_unlock',
-    color: 'from-violet-500 to-purple-600'
+    color: 'from-accent to-chart-5'
   },
   {
     id: 'live-auctions',
@@ -43,7 +43,7 @@ const MOBILE_FEATURES: MobileFeature[] = [
     icon: Gavel,
     path: '/mobile/auctions',
     isPremium: false,
-    color: 'from-amber-500 to-orange-600'
+    color: 'from-gold-primary to-chart-3'
   },
   {
     id: 'community-chat',
@@ -52,7 +52,7 @@ const MOBILE_FEATURES: MobileFeature[] = [
     icon: MessageCircle,
     path: '/mobile/community',
     isPremium: false,
-    color: 'from-emerald-500 to-green-600'
+    color: 'from-chart-1 to-chart-2'
   },
   {
     id: 'property-journey',
@@ -62,7 +62,7 @@ const MOBILE_FEATURES: MobileFeature[] = [
     path: '/mobile/journey',
     isPremium: true,
     productId: 'journey_pro',
-    color: 'from-blue-500 to-cyan-600'
+    color: 'from-primary to-chart-4'
   }
 ];
 

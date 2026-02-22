@@ -107,8 +107,8 @@ const StorageManager: React.FC<StorageManagerProps> = ({ className }) => {
         {/* Persistence Status */}
         <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg ${isPersistent ? 'bg-green-500/10' : 'bg-amber-500/10'}`}>
-              <Shield className={`h-4 w-4 ${isPersistent ? 'text-green-500' : 'text-amber-500'}`} />
+             <div className={`p-2 rounded-lg ${isPersistent ? 'bg-chart-1/10' : 'bg-chart-3/10'}`}>
+               <Shield className={`h-4 w-4 ${isPersistent ? 'text-chart-1' : 'text-chart-3'}`} />
             </div>
             <div>
               <p className="font-medium text-sm">Persistent Storage</p>

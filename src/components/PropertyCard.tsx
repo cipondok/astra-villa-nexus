@@ -49,16 +49,16 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   const [show3DModal, setShow3DModal] = useState(false);
 
   const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'sale':
-        return 'bg-emerald-600 text-white font-semibold';
-      case 'rent':
-        return 'bg-blue-600 text-white font-semibold';
-      case 'new-project':
-        return 'bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold';
-      default:
-        return 'bg-slate-600 text-white font-semibold';
-    }
+     switch (type) {
+       case 'sale':
+         return 'bg-chart-1 text-primary-foreground font-semibold';
+       case 'rent':
+         return 'bg-primary text-primary-foreground font-semibold';
+       case 'new-project':
+         return 'bg-gradient-to-r from-gold-primary to-chart-3 text-primary-foreground font-semibold';
+       default:
+         return 'bg-muted-foreground text-primary-foreground font-semibold';
+     }
   };
 
   const getTypeLabel = (type: string) => {

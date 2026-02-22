@@ -1924,7 +1924,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: "spring", stiffness: 500, damping: 25 }}
-                        className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center shadow-lg z-20"
+                        className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center shadow-lg z-20"
                       >
                         {messages.length - 3}
                       </motion.span>
@@ -2112,7 +2112,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute top-2 right-2 h-6 w-6 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center z-10 animate-pulse"
+                    className="absolute top-2 right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground text-xs font-bold flex items-center justify-center z-10 animate-pulse"
                     style={{
                       boxShadow: '0 0 20px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.3)'
                     }}
@@ -2200,7 +2200,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   transition={{ duration: 0.5, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <div className="px-4 py-2 bg-orange-500/90 text-white border-b border-orange-600">
+                  <div className="px-4 py-2 bg-chart-3/90 text-primary-foreground border-b border-chart-3">
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2">
                         <motion.div
@@ -2217,7 +2217,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-6 px-2 text-xs text-white hover:bg-white/20"
+                           className="h-6 px-2 text-xs text-primary-foreground hover:bg-primary-foreground/20"
                           onClick={() => {
                             setIsAutoCollapsePaused(true);
                             setShowCollapseWarning(false);
@@ -2234,7 +2234,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-6 px-2 text-xs text-white hover:bg-white/20"
+                           className="h-6 px-2 text-xs text-primary-foreground hover:bg-primary-foreground/20"
                           onClick={() => {
                             setLastActivityTime(Date.now());
                             setShowCollapseWarning(false);
@@ -2247,12 +2247,12 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                     </div>
                     {/* Progress bar */}
                     <motion.div
-                      className="h-1 bg-orange-700 mt-1.5 rounded-full overflow-hidden"
+                      className="h-1 bg-chart-3 mt-1.5 rounded-full overflow-hidden"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                     >
                       <motion.div
-                        className="h-full bg-white"
+                        className="h-full bg-primary-foreground"
                         initial={{ width: '100%' }}
                         animate={{ width: '0%' }}
                         transition={{ 
@@ -2274,7 +2274,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   transition={{ duration: 0.5, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <div className="px-4 py-2 bg-blue-500/90 text-white border-b border-blue-600">
+                  <div className="px-4 py-2 bg-chart-4/90 text-primary-foreground border-b border-chart-4">
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2">
                         <span className="text-base">⏸️</span>
@@ -2285,7 +2285,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-6 px-2 text-xs text-white hover:bg-white/20"
+                        className="h-6 px-2 text-xs text-primary-foreground hover:bg-primary-foreground/20"
                         onClick={() => {
                           setIsAutoCollapsePaused(false);
                           setLastActivityTime(Date.now());

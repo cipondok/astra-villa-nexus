@@ -518,7 +518,7 @@ const VirtualTourSettings = () => {
                   <div key={theme.id} className="p-4 border rounded-lg">
                     <div className="w-full h-32 rounded-lg mb-3" style={{ backgroundColor: theme.preview }}>
                       <div className="flex items-center justify-center h-full">
-                        <Palette className="h-8 w-8 text-white opacity-50" />
+                        <Palette className="h-8 w-8 text-primary-foreground opacity-50" />
                       </div>
                     </div>
                     <h4 className="font-semibold mb-2">{theme.name}</h4>

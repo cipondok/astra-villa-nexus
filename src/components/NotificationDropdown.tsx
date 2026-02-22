@@ -52,7 +52,7 @@ const NotificationDropdown: React.FC<{ onNavigate?: (path: string) => void }> = 
       case 'success':
         return <CheckCircle className="h-4 w-4 text-accent" />;
       case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+        return <AlertTriangle className="h-4 w-4 text-chart-3" />;
       default:
         return <Info className="h-4 w-4 text-primary" />;
     }

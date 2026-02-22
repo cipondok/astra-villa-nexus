@@ -189,14 +189,14 @@ const MediaHub = () => {
                       {video.thumbnail_url ? (
                         <img src={video.thumbnail_url} alt={video.title} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-red-500/20 to-red-600/20">
-                          <Youtube className="h-12 w-12 text-red-500" />
-                        </div>
+                         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-destructive/20 to-destructive/20">
+                           <Youtube className="h-12 w-12 text-destructive" />
+                         </div>
                       )}
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center">
-                          <Play className="h-8 w-8 text-red-500 ml-1" />
-                        </div>
+                       <div className="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                         <div className="w-16 h-16 rounded-full bg-background/90 flex items-center justify-center">
+                           <Play className="h-8 w-8 text-destructive ml-1" />
+                         </div>
                       </div>
                       <Badge className="absolute top-2 left-2" variant="secondary">
                         {video.video_type?.replace('_', ' ')}
@@ -231,9 +231,9 @@ const MediaHub = () => {
               <div className="max-w-3xl mx-auto">
                 <Card className="mb-8">
                   <CardHeader className="text-center">
-                    <div className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                      <Podcast className="h-12 w-12 text-white" />
-                    </div>
+                     <div className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent to-chart-5 flex items-center justify-center">
+                       <Podcast className="h-12 w-12 text-primary-foreground" />
+                     </div>
                     <CardTitle className="text-2xl">Property Insights Podcast</CardTitle>
                     <CardDescription>
                       Weekly conversations with industry experts about the Indonesian property market
@@ -260,8 +260,8 @@ const MediaHub = () => {
                     <Card key={episode.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
-                          <div className="w-16 h-16 shrink-0 rounded-lg bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
-                            <span className="text-lg font-bold text-purple-600">#{episode.episode_number}</span>
+                           <div className="w-16 h-16 shrink-0 rounded-lg bg-accent/10 dark:bg-accent/20 flex items-center justify-center">
+                             <span className="text-lg font-bold text-accent">#{episode.episode_number}</span>
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
@@ -307,12 +307,12 @@ const MediaHub = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {reports.map((report) => (
                   <Card key={report.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className="relative aspect-[4/3] bg-gradient-to-br from-green-500/20 to-emerald-600/20">
+                    <div className="relative aspect-[4/3] bg-gradient-to-br from-chart-1/20 to-chart-1/20">
                       {report.cover_image_url ? (
                         <img src={report.cover_image_url} alt={report.title} className="w-full h-full object-cover" />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <FileText className="h-16 w-16 text-green-500/50" />
+                          <FileText className="h-16 w-16 text-chart-1/50" />
                         </div>
                       )}
                       <Badge className="absolute top-2 left-2" variant={report.access_tier === 'free' ? 'secondary' : 'default'}>
@@ -350,7 +350,7 @@ const MediaHub = () => {
                 {events.map((event) => (
                   <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                     <div className="md:flex">
-                      <div className="md:w-48 shrink-0 p-6 bg-gradient-to-br from-orange-500/10 to-red-500/10 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r">
+                      <div className="md:w-48 shrink-0 p-6 bg-gradient-to-br from-chart-3/10 to-destructive/10 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r">
                         <p className="text-4xl font-bold">{format(new Date(event.start_datetime), 'd')}</p>
                         <p className="text-lg font-medium">{format(new Date(event.start_datetime), 'MMM yyyy')}</p>
                         <p className="text-sm text-muted-foreground mt-1">{format(new Date(event.start_datetime), 'h:mm a')}</p>

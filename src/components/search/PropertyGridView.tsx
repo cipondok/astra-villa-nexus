@@ -149,14 +149,14 @@ const PropertyGridView = ({
 
               {/* Image Count */}
               {imageCount > 1 && (
-                <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded">
+                <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-background/60 backdrop-blur-sm text-foreground text-[9px] px-1.5 py-0.5 rounded">
                   <Camera className="h-2.5 w-2.5" />
                   <span>{imageCount}</span>
                 </div>
               )}
 
               {/* View Icon on Hover */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/10">
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-background/10">
                 <div className="h-10 w-10 rounded-full bg-card/95 backdrop-blur-sm flex items-center justify-center shadow-lg">
                   <Eye className="h-5 w-5 text-primary" />
                 </div>
