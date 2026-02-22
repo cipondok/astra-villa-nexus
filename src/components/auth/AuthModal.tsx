@@ -311,7 +311,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
                     value={loginData.email}
                     onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                     disabled={authLoading}
-                    className={errors.email ? "border-red-500" : ""}
+                    className={errors.email ? "border-destructive" : ""}
                   />
                   {errors.email && (
                     <Alert variant="destructive">
@@ -330,7 +330,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
                       value={loginData.password}
                       onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                       disabled={authLoading}
-                      className={errors.password ? "border-red-500 pr-10" : "pr-10"}
+                      className={errors.password ? "border-destructive pr-10" : "pr-10"}
                     />
                     <Button
                       type="button"
@@ -352,7 +352,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
+                  className="w-full bg-gradient-to-r from-primary to-chart-3"
                   disabled={authLoading || authSuccess}
                 >
                   {authLoading ? (
@@ -395,7 +395,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
                     value={registerData.fullName}
                     onChange={(e) => setRegisterData(prev => ({ ...prev, fullName: e.target.value }))}
                     disabled={authLoading}
-                    className={errors.fullName ? "border-red-500" : ""}
+                    className={errors.fullName ? "border-destructive" : ""}
                   />
                   {errors.fullName && (
                     <Alert variant="destructive">
@@ -413,7 +413,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
                     value={registerData.email}
                     onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
                     disabled={authLoading}
-                    className={errors.email ? "border-red-500" : ""}
+                    className={errors.email ? "border-destructive" : ""}
                   />
                   {errors.email && (
                     <Alert variant="destructive">
@@ -432,7 +432,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
                       value={registerData.password}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))}
                       disabled={authLoading}
-                      className={errors.password ? "border-red-500 pr-10" : "pr-10"}
+                      className={errors.password ? "border-destructive pr-10" : "pr-10"}
                     />
                     <Button
                       type="button"
@@ -462,7 +462,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
                       value={registerData.confirmPassword}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                       disabled={authLoading}
-                      className={errors.confirmPassword ? "border-red-500 pr-10" : "pr-10"}
+                      className={errors.confirmPassword ? "border-destructive pr-10" : "pr-10"}
                     />
                     <Button
                       type="button"

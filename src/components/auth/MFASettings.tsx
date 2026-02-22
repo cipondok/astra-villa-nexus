@@ -279,7 +279,7 @@ const MFASettings = () => {
             </div>
             <div className="flex items-center gap-3">
               {mfaSettings?.is_enabled && (
-                <Badge className="bg-green-500/10 text-green-500">
+                <Badge className="bg-chart-1/10 text-chart-1">
                   <CheckCircle className="h-3 w-3 mr-1" />
                   Enabled
                 </Badge>
@@ -345,7 +345,7 @@ const MFASettings = () => {
                   </div>
                 </div>
                 {verification?.email_verified ? (
-                  <Badge className="bg-green-500/10 text-green-500">
+                  <Badge className="bg-chart-1/10 text-chart-1">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Verified
                   </Badge>

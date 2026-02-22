@@ -190,17 +190,17 @@ const UGCChallengeCard = () => {
               <div 
                 key={index}
                 className={`p-4 rounded-lg border ${
-                  index === 0 ? 'bg-gradient-to-r from-yellow-500/10 to-yellow-600/5 border-yellow-500/30' :
-                  index === 1 ? 'bg-gradient-to-r from-gray-400/10 to-gray-500/5 border-gray-400/30' :
-                  index === 2 ? 'bg-gradient-to-r from-amber-600/10 to-amber-700/5 border-amber-600/30' :
+                  index === 0 ? 'bg-gradient-to-r from-chart-3/10 to-chart-3/5 border-chart-3/30' :
+                  index === 1 ? 'bg-gradient-to-r from-muted/40 to-muted/20 border-border' :
+                  index === 2 ? 'bg-gradient-to-r from-chart-3/10 to-chart-3/5 border-chart-3/30' :
                   'bg-muted/50'
                 }`}
               >
                 <div className="flex items-center gap-4">
                   <div className={`p-3 rounded-full ${
-                    index === 0 ? 'bg-yellow-500' :
-                    index === 1 ? 'bg-gray-400' :
-                    index === 2 ? 'bg-amber-600' :
+                    index === 0 ? 'bg-chart-3' :
+                    index === 1 ? 'bg-muted-foreground' :
+                    index === 2 ? 'bg-chart-3' :
                     'bg-primary'
                   }`}>
                     <Trophy className="w-6 h-6 text-white" />
@@ -225,19 +225,19 @@ const UGCChallengeCard = () => {
               <h4 className="font-medium mb-3">Participation Requirements</h4>
               <ul className="space-y-2">
                 <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <CheckCircle className="w-4 h-4 text-chart-1" />
                   Minimum {challenge.participation_rules?.min_photos || 3} photos required
                 </li>
                 <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <CheckCircle className="w-4 h-4 text-chart-1" />
                   Maximum {challenge.participation_rules?.max_photos || 10} photos allowed
                 </li>
                 <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <CheckCircle className="w-4 h-4 text-chart-1" />
                   Description must be at least {challenge.participation_rules?.min_description_length || 100} characters
                 </li>
                 <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <CheckCircle className="w-4 h-4 text-chart-1" />
                   Content must be original
                 </li>
               </ul>
@@ -263,7 +263,7 @@ const UGCChallengeCard = () => {
           <TabsContent value="submit">
             {userSubmission ? (
               <div className="text-center py-8">
-                <CheckCircle className="w-16 h-16 mx-auto mb-4 text-green-500" />
+                <CheckCircle className="w-16 h-16 mx-auto mb-4 text-chart-1" />
                 <h3 className="text-xl font-medium mb-2">Submission Received!</h3>
                 <p className="text-muted-foreground mb-4">
                   Your entry "{userSubmission.title}" is {userSubmission.status}.

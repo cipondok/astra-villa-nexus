@@ -25,8 +25,8 @@ const platforms: SocialPlatform[] = [
     id: 'instagram',
     name: 'Instagram Storefront',
     icon: Instagram,
-    color: 'text-pink-500',
-    bgGradient: 'from-pink-500 via-purple-500 to-orange-400',
+    color: 'text-destructive',
+    bgGradient: 'from-destructive via-accent to-chart-3',
     features: ['Shoppable Posts', 'Story Links', 'Reels Shopping'],
     cta: 'Shop Now'
   },
@@ -34,8 +34,8 @@ const platforms: SocialPlatform[] = [
     id: 'tiktok',
     name: 'TikTok Tours',
     icon: Video,
-    color: 'text-black dark:text-white',
-    bgGradient: 'from-cyan-400 via-pink-500 to-red-500',
+    color: 'text-foreground',
+    bgGradient: 'from-chart-4 via-destructive to-destructive',
     features: ['Property Tours', 'Shop Now Button', 'Live Shopping'],
     cta: 'Book Tour'
   },
@@ -43,8 +43,8 @@ const platforms: SocialPlatform[] = [
     id: 'pinterest',
     name: 'Pinterest Ideas',
     icon: Image,
-    color: 'text-red-600',
-    bgGradient: 'from-red-500 to-red-600',
+    color: 'text-destructive',
+    bgGradient: 'from-destructive to-destructive',
     features: ['Idea Boards', 'Rich Pins', 'Shop Tab'],
     cta: 'Save Idea'
   },
@@ -52,8 +52,8 @@ const platforms: SocialPlatform[] = [
     id: 'facebook',
     name: 'Facebook Marketplace',
     icon: Facebook,
-    color: 'text-blue-600',
-    bgGradient: 'from-blue-500 to-blue-700',
+    color: 'text-chart-4',
+    bgGradient: 'from-chart-4 to-chart-4',
     features: ['Premium Listings', 'Shop Integration', 'Messenger Bot'],
     cta: 'View Listing'
   },
@@ -61,8 +61,8 @@ const platforms: SocialPlatform[] = [
     id: 'whatsapp',
     name: 'WhatsApp Business',
     icon: MessageCircle,
-    color: 'text-green-500',
-    bgGradient: 'from-green-400 to-green-600',
+    color: 'text-chart-1',
+    bgGradient: 'from-chart-1 to-chart-1',
     features: ['Automated Viewings', 'Catalog', 'Instant Booking'],
     cta: 'Book Viewing'
   }
@@ -227,15 +227,15 @@ const SocialCommerceHub: React.FC<SocialCommerceHubProps> = ({
               <div className="text-xs text-muted-foreground">Total Views</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-pink-500">847</div>
+              <div className="text-2xl font-bold text-destructive">847</div>
               <div className="text-xs text-muted-foreground">Engagements</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-500">156</div>
+              <div className="text-2xl font-bold text-chart-1">156</div>
               <div className="text-xs text-muted-foreground">Inquiries</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-500">23</div>
+              <div className="text-2xl font-bold text-chart-4">23</div>
               <div className="text-xs text-muted-foreground">Conversions</div>
             </div>
           </div>

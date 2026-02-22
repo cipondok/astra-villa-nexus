@@ -230,7 +230,7 @@ const PropertySocialActions: React.FC<PropertySocialActionsProps> = ({
             size="sm"
             className="gap-1.5 whitespace-nowrap"
           >
-            <MessageCircle className="h-4 w-4 text-green-500" />
+            <MessageCircle className="h-4 w-4 text-chart-1" />
             WhatsApp
           </Button>
         </div>

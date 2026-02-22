@@ -76,8 +76,8 @@ const CaptchaVerification = ({ onVerify, onCancel, isLoading }: CaptchaVerificat
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-2">
-            <Shield className="h-6 w-6 text-orange-600" />
+          <div className="mx-auto w-12 h-12 bg-chart-3/10 rounded-full flex items-center justify-center mb-2">
+            <Shield className="h-6 w-6 text-chart-3" />
           </div>
           <CardTitle className="text-lg">Security Verification</CardTitle>
           <p className="text-sm text-muted-foreground">
