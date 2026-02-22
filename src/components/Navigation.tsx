@@ -255,8 +255,8 @@ const Navigation = () => {
                     />
                   </div>
                   <div className="hidden sm:flex items-center space-x-1 ml-1">
-                    <span className={cn("text-lg font-bold transition-all duration-500", isHomePage && !scrolled ? "text-white drop-shadow-lg" : "text-foreground")}>ASTRA</span>
-                    <span className={cn("text-lg font-bold transition-all duration-500", isHomePage && !scrolled ? "text-white/90 drop-shadow-lg" : "text-muted-foreground")}>Villa</span>
+                    <span className={cn("text-lg font-bold transition-all duration-500", isHomePage && !scrolled ? "text-primary-foreground drop-shadow-lg" : "text-foreground")}>ASTRA</span>
+                    <span className={cn("text-lg font-bold transition-all duration-500", isHomePage && !scrolled ? "text-primary-foreground/90 drop-shadow-lg" : "text-muted-foreground")}>Villa</span>
                   </div>
                 </>
               )}

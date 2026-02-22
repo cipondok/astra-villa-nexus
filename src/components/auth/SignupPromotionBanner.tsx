@@ -73,7 +73,7 @@ const SignupPromotionBanner = ({ onSignupClick, compact = false }: SignupPromoti
       <div className="relative z-10">
         <div className="flex items-center gap-2 mb-3">
           <div className="flex items-center justify-center h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent">
-            <Sparkles className="h-4 w-4 text-white" />
+            <Sparkles className="h-4 w-4 text-primary-foreground" />
           </div>
           <div>
             <h3 className="text-sm font-bold text-foreground">🎉 Limited-Time Signup Offer!</h3>
@@ -125,7 +125,7 @@ const SignupPromotionBanner = ({ onSignupClick, compact = false }: SignupPromoti
         <Button
           onClick={onSignupClick}
           size="sm"
-          className="w-full h-8 text-xs bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-bold shadow-lg"
+          className="w-full h-8 text-xs bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-bold shadow-lg"
         >
           <Sparkles className="h-3.5 w-3.5 mr-1" />
           Claim Your Free Rewards — Sign Up Now!

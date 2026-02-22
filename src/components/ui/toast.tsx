@@ -80,11 +80,11 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-all hover:text-foreground hover:bg-white/20 focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100",
-      "group-[.destructive]:text-white/80 group-[.destructive]:hover:text-white group-[.destructive]:hover:bg-white/20",
-      "group-[.success]:text-white/80 group-[.success]:hover:text-white group-[.success]:hover:bg-white/20",
-      "group-[.warning]:text-white/80 group-[.warning]:hover:text-white group-[.warning]:hover:bg-white/20",
-      "group-[.info]:text-white/80 group-[.info]:hover:text-white group-[.info]:hover:bg-white/20",
+      "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-all hover:text-foreground hover:bg-primary-foreground/20 focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100",
+      "group-[.destructive]:text-primary-foreground/80 group-[.destructive]:hover:text-primary-foreground group-[.destructive]:hover:bg-primary-foreground/20",
+      "group-[.success]:text-primary-foreground/80 group-[.success]:hover:text-primary-foreground group-[.success]:hover:bg-primary-foreground/20",
+      "group-[.warning]:text-primary-foreground/80 group-[.warning]:hover:text-primary-foreground group-[.warning]:hover:bg-primary-foreground/20",
+      "group-[.info]:text-primary-foreground/80 group-[.info]:hover:text-primary-foreground group-[.info]:hover:bg-primary-foreground/20",
       className
     )}
     toast-close=""

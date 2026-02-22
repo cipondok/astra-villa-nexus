@@ -279,7 +279,7 @@ const LocationMap = () => {
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-foreground truncate pr-1">{province.name}</span>
                     <div className={`h-6 w-6 rounded-lg bg-gradient-to-br ${province.gradient} flex items-center justify-center shrink-0`}>
-                      <province.icon className="h-3 w-3 text-white" />
+                      <province.icon className="h-3 w-3 text-primary-foreground" />
                     </div>
                   </div>
                   <div className="w-full bg-muted/60 rounded-full h-1.5 overflow-hidden mb-2">
@@ -350,7 +350,7 @@ const LocationMap = () => {
                       <span>{province.name}</span>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                         isSelected
-                          ? 'bg-white/20 text-white'
+                          ? 'bg-primary-foreground/20 text-primary-foreground'
                           : 'bg-current/10 opacity-80'
                       }`}>
                         {propertyCount >= 1000 ? `${(propertyCount / 1000).toFixed(1)}K` : propertyCount}
@@ -376,30 +376,30 @@ const LocationMap = () => {
                 emoji: '🏙️',
                 provinces: ['DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'Jawa Timur'],
                 properties: 42500,
-                gradient: 'from-blue-500 to-cyan-500',
-                bg: 'bg-blue-500/8 dark:bg-blue-500/15',
-                border: 'border-blue-400/25',
-                text: 'text-blue-600 dark:text-blue-400',
+                gradient: 'from-primary to-chart-4',
+                bg: 'bg-primary/5 dark:bg-primary/15',
+                border: 'border-primary/25',
+                text: 'text-primary',
               },
               {
                 region: 'Sumatera',
                 emoji: '🌴',
                 provinces: ['Sumatera Utara', 'Sumatera Barat', 'Riau', 'Lampung'],
                 properties: 18200,
-                gradient: 'from-emerald-500 to-teal-500',
-                bg: 'bg-emerald-500/8 dark:bg-emerald-500/15',
-                border: 'border-emerald-400/25',
-                text: 'text-emerald-600 dark:text-emerald-400',
+                gradient: 'from-chart-1 to-chart-4',
+                bg: 'bg-chart-1/5 dark:bg-chart-1/15',
+                border: 'border-chart-1/25',
+                text: 'text-chart-1',
               },
               {
                 region: 'Kalimantan',
                 emoji: '🌿',
                 provinces: ['Kalimantan Timur', 'Kalimantan Selatan', 'Kalimantan Barat'],
                 properties: 12800,
-                gradient: 'from-amber-500 to-orange-500',
-                bg: 'bg-amber-500/8 dark:bg-amber-500/15',
-                border: 'border-amber-400/25',
-                text: 'text-amber-600 dark:text-amber-400',
+                gradient: 'from-gold-primary to-chart-3',
+                bg: 'bg-gold-primary/5 dark:bg-gold-primary/15',
+                border: 'border-gold-primary/25',
+                text: 'text-gold-primary',
               },
             ].map((item, index) => (
               <motion.div
@@ -418,7 +418,7 @@ const LocationMap = () => {
                         <span className="text-2xl mr-2">{item.emoji}</span>
                         <h3 className="font-black text-lg text-foreground inline">{item.region}</h3>
                       </div>
-                      <span className={`text-xs font-bold px-2 py-1 rounded-full bg-gradient-to-r ${item.gradient} text-white shadow-sm`}>
+                      <span className={`text-xs font-bold px-2 py-1 rounded-full bg-gradient-to-r ${item.gradient} text-primary-foreground shadow-sm`}>
                         {(item.properties / 1000).toFixed(1)}K+
                       </span>
                     </div>

@@ -196,7 +196,7 @@ const GroupBuyingDeals: React.FC<GroupBuyingDealsProps> = ({ city, className }) 
               </Badge>
             </div>
             <div className="absolute bottom-2 right-2">
-              <Badge variant="secondary" className="bg-black/60 text-white">
+              <Badge variant="secondary" className="bg-background/60 text-foreground">
                 <Clock className="h-3 w-3 mr-1" />
                 {getTimeRemaining(deal.end_date)}
               </Badge>

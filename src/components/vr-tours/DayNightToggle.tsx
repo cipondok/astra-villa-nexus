@@ -34,7 +34,7 @@ const DayNightToggle: React.FC<DayNightToggleProps> = ({
         )} />
         <Moon className={cn(
           "h-4 w-4 transition-opacity duration-300",
-          isDayMode ? "text-white/30 opacity-50" : "text-white opacity-100"
+          isDayMode ? "text-primary-foreground/30 opacity-50" : "text-primary-foreground opacity-100"
         )} />
       </div>
 
@@ -83,7 +83,7 @@ const DayNightToggle: React.FC<DayNightToggleProps> = ({
           {[...Array(5)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute w-0.5 h-0.5 bg-white rounded-full"
+              className="absolute w-0.5 h-0.5 bg-primary-foreground rounded-full"
               initial={{ opacity: 0 }}
               animate={{ opacity: [0, 1, 0] }}
               transition={{

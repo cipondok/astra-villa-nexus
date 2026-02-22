@@ -105,10 +105,10 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
 
   const getTypeColor = (type: TransactionRecord['type']) => {
     switch (type) {
-      case 'escrow': return 'bg-blue-500/20 text-blue-700 border-blue-500/30';
-      case 'deed': return 'bg-purple-500/20 text-purple-700 border-purple-500/30';
-      case 'token': return 'bg-green-500/20 text-green-700 border-green-500/30';
-      case 'commission': return 'bg-orange-500/20 text-orange-700 border-orange-500/30';
+      case 'escrow': return 'bg-primary/20 text-primary border-primary/30';
+      case 'deed': return 'bg-accent/20 text-accent border-accent/30';
+      case 'token': return 'bg-chart-1/20 text-chart-1 border-chart-1/30';
+      case 'commission': return 'bg-chart-3/20 text-chart-3 border-chart-3/30';
     }
   };
 
@@ -116,14 +116,14 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
     switch (status) {
       case 'confirmed':
         return (
-          <Badge variant="outline" className="bg-green-500/10 text-green-700 border-green-500/30">
+          <Badge variant="outline" className="bg-chart-1/10 text-chart-1 border-chart-1/30">
             <CheckCircle2 className="h-3 w-3 mr-1" />
             Confirmed
           </Badge>
         );
       case 'pending':
         return (
-          <Badge variant="outline" className="bg-yellow-500/10 text-yellow-700 border-yellow-500/30">
+          <Badge variant="outline" className="bg-gold-primary/10 text-gold-primary border-gold-primary/30">
             <Clock className="h-3 w-3 mr-1 animate-pulse" />
             Pending
           </Badge>

@@ -390,7 +390,7 @@ const RealisticModernVilla = ({ isNightMode, showDimensions }: { isNightMode: bo
               <meshStandardMaterial color="#ff0000" />
             </mesh>
             <Html position={[0, -0.5, 0]}>
-              <div className="bg-white/95 dark:bg-black/95 px-3 py-2 rounded-lg border shadow-lg text-center">
+              <div className="bg-background/95 dark:bg-background/95 px-3 py-2 rounded-lg border shadow-lg text-center">
                 <div className="font-bold text-destructive">14.0m</div>
                 <div className="text-xs text-muted-foreground">Length</div>
               </div>
@@ -404,7 +404,7 @@ const RealisticModernVilla = ({ isNightMode, showDimensions }: { isNightMode: bo
               <meshStandardMaterial color="#00ff00" />
             </mesh>
             <Html position={[0, -0.5, 0]} rotation={[0, -Math.PI/2, 0]}>
-              <div className="bg-white/95 dark:bg-black/95 px-3 py-2 rounded-lg border shadow-lg text-center">
+              <div className="bg-background/95 dark:bg-background/95 px-3 py-2 rounded-lg border shadow-lg text-center">
                 <div className="font-bold text-chart-1">10.0m</div>
                 <div className="text-xs text-muted-foreground">Width</div>
               </div>
@@ -418,7 +418,7 @@ const RealisticModernVilla = ({ isNightMode, showDimensions }: { isNightMode: bo
               <meshStandardMaterial color="#0000ff" />
             </mesh>
             <Html position={[0, -0.5, 0]} rotation={[0, 0, -Math.PI/2]}>
-              <div className="bg-white/95 dark:bg-black/95 px-3 py-2 rounded-lg border shadow-lg text-center">
+              <div className="bg-background/95 dark:bg-background/95 px-3 py-2 rounded-lg border shadow-lg text-center">
                 <div className="font-bold text-chart-4">8.0m</div>
                 <div className="text-xs text-muted-foreground">Height</div>
               </div>

@@ -253,7 +253,7 @@ const WNARulesRegulations: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className={cn(
                 "rounded-lg overflow-hidden transition-all duration-200",
-                "bg-transparent dark:bg-white/5",
+                "bg-transparent dark:bg-muted/20",
                 "border",
                 isExpanded ? "border-accent shadow-md" : "border-border/30"
               )}

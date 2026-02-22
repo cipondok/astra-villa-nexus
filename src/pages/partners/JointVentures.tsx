@@ -499,7 +499,7 @@ const JointVentures = () => {
                 type="submit"
                 size="lg"
                 disabled={isSubmitting}
-                className="w-full text-lg h-14 bg-macos-gradient hover:shadow-macos-hover transition-all duration-300 text-white font-semibold border-0"
+                className="w-full text-lg h-14 bg-gradient-to-r from-primary to-accent hover:shadow-lg transition-all duration-300 text-primary-foreground font-semibold border-0"
               >
                 {isSubmitting ? currentText.submitting : currentText.submitButton}
               </Button>
