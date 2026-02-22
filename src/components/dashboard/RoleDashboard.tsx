@@ -266,9 +266,9 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
     <div className="space-y-6">
       {/* Debug Info for Admin Users */}
       {isAdmin && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-yellow-800 mb-2">Debug Info (Admin):</h3>
-          <div className="text-xs text-yellow-700 space-y-1">
+        <div className="bg-chart-3/10 border border-chart-3/30 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-chart-3 mb-2">Debug Info (Admin):</h3>
+          <div className="text-xs text-chart-3/80 space-y-1">
             <div>Email: {user?.email}</div>
             <div>Profile Role: {profile?.role || 'Not loaded'}</div>
             <div>Verification Status: {profile?.verification_status || 'Not loaded'}</div>

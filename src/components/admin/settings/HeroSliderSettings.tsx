@@ -450,7 +450,7 @@ const HeroSliderSettings: React.FC = () => {
                 {/* 3D tilt indicator */}
                 {config.enable3DTilt && (
                   <div className="absolute top-2 right-2 z-10">
-                    <Badge className="text-[8px] h-4 bg-violet-500/80 text-white border-0">
+                    <Badge className="text-[8px] h-4 bg-chart-5/80 text-primary-foreground border-0">
                       <Move3D className="h-2.5 w-2.5 mr-0.5" /> 3D Tilt
                     </Badge>
                   </div>
@@ -459,7 +459,7 @@ const HeroSliderSettings: React.FC = () => {
                 {/* Depth layers indicator */}
                 {config.enableDepthLayers && (
                   <div className="absolute top-2 left-2 z-10">
-                    <Badge className="text-[8px] h-4 bg-emerald-500/80 text-white border-0">
+                    <Badge className="text-[8px] h-4 bg-chart-1/80 text-primary-foreground border-0">
                       <Layers className="h-2.5 w-2.5 mr-0.5" /> {config.depthLayerCount} Layers
                     </Badge>
                   </div>
@@ -468,7 +468,7 @@ const HeroSliderSettings: React.FC = () => {
                 {/* Entry animation indicator */}
                 {config.enableEntryAnimation && (
                   <div className="absolute bottom-2 left-2 z-10">
-                    <Badge className="text-[8px] h-4 bg-amber-500/80 text-white border-0">
+                    <Badge className="text-[8px] h-4 bg-chart-3/80 text-primary-foreground border-0">
                       <Zap className="h-2.5 w-2.5 mr-0.5" /> {config.entryAnimationType} ({config.entryAnimationDuration}ms)
                     </Badge>
                   </div>
