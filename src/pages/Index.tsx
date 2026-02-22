@@ -542,7 +542,7 @@ const Index = () => {
         </section>
 
         {/* Search Section */}
-        <section className="w-full bg-gradient-to-b from-hero-from via-hero-via to-hero-to py-5 sm:py-7 md:py-10">
+        <section className="w-full bg-background py-5 sm:py-7 md:py-10">
           <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
             {/* AI Badge */}
             <div className="text-center mb-5 sm:mb-6">
