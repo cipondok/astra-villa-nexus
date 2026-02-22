@@ -204,11 +204,11 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
         {/* Clickable Header */}
         <button
           onClick={handleToggleExpansion}
-          className="w-full flex items-center justify-between gap-2 mb-4 pb-3 border-b border-white/10 hover:bg-white/5 transition-all duration-300 rounded-lg px-2 py-1"
+          className="w-full flex items-center justify-between gap-2 mb-4 pb-3 border-b border-border/10 hover:bg-foreground/5 transition-all duration-300 rounded-lg px-2 py-1"
         >
           <div className="flex items-center gap-2">
             <span className="text-lg">🔗</span>
-            <h3 className="text-sm font-semibold text-white">{getHeaderText()}</h3>
+            <h3 className="text-sm font-semibold text-foreground">{getHeaderText()}</h3>
             {expansionState !== 'collapsed' && (
               <Badge className="text-xs bg-chart-4/20 text-chart-4 border-chart-4/30">
                 {displayLinks.length}
@@ -294,7 +294,7 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
         
         {/* Expansion Hint */}
         {expansionState === 'half-open' && (
-          <div className="mt-3 pt-3 border-t border-white/10 text-center">
+          <div className="mt-3 pt-3 border-t border-border/10 text-center">
             <span className="text-xs text-muted-foreground">
               {allLinks.length - priorityLinks.length} more links available
             </span>

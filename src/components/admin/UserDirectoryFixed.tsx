@@ -490,7 +490,7 @@ const UserDirectoryFixed = () => {
                                 )}
                                 <span className="text-sm font-medium">{categoryInfo.name}</span>
                                 {categoryInfo.isLocked && (
-                                  <Lock className="h-3 w-3 text-orange-500" />
+                                  <Lock className="h-3 w-3 text-chart-3" />
                                 )}
                               </div>
                               {categoryInfo.isSubcategory && categoryInfo.parentName && (
@@ -503,11 +503,11 @@ const UserDirectoryFixed = () => {
                                   {categoryInfo.type === 'products' ? 'Produk' : 'Layanan'}
                                 </Badge>
                                 {categoryInfo.isLocked ? (
-                                  <Badge variant="outline" className="text-xs text-orange-600">
+                                  <Badge variant="outline" className="text-xs text-chart-3">
                                     Terkunci
                                   </Badge>
                                 ) : (
-                                  <Badge variant="outline" className="text-xs text-green-600">
+                                  <Badge variant="outline" className="text-xs text-chart-1">
                                     Dapat Diubah
                                   </Badge>
                                 )}
@@ -515,7 +515,7 @@ const UserDirectoryFixed = () => {
                             </div>
                           ) : (
                             <div className="text-sm text-muted-foreground flex items-center gap-1">
-                              <AlertTriangle className="h-3 w-3 text-amber-500" />
+                              <AlertTriangle className="h-3 w-3 text-chart-3" />
                               Belum dipilih
                             </div>
                           )

@@ -301,7 +301,7 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
                     <p className="text-[10px] font-medium text-foreground">{item.label}</p>
                     <p className="text-[8px] text-muted-foreground">{item.size}</p>
                   </div>
-                  <div className="flex items-center justify-center p-2 bg-white dark:bg-black rounded border border-border/30 h-12">
+                  <div className="flex items-center justify-center p-2 bg-background rounded border border-border/30 h-12">
                     <img src={settings[item.key]} alt={item.label} className="max-h-8 max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                   </div>
                   <div className="flex gap-1">
@@ -404,7 +404,7 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
                       <Trash2 className="h-2 w-2 mr-0.5" /> Clear
                     </Button>
                   </div>
-                  <div className="flex items-center justify-center p-2 bg-white dark:bg-black rounded border h-20">
+                  <div className="flex items-center justify-center p-2 bg-background rounded border h-20">
                     <img src={masterLogo} alt="Master" className="max-h-16 max-w-full object-contain" />
                   </div>
                 </div>
@@ -430,7 +430,7 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
                     <div key={logo.key} className="p-2 bg-muted/30 rounded-md space-y-1">
                       <p className="text-[9px] font-medium text-foreground">{logo.size}</p>
                       <p className="text-[7px] text-muted-foreground">{logo.width}x{logo.height}</p>
-                      <div className="flex items-center justify-center p-1 bg-white dark:bg-black rounded border h-10">
+                      <div className="flex items-center justify-center p-1 bg-background rounded border h-10">
                         <img src={logo.dataUrl} alt={logo.size} style={{ maxWidth: Math.min(logo.width, 50), maxHeight: 32 }} className="object-contain" />
                       </div>
                       <Button size="sm" variant="outline" className="w-full h-5 text-[8px]" disabled={uploading === logo.key} onClick={() => applyLogo(logo)}>

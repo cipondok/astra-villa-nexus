@@ -199,7 +199,7 @@ const Property3DViewSettings = () => {
       </div>
 
       {/* Status Alert */}
-      <Alert className={`p-2 ${settings.enabled ? 'border-emerald-500/50 bg-emerald-500/10' : 'border-destructive/50 bg-destructive/10'}`}>
+      <Alert className={`p-2 ${settings.enabled ? 'border-chart-1/50 bg-chart-1/10' : 'border-destructive/50 bg-destructive/10'}`}>
         <AlertTriangle className="h-3 w-3" />
         <AlertDescription className="text-[10px]">
           <strong>3D View Status:</strong> {settings.enabled ? 'Enabled and active' : 'Disabled - users cannot view 3D models'}
@@ -495,15 +495,15 @@ const Property3DViewSettings = () => {
             <CardContent className="p-3 pt-0 space-y-2">
               <div className="space-y-2 text-[10px] text-muted-foreground">
                 <div className="flex items-start gap-2">
-                  <Lightbulb className="h-3 w-3 text-amber-500 mt-0.5" />
+                  <Lightbulb className="h-3 w-3 text-chart-3 mt-0.5" />
                   <p>Upload 3D models in GLB or GLTF format for best compatibility</p>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Lightbulb className="h-3 w-3 text-amber-500 mt-0.5" />
+                  <Lightbulb className="h-3 w-3 text-chart-3 mt-0.5" />
                   <p>Keep file sizes under {settings.maxFileSize}MB for optimal loading</p>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Lightbulb className="h-3 w-3 text-amber-500 mt-0.5" />
+                  <Lightbulb className="h-3 w-3 text-chart-3 mt-0.5" />
                   <p>Enable VR/AR only if your target devices support it</p>
                 </div>
               </div>

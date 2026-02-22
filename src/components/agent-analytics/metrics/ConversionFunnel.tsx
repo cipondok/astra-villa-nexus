@@ -11,10 +11,10 @@ interface ConversionFunnelProps {
 
 const stageIcons = [Eye, MessageSquare, Calendar, Handshake, CheckCircle];
 const stageColors = [
-  'from-blue-500 to-blue-400',
-  'from-purple-500 to-purple-400',
-  'from-orange-500 to-orange-400',
-  'from-green-500 to-green-400',
+  'from-chart-4 to-chart-4/80',
+  'from-chart-5 to-chart-5/80',
+  'from-chart-3 to-chart-3/80',
+  'from-chart-1 to-chart-1/80',
   'from-primary to-primary/80',
 ];
 
@@ -69,7 +69,7 @@ const ConversionFunnel: React.FC<ConversionFunnelProps> = ({ data, className }) 
                       "w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br",
                       stageColors[idx]
                     )}>
-                      <Icon className="h-4 w-4 text-white" />
+                      <Icon className="h-4 w-4 text-primary-foreground" />
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-center mb-1">

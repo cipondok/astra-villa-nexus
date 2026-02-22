@@ -193,8 +193,8 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
         <div className="max-w-screen-2xl mx-auto px-2 sm:px-4 md:px-6 lg:px-12 xl:px-16">
           <div className={`flex items-center justify-between ${isMobile ? 'h-12' : 'h-14'}`}>
             <div className="flex items-center space-x-2 sm:space-x-3 cursor-pointer group" onClick={() => navigate('/')}>
-              <div className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} rounded-xl bg-gradient-to-br from-primary to-accent backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105`}>
-                <Shield className={`${isMobile ? 'h-4 w-4' : 'h-6 w-6'} text-white animate-pulse`} />
+              <div className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} rounded-xl bg-gradient-to-br from-primary to-accent backdrop-blur-sm border border-primary-foreground/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105`}>
+                <Shield className={`${isMobile ? 'h-4 w-4' : 'h-6 w-6'} text-primary-foreground animate-pulse`} />
               </div>
               {!isMobile && (
                 <div className="flex items-center space-x-1">
@@ -456,7 +456,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
                      <Button
                        variant="ghost"
                        size="sm"
-                       className="relative w-12 h-12 p-0 rounded-xl bg-white/15 hover:bg-white/25 border border-white/30 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-xl"
+                       className="relative w-12 h-12 p-0 rounded-xl bg-primary-foreground/15 hover:bg-primary-foreground/25 border border-primary-foreground/30 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-xl"
                      >
                        <div className="w-10 h-10 bg-gradient-to-br from-primary via-chart-4 to-chart-5 rounded-full flex items-center justify-center shadow-lg ring-2 ring-border/20">
                           <UserCog className="h-5 w-5 text-primary-foreground drop-shadow-sm" />

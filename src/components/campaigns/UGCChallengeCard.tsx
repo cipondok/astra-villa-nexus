@@ -97,14 +97,14 @@ const UGCChallengeCard = () => {
   return (
     <Card className="overflow-hidden">
       {/* Hero Banner */}
-      <div className="relative bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 p-6 text-white">
-        <div className="absolute inset-0 bg-black/20" />
+      <div className="relative bg-gradient-to-r from-chart-5 via-destructive to-chart-3 p-6 text-primary-foreground">
+        <div className="absolute inset-0 bg-background/20" />
         <div className="relative">
-          <Badge className="bg-white/20 text-white border-white/30 mb-3">
+          <Badge className="bg-primary-foreground/20 text-primary-foreground border-primary-foreground/30 mb-3">
             {challenge.theme}
           </Badge>
           <h2 className="text-2xl font-bold mb-2">{challenge.title}</h2>
-          <p className="text-white/90 mb-4">{challenge.description}</p>
+          <p className="text-primary-foreground/90 mb-4">{challenge.description}</p>
           
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center gap-2">
@@ -149,10 +149,10 @@ const UGCChallengeCard = () => {
                         alt={submission.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
                       <div className="absolute bottom-3 left-3 right-3">
-                        <h4 className="font-medium text-white truncate">{submission.title}</h4>
-                        <div className="flex items-center gap-3 text-white/80 text-sm">
+                        <h4 className="font-medium text-foreground truncate">{submission.title}</h4>
+                        <div className="flex items-center gap-3 text-foreground/80 text-sm">
                           <span className="flex items-center gap-1">
                             <Eye className="w-3 h-3" />
                             {submission.view_count}
@@ -203,7 +203,7 @@ const UGCChallengeCard = () => {
                     index === 2 ? 'bg-chart-3' :
                     'bg-primary'
                   }`}>
-                    <Trophy className="w-6 h-6 text-white" />
+                    <Trophy className="w-6 h-6 text-primary-foreground" />
                   </div>
                   <div className="flex-1">
                     <h4 className="font-medium">{prize.title}</h4>
