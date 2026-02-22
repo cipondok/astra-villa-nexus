@@ -185,7 +185,7 @@ const LiveAuctionPlatform = ({ auctionId }: LiveAuctionPlatformProps) => {
           return (
             <Card 
               key={a.id} 
-              className={`cursor-pointer transition-all hover:shadow-md ${isLive ? "border-green-500/50" : ""}`}
+              className={`cursor-pointer transition-all hover:shadow-md ${isLive ? "border-chart-1/50" : ""}`}
               onClick={() => window.location.href = `/auction/${a.id}`}
             >
               <CardContent className="p-4">
@@ -199,7 +199,7 @@ const LiveAuctionPlatform = ({ auctionId }: LiveAuctionPlatformProps) => {
                   )}
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <Badge className={isLive ? "bg-green-500" : "bg-blue-500"}>
+                      <Badge className={isLive ? "bg-chart-1" : "bg-primary"}>
                         {isLive ? "LIVE" : "Upcoming"}
                       </Badge>
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -256,7 +256,7 @@ const LiveAuctionPlatform = ({ auctionId }: LiveAuctionPlatformProps) => {
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header with timer */}
-      <div className={`sticky top-0 z-10 p-4 ${isLive ? "bg-green-500" : "bg-primary"} text-white`}>
+      <div className={`sticky top-0 z-10 p-4 ${isLive ? "bg-chart-1" : "bg-primary"} text-primary-foreground`}>
         <div className="flex items-center justify-between">
           <div>
             <Badge variant="secondary" className="mb-1">

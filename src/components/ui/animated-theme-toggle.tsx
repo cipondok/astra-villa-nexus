@@ -47,11 +47,11 @@ const AnimatedThemeToggle = () => {
   return (
     <div className="relative">
       {/* Animated Background */}
-      <div className="relative flex items-center bg-gray-100 dark:bg-gray-800 rounded-full p-1 transition-all duration-300">
+      <div className="relative flex items-center bg-muted rounded-full p-1 transition-all duration-300">
         {/* Sliding indicator */}
         <div
           className={cn(
-            "absolute top-1 bottom-1 rounded-full bg-white dark:bg-gray-700 transition-all duration-300 ease-out shadow-md",
+            "absolute top-1 bottom-1 rounded-full bg-background transition-all duration-300 ease-out shadow-md",
             theme === 'light' && "left-1 w-10",
             theme === 'dark' && "left-12 w-10", 
             theme === 'system' && "left-[5.5rem] w-10"
@@ -69,8 +69,8 @@ const AnimatedThemeToggle = () => {
               "relative z-10 flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200",
               "hover:bg-transparent",
               theme === mode 
-                ? "text-gray-900 dark:text-white" 
-                : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                ? "text-foreground" 
+                : "text-muted-foreground hover:text-foreground"
             )}
           >
             <Icon 
@@ -88,7 +88,7 @@ const AnimatedThemeToggle = () => {
 
       {/* Tooltip for mobile */}
       <div className="absolute top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none sm:hidden">
-        <div className="bg-gray-900 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
+        <div className="bg-popover text-popover-foreground text-xs rounded px-2 py-1 whitespace-nowrap">
           {themes.find(t => t.mode === theme)?.label} theme
         </div>
       </div>

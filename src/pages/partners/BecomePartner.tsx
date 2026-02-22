@@ -173,26 +173,10 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
         "Priority technical support"
       ],
       requirements: [
-        {
-          icon: Building2,
-          title: "Licensed Business",
-          description: "Valid real estate business license"
-        },
-        {
-          icon: TrendingUp,
-          title: "Track Record",
-          description: "Proven track record in real estate"
-        },
-        {
-          icon: Award,
-          title: "Professional Standards",
-          description: "Commitment to professional excellence"
-        },
-        {
-          icon: Target,
-          title: "Business Goals",
-          description: "Clear growth objectives and targets"
-        }
+        { icon: Building2, title: "Licensed Business", description: "Valid real estate business license" },
+        { icon: TrendingUp, title: "Track Record", description: "Proven track record in real estate" },
+        { icon: Award, title: "Professional Standards", description: "Commitment to professional excellence" },
+        { icon: Target, title: "Business Goals", description: "Clear growth objectives and targets" }
       ],
       applyButton: "Apply Now",
       contactUs: "Contact Us",
@@ -245,26 +229,10 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
         "Dukungan teknis prioritas"
       ],
       requirements: [
-        {
-          icon: Building2,
-          title: "Bisnis Berlisensi",
-          description: "Lisensi bisnis real estat yang valid"
-        },
-        {
-          icon: TrendingUp,
-          title: "Rekam Jejak",
-          description: "Rekam jejak terbukti di real estat"
-        },
-        {
-          icon: Award,
-          title: "Standar Profesional",
-          description: "Komitmen terhadap keunggulan profesional"
-        },
-        {
-          icon: Target,
-          title: "Tujuan Bisnis",
-          description: "Tujuan dan target pertumbuhan yang jelas"
-        }
+        { icon: Building2, title: "Bisnis Berlisensi", description: "Lisensi bisnis real estat yang valid" },
+        { icon: TrendingUp, title: "Rekam Jejak", description: "Rekam jejak terbukti di real estat" },
+        { icon: Award, title: "Standar Profesional", description: "Komitmen terhadap keunggulan profesional" },
+        { icon: Target, title: "Tujuan Bisnis", description: "Tujuan dan target pertumbuhan yang jelas" }
       ],
       applyButton: "Daftar Sekarang",
       contactUs: "Hubungi Kami",
@@ -314,20 +282,20 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
         {/* Hero Section */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center p-3 bg-macos-gradient rounded-2xl mb-6 shadow-macos">
-            <Building2 className="w-12 h-12 text-white" />
+            <Building2 className="w-12 h-12 text-primary-foreground" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
             {currentText.title}
           </h1>
-          <p className="text-xl text-macos-gray max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             {currentText.subtitle}
           </p>
         </div>
 
         {/* Description */}
         <div className="max-w-4xl mx-auto mb-16">
-          <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos border border-neutral-200 dark:border-neutral-800">
-            <p className="text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed mb-8">
+          <div className="bg-card dark:bg-card p-8 rounded-2xl shadow-macos border border-border">
+            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
               {currentText.description}
             </p>
             
@@ -335,8 +303,8 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {currentText.benefits.map((benefit, index) => (
                 <div key={index} className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-macos-blue flex-shrink-0" />
-                  <span className="text-neutral-700 dark:text-neutral-300">{benefit}</span>
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                  <span className="text-muted-foreground">{benefit}</span>
                 </div>
               ))}
             </div>
@@ -352,12 +320,12 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
             {currentText.requirements.map((req, index) => {
               const Icon = req.icon;
               return (
-                <div key={index} className="bg-white dark:bg-neutral-900 p-6 rounded-2xl text-center shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-neutral-200 dark:border-neutral-800">
+                <div key={index} className="bg-card p-6 rounded-2xl text-center shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-border">
                   <div className="inline-flex p-4 bg-macos-gradient rounded-2xl mb-4 shadow-macos">
-                    <Icon className="w-8 h-8 text-white" />
+                    <Icon className="w-8 h-8 text-primary-foreground" />
                   </div>
-                  <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-2">{req.title}</h3>
-                  <p className="text-neutral-600 dark:text-neutral-400 text-sm">{req.description}</p>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{req.title}</h3>
+                  <p className="text-muted-foreground text-sm">{req.description}</p>
                 </div>
               );
             })}
@@ -366,12 +334,12 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
 
         {/* Application Form Section */}
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white dark:bg-neutral-900 p-12 rounded-2xl shadow-macos-hover border border-neutral-200 dark:border-neutral-800 animate-macos-window-in">
+          <div className="bg-card p-12 rounded-2xl shadow-macos-hover border border-border animate-macos-window-in">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
                 {currentText.formTitle}
               </h2>
-              <p className="text-neutral-600 dark:text-neutral-400 text-lg">
+              <p className="text-muted-foreground text-lg">
                 {currentText.formSubtitle}
               </p>
             </div>
@@ -379,8 +347,8 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
-                    <User className="w-4 h-4 text-macos-blue" />
+                  <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                    <User className="w-4 h-4 text-primary" />
                     {currentText.namePlaceholder}
                   </label>
                   <Input
@@ -388,13 +356,13 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder={currentText.namePlaceholder}
-                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    className="h-12 bg-muted border-border focus:border-primary focus:ring-primary"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-macos-blue" />
+                  <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-primary" />
                     {currentText.emailPlaceholder}
                   </label>
                   <div className="relative">
@@ -409,14 +377,14 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                         setEmailValid(email.length > 0 ? emailRegex.test(email) : null);
                       }}
                       placeholder={currentText.emailPlaceholder}
-                      className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                      className="h-12 pr-10 bg-muted border-border focus:border-primary focus:ring-primary"
                     />
                     {emailValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
                         {emailValid ? (
-                          <Check className="w-5 h-5 text-green-500" />
+                          <Check className="w-5 h-5 text-chart-1" />
                         ) : (
-                          <X className="w-5 h-5 text-red-500" />
+                          <X className="w-5 h-5 text-destructive" />
                         )}
                       </div>
                     )}
@@ -424,8 +392,8 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-macos-blue" />
+                  <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-primary" />
                     {currentText.phonePlaceholder}
                   </label>
                   <div className="relative">
@@ -444,14 +412,14 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                         }
                       }}
                       placeholder={currentText.phonePlaceholder}
-                      className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                      className="h-12 pr-10 bg-muted border-border focus:border-primary focus:ring-primary"
                     />
                     {phoneValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
                         {phoneValid ? (
-                          <Check className="w-5 h-5 text-green-500" />
+                          <Check className="w-5 h-5 text-chart-1" />
                         ) : (
-                          <X className="w-5 h-5 text-red-500" />
+                          <X className="w-5 h-5 text-destructive" />
                         )}
                       </div>
                     )}
@@ -459,8 +427,8 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-macos-blue" />
+                  <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-primary" />
                     {currentText.companyPlaceholder}
                   </label>
                   <Input
@@ -468,17 +436,17 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                     placeholder={currentText.companyPlaceholder}
-                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    className="h-12 bg-muted border-border focus:border-primary focus:ring-primary"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
-                    <Briefcase className="w-4 h-4 text-macos-blue" />
+                  <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                    <Briefcase className="w-4 h-4 text-primary" />
                     {currentText.businessType}
                   </label>
                   <Select value={formData.businessType} onValueChange={(value) => setFormData({ ...formData, businessType: value })}>
-                    <SelectTrigger className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue">
+                    <SelectTrigger className="h-12 bg-muted border-border focus:border-primary focus:ring-primary">
                       <SelectValue placeholder={currentText.selectBusinessType} />
                     </SelectTrigger>
                     <SelectContent>
@@ -491,12 +459,12 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
-                    <Award className="w-4 h-4 text-macos-blue" />
+                  <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                    <Award className="w-4 h-4 text-primary" />
                     {currentText.experience}
                   </label>
                   <Select value={formData.experience} onValueChange={(value) => setFormData({ ...formData, experience: value })}>
-                    <SelectTrigger className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue">
+                    <SelectTrigger className="h-12 bg-muted border-border focus:border-primary focus:ring-primary">
                       <SelectValue placeholder={currentText.selectExperience} />
                     </SelectTrigger>
                     <SelectContent>
@@ -510,7 +478,7 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="text-sm font-semibold text-muted-foreground">
                   {currentText.website}
                 </label>
                 <Input
@@ -518,12 +486,12 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                   value={formData.website}
                   onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                   placeholder={currentText.websitePlaceholder}
-                  className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  className="h-12 bg-muted border-border focus:border-primary focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="text-sm font-semibold text-muted-foreground">
                   {currentText.propertyTypes}
                 </label>
                 <div className="grid grid-cols-2 gap-4">
@@ -544,9 +512,9 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                             setFormData({ ...formData, propertyTypes: formData.propertyTypes.filter(t => t !== type.value) });
                           }
                         }}
-                        className="w-4 h-4 text-macos-blue border-neutral-300 rounded focus:ring-macos-blue"
+                        className="w-4 h-4 text-primary border-border rounded focus:ring-primary"
                       />
-                      <span className="text-sm text-neutral-700 dark:text-neutral-300">
+                      <span className="text-sm text-muted-foreground">
                         {type.label}
                       </span>
                     </label>
@@ -555,7 +523,7 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="text-sm font-semibold text-muted-foreground">
                   {currentText.serviceAreas}
                 </label>
                 <Input
@@ -563,12 +531,12 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                   value={formData.serviceAreas}
                   onChange={(e) => setFormData({ ...formData, serviceAreas: e.target.value })}
                   placeholder={currentText.serviceAreasPlaceholder}
-                  className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  className="h-12 bg-muted border-border focus:border-primary focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
+                <h3 className="text-lg font-semibold text-foreground">
                   {currentText.socialMedia}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -577,34 +545,34 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                     value={formData.instagram}
                     onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
                     placeholder={`${currentText.instagram} URL`}
-                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    className="h-12 bg-muted border-border focus:border-primary focus:ring-primary"
                   />
                   <Input
                     type="url"
                     value={formData.facebook}
                     onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
                     placeholder={`${currentText.facebook} URL`}
-                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    className="h-12 bg-muted border-border focus:border-primary focus:ring-primary"
                   />
                   <Input
                     type="url"
                     value={formData.linkedin}
                     onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
                     placeholder={`${currentText.linkedin} URL`}
-                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    className="h-12 bg-muted border-border focus:border-primary focus:ring-primary"
                   />
                   <Input
                     type="url"
                     value={formData.twitter}
                     onChange={(e) => setFormData({ ...formData, twitter: e.target.value })}
                     placeholder={`${currentText.twitter} URL`}
-                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    className="h-12 bg-muted border-border focus:border-primary focus:ring-primary"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="text-sm font-semibold text-muted-foreground">
                   {currentText.messagePlaceholder}
                 </label>
                 <Textarea
@@ -613,12 +581,12 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder={currentText.messagePlaceholder}
                   rows={5}
-                  className="resize-none bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  className="resize-none bg-muted border-border focus:border-primary focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="text-sm font-semibold text-muted-foreground">
                   {language === "en" ? "Security Check" : "Pemeriksaan Keamanan"}
                 </label>
                 <SimpleCaptcha code={captchaCode} onRefresh={refreshCaptcha} />
@@ -627,7 +595,7 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                   value={formData.captchaInput}
                   onChange={(e) => setFormData({ ...formData, captchaInput: e.target.value })}
                   placeholder={language === "en" ? "Enter the code above" : "Masukkan kode di atas"}
-                  className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  className="h-12 bg-muted border-border focus:border-primary focus:ring-primary"
                   maxLength={6}
                 />
               </div>
@@ -636,7 +604,7 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
                 type="submit"
                 size="lg"
                 disabled={isSubmitting}
-                className="w-full text-lg h-14 bg-macos-gradient hover:shadow-macos-hover transition-all duration-300 text-white font-semibold border-0"
+                className="w-full text-lg h-14 bg-macos-gradient hover:shadow-macos-hover transition-all duration-300 text-primary-foreground font-semibold border-0"
               >
                 {isSubmitting ? currentText.submitting : currentText.submitButton}
               </Button>
