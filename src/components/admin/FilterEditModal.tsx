@@ -430,7 +430,7 @@ const FilterEditModal = ({ filter, isOpen, onClose, onSave }: FilterEditModalPro
                 </div>
                 
                 {filterData.description && (
-                  <div className="mt-3 p-2 bg-blue-50 rounded text-sm text-blue-700">
+                  <div className="mt-3 p-2 bg-chart-4/10 rounded text-sm text-chart-4">
                     <strong>Description:</strong> {filterData.description}
                   </div>
                 )}

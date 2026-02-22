@@ -184,14 +184,14 @@ const GroupBuyingDeals: React.FC<GroupBuyingDealsProps> = ({ city, className }) 
                 </Badge>
               )}
               {isTargetMet && (
-                <Badge className="bg-green-500">
+                <Badge className="bg-chart-1">
                   <CheckCircle2 className="h-3 w-3 mr-1" />
                   Target Met!
                 </Badge>
               )}
             </div>
             <div className="absolute top-2 right-2">
-              <Badge className="bg-red-500 text-white text-lg font-bold px-3">
+              <Badge className="bg-destructive text-destructive-foreground text-lg font-bold px-3">
                 -{deal.discount_percentage}%
               </Badge>
             </div>
@@ -226,7 +226,7 @@ const GroupBuyingDeals: React.FC<GroupBuyingDealsProps> = ({ city, className }) 
               </span>
             </div>
 
-            <div className="flex items-center gap-1 text-sm text-green-600 mb-4">
+            <div className="flex items-center gap-1 text-sm text-chart-1 mb-4">
               <Gift className="h-4 w-4" />
               <span>Save Rp {savings.toLocaleString()}</span>
             </div>

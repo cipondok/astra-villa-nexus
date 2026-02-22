@@ -63,7 +63,7 @@ export const KPRCalculator: React.FC<KPRCalculatorProps> = ({ propertyPrice, cla
             <Calculator className="h-4 w-4 text-primary" />
           </div>
           Simulasi KPR
-          <Badge variant="outline" className="ml-auto text-[10px] bg-green-500/10 text-green-600 border-green-500/20">
+          <Badge variant="outline" className="ml-auto text-[10px] bg-chart-1/10 text-chart-1 border-chart-1/20">
             Fitur Gratis
           </Badge>
         </CardTitle>
@@ -162,13 +162,13 @@ export const KPRCalculator: React.FC<KPRCalculatorProps> = ({ propertyPrice, cla
         {/* Results */}
         <div className="pt-3 sm:pt-4 border-t border-border/50 space-y-3">
           {/* Monthly Payment - Highlighted */}
-          <div className="p-3 sm:p-4 bg-gradient-to-r from-green-500/10 via-emerald-500/5 to-green-500/10 rounded-xl border border-green-500/20">
+          <div className="p-3 sm:p-4 bg-gradient-to-r from-chart-1/10 via-chart-1/5 to-chart-1/10 rounded-xl border border-chart-1/20">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <TrendingDown className="h-4 w-4 text-green-600" />
-                <span className="text-xs sm:text-sm font-medium text-green-700 dark:text-green-400">Cicilan per Bulan</span>
+                <TrendingDown className="h-4 w-4 text-chart-1" />
+                <span className="text-xs sm:text-sm font-medium text-chart-1">Cicilan per Bulan</span>
               </div>
-              <span className="text-lg sm:text-2xl font-bold text-green-600">{formatCurrency(calculations.monthlyPayment)}</span>
+              <span className="text-lg sm:text-2xl font-bold text-chart-1">{formatCurrency(calculations.monthlyPayment)}</span>
             </div>
           </div>
 
@@ -184,7 +184,7 @@ export const KPRCalculator: React.FC<KPRCalculatorProps> = ({ propertyPrice, cla
             </div>
             <div className="p-2.5 sm:p-3 bg-muted/30 rounded-xl">
               <div className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">Total Bunga</div>
-              <div className="text-xs sm:text-sm font-semibold text-orange-600">{formatCurrency(calculations.totalInterest)}</div>
+              <div className="text-xs sm:text-sm font-semibold text-chart-3">{formatCurrency(calculations.totalInterest)}</div>
             </div>
             <div className="p-2.5 sm:p-3 bg-muted/30 rounded-xl">
               <div className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">Jumlah Cicilan</div>
