@@ -51,7 +51,7 @@ const VendorManagementHub = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
-            <ShoppingBag className="h-8 w-8 text-blue-600" />
+            <ShoppingBag className="h-8 w-8 text-primary" />
             Vendor Management Hub
           </h1>
           <p className="text-muted-foreground">
@@ -83,7 +83,7 @@ const VendorManagementHub = () => {
                     <p className="text-sm text-muted-foreground">Active Vendors</p>
                     <p className="text-2xl font-bold">{activeVendors}</p>
                   </div>
-                  <Users className="h-8 w-8 text-blue-600" />
+                  <Users className="h-8 w-8 text-chart-4" />
                 </div>
               </CardContent>
             </Card>
@@ -95,7 +95,7 @@ const VendorManagementHub = () => {
                     <p className="text-sm text-muted-foreground">Categories</p>
                     <p className="text-2xl font-bold">15</p>
                   </div>
-                  <FolderTree className="h-8 w-8 text-green-600" />
+                  <FolderTree className="h-8 w-8 text-chart-1" />
                 </div>
               </CardContent>
             </Card>
@@ -107,7 +107,7 @@ const VendorManagementHub = () => {
                     <p className="text-sm text-muted-foreground">Active Services</p>
                     <p className="text-2xl font-bold">456</p>
                   </div>
-                  <ShoppingBag className="h-8 w-8 text-purple-600" />
+                  <ShoppingBag className="h-8 w-8 text-accent" />
                 </div>
               </CardContent>
             </Card>
@@ -119,7 +119,7 @@ const VendorManagementHub = () => {
                     <p className="text-sm text-muted-foreground">Products in Stock</p>
                     <p className="text-2xl font-bold">1,234</p>
                   </div>
-                  <Package className="h-8 w-8 text-orange-600" />
+                  <Package className="h-8 w-8 text-chart-3" />
                 </div>
               </CardContent>
             </Card>
@@ -133,28 +133,28 @@ const VendorManagementHub = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div 
-                  className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors border-orange-200 bg-orange-50/50"
+                  className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors border-chart-3/30 bg-chart-3/5"
                   onClick={() => setActiveTab("issues")}
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium text-orange-800">Resolve Issues</h4>
-                      <p className="text-sm text-orange-600">KYC & Payment integration issues</p>
+                      <h4 className="font-medium text-chart-3">Resolve Issues</h4>
+                      <p className="text-sm text-chart-3/80">KYC & Payment integration issues</p>
                     </div>
                     <Badge variant="destructive">1 Active</Badge>
                   </div>
                 </div>
 
                 <div 
-                  className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors border-blue-200 bg-blue-50/50"
+                  className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors border-chart-4/30 bg-chart-4/5"
                   onClick={() => setActiveTab("functions")}
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium text-blue-800">Generate Functions</h4>
-                      <p className="text-sm text-blue-600">Create new vendor system capabilities</p>
+                      <h4 className="font-medium text-chart-4">Generate Functions</h4>
+                      <p className="text-sm text-chart-4/80">Create new vendor system capabilities</p>
                     </div>
-                    <Badge variant="outline" className="text-blue-600 border-blue-200">12 Templates</Badge>
+                    <Badge variant="outline" className="text-chart-4 border-chart-4/30">12 Templates</Badge>
                   </div>
                 </div>
 
@@ -232,7 +232,7 @@ const VendorManagementHub = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-3 p-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-chart-1 rounded-full"></div>
                   <div className="flex-1">
                     <p className="text-sm font-medium">New vendor registered</p>
                     <p className="text-xs text-muted-foreground">Electronics repair service</p>
@@ -241,7 +241,7 @@ const VendorManagementHub = () => {
                 </div>
 
                 <div className="flex items-center gap-3 p-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-chart-4 rounded-full"></div>
                   <div className="flex-1">
                     <p className="text-sm font-medium">Service approved</p>
                     <p className="text-xs text-muted-foreground">AC Repair & Maintenance</p>
@@ -250,7 +250,7 @@ const VendorManagementHub = () => {
                 </div>
 
                 <div className="flex items-center gap-3 p-2">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-chart-3 rounded-full"></div>
                   <div className="flex-1">
                     <p className="text-sm font-medium">Low stock alert</p>
                     <p className="text-xs text-muted-foreground">Samsung TV 55" - 2 units left</p>

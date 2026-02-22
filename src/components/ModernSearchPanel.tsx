@@ -392,9 +392,9 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     <>
       {/* Search Progress Popup */}
       <Dialog open={isSearching} onOpenChange={setIsSearching}>
-        <DialogContent className="max-w-md bg-white/90 dark:bg-gray-900/90 border-none p-0 shadow-xl animate-fade-in">
+        <DialogContent className="max-w-md bg-background/90 backdrop-blur-sm border-none p-0 shadow-xl animate-fade-in">
           <div className="flex flex-col items-center justify-center px-8 py-8 space-y-7">
-            <h2 className="font-bold text-2xl bg-gradient-to-r from-blue-600 via-purple-500 to-orange-500 bg-clip-text text-transparent animate-gradient">
+            <h2 className="font-bold text-2xl bg-gradient-to-r from-primary via-accent to-chart-3 bg-clip-text text-transparent animate-gradient">
               {language === "id" ? "Sedang Mencari..." : "Searching..."}
             </h2>
             <Progress value={progress} className="h-3 w-full mb-3" />
@@ -428,17 +428,17 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
         </DialogContent>
       </Dialog>
 
-      <Card className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm shadow-2xl max-w-6xl mx-auto transition-colors">
+      <Card className="bg-card/60 backdrop-blur-sm shadow-2xl max-w-6xl mx-auto transition-colors">
         <CardContent className="p-6">
 
           {/* Property Type as colorful iPhone-style buttons (already at top) */}
           <IPhoneToggleGroup
             options={[
-              { value: "", label: language === "id" ? "Semua Jenis" : "All Types", colorClass: "bg-gradient-to-r from-blue-400 to-blue-600 text-white" },
-              { value: "apartment", label: language === "id" ? "Apartemen" : "Apartment", colorClass: "bg-gradient-to-r from-purple-400 to-purple-600 text-white" },
-              { value: "house", label: language === "id" ? "Rumah" : "House", colorClass: "bg-gradient-to-r from-pink-400 to-pink-600 text-white" },
-              { value: "villa", label: "Villa", colorClass: "bg-gradient-to-r from-orange-400 to-orange-600 text-white" },
-              { value: "townhouse", label: language === "id" ? "Rumah Kota" : "Townhouse", colorClass: "bg-gradient-to-r from-green-400 to-green-600 text-white" },
+              { value: "", label: language === "id" ? "Semua Jenis" : "All Types", colorClass: "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground" },
+              { value: "apartment", label: language === "id" ? "Apartemen" : "Apartment", colorClass: "bg-gradient-to-r from-accent to-accent/80 text-accent-foreground" },
+              { value: "house", label: language === "id" ? "Rumah" : "House", colorClass: "bg-gradient-to-r from-chart-4 to-chart-4/80 text-primary-foreground" },
+              { value: "villa", label: "Villa", colorClass: "bg-gradient-to-r from-gold-primary to-gold-primary/80 text-primary-foreground" },
+              { value: "townhouse", label: language === "id" ? "Rumah Kota" : "Townhouse", colorClass: "bg-gradient-to-r from-chart-1 to-chart-1/80 text-primary-foreground" },
             ]}
             value={propertyType}
             onChange={setPropertyType}
@@ -449,10 +449,10 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-2 mb-4">
             <div>
               <div className="relative w-full">
-                <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                 <Input
                   placeholder={currentText.search}
-                  className="pl-10 h-12 text-gray-700 dark:text-gray-200"
+                  className="pl-10 h-12 text-foreground"
                   value={searchQuery}
                   onChange={handleSearchInputChange}
                   onKeyDown={handleKeyPress}
@@ -462,7 +462,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
             <div className="flex">
               <Button
                 onClick={handleManualSearch}
-                className="h-12 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                className="h-12 w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
               >
                 <Search className="h-4 w-4 mr-2" />
                 {currentText.searchBtn}
@@ -475,7 +475,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
             <Button
               variant="ghost"
               onClick={() => setShowAdvanced(v => !v)}
-              className="text-gray-600 hover:text-gray-800"
+              className="text-muted-foreground hover:text-foreground"
             >
               <Filter className="h-4 w-4 mr-2" />
               {showAdvanced
@@ -488,7 +488,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 variant="outline"
                 size="sm"
                 onClick={handleClearFilters}
-                className="text-gray-600 hover:text-gray-800"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <X className="h-4 w-4 mr-1" />
                 {language === "id" ? "Hapus semua" : "Clear all"}
@@ -505,7 +505,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
             }}
           >
             {filtersMounted && (
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 p-4 bg-gray-50/80 dark:bg-gray-800/80 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 p-4 bg-muted/50 rounded-lg">
                 {/* Location Selector */}
                 <div className="md:col-span-3">
                   <LocationSelector
@@ -522,7 +522,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 </div>
                 {/* Bedrooms mini pills */}
                 <div>
-                  <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                  <label className="block mb-1 text-foreground text-sm font-medium">
                     {language === "id" ? "Kamar Tidur" : "Bedrooms"}
                   </label>
                   <PillToggleGroup
@@ -539,7 +539,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 </div>
                 {/* Bathrooms mini pills */}
                 <div>
-                  <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                  <label className="block mb-1 text-foreground text-sm font-medium">
                     {language === "id" ? "Kamar Mandi" : "Bathrooms"}
                   </label>
                   <PillToggleGroup
@@ -556,12 +556,12 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 </div>
                 {/* Smart Filter grouped pills */}
                 <div className="md:col-span-2 space-y-3">
-                  <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                  <label className="block mb-1 text-foreground text-sm font-medium">
                     {language === "id" ? "Filter Pintar" : "Smart Filters"}
                   </label>
                   {smartFilterCategories.map((cat) => (
                     <div key={cat.key} className="mb-1">
-                      <div className="text-xs font-semibold text-gray-500 mb-1">{cat.label}</div>
+                      <div className="text-xs font-semibold text-muted-foreground mb-1">{cat.label}</div>
                       <div className="flex flex-wrap gap-2">
                         {cat.options.map((option) => (
                           <button
@@ -570,8 +570,8 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                             onClick={() => handleSmartFacilityToggle(option.value)}
                             className={`px-3 py-1 rounded-full border text-xs font-medium transition 
                               ${selectedSmartFacilities.includes(option.value)
-                                ? "bg-blue-600 text-white shadow scale-105"
-                                : "bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-blue-50 dark:hover:bg-gray-700"}
+                                ? "bg-primary text-primary-foreground shadow scale-105"
+                                : "bg-muted text-muted-foreground hover:bg-primary/10"}
                             `}
                             aria-pressed={selectedSmartFacilities.includes(option.value)}
                           >
@@ -588,7 +588,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
 
           {/* Popular Searches */}
           <div className="text-left">
-            <p className="text-gray-600 dark:text-gray-400 mb-3 font-medium">
+            <p className="text-muted-foreground mb-3 font-medium">
               {language === "id" ? "Pencarian populer:" : "Popular searches:"}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -600,7 +600,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                   <Badge
                     key={idx}
                     variant="secondary"
-                    className="cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
+                    className="cursor-pointer hover:bg-primary/10 transition-colors"
                     onClick={() => {
                       setSearchQuery(term);
                       setPropertyType("");
