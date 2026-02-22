@@ -197,13 +197,13 @@ const NewProjects = () => {
 
   const categories: { name: string; icon: LucideIcon; type: string; count: number; color: string; iconBg: string }[] = [
     { name: 'All Projects', icon: Sparkles, type: 'all', count: Object.values(categoryCounts || {}).reduce((a, b) => a + b, 0), color: 'text-primary', iconBg: 'bg-primary/10 dark:bg-primary/20' },
-    { name: 'Apartments', icon: Building2, type: 'apartment', count: categoryCounts?.apartment || 0, color: 'text-blue-600 dark:text-blue-400', iconBg: 'bg-blue-100 dark:bg-blue-900/50' },
-    { name: 'Houses', icon: Home, type: 'house', count: categoryCounts?.house || 0, color: 'text-emerald-600 dark:text-emerald-400', iconBg: 'bg-emerald-100 dark:bg-emerald-900/50' },
-    { name: 'Commercial', icon: Store, type: 'commercial', count: categoryCounts?.commercial || 0, color: 'text-purple-600 dark:text-purple-400', iconBg: 'bg-purple-100 dark:bg-purple-900/50' },
-    { name: 'Plots', icon: Map, type: 'land', count: categoryCounts?.land || 0, color: 'text-amber-600 dark:text-amber-400', iconBg: 'bg-amber-100 dark:bg-amber-900/50' },
-    { name: 'Offices', icon: Briefcase, type: 'office', count: 0, color: 'text-cyan-600 dark:text-cyan-400', iconBg: 'bg-cyan-100 dark:bg-cyan-900/50' },
-    { name: 'Penthouse', icon: Crown, type: 'penthouse', count: 0, color: 'text-pink-600 dark:text-pink-400', iconBg: 'bg-pink-100 dark:bg-pink-900/50' },
-    { name: 'Farm Houses', icon: Trees, type: 'farmhouse', count: 0, color: 'text-green-600 dark:text-green-400', iconBg: 'bg-green-100 dark:bg-green-900/50' },
+    { name: 'Apartments', icon: Building2, type: 'apartment', count: categoryCounts?.apartment || 0, color: 'text-chart-4', iconBg: 'bg-chart-4/10' },
+    { name: 'Houses', icon: Home, type: 'house', count: categoryCounts?.house || 0, color: 'text-chart-1', iconBg: 'bg-chart-1/10' },
+    { name: 'Commercial', icon: Store, type: 'commercial', count: categoryCounts?.commercial || 0, color: 'text-accent-foreground', iconBg: 'bg-accent/10' },
+    { name: 'Plots', icon: Map, type: 'land', count: categoryCounts?.land || 0, color: 'text-chart-3', iconBg: 'bg-chart-3/10' },
+    { name: 'Offices', icon: Briefcase, type: 'office', count: 0, color: 'text-chart-4', iconBg: 'bg-chart-4/10' },
+    { name: 'Penthouse', icon: Crown, type: 'penthouse', count: 0, color: 'text-chart-5', iconBg: 'bg-chart-5/10' },
+    { name: 'Farm Houses', icon: Trees, type: 'farmhouse', count: 0, color: 'text-chart-1', iconBg: 'bg-chart-1/10' },
   ];
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', slidesToScroll: 1, containScroll: 'trimSnaps' });

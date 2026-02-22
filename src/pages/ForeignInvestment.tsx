@@ -139,11 +139,11 @@ const ForeignInvestment = () => {
         description: pt.wniDesc,
         features: pt.wniFeatures,
         flag: '🇮🇩',
-        gradient: 'from-red-500 via-red-600 to-orange-500',
-        accentColor: 'text-red-500 dark:text-red-400',
-        bgColor: 'bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/40 dark:to-orange-900/30',
-        borderColor: 'border-red-200/60 dark:border-red-500/30',
-        hoverBorder: 'hover:border-red-400 dark:hover:border-red-400/60'
+        gradient: 'from-destructive via-destructive/80 to-chart-3',
+        accentColor: 'text-destructive',
+        bgColor: 'bg-gradient-to-br from-destructive/10 to-chart-3/10',
+        borderColor: 'border-destructive/20',
+        hoverBorder: 'hover:border-destructive/40'
       },
       {
         id: 'wna',
@@ -153,11 +153,11 @@ const ForeignInvestment = () => {
         description: pt.wnaDesc,
         features: pt.wnaFeatures,
         flag: '🌍',
-        gradient: 'from-blue-500 via-blue-600 to-indigo-500',
-        accentColor: 'text-blue-500 dark:text-blue-400',
-        bgColor: 'bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/30',
-        borderColor: 'border-blue-200/60 dark:border-blue-500/30',
-        hoverBorder: 'hover:border-blue-400 dark:hover:border-blue-400/60'
+        gradient: 'from-primary via-primary/80 to-accent',
+        accentColor: 'text-primary',
+        bgColor: 'bg-gradient-to-br from-primary/10 to-accent/10',
+        borderColor: 'border-primary/20',
+        hoverBorder: 'hover:border-primary/40'
       }
     ];
 
@@ -169,14 +169,14 @@ const ForeignInvestment = () => {
             <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-primary/80 to-accent shadow-lg">
               <Building2 className="h-5 w-5 text-white" />
             </div>
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center shadow-md">
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-chart-1 to-chart-1/80 flex items-center justify-center shadow-md">
               <Bot className="h-2.5 w-2.5 text-white" />
             </div>
           </div>
           <div className="text-left">
             <h2 className="text-sm md:text-base font-bold text-foreground flex items-center gap-1.5">
               {language === 'en' ? 'Choose Your Path' : 'Pilih Jalur Anda'}
-              <TrendingUp className="h-3.5 w-3.5 text-green-500" />
+              <TrendingUp className="h-3.5 w-3.5 text-chart-1" />
             </h2>
             <p className="text-[9px] md:text-[10px] text-muted-foreground">
               {language === 'en' ? 'Select your investment pathway' : 'Pilih jalur investasi Anda'}
@@ -224,7 +224,7 @@ const ForeignInvestment = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
                       <span className="text-lg">{item.flag}</span>
-                      <Shield className="h-3.5 w-3.5 text-green-500" />
+                      <Shield className="h-3.5 w-3.5 text-chart-1" />
                     </div>
                     <h3 className="text-xs sm:text-sm font-bold text-foreground group-hover:text-primary transition-colors">
                       {item.title}

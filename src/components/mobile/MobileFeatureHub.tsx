@@ -253,7 +253,7 @@ const MobileFeatureHub: React.FC = () => {
                               <Lock className="h-3.5 w-3.5 text-muted-foreground" />
                             )}
                             {hasFeatureAccess && feature.isPremium && (
-                              <Check className="h-3.5 w-3.5 text-green-500" />
+                              <Check className="h-3.5 w-3.5 text-chart-1" />
                             )}
                           </h3>
                           <p className="text-xs text-muted-foreground mt-0.5">

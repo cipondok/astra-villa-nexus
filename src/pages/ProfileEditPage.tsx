@@ -596,7 +596,7 @@ const VIPMembershipCard: React.FC = () => {
             <div>
               <CardTitle className="text-sm flex items-center gap-1.5">
                 Membership
-                {isHighTier && <Sparkles className="h-3 w-3 text-yellow-500" />}
+                {isHighTier && <Sparkles className="h-3 w-3 text-chart-3" />}
               </CardTitle>
             </div>
           </div>
@@ -645,13 +645,13 @@ const VIPMembershipCard: React.FC = () => {
         {/* Features */}
         <div className="flex flex-wrap gap-1.5">
           {canFeatureListings && (
-            <div className="flex items-center gap-1 text-[9px] bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded">
+            <div className="flex items-center gap-1 text-[9px] bg-chart-1/10 text-chart-1 px-1.5 py-0.5 rounded">
               <Sparkles className="h-2.5 w-2.5" />
               Featured
             </div>
           )}
           {prioritySupport && (
-            <div className="flex items-center gap-1 text-[9px] bg-blue-100 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 px-1.5 py-0.5 rounded">
+            <div className="flex items-center gap-1 text-[9px] bg-chart-4/10 text-chart-4 px-1.5 py-0.5 rounded">
               <Shield className="h-2.5 w-2.5" />
               Priority
             </div>
