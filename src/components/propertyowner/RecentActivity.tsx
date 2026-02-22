@@ -20,7 +20,7 @@ const RecentActivity = () => {
       description: "Someone is interested in your Luxury Beachfront Villa",
       time: "2 hours ago",
       icon: MessageSquare,
-      color: "text-blue-500"
+      color: "text-chart-4"
     },
     {
       id: 2,
@@ -29,7 +29,7 @@ const RecentActivity = () => {
       description: "Your Modern Penthouse SCBD was viewed 5 times today",
       time: "4 hours ago",
       icon: Eye,
-      color: "text-green-500"
+      color: "text-chart-1"
     },
     {
       id: 3,
@@ -38,7 +38,7 @@ const RecentActivity = () => {
       description: "Traditional Javanese House was added to 3 wishlists",
       time: "1 day ago",
       icon: Heart,
-      color: "text-red-500"
+      color: "text-destructive"
     },
     {
       id: 4,
@@ -47,7 +47,7 @@ const RecentActivity = () => {
       description: "Monthly rent payment for Villa Seminyak",
       time: "2 days ago",
       icon: DollarSign,
-      color: "text-yellow-500"
+      color: "text-chart-3"
     },
     {
       id: 5,
@@ -56,7 +56,7 @@ const RecentActivity = () => {
       description: "Your Commercial Space listing is now live",
       time: "3 days ago",
       icon: CheckCircle,
-      color: "text-green-600"
+      color: "text-chart-1"
     }
   ];
 

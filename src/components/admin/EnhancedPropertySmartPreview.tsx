@@ -493,7 +493,7 @@ const EnhancedPropertySmartPreview = () => {
               )}
               
               {previewSettings.pricePosition === 'overlay' && previewSettings.showPrice && (
-                <div className="absolute top-2 right-2 bg-black bg-opacity-75 text-white px-2 py-1 rounded">
+                <div className="absolute top-2 right-2 bg-background/75 text-foreground px-2 py-1 rounded">
                   {property.price ? formatIDR(property.price) : 'Price on request'}
                 </div>
               )}
@@ -969,7 +969,7 @@ const EnhancedPropertySmartPreview = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-white">Image Height: {previewSettings.imageHeight}px</Label>
+                    <Label className="text-foreground">Image Height: {previewSettings.imageHeight}px</Label>
                     <Badge variant="outline" className={getSizeIndicator(previewSettings.imageHeight, 100, 400).color}>
                       {getSizeIndicator(previewSettings.imageHeight, 100, 400).text}
                     </Badge>
@@ -990,7 +990,7 @@ const EnhancedPropertySmartPreview = () => {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-white">Title Size: {previewSettings.titleSize}px</Label>
+                    <Label className="text-foreground">Title Size: {previewSettings.titleSize}px</Label>
                     <Badge variant="outline" className={getSizeIndicator(previewSettings.titleSize, 12, 32).color}>
                       {getSizeIndicator(previewSettings.titleSize, 12, 32).text}
                     </Badge>
@@ -1011,7 +1011,7 @@ const EnhancedPropertySmartPreview = () => {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-white">Price Size: {previewSettings.priceSize}px</Label>
+                    <Label className="text-foreground">Price Size: {previewSettings.priceSize}px</Label>
                     <Badge variant="outline" className={getSizeIndicator(previewSettings.priceSize, 14, 36).color}>
                       {getSizeIndicator(previewSettings.priceSize, 14, 36).text}
                     </Badge>
@@ -1032,7 +1032,7 @@ const EnhancedPropertySmartPreview = () => {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-white">Card Border Radius: {previewSettings.cardBorderRadius}px</Label>
+                    <Label className="text-foreground">Card Border Radius: {previewSettings.cardBorderRadius}px</Label>
                     <Badge variant="outline" className={getSizeIndicator(previewSettings.cardBorderRadius, 0, 24).color}>
                       {getSizeIndicator(previewSettings.cardBorderRadius, 0, 24).text}
                     </Badge>

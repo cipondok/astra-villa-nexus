@@ -129,7 +129,7 @@ const PropertyWatermarkSettings = () => {
         <Button 
           onClick={handleSave}
           disabled={updateWatermarkMutation.isPending}
-          className="text-white font-medium px-6"
+          className="text-primary-foreground font-medium px-6"
           style={{ 
             backgroundColor: themeSettings.primaryColor,
             borderColor: themeSettings.primaryColor 

@@ -753,7 +753,7 @@ export const MacOSAdminDesktop = () => {
                     className="w-4 h-4 bg-destructive rounded-full hover:bg-destructive/80 flex items-center justify-center transition-colors duration-200 hover:scale-110"
                     title="Close"
                   >
-                    <X className="w-3 h-3 text-white font-bold" />
+                    <X className="w-3 h-3 text-primary-foreground font-bold" />
                   </button>
                   <button 
                     onClick={(e) => {
@@ -763,7 +763,7 @@ export const MacOSAdminDesktop = () => {
                     className="w-4 h-4 bg-chart-3 rounded-full hover:bg-chart-3/80 flex items-center justify-center transition-colors duration-200 hover:scale-110"
                     title="Minimize"
                   >
-                    <Minimize2 className="w-3 h-3 text-white" />
+                    <Minimize2 className="w-3 h-3 text-primary-foreground" />
                   </button>
                   <button 
                     onClick={(e) => {
@@ -773,7 +773,7 @@ export const MacOSAdminDesktop = () => {
                     className="w-4 h-4 bg-chart-1 rounded-full hover:bg-chart-1/80 flex items-center justify-center transition-colors duration-200 hover:scale-110"
                     title="Maximize"
                   >
-                    <Maximize2 className="w-3 h-3 text-white" />
+                    <Maximize2 className="w-3 h-3 text-primary-foreground" />
                   </button>
                 </div>
                 <span className="text-sm font-medium text-foreground">{window.title}</span>
@@ -847,15 +847,15 @@ export const MacOSAdminDesktop = () => {
                   <button
                     onClick={() => openApp(app)}
                     className={`
-                      w-12 h-12 rounded-xl flex items-center justify-center text-white
+                      w-12 h-12 rounded-xl flex items-center justify-center text-primary-foreground
                       hover:scale-110 transition-all duration-200 relative
                       ${app.color}
-                      ${isOpen ? 'ring-2 ring-white/50' : ''}
+                      ${isOpen ? 'ring-2 ring-primary-foreground/50' : ''}
                     `}
                   >
                     <Icon className="w-6 h-6" />
                     {isOpen && (
-                      <div className="absolute -bottom-1 w-1 h-1 bg-white rounded-full" />
+                      <div className="absolute -bottom-1 w-1 h-1 bg-primary-foreground rounded-full" />
                     )}
                     {/* New Badge */}
                     {(app as any).badge && (
@@ -888,14 +888,14 @@ export const MacOSAdminDesktop = () => {
           </button>
           
           {/* Divider */}
-          <div className="w-px h-8 bg-white/30" />
+          <div className="w-px h-8 bg-primary-foreground/30" />
           
           {/* Minimized Windows */}
           {openWindows.filter(w => w.isMinimized).map(window => (
             <button
               key={window.id}
               onClick={() => restoreWindow(window.id)}
-              className="w-12 h-12 bg-muted-foreground rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-200"
+              className="w-12 h-12 bg-muted-foreground rounded-xl flex items-center justify-center text-primary-foreground hover:scale-110 transition-all duration-200"
               title={`Restore ${window.title}`}
             >
               <Minimize2 className="w-4 h-4" />

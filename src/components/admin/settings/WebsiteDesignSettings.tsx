@@ -949,7 +949,7 @@ const WebsiteDesignSettings = () => {
 
                 {components.glassmorphism && (
                   <div 
-                    className="p-4 border backdrop-blur-xl bg-white/10 dark:bg-black/10"
+                    className="p-4 border backdrop-blur-xl bg-primary-foreground/10 dark:bg-background/10"
                     style={{ borderRadius: components.borderRadius }}
                   >
                     <p className="text-sm font-medium">Glassmorphism Effect</p>

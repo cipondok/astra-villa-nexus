@@ -154,7 +154,7 @@ const CaptchaSettings = () => {
       </div>
 
       {/* Main Configuration */}
-      <Card className="bg-card/50 border-border/50 border-l-2 border-l-blue-500">
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-4">
         <CardHeader className="py-2 px-3">
           <CardTitle className="text-xs text-foreground">reCAPTCHA Configuration</CardTitle>
         </CardHeader>
@@ -240,7 +240,7 @@ const CaptchaSettings = () => {
       </Card>
 
       {/* Form Protection */}
-      <Card className="bg-card/50 border-border/50 border-l-2 border-l-emerald-500">
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-1">
         <CardHeader className="py-2 px-3">
           <CardTitle className="text-xs text-foreground">Form Protection</CardTitle>
           <CardDescription className="text-[10px]">Enable captcha per form</CardDescription>

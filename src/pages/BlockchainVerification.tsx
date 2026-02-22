@@ -144,7 +144,7 @@ const BlockchainVerification = () => {
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 rounded-xl bg-gradient-to-br from-accent to-primary">
-                  <Shield className="h-8 w-8 text-white" />
+                  <Shield className="h-8 w-8 text-primary-foreground" />
                 </div>
                 <Badge variant="outline" className="bg-accent/10 border-accent/30 text-accent-foreground">
                   {t.network}
@@ -184,7 +184,7 @@ const BlockchainVerification = () => {
                   <Card className="h-full hover:shadow-lg transition-shadow">
                     <CardHeader>
                       <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-3`}>
-                        <feature.icon className="h-6 w-6 text-white" />
+                        <feature.icon className="h-6 w-6 text-primary-foreground" />
                       </div>
                       <CardTitle className="text-lg">{feature.title}</CardTitle>
                     </CardHeader>

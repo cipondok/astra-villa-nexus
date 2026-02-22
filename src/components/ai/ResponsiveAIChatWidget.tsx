@@ -2320,20 +2320,20 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                         <div className="flex items-center gap-2">
                           {syncStatus === 'syncing' && (
                             <>
-                              <Loader2 className="h-3.5 w-3.5 text-blue-500 animate-spin" />
-                              <span className="text-xs text-blue-500 font-medium">Syncing</span>
+                               <Loader2 className="h-3.5 w-3.5 text-chart-4 animate-spin" />
+                              <span className="text-xs text-chart-4 font-medium">Syncing</span>
                             </>
                           )}
                           {syncStatus === 'synced' && (
                             <>
-                              <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
-                              <span className="text-xs text-green-500 font-medium">Synced</span>
+                              <CheckCircle2 className="h-3.5 w-3.5 text-chart-1" />
+                              <span className="text-xs text-chart-1 font-medium">Synced</span>
                             </>
                           )}
                           {syncStatus === 'error' && (
                             <>
-                              <XCircle className="h-3.5 w-3.5 text-red-500" />
-                              <span className="text-xs text-red-500 font-medium">Error</span>
+                              <XCircle className="h-3.5 w-3.5 text-destructive" />
+                              <span className="text-xs text-destructive font-medium">Error</span>
                             </>
                           )}
                           {syncStatus === 'idle' && lastSyncTime && (
