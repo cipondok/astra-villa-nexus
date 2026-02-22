@@ -66,13 +66,13 @@ const FeedbackSection = ({ propertyId }: FeedbackSectionProps) => {
                     <Star
                       key={i}
                       className={`h-4 w-4 ${
-                        i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                        i < review.rating ? 'fill-gold-primary text-gold-primary' : 'text-muted-foreground/50'
                       }`}
                     />
                   ))}
                 </div>
               </div>
-              <p className="text-gray-700 dark:text-gray-300">{review.comment}</p>
+              <p className="text-muted-foreground">{review.comment}</p>
               <Button variant="ghost" size="sm" className="mt-2">
                 <ThumbsUp className="h-3 w-3 mr-1" />
                 Helpful
@@ -94,7 +94,7 @@ const FeedbackSection = ({ propertyId }: FeedbackSectionProps) => {
                 <Star
                   key={star}
                   className={`h-6 w-6 cursor-pointer ${
-                    star <= newRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                    star <= newRating ? 'fill-gold-primary text-gold-primary' : 'text-muted-foreground/50'
                   }`}
                   onClick={() => setNewRating(star)}
                 />

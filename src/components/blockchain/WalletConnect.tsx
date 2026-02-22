@@ -97,7 +97,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm" className="gap-2">
-            <div className={`h-2 w-2 rounded-full ${isPolygon ? 'bg-purple-500' : 'bg-yellow-500'}`} />
+            <div className={`h-2 w-2 rounded-full ${isPolygon ? 'bg-accent' : 'bg-chart-3'}`} />
             {shortenAddress(address)}
             <ChevronDown className="h-3 w-3" />
           </Button>

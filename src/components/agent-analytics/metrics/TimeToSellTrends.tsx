@@ -37,7 +37,7 @@ const TimeToSellTrends: React.FC<TimeToSellTrendsProps> = ({ data, className }) 
           </div>
           <p className="text-2xl font-bold text-foreground">{data.avgDaysToSell}</p>
           <p className="text-xs text-muted-foreground">Avg. Days to Sell</p>
-          <div className="flex items-center gap-1 text-[10px] text-green-500 mt-1">
+          <div className="flex items-center gap-1 text-[10px] text-chart-1 mt-1">
             <TrendingDown className="h-3 w-3" />
             5 days faster than last month
           </div>
@@ -56,7 +56,7 @@ const TimeToSellTrends: React.FC<TimeToSellTrendsProps> = ({ data, className }) 
           </div>
           <p className="text-2xl font-bold text-foreground">{data.avgDaysToRent}</p>
           <p className="text-xs text-muted-foreground">Avg. Days to Rent</p>
-          <div className="flex items-center gap-1 text-[10px] text-green-500 mt-1">
+          <div className="flex items-center gap-1 text-[10px] text-chart-1 mt-1">
             <TrendingDown className="h-3 w-3" />
             2 days faster than last month
           </div>
@@ -122,13 +122,13 @@ const TimeToSellTrends: React.FC<TimeToSellTrendsProps> = ({ data, className }) 
                   <div className="flex items-center gap-2">
                     <div className={cn(
                       "w-6 h-6 rounded-lg flex items-center justify-center",
-                      idx === 0 ? "bg-green-500/10" : 
+                      idx === 0 ? "bg-chart-1/10" : 
                       idx === sortedByType.length - 1 ? "bg-destructive/10" : 
                       "bg-muted"
                     )}>
                       <Icon className={cn(
                         "h-3 w-3",
-                        idx === 0 ? "text-green-500" : 
+                        idx === 0 ? "text-chart-1" : 
                         idx === sortedByType.length - 1 ? "text-destructive" : 
                         "text-muted-foreground"
                       )} />
@@ -144,7 +144,7 @@ const TimeToSellTrends: React.FC<TimeToSellTrendsProps> = ({ data, className }) 
                     transition={{ duration: 0.8, delay: idx * 0.05 }}
                     className={cn(
                       "h-full rounded-full",
-                      idx === 0 ? "bg-gradient-to-r from-green-500 to-green-400" :
+                      idx === 0 ? "bg-gradient-to-r from-chart-1 to-chart-1/70" :
                       idx === sortedByType.length - 1 ? "bg-gradient-to-r from-destructive to-destructive/70" :
                       "bg-gradient-to-r from-primary to-primary/70"
                     )}
@@ -157,13 +157,13 @@ const TimeToSellTrends: React.FC<TimeToSellTrendsProps> = ({ data, className }) 
       </div>
 
       {/* Performance Benchmark */}
-      <div className="bg-gradient-to-r from-green-500/10 via-background to-primary/10 border border-border/50 rounded-xl p-4">
+      <div className="bg-gradient-to-r from-chart-1/10 via-background to-primary/10 border border-border/50 rounded-xl p-4">
         <h4 className="text-sm font-semibold text-foreground mb-2">Performance vs Market</h4>
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center">
             <p className="text-xs text-muted-foreground mb-1">Your Avg (Sale)</p>
-            <p className="text-xl font-bold text-green-500">{data.avgDaysToSell} days</p>
-            <p className="text-[10px] text-green-600">15% faster than market</p>
+            <p className="text-xl font-bold text-chart-1">{data.avgDaysToSell} days</p>
+            <p className="text-[10px] text-chart-1">15% faster than market</p>
           </div>
           <div className="text-center">
             <p className="text-xs text-muted-foreground mb-1">Your Avg (Rent)</p>

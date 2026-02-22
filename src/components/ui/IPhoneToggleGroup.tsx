@@ -27,8 +27,8 @@ const IPhoneToggleGroup: React.FC<IPhoneToggleGroupProps> = ({
         className={`
           px-4 py-2 rounded-full font-semibold text-sm transition-all
           ${opt.value === value
-            ? `${opt.colorClass ?? "bg-primary text-white"} scale-105 shadow-lg`
-            : "bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700"}
+            ? `${opt.colorClass ?? "bg-primary text-primary-foreground"} scale-105 shadow-lg`
+            : "bg-muted text-muted-foreground hover:bg-muted/80"}
           outline-none focus:ring-2 focus:ring-primary`
         }
         style={{ minWidth: 76 }}
