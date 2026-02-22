@@ -217,7 +217,7 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
 
       {/* Enhanced Location Section */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900">Lokasi Properti</h3>
+        <h3 className="text-lg font-semibold text-foreground">Lokasi Properti</h3>
         <EnhancedLocationSelector
           selectedState={formData.state}
           selectedCity={formData.city}

@@ -236,7 +236,7 @@ const VideoTourViewer: React.FC<VideoTourViewerProps> = ({
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <span className="absolute bottom-1 left-1 text-[10px] text-white font-medium">
+                <span className="absolute bottom-1 left-1 text-[10px] text-primary-foreground font-medium">
                   {index + 1}. {scene.title}
                 </span>
               </button>

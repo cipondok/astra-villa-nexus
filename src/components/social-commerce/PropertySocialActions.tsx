@@ -86,7 +86,7 @@ const PropertySocialActions: React.FC<PropertySocialActionsProps> = ({
                         className={cn(
                           "h-12 w-12 rounded-full shadow-lg",
                           action.color,
-                          "text-white"
+                          "text-primary-foreground"
                         )}
                       >
                         <action.icon className="h-5 w-5" />
@@ -138,7 +138,7 @@ const PropertySocialActions: React.FC<PropertySocialActionsProps> = ({
           className={cn(
             "h-14 w-14 rounded-full shadow-xl flex items-center justify-center",
             "bg-gradient-to-br from-primary to-primary/80",
-            "text-white transition-transform"
+            "text-primary-foreground transition-transform"
           )}
           animate={{ rotate: isExpanded ? 45 : 0 }}
         >

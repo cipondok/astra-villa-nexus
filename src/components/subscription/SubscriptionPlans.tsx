@@ -73,7 +73,7 @@ export const SubscriptionPlans: React.FC = () => {
 
                 <CardHeader className="text-center pb-2">
                   <div className={`mx-auto w-12 h-12 rounded-full bg-gradient-to-br ${PLAN_COLORS[plan.slug]} flex items-center justify-center mb-3`}>
-                    <Icon className="h-6 w-6 text-white" />
+                    <Icon className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <CardTitle className="text-xl">{plan.name}</CardTitle>
                   <CardDescription>{plan.description}</CardDescription>

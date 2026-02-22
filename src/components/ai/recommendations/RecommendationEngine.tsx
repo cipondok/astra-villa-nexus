@@ -108,7 +108,7 @@ const RecommendationEngine = ({
             <TrendingUp className="h-3 w-3 mr-1" />
             {meta.preferenceMatches} preference matches
           </Badge>
-          <Badge className="bg-purple-100 text-purple-700">
+          <Badge className="bg-accent/10 text-accent">
             <Lightbulb className="h-3 w-3 mr-1" />
             {meta.discoveryMatches} discoveries
           </Badge>
@@ -166,9 +166,9 @@ const RecommendationEngine = ({
             </TabsContent>
 
             <TabsContent value="discovery">
-              <div className="mb-4 p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+              <div className="mb-4 p-4 bg-accent/5 dark:bg-accent/10 rounded-lg">
                 <h4 className="font-medium flex items-center gap-2 mb-1">
-                  <Lightbulb className="h-4 w-4 text-purple-600" />
+                  <Lightbulb className="h-4 w-4 text-accent" />
                   Discovery Recommendations
                 </h4>
                 <p className="text-sm text-muted-foreground">

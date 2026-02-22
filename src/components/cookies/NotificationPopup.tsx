@@ -47,7 +47,7 @@ const NotificationPopup = ({ show, onClose }: NotificationPopupProps) => {
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="absolute top-1.5 right-1.5 md:top-3 md:right-3 hover:bg-white/10 rounded-full h-7 w-7 md:h-auto md:w-auto"
+            className="absolute top-1.5 right-1.5 md:top-3 md:right-3 hover:bg-primary-foreground/10 rounded-full h-7 w-7 md:h-auto md:w-auto"
           >
             <X className="w-3 h-3 md:w-4 md:h-4" />
           </Button>
@@ -55,7 +55,7 @@ const NotificationPopup = ({ show, onClose }: NotificationPopupProps) => {
           {/* Icon */}
           <div className="flex items-start gap-2 md:gap-3 mb-2 md:mb-3">
             <div className="flex-shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center animate-pulse">
-              <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-white" />
+              <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
             </div>
             
             <div className="flex-grow">

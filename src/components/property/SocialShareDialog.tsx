@@ -154,7 +154,7 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
                 onClick={platform.action}
               >
                 <div className={`p-1.5 rounded-full ${platform.color}`}>
-                  <platform.icon className="h-3.5 w-3.5 text-white" />
+                  <platform.icon className="h-3.5 w-3.5 text-primary-foreground" />
                 </div>
                 <span className="text-[9px] font-medium text-foreground/80 line-clamp-1">{platform.name}</span>
               </Button>
