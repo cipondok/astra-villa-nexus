@@ -105,13 +105,13 @@ const VendorCustomerManagement = () => {
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      active: "bg-green-100 text-green-800",
-      inactive: "bg-gray-100 text-gray-800",
-      blocked: "bg-red-100 text-red-800"
+      active: "bg-chart-1/20 text-chart-1",
+      inactive: "bg-muted text-muted-foreground",
+      blocked: "bg-destructive/20 text-destructive"
     };
 
     return (
-      <Badge variant="outline" className={colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800"}>
+      <Badge variant="outline" className={colors[status as keyof typeof colors] || "bg-muted text-muted-foreground"}>
         {status.toUpperCase()}
       </Badge>
     );
@@ -149,9 +149,9 @@ const VendorCustomerManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Active Customers</p>
-                <p className="text-2xl font-bold text-green-600">{activeCustomers}</p>
+                <p className="text-2xl font-bold text-chart-1">{activeCustomers}</p>
               </div>
-              <Users className="h-8 w-8 text-green-600" />
+              <Users className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -161,9 +161,9 @@ const VendorCustomerManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
-                <p className="text-2xl font-bold text-blue-600">{totalOrders}</p>
+                <p className="text-2xl font-bold text-chart-4">{totalOrders}</p>
               </div>
-              <Calendar className="h-8 w-8 text-blue-600" />
+              <Calendar className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -173,9 +173,9 @@ const VendorCustomerManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold text-green-600">${totalRevenue.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-chart-1">${totalRevenue.toFixed(2)}</p>
               </div>
-              <DollarSign className="h-8 w-8 text-green-600" />
+              <DollarSign className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -196,7 +196,7 @@ const VendorCustomerManagement = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder="Search customers..."
                   value={searchTerm}

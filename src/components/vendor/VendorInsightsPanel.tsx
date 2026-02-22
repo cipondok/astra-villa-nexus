@@ -136,26 +136,26 @@ const VendorInsightsPanel = ({ performanceData, goals }: VendorInsightsPanelProp
   const getInsightIcon = (type: string) => {
     switch (type) {
       case "warning":
-        return <AlertTriangle className="h-5 w-5 text-orange-600" />;
+        return <AlertTriangle className="h-5 w-5 text-chart-3" />;
       case "success":
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
+        return <CheckCircle className="h-5 w-5 text-chart-1" />;
       case "tip":
-        return <Lightbulb className="h-5 w-5 text-blue-600" />;
+        return <Lightbulb className="h-5 w-5 text-chart-4" />;
       default:
-        return <TrendingUp className="h-5 w-5 text-blue-600" />;
+        return <TrendingUp className="h-5 w-5 text-chart-4" />;
     }
   };
 
   const getInsightColor = (type: string) => {
     switch (type) {
       case "warning":
-        return "border-l-orange-500 bg-orange-50";
+        return "border-l-chart-3 bg-chart-3/10";
       case "success":
-        return "border-l-green-500 bg-green-50";
+        return "border-l-chart-1 bg-chart-1/10";
       case "tip":
-        return "border-l-blue-500 bg-blue-50";
+        return "border-l-chart-4 bg-chart-4/10";
       default:
-        return "border-l-gray-500 bg-gray-50";
+        return "border-l-muted-foreground bg-muted";
     }
   };
 
@@ -180,10 +180,10 @@ const VendorInsightsPanel = ({ performanceData, goals }: VendorInsightsPanelProp
               <div className="flex items-start gap-3">
                 {getInsightIcon(insight.type)}
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 mb-1">
+                  <h3 className="font-semibold text-foreground mb-1">
                     {insight.title}
                   </h3>
-                  <p className="text-sm text-gray-700 mb-3">
+                  <p className="text-sm text-muted-foreground mb-3">
                     {insight.message}
                   </p>
                   <div className="flex items-center gap-3">
