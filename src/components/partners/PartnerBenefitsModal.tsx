@@ -29,56 +29,56 @@ const PartnerBenefitsModal = ({ isOpen, onClose }: PartnerBenefitsModalProps) =>
       title: "Revenue Sharing",
       description: "Earn up to 40% commission on successful referrals and closed deals",
       category: "Financial",
-      color: "text-green-500"
+      color: "text-chart-1"
     },
     {
       icon: Users,
       title: "Lead Generation",
       description: "Access to our extensive client database and marketing channels",
       category: "Business Growth",
-      color: "text-blue-500"
+      color: "text-primary"
     },
     {
       icon: BookOpen,
       title: "Training & Education",
       description: "Free access to industry training programs and certification courses",
       category: "Professional Development",
-      color: "text-purple-500"
+      color: "text-accent"
     },
     {
       icon: Zap,
       title: "Technology Access",
       description: "Use our advanced CRM, marketing tools, and property management software",
       category: "Technology",
-      color: "text-yellow-500"
+      color: "text-gold-primary"
     },
     {
       icon: Shield,
       title: "Legal Support",
       description: "Access to legal consultation and document templates",
       category: "Support",
-      color: "text-red-500"
+      color: "text-destructive"
     },
     {
       icon: Target,
       title: "Marketing Support",
       description: "Co-branded marketing materials and digital marketing campaigns",
       category: "Marketing",
-      color: "text-orange-500"
+      color: "text-chart-3"
     },
     {
       icon: Award,
       title: "Recognition Program",
       description: "Performance-based awards and public recognition opportunities",
       category: "Recognition",
-      color: "text-indigo-500"
+      color: "text-chart-4"
     },
     {
       icon: Headphones,
       title: "24/7 Support",
       description: "Round-the-clock technical and business support",
       category: "Support",
-      color: "text-pink-500"
+      color: "text-chart-5"
     }
   ];
 
@@ -176,23 +176,23 @@ const PartnerBenefitsModal = ({ isOpen, onClose }: PartnerBenefitsModalProps) =>
           </div>
 
           {/* Success Stats */}
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
+          <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-4 text-center">Partner Success Statistics</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">500+</div>
+                <div className="text-2xl font-bold text-primary">500+</div>
                 <div className="text-sm text-muted-foreground">Active Partners</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">$2.5M+</div>
+                <div className="text-2xl font-bold text-chart-1">$2.5M+</div>
                 <div className="text-sm text-muted-foreground">Partner Earnings</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">95%</div>
+                <div className="text-2xl font-bold text-accent">95%</div>
                 <div className="text-sm text-muted-foreground">Satisfaction Rate</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600">24/7</div>
+                <div className="text-2xl font-bold text-chart-3">24/7</div>
                 <div className="text-sm text-muted-foreground">Support Available</div>
               </div>
             </div>
@@ -203,7 +203,7 @@ const PartnerBenefitsModal = ({ isOpen, onClose }: PartnerBenefitsModalProps) =>
             <Button variant="outline" onClick={onClose} className="flex-1">
               Close
             </Button>
-            <Button className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+            <Button className="flex-1 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
               <Rocket className="h-4 w-4 mr-2" />
               Start Partnership Journey
             </Button>

@@ -39,10 +39,10 @@ const GmailOfferPopup = ({ show, onClose, email }: GmailOfferPopupProps) => {
             <div className="flex justify-center mb-4">
               <div className="relative">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center animate-pulse">
-                  <Gift className="w-8 h-8 text-white" />
+                  <Gift className="w-8 h-8 text-primary-foreground" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
-                  <Mail className="w-3 h-3 text-white" />
+                <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-gold-primary to-chart-3 flex items-center justify-center">
+                  <Mail className="w-3 h-3 text-primary-foreground" />
                 </div>
               </div>
             </div>

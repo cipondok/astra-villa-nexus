@@ -109,10 +109,10 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
               </div>
             </div>
             <div className="text-left">
-              <h2 className="text-xs md:text-sm font-bold text-foreground dark:text-white">
+              <h2 className="text-xs md:text-sm font-bold text-foreground">
                 {t.headline}
               </h2>
-              <p className="text-[8px] md:text-[9px] text-muted-foreground dark:text-white/60">
+              <p className="text-[8px] md:text-[9px] text-muted-foreground">
                 {t.subtitle}
               </p>
             </div>
@@ -160,10 +160,10 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
 
                 {/* Text Content */}
                 <div className="text-center">
-                  <h3 className="text-[10px] md:text-xs font-bold text-foreground dark:text-white">
+                  <h3 className="text-[10px] md:text-xs font-bold text-foreground">
                     {item.title}
                   </h3>
-                  <p className="text-[7px] md:text-[8px] text-muted-foreground dark:text-white/60 mt-0.5">
+                  <p className="text-[7px] md:text-[8px] text-muted-foreground mt-0.5">
                     {item.description}
                   </p>
                 </div>
@@ -185,7 +185,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                 </div>
 
                 {/* AI Badge */}
-                <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[6px] text-white font-bold shadow-lg">
+                <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[6px] text-primary-foreground font-bold shadow-lg">
                   <Sparkles className="w-2 h-2" />
                   AI
                 </div>
@@ -229,10 +229,10 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
 
             {/* Text Content */}
             <div className="text-center">
-              <h3 className="text-[10px] md:text-xs font-bold text-foreground dark:text-white">
+              <h3 className="text-[10px] md:text-xs font-bold text-foreground">
                 {centralPath.title}
               </h3>
-              <p className="text-[7px] md:text-[8px] text-muted-foreground dark:text-white/60 mt-0.5">
+              <p className="text-[7px] md:text-[8px] text-muted-foreground mt-0.5">
                 {centralPath.description}
               </p>
             </div>
@@ -254,7 +254,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
             </div>
 
             {/* Guide Badge */}
-            <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[6px] text-white font-bold shadow-lg">
+            <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[6px] text-primary-foreground font-bold shadow-lg">
               <Globe className="w-2 h-2" />
               Guide
             </div>
@@ -280,11 +280,11 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
               </div>
             </div>
             <div className="text-left">
-              <h2 className="text-sm md:text-base font-bold text-white flex items-center gap-1.5">
+              <h2 className="text-sm md:text-base font-bold text-primary-foreground flex items-center gap-1.5">
                 {t.headline}
                 <TrendingUp className="h-3.5 w-3.5 text-chart-1" />
               </h2>
-              <p className="text-[9px] md:text-[10px] text-white/70">
+              <p className="text-[9px] md:text-[10px] text-primary-foreground/70">
                 {t.subtitle}
               </p>
             </div>
@@ -331,16 +331,16 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                       <span className="text-lg">{item.flag}</span>
                       <Shield className="h-3.5 w-3.5 text-chart-1" />
                     </div>
-                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-gold-primary transition-colors">
+                    <h3 className="text-xs sm:text-sm font-bold text-primary-foreground group-hover:text-gold-primary transition-colors">
                       {item.title}
                     </h3>
-                    <p className="text-[9px] sm:text-[10px] text-white/70">
+                    <p className="text-[9px] sm:text-[10px] text-primary-foreground/70">
                       {item.description}
                     </p>
                   </div>
                   
                   {/* AI Badge */}
-                  <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[7px] text-white font-bold shadow-lg">
+                  <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[7px] text-primary-foreground font-bold shadow-lg">
                     <Sparkles className="w-2.5 h-2.5" />
                     AI
                   </div>

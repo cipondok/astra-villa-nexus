@@ -159,7 +159,7 @@ const PaymentInstructions = ({ paymentData, onPaymentConfirmed }: PaymentInstruc
                 <ol className="text-sm space-y-1">
                   {instructions.instructions.map((step: string, index: number) => (
                     <li key={index} className="flex">
-                      <span className="mr-2 text-blue-600 font-medium">{index + 1}.</span>
+                       <span className="mr-2 text-primary font-medium">{index + 1}.</span>
                       <span>{step}</span>
                     </li>
                   ))}
@@ -200,7 +200,7 @@ const PaymentInstructions = ({ paymentData, onPaymentConfirmed }: PaymentInstruc
                 <ol className="text-sm space-y-1">
                   {instructions.instructions.map((step: string, index: number) => (
                     <li key={index} className="flex">
-                      <span className="mr-2 text-blue-600 font-medium">{index + 1}.</span>
+                      <span className="mr-2 text-primary font-medium">{index + 1}.</span>
                       <span>{step}</span>
                     </li>
                   ))}

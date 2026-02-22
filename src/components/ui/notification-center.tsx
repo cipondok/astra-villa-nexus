@@ -218,7 +218,7 @@ const NotificationCenter = () => {
                   <Card 
                     key={notification.id} 
                     className={`cursor-pointer transition-colors ${
-                      !notification.is_read ? 'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800' : ''
+                      !notification.is_read ? 'bg-primary/5 border-primary/20' : ''
                     }`}
                     onClick={() => handleNotificationClick(notification)}
                   >

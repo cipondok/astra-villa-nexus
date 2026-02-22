@@ -97,10 +97,10 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
   return (
     <section className="rounded-xl p-3">
       <div className="mb-3 flex items-center justify-center gap-2">
-        <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-md shadow-blue-500/30">
-          <Key className="h-3.5 w-3.5 text-white" />
+        <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-chart-4 to-primary flex items-center justify-center shadow-md shadow-chart-4/30">
+          <Key className="h-3.5 w-3.5 text-primary-foreground" />
         </div>
-        <h2 className="text-sm font-bold bg-gradient-to-r from-blue-600 via-cyan-500 to-primary bg-clip-text text-transparent">Properti Disewa</h2>
+        <h2 className="text-sm font-bold bg-gradient-to-r from-chart-4 via-primary to-primary bg-clip-text text-transparent">Properti Disewa</h2>
       </div>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3">
@@ -112,7 +112,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
             <div
               key={property.id}
               onClick={() => onPropertyClick(property)}
-              className="group cursor-pointer rounded-xl border border-white/30 dark:border-white/15 bg-white/60 dark:bg-white/5 backdrop-blur-xl shadow-lg shadow-blue-500/5 hover:shadow-2xl hover:shadow-blue-500/15 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-blue-400/5 before:via-transparent before:to-cyan-400/5 before:pointer-events-none before:rounded-xl"
+              className="group cursor-pointer rounded-xl border border-border/30 dark:border-border/15 bg-card/60 dark:bg-card/5 backdrop-blur-xl shadow-lg shadow-chart-4/5 hover:shadow-2xl hover:shadow-chart-4/15 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-chart-4/5 before:via-transparent before:to-primary/5 before:pointer-events-none before:rounded-xl"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -128,11 +128,11 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
 
                 {/* Top Badges */}
                 <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between">
-                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gradient-to-r from-blue-400 to-cyan-500 text-white shadow-lg shadow-blue-500/40 ring-1 ring-white/30">
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gradient-to-r from-chart-4 to-primary text-primary-foreground shadow-lg shadow-chart-4/40 ring-1 ring-background/30">
                     <Key className="h-2 w-2" />
                     RENT
                   </span>
-                  <span className="flex items-center gap-0.5 bg-white/20 backdrop-blur-lg text-white text-[9px] px-1.5 py-0.5 rounded-full border border-white/30 shadow-sm">
+                  <span className="flex items-center gap-0.5 bg-background/20 backdrop-blur-lg text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full border border-background/30 shadow-sm">
                     <Building className="h-2 w-2" />
                     {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
                   </span>
@@ -140,7 +140,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
 
                 {/* Image count badge */}
                 {imageCount > 1 && (
-                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 bg-white/15 backdrop-blur-lg text-white text-[9px] px-1.5 py-0.5 rounded-full border border-white/25 shadow-sm">
+                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 bg-background/15 backdrop-blur-lg text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full border border-background/25 shadow-sm">
                     <Camera className="h-2 w-2" />
                     {imageCount}
                   </div>
@@ -178,30 +178,30 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
                 </h3>
 
                 {/* Location */}
-                <div className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-cyan-500/10 via-sky-500/8 to-blue-500/10 border border-cyan-400/25 px-1.5 py-0.5 backdrop-blur-sm" title={getLocation(property)}>
-                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-cyan-500 dark:text-cyan-400" />
+                <div className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-chart-4/10 via-primary/8 to-chart-4/10 border border-chart-4/25 px-1.5 py-0.5 backdrop-blur-sm" title={getLocation(property)}>
+                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-chart-4" />
                   <span className="text-[10px] text-foreground/70 font-medium truncate">{getLocation(property)}</span>
                 </div>
 
                 {/* Specs */}
-                <div className="flex items-center gap-1 pt-1.5 border-t border-blue-400/15">
+                <div className="flex items-center gap-1 pt-1.5 border-t border-chart-4/15">
                   {Number(property.bedrooms) > 0 && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-violet-500/15 to-purple-500/15 border border-violet-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-violet-500/10">
-                      <Bed className="h-2.5 w-2.5 text-violet-500 dark:text-violet-400" />
+                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-accent/15 to-accent/10 border border-accent/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-accent/10">
+                      <Bed className="h-2.5 w-2.5 text-accent" />
                       <span className="text-[10px] font-bold text-foreground/80">{property.bedrooms}</span>
-                      <span className="text-[8px] text-violet-500/70 dark:text-violet-400/70 font-bold">KT</span>
+                      <span className="text-[8px] text-accent/70 font-bold">KT</span>
                     </div>
                   )}
                   {Number(property.bathrooms) > 0 && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-sky-500/15 to-blue-500/15 border border-sky-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-sky-500/10">
-                      <Bath className="h-2.5 w-2.5 text-sky-500 dark:text-sky-400" />
+                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-chart-4/15 to-primary/15 border border-chart-4/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-chart-4/10">
+                      <Bath className="h-2.5 w-2.5 text-chart-4" />
                       <span className="text-[10px] font-bold text-foreground/80">{property.bathrooms}</span>
-                      <span className="text-[8px] text-sky-500/70 dark:text-sky-400/70 font-bold">KM</span>
+                      <span className="text-[8px] text-chart-4/70 font-bold">KM</span>
                     </div>
                   )}
                   {Number(property.area_sqm) > 0 && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-amber-500/15 to-orange-500/15 border border-amber-400/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-amber-500/10">
-                      <Maximize className="h-2.5 w-2.5 text-amber-500 dark:text-amber-400" />
+                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-gold-primary/15 to-chart-3/15 border border-gold-primary/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-gold-primary/10">
+                      <Maximize className="h-2.5 w-2.5 text-gold-primary" />
                       <span className="text-[10px] font-bold text-foreground/80">{property.area_sqm}m²</span>
                     </div>
                   )}

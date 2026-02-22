@@ -43,7 +43,7 @@ const SearchLoadingAnimation = ({ language }: SearchLoadingAnimationProps) => {
       {/* Animated ASTRA Villa Logo */}
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-2">
-          <span className="inline-block animate-gradient bg-gradient-to-r from-blue-600 via-purple-500 to-orange-500 bg-clip-text text-transparent bg-[length:300%_300%]">
+          <span className="inline-block animate-gradient bg-gradient-to-r from-primary via-accent to-chart-3 bg-clip-text text-transparent bg-[length:300%_300%]">
             ASTRA Villa
           </span>
         </h1>

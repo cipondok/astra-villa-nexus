@@ -210,7 +210,7 @@ const VerifiedAgentsList = ({ searchQuery }: VerifiedAgentsListProps) => {
   return (
     <div>
       <div className="flex items-center gap-2 mb-6">
-        <Shield className="h-5 w-5 text-green-600" />
+        <Shield className="h-5 w-5 text-chart-1" />
         <h2 className="text-xl font-semibold text-foreground">
           Agen Terverifikasi ({agents.length})
         </h2>

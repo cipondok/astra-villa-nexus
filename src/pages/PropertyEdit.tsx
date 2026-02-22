@@ -152,8 +152,8 @@ const PropertyEdit = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Property Not Found</h2>
-          <p className="text-gray-600 mb-4">The property you're looking for doesn't exist or you don't have permission to edit it.</p>
+          <h2 className="text-2xl font-bold text-foreground mb-4">Property Not Found</h2>
+          <p className="text-muted-foreground mb-4">The property you're looking for doesn't exist or you don't have permission to edit it.</p>
           <Button onClick={() => navigate('/agent-dashboard')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
@@ -165,9 +165,9 @@ const PropertyEdit = () => {
 
   return (
     <div className="min-h-screen relative">
-      <div className="fixed inset-0 bg-gradient-to-br from-blue-50/60 via-purple-50/60 to-pink-50/60 backdrop-blur-sm -z-10"></div>
+      <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-chart-5/5 backdrop-blur-sm -z-10"></div>
       
-      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50 shadow-sm">
         <AuthenticatedNavigation
           language={language}
           onLanguageToggle={() => setLanguage(language === "en" ? "id" : "en")}
@@ -187,7 +187,7 @@ const PropertyEdit = () => {
 
           <Card className="bg-card/95 backdrop-blur-md shadow-xl border-border/50">
             <CardHeader className="space-y-1 pb-6">
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary via-accent to-chart-5 bg-clip-text text-transparent">
                 Edit Property
               </CardTitle>
               <CardDescription className="text-base">Update your property listing details across different categories</CardDescription>

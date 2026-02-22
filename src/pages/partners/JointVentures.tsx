@@ -272,7 +272,7 @@ const JointVentures = () => {
         {/* Description */}
         <div className="max-w-4xl mx-auto mb-16">
           <div className="bg-background p-8 rounded-2xl shadow-macos border border-border text-center">
-            <p className="text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed">
+            <p className="text-lg text-muted-foreground leading-relaxed">
               {currentText.description}
             </p>
           </div>
@@ -294,10 +294,10 @@ const JointVentures = () => {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-xl font-bold text-foreground mb-2">{opportunity.title}</h3>
-                      <p className="text-neutral-600 dark:text-neutral-400">{opportunity.description}</p>
+                      <p className="text-muted-foreground">{opportunity.description}</p>
                     </div>
                   </div>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400 pl-16">{opportunity.details}</p>
+                  <p className="text-sm text-muted-foreground pl-16">{opportunity.details}</p>
                 </div>
               );
             })}
@@ -314,7 +314,7 @@ const JointVentures = () => {
               {currentText.advantages.map((advantage, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-macos-gradient rounded-full shadow-macos" />
-                  <span className="text-neutral-700 dark:text-neutral-300">{advantage}</span>
+                  <span className="text-muted-foreground">{advantage}</span>
                 </div>
               ))}
             </div>
@@ -328,7 +328,7 @@ const JointVentures = () => {
               <h2 className="text-3xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
                 {currentText.formTitle}
               </h2>
-              <p className="text-neutral-600 dark:text-neutral-400 text-lg">
+              <p className="text-muted-foreground text-lg">
                 {currentText.formSubtitle}
               </p>
             </div>
@@ -336,7 +336,7 @@ const JointVentures = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                   <label className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <User className="w-4 h-4 text-macos-blue" />
                     {currentText.namePlaceholder}
                   </label>
@@ -345,12 +345,12 @@ const JointVentures = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder={currentText.namePlaceholder}
-                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                     className="h-12 bg-muted/50 border-border focus:border-primary focus:ring-primary"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                   <label className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <Mail className="w-4 h-4 text-macos-blue" />
                     {currentText.emailPlaceholder}
                   </label>
@@ -366,7 +366,7 @@ const JointVentures = () => {
                         setEmailValid(email.length > 0 ? emailRegex.test(email) : null);
                       }}
                       placeholder={currentText.emailPlaceholder}
-                      className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                       className="h-12 pr-10 bg-muted/50 border-border focus:border-primary focus:ring-primary"
                     />
                     {emailValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -381,7 +381,7 @@ const JointVentures = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                   <label className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <Phone className="w-4 h-4 text-macos-blue" />
                     {currentText.phonePlaceholder}
                   </label>
@@ -401,7 +401,7 @@ const JointVentures = () => {
                         }
                       }}
                       placeholder={currentText.phonePlaceholder}
-                      className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                      className="h-12 pr-10 bg-muted/50 border-border focus:border-primary focus:ring-primary"
                     />
                     {phoneValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -416,7 +416,7 @@ const JointVentures = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                   <label className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <Building className="w-4 h-4 text-macos-blue" />
                     {currentText.companyPlaceholder}
                   </label>
@@ -425,17 +425,17 @@ const JointVentures = () => {
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                     placeholder={currentText.companyPlaceholder}
-                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                     className="h-12 bg-muted/50 border-border focus:border-primary focus:ring-primary"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                   <label className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <DollarSign className="w-4 h-4 text-macos-blue" />
                     {currentText.investmentRange}
                   </label>
                   <Select value={formData.investmentRange} onValueChange={(value) => setFormData({ ...formData, investmentRange: value })}>
-                    <SelectTrigger className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue">
+                     <SelectTrigger className="h-12 bg-muted/50 border-border focus:border-primary focus:ring-primary">
                       <SelectValue placeholder={currentText.selectInvestment} />
                     </SelectTrigger>
                     <SelectContent>
