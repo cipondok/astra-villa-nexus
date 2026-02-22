@@ -757,7 +757,7 @@ const WelcomeScreenSettings = ({ settings, loading, onInputChange, onSave }: Wel
                         settings.loadingPopupBorderRadius === 'full' ? 'rounded-3xl' : 'rounded-2xl'
                       )}>
                         {/* Gradient Top Accent */}
-                        <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500" />
+                        <div className="h-1 bg-gradient-to-r from-primary via-accent to-gold-primary" />
                         
                         {/* Header with Logo & Brand */}
                         <div className="flex items-center justify-between px-4 py-3 border-b border-border/30">
@@ -779,7 +779,7 @@ const WelcomeScreenSettings = ({ settings, loading, onInputChange, onSave }: Wel
                             {/* Brand Name */}
                             <div className="flex flex-col">
                               <h3 className="text-sm font-bold leading-tight">
-                                <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+                                <span className="bg-gradient-to-r from-primary via-accent to-gold-primary bg-clip-text text-transparent">
                                   ASTRA
                                 </span>
                                 <span className="text-foreground ml-1">Villa</span>

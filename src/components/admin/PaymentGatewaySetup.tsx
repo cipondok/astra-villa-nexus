@@ -417,7 +417,7 @@ const PaymentGatewaySetup = () => {
                     </div>
                   </div>
                   {gateway.setupComplete && (
-                    <Badge variant="default" className="bg-green-500">
+                    <Badge variant="default" className="bg-chart-1">
                       <CheckCircle className="h-3 w-3 mr-1" />
                       Ready
                     </Badge>
@@ -427,13 +427,13 @@ const PaymentGatewaySetup = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Configuration:</span>
-                    <span className={gateway.configured ? 'text-green-600' : 'text-orange-600'}>
+                    <span className={gateway.configured ? 'text-chart-1' : 'text-chart-5'}>
                       {gateway.configured ? 'Complete' : 'Pending'}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Status:</span>
-                    <span className={gateway.enabled ? 'text-green-600' : 'text-gray-600'}>
+                    <span className={gateway.enabled ? 'text-chart-1' : 'text-muted-foreground'}>
                       {gateway.enabled ? 'Enabled' : 'Disabled'}
                     </span>
                   </div>

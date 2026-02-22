@@ -159,7 +159,7 @@ const PropertyManagementAdvanced = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Advanced Property Management</h2>
-          <p className="text-gray-600">Comprehensive property listing control and monitoring</p>
+          <p className="text-muted-foreground">Comprehensive property listing control and monitoring</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
@@ -304,12 +304,12 @@ const PropertyManagementAdvanced = () => {
                     <TableRow key={property.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                            <Image className="h-6 w-6 text-gray-500" />
+                          <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                            <Image className="h-6 w-6 text-muted-foreground" />
                           </div>
                           <div>
                             <div className="font-medium">{property.title}</div>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-muted-foreground">
                               {property.bedrooms}BR • {property.bathrooms}BA • {property.area}m²
                             </div>
                           </div>
@@ -323,12 +323,12 @@ const PropertyManagementAdvanced = () => {
                           <div className="font-medium">
                             {formatPrice(property.price, property.listingType)}
                           </div>
-                          <div className="text-sm text-gray-500">{property.listingType}</div>
+                          <div className="text-sm text-muted-foreground">{property.listingType}</div>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3 text-gray-400" />
+                          <MapPin className="h-3 w-3 text-muted-foreground" />
                           <span className="text-sm">{property.location}</span>
                         </div>
                       </TableCell>
@@ -336,7 +336,7 @@ const PropertyManagementAdvanced = () => {
                       <TableCell>
                         <div className="text-sm">
                           <div>{property.views} views</div>
-                          <div className="text-gray-500">{property.inquiries} inquiries</div>
+                          <div className="text-muted-foreground">{property.inquiries} inquiries</div>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -396,13 +396,13 @@ const PropertyManagementAdvanced = () => {
                   <div key={property.id} className="p-4 border rounded-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <Building2 className="h-8 w-8 text-gray-500" />
+                        <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center">
+                          <Building2 className="h-8 w-8 text-muted-foreground" />
                         </div>
                         <div>
                           <div className="font-medium">{property.title}</div>
-                          <div className="text-sm text-gray-500">{property.location}</div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-muted-foreground">{property.location}</div>
+                          <div className="text-sm text-muted-foreground">
                             Submitted: {property.submittedDate} by {property.owner}
                           </div>
                         </div>
@@ -440,14 +440,14 @@ const PropertyManagementAdvanced = () => {
             <CardContent>
               <div className="space-y-4">
                 {flaggedProperties.map((flag) => (
-                  <div key={flag.id} className="p-4 border rounded-lg bg-red-50 border-red-200">
+                  <div key={flag.id} className="p-4 border rounded-lg bg-destructive/10 border-destructive/30">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <AlertTriangle className="h-5 w-5 text-red-500" />
+                        <AlertTriangle className="h-5 w-5 text-destructive" />
                         <div>
                           <div className="font-medium">{flag.propertyTitle}</div>
-                          <div className="text-sm text-gray-600">{flag.reason}</div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-sm text-muted-foreground">{flag.reason}</div>
+                          <div className="text-xs text-muted-foreground">
                             Reported by: {flag.reportedBy} • {flag.date}
                           </div>
                         </div>
@@ -472,7 +472,7 @@ const PropertyManagementAdvanced = () => {
                 <CardTitle>Property Performance</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64 flex items-center justify-center text-gray-500">
+                <div className="h-64 flex items-center justify-center text-muted-foreground">
                   Performance Chart Placeholder
                   <br />
                   (Views, Inquiries, Conversion Rate)
@@ -485,7 +485,7 @@ const PropertyManagementAdvanced = () => {
                 <CardTitle>Market Trends</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64 flex items-center justify-center text-gray-500">
+                <div className="h-64 flex items-center justify-center text-muted-foreground">
                   Market Trends Chart Placeholder
                   <br />
                   (Price Trends, Popular Areas)
@@ -503,9 +503,9 @@ const PropertyManagementAdvanced = () => {
                     <div key={property.id} className="flex items-center justify-between p-3 border rounded">
                       <div>
                         <div className="font-medium">{property.title}</div>
-                        <div className="text-sm text-gray-500">{property.views} views</div>
+                        <div className="text-sm text-muted-foreground">{property.views} views</div>
                       </div>
-                      <TrendingUp className="h-4 w-4 text-green-500" />
+                      <TrendingUp className="h-4 w-4 text-chart-1" />
                     </div>
                   ))}
                 </div>
@@ -517,7 +517,7 @@ const PropertyManagementAdvanced = () => {
                 <CardTitle>Location Analytics</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64 flex items-center justify-center text-gray-500">
+                <div className="h-64 flex items-center justify-center text-muted-foreground">
                   Location Analytics Placeholder
                   <br />
                   (Popular areas, Price by location)

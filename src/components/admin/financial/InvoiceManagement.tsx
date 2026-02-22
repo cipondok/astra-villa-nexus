@@ -133,8 +133,8 @@ export const InvoiceManagement: React.FC = () => {
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-emerald-500/10">
-              <CheckCircle className="h-4 w-4 text-emerald-500" />
+            <div className="p-2 rounded-lg bg-chart-1/10">
+              <CheckCircle className="h-4 w-4 text-chart-1" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Paid</p>

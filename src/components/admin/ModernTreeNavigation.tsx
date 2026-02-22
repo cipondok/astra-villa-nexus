@@ -215,7 +215,7 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
               </Badge>
             )}
           </div>
-          <div className="text-gray-400 hover:text-white transition-colors">
+          <div className="text-muted-foreground hover:text-foreground transition-colors">
             {getHeaderIcon()}
           </div>
         </button>
@@ -231,7 +231,7 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
                 <div className={`w-2 h-2 rounded-full ${
                   expansionState === 'half-open' ? 'bg-chart-3 animate-pulse' : 'bg-chart-1'
                 }`} />
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-muted-foreground">
                   {expansionState === 'half-open' ? 'Essential Links' : 'Complete Navigation'}
                 </span>
               </div>
@@ -295,7 +295,7 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
         {/* Expansion Hint */}
         {expansionState === 'half-open' && (
           <div className="mt-3 pt-3 border-t border-white/10 text-center">
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-muted-foreground">
               {allLinks.length - priorityLinks.length} more links available
             </span>
           </div>
