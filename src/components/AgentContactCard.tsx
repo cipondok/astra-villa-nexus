@@ -39,9 +39,9 @@ const AgentContactCard = ({ agent }: AgentContactCardProps) => {
           />
           <div className="flex-1">
             <h3 className="font-semibold text-lg">{agent.name}</h3>
-            <p className="text-gray-600 dark:text-gray-300 text-sm">{agent.title}</p>
+            <p className="text-muted-foreground text-sm">{agent.title}</p>
             <div className="flex items-center gap-1 mt-1">
-              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+              <Star className="h-3 w-3 fill-chart-3 text-chart-3" />
               <span className="text-sm font-medium">{agent.rating}</span>
             </div>
           </div>
@@ -49,11 +49,11 @@ const AgentContactCard = ({ agent }: AgentContactCardProps) => {
 
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-gray-600">Experience:</span>
+            <span className="text-muted-foreground">Experience:</span>
             <p className="font-medium">{agent.experience}</p>
           </div>
           <div>
-            <span className="text-gray-600">Properties Sold:</span>
+            <span className="text-muted-foreground">Properties Sold:</span>
             <p className="font-medium">{agent.properties}</p>
           </div>
         </div>
@@ -70,8 +70,8 @@ const AgentContactCard = ({ agent }: AgentContactCardProps) => {
         </div>
 
         <div className="flex gap-2">
-          <Badge className="bg-green-100 text-green-800">Verified Agent</Badge>
-          <Badge className="bg-blue-100 text-blue-800">Top Performer</Badge>
+          <Badge className="bg-chart-1/10 text-chart-1">Verified Agent</Badge>
+          <Badge className="bg-chart-4/10 text-chart-4">Top Performer</Badge>
         </div>
       </CardContent>
     </Card>

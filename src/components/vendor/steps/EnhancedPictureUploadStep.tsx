@@ -70,9 +70,9 @@ const EnhancedPictureUploadStep: React.FC<EnhancedPictureUploadStepProps> = ({
           </AlertDescription>
         </Alert>
       ) : (
-        <Alert className="border-blue-200 bg-blue-50">
-          <Wrench className="h-4 w-4 text-blue-600" />
-          <AlertDescription className="text-blue-800">
+        <Alert className="border-chart-4/30 bg-chart-4/5">
+          <Wrench className="h-4 w-4 text-chart-4" />
+          <AlertDescription className="text-chart-4">
             <strong>Service Photography Tips:</strong>
             <ul className="mt-2 space-y-1 text-sm">
               <li>• Show before/after examples of your work</li>
@@ -97,14 +97,14 @@ const EnhancedPictureUploadStep: React.FC<EnhancedPictureUploadStepProps> = ({
 
       {/* Current Images Summary */}
       {formData.serviceImages && formData.serviceImages.length > 0 && (
-        <Card className="bg-green-50 border-green-200">
+        <Card className="bg-chart-1/5 border-chart-1/30">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="font-medium text-green-900 flex items-center">
+              <h4 className="font-medium text-chart-1 flex items-center">
                 <Camera className="h-4 w-4 mr-2" />
                 Upload Summary
               </h4>
-              <Badge variant="outline" className="bg-green-100 text-green-800">
+              <Badge variant="outline" className="bg-chart-1/10 text-chart-1">
                 {formData.serviceImages.length} images ready
               </Badge>
             </div>
@@ -112,12 +112,12 @@ const EnhancedPictureUploadStep: React.FC<EnhancedPictureUploadStepProps> = ({
             {formData.optimizationData && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div className="text-center">
-                  <p className="font-medium text-green-900">Total Images</p>
-                  <p className="text-green-700">{formData.serviceImages.length}</p>
+                  <p className="font-medium text-foreground">Total Images</p>
+                  <p className="text-chart-1">{formData.serviceImages.length}</p>
                 </div>
                 <div className="text-center">
-                  <p className="font-medium text-green-900">Avg. Compression</p>
-                  <p className="text-green-700">
+                  <p className="font-medium text-foreground">Avg. Compression</p>
+                  <p className="text-chart-1">
                     {Math.round(
                       formData.optimizationData.reduce((acc: number, data: any) => acc + data.compressionRatio, 0) / 
                       formData.optimizationData.length
@@ -125,14 +125,14 @@ const EnhancedPictureUploadStep: React.FC<EnhancedPictureUploadStepProps> = ({
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="font-medium text-green-900">BG Removed</p>
-                  <p className="text-green-700">
+                  <p className="font-medium text-foreground">BG Removed</p>
+                  <p className="text-chart-1">
                     {formData.optimizationData.filter((data: any) => data.hasBackgroundRemoved).length}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="font-medium text-green-900">Thumbnails</p>
-                  <p className="text-green-700">
+                  <p className="font-medium text-foreground">Thumbnails</p>
+                  <p className="text-chart-1">
                     {formData.optimizationData.filter((data: any) => data.hasThumbnail).length}
                   </p>
                 </div>
@@ -145,8 +145,8 @@ const EnhancedPictureUploadStep: React.FC<EnhancedPictureUploadStepProps> = ({
       {/* Image Type Suggestions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="text-center p-4 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <Camera className="h-6 w-6 text-blue-600" />
+          <div className="w-12 h-12 bg-chart-4/10 rounded-full flex items-center justify-center mx-auto mb-3">
+            <Camera className="h-6 w-6 text-chart-4" />
           </div>
           <h4 className="font-medium mb-2">Work Examples</h4>
           <p className="text-sm text-muted-foreground">
@@ -155,8 +155,8 @@ const EnhancedPictureUploadStep: React.FC<EnhancedPictureUploadStepProps> = ({
         </Card>
         
         <Card className="text-center p-4 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <Wrench className="h-6 w-6 text-green-600" />
+          <div className="w-12 h-12 bg-chart-1/10 rounded-full flex items-center justify-center mx-auto mb-3">
+            <Wrench className="h-6 w-6 text-chart-1" />
           </div>
           <h4 className="font-medium mb-2">Process & Equipment</h4>
           <p className="text-sm text-muted-foreground">
@@ -165,8 +165,8 @@ const EnhancedPictureUploadStep: React.FC<EnhancedPictureUploadStepProps> = ({
         </Card>
         
         <Card className="text-center p-4 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <Package className="h-6 w-6 text-purple-600" />
+          <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-3">
+            <Package className="h-6 w-6 text-accent-foreground" />
           </div>
           <h4 className="font-medium mb-2">Products & Materials</h4>
           <p className="text-sm text-muted-foreground">
@@ -176,39 +176,39 @@ const EnhancedPictureUploadStep: React.FC<EnhancedPictureUploadStepProps> = ({
       </div>
 
       {/* Performance Benefits */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+      <Card className="bg-gradient-to-r from-chart-4/5 to-accent/5 border-chart-4/30">
         <CardContent className="p-4">
-          <h4 className="font-medium text-blue-900 mb-3 flex items-center">
+          <h4 className="font-medium text-foreground mb-3 flex items-center">
             <Sparkles className="h-4 w-4 mr-2" />
             Smart Optimization Benefits
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-blue-800">Automatic image compression</span>
+                <div className="w-2 h-2 bg-chart-1 rounded-full"></div>
+                <span className="text-muted-foreground">Automatic image compression</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-blue-800">WebP format conversion</span>
+                <div className="w-2 h-2 bg-chart-1 rounded-full"></div>
+                <span className="text-muted-foreground">WebP format conversion</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-blue-800">Smart resize & cropping</span>
+                <div className="w-2 h-2 bg-chart-1 rounded-full"></div>
+                <span className="text-muted-foreground">Smart resize & cropping</span>
               </div>
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <span className="text-blue-800">AI background removal</span>
+                <div className="w-2 h-2 bg-accent rounded-full"></div>
+                <span className="text-muted-foreground">AI background removal</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <span className="text-blue-800">Thumbnail generation</span>
+                <div className="w-2 h-2 bg-accent rounded-full"></div>
+                <span className="text-muted-foreground">Thumbnail generation</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <span className="text-blue-800">Faster page loading</span>
+                <div className="w-2 h-2 bg-accent rounded-full"></div>
+                <span className="text-muted-foreground">Faster page loading</span>
               </div>
             </div>
           </div>
