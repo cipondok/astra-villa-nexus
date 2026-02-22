@@ -191,13 +191,13 @@ const PictureUploadStep: React.FC<PictureUploadStepProps> = ({ formData, updateF
       )}
 
       {/* Image Guidelines */}
-      <Card className="bg-amber-50 border-amber-200">
+      <Card className="bg-chart-3/10 border-chart-3/20">
         <CardContent className="p-4">
-          <h4 className="font-medium text-amber-900 mb-2 flex items-center">
+          <h4 className="font-medium text-chart-3 mb-2 flex items-center">
             <Camera className="h-4 w-4 mr-2" />
             Photo Guidelines
           </h4>
-          <ul className="text-sm text-amber-800 space-y-1">
+          <ul className="text-sm text-muted-foreground space-y-1">
             <li>• Use high-resolution, well-lit photos</li>
             <li>• Show your work process, tools, and results</li>
             <li>• Include before/after comparisons if applicable</li>

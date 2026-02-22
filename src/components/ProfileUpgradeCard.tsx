@@ -94,15 +94,15 @@ const ProfileUpgradeCard = () => {
 
                 <div className="grid grid-cols-3 gap-1.5">
                   <div className="p-1.5 border rounded-lg bg-background/50 text-center">
-                    <Key className="h-3.5 w-3.5 mx-auto mb-0.5 text-green-600" />
+                    <Key className="h-3.5 w-3.5 mx-auto mb-0.5 text-chart-1" />
                     <p className="text-[10px] font-medium">Owner</p>
                   </div>
                   <div className="p-1.5 border rounded-lg bg-background/50 text-center">
-                    <Home className="h-3.5 w-3.5 mx-auto mb-0.5 text-blue-600" />
+                    <Home className="h-3.5 w-3.5 mx-auto mb-0.5 text-chart-4" />
                     <p className="text-[10px] font-medium">Agent</p>
                   </div>
                   <div className="p-1.5 border rounded-lg bg-background/50 text-center">
-                    <Building2 className="h-3.5 w-3.5 mx-auto mb-0.5 text-orange-600" />
+                    <Building2 className="h-3.5 w-3.5 mx-auto mb-0.5 text-chart-5" />
                     <p className="text-[10px] font-medium">Vendor</p>
                   </div>
                 </div>
@@ -111,8 +111,8 @@ const ProfileUpgradeCard = () => {
                 {!canUpgrade && restrictionReason && (
                   <div className={`p-2 rounded-lg flex items-start gap-2 ${
                     hasPendingApplication 
-                      ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200' 
-                      : 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200'
+                      ? 'bg-chart-3/10 text-chart-3' 
+                      : 'bg-primary/10 text-primary'
                   }`}>
                     {hasPendingApplication ? (
                       <Clock className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
@@ -130,7 +130,7 @@ const ProfileUpgradeCard = () => {
                         <div className="mt-1.5 flex items-center gap-1.5">
                           <div className="h-1 flex-1 bg-background/50 rounded-full overflow-hidden">
                             <div 
-                              className="h-full bg-blue-500 rounded-full transition-all"
+                              className="h-full bg-primary rounded-full transition-all"
                               style={{ width: `${((30 - daysUntilCanUpgrade) / 30) * 100}%` }}
                             />
                           </div>

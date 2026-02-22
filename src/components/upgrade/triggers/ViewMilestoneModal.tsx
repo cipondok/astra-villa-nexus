@@ -66,11 +66,11 @@ const ViewMilestoneModal = ({ open, onClose, viewCount }: ViewMilestoneModalProp
         <DialogHeader>
           <div className="flex items-center gap-2">
             <motion.div 
-              className="p-2 rounded-full bg-orange-500/10"
+               className="p-2 rounded-full bg-chart-5/10"
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
             >
-              <Flame className="h-5 w-5 text-orange-500" />
+              <Flame className="h-5 w-5 text-chart-5" />
             </motion.div>
             <Badge variant="destructive" className="animate-pulse">
               {t.urgency}
@@ -137,7 +137,7 @@ const ViewMilestoneModal = ({ open, onClose, viewCount }: ViewMilestoneModalProp
           <Button variant="ghost" onClick={onClose} className="w-full sm:w-auto text-muted-foreground">
             {t.maybeLater}
           </Button>
-          <Button onClick={handleUpgrade} className="w-full sm:w-auto gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600">
+          <Button onClick={handleUpgrade} className="w-full sm:w-auto gap-2 bg-gradient-to-r from-chart-5 to-destructive hover:from-chart-5/90 hover:to-destructive/90">
             <Eye className="h-4 w-4" />
             {t.upgradeNow}
           </Button>

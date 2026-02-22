@@ -40,36 +40,36 @@ const NOTIFICATION_BENEFITS = [
     icon: TrendingDown,
     title: 'Price Drop Alerts',
     description: 'Get notified when properties you like drop in price',
-    color: 'text-emerald-500',
-    bgColor: 'bg-emerald-500/10'
+    color: 'text-chart-1',
+    bgColor: 'bg-chart-1/10'
   },
   {
     icon: Home,
     title: 'New Property Matches',
     description: 'Be first to know about properties matching your criteria',
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500/10'
+    color: 'text-chart-4',
+    bgColor: 'bg-chart-4/10'
   },
   {
     icon: MessageSquare,
     title: 'Message Alerts',
     description: 'Never miss a message from agents or property owners',
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/10'
+    color: 'text-accent-foreground',
+    bgColor: 'bg-accent/10'
   },
   {
     icon: Calendar,
     title: 'Viewing Reminders',
     description: 'Automatic reminders for scheduled property viewings',
-    color: 'text-amber-500',
-    bgColor: 'bg-amber-500/10'
+    color: 'text-chart-3',
+    bgColor: 'bg-chart-3/10'
   },
   {
     icon: BarChart3,
     title: 'Market Insights',
     description: 'Weekly market updates and investment opportunities',
-    color: 'text-cyan-500',
-    bgColor: 'bg-cyan-500/10'
+    color: 'text-primary',
+    bgColor: 'bg-primary/10'
   }
 ];
 
@@ -285,9 +285,9 @@ export const NotificationPermissionDialog: React.FC<NotificationPermissionDialog
               </div>
 
               {/* Incentive Banner */}
-              <div className="p-3 rounded-lg bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20 mb-4">
+              <div className="p-3 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 mb-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                  <Star className="h-4 w-4 text-chart-3 fill-chart-3" />
                   <span className="font-medium text-sm">Enable Now & Get Rewards!</span>
                 </div>
                 <div className="flex flex-wrap gap-2 text-xs">
@@ -391,8 +391,8 @@ export const NotificationPermissionDialog: React.FC<NotificationPermissionDialog
               animate={{ opacity: 1, scale: 1 }}
               className="text-center py-6"
             >
-              <div className="mx-auto w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4">
-                <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+              <div className="mx-auto w-16 h-16 rounded-full bg-chart-1/10 flex items-center justify-center mb-4">
+                <CheckCircle2 className="h-8 w-8 text-chart-1" />
               </div>
               
               <DialogTitle className="text-xl mb-2">You're All Set! 🎉</DialogTitle>
@@ -400,7 +400,7 @@ export const NotificationPermissionDialog: React.FC<NotificationPermissionDialog
                 Notifications enabled successfully. You'll now receive alerts for properties that matter to you.
               </DialogDescription>
 
-              <div className="p-4 rounded-lg bg-gradient-to-r from-primary/10 to-purple-500/10 border mb-4">
+              <div className="p-4 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border mb-4">
                 <p className="text-sm font-medium mb-2">Rewards Earned:</p>
                 <div className="flex justify-center gap-3">
                   <Badge className="gap-1">
