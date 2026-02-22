@@ -152,7 +152,7 @@ const SMTPSettings = () => {
       </div>
 
       {/* Connection Status */}
-      <Card className="bg-card/50 border-border/50 border-l-2 border-l-blue-500">
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-4">
         <CardContent className="p-3">
           <div className="grid grid-cols-3 gap-3">
             <div>
@@ -172,7 +172,7 @@ const SMTPSettings = () => {
       </Card>
 
       {/* Server Configuration */}
-      <Card className="bg-card/50 border-border/50 border-l-2 border-l-emerald-500">
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-1">
         <CardHeader className="py-2 px-3">
           <CardTitle className="text-xs text-foreground">Server Configuration</CardTitle>
         </CardHeader>
@@ -237,7 +237,7 @@ const SMTPSettings = () => {
       </Card>
 
       {/* Sender Information */}
-      <Card className="bg-card/50 border-border/50 border-l-2 border-l-purple-500">
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-accent">
         <CardHeader className="py-2 px-3">
           <CardTitle className="text-xs text-foreground">Sender Information</CardTitle>
         </CardHeader>
@@ -267,7 +267,7 @@ const SMTPSettings = () => {
       </Card>
 
       {/* Settings & Actions */}
-      <Card className="bg-card/50 border-border/50 border-l-2 border-l-orange-500">
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-chart-3">
         <CardHeader className="py-2 px-3">
           <CardTitle className="text-xs text-foreground">Email Settings</CardTitle>
         </CardHeader>

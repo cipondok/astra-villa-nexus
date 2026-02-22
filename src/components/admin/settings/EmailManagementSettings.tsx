@@ -1294,7 +1294,7 @@ const EmailManagementSettings: React.FC = () => {
                 className="bg-gradient-to-br from-gold-primary/10 to-gold-primary/5 rounded-lg p-4 max-h-[500px] overflow-auto"
                 style={{ fontFamily: 'Inter, sans-serif' }}
               >
-                <div className="max-w-xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                <div className="max-w-xl mx-auto bg-background rounded-xl shadow-lg overflow-hidden">
                   {/* Gold accent bar */}
                   <div 
                     className="h-1"
@@ -1325,7 +1325,7 @@ const EmailManagementSettings: React.FC = () => {
                     {currentTemplate.buttonText && (
                       <div className="text-center mt-6">
                         <button 
-                          className="px-6 py-3 rounded-lg text-white text-sm font-medium shadow-md"
+                          className="px-6 py-3 rounded-lg text-primary-foreground text-sm font-medium shadow-md"
                           style={{ background: `linear-gradient(135deg, ${branding.primaryColor}, ${branding.accentColor})` }}
                         >
                           {currentTemplate.buttonText}

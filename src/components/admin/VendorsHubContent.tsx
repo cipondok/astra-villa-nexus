@@ -79,7 +79,7 @@ const VendorsHubContent = () => {
       {/* Header */}
       <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-primary/10 via-accent/5 to-chart-3/10 rounded-lg border border-border/50">
         <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-          <Store className="h-4 w-4 text-white" />
+          <Store className="h-4 w-4 text-primary-foreground" />
         </div>
         <div>
           <div className="flex items-center gap-2">

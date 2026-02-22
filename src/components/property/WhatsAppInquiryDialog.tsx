@@ -155,7 +155,7 @@ ${message}`;
               </Button>
               <Button 
                 type="submit" 
-                className="flex-1 h-10 bg-[#25D366] hover:bg-[#1fb855] text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 text-sm"
+                className="flex-1 h-10 bg-[#25D366] hover:bg-[#1fb855] text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-200 text-sm"
               >
                 <MessageCircle className="h-4 w-4 mr-1.5" />
                 Send WhatsApp

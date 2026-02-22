@@ -126,7 +126,7 @@ const QuickActions = () => {
                 className="h-auto p-4 flex flex-col items-center space-y-2 hover:shadow-md transition-all"
                 onClick={action.onClick}
               >
-                <div className={`p-2 rounded-full ${action.color} text-white`}>
+                <div className={`p-2 rounded-full ${action.color} text-primary-foreground`}>
                   <IconComponent className="h-4 w-4" />
                 </div>
                 <div className="text-center">

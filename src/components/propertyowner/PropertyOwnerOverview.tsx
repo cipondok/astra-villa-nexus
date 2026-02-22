@@ -66,7 +66,7 @@ const PropertyOwnerOverview = () => {
             </Button>
             <Button 
               size="sm"
-              className="h-6 px-2 text-[9px] bg-white/20 hover:bg-white/30"
+              className="h-6 px-2 text-[9px] bg-primary-foreground/20 hover:bg-primary-foreground/30"
               onClick={() => navigate('/add-property')}
             >
               <PlusCircle className="h-3 w-3 mr-0.5" />
