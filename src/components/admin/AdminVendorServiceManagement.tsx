@@ -716,7 +716,7 @@ const CreateServiceForm = () => {
                           value={item.item_name}
                           onChange={(e) => updateServiceItem(index, 'item_name', e.target.value)}
                           placeholder="e.g., Basic Service Package"
-                          className="border-blue-200 focus:ring-blue-500"
+                          className="border-border focus:ring-primary"
                         />
                       </div>
                       
@@ -728,7 +728,7 @@ const CreateServiceForm = () => {
                           value={item.price}
                           onChange={(e) => updateServiceItem(index, 'price', parseFloat(e.target.value) || 0)}
                           placeholder="150000"
-                          className="border-blue-200 focus:ring-blue-500"
+                           className="border-border focus:ring-primary"
                         />
                       </div>
                     </div>
@@ -740,7 +740,7 @@ const CreateServiceForm = () => {
                         onChange={(e) => updateServiceItem(index, 'item_description', e.target.value)}
                         placeholder="Describe what's included in this pricing item..."
                         rows={2}
-                        className="border-blue-200 focus:ring-blue-500"
+                        className="border-border focus:ring-primary"
                       />
                     </div>
                   </div>

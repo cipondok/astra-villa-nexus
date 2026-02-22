@@ -614,7 +614,7 @@ const MortgageManagement: React.FC = () => {
                                         </div>
                                         <div className="flex items-center gap-4">
                                           <div className="text-right">
-                                            <p className="font-bold text-green-600">{rate.interest_rate_year1}%</p>
+                                            <p className="font-bold text-chart-1">{rate.interest_rate_year1}%</p>
                                             <p className="text-xs text-muted-foreground">Year 1</p>
                                           </div>
                                           {rate.interest_rate_year2 && (
