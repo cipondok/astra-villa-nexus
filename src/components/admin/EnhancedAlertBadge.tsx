@@ -104,7 +104,7 @@ const EnhancedAlertBadge = () => {
   const urgentCount = alertStats.urgent || 0;
 
   const getCategoryIcon = (category: string, size = 16) => {
-    const iconProps = { size, className: "text-white" };
+    const iconProps = { size, className: "text-primary-foreground" };
     switch (category) {
       case 'users': return <Users {...iconProps} />;
       case 'properties': return <Building2 {...iconProps} />;
@@ -175,12 +175,12 @@ const EnhancedAlertBadge = () => {
       <Button
         onClick={handleAlertClick}
         variant="ghost"
-        className="relative p-2 hover:bg-white/20"
+        className="relative p-2 hover:bg-primary-foreground/20"
       >
         {totalUnreadCount > 0 ? (
-          <BellRing className="h-5 w-5 text-white animate-pulse" />
+          <BellRing className="h-5 w-5 text-primary-foreground animate-pulse" />
         ) : (
-          <Bell className="h-5 w-5 text-white" />
+          <Bell className="h-5 w-5 text-primary-foreground" />
         )}
         
         {totalUnreadCount > 0 && (
