@@ -1240,8 +1240,8 @@ const EnhancedPropertySmartPreview = () => {
                   </Button>
                 </div>
 
-                <div className="pt-4 border-t border-slate-600">
-                  <Label className="text-white font-medium">Custom CSS</Label>
+                <div className="pt-4 border-t border-border">
+                  <Label className="text-foreground font-medium">Custom CSS</Label>
                   <p className="text-muted-foreground text-sm mb-3">Add custom CSS for advanced styling (Coming Soon)</p>
                   <Textarea
                     value={customCSS}
@@ -1250,7 +1250,7 @@ const EnhancedPropertySmartPreview = () => {
 .property-card {
   /* Your custom styles */
 }"
-                    className="bg-slate-700/50 border-slate-600 text-white text-xs font-mono"
+                    className="bg-muted/50 border-border text-foreground text-xs font-mono"
                     rows={8}
                     disabled
                   />
@@ -1259,9 +1259,9 @@ const EnhancedPropertySmartPreview = () => {
             </Card>
 
             {/* Performance & Debug */}
-            <Card className="bg-slate-800/50 border-slate-700/50">
+            <Card className="bg-card/50 border-border/50">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
+                <CardTitle className="text-foreground flex items-center">
                   <Zap className="h-5 w-5 mr-2" />
                   Performance & Debug
                 </CardTitle>
@@ -1269,7 +1269,7 @@ const EnhancedPropertySmartPreview = () => {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-white font-medium">Live Preview Mode</h3>
+                    <h3 className="text-foreground font-medium">Live Preview Mode</h3>
                     <p className="text-muted-foreground text-sm">Toggle real-time updates for better performance</p>
                   </div>
                   <Switch
@@ -1278,21 +1278,21 @@ const EnhancedPropertySmartPreview = () => {
                   />
                 </div>
 
-                <div className="pt-4 border-t border-slate-600">
-                  <h3 className="text-white font-medium mb-2">Preview Statistics</h3>
+                <div className="pt-4 border-t border-border">
+                  <h3 className="text-foreground font-medium mb-2">Preview Statistics</h3>
                   <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="bg-slate-700/30 p-3 rounded">
+                    <div className="bg-muted/30 p-3 rounded">
                       <div className="text-muted-foreground">Properties Loaded</div>
                       <div className="text-foreground font-semibold">{properties?.length || 0}</div>
                     </div>
-                    <div className="bg-slate-700/30 p-3 rounded">
+                    <div className="bg-muted/30 p-3 rounded">
                       <div className="text-muted-foreground">Render Updates</div>
                       <div className="text-foreground font-semibold">{previewKey}</div>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-600">
+                <div className="pt-4 border-t border-border">
                   <Button 
                     onClick={() => window.location.reload()} 
                     variant="outline" 
@@ -1306,16 +1306,16 @@ const EnhancedPropertySmartPreview = () => {
             </Card>
 
             {/* Database & Sync */}
-            <Card className="bg-slate-800/50 border-slate-700/50">
+            <Card className="bg-card/50 border-border/50">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
+                <CardTitle className="text-foreground flex items-center">
                   <Database className="h-5 w-5 mr-2" />
                   Database & Sync
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="bg-slate-700/30 p-4 rounded">
-                  <h3 className="text-white font-medium mb-2">Data Source Information</h3>
+                <div className="bg-muted/30 p-4 rounded">
+                  <h3 className="text-foreground font-medium mb-2">Data Source Information</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Table:</span>

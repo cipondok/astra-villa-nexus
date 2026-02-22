@@ -66,7 +66,7 @@ const AIChatMessages = ({ messages, isLoading, messagesEndRef, onReaction, onTog
                   <Star 
                     className={cn(
                       "h-3.5 w-3.5",
-                      msg.starred ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground'
+                      msg.starred ? 'fill-gold-primary text-gold-primary' : 'text-muted-foreground'
                     )}
                   />
                 </Button>

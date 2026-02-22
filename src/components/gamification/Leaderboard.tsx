@@ -26,9 +26,9 @@ const CATEGORY_CONFIG: Record<LeaderboardCategory, { label: string; icon: React.
 };
 
 const RANK_STYLES = {
-  1: { bg: 'bg-yellow-500/10', border: 'border-yellow-500/30', icon: <Crown className="h-4 w-4 text-yellow-500" /> },
-  2: { bg: 'bg-slate-300/10', border: 'border-slate-400/30', icon: <Medal className="h-4 w-4 text-slate-400" /> },
-  3: { bg: 'bg-amber-600/10', border: 'border-amber-600/30', icon: <Medal className="h-4 w-4 text-amber-600" /> }
+  1: { bg: 'bg-gold-primary/10', border: 'border-gold-primary/30', icon: <Crown className="h-4 w-4 text-gold-primary" /> },
+  2: { bg: 'bg-muted/30', border: 'border-muted-foreground/30', icon: <Medal className="h-4 w-4 text-muted-foreground" /> },
+  3: { bg: 'bg-chart-3/10', border: 'border-chart-3/30', icon: <Medal className="h-4 w-4 text-chart-3" /> }
 };
 
 const Leaderboard = ({
@@ -139,7 +139,7 @@ const Leaderboard = ({
       <Card className={className}>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Trophy className="h-4 w-4 text-yellow-500" />
+            <Trophy className="h-4 w-4 text-gold-primary" />
             {config.label}
           </CardTitle>
         </CardHeader>
@@ -163,7 +163,7 @@ const Leaderboard = ({
     <Card className={className}>
       <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
-          <Trophy className="h-4 w-4 text-yellow-500" />
+          <Trophy className="h-4 w-4 text-gold-primary" />
           Leaderboards
         </CardTitle>
       </CardHeader>

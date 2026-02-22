@@ -246,7 +246,7 @@ const VendorListings = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder="Search listings..."
                   value={searchTerm}
@@ -289,11 +289,11 @@ const VendorListings = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Active</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-chart-1">
                   {listings?.filter(l => l.is_active).length || 0}
                 </p>
               </div>
-              <Eye className="h-8 w-8 text-green-600" />
+              <Eye className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -303,9 +303,9 @@ const VendorListings = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Views This Month</p>
-                <p className="text-2xl font-bold text-blue-600">1,245</p>
+                <p className="text-2xl font-bold text-chart-4">1,245</p>
               </div>
-              <Eye className="h-8 w-8 text-blue-600" />
+              <Eye className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -315,9 +315,9 @@ const VendorListings = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Inquiries</p>
-                <p className="text-2xl font-bold text-purple-600">23</p>
+                <p className="text-2xl font-bold text-accent-foreground">23</p>
               </div>
-              <Heart className="h-8 w-8 text-purple-600" />
+              <Heart className="h-8 w-8 text-accent-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -335,7 +335,7 @@ const VendorListings = () => {
           filteredListings.map((listing) => (
             <Card key={listing.id} className="overflow-hidden">
               <div className="relative">
-                <div className="h-48 bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                <div className="h-48 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
                   {listing.images && listing.images.length > 0 ? (
                     <img 
                       src={listing.images[0]} 
@@ -343,7 +343,7 @@ const VendorListings = () => {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <Camera className="h-12 w-12 text-gray-400" />
+                    <Camera className="h-12 w-12 text-muted-foreground" />
                   )}
                 </div>
                 <Badge 
