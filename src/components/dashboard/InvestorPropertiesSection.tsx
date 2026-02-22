@@ -67,13 +67,13 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
             </Badge>
           )}
           {property.is_featured && (
-            <Badge className="bg-amber-500/90 text-white text-[8px] px-1 py-0.5">
+            <Badge className="bg-gold-primary/90 text-primary-foreground text-[8px] px-1 py-0.5">
               <Star className="h-2 w-2 mr-0.5" />
               Featured
             </Badge>
           )}
           {property.investor_highlight && (
-            <Badge className="bg-emerald-500/90 text-white text-[8px] px-1 py-0.5">
+            <Badge className="bg-chart-1/90 text-primary-foreground text-[8px] px-1 py-0.5">
               <Sparkles className="h-2 w-2 mr-0.5" />
               Pick
             </Badge>
@@ -239,7 +239,7 @@ export const InvestorPropertiesSection = () => {
         <div className="flex items-center gap-2 flex-wrap">
           <Badge 
             variant="outline" 
-            className={`text-[10px] px-2 py-0.5 ${isWna ? 'border-chart-4 text-chart-4 bg-chart-4/10' : 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10'}`}
+            className={`text-[10px] px-2 py-0.5 ${isWna ? 'border-chart-4 text-chart-4 bg-chart-4/10' : 'border-chart-1 text-chart-1 bg-chart-1/10'}`}
           >
             <Globe className="h-2.5 w-2.5 mr-1" />
             {isWna ? 'Foreign Investor (WNA)' : 'Indonesian Investor (WNI)'}
@@ -275,7 +275,7 @@ export const InvestorPropertiesSection = () => {
           isLoading={featuredLoading}
           emptyMessage="No featured properties available"
           viewAllPath="/dijual"
-          icon={<Star className="h-4 w-4 text-amber-500" />}
+          icon={<Star className="h-4 w-4 text-gold-primary" />}
         />
       )}
 

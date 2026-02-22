@@ -121,7 +121,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
                       isActive 
                         ? "bg-white/25 text-white border-0" 
                         : String(section.badge) === 'New' 
-                          ? "bg-green-500/15 text-green-600 border-0"
+                          ? "bg-chart-1/15 text-chart-1 border-0"
                           : "bg-primary/10 text-primary border-0"
                     )}
                   >
