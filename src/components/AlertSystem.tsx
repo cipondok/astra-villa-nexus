@@ -22,38 +22,38 @@ const AlertSystem = ({ alerts, onRemoveAlert }: AlertSystemProps) => {
     switch (type) {
       case "success":
         return {
-          container: "bg-gradient-to-r from-green-900/90 to-emerald-900/90 border-green-500/50 backdrop-blur-sm",
-          icon: "text-green-400",
-          title: "text-green-200",
-          message: "text-green-300"
+          container: "bg-gradient-to-r from-chart-1/20 to-chart-1/10 border-chart-1/50 backdrop-blur-sm",
+          icon: "text-chart-1",
+          title: "text-chart-1",
+          message: "text-chart-1/80"
         };
       case "error":
         return {
-          container: "bg-gradient-to-r from-red-900/90 to-rose-900/90 border-red-500/50 backdrop-blur-sm",
-          icon: "text-red-400",
-          title: "text-red-200",
-          message: "text-red-300"
+          container: "bg-gradient-to-r from-destructive/20 to-destructive/10 border-destructive/50 backdrop-blur-sm",
+          icon: "text-destructive",
+          title: "text-destructive",
+          message: "text-destructive/80"
         };
       case "warning":
         return {
-          container: "bg-gradient-to-r from-yellow-900/90 to-amber-900/90 border-yellow-500/50 backdrop-blur-sm",
-          icon: "text-yellow-400",
-          title: "text-yellow-200",
-          message: "text-yellow-300"
+          container: "bg-gradient-to-r from-chart-3/20 to-chart-3/10 border-chart-3/50 backdrop-blur-sm",
+          icon: "text-chart-3",
+          title: "text-chart-3",
+          message: "text-chart-3/80"
         };
       case "info":
         return {
-          container: "bg-gradient-to-r from-blue-900/90 to-sky-900/90 border-blue-500/50 backdrop-blur-sm",
-          icon: "text-blue-400",
-          title: "text-blue-200",
-          message: "text-blue-300"
+          container: "bg-gradient-to-r from-chart-4/20 to-chart-4/10 border-chart-4/50 backdrop-blur-sm",
+          icon: "text-chart-4",
+          title: "text-chart-4",
+          message: "text-chart-4/80"
         };
       default:
         return {
-          container: "bg-gradient-to-r from-slate-900/90 to-gray-900/90 border-slate-500/50 backdrop-blur-sm",
-          icon: "text-gray-400",
-          title: "text-gray-200",
-          message: "text-gray-300"
+          container: "bg-gradient-to-r from-muted/90 to-muted/70 border-border/50 backdrop-blur-sm",
+          icon: "text-muted-foreground",
+          title: "text-foreground",
+          message: "text-muted-foreground"
         };
     }
   };
@@ -181,8 +181,8 @@ const AlertItem = ({ alert, styles, icon, onRemove }: AlertItemProps) => {
           <button
             onClick={handleRemove}
             className={`
-              flex-shrink-0 ml-4 inline-flex text-gray-400 hover:text-white
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500
+              flex-shrink-0 ml-4 inline-flex text-muted-foreground hover:text-foreground
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary
               rounded-md p-1 transition-colors duration-200
             `}
           >
@@ -192,7 +192,7 @@ const AlertItem = ({ alert, styles, icon, onRemove }: AlertItemProps) => {
         
         {/* Progress bar for auto-dismiss */}
         <div 
-          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full" 
+          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary to-accent rounded-full" 
           style={progressBarStyle}
         />
       </div>
