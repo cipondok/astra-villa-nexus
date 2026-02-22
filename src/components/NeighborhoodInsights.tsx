@@ -158,7 +158,7 @@ const NeighborhoodInsights = ({ neighborhood }: NeighborhoodInsightsProps) => {
               <Footprints className="h-6 w-6 mx-auto mb-2 text-chart-4" />
               <div className="text-2xl font-bold">{neighborhood.walkScore}</div>
               <div className="text-sm text-muted-foreground">Walk Score</div>
-              <Badge className={`mt-2 text-white ${getScoreColor(neighborhood.walkScore)}`}>
+              <Badge className={`mt-2 text-primary-foreground ${getScoreColor(neighborhood.walkScore)}`}>
                 {getScoreLabel(neighborhood.walkScore)}
               </Badge>
             </div>
@@ -167,7 +167,7 @@ const NeighborhoodInsights = ({ neighborhood }: NeighborhoodInsightsProps) => {
               <Car className="h-6 w-6 mx-auto mb-2 text-chart-1" />
               <div className="text-2xl font-bold">{neighborhood.transitScore}</div>
               <div className="text-sm text-muted-foreground">Transit Score</div>
-              <Badge className={`mt-2 text-white ${getScoreColor(neighborhood.transitScore)}`}>
+              <Badge className={`mt-2 text-primary-foreground ${getScoreColor(neighborhood.transitScore)}`}>
                 {getScoreLabel(neighborhood.transitScore)}
               </Badge>
             </div>
@@ -176,7 +176,7 @@ const NeighborhoodInsights = ({ neighborhood }: NeighborhoodInsightsProps) => {
               <Bike className="h-6 w-6 mx-auto mb-2 text-chart-3" />
               <div className="text-2xl font-bold">{neighborhood.bikeScore}</div>
               <div className="text-sm text-muted-foreground">Bike Score</div>
-              <Badge className={`mt-2 text-white ${getScoreColor(neighborhood.bikeScore)}`}>
+              <Badge className={`mt-2 text-primary-foreground ${getScoreColor(neighborhood.bikeScore)}`}>
                 {getScoreLabel(neighborhood.bikeScore)}
               </Badge>
             </div>
@@ -199,7 +199,7 @@ const NeighborhoodInsights = ({ neighborhood }: NeighborhoodInsightsProps) => {
                     {place.type}
                   </Badge>
                 </div>
-                <div className="text-sm text-gray-600 font-medium">
+                <div className="text-sm text-muted-foreground font-medium">
                   {place.distance}
                 </div>
               </div>

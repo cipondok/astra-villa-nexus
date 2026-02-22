@@ -336,7 +336,7 @@ const WNAPropertyTypes: React.FC = () => {
               <div className="space-y-1">
                 {property.details.map((detail, i) => (
                   <div key={i} className="flex items-start gap-1.5">
-                    <div className={cn("w-1 h-1 rounded-full mt-1.5 flex-shrink-0", isProhibited ? "bg-red-500" : "bg-accent")} />
+                    <div className={cn("w-1 h-1 rounded-full mt-1.5 flex-shrink-0", isProhibited ? "bg-destructive" : "bg-accent")} />
                     <span className="text-[9px] sm:text-[10px] text-foreground/80">{detail}</span>
                   </div>
                 ))}
@@ -381,10 +381,10 @@ const WNAPropertyTypes: React.FC = () => {
       </div>
 
       {/* Legal Note */}
-      <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
+      <div className="p-3 rounded-lg bg-chart-3/10 border border-chart-3/20">
         <div className="flex items-start gap-2">
-          <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
-          <p className="text-[10px] sm:text-xs text-amber-700 dark:text-amber-300">{t.legalNote}</p>
+          <AlertTriangle className="h-4 w-4 text-chart-3 flex-shrink-0 mt-0.5" />
+          <p className="text-[10px] sm:text-xs text-chart-3">{t.legalNote}</p>
         </div>
       </div>
     </div>

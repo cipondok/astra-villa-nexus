@@ -52,7 +52,7 @@ const SocialCommerceManagement: React.FC = () => {
       name: 'tiktok',
       displayName: 'TikTok Shop',
       icon: Video,
-      color: 'text-black dark:text-white',
+      color: 'text-foreground',
       isEnabled: true,
       impressions: 128500,
       clicks: 8950,
