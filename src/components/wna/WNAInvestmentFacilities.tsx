@@ -170,12 +170,12 @@ const WNAInvestmentFacilities: React.FC = () => {
   const t = copy[language];
 
   const colorClasses = {
-    blue: { bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-400', border: 'border-blue-200 dark:border-blue-800' },
-    purple: { bg: 'bg-purple-100 dark:bg-purple-900/50', text: 'text-purple-600 dark:text-purple-400', border: 'border-purple-200 dark:border-purple-800' },
-    green: { bg: 'bg-green-100 dark:bg-green-900/50', text: 'text-green-600 dark:text-green-400', border: 'border-green-200 dark:border-green-800' },
-    amber: { bg: 'bg-amber-100 dark:bg-amber-900/50', text: 'text-amber-600 dark:text-amber-400', border: 'border-amber-200 dark:border-amber-800' },
-    cyan: { bg: 'bg-cyan-100 dark:bg-cyan-900/50', text: 'text-cyan-600 dark:text-cyan-400', border: 'border-cyan-200 dark:border-cyan-800' },
-    rose: { bg: 'bg-rose-100 dark:bg-rose-900/50', text: 'text-rose-600 dark:text-rose-400', border: 'border-rose-200 dark:border-rose-800' }
+    blue: { bg: 'bg-chart-4/10', text: 'text-chart-4', border: 'border-chart-4/20' },
+    purple: { bg: 'bg-chart-5/10', text: 'text-chart-5', border: 'border-chart-5/20' },
+    green: { bg: 'bg-chart-1/10', text: 'text-chart-1', border: 'border-chart-1/20' },
+    amber: { bg: 'bg-gold-primary/10', text: 'text-gold-primary', border: 'border-gold-primary/20' },
+    cyan: { bg: 'bg-accent/10', text: 'text-accent', border: 'border-accent/20' },
+    rose: { bg: 'bg-destructive/10', text: 'text-destructive', border: 'border-destructive/20' }
   };
 
   return (

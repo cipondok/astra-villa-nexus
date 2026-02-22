@@ -209,8 +209,8 @@ const VendorBookings = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Bookings</h2>
-          <p className="text-gray-600 dark:text-gray-400">Manage your service bookings</p>
+          <h2 className="text-2xl font-bold text-foreground">Bookings</h2>
+          <p className="text-muted-foreground">Manage your service bookings</p>
         </div>
         
         <div className="flex space-x-2">
@@ -230,11 +230,11 @@ const VendorBookings = () => {
       {bookings.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Calendar className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               No bookings found
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-muted-foreground">
               {filter === 'all' ? 'You have no bookings yet' : `No ${filter} bookings`}
             </p>
           </CardContent>

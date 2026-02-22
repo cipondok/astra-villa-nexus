@@ -13,9 +13,9 @@ interface ListingPerformanceProps {
 
 const ListingPerformance: React.FC<ListingPerformanceProps> = ({ data, className }) => {
   const stats = [
-    { label: 'Total Views', value: data.totalViews, icon: Eye, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-    { label: 'Inquiries', value: data.totalInquiries, icon: MessageSquare, color: 'text-green-500', bg: 'bg-green-500/10' },
-    { label: 'Saves', value: data.totalSaves, icon: Heart, color: 'text-red-500', bg: 'bg-red-500/10' },
+    { label: 'Total Views', value: data.totalViews, icon: Eye, color: 'text-chart-4', bg: 'bg-chart-4/10' },
+    { label: 'Inquiries', value: data.totalInquiries, icon: MessageSquare, color: 'text-chart-1', bg: 'bg-chart-1/10' },
+    { label: 'Saves', value: data.totalSaves, icon: Heart, color: 'text-destructive', bg: 'bg-destructive/10' },
     { label: 'Avg Views/Listing', value: data.avgViewsPerListing, icon: TrendingUp, color: 'text-primary', bg: 'bg-primary/10' },
   ];
 
@@ -108,9 +108,9 @@ const ListingPerformance: React.FC<ListingPerformanceProps> = ({ data, className
               <div className="flex items-center gap-3">
                 <span className={cn(
                   "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold",
-                  idx === 0 ? "bg-yellow-500/20 text-yellow-600" :
-                  idx === 1 ? "bg-gray-300/20 text-gray-500" :
-                  idx === 2 ? "bg-orange-500/20 text-orange-600" :
+                  idx === 0 ? "bg-gold-primary/20 text-gold-primary" :
+                  idx === 1 ? "bg-muted text-muted-foreground" :
+                  idx === 2 ? "bg-chart-3/20 text-chart-3" :
                   "bg-muted text-muted-foreground"
                 )}>
                   {idx + 1}
