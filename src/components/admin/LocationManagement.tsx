@@ -529,7 +529,7 @@ const LocationManagement = () => {
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="text-center text-red-600">
+          <div className="text-center text-destructive">
             <XCircle className="h-12 w-12 mx-auto mb-4" />
             <p>Error loading locations: {error.message}</p>
           </div>
@@ -736,10 +736,10 @@ const LocationManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-medium text-muted-foreground">Provinces</p>
-                <p className="text-2xl font-bold text-orange-600">{provinces.length}</p>
+                <p className="text-2xl font-bold text-chart-5">{provinces.length}</p>
                 <p className="text-xs text-muted-foreground">of 38 expected</p>
               </div>
-              <Globe className="h-8 w-8 text-green-600" />
+              <Globe className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -751,7 +751,7 @@ const LocationManagement = () => {
                 <p className="text-sm font-medium text-muted-foreground">Cities</p>
                 <p className="text-2xl font-bold">{[...new Set(locations.map(l => l.city_name))].length}</p>
               </div>
-              <Building className="h-8 w-8 text-orange-600" />
+              <Building className="h-8 w-8 text-chart-5" />
             </div>
           </CardContent>
         </Card>
@@ -763,7 +763,7 @@ const LocationManagement = () => {
                 <p className="text-sm font-medium text-muted-foreground">Districts</p>
                 <p className="text-2xl font-bold">{[...new Set(locations.filter(l => l.district_name).map(l => l.district_name))].length}</p>
               </div>
-              <Home className="h-8 w-8 text-purple-600" />
+              <Home className="h-8 w-8 text-accent-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -775,7 +775,7 @@ const LocationManagement = () => {
                 <p className="text-sm font-medium text-muted-foreground">Active</p>
                 <p className="text-2xl font-bold">{locations.filter(l => l.is_active).length}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -831,9 +831,9 @@ const LocationManagement = () => {
                   </p>
                   <div className="flex items-center gap-1 mt-2">
                     {isComplete ? (
-                      <CheckCircle className="h-3 w-3 text-green-600" />
+                      <CheckCircle className="h-3 w-3 text-chart-1" />
                     ) : (
-                      <XCircle className="h-3 w-3 text-red-600" />
+                      <XCircle className="h-3 w-3 text-destructive" />
                     )}
                     <span className="text-xs text-muted-foreground">
                       {isComplete ? 'Data Available' : 'No Data'}
@@ -845,14 +845,14 @@ const LocationManagement = () => {
           </div>
           
           {provinces.length < 38 && (
-            <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+            <div className="mt-4 p-4 bg-chart-3/10 border border-chart-3/30 rounded-lg">
               <div className="flex items-center gap-2">
-                <Info className="h-4 w-4 text-yellow-600" />
-                <span className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                <Info className="h-4 w-4 text-chart-3" />
+                <span className="text-sm font-medium text-foreground">
                   Missing Provinces Detected
                 </span>
               </div>
-              <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Found {provinces.length} out of 38 expected Indonesian provinces. Some provinces may be missing or have naming inconsistencies.
               </p>
             </div>
@@ -891,7 +891,7 @@ const LocationManagement = () => {
                   {Object.entries(locationTree).map(([provinceName, province]: any) => (
                     <div key={provinceName} className="border rounded-lg p-4">
                       <div className="flex items-center gap-2 font-semibold text-lg mb-3">
-                        <Globe className="h-5 w-5 text-blue-600" />
+                        <Globe className="h-5 w-5 text-chart-4" />
                         {province.name} ({province.code})
                       </div>
                       
@@ -899,7 +899,7 @@ const LocationManagement = () => {
                         {Object.entries(province.cities).map(([cityKey, city]: any) => (
                           <div key={cityKey} className="border-l-2 border-muted pl-4">
                             <div className="flex items-center gap-2 font-medium mb-2">
-                              <Building className="h-4 w-4 text-green-600" />
+                              <Building className="h-4 w-4 text-chart-1" />
                               {city.type} {city.name} ({city.code})
                             </div>
                             
@@ -908,7 +908,7 @@ const LocationManagement = () => {
                                 {Object.entries(city.districts).map(([districtKey, district]: any) => (
                                   <div key={districtKey} className="border-l-2 border-muted-foreground/30 pl-4">
                                     <div className="flex items-center gap-2 font-medium text-sm mb-1">
-                                      <Home className="h-3 w-3 text-orange-600" />
+                                      <Home className="h-3 w-3 text-chart-5" />
                                       {district.name} ({district.code})
                                     </div>
                                     
@@ -916,7 +916,7 @@ const LocationManagement = () => {
                                       {district.subdistricts.map((location: Location) => (
                                         <div key={location.id} className="flex items-center justify-between p-2 bg-muted/30 rounded text-sm">
                                           <div className="flex items-center gap-2">
-                                            <MapPin className="h-3 w-3 text-red-500" />
+                                            <MapPin className="h-3 w-3 text-destructive" />
                                             <span>{location.subdistrict_name} - {location.area_name}</span>
                                             {location.postal_code && (
                                               <Badge variant="outline" className="text-xs">{location.postal_code}</Badge>
@@ -946,7 +946,7 @@ const LocationManagement = () => {
                                 {city.locations.map((location: Location) => (
                                   <div key={location.id} className="flex items-center justify-between p-2 bg-muted/30 rounded text-sm">
                                     <div className="flex items-center gap-2">
-                                      <MapPin className="h-3 w-3 text-red-500" />
+                                      <MapPin className="h-3 w-3 text-destructive" />
                                       <span>{location.area_name}</span>
                                       {location.postal_code && (
                                         <Badge variant="outline" className="text-xs">{location.postal_code}</Badge>
@@ -1265,7 +1265,7 @@ const LocationManagement = () => {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => locationToDelete && deleteLocationMutation.mutate(locationToDelete.id)}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
               disabled={deleteLocationMutation.isPending}
             >
               {deleteLocationMutation.isPending ? 'Deleting...' : 'Delete'}

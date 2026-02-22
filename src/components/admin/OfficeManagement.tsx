@@ -39,23 +39,23 @@ const OfficeForm = ({ office, onSave, onCancel }: { office: Partial<OfficeLocati
         <div>
           <Label htmlFor="name_en">Name (EN)</Label>
           <Input id="name_en" {...register("name_en", { required: true })} />
-          {errors.name_en && <p className="text-red-500 text-xs mt-1">This field is required.</p>}
+          {errors.name_en && <p className="text-destructive text-xs mt-1">This field is required.</p>}
         </div>
         <div>
           <Label htmlFor="name_id">Name (ID)</Label>
           <Input id="name_id" {...register("name_id", { required: true })} />
-          {errors.name_id && <p className="text-red-500 text-xs mt-1">This field is required.</p>}
+          {errors.name_id && <p className="text-destructive text-xs mt-1">This field is required.</p>}
         </div>
       </div>
       <div>
         <Label htmlFor="address_en">Address (EN)</Label>
         <Textarea id="address_en" {...register("address_en", { required: true })} />
-         {errors.address_en && <p className="text-red-500 text-xs mt-1">This field is required.</p>}
+         {errors.address_en && <p className="text-destructive text-xs mt-1">This field is required.</p>}
       </div>
       <div>
         <Label htmlFor="address_id">Address (ID)</Label>
         <Textarea id="address_id" {...register("address_id", { required: true })} />
-        {errors.address_id && <p className="text-red-500 text-xs mt-1">This field is required.</p>}
+        {errors.address_id && <p className="text-destructive text-xs mt-1">This field is required.</p>}
       </div>
       <div className="grid grid-cols-2 gap-4">
          <div>
@@ -70,7 +70,7 @@ const OfficeForm = ({ office, onSave, onCancel }: { office: Partial<OfficeLocati
       <div>
         <Label htmlFor="email">Email</Label>
         <Input id="email" type="email" {...register("email", { pattern: { value: /^\S+@\S+$/i, message: "Invalid email address" }})} />
-        {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+        {errors.email && <p className="text-destructive text-xs mt-1">{errors.email.message}</p>}
       </div>
       <div>
         <Label htmlFor="business_hours_en">Business Hours (EN)</Label>

@@ -142,7 +142,7 @@ const VideoVerificationReviewDashboard: React.FC = () => {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-yellow-500" />
+              <Clock className="h-5 w-5 text-chart-3" />
               <div>
                 <p className="text-2xl font-bold">{stats.pending}</p>
                 <p className="text-xs text-muted-foreground">Pending Review</p>
@@ -153,7 +153,7 @@ const VideoVerificationReviewDashboard: React.FC = () => {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-blue-500" />
+              <Calendar className="h-5 w-5 text-chart-4" />
               <div>
                 <p className="text-2xl font-bold">{stats.scheduled}</p>
                 <p className="text-xs text-muted-foreground">Scheduled</p>
@@ -164,7 +164,7 @@ const VideoVerificationReviewDashboard: React.FC = () => {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-2">
-              <Video className="h-5 w-5 text-green-500" />
+              <Video className="h-5 w-5 text-chart-1" />
               <div>
                 <p className="text-2xl font-bold">{stats.inProgress}</p>
                 <p className="text-xs text-muted-foreground">In Progress</p>
