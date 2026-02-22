@@ -126,11 +126,11 @@ const VendorKYCVerification = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'approved':
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
+        return <CheckCircle className="h-5 w-5 text-chart-1" />;
       case 'rejected':
-        return <AlertCircle className="h-5 w-5 text-red-600" />;
+        return <AlertCircle className="h-5 w-5 text-destructive" />;
       default:
-        return <Clock className="h-5 w-5 text-yellow-600" />;
+        return <Clock className="h-5 w-5 text-chart-3" />;
     }
   };
 
@@ -162,27 +162,27 @@ const VendorKYCVerification = () => {
       </div>
 
       {isVerified && (
-        <Alert className="border-green-200 bg-green-50">
-          <CheckCircle className="h-4 w-4 text-green-600" />
-          <AlertDescription className="text-green-800">
+        <Alert className="border-chart-1/30 bg-chart-1/10">
+          <CheckCircle className="h-4 w-4 text-chart-1" />
+          <AlertDescription className="text-foreground">
             Your identity has been verified successfully! You now have access to all vendor features.
           </AlertDescription>
         </Alert>
       )}
 
       {isPending && (
-        <Alert className="border-yellow-200 bg-yellow-50">
-          <Clock className="h-4 w-4 text-yellow-600" />
-          <AlertDescription className="text-yellow-800">
+        <Alert className="border-chart-3/30 bg-chart-3/10">
+          <Clock className="h-4 w-4 text-chart-3" />
+          <AlertDescription className="text-foreground">
             Your KYC documents are under review. We'll notify you once the verification is complete.
           </AlertDescription>
         </Alert>
       )}
 
       {isRejected && (
-        <Alert className="border-red-200 bg-red-50">
-          <AlertCircle className="h-4 w-4 text-red-600" />
-          <AlertDescription className="text-red-800">
+        <Alert className="border-destructive/30 bg-destructive/10">
+          <AlertCircle className="h-4 w-4 text-destructive" />
+          <AlertDescription className="text-foreground">
             Your KYC verification was rejected. Please review the requirements and submit again.
             {kycData?.notes && <div className="mt-2">Admin notes: {kycData.notes}</div>}
           </AlertDescription>

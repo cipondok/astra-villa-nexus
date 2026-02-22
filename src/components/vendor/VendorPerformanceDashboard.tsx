@@ -116,22 +116,22 @@ const VendorPerformanceDashboard = () => {
 
   const getPerformanceColor = (score: number, target: number, isReverse = false) => {
     const ratio = isReverse ? target / score : score / target;
-    if (ratio >= 1) return "text-green-600";
-    if (ratio >= 0.8) return "text-yellow-600";
-    return "text-red-600";
+    if (ratio >= 1) return "text-chart-1";
+    if (ratio >= 0.8) return "text-chart-3";
+    return "text-destructive";
   };
 
   const getPerformanceIcon = (score: number, target: number, isReverse = false) => {
     const ratio = isReverse ? target / score : score / target;
-    if (ratio >= 1) return <CheckCircle className="h-4 w-4 text-green-600" />;
-    if (ratio >= 0.8) return <AlertCircle className="h-4 w-4 text-yellow-600" />;
-    return <TrendingDown className="h-4 w-4 text-red-600" />;
+    if (ratio >= 1) return <CheckCircle className="h-4 w-4 text-chart-1" />;
+    if (ratio >= 0.8) return <AlertCircle className="h-4 w-4 text-chart-3" />;
+    return <TrendingDown className="h-4 w-4 text-destructive" />;
   };
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -163,7 +163,7 @@ const VendorPerformanceDashboard = () => {
       </Card>
 
       {/* Performance Score Overview */}
-      <Card className="border-l-4 border-l-blue-500">
+      <Card className="border-l-4 border-l-primary">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Overall Performance Score</span>
@@ -337,12 +337,12 @@ const VendorPerformanceDashboard = () => {
             <CardContent>
               <div className="space-y-4">
                 {avgMetrics.responseTime > performanceGoals.responseTimeTarget && (
-                  <div className="p-4 border-l-4 border-l-orange-500 bg-orange-50">
+                  <div className="p-4 border-l-4 border-l-chart-3 bg-chart-3/10">
                     <div className="flex items-start gap-3">
-                      <Clock className="h-5 w-5 text-orange-600 mt-0.5" />
+                      <Clock className="h-5 w-5 text-chart-3 mt-0.5" />
                       <div>
-                        <h3 className="font-semibold text-orange-900">Improve Response Time</h3>
-                        <p className="text-sm text-orange-800">
+                        <h3 className="font-semibold text-foreground">Improve Response Time</h3>
+                        <p className="text-sm text-muted-foreground">
                           Your average response time is {avgMetrics.responseTime} minutes. 
                           Consider setting up instant notifications to respond faster to booking requests.
                         </p>
@@ -352,12 +352,12 @@ const VendorPerformanceDashboard = () => {
                 )}
 
                 {avgMetrics.customerSatisfaction < performanceGoals.satisfactionTarget && (
-                  <div className="p-4 border-l-4 border-l-red-500 bg-red-50">
+                  <div className="p-4 border-l-4 border-l-destructive bg-destructive/10">
                     <div className="flex items-start gap-3">
-                      <Star className="h-5 w-5 text-red-600 mt-0.5" />
+                      <Star className="h-5 w-5 text-destructive mt-0.5" />
                       <div>
-                        <h3 className="font-semibold text-red-900">Boost Customer Satisfaction</h3>
-                        <p className="text-sm text-red-800">
+                        <h3 className="font-semibold text-foreground">Boost Customer Satisfaction</h3>
+                        <p className="text-sm text-muted-foreground">
                           Your satisfaction rating is {avgMetrics.customerSatisfaction}/5.0. 
                           Focus on clear communication and exceeding customer expectations.
                         </p>
@@ -367,12 +367,12 @@ const VendorPerformanceDashboard = () => {
                 )}
 
                 {avgMetrics.completionRate >= performanceGoals.completionTarget && (
-                  <div className="p-4 border-l-4 border-l-green-500 bg-green-50">
+                  <div className="p-4 border-l-4 border-l-chart-1 bg-chart-1/10">
                     <div className="flex items-start gap-3">
-                      <Award className="h-5 w-5 text-green-600 mt-0.5" />
+                      <Award className="h-5 w-5 text-chart-1 mt-0.5" />
                       <div>
-                        <h3 className="font-semibold text-green-900">Excellent Completion Rate!</h3>
-                        <p className="text-sm text-green-800">
+                        <h3 className="font-semibold text-foreground">Excellent Completion Rate!</h3>
+                        <p className="text-sm text-muted-foreground">
                           Your {avgMetrics.completionRate}% completion rate is outstanding. 
                           This reliability will help you get more bookings.
                         </p>
@@ -381,12 +381,12 @@ const VendorPerformanceDashboard = () => {
                   </div>
                 )}
 
-                <div className="p-4 border-l-4 border-l-blue-500 bg-blue-50">
+                <div className="p-4 border-l-4 border-l-chart-4 bg-chart-4/10">
                   <div className="flex items-start gap-3">
-                    <TrendingUp className="h-5 w-5 text-blue-600 mt-0.5" />
+                    <TrendingUp className="h-5 w-5 text-chart-4 mt-0.5" />
                     <div>
-                      <h3 className="font-semibold text-blue-900">Growth Opportunity</h3>
-                      <p className="text-sm text-blue-800">
+                      <h3 className="font-semibold text-foreground">Growth Opportunity</h3>
+                      <p className="text-sm text-muted-foreground">
                         You've completed {avgMetrics.bookingCount} bookings this period. 
                         Consider expanding your service areas or adding new service types to increase revenue.
                       </p>

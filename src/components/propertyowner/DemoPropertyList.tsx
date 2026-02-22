@@ -170,11 +170,11 @@ const DemoPropertyList = () => {
                       </div>
                     </div>
                     
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
                       {property.description}
                     </p>
                     
-                    <div className="flex items-center gap-4 mb-3 text-sm text-gray-600">
+                    <div className="flex items-center gap-4 mb-3 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <MapPin className="h-4 w-4" />
                         {property.location}
@@ -194,7 +194,7 @@ const DemoPropertyList = () => {
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-muted-foreground">
                         Ditambahkan: {new Date(property.created_at).toLocaleDateString('id-ID')}
                       </span>
                       <div className="flex gap-2">
@@ -224,13 +224,13 @@ const DemoPropertyList = () => {
           
           {/* Empty State */}
           {demoProperties.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
-              <PlusCircle className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <div className="text-center py-8 text-muted-foreground">
+              <PlusCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
               <h3 className="text-lg font-medium mb-2">Belum Ada Properti</h3>
               <p className="mb-4">Mulai dengan menambahkan properti pertama Anda</p>
               <Button 
                 onClick={() => navigate('/add-property')}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 <PlusCircle className="h-4 w-4 mr-2" />
                 Tambah Properti Pertama
