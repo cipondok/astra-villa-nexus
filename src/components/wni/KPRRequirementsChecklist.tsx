@@ -229,8 +229,8 @@ export const KPRRequirementsChecklist: React.FC<KPRRequirementsChecklistProps> =
     <Card className={cn("border-0 bg-transparent shadow-none", className)}>
       <CardHeader className="pb-1.5 pt-0 px-0">
         <CardTitle className="flex items-center gap-1.5 text-[10px] sm:text-sm">
-          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-purple-500/20 to-primary/20 flex items-center justify-center">
-            <FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-purple-600" />
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-accent/20 to-primary/20 flex items-center justify-center">
+            <FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-accent-foreground" />
           </div>
           {t.title}
         </CardTitle>
@@ -258,17 +258,17 @@ export const KPRRequirementsChecklist: React.FC<KPRRequirementsChecklistProps> =
                     <div className="flex items-center gap-1.5">
                       <div className={cn(
                         "w-5 h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center",
-                        category === 'identity' && "bg-blue-500/20",
-                        category === 'employment' && "bg-green-500/20",
-                        category === 'financial' && "bg-orange-500/20",
-                        category === 'property' && "bg-purple-500/20"
+                        category === 'identity' && "bg-chart-4/20",
+                        category === 'employment' && "bg-chart-1/20",
+                        category === 'financial' && "bg-chart-3/20",
+                        category === 'property' && "bg-accent/20"
                       )}>
                         <Icon className={cn(
                           "h-2.5 w-2.5 sm:h-3 sm:w-3",
-                          category === 'identity' && "text-blue-600",
-                          category === 'employment' && "text-green-600",
-                          category === 'financial' && "text-orange-600",
-                          category === 'property' && "text-purple-600"
+                          category === 'identity' && "text-chart-4",
+                          category === 'employment' && "text-chart-1",
+                          category === 'financial' && "text-chart-3",
+                          category === 'property' && "text-accent-foreground"
                         )} />
                       </div>
                       <div className="text-left">
@@ -293,7 +293,7 @@ export const KPRRequirementsChecklist: React.FC<KPRRequirementsChecklistProps> =
                         >
                           <div className="flex items-start gap-1">
                             {req.required ? (
-                              <CheckCircle2 className="h-2.5 w-2.5 text-green-500 flex-shrink-0 mt-0.5" />
+                              <CheckCircle2 className="h-2.5 w-2.5 text-chart-1 flex-shrink-0 mt-0.5" />
                             ) : (
                               <AlertCircle className="h-2.5 w-2.5 text-muted-foreground flex-shrink-0 mt-0.5" />
                             )}
@@ -306,7 +306,7 @@ export const KPRRequirementsChecklist: React.FC<KPRRequirementsChecklistProps> =
                                   variant={req.required ? "default" : "secondary"} 
                                   className={cn(
                                     "text-[6px] sm:text-[7px] px-0.5 py-0",
-                                    req.required ? "bg-red-500/20 text-red-600 hover:bg-red-500/30" : ""
+                                    req.required ? "bg-destructive/20 text-destructive hover:bg-destructive/30" : ""
                                   )}
                                 >
                                   {req.required ? t.required : t.optional}
@@ -328,10 +328,10 @@ export const KPRRequirementsChecklist: React.FC<KPRRequirementsChecklistProps> =
         </Accordion>
 
         {/* Important Note */}
-        <div className="flex items-start gap-1 p-2 bg-blue-500/10 border border-blue-500/20 rounded-md">
-          <Info className="h-3 w-3 text-blue-500 flex-shrink-0 mt-0.5" />
+        <div className="flex items-start gap-1 p-2 bg-chart-4/10 border border-chart-4/20 rounded-md">
+          <Info className="h-3 w-3 text-chart-4 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-[9px] sm:text-xs font-medium text-blue-700 dark:text-blue-400">{t.importantNote}</p>
+            <p className="text-[9px] sm:text-xs font-medium text-chart-4">{t.importantNote}</p>
             <p className="text-[8px] sm:text-[9px] text-muted-foreground">{t.noteText}</p>
           </div>
         </div>
