@@ -579,7 +579,7 @@ const HomeLoanCalculator = () => {
             <Alert variant={eligibility.eligible ? "default" : "destructive"} className="mt-4">
               <div className="flex items-start gap-2">
                 {eligibility.eligible ? (
-                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <CheckCircle className="w-5 h-5 text-chart-1" />
                 ) : (
                   <XCircle className="w-5 h-5" />
                 )}

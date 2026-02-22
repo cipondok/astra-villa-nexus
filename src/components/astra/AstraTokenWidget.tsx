@@ -150,11 +150,11 @@ const AstraTokenWidget: React.FC<AstraTokenWidgetProps> = ({
   // Compact version for sidebars/headers
   if (compact) {
     return (
-      <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
+      <Card className="bg-gradient-to-r from-chart-3/10 to-chart-3/5 border-chart-3/30">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Coins className="h-5 w-5 text-yellow-600" />
+              <Coins className="h-5 w-5 text-chart-3" />
               <div>
                 <p className="text-sm font-medium">{formatTokenAmount(balance?.total_tokens || 0)} ASTRA</p>
                 <p className="text-xs text-muted-foreground">
@@ -188,11 +188,11 @@ const AstraTokenWidget: React.FC<AstraTokenWidgetProps> = ({
 
   // Full widget version
   return (
-    <Card className="bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 border-yellow-200">
+    <Card className="bg-gradient-to-br from-chart-3/10 via-chart-3/5 to-destructive/5 border-chart-3/30">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Coins className="h-6 w-6 text-yellow-600" />
+            <Coins className="h-6 w-6 text-chart-3" />
             <span>ASTRA Tokens</span>
           </div>
           <Badge variant="outline" className="bg-white">
@@ -205,13 +205,13 @@ const AstraTokenWidget: React.FC<AstraTokenWidgetProps> = ({
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center">
             <p className="text-sm text-muted-foreground">Available</p>
-            <p className="text-lg font-bold text-green-600">
+            <p className="text-lg font-bold text-chart-1">
               {formatTokenAmount(balance?.available_tokens || 0)}
             </p>
           </div>
           <div className="text-center">
             <p className="text-sm text-muted-foreground">Lifetime Earned</p>
-            <p className="text-lg font-bold text-blue-600">
+            <p className="text-lg font-bold text-chart-4">
               {formatTokenAmount(balance?.lifetime_earned || 0)}
             </p>
           </div>
@@ -230,9 +230,9 @@ const AstraTokenWidget: React.FC<AstraTokenWidgetProps> = ({
           </div>
 
           {checkinStatus?.hasCheckedInToday ? (
-            <div className="bg-green-100 p-3 rounded-lg text-center">
-              <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
-              <p className="text-sm text-green-800 font-medium">
+            <div className="bg-chart-1/10 p-3 rounded-lg text-center">
+              <CheckCircle className="h-5 w-5 text-chart-1 mx-auto mb-1" />
+              <p className="text-sm text-chart-1 font-medium">
                 ✅ Checked in today! 
                 {checkinStatus.todayCheckin && (
                   <span className="block text-xs">

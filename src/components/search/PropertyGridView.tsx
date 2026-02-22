@@ -229,7 +229,7 @@ const PropertyGridView = ({
                 </Button>
                 <Button
                   size="sm"
-                  className="flex-1 h-7 text-[10px] bg-green-600 hover:bg-green-700 text-white"
+                  className="flex-1 h-7 text-[10px] bg-chart-1 hover:bg-chart-1/90 text-chart-1-foreground"
                   onClick={(e) => {
                     e.stopPropagation();
                     onContact?.(property);
