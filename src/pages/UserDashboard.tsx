@@ -118,8 +118,8 @@ const UserDashboard = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
             <Card className="p-3 sm:p-4">
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                  <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                  <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
                 </div>
                 <div className="min-w-0">
                   <p className="text-lg sm:text-2xl font-bold">{stats.savedProperties}</p>
@@ -130,8 +130,8 @@ const UserDashboard = () => {
             
             <Card className="p-3 sm:p-4">
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                  <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-chart-4/10 flex items-center justify-center">
+                  <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-chart-4" />
                 </div>
                 <div className="min-w-0">
                   <p className="text-lg sm:text-2xl font-bold">{stats.messages}</p>
@@ -142,8 +142,8 @@ const UserDashboard = () => {
             
             <Card className="p-3 sm:p-4">
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                  <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-chart-1/10 flex items-center justify-center">
+                  <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-chart-1" />
                 </div>
                 <div className="min-w-0">
                   <p className="text-lg sm:text-2xl font-bold">{recentActivity.length}</p>
@@ -154,8 +154,8 @@ const UserDashboard = () => {
             
             <Card className="p-3 sm:p-4">
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                  <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-chart-5/10 flex items-center justify-center">
+                  <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-chart-5" />
                 </div>
                 <div className="min-w-0">
                   <p className="text-lg sm:text-2xl font-bold">{stats.notifications}</p>
@@ -228,8 +228,8 @@ const UserDashboard = () => {
                 <Card className="cursor-pointer hover:shadow-md active:scale-[0.98] transition-all">
                   <CardHeader className="p-3 sm:p-4 flex flex-row items-center justify-between">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                        <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                      <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                        <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
                       </div>
                       <div>
                         <CardTitle className="text-sm sm:text-base">Saved ({stats.savedProperties})</CardTitle>
@@ -243,8 +243,8 @@ const UserDashboard = () => {
                 <Card className="cursor-pointer hover:shadow-md active:scale-[0.98] transition-all">
                   <CardHeader className="p-3 sm:p-4 flex flex-row items-center justify-between">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                        <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
+                      <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-chart-4/10 flex items-center justify-center">
+                        <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-chart-4" />
                       </div>
                       <div>
                         <CardTitle className="text-sm sm:text-base">Messages</CardTitle>

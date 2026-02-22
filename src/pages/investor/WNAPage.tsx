@@ -207,12 +207,12 @@ const WNAPage = () => {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
             {t.benefits.map((benefit, idx) => {
               const iconColors = [
-                { bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-400' },
-                { bg: 'bg-amber-100 dark:bg-amber-900/50', text: 'text-amber-600 dark:text-amber-400' },
-                { bg: 'bg-green-100 dark:bg-green-900/50', text: 'text-green-600 dark:text-green-400' },
-                { bg: 'bg-purple-100 dark:bg-purple-900/50', text: 'text-purple-600 dark:text-purple-400' },
-                { bg: 'bg-cyan-100 dark:bg-cyan-900/50', text: 'text-cyan-600 dark:text-cyan-400' },
-                { bg: 'bg-rose-100 dark:bg-rose-900/50', text: 'text-rose-600 dark:text-rose-400' },
+                { bg: 'bg-chart-4/10', text: 'text-chart-4' },
+                { bg: 'bg-chart-3/10', text: 'text-chart-3' },
+                { bg: 'bg-chart-1/10', text: 'text-chart-1' },
+                { bg: 'bg-chart-5/10', text: 'text-chart-5' },
+                { bg: 'bg-accent/10', text: 'text-accent' },
+                { bg: 'bg-destructive/10', text: 'text-destructive' },
               ];
               const colorSet = iconColors[idx % iconColors.length];
               
@@ -354,13 +354,13 @@ const WNAPage = () => {
             viewport={{ once: true }}
             className={cn(
               "rounded-xl p-4 sm:p-6",
-              "bg-gradient-to-br from-accent/10 via-white/50 to-blue-500/10 dark:from-accent/10 dark:via-white/5 dark:to-blue-500/10",
+              "bg-gradient-to-br from-accent/10 via-background/50 to-chart-4/10 dark:from-accent/10 dark:via-background/5 dark:to-chart-4/10",
               "backdrop-blur-xl",
               "border-2 border-accent/30 shadow-md"
             )}
           >
             <div className="flex items-center gap-2 mb-4">
-              <div className={cn("flex items-center justify-center w-10 h-10 rounded-xl", "bg-gradient-to-br from-accent/20 via-blue-500/10 to-accent/20", "border-2 border-accent/30")}>
+              <div className={cn("flex items-center justify-center w-10 h-10 rounded-xl", "bg-gradient-to-br from-accent/20 via-chart-4/10 to-accent/20", "border-2 border-accent/30")}>
                 <Award className="h-5 w-5 text-accent" />
               </div>
               <h2 className="text-sm sm:text-base font-bold text-foreground">{t.vipTitle}</h2>
@@ -368,7 +368,7 @@ const WNAPage = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {t.vipFeatures.map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-white/50 dark:bg-white/5 border border-border/30">
-                  <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-chart-1 flex-shrink-0" />
                   <span className="text-xs sm:text-sm text-foreground">{feature}</span>
                 </div>
               ))}
@@ -388,7 +388,7 @@ const WNAPage = () => {
                 defaultType="wna-investment" 
                 className="h-10 sm:h-12 text-sm sm:text-base px-6 shadow-lg"
               />
-              <Button size="lg" onClick={() => navigate('/contact')} className="gap-2 h-10 sm:h-12 text-sm sm:text-base px-6 bg-gradient-to-r from-accent to-blue-500 hover:from-accent/90 hover:to-blue-600 shadow-lg active:scale-95">
+              <Button size="lg" onClick={() => navigate('/contact')} className="gap-2 h-10 sm:h-12 text-sm sm:text-base px-6 bg-gradient-to-r from-accent to-chart-4 hover:from-accent/90 hover:to-chart-4/90 shadow-lg active:scale-95">
                 <Phone className="h-4 w-4" />
                 {t.ctaButton}
               </Button>

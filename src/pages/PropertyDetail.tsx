@@ -518,7 +518,7 @@ const PropertyDetail: React.FC = () => {
                       {property.posted_by.position || 'Developer'}
                     </span>
                     <div className="flex items-center gap-1">
-                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-3 w-3 fill-gold-primary text-gold-primary" />
                       <span className="text-xs font-semibold">{property.posted_by.customer_feedback_rating}</span>
                     </div>
                     <span className="text-xs text-muted-foreground hidden sm:inline">• {property.posted_by.experience_years}y exp</span>
@@ -528,7 +528,7 @@ const PropertyDetail: React.FC = () => {
                 
               <Button 
                 size="sm"
-                className="flex-shrink-0 bg-emerald-600 hover:bg-emerald-700 text-background border-0 h-9 px-4 text-xs font-semibold shadow-sm"
+                className="flex-shrink-0 bg-chart-1 hover:bg-chart-1/90 text-background border-0 h-9 px-4 text-xs font-semibold shadow-sm"
                 onClick={() => {
                   if (user && property.posted_by?.whatsapp_number) {
                     window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
@@ -1095,7 +1095,7 @@ const PropertyDetail: React.FC = () => {
                         <h4 className="font-semibold text-xs sm:text-sm text-foreground truncate">{property.posted_by.name}</h4>
                         <p className="text-[9px] sm:text-[10px] text-gold-primary font-medium">{property.posted_by.position}</p>
                         <div className="flex items-center gap-1 mt-0.5">
-                          <Star className="h-2.5 w-2.5 fill-yellow-400 text-yellow-400" />
+                          <Star className="h-2.5 w-2.5 fill-gold-primary text-gold-primary" />
                           <span className="text-[9px] sm:text-[10px] font-semibold text-foreground">{property.posted_by.customer_feedback_rating}</span>
                           <span className="text-[8px] sm:text-[9px] text-muted-foreground">({property.posted_by.customer_feedback_count})</span>
                         </div>

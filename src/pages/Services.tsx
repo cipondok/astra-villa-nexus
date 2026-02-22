@@ -332,7 +332,7 @@ const Services = () => {
                         </p>
                         {service.vendor_business_profiles?.rating && (
                           <div className="flex items-center gap-1">
-                            <Star className="h-2.5 w-2.5 md:h-3 md:w-3 fill-amber-400 text-amber-400" />
+                            <Star className="h-2.5 w-2.5 md:h-3 md:w-3 fill-gold-primary text-gold-primary" />
                             <span className="text-[9px] md:text-xs text-muted-foreground">
                               {service.vendor_business_profiles.rating.toFixed(1)}
                             </span>
