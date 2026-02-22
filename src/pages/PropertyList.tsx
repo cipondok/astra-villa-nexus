@@ -127,15 +127,15 @@ const PropertyList = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Active</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1"><CheckCircle className="h-3 w-3 mr-1" />Active</Badge>;
       case 'sold':
-        return <Badge className="bg-blue-100 text-blue-800"><CheckCircle className="h-3 w-3 mr-1" />Sold</Badge>;
+        return <Badge className="bg-chart-4/10 text-chart-4"><CheckCircle className="h-3 w-3 mr-1" />Sold</Badge>;
       case 'rented':
-        return <Badge className="bg-purple-100 text-purple-800"><CheckCircle className="h-3 w-3 mr-1" />Rented</Badge>;
+        return <Badge className="bg-accent/10 text-accent-foreground"><CheckCircle className="h-3 w-3 mr-1" />Rented</Badge>;
       case 'pending_approval':
-        return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
       case 'inactive':
-        return <Badge className="bg-gray-100 text-gray-800"><XCircle className="h-3 w-3 mr-1" />Inactive</Badge>;
+        return <Badge className="bg-muted text-muted-foreground"><XCircle className="h-3 w-3 mr-1" />Inactive</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
