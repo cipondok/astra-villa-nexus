@@ -110,7 +110,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
               >
                 <Icon className={cn(
                   "h-2.5 w-2.5",
-                  isActive ? "text-white" : "text-current"
+                  isActive ? "text-primary-foreground" : "text-current"
                 )} />
                 <span className="max-w-[80px] truncate">{section.label}</span>
                 {'badge' in section && section.badge && (
@@ -119,7 +119,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
                     className={cn(
                       "text-[7px] px-1 py-0 h-3 leading-none",
                       isActive 
-                        ? "bg-white/25 text-white border-0" 
+                        ? "bg-primary-foreground/25 text-primary-foreground border-0" 
                         : String(section.badge) === 'New' 
                           ? "bg-chart-1/15 text-chart-1 border-0"
                           : "bg-primary/10 text-primary border-0"

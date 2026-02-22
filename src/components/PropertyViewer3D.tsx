@@ -24,9 +24,9 @@ function Loader() {
   const { progress } = useProgress();
   return (
     <Html center>
-      <div className="text-white bg-black/50 px-4 py-2 rounded-lg backdrop-blur-sm">
+       <div className="text-primary-foreground bg-background/50 px-4 py-2 rounded-lg backdrop-blur-sm">
         <div className="flex items-center gap-2">
-          <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+          <div className="animate-spin h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full"></div>
           <span>Loading 3D Model... {progress.toFixed(0)}%</span>
         </div>
       </div>
@@ -135,12 +135,12 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
   }, [isOpen, isTopView])
 
   const stagingStyles = [
-    { id: 'modern', name: 'Modern', color: 'bg-blue-500' },
-    { id: 'classic', name: 'Classic', color: 'bg-amber-500' },
-    { id: 'minimalist', name: 'Minimalist', color: 'bg-gray-500' },
-    { id: 'luxury', name: 'Luxury', color: 'bg-purple-500' },
-    { id: 'scandinavian', name: 'Scandinavian', color: 'bg-green-500' },
-    { id: 'industrial', name: 'Industrial', color: 'bg-orange-500' },
+     { id: 'modern', name: 'Modern', color: 'bg-primary' },
+    { id: 'classic', name: 'Classic', color: 'bg-chart-3' },
+    { id: 'minimalist', name: 'Minimalist', color: 'bg-muted-foreground' },
+    { id: 'luxury', name: 'Luxury', color: 'bg-accent' },
+    { id: 'scandinavian', name: 'Scandinavian', color: 'bg-chart-1' },
+    { id: 'industrial', name: 'Industrial', color: 'bg-chart-5' },
   ];
 
   return (
@@ -149,17 +149,17 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
         <div className="relative w-full h-full">
           {/* Header */}
           <div className="absolute top-0 left-0 right-0 z-10 bg-black/50 backdrop-blur-sm p-4">
-            <div className="flex items-center justify-between text-white">
+            <div className="flex items-center justify-between text-primary-foreground">
               <div>
-                <DialogTitle className="text-xl font-bold text-white">{propertyTitle}</DialogTitle>
-                <p className="text-sm text-gray-300">3D Virtual Tour</p>
+                 <DialogTitle className="text-xl font-bold text-primary-foreground">{propertyTitle}</DialogTitle>
+                 <p className="text-sm text-muted-foreground">3D Virtual Tour</p>
               </div>
               <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={toggleFullscreen}
-                  className="text-white hover:bg-white/20"
+                   className="text-primary-foreground hover:bg-primary-foreground/20"
                 >
                   {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
                 </Button>
@@ -167,7 +167,7 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
                   variant="ghost"
                   size="sm"
                   onClick={onClose}
-                  className="text-white hover:bg-white/20"
+                  className="text-primary-foreground hover:bg-primary-foreground/20"
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -182,7 +182,7 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
                 variant={activeTool === 'orbit' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => handleToolChange('orbit')}
-                className="text-white hover:bg-white/20 justify-start"
+                 className="text-primary-foreground hover:bg-primary-foreground/20 justify-start"
               >
                 <Eye className="h-4 w-4 mr-2" />
                 Navigate
@@ -191,7 +191,7 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
                 variant={activeTool === 'measure' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => handleToolChange('measure')}
-                className="text-white hover:bg-white/20 justify-start"
+                 className="text-primary-foreground hover:bg-primary-foreground/20 justify-start"
               >
                 <Ruler className="h-4 w-4 mr-2" />
                 Measure
@@ -200,7 +200,7 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
                 variant={activeTool === 'staging' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => handleToolChange('staging')}
-                className="text-white hover:bg-white/20 justify-start"
+                 className="text-primary-foreground hover:bg-primary-foreground/20 justify-start"
               >
                 <Palette className="h-4 w-4 mr-2" />
                 Staging
@@ -209,7 +209,7 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
                 variant={activeTool === 'lighting' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => handleToolChange('lighting')}
-                className="text-white hover:bg-white/20 justify-start"
+                 className="text-primary-foreground hover:bg-primary-foreground/20 justify-start"
               >
                 <Sun className="h-4 w-4 mr-2" />
                 Lighting
@@ -218,7 +218,7 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
                 variant={isTopView ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setIsTopView(!isTopView)}
-                className="text-white hover:bg-white/20 justify-start"
+                 className="text-primary-foreground hover:bg-primary-foreground/20 justify-start"
               >
                 <LayoutGrid className="h-4 w-4 mr-2" />
                 Top View
@@ -227,7 +227,7 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
                 variant={showNeighborhood ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setShowNeighborhood(!showNeighborhood)}
-                className="text-white hover:bg-white/20 justify-start"
+                 className="text-primary-foreground hover:bg-primary-foreground/20 justify-start"
               >
                 <Map className="h-4 w-4 mr-2" />
                 Area
@@ -246,7 +246,7 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
                     setEmotionTrackingStatus('loading');
                   }
                 }}
-                className="text-white hover:bg-white/20 justify-start"
+                className="text-primary-foreground hover:bg-primary-foreground/20 justify-start"
               >
                 <Webcam className="h-4 w-4 mr-2" />
                 Emotion AI
@@ -273,14 +273,14 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
 
           {/* Status Badges */}
           <div className="absolute top-20 right-4 z-10 flex flex-col gap-2">
-            <Badge className="bg-green-500/80 text-white backdrop-blur-sm">
-              AR Ready
-            </Badge>
-            <Badge className="bg-blue-500/80 text-white backdrop-blur-sm">
-              4K Quality
-            </Badge>
-            {measurementMode && (
-              <Badge className="bg-orange-500/80 text-white backdrop-blur-sm animate-pulse">
+             <Badge className="bg-chart-1/80 text-primary-foreground backdrop-blur-sm">
+               AR Ready
+             </Badge>
+             <Badge className="bg-chart-4/80 text-primary-foreground backdrop-blur-sm">
+               4K Quality
+             </Badge>
+             {measurementMode && (
+               <Badge className="bg-chart-3/80 text-primary-foreground backdrop-blur-sm animate-pulse">
                 Measurement Active
               </Badge>
             )}
@@ -343,7 +343,7 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
           {/* UI elements at bottom */}
           <div className="absolute bottom-4 right-4 left-4 z-10 flex justify-between items-end">
             {/* Instructions */}
-            <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 text-white max-w-sm">
+            <div className="bg-background/50 backdrop-blur-sm rounded-lg p-3 text-primary-foreground max-w-sm">
               <h4 className="font-semibold mb-2">How to Navigate:</h4>
               <ul className="text-sm space-y-1">
                 <li>• Click & drag to rotate view</li>
@@ -356,12 +356,12 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
             {/* Emotion Status */}
             <div className="flex flex-col items-end gap-2">
               {emotionTrackingStatus === 'loading' && (
-                  <Badge className="bg-yellow-500/80 text-white backdrop-blur-sm">
+                  <Badge className="bg-chart-3/80 text-primary-foreground backdrop-blur-sm">
                       Loading Emotion AI...
                   </Badge>
               )}
               {emotionTrackingStatus === 'ready' && detectedEmotion && (
-                  <Badge className="bg-purple-500/80 text-white backdrop-blur-sm capitalize">
+                  <Badge className="bg-accent/80 text-primary-foreground backdrop-blur-sm capitalize">
                       Emotion: {detectedEmotion}
                   </Badge>
               )}

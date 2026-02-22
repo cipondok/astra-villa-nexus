@@ -46,7 +46,7 @@ export default function PlatformHub() {
       description: 'Typesense-compatible faceted search with geo-location',
       icon: <Search className="h-5 w-5" />,
       progress: 100,
-      color: 'from-blue-500 to-cyan-500',
+      color: 'from-primary to-chart-4',
       features: [
         { name: 'Faceted Filters', description: 'Dynamic filter counts by property type, price, location', status: 'active', icon: <Search className="h-4 w-4" />, link: '/search' },
         { name: 'Geo Search', description: 'Find properties near any location with radius filters', status: 'active', icon: <Map className="h-4 w-4" />, link: '/search' },
@@ -60,7 +60,7 @@ export default function PlatformHub() {
       description: 'Real-time alerts via FCM/Web Push',
       icon: <Bell className="h-5 w-5" />,
       progress: 100,
-      color: 'from-purple-500 to-pink-500',
+      color: 'from-accent to-chart-5',
       features: [
         { name: 'Price Drop Alerts', description: 'Instant notifications when saved properties drop in price', status: 'active', icon: <TrendingUp className="h-4 w-4" /> },
         { name: 'New Match Alerts', description: 'Get notified when new properties match your criteria', status: 'active', icon: <Search className="h-4 w-4" /> },
@@ -74,7 +74,7 @@ export default function PlatformHub() {
       description: 'Native iOS/Android via Capacitor',
       icon: <Smartphone className="h-5 w-5" />,
       progress: 100,
-      color: 'from-green-500 to-emerald-500',
+      color: 'from-chart-1 to-chart-2',
       features: [
         { name: 'Capacitor Config', description: 'Ready for iOS/Android deployment', status: 'ready', icon: <Smartphone className="h-4 w-4" /> },
         { name: 'Push Notifications', description: 'Native push support for mobile', status: 'ready', icon: <Bell className="h-4 w-4" /> },
@@ -88,7 +88,7 @@ export default function PlatformHub() {
       description: 'ML-powered recommendations and predictions',
       icon: <Brain className="h-5 w-5" />,
       progress: 100,
-      color: 'from-orange-500 to-red-500',
+      color: 'from-chart-3 to-destructive',
       features: [
         { name: 'Smart Recommendations', description: '80% preference match + 20% discovery suggestions', status: 'active', icon: <Sparkles className="h-4 w-4" /> },
         { name: 'Price Predictions', description: 'ML-based market trend analysis', status: 'active', icon: <TrendingUp className="h-4 w-4" /> },
@@ -115,7 +115,7 @@ export default function PlatformHub() {
               <Button variant="ghost" size="sm">← Back</Button>
             </Link>
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Platform Infrastructure
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -148,7 +148,7 @@ export default function PlatformHub() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg bg-gradient-to-br ${phase.color} text-white`}>
+                    <div className={`p-2 rounded-lg bg-gradient-to-br ${phase.color} text-primary-foreground`}>
                       {phase.icon}
                     </div>
                     <div>
@@ -178,9 +178,9 @@ export default function PlatformHub() {
                           <Badge 
                             variant="outline" 
                             className={`text-[10px] px-1.5 py-0 ${
-                              feature.status === 'active' ? 'border-green-500 text-green-500' :
-                              feature.status === 'ready' ? 'border-blue-500 text-blue-500' :
-                              'border-yellow-500 text-yellow-500'
+                              feature.status === 'active' ? 'border-chart-1 text-chart-1' :
+                              feature.status === 'ready' ? 'border-chart-4 text-chart-4' :
+                              'border-chart-3 text-chart-3'
                             }`}
                           >
                             {feature.status}
