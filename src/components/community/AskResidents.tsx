@@ -171,7 +171,7 @@ const AskResidents: React.FC<AskResidentsProps> = ({ propertyId, className }) =>
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-medium">Resident {index + 1}</span>
                       {resident.is_verified && (
-                        <Badge className="bg-green-100 text-green-700 text-xs">
+                        <Badge className="bg-chart-1/10 text-chart-1 text-xs">
                           <CheckCircle2 className="h-3 w-3 mr-1" />
                           Verified
                         </Badge>
@@ -257,9 +257,9 @@ const AskResidents: React.FC<AskResidentsProps> = ({ propertyId, className }) =>
                             </p>
                           </div>
                           
-                          <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
-                            <Shield className="h-4 w-4 text-blue-600" />
-                            <p className="text-xs text-blue-700">
+                          <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg">
+                            <Shield className="h-4 w-4 text-primary" />
+                            <p className="text-xs text-primary">
                               Messages are monitored for safety. Be respectful and avoid sharing personal info.
                             </p>
                           </div>

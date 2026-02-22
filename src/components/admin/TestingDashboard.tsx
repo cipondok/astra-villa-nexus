@@ -618,20 +618,20 @@ const TestingDashboard = () => {
                 <Separator />
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                  <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-                    <p className="text-2xl font-bold text-green-600">181</p>
+                  <div className="p-3 rounded-lg bg-chart-1/10 border border-chart-1/20">
+                    <p className="text-2xl font-bold text-chart-1">181</p>
                     <p className="text-xs text-muted-foreground">Total Passed</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <p className="text-2xl font-bold text-red-600">3</p>
+                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                    <p className="text-2xl font-bold text-destructive">3</p>
                     <p className="text-xs text-muted-foreground">Total Failed</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                    <p className="text-2xl font-bold text-blue-600">4</p>
+                  <div className="p-3 rounded-lg bg-chart-4/10 border border-chart-4/20">
+                    <p className="text-2xl font-bold text-chart-4">4</p>
                     <p className="text-xs text-muted-foreground">Browsers Tested</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                    <p className="text-2xl font-bold text-purple-600">98.4%</p>
+                  <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
+                    <p className="text-2xl font-bold text-accent-foreground">98.4%</p>
                     <p className="text-xs text-muted-foreground">Pass Rate</p>
                   </div>
                 </div>
@@ -655,7 +655,7 @@ const TestingDashboard = () => {
                     <div key={idx} className="space-y-1">
                       <div className="flex justify-between text-sm">
                         <span>{item.feature}</span>
-                        <span className={item.support === 100 ? 'text-green-600' : 'text-yellow-600'}>
+                        <span className={item.support === 100 ? 'text-chart-1' : 'text-chart-3'}>
                           {item.support}%
                         </span>
                       </div>
@@ -719,20 +719,20 @@ const TestingDashboard = () => {
                 <Separator />
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                  <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-                    <p className="text-2xl font-bold text-green-600">149</p>
+                  <div className="p-3 rounded-lg bg-chart-1/10 border border-chart-1/20">
+                    <p className="text-2xl font-bold text-chart-1">149</p>
                     <p className="text-xs text-muted-foreground">Total Passed</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <p className="text-2xl font-bold text-red-600">3</p>
+                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                    <p className="text-2xl font-bold text-destructive">3</p>
                     <p className="text-xs text-muted-foreground">Total Failed</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                    <p className="text-2xl font-bold text-blue-600">4</p>
+                  <div className="p-3 rounded-lg bg-chart-4/10 border border-chart-4/20">
+                    <p className="text-2xl font-bold text-chart-4">4</p>
                     <p className="text-xs text-muted-foreground">Devices Tested</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                    <p className="text-2xl font-bold text-purple-600">98.0%</p>
+                  <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
+                    <p className="text-2xl font-bold text-accent-foreground">98.0%</p>
                     <p className="text-xs text-muted-foreground">Pass Rate</p>
                   </div>
                 </div>

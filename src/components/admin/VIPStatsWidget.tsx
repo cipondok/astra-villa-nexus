@@ -82,7 +82,7 @@ export function VIPStatsWidget({ onNavigate }: VIPStatsWidgetProps) {
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center justify-between">
           <span className="flex items-center gap-2">
-            <Crown className="h-4 w-4 text-yellow-500" />
+            <Crown className="h-4 w-4 text-chart-3" />
             VIP Membership
           </span>
           <Badge variant="outline" className="text-xs">

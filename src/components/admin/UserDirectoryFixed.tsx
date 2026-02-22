@@ -351,7 +351,7 @@ const UserDirectoryFixed = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-blue-500" />
+              <Users className="h-4 w-4 text-chart-4" />
               <span className="text-sm font-medium">Total Users</span>
             </div>
             <div className="text-2xl font-bold mt-2">{stats.totalUsers}</div>
@@ -360,7 +360,7 @@ const UserDirectoryFixed = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-green-500" />
+              <Shield className="h-4 w-4 text-chart-1" />
               <span className="text-sm font-medium">Active Users</span>
             </div>
             <div className="text-2xl font-bold mt-2">{stats.activeUsers}</div>
@@ -369,7 +369,7 @@ const UserDirectoryFixed = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-purple-500" />
+              <Building2 className="h-4 w-4 text-accent-foreground" />
               <span className="text-sm font-medium">Vendors</span>
             </div>
             <div className="text-2xl font-bold mt-2">{stats.vendors}</div>
@@ -378,7 +378,7 @@ const UserDirectoryFixed = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Package className="h-4 w-4 text-orange-500" />
+              <Package className="h-4 w-4 text-chart-5" />
               <span className="text-sm font-medium">Categorized</span>
             </div>
             <div className="text-2xl font-bold mt-2">{stats.vendorsWithCategory}</div>
@@ -467,7 +467,7 @@ const UserDirectoryFixed = () => {
                             <div className="text-xs text-muted-foreground">{user.company_name}</div>
                           )}
                           {vendorProfile?.business_name && (
-                            <div className="text-xs font-medium text-blue-600">
+                            <div className="text-xs font-medium text-primary">
                               {vendorProfile.business_name}
                             </div>
                           )}

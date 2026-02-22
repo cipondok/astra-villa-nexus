@@ -694,9 +694,9 @@ const IndonesianLocationManager = () => {
 
             {/* Remaining Info */}
             {syncProgress?.remaining !== undefined && syncProgress.remaining > 0 && (
-              <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 text-sm">
+              <div className="bg-chart-5/10 border border-chart-5/20 rounded-lg p-3 text-sm">
                 <div className="flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 text-amber-500" />
+                  <AlertCircle className="h-4 w-4 text-chart-5" />
                   <span>Masih ada <strong>{syncProgress.remaining}</strong> provinsi yang belum disinkronkan. Jalankan lagi untuk melanjutkan.</span>
                 </div>
               </div>
@@ -852,10 +852,10 @@ const IndonesianLocationManager = () => {
               </div>
               <div className="flex gap-2 items-center">
                 <Select value={syncMode} onValueChange={(v) => setSyncMode(v as any)}>
-                  <SelectTrigger className="w-52 bg-white dark:bg-gray-800">
+                  <SelectTrigger className="w-52 bg-card border-border">
                     <SelectValue placeholder="Pilih mode sync" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-gray-800 z-50">
+                  <SelectContent className="bg-card border-border z-50">
                     <SelectItem value="provinces">Provinsi Saja (Level 1)</SelectItem>
                     <SelectItem value="districts">Batch 3 Provinsi + Kecamatan</SelectItem>
                     <SelectItem value="single-province">Pilih 1 Provinsi Lengkap</SelectItem>
@@ -864,10 +864,10 @@ const IndonesianLocationManager = () => {
                 
                 {syncMode === 'single-province' && (
                   <Select value={selectedSyncProvince} onValueChange={setSelectedSyncProvince}>
-                    <SelectTrigger className="w-48 bg-white dark:bg-gray-800">
+                    <SelectTrigger className="w-48 bg-card border-border">
                       <SelectValue placeholder="Pilih provinsi" />
                     </SelectTrigger>
-                    <SelectContent className="max-h-64 overflow-y-auto bg-white dark:bg-gray-800 z-50">
+                    <SelectContent className="max-h-64 overflow-y-auto bg-card border-border z-50">
                       {provinces.map((prov) => (
                         <SelectItem key={prov.code} value={prov.code}>
                           {prov.name}
@@ -1415,8 +1415,8 @@ const IndonesianLocationManager = () => {
                         <div className="text-muted-foreground">Sync satu provinsi dengan semua kota, kecamatan, dan opsional kelurahan/desa. Untuk update data terbaru.</div>
                       </div>
                     </div>
-                    <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                      <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
+                    <div className="mt-4 p-3 bg-chart-5/10 border border-chart-5/20 rounded-lg">
+                      <div className="flex items-center gap-2 text-chart-5">
                         <AlertCircle className="h-4 w-4" />
                         <span className="font-medium">Tips:</span>
                       </div>

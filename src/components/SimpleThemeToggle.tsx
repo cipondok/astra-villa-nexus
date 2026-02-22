@@ -27,12 +27,12 @@ const SimpleThemeToggle = ({ className = "" }: SimpleThemeToggleProps) => {
     >
       {theme === "dark" ? (
         <>
-          <Sun className="h-4 w-4 text-yellow-500" />
+          <Sun className="h-4 w-4 text-chart-3" />
           <span className="hidden md:inline text-foreground font-medium">Light</span>
         </>
       ) : (
         <>
-          <Moon className="h-4 w-4 text-blue-500 dark:text-yellow-500" />
+          <Moon className="h-4 w-4 text-primary dark:text-chart-3" />
           <span className="hidden md:inline text-foreground font-medium">Dark</span>
         </>
       )}

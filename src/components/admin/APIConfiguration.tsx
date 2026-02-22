@@ -306,8 +306,8 @@ const APIConfiguration = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">ASTRA Token API Configuration</h2>
-          <p className="text-gray-400">Configure your ASTRA Token API settings for property transactions</p>
+          <h2 className="text-2xl font-bold">ASTRA Token API Configuration</h2>
+          <p className="text-muted-foreground">Configure your ASTRA Token API settings for property transactions</p>
         </div>
         <div className="flex items-center space-x-2">
           {connectionStatus && (
@@ -327,16 +327,16 @@ const APIConfiguration = () => {
       </div>
 
       <Tabs defaultValue="configuration" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3 bg-slate-800/50">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="configuration">Configuration</TabsTrigger>
           <TabsTrigger value="endpoints">Endpoints</TabsTrigger>
           <TabsTrigger value="testing">Testing</TabsTrigger>
         </TabsList>
 
         <TabsContent value="configuration" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
+          <Card>
             <CardHeader>
-              <CardTitle className="flex items-center text-white">
+              <CardTitle className="flex items-center">
                 <Settings className="h-5 w-5 mr-2" />
                 API Settings
               </CardTitle>
@@ -344,13 +344,13 @@ const APIConfiguration = () => {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-white">Base URL</Label>
+                  <Label>Base URL</Label>
                   <div className="flex space-x-2">
                     <Input
                       value={config.baseUrl}
                       onChange={(e) => handleInputChange('baseUrl', e.target.value)}
                       placeholder="https://your-api.com/v1"
-                      className="bg-slate-700/50 border-slate-600 text-white"
+                      className=""
                     />
                     <Button
                       variant="outline"
@@ -363,14 +363,14 @@ const APIConfiguration = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">API Key</Label>
+                  <Label>API Key</Label>
                   <div className="flex space-x-2">
                     <Input
                       type={showApiKey ? 'text' : 'password'}
                       value={config.apiKey}
                       onChange={(e) => handleInputChange('apiKey', e.target.value)}
                       placeholder="astra_your_actual_api_key_here"
-                      className="bg-slate-700/50 border-slate-600 text-white"
+                      className=""
                     />
                     <Button
                       variant="outline"
@@ -381,10 +381,10 @@ const APIConfiguration = () => {
                     </Button>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs text-gray-400">API key should start with "astra_"</p>
-                    <p className="text-xs text-gray-500">Current key: {config.apiKey ? config.apiKey.substring(0, 15) + '...' : 'Not set'}</p>
+                    <p className="text-xs text-muted-foreground">API key should start with "astra_"</p>
+                    <p className="text-xs text-muted-foreground/70">Current key: {config.apiKey ? config.apiKey.substring(0, 15) + '...' : 'Not set'}</p>
                     {config.apiKey && !isValidAPIKey(config.apiKey) && (
-                      <p className="text-xs text-red-400 flex items-center">
+                      <p className="text-xs text-destructive flex items-center">
                         <AlertTriangle className="h-3 w-3 mr-1" />
                         Invalid API key format
                       </p>
@@ -393,33 +393,33 @@ const APIConfiguration = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">Timeout (ms)</Label>
+                  <Label>Timeout (ms)</Label>
                   <Input
                     type="number"
                     value={config.timeout}
                     onChange={(e) => handleInputChange('timeout', parseInt(e.target.value))}
-                    className="bg-slate-700/50 border-slate-600 text-white"
+                    className=""
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">Retry Attempts</Label>
+                  <Label>Retry Attempts</Label>
                   <Input
                     type="number"
                     value={config.retryAttempts}
                     onChange={(e) => handleInputChange('retryAttempts', parseInt(e.target.value))}
-                    className="bg-slate-700/50 border-slate-600 text-white"
+                    className=""
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-white">Description</Label>
+                <Label>Description</Label>
                 <Textarea
                   value={config.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   placeholder="Describe this API configuration"
-                  className="bg-slate-700/50 border-slate-600 text-white"
+                  className=""
                 />
               </div>
 
@@ -428,7 +428,7 @@ const APIConfiguration = () => {
                   checked={config.isEnabled}
                   onCheckedChange={(checked) => handleInputChange('isEnabled', checked)}
                 />
-                <Label className="text-white">Enable API</Label>
+                <Label>Enable API</Label>
               </div>
 
               <div className="flex space-x-2">
@@ -456,52 +456,52 @@ const APIConfiguration = () => {
         </TabsContent>
 
         <TabsContent value="endpoints" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white">Available Endpoints</CardTitle>
+              <CardTitle>Available Endpoints</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
-                <div className="p-3 bg-slate-700/30 rounded-lg">
+                <div className="p-3 bg-muted/30 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-green-400">GET /health</span>
+                    <span className="font-mono text-chart-1">GET /health</span>
                     <Badge variant="outline">Health Check</Badge>
                   </div>
-                  <p className="text-sm text-gray-400 mt-1">Check API connectivity and status</p>
+                  <p className="text-sm text-muted-foreground mt-1">Check API connectivity and status</p>
                 </div>
 
-                <div className="p-3 bg-slate-700/30 rounded-lg">
+                <div className="p-3 bg-muted/30 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-green-400">GET /users</span>
+                    <span className="font-mono text-chart-1">GET /users</span>
                     <Badge variant="outline">User Profile</Badge>
                   </div>
-                  <p className="text-sm text-gray-400 mt-1">Get user profile and balance</p>
-                  <code className="text-xs text-gray-500">?userId=user_uuid</code>
+                  <p className="text-sm text-muted-foreground mt-1">Get user profile and balance</p>
+                  <code className="text-xs text-muted-foreground/70">?userId=user_uuid</code>
                 </div>
 
-                <div className="p-3 bg-slate-700/30 rounded-lg">
+                <div className="p-3 bg-muted/30 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-blue-400">POST /users</span>
+                    <span className="font-mono text-chart-4">POST /users</span>
                     <Badge variant="outline">Create User</Badge>
                   </div>
-                  <p className="text-sm text-gray-400 mt-1">Create new user account</p>
+                  <p className="text-sm text-muted-foreground mt-1">Create new user account</p>
                 </div>
 
-                <div className="p-3 bg-slate-700/30 rounded-lg">
+                <div className="p-3 bg-muted/30 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-blue-400">POST /transactions</span>
+                    <span className="font-mono text-chart-4">POST /transactions</span>
                     <Badge variant="outline">Process Payment</Badge>
                   </div>
-                  <p className="text-sm text-gray-400 mt-1">Process property purchase</p>
+                  <p className="text-sm text-muted-foreground mt-1">Process property purchase</p>
                 </div>
 
-                <div className="p-3 bg-slate-700/30 rounded-lg">
+                <div className="p-3 bg-muted/30 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-green-400">GET /properties</span>
+                    <span className="font-mono text-chart-1">GET /properties</span>
                     <Badge variant="outline">Properties</Badge>
                   </div>
-                  <p className="text-sm text-gray-400 mt-1">Get available properties</p>
-                  <code className="text-xs text-gray-500">?limit=20 or ?propertyId=uuid</code>
+                  <p className="text-sm text-muted-foreground mt-1">Get available properties</p>
+                  <code className="text-xs text-muted-foreground/70">?limit=20 or ?propertyId=uuid</code>
                 </div>
               </div>
             </CardContent>
@@ -509,9 +509,9 @@ const APIConfiguration = () => {
         </TabsContent>
 
         <TabsContent value="testing" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white">API Testing</CardTitle>
+              <CardTitle>API Testing</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <Button 
@@ -538,13 +538,13 @@ const APIConfiguration = () => {
 
               {testResults && (
                 <div className="space-y-2">
-                  <Label className="text-white">Test Results</Label>
+                  <Label>Test Results</Label>
                   <div className={`p-3 rounded-lg ${
                     testResults.status === 'success' 
-                      ? 'bg-green-900/20 border border-green-500/30' 
-                      : 'bg-red-900/20 border border-red-500/30'
+                      ? 'bg-chart-1/10 border border-chart-1/30' 
+                      : 'bg-destructive/10 border border-destructive/30'
                   }`}>
-                    <pre className="text-xs text-white overflow-auto whitespace-pre-wrap">
+                    <pre className="text-xs overflow-auto whitespace-pre-wrap">
                       {JSON.stringify(testResults, null, 2)}
                     </pre>
                   </div>
