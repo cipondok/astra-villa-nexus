@@ -27,19 +27,19 @@ const NetworkStatus: React.FC<NetworkStatusProps> = ({
     >
       {isOnline ? (
         <>
-          <div className="flex items-center gap-1.5 text-green-500">
+          <div className="flex items-center gap-1.5 text-chart-1">
             <Wifi className="h-4 w-4" />
             {showDetails && <span>Online</span>}
           </div>
           {syncQueueLength > 0 && (
-            <div className="flex items-center gap-1 text-amber-500">
+            <div className="flex items-center gap-1 text-chart-3">
               <RefreshCw className="h-3.5 w-3.5 animate-spin" />
               <span className="text-xs">{syncQueueLength} syncing</span>
             </div>
           )}
         </>
       ) : (
-        <div className="flex items-center gap-1.5 text-red-500">
+        <div className="flex items-center gap-1.5 text-destructive">
           <WifiOff className="h-4 w-4" />
           {showDetails && <span>Offline</span>}
           {syncQueueLength > 0 && (
@@ -67,8 +67,8 @@ export const NetworkStatusBanner: React.FC = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 py-2 px-4 text-center text-sm font-medium transition-all",
         isOnline 
-          ? "bg-amber-500/90 text-amber-950" 
-          : "bg-red-500/90 text-white"
+          ? "bg-chart-3 text-primary-foreground" 
+          : "bg-destructive text-destructive-foreground"
       )}
     >
       {isOnline ? (

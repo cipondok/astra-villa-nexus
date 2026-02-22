@@ -83,9 +83,9 @@ const PaymentStatusChecker: React.FC = () => {
   };
 
   const getStatusColor = () => {
-    if (isVerifying) return 'bg-blue-50 border-blue-200';
-    if (paymentResult?.success) return 'bg-green-50 border-green-200';
-    return 'bg-red-50 border-red-200';
+    if (isVerifying) return 'bg-chart-4/10 border-chart-4/20';
+    if (paymentResult?.success) return 'bg-chart-1/10 border-chart-1/20';
+    return 'bg-destructive/10 border-destructive/20';
   };
 
   const handleGoToBooking = () => {

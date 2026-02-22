@@ -77,17 +77,17 @@ export const AffiliatePanel = () => {
       <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
         <div className="grid grid-cols-3 gap-2">
           <div className="text-center p-2 bg-muted/50 rounded-lg">
-            <Users className="h-4 w-4 mx-auto mb-1 text-blue-500" />
+            <Users className="h-4 w-4 mx-auto mb-1 text-chart-4" />
             <p className="text-lg font-bold">{affiliate.total_referrals || 0}</p>
             <p className="text-[10px] text-muted-foreground">Referrals</p>
           </div>
           <div className="text-center p-2 bg-muted/50 rounded-lg">
-            <DollarSign className="h-4 w-4 mx-auto mb-1 text-green-500" />
+            <DollarSign className="h-4 w-4 mx-auto mb-1 text-chart-1" />
             <p className="text-lg font-bold">{affiliate.pending_earnings || 0}</p>
             <p className="text-[10px] text-muted-foreground">Pending</p>
           </div>
           <div className="text-center p-2 bg-muted/50 rounded-lg">
-            <TrendingUp className="h-4 w-4 mx-auto mb-1 text-amber-500" />
+            <TrendingUp className="h-4 w-4 mx-auto mb-1 text-chart-3" />
             <p className="text-lg font-bold">{affiliate.total_earnings || 0}</p>
             <p className="text-[10px] text-muted-foreground">Total</p>
           </div>

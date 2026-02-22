@@ -68,13 +68,13 @@ const DemoPropertyList = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'approved':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-chart-1/10 text-chart-1 border-chart-1/20';
       case 'pending_approval':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-chart-3/10 text-chart-3 border-chart-3/20';
       case 'rejected':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -119,7 +119,7 @@ const DemoPropertyList = () => {
           </div>
           <Button 
             onClick={() => navigate('/add-property')}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
           >
             <PlusCircle className="h-4 w-4 mr-2" />
             Tambah Properti Baru
@@ -129,11 +129,11 @@ const DemoPropertyList = () => {
       <CardContent>
         <div className="space-y-4">
           {demoProperties.map((property) => (
-            <Card key={property.id} className="border border-gray-200 hover:shadow-md transition-shadow">
+            <Card key={property.id} className="border border-border hover:shadow-md transition-shadow">
               <CardContent className="p-4">
                 <div className="flex flex-col md:flex-row gap-4">
                   {/* Property Image */}
-                  <div className="w-full md:w-48 h-32 rounded-lg overflow-hidden bg-gray-100">
+                  <div className="w-full md:w-48 h-32 rounded-lg overflow-hidden bg-muted">
                     <img 
                       src={property.image_urls[0]} 
                       alt={property.title}
@@ -145,23 +145,23 @@ const DemoPropertyList = () => {
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-2">
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                        <h3 className="text-lg font-semibold text-foreground mb-1">
                           {property.title}
                         </h3>
                         <div className="flex items-center gap-2 mb-2">
                           <Badge variant="outline" className={getStatusColor(property.status)}>
                             {getStatusText(property.status)}
                           </Badge>
-                          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          <Badge variant="outline" className="bg-chart-4/10 text-chart-4 border-chart-4/20">
                             {getListingTypeText(property.listing_type)}
                           </Badge>
-                          <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                          <Badge variant="outline" className="bg-accent/10 text-accent border-accent/20">
                             {getPropertyTypeText(property.property_type)}
                           </Badge>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-green-600">
+                        <div className="text-2xl font-bold text-chart-1">
                           {property.listing_type === 'rent' 
                             ? `${formatIDR(property.price)}/bulan`
                             : formatIDR(property.price)
