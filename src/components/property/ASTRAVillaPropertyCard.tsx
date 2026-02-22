@@ -186,13 +186,13 @@ const ASTRAVillaPropertyCard = ({
         {/* Price Section */}
         <div className={cn(
           "flex items-baseline gap-1 rounded-lg px-2.5 py-2 border flex-wrap",
-          "bg-gold-primary/5 border-gold-primary/15"
+          "bg-primary/5 border-primary/15"
         )}>
-          <span className="text-base font-black leading-none tracking-tight text-gold-primary">
+          <span className="text-base font-black leading-none tracking-tight text-primary">
             {priceInfo.main}
           </span>
           {priceInfo.suffix && (
-            <span className="text-[11px] font-extrabold text-gold-primary/60">
+            <span className="text-[11px] font-extrabold text-primary/60">
               {priceInfo.suffix}
             </span>
           )}
@@ -207,7 +207,7 @@ const ASTRAVillaPropertyCard = ({
         </div>
 
         {/* Title */}
-        <h3 className="text-[11px] font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-gold-primary transition-colors duration-200">
+        <h3 className="text-[11px] font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-200">
           {property.title}
         </h3>
 
@@ -218,7 +218,7 @@ const ASTRAVillaPropertyCard = ({
         </div>
 
         {/* Specs */}
-        <div className="flex items-center flex-wrap gap-1.5 pt-2 border-t border-gold-primary/10">
+        <div className="flex items-center flex-wrap gap-1.5 pt-2 border-t border-border/30">
           {property.bedrooms !== undefined && Number(property.bedrooms) > 0 && (
             <div className="flex items-center gap-0.5 text-muted-foreground">
               <Bed className="h-3 w-3" />

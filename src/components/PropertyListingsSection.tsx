@@ -102,14 +102,14 @@ const PropertyListingsSection = ({
       <section className="py-3 sm:py-4 min-h-[300px]">
         <div className="w-full px-2 sm:px-4">
           <div className="text-center p-8 rounded-2xl max-w-sm mx-auto
-            bg-primary-foreground/5 backdrop-blur-xl border border-primary-foreground/10 shadow-xl">
+            bg-muted/50 backdrop-blur-xl border border-border shadow-xl">
             <div className="relative w-14 h-14 mx-auto mb-4">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gold-primary to-gold-primary/60 animate-spin" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-primary/60 animate-spin" />
               <div className="absolute inset-1 rounded-full bg-background" />
-              <div className="absolute inset-2.5 rounded-full bg-gradient-to-r from-gold-primary/40 to-gold-primary/20 animate-pulse" />
-              <Sparkles className="absolute inset-0 m-auto w-4 h-4 text-gold-primary" />
+              <div className="absolute inset-2.5 rounded-full bg-gradient-to-r from-primary/40 to-primary/20 animate-pulse" />
+              <Sparkles className="absolute inset-0 m-auto w-4 h-4 text-primary" />
             </div>
-            <p className="text-sm sm:text-base font-semibold text-gold-primary">
+            <p className="text-sm sm:text-base font-semibold text-primary">
               {currentText.loadingProperties}
             </p>
             <p className="text-xs text-muted-foreground mt-2">This should only take a few seconds...</p>
@@ -128,13 +128,13 @@ const PropertyListingsSection = ({
           {!hideTitle && (
             <div className="text-center mb-3 sm:mb-4">
               <div className="flex items-center justify-center gap-2 mb-1">
-                <div className="h-px w-6 sm:w-10 bg-gradient-to-r from-transparent to-gold-primary/30" />
-                <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gold-primary uppercase tracking-wider">
+                <div className="h-px w-6 sm:w-10 bg-gradient-to-r from-transparent to-primary/30" />
+                <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground uppercase tracking-wider">
                   {sectionData.sectionTitle}
                 </h2>
-                <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />
-                <div className="h-px w-6 sm:w-10 bg-gradient-to-l from-transparent to-gold-primary/30" />
+                <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
+                <div className="h-px w-6 sm:w-10 bg-gradient-to-l from-transparent to-primary/30" />
               </div>
               {sectionData.sectionSubtitle && (
                 <p className="text-sm sm:text-base text-muted-foreground">{sectionData.sectionSubtitle}</p>
@@ -145,13 +145,13 @@ const PropertyListingsSection = ({
           {!displayProperties || displayProperties.length === 0 ? (
             <div className="text-center py-6 sm:py-8">
               <div className="max-w-md mx-auto px-4 p-6 rounded-2xl
-                bg-primary-foreground/5 backdrop-blur-xl border border-primary-foreground/10 shadow-xl">
+                bg-muted/50 backdrop-blur-xl border border-border shadow-xl">
                 <div className="mb-4">
-                  <div className="w-14 h-14 mx-auto mb-3 bg-primary-foreground/8 rounded-xl flex items-center justify-center border border-primary-foreground/10">
+                   <div className="w-14 h-14 mx-auto mb-3 bg-muted rounded-xl flex items-center justify-center border border-border">
                     <Building2 className="w-7 h-7 text-gold-primary/70" strokeWidth={1.5} />
                   </div>
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold mb-2 text-gold-primary">
+                <h3 className="text-base sm:text-lg font-semibold mb-2 text-foreground">
                   {hasSearched ? currentText.noResults : currentText.noFeaturedProperties}
                 </h3>
                 {hasSearched && (
@@ -163,14 +163,14 @@ const PropertyListingsSection = ({
                   <Button
                     onClick={() => window.location.reload()}
                     variant="outline"
-                    className="w-full text-sm border-primary-foreground/15 hover:bg-primary-foreground/5 hover:border-gold-primary/30 transition-all duration-300"
+                    className="w-full text-sm border-border hover:bg-muted hover:border-primary/30 transition-all duration-300"
                   >
                     <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
                     Refresh
                   </Button>
                   <Button
                     onClick={() => navigate('/dijual')}
-                    className="w-full text-sm bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-background shadow-md hover:shadow-lg hover:shadow-gold-primary/20 transition-all"
+                    className="w-full text-sm bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg hover:shadow-primary/20 transition-all"
                   >
                     {currentText.browseAll}
                     <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
