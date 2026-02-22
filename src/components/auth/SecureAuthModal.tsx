@@ -635,17 +635,17 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                       <Phone className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                       <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2">
                         {whatsappValidation.type === "success" ? (
-                          <CheckCircle className="h-3 w-3 text-green-500" />
+                          <CheckCircle className="h-3 w-3 text-chart-1" />
                         ) : whatsappValidation.type === "error" ? (
                           <XCircle className="h-3 w-3 text-destructive" />
                         ) : (
-                          <MessageCircle className="h-3 w-3 text-green-600" />
+                          <MessageCircle className="h-3 w-3 text-chart-1" />
                         )}
                       </div>
                     </div>
                     {whatsappValidation.message && (
                       <p className={`text-[9px] ${
-                        whatsappValidation.type === "error" ? "text-destructive" : "text-green-500"
+                        whatsappValidation.type === "error" ? "text-destructive" : "text-chart-1"
                       }`}>
                         {whatsappValidation.message}
                       </p>
@@ -701,7 +701,7 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                     <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
                       {registerData.confirmPassword && (
                         passwordsMatch ? 
-                          <CheckCircle className="h-3 w-3 text-green-500" /> :
+                          <CheckCircle className="h-3 w-3 text-chart-1" /> :
                           <XCircle className="h-3 w-3 text-destructive" />
                       )}
                       <Button
@@ -719,7 +719,7 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                     <p className="text-[9px] text-destructive">{currentText.passwordsDontMatch}</p>
                   )}
                   {registerData.confirmPassword && passwordsMatch && (
-                    <p className="text-[9px] text-green-500">{currentText.passwordsMatch}</p>
+                    <p className="text-[9px] text-chart-1">{currentText.passwordsMatch}</p>
                   )}
                 </div>
 
@@ -757,8 +757,8 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
           </div>
           <div className="flex items-center gap-1">
             <div className={`w-1.5 h-1.5 rounded-full ${
-              riskLevel === "low" ? "bg-green-500" :
-              riskLevel === "medium" ? "bg-yellow-500" :
+              riskLevel === "low" ? "bg-chart-1" :
+              riskLevel === "medium" ? "bg-chart-3" :
               "bg-destructive"
             }`} />
             <span>{riskLevel.toUpperCase()} RISK</span>

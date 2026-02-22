@@ -19,15 +19,15 @@ const getNotificationIcon = (type: InAppNotification['type']) => {
     case 'new_match':
       return <Home className="h-4 w-4 text-primary" />;
     case 'price_drop':
-      return <TrendingDown className="h-4 w-4 text-green-500" />;
+      return <TrendingDown className="h-4 w-4 text-chart-1" />;
     case 'message':
-      return <MessageSquare className="h-4 w-4 text-blue-500" />;
+      return <MessageSquare className="h-4 w-4 text-chart-4" />;
     case 'appointment':
-      return <Calendar className="h-4 w-4 text-orange-500" />;
+      return <Calendar className="h-4 w-4 text-chart-3" />;
     case 'market_insight':
-      return <BarChart3 className="h-4 w-4 text-purple-500" />;
+      return <BarChart3 className="h-4 w-4 text-accent-foreground" />;
     case 'favorite':
-      return <Star className="h-4 w-4 text-yellow-500" />;
+      return <Star className="h-4 w-4 text-chart-3" />;
     case 'system':
     default:
       return <Info className="h-4 w-4 text-muted-foreground" />;

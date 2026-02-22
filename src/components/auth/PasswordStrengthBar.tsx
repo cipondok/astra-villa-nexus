@@ -29,20 +29,20 @@ export const PasswordStrengthBar = ({ password, showTips = true }: PasswordStren
     
     if (score <= 2) {
       strength = 'weak';
-      color = 'bg-red-500';
-      bgColor = 'bg-red-100';
+      color = 'bg-destructive';
+      bgColor = 'bg-destructive/10';
     } else if (score === 3) {
       strength = 'fair';
-      color = 'bg-amber-500';
-      bgColor = 'bg-amber-100';
+      color = 'bg-chart-3';
+      bgColor = 'bg-chart-3/10';
     } else if (score === 4) {
       strength = 'good';
-      color = 'bg-blue-500';
-      bgColor = 'bg-blue-100';
+      color = 'bg-chart-4';
+      bgColor = 'bg-chart-4/10';
     } else {
       strength = 'strong';
-      color = 'bg-green-500';
-      bgColor = 'bg-green-100';
+      color = 'bg-chart-1';
+      bgColor = 'bg-chart-1/10';
     }
 
     // Generate tips based on unmet criteria
@@ -54,10 +54,10 @@ export const PasswordStrengthBar = ({ password, showTips = true }: PasswordStren
   if (!password) return null;
 
   const strengthLabels = {
-    weak: { text: 'Weak', icon: ShieldAlert, color: 'text-red-600' },
-    fair: { text: 'Fair', icon: Shield, color: 'text-amber-600' },
-    good: { text: 'Good', icon: Shield, color: 'text-blue-600' },
-    strong: { text: 'Strong', icon: ShieldCheck, color: 'text-green-600' },
+    weak: { text: 'Weak', icon: ShieldAlert, color: 'text-destructive' },
+    fair: { text: 'Fair', icon: Shield, color: 'text-chart-3' },
+    good: { text: 'Good', icon: Shield, color: 'text-chart-4' },
+    strong: { text: 'Strong', icon: ShieldCheck, color: 'text-chart-1' },
   };
 
   const StrengthIcon = strengthLabels[analysis.strength].icon;
@@ -93,11 +93,11 @@ export const PasswordStrengthBar = ({ password, showTips = true }: PasswordStren
           {analysis.criteria.map((criterion, index) => (
             <div key={index} className="flex items-center gap-2 text-xs">
               {criterion.met ? (
-                <CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                <CheckCircle className="h-3.5 w-3.5 text-chart-1 flex-shrink-0" />
               ) : (
                 <XCircle className="h-3.5 w-3.5 text-muted-foreground/50 flex-shrink-0" />
               )}
-              <span className={criterion.met ? "text-green-600" : "text-muted-foreground"}>
+              <span className={criterion.met ? "text-chart-1" : "text-muted-foreground"}>
                 {criterion.label}
               </span>
             </div>

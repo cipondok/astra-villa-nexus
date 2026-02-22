@@ -81,14 +81,14 @@ export const PropertyPosterInfo: React.FC<PropertyPosterInfoProps> = ({
         return {
           icon: Building2,
           label: 'Perusahaan (PT)',
-          color: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+          color: 'bg-primary/10 text-primary border-primary/20',
           description: 'Agen Properti Terdaftar'
         };
       default:
         return {
           icon: User,
           label: 'Perorangan',
-          color: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
+          color: 'bg-muted text-muted-foreground border-border',
           description: 'Pemilik Langsung'
         };
     }
@@ -114,14 +114,14 @@ export const PropertyPosterInfo: React.FC<PropertyPosterInfoProps> = ({
         return {
           icon: BadgeCheck,
           label: 'Verified',
-          color: 'bg-green-500/10 text-green-600 border-green-500/20',
+          color: 'bg-chart-1/10 text-chart-1 border-chart-1/20',
           description: 'Identitas Terverifikasi'
         };
       case 'pending':
         return {
           icon: Shield,
           label: 'Pending',
-          color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
+          color: 'bg-chart-3/10 text-chart-3 border-chart-3/20',
           description: 'Sedang Diverifikasi'
         };
       default:
@@ -191,7 +191,7 @@ export const PropertyPosterInfo: React.FC<PropertyPosterInfoProps> = ({
             <div className="flex items-center gap-3 text-xs">
               {poster.customer_feedback_rating && (
                 <div className="flex items-center gap-1">
-                  <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                  <Star className="h-3.5 w-3.5 fill-chart-3 text-chart-3" />
                   <span className="font-semibold">{poster.customer_feedback_rating}</span>
                   {poster.customer_feedback_count && (
                     <span className="text-muted-foreground">({poster.customer_feedback_count})</span>

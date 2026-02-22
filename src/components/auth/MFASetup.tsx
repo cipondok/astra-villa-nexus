@@ -89,9 +89,9 @@ export const MFASetup = ({ onComplete }: MFASetupProps) => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <Shield className="h-12 w-12 text-blue-600 mx-auto mb-2" />
+        <Shield className="h-12 w-12 text-primary mx-auto mb-2" />
         <h3 className="text-lg font-semibold">Multi-Factor Authentication</h3>
-        <p className="text-sm text-gray-600">Add an extra layer of security to your account</p>
+        <p className="text-sm text-muted-foreground">Add an extra layer of security to your account</p>
       </div>
 
       {step === "setup" && (
