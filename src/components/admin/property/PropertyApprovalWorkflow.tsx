@@ -288,7 +288,7 @@ const PropertyApprovalWorkflow = () => {
               <div className="text-sm text-muted-foreground">Rejected</div>
             </Card>
             <Card className="p-4">
-              <div className="text-2xl font-bold text-purple-600">{stats.avg_review_time}</div>
+              <div className="text-2xl font-bold text-accent-foreground">{stats.avg_review_time}</div>
               <div className="text-sm text-muted-foreground">Avg Review Time</div>
             </Card>
           </div>
