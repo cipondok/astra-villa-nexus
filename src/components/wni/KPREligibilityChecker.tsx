@@ -294,14 +294,14 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
     <Card className={cn("border-0 bg-transparent shadow-none", className)}>
       <CardHeader className="pb-1.5 pt-0 px-0">
         <CardTitle className="flex items-center gap-1.5 text-[10px] sm:text-sm">
-          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-green-500/20 to-primary/20 flex items-center justify-center">
-            <Calculator className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-green-600" />
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-chart-1/20 to-primary/20 flex items-center justify-center">
+            <Calculator className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-chart-1" />
           </div>
           {t.title}
         </CardTitle>
         <p className="text-[9px] sm:text-xs text-muted-foreground">{t.subtitle}</p>
         {countryInfo && (
-          <Badge className="w-fit mt-1.5 text-[9px] sm:text-xs gap-0.5 bg-blue-500/10 text-blue-600 border-blue-500/20">
+          <Badge className="w-fit mt-1.5 text-[9px] sm:text-xs gap-0.5 bg-primary/10 text-primary border-primary/20">
             {countryInfo.flag} {language === 'id' ? countryInfo.nameId : countryInfo.name}
           </Badge>
         )}
@@ -448,9 +448,9 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
                         )}
                       >
                         <RadioGroupItem value={option} className="sr-only" />
-                        {option === 'clean' && <CheckCircle className="h-2.5 w-2.5 text-green-500 flex-shrink-0" />}
-                        {option === 'minor' && <AlertTriangle className="h-2.5 w-2.5 text-amber-500 flex-shrink-0" />}
-                        {option === 'issues' && <XCircle className="h-2.5 w-2.5 text-red-500 flex-shrink-0" />}
+                        {option === 'clean' && <CheckCircle className="h-2.5 w-2.5 text-chart-1 flex-shrink-0" />}
+                        {option === 'minor' && <AlertTriangle className="h-2.5 w-2.5 text-chart-3 flex-shrink-0" />}
+                        {option === 'issues' && <XCircle className="h-2.5 w-2.5 text-destructive flex-shrink-0" />}
                         <span className="truncate">{t.creditOptions[option]}</span>
                       </label>
                     ))}
@@ -494,18 +494,18 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
               <div className={cn(
                 "p-4 rounded-xl border text-center",
                 result.eligible 
-                  ? "bg-green-500/10 border-green-500/30" 
-                  : "bg-amber-500/10 border-amber-500/30"
+                  ? "bg-chart-1/10 border-chart-1/30" 
+                  : "bg-chart-3/10 border-chart-3/30"
               )}>
                 <div className="flex items-center justify-center gap-2 mb-2">
                   {result.eligible ? (
-                    <CheckCircle className="h-6 w-6 text-green-500" />
+                    <CheckCircle className="h-6 w-6 text-chart-1" />
                   ) : (
-                    <AlertTriangle className="h-6 w-6 text-amber-500" />
+                    <AlertTriangle className="h-6 w-6 text-chart-3" />
                   )}
                   <h3 className={cn(
                     "text-sm font-semibold",
-                    result.eligible ? "text-green-600" : "text-amber-600"
+                    result.eligible ? "text-chart-1" : "text-chart-3"
                   )}>
                     {result.eligible ? t.result.eligible : t.result.notEligible}
                   </h3>
@@ -529,30 +529,30 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
                   <p className="text-[10px] text-muted-foreground">{t.result.maxTenure}</p>
                   <p className="text-sm font-semibold">{result.maxTenure} years</p>
                 </div>
-                <div className="p-3 bg-green-500/10 rounded-xl">
+                <div className="p-3 bg-chart-1/10 rounded-xl">
                   <p className="text-[10px] text-muted-foreground">{t.result.monthlyPayment}</p>
-                  <p className="text-sm font-semibold text-green-600">{formatCurrency(result.estimatedMonthlyPayment)}</p>
+                  <p className="text-sm font-semibold text-chart-1">{formatCurrency(result.estimatedMonthlyPayment)}</p>
                 </div>
                 <div className={cn(
                   "p-3 rounded-xl",
-                  result.dti > 40 ? "bg-red-500/10" : "bg-blue-500/10"
+                  result.dti > 40 ? "bg-destructive/10" : "bg-primary/10"
                 )}>
                   <p className="text-[10px] text-muted-foreground">{t.result.dti}</p>
                   <p className={cn(
                     "text-sm font-semibold",
-                    result.dti > 40 ? "text-red-600" : "text-blue-600"
+                    result.dti > 40 ? "text-destructive" : "text-primary"
                   )}>{result.dti.toFixed(1)}%</p>
                 </div>
               </div>
 
               {/* Issues */}
               {result.issues.length > 0 && (
-                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
-                  <p className="text-xs font-medium text-red-600 mb-2">{t.result.issues}</p>
+                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl">
+                  <p className="text-xs font-medium text-destructive mb-2">{t.result.issues}</p>
                   <ul className="space-y-1">
                     {result.issues.map((issue, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-[10px] text-muted-foreground">
-                        <XCircle className="h-3 w-3 text-red-500 flex-shrink-0 mt-0.5" />
+                        <XCircle className="h-3 w-3 text-destructive flex-shrink-0 mt-0.5" />
                         {issue}
                       </li>
                     ))}
@@ -562,12 +562,12 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
 
               {/* Recommendations */}
               {result.recommendations.length > 0 && (
-                <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
-                  <p className="text-xs font-medium text-blue-600 mb-2">{t.result.recommendations}</p>
+                <div className="p-3 bg-primary/10 border border-primary/20 rounded-xl">
+                  <p className="text-xs font-medium text-primary mb-2">{t.result.recommendations}</p>
                   <ul className="space-y-1">
                     {result.recommendations.map((rec, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-[10px] text-muted-foreground">
-                        <TrendingUp className="h-3 w-3 text-blue-500 flex-shrink-0 mt-0.5" />
+                        <TrendingUp className="h-3 w-3 text-primary flex-shrink-0 mt-0.5" />
                         {rec}
                       </li>
                     ))}

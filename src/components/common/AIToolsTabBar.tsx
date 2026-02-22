@@ -30,64 +30,64 @@ const tools: ToolItem[] = [
     label: 'New Projects',
     shortLabel: 'Projects',
     path: '/new-projects',
-    color: 'text-blue-600 dark:text-blue-400',
-    iconBg: 'bg-blue-100 dark:bg-blue-900/50'
+    color: 'text-chart-4',
+    iconBg: 'bg-chart-4/10'
   },
   {
     icon: Calculator,
     label: 'Construction Cost',
     shortLabel: 'Build Cost',
     path: '/calculators/construction',
-    color: 'text-cyan-600 dark:text-cyan-400',
-    iconBg: 'bg-cyan-100 dark:bg-cyan-900/50'
+    color: 'text-chart-1',
+    iconBg: 'bg-chart-1/10'
   },
   {
     icon: Landmark,
     label: 'Home Loan',
     shortLabel: 'KPR',
     path: '/calculators/loan',
-    color: 'text-emerald-600 dark:text-emerald-400',
-    iconBg: 'bg-emerald-100 dark:bg-emerald-900/50'
+    color: 'text-chart-1',
+    iconBg: 'bg-chart-1/10'
   },
   {
     icon: Map,
     label: 'Area Guides',
     shortLabel: 'Areas',
     path: '/areas',
-    color: 'text-pink-600 dark:text-pink-400',
-    iconBg: 'bg-pink-100 dark:bg-pink-900/50'
+    color: 'text-chart-5',
+    iconBg: 'bg-chart-5/10'
   },
   {
     icon: MapPin,
     label: 'Plot Finder',
     shortLabel: 'Plots',
     path: '/search?property_type=land',
-    color: 'text-teal-600 dark:text-teal-400',
-    iconBg: 'bg-teal-100 dark:bg-teal-900/50'
+    color: 'text-primary',
+    iconBg: 'bg-primary/10'
   },
   {
     icon: TrendingUp,
     label: 'Property Index',
     shortLabel: 'Index',
     path: '/analytics?tab=overview',
-    color: 'text-purple-600 dark:text-purple-400',
-    iconBg: 'bg-purple-100 dark:bg-purple-900/50'
+    color: 'text-accent-foreground',
+    iconBg: 'bg-accent/10'
   },
   {
     icon: Ruler,
     label: 'Area Converter',
     shortLabel: 'Convert',
     path: '/calculators/area',
-    color: 'text-amber-600 dark:text-amber-400',
-    iconBg: 'bg-amber-100 dark:bg-amber-900/50'
+    color: 'text-chart-3',
+    iconBg: 'bg-chart-3/10'
   },
   {
     icon: BarChart3,
     label: 'Property Trends',
     shortLabel: 'Trends',
     path: '/analytics?tab=trends',
-    color: 'text-violet-600 dark:text-violet-400',
-    iconBg: 'bg-violet-100 dark:bg-violet-900/50'
+    color: 'text-accent-foreground',
+    iconBg: 'bg-accent/10'
   }
 ];
 

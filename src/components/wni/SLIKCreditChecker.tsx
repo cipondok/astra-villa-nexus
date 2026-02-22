@@ -219,10 +219,10 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
 
   const getStatusColor = (color: string) => {
     switch (color) {
-      case 'green': return 'bg-green-500/20 border-green-500/30 text-green-600';
-      case 'yellow': return 'bg-yellow-500/20 border-yellow-500/30 text-yellow-600';
-      case 'orange': return 'bg-orange-500/20 border-orange-500/30 text-orange-600';
-      case 'red': return 'bg-red-500/20 border-red-500/30 text-red-600';
+      case 'green': return 'bg-chart-1/20 border-chart-1/30 text-chart-1';
+      case 'yellow': return 'bg-chart-3/20 border-chart-3/30 text-chart-3';
+      case 'orange': return 'bg-chart-5/20 border-chart-5/30 text-chart-5';
+      case 'red': return 'bg-destructive/20 border-destructive/30 text-destructive';
       default: return 'bg-muted';
     }
   };
@@ -231,8 +231,8 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
     <Card className={cn("border border-primary/10 bg-transparent dark:bg-white/5 backdrop-blur-xl shadow-sm", className)}>
       <CardHeader className="pb-2 pt-3 px-3">
         <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-primary/20 flex items-center justify-center">
-            <FileSearch className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-600" />
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-chart-3/20 to-primary/20 flex items-center justify-center">
+            <FileSearch className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-chart-3" />
           </div>
           {t.title}
         </CardTitle>
@@ -240,11 +240,11 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
       </CardHeader>
       <CardContent className="space-y-3 px-3 pb-3">
         {/* What is SLIK */}
-        <div className="p-2.5 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+        <div className="p-2.5 bg-primary/10 border border-primary/20 rounded-lg">
           <div className="flex items-start gap-2">
-            <Info className="h-3.5 w-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
+            <Info className="h-3.5 w-3.5 text-primary flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-[10px] sm:text-xs font-medium text-blue-600">{t.whatIsSLIK}</p>
+              <p className="text-[10px] sm:text-xs font-medium text-primary">{t.whatIsSLIK}</p>
               <p className="text-[9px] sm:text-[10px] text-muted-foreground mt-0.5">{t.slikDesc}</p>
             </div>
           </div>
@@ -271,10 +271,10 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
                     <Badge 
                       className={cn(
                         "text-[9px] sm:text-xs font-bold px-1.5 flex-shrink-0",
-                        status.color === 'green' && "bg-green-500",
-                        status.color === 'yellow' && "bg-yellow-500",
-                        status.color === 'orange' && "bg-orange-500",
-                        status.color === 'red' && "bg-red-500"
+                        status.color === 'green' && "bg-chart-1",
+                        status.color === 'yellow' && "bg-chart-3",
+                        status.color === 'orange' && "bg-chart-5",
+                        status.color === 'red' && "bg-destructive"
                       )}
                     >
                       {status.level}
@@ -288,7 +288,7 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
                     variant={status.eligible ? "default" : "destructive"}
                     className={cn(
                       "text-[7px] sm:text-[9px] px-1 py-0 flex-shrink-0 whitespace-nowrap",
-                      status.eligible ? "bg-green-500" : "bg-red-500"
+                      status.eligible ? "bg-chart-1" : "bg-destructive"
                     )}
                   >
                     {status.eligible ? (
@@ -337,7 +337,7 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
           <AccordionItem value="overseas" className="border border-border/50 rounded-lg px-3">
             <AccordionTrigger className="hover:no-underline py-2">
               <div className="flex items-center gap-1.5">
-                <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
+                <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                 <span className="text-[10px] sm:text-sm font-medium">{t.forOverseasWNI}</span>
               </div>
             </AccordionTrigger>
@@ -345,7 +345,7 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
               <ul className="space-y-1.5">
                 {t.overseasSteps.map((step, idx) => (
                   <li key={idx} className="flex items-start gap-1.5 text-[9px] sm:text-xs text-muted-foreground">
-                    <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-3 w-3 text-chart-1 flex-shrink-0 mt-0.5" />
                     {step}
                   </li>
                 ))}
@@ -357,7 +357,7 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
           <AccordionItem value="cleaning" className="border border-border/50 rounded-lg px-3">
             <AccordionTrigger className="hover:no-underline py-2">
               <div className="flex items-center gap-1.5">
-                <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-amber-500" />
+                <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-chart-3" />
                 <span className="text-[10px] sm:text-sm font-medium">{t.cleaningCredit}</span>
               </div>
             </AccordionTrigger>
@@ -365,7 +365,7 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
               <ol className="space-y-1.5">
                 {t.cleaningSteps.map((step, idx) => (
                   <li key={idx} className="flex items-start gap-1.5 text-[9px] sm:text-xs text-muted-foreground">
-                    <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center flex-shrink-0 text-[9px] font-medium">
+                    <span className="w-4 h-4 rounded-full bg-chart-3/20 text-chart-3 flex items-center justify-center flex-shrink-0 text-[9px] font-medium">
                       {idx + 1}
                     </span>
                     {step}
