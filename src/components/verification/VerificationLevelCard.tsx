@@ -67,7 +67,7 @@ export const VerificationLevelCard: React.FC<VerificationLevelCardProps> = ({
         'relative overflow-hidden transition-all duration-300',
         isCurrentLevel && 'ring-2 ring-primary shadow-lg',
         !isUnlocked && 'opacity-60',
-        isComplete && 'bg-gradient-to-br from-green-50/50 to-emerald-50/50',
+        isComplete && 'bg-gradient-to-br from-chart-1/5 to-chart-1/10',
         className
       )}
     >

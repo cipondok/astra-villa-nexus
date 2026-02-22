@@ -311,18 +311,18 @@ const WNAFaqHelp: React.FC = () => {
         {/* Quick Tips */}
         <div className={cn(
           "rounded-lg p-4",
-          "bg-amber-50/80 dark:bg-amber-900/20",
-          "border-2 border-amber-200 dark:border-amber-800"
+          "bg-chart-3/5",
+          "border-2 border-chart-3/20"
         )}>
           <div className="flex items-center gap-2 mb-3">
-            <Lightbulb className="h-5 w-5 text-amber-600" />
+            <Lightbulb className="h-5 w-5 text-chart-3" />
             <h4 className="text-sm sm:text-base font-bold text-foreground">{t.quickTips.title}</h4>
           </div>
           
           <div className="space-y-2">
             {t.quickTips.tips.map((tip, idx) => (
               <div key={idx} className="flex items-start gap-2">
-                <Badge className="text-[10px] px-1.5 py-0 bg-amber-500 text-white flex-shrink-0">
+                <Badge className="text-[10px] px-1.5 py-0 bg-chart-3 text-primary-foreground flex-shrink-0">
                   {idx + 1}
                 </Badge>
                 <span className="text-xs sm:text-sm text-foreground/80">{tip}</span>

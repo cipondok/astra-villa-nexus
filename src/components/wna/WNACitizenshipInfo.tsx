@@ -338,11 +338,11 @@ const WNACitizenshipInfo: React.FC = () => {
   const t = copy[language];
 
   const colorClasses = {
-    blue: { bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-400' },
-    green: { bg: 'bg-green-100 dark:bg-green-900/50', text: 'text-green-600 dark:text-green-400' },
-    rose: { bg: 'bg-rose-100 dark:bg-rose-900/50', text: 'text-rose-600 dark:text-rose-400' },
-    purple: { bg: 'bg-purple-100 dark:bg-purple-900/50', text: 'text-purple-600 dark:text-purple-400' },
-    amber: { bg: 'bg-amber-100 dark:bg-amber-900/50', text: 'text-amber-600 dark:text-amber-400' }
+    blue: { bg: 'bg-chart-4/10', text: 'text-chart-4' },
+    green: { bg: 'bg-chart-1/10', text: 'text-chart-1' },
+    rose: { bg: 'bg-destructive/10', text: 'text-destructive' },
+    purple: { bg: 'bg-accent/10', text: 'text-accent-foreground' },
+    amber: { bg: 'bg-chart-3/10', text: 'text-chart-3' }
   };
 
   return (
@@ -357,10 +357,10 @@ const WNACitizenshipInfo: React.FC = () => {
       </div>
 
       {/* Important Note */}
-      <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border-2 border-amber-300 dark:border-amber-700">
+      <div className="p-3 rounded-lg bg-chart-3/5 border-2 border-chart-3/30">
         <div className="flex items-start gap-2">
-          <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
-          <p className="text-xs sm:text-sm font-medium text-amber-800 dark:text-amber-200">{t.importantNote}</p>
+          <AlertTriangle className="h-5 w-5 text-chart-3 flex-shrink-0 mt-0.5" />
+          <p className="text-xs sm:text-sm font-medium text-chart-3">{t.importantNote}</p>
         </div>
       </div>
 
@@ -424,7 +424,7 @@ const WNACitizenshipInfo: React.FC = () => {
                         <div className="space-y-1">
                           {pathway.requirements.map((req, i) => (
                             <div key={i} className="flex items-start gap-1.5">
-                              <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0 mt-0.5" />
+                              <CheckCircle className="h-3 w-3 text-chart-1 flex-shrink-0 mt-0.5" />
                               <span className="text-[9px] sm:text-[10px] text-foreground/80">{req}</span>
                             </div>
                           ))}
@@ -434,7 +434,7 @@ const WNACitizenshipInfo: React.FC = () => {
                       {/* Benefits */}
                       <div className={cn("p-2.5 rounded-lg", colors.bg, "bg-opacity-30")}>
                         <h5 className="text-[10px] sm:text-xs font-semibold text-foreground mb-2 flex items-center gap-1">
-                          <CheckCircle className="h-3.5 w-3.5 text-green-500" />
+                          <CheckCircle className="h-3.5 w-3.5 text-chart-1" />
                           {language === 'en' ? 'Benefits' : 'Manfaat'}
                         </h5>
                         <div className="space-y-1">
@@ -456,16 +456,16 @@ const WNACitizenshipInfo: React.FC = () => {
       </div>
 
       {/* What Investment Cannot Provide */}
-      <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
-        <h4 className="text-xs sm:text-sm font-bold text-red-700 dark:text-red-400 mb-2 flex items-center gap-2">
+      <div className="p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+        <h4 className="text-xs sm:text-sm font-bold text-destructive mb-2 flex items-center gap-2">
           <XCircle className="h-4 w-4" />
           {t.cannotObtain.title}
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
           {t.cannotObtain.items.map((item, idx) => (
             <div key={idx} className="flex items-start gap-1.5">
-              <XCircle className="h-3 w-3 text-red-500 flex-shrink-0 mt-0.5" />
-              <span className="text-[10px] sm:text-xs text-red-700 dark:text-red-300">{item}</span>
+              <XCircle className="h-3 w-3 text-destructive flex-shrink-0 mt-0.5" />
+              <span className="text-[10px] sm:text-xs text-destructive/80">{item}</span>
             </div>
           ))}
         </div>
