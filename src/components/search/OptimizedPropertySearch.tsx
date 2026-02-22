@@ -1552,7 +1552,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       {/* Live Transcription Banner */}
       {isListening && (
         <div className="fixed top-0 left-0 right-0 z-50 animate-in slide-in-from-top duration-300">
-          <div className="bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg">
+          <div className="bg-gradient-to-r from-destructive to-destructive/90 text-destructive-foreground shadow-lg">
             <div className="container mx-auto px-4 py-4">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-3">
@@ -1576,7 +1576,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                   {interimTranscript || "Start speaking..."}
                 </div>
                 <Select value={voiceLanguage} onValueChange={handleLanguageChange}>
-                  <SelectTrigger className="w-[160px] bg-white/20 hover:bg-white/30 text-white border-white/30 h-9">
+                  <SelectTrigger className="w-[160px] bg-primary-foreground/20 hover:bg-primary-foreground/30 text-destructive-foreground border-primary-foreground/30 h-9">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-popover z-[60]">
@@ -1591,7 +1591,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                   onClick={handleVoiceSearch}
                   size="sm"
                   variant="secondary"
-                  className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                    className="bg-primary-foreground/20 hover:bg-primary-foreground/30 text-destructive-foreground border-primary-foreground/30"
                 >
                   Stop (Ctrl+M)
                 </Button>
@@ -1614,13 +1614,13 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       {/* Low Confidence Retry Banner */}
       {showRetryOption && recognitionConfidence !== null && (
         <div className="fixed top-0 left-0 right-0 z-50 animate-in slide-in-from-top duration-300">
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg">
+          <div className="bg-gradient-to-r from-chart-3 to-chart-3/90 text-primary-foreground shadow-lg">
             <div className="container mx-auto px-4 py-4">
               <div className="flex items-center gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-sm font-semibold">Low Confidence Detected</span>
-                    <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                    <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground border-primary-foreground/30">
                       {Math.round(recognitionConfidence * 100)}% confident
                     </Badge>
                   </div>
@@ -1633,7 +1633,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     onClick={handleRetry}
                     size="sm"
                     variant="secondary"
-                    className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                    className="bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground border-primary-foreground/30"
                   >
                     Retry
                   </Button>
@@ -1641,7 +1641,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     onClick={handleAcceptLowConfidence}
                     size="sm"
                     variant="secondary"
-                    className="bg-white text-orange-600 hover:bg-white/90"
+                    className="bg-primary-foreground text-chart-3 hover:bg-primary-foreground/90"
                   >
                     Accept Anyway
                   </Button>
@@ -1653,7 +1653,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     }}
                     size="sm"
                     variant="ghost"
-                    className="text-white hover:bg-white/20"
+                    className="text-primary-foreground hover:bg-primary-foreground/20"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -1717,7 +1717,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                       variant="ghost"
                       className={`h-7 w-7 transition-all ${
                         isListening 
-                          ? "text-red-500 hover:text-red-600 animate-pulse ring-2 ring-red-400 ring-offset-2" 
+                          ? "text-destructive hover:text-destructive/90 animate-pulse ring-2 ring-destructive/40 ring-offset-2" 
                           : "text-muted-foreground hover:text-foreground"
                       }`}
                       aria-label={isListening ? "Stop recording" : "Start voice search"}
@@ -1760,7 +1760,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     )}
                   </div>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className={isListening ? "bg-red-500 text-white" : ""}>
+                <TooltipContent side="bottom" className={isListening ? "bg-destructive text-destructive-foreground" : ""}>
                   {isListening 
                     ? `🎤 Listening in ${voiceLanguages.find(l => l.code === voiceLanguage)?.name}... (Ctrl+M to stop)` 
                     : `Voice search (Ctrl+M) - ${voiceLanguages.find(l => l.code === voiceLanguage)?.name}`
@@ -3327,8 +3327,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     <span className="text-muted-foreground">Total Weight:</span>
                     <span className={`font-medium ${
                       Object.values(similarityWeights).reduce((a, b) => a + b, 0) === 100 
-                        ? 'text-green-600' 
-                        : 'text-orange-600'
+                        ? 'text-chart-1' 
+                        : 'text-chart-3'
                     }`}>
                       {Object.values(similarityWeights).reduce((a, b) => a + b, 0)}%
                     </span>
@@ -3756,8 +3756,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
           <div className="space-y-6">
             {/* Good Examples */}
             <div className="space-y-3">
-              <div className="flex items-center gap-2 text-green-600">
-                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+              <div className="flex items-center gap-2 text-chart-1">
+                <div className="w-6 h-6 rounded-full bg-chart-1/10 flex items-center justify-center">
                   ✓
                 </div>
                 <h3 className="font-semibold">Good Image Examples</h3>
@@ -3765,9 +3765,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="border rounded-lg p-3 space-y-2">
-                  <div className="aspect-video bg-gradient-to-br from-blue-100 to-blue-50 rounded flex items-center justify-center text-xs text-muted-foreground">
+                  <div className="aspect-video bg-gradient-to-br from-chart-4/10 to-chart-4/5 rounded flex items-center justify-center text-xs text-muted-foreground">
                     <div className="text-center">
-                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-blue-400" />
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-chart-4" />
                       Front exterior view
                     </div>
                   </div>
@@ -3776,9 +3776,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 </div>
 
                 <div className="border rounded-lg p-3 space-y-2">
-                  <div className="aspect-video bg-gradient-to-br from-green-100 to-green-50 rounded flex items-center justify-center text-xs text-muted-foreground">
+                  <div className="aspect-video bg-gradient-to-br from-chart-1/10 to-chart-1/5 rounded flex items-center justify-center text-xs text-muted-foreground">
                     <div className="text-center">
-                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-green-400" />
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-chart-1" />
                       Complete building
                     </div>
                   </div>
@@ -3787,9 +3787,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 </div>
 
                 <div className="border rounded-lg p-3 space-y-2">
-                  <div className="aspect-video bg-gradient-to-br from-purple-100 to-purple-50 rounded flex items-center justify-center text-xs text-muted-foreground">
+                  <div className="aspect-video bg-gradient-to-br from-accent/10 to-accent/5 rounded flex items-center justify-center text-xs text-muted-foreground">
                     <div className="text-center">
-                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-purple-400" />
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-accent-foreground" />
                       Daytime photo
                     </div>
                   </div>
@@ -3798,9 +3798,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 </div>
 
                 <div className="border rounded-lg p-3 space-y-2">
-                  <div className="aspect-video bg-gradient-to-br from-orange-100 to-orange-50 rounded flex items-center justify-center text-xs text-muted-foreground">
+                  <div className="aspect-video bg-gradient-to-br from-chart-3/10 to-chart-3/5 rounded flex items-center justify-center text-xs text-muted-foreground">
                     <div className="text-center">
-                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-orange-400" />
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-chart-3" />
                       Straight angle
                     </div>
                   </div>
@@ -3812,8 +3812,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
             {/* Bad Examples */}
             <div className="space-y-3">
-              <div className="flex items-center gap-2 text-red-600">
-                <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center">
+              <div className="flex items-center gap-2 text-destructive">
+                <div className="w-6 h-6 rounded-full bg-destructive/10 flex items-center justify-center">
                   ✗
                 </div>
                 <h3 className="font-semibold">Avoid These</h3>
@@ -3853,14 +3853,14 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                   <p className="text-xs text-muted-foreground">Room interiors work poorly for matching property type</p>
                 </div>
 
-                <div className="border border-red-200 rounded-lg p-3 space-y-2 bg-red-50/30">
-                  <div className="aspect-video bg-gradient-to-br from-gray-300 to-gray-200 rounded flex items-center justify-center text-xs text-muted-foreground">
+                <div className="border border-destructive/20 rounded-lg p-3 space-y-2 bg-destructive/5">
+                  <div className="aspect-video bg-gradient-to-br from-muted to-muted/80 rounded flex items-center justify-center text-xs text-muted-foreground">
                     <div className="text-center opacity-50">
                       <ImageIcon className="h-8 w-8 mx-auto mb-2" />
                       Many obstructions
                     </div>
                   </div>
-                  <p className="text-sm font-medium text-red-700">Blocked View</p>
+                  <p className="text-sm font-medium text-destructive">Blocked View</p>
                   <p className="text-xs text-muted-foreground">Trees, cars, or other objects blocking the property</p>
                 </div>
               </div>

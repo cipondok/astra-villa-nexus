@@ -313,9 +313,9 @@ const RentalBookingManager = () => {
                   </div>
 
                   {booking.special_requests && (
-                    <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-                      <p className="text-sm font-medium text-blue-800 mb-1">Special Requests:</p>
-                      <p className="text-sm text-blue-700">{booking.special_requests}</p>
+                    <div className="mb-4 p-3 bg-chart-4/5 rounded-lg">
+                      <p className="text-sm font-medium text-chart-4 mb-1">Special Requests:</p>
+                      <p className="text-sm text-chart-4/80">{booking.special_requests}</p>
                     </div>
                   )}
 
@@ -333,7 +333,7 @@ const RentalBookingManager = () => {
                           size="sm" 
                           variant="outline"
                           onClick={() => handleWhatsAppContact(booking)}
-                          className="text-green-600 border-green-200 hover:bg-green-50"
+                          className="text-chart-1 border-chart-1/20 hover:bg-chart-1/5"
                         >
                           <MessageCircle className="h-3 w-3 mr-1" />
                           WhatsApp
@@ -368,7 +368,7 @@ const RentalBookingManager = () => {
                           <Button 
                             size="sm" 
                             onClick={() => handleStatusChange(booking.id, 'confirmed')}
-                            className="bg-green-600 hover:bg-green-700"
+                            className="bg-chart-1 hover:bg-chart-1/90"
                           >
                             <CheckCircle className="h-3 w-3 mr-1" />
                             Confirm
@@ -388,7 +388,7 @@ const RentalBookingManager = () => {
                         <Button 
                           size="sm" 
                           onClick={() => handlePaymentStatusChange(booking.id, 'paid')}
-                          className="bg-blue-600 hover:bg-blue-700"
+                          className="bg-primary hover:bg-primary/90"
                         >
                           <DollarSign className="h-3 w-3 mr-1" />
                           Mark Paid

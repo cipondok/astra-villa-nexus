@@ -90,16 +90,16 @@ const RentalTerms: React.FC<RentalTermsProps> = ({ terms, compact = false }) => 
           const IconComponent = getTermIcon(term.term_type);
           return (
             <div key={term.id} className="flex items-start space-x-2 text-sm">
-              <IconComponent className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
+              <IconComponent className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
               <div>
-                <span className="font-medium text-gray-700">{term.title}:</span>
-                <span className="text-gray-600 ml-1">{term.description}</span>
+                <span className="font-medium text-foreground">{term.title}:</span>
+                <span className="text-muted-foreground ml-1">{term.description}</span>
               </div>
             </div>
           );
         })}
         {terms.length > 3 && (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             +{terms.length - 3} syarat & ketentuan lainnya
           </p>
         )}
@@ -130,8 +130,8 @@ const RentalTerms: React.FC<RentalTermsProps> = ({ terms, compact = false }) => 
             {sortedTerms.some(term => term.is_mandatory) && (
               <div>
                 <div className="flex items-center mb-4">
-                  <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
-                  <h3 className="font-semibold text-gray-900">Syarat Wajib</h3>
+                  <AlertTriangle className="h-5 w-5 text-destructive mr-2" />
+                  <h3 className="font-semibold text-foreground">Syarat Wajib</h3>
                 </div>
                 <div className="space-y-4">
                   {sortedTerms
@@ -166,8 +166,8 @@ const RentalTerms: React.FC<RentalTermsProps> = ({ terms, compact = false }) => 
             {sortedTerms.some(term => !term.is_mandatory) && (
               <div>
                 <div className="flex items-center mb-4">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  <h3 className="font-semibold text-gray-900">Informasi Tambahan</h3>
+                  <CheckCircle className="h-5 w-5 text-chart-1 mr-2" />
+                  <h3 className="font-semibold text-foreground">Informasi Tambahan</h3>
                 </div>
                 <div className="space-y-3">
                   {sortedTerms
@@ -188,7 +188,7 @@ const RentalTerms: React.FC<RentalTermsProps> = ({ terms, compact = false }) => 
                                   {getTermTypeLabel(term.term_type)}
                                 </Badge>
                               </div>
-                              <p className="text-sm text-gray-600">{term.description}</p>
+                              <p className="text-sm text-muted-foreground">{term.description}</p>
                             </div>
                           </div>
                         </div>
