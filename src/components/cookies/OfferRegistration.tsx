@@ -65,7 +65,7 @@ const OfferRegistration = () => {
             {/* Header */}
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/60 mb-3">
-                <Sparkles className="w-6 h-6 text-white" />
+                <Sparkles className="w-6 h-6 text-primary-foreground" />
               </div>
               <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                 Exclusive Villa Offers

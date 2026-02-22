@@ -311,22 +311,22 @@ const CreateServiceForm = () => {
           {/* Step Progress Indicator */}
           <div className="flex items-center space-x-4">
             <div className={`flex items-center space-x-2 ${serviceData.main_category_id ? 'text-primary' : 'text-muted-foreground'}`}>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${serviceData.main_category_id ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>1</div>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${serviceData.main_category_id ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>1</div>
               <span className="text-sm font-medium">Main</span>
             </div>
             <div className={`w-8 h-0.5 ${serviceData.main_category_id ? 'bg-primary' : 'bg-muted'}`}></div>
             <div className={`flex items-center space-x-2 ${serviceData.sub_category_id ? 'text-primary' : 'text-muted-foreground'}`}>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${serviceData.sub_category_id ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>2</div>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${serviceData.sub_category_id ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>2</div>
               <span className="text-sm font-medium">Sub</span>
             </div>
             <div className={`w-8 h-0.5 ${serviceData.sub_category_id ? 'bg-primary' : 'bg-muted'}`}></div>
             <div className={`flex items-center space-x-2 ${(serviceData.approved_service_name_id || useCustomName) ? 'text-primary' : 'text-muted-foreground'}`}>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${(serviceData.approved_service_name_id || useCustomName) ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>3</div>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${(serviceData.approved_service_name_id || useCustomName) ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>3</div>
               <span className="text-sm font-medium">Service</span>
             </div>
             <div className={`w-8 h-0.5 ${(serviceData.approved_service_name_id || useCustomName) ? 'bg-primary' : 'bg-muted'}`}></div>
             <div className={`flex items-center space-x-2 ${serviceData.category_id ? 'text-primary' : 'text-muted-foreground'}`}>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${serviceData.category_id ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>4</div>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${serviceData.category_id ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>4</div>
               <span className="text-sm font-medium">Type</span>
             </div>
           </div>
@@ -791,11 +791,11 @@ const CreateServiceForm = () => {
         <Button 
           onClick={() => createServiceMutation.mutate()} 
           disabled={!selectedVendor || (!serviceData.approved_service_name_id && !useCustomName) || !serviceData.category_id || createServiceMutation.isPending}
-          className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 px-8 py-2 text-white font-medium"
+          className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 px-8 py-2 text-primary-foreground font-medium"
         >
           {createServiceMutation.isPending ? (
             <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
               <span>Creating Service...</span>
             </div>
           ) : 'Create Vendor Service'}

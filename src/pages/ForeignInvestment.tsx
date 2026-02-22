@@ -167,10 +167,10 @@ const ForeignInvestment = () => {
         <div className="flex items-center justify-center gap-3 mb-2">
           <div className="relative">
             <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-primary/80 to-accent shadow-lg">
-              <Building2 className="h-5 w-5 text-white" />
+              <Building2 className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-chart-1 to-chart-1/80 flex items-center justify-center shadow-md">
-              <Bot className="h-2.5 w-2.5 text-white" />
+              <Bot className="h-2.5 w-2.5 text-primary-foreground" />
             </div>
           </div>
           <div className="text-left">
@@ -235,7 +235,7 @@ const ForeignInvestment = () => {
                   </div>
                   
                   {/* AI Badge */}
-                  <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[7px] text-white font-bold shadow-lg">
+                  <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[7px] text-primary-foreground font-bold shadow-lg">
                     <Sparkles className="w-2.5 h-2.5" />
                     AI
                   </div>

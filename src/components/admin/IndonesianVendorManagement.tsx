@@ -201,7 +201,7 @@ const IndonesianVendorManagement = () => {
     const Icon = config.icon;
 
     return (
-      <Badge className={`${config.color} text-white`}>
+      <Badge className={`${config.color} text-primary-foreground`}>
         <Icon className="h-3 w-3 mr-1" />
         {config.text}
       </Badge>

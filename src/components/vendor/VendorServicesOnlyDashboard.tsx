@@ -50,15 +50,15 @@ const VendorServicesOnlyDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white">Service Management</h1>
-              <p className="text-white/80 mt-1">
+              <h1 className="text-3xl font-bold text-primary-foreground">Service Management</h1>
+              <p className="text-primary-foreground/80 mt-1">
                 Manage your services, add new offerings, and track performance
               </p>
             </div>
             <div className="flex items-center gap-3">
               <Button
                 onClick={() => setIsCreateServiceOpen(true)}
-                className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                className="bg-primary-foreground/20 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/30"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 New Service

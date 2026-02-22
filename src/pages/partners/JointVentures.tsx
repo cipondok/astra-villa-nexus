@@ -259,7 +259,7 @@ const JointVentures = () => {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center p-3 bg-macos-gradient rounded-2xl mb-6 shadow-macos">
-            <Handshake className="w-12 h-12 text-white" />
+            <Handshake className="w-12 h-12 text-primary-foreground" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
             {currentText.title}
@@ -271,7 +271,7 @@ const JointVentures = () => {
 
         {/* Description */}
         <div className="max-w-4xl mx-auto mb-16">
-          <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos border border-neutral-200 dark:border-neutral-800 text-center">
+          <div className="bg-background p-8 rounded-2xl shadow-macos border border-border text-center">
             <p className="text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed">
               {currentText.description}
             </p>
@@ -287,13 +287,13 @@ const JointVentures = () => {
             {currentText.opportunities.map((opportunity, index) => {
               const Icon = opportunity.icon;
               return (
-                <div key={index} className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-neutral-200 dark:border-neutral-800">
+                <div key={index} className="bg-background p-8 rounded-2xl shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-border">
                   <div className="flex items-start gap-4 mb-4">
                     <div className="p-4 bg-macos-gradient rounded-2xl shadow-macos">
-                      <Icon className="w-8 h-8 text-white" />
+                      <Icon className="w-8 h-8 text-primary-foreground" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">{opportunity.title}</h3>
+                      <h3 className="text-xl font-bold text-foreground mb-2">{opportunity.title}</h3>
                       <p className="text-neutral-600 dark:text-neutral-400">{opportunity.description}</p>
                     </div>
                   </div>
@@ -309,7 +309,7 @@ const JointVentures = () => {
           <h2 className="text-3xl font-bold text-center mb-12 bg-macos-gradient bg-clip-text text-transparent">
             Joint Venture Advantages
           </h2>
-          <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos border border-neutral-200 dark:border-neutral-800 max-w-4xl mx-auto">
+          <div className="bg-background p-8 rounded-2xl shadow-macos border border-border max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {currentText.advantages.map((advantage, index) => (
                 <div key={index} className="flex items-center gap-3">
@@ -323,7 +323,7 @@ const JointVentures = () => {
 
         {/* Inquiry Form Section */}
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white dark:bg-neutral-900 p-12 rounded-2xl shadow-macos-hover border border-neutral-200 dark:border-neutral-800 animate-macos-window-in">
+          <div className="bg-background p-12 rounded-2xl shadow-macos-hover border border-border animate-macos-window-in">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
                 {currentText.formTitle}
@@ -371,9 +371,9 @@ const JointVentures = () => {
                     {emailValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
                         {emailValid ? (
-                          <Check className="w-5 h-5 text-green-500" />
+                          <Check className="w-5 h-5 text-chart-1" />
                         ) : (
-                          <X className="w-5 h-5 text-red-500" />
+                          <X className="w-5 h-5 text-destructive" />
                         )}
                       </div>
                     )}
@@ -406,9 +406,9 @@ const JointVentures = () => {
                     {phoneValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
                         {phoneValid ? (
-                          <Check className="w-5 h-5 text-green-500" />
+                          <Check className="w-5 h-5 text-chart-1" />
                         ) : (
-                          <X className="w-5 h-5 text-red-500" />
+                          <X className="w-5 h-5 text-destructive" />
                         )}
                       </div>
                     )}

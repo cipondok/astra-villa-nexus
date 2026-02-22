@@ -51,7 +51,7 @@ const AdminDashboard = () => {
           {/* Glassmorphic Card */}
           <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card/80 backdrop-blur-xl shadow-2xl">
             {/* Gradient Top Accent */}
-            <div className="h-1.5 bg-gradient-to-r from-destructive via-orange-500 to-amber-500" />
+            <div className="h-1.5 bg-gradient-to-r from-destructive via-chart-3 to-gold-primary" />
             
             {/* Content */}
             <div className="p-6 sm:p-8">

@@ -70,7 +70,7 @@ const PanoramaSphere: React.FC<PanoramaSphereProps> = ({
   if (!texture) {
     return (
       <Html center>
-        <div className="flex items-center gap-2 text-white">
+        <div className="flex items-center gap-2 text-primary-foreground">
           <RotateCw className="h-5 w-5 animate-spin" />
           <span>Loading panorama...</span>
         </div>

@@ -931,7 +931,7 @@ export const MacOSAdminDesktop = () => {
                   >
                     <div className="flex items-center space-x-3">
                       <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${category.color}`}>
-                        <category.icon className="w-3 h-3 text-white" />
+                        <category.icon className="w-3 h-3 text-primary-foreground" />
                       </div>
                       <span className="text-sm font-medium text-foreground">{category.name}</span>
                     </div>
@@ -1100,7 +1100,7 @@ export const MacOSAdminDesktop = () => {
                   className="w-full flex items-center p-3 hover:bg-muted rounded-lg text-left"
                 >
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 ${app.color}`}>
-                    <app.icon className="w-4 h-4 text-white" />
+                    <app.icon className="w-4 h-4 text-primary-foreground" />
                   </div>
                   <span className="text-foreground">{app.name}</span>
                 </button>

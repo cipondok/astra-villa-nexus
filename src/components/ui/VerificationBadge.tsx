@@ -54,7 +54,7 @@ const VerificationBadge = ({
   return (
     <Badge 
       className={cn(
-        "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 border-none shadow-md backdrop-blur-sm font-semibold flex items-center",
+        "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 border-none shadow-md backdrop-blur-sm font-semibold flex items-center",
         sizeClasses[size],
         className
       )}

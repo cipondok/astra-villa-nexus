@@ -50,8 +50,8 @@ const PillToggleGroup: React.FC<PillToggleGroupProps> = ({
           onClick={() => handleClick(opt.value)}
           className={`px-4 sm:px-5 py-2 sm:py-2.5 min-h-[44px] sm:min-h-[40px] rounded-full border-2 font-semibold text-sm sm:text-xs transition-all duration-300 ease-in-out touch-manipulation
             ${selectedValues.includes(opt.value)
-              ? "bg-blue-600 border-blue-600 text-white shadow-lg scale-105 sm:scale-110 ring-2 ring-blue-300 animate-in"
-              : "bg-background border-border text-foreground hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 hover:scale-105 active:scale-95"}
+              ? "bg-primary border-primary text-primary-foreground shadow-lg scale-105 sm:scale-110 ring-2 ring-primary/30 animate-in"
+              : "bg-background border-border text-foreground hover:border-primary/50 hover:bg-primary/5 hover:scale-105 active:scale-95"}
             `}
           aria-pressed={selectedValues.includes(opt.value)}
         >
