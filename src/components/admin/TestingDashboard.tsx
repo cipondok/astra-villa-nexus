@@ -761,7 +761,7 @@ const TestingDashboard = () => {
                           <span>{category.icon}</span>
                           {category.name}
                         </span>
-                        <span className={`text-xs font-medium ${category.passed === category.total ? 'text-green-600' : 'text-yellow-600'}`}>
+                        <span className={`text-xs font-medium ${category.passed === category.total ? 'text-chart-1' : 'text-chart-3'}`}>
                           {category.passed}/{category.total}
                         </span>
                       </div>
@@ -795,30 +795,30 @@ const TestingDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="p-4 rounded-lg border bg-gradient-to-br from-blue-500/10 to-blue-500/5">
+                  <div className="p-4 rounded-lg border bg-gradient-to-br from-chart-4/10 to-chart-4/5">
                     <div className="flex items-center gap-2 mb-2">
-                      <Timer className="h-4 w-4 text-blue-600" />
+                      <Timer className="h-4 w-4 text-chart-4" />
                       <span className="text-xs text-muted-foreground">Avg Response</span>
                     </div>
                     <p className="text-2xl font-bold">{loadTestResults.avgResponseTime}ms</p>
                   </div>
-                  <div className="p-4 rounded-lg border bg-gradient-to-br from-green-500/10 to-green-500/5">
+                  <div className="p-4 rounded-lg border bg-gradient-to-br from-chart-1/10 to-chart-1/5">
                     <div className="flex items-center gap-2 mb-2">
-                      <TrendingUp className="h-4 w-4 text-green-600" />
+                      <TrendingUp className="h-4 w-4 text-chart-1" />
                       <span className="text-xs text-muted-foreground">Req/Second</span>
                     </div>
                     <p className="text-2xl font-bold">{loadTestResults.requestsPerSecond}</p>
                   </div>
-                  <div className="p-4 rounded-lg border bg-gradient-to-br from-purple-500/10 to-purple-500/5">
+                  <div className="p-4 rounded-lg border bg-gradient-to-br from-accent/10 to-accent/5">
                     <div className="flex items-center gap-2 mb-2">
-                      <Users className="h-4 w-4 text-purple-600" />
+                      <Users className="h-4 w-4 text-accent-foreground" />
                       <span className="text-xs text-muted-foreground">Concurrent Users</span>
                     </div>
                     <p className="text-2xl font-bold">{loadTestResults.concurrentUsers}</p>
                   </div>
-                  <div className="p-4 rounded-lg border bg-gradient-to-br from-emerald-500/10 to-emerald-500/5">
+                  <div className="p-4 rounded-lg border bg-gradient-to-br from-chart-1/10 to-chart-1/5">
                     <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                      <CheckCircle2 className="h-4 w-4 text-chart-1" />
                       <span className="text-xs text-muted-foreground">Success Rate</span>
                     </div>
                     <p className="text-2xl font-bold">{loadTestResults.successRate}%</p>
@@ -862,7 +862,7 @@ const TestingDashboard = () => {
                 </div>
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">Error Rate</p>
-                  <p className="text-lg font-bold text-green-600">{loadTestResults.errorRate}%</p>
+                  <p className="text-lg font-bold text-chart-1">{loadTestResults.errorRate}%</p>
                 </div>
                 <Separator />
                 <div className="space-y-2">

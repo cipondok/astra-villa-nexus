@@ -538,10 +538,10 @@ const PropertyInsertForm = () => {
         {showAiHelp && aiSuggestion && (
           <div className="mb-6 p-4 bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg border border-primary/20">
             <div className="flex items-start gap-3">
-              <Sparkles className="h-5 w-5 text-blue-600 mt-0.5" />
+              <Sparkles className="h-5 w-5 text-primary mt-0.5" />
               <div>
-                <h4 className="font-medium text-blue-900 mb-1">💡 Saran AI</h4>
-                <p className="text-blue-800 text-sm">{aiSuggestion}</p>
+                <h4 className="font-medium text-foreground mb-1">💡 Saran AI</h4>
+                <p className="text-foreground/80 text-sm">{aiSuggestion}</p>
               </div>
             </div>
           </div>
@@ -578,31 +578,31 @@ const PropertyInsertForm = () => {
             </TabsList>
 
             <TabsContent value="basic" className="space-y-6 mt-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="title" className="text-gray-700 font-medium">Judul Properti *</Label>
+                    <Label htmlFor="title" className="text-foreground font-medium">Judul Properti *</Label>
                     <Input
                       id="title"
                       value={formData.title}
                       onChange={(e) => handleInputChange('title', e.target.value)}
                       placeholder="Rumah Keluarga Indah di Jakarta"
                       required
-                      className="bg-white border-gray-300 text-gray-900"
+                      className="bg-card border-border text-foreground"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="price" className="text-gray-700 font-medium">Harga (IDR) *</Label>
+                    <Label htmlFor="price" className="text-foreground font-medium">Harga (IDR) *</Label>
                     <Input
                       id="price"
                       value={formData.price}
                       onChange={(e) => handleInputChange('price', e.target.value.replace(/[^0-9]/g, ''))}
                       placeholder="2500000000"
-                      className="bg-white border-gray-300 text-gray-900"
+                      className="bg-card border-border text-foreground"
                     />
                     {formData.price && (
-                      <p className="text-sm text-green-600 mt-1 font-medium">
+                      <p className="text-sm text-chart-1 mt-1 font-medium">
                         {formatIDR(Number(formData.price))}
                       </p>
                     )}
@@ -628,40 +628,40 @@ const PropertyInsertForm = () => {
                   </div>
 
                   <div>
-                    <Label className="text-gray-700 font-medium">Tipe Listing *</Label>
+                    <Label className="text-foreground font-medium">Tipe Listing *</Label>
                     <RadioGroup 
                       value={formData.listing_type} 
                       onValueChange={(value) => handleInputChange('listing_type', value)}
                       className="flex flex-row space-x-6 mt-2"
                     >
-                      <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                      <div className="flex items-center space-x-2 bg-card border border-border rounded-lg px-3 py-2 shadow-sm">
                         <RadioGroupItem value="sale" id="sale" />
-                        <Label htmlFor="sale" className="text-sm font-medium text-gray-900">💰 Dijual</Label>
+                        <Label htmlFor="sale" className="text-sm font-medium text-foreground">💰 Dijual</Label>
                       </div>
-                      <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                      <div className="flex items-center space-x-2 bg-card border border-border rounded-lg px-3 py-2 shadow-sm">
                         <RadioGroupItem value="rent" id="rent" />
-                        <Label htmlFor="rent" className="text-sm font-medium text-gray-900">🏠 Disewakan</Label>
+                        <Label htmlFor="rent" className="text-sm font-medium text-foreground">🏠 Disewakan</Label>
                       </div>
                     </RadioGroup>
                   </div>
                 </div>
 
                 <div className="mt-4">
-                  <Label htmlFor="description" className="text-gray-700 font-medium">Deskripsi</Label>
+                  <Label htmlFor="description" className="text-foreground font-medium">Deskripsi</Label>
                   <Textarea
                     id="description"
                     value={formData.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
                     placeholder="Deskripsi detail properti..."
                     rows={4}
-                    className="bg-white border-gray-300 text-gray-900"
+                    className="bg-card border-border text-foreground"
                   />
                 </div>
               </div>
             </TabsContent>
 
             <TabsContent value="location" className="space-y-6 mt-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
                 <EnhancedLocationSelector
                   selectedState={formData.state}
                   selectedCity={formData.city}
@@ -676,7 +676,7 @@ const PropertyInsertForm = () => {
             </TabsContent>
 
             <TabsContent value="details" className="space-y-6 mt-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <Label htmlFor="bedrooms" className="text-foreground font-medium">🛏️ Kamar Tidur</Label>
@@ -787,24 +787,24 @@ const PropertyInsertForm = () => {
                 />
 
                 {/* 3D Virtual Tour */}
-                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">🥽 Virtual Tour 3D</h3>
+                <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
+                  <h3 className="text-lg font-medium text-foreground mb-4">🥽 Virtual Tour 3D</h3>
                   
                   <div className="space-y-4">
                     <div>
-                      <Label className="text-gray-700 font-medium">Apakah properti memiliki virtual tour 3D?</Label>
+                      <Label className="text-foreground font-medium">Apakah properti memiliki virtual tour 3D?</Label>
                       <RadioGroup 
                         value={formData.has_3d_tour.toString()} 
                         onValueChange={(value) => handleInputChange('has_3d_tour', value === 'true')}
                         className="flex flex-row space-x-6 mt-2"
                       >
-                        <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                        <div className="flex items-center space-x-2 bg-card border border-border rounded-lg px-3 py-2 shadow-sm">
                           <RadioGroupItem value="true" id="has_3d" />
-                          <Label htmlFor="has_3d" className="text-sm text-gray-900">✅ Ada 3D Tour</Label>
+                          <Label htmlFor="has_3d" className="text-sm text-foreground">✅ Ada 3D Tour</Label>
                         </div>
-                        <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                        <div className="flex items-center space-x-2 bg-card border border-border rounded-lg px-3 py-2 shadow-sm">
                           <RadioGroupItem value="false" id="no_3d" />
-                          <Label htmlFor="no_3d" className="text-sm text-gray-900">❌ Tidak Ada</Label>
+                          <Label htmlFor="no_3d" className="text-sm text-foreground">❌ Tidak Ada</Label>
                         </div>
                       </RadioGroup>
                     </div>
@@ -812,24 +812,24 @@ const PropertyInsertForm = () => {
                     {formData.has_3d_tour && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="three_d_model_url" className="text-gray-700 font-medium">🔗 URL Model 3D</Label>
+                          <Label htmlFor="three_d_model_url" className="text-foreground font-medium">🔗 URL Model 3D</Label>
                           <Input
                             id="three_d_model_url"
                             value={formData.three_d_model_url}
                             onChange={(e) => handleInputChange('three_d_model_url', e.target.value)}
                             placeholder="https://example.com/3d-model"
-                            className="bg-white border-gray-300 text-gray-900"
+                            className="bg-card border-border text-foreground"
                           />
                         </div>
 
                         <div>
-                          <Label htmlFor="virtual_tour_url" className="text-gray-700 font-medium">🌐 URL Virtual Tour</Label>
+                          <Label htmlFor="virtual_tour_url" className="text-foreground font-medium">🌐 URL Virtual Tour</Label>
                           <Input
                             id="virtual_tour_url"
                             value={formData.virtual_tour_url}
                             onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)}
                             placeholder="https://example.com/virtual-tour"
-                            className="bg-white border-gray-300 text-gray-900"
+                            className="bg-card border-border text-foreground"
                           />
                         </div>
                       </div>
@@ -847,7 +847,7 @@ const PropertyInsertForm = () => {
               variant="outline"
               onClick={goToPreviousTab}
               disabled={isFirstTab()}
-              className="flex items-center gap-2 bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              className="flex items-center gap-2 bg-card text-foreground border-border hover:bg-muted"
             >
               <ChevronLeft className="h-4 w-4" />
               Sebelumnya
@@ -860,19 +860,19 @@ const PropertyInsertForm = () => {
                     type="button"
                     variant="outline"
                     onClick={handlePreview}
-                    className="flex items-center gap-2 bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    className="flex items-center gap-2 bg-card text-foreground border-border hover:bg-muted"
                   >
                     <Eye className="h-4 w-4" />
                     Preview Properti
                   </Button>
                   <Button 
                     type="submit" 
-                    className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
+                    className="flex items-center gap-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg"
                     disabled={insertPropertyMutation.isPending}
                   >
                     {insertPropertyMutation.isPending ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground"></div>
                         Mengirim...
                       </>
                     ) : (
