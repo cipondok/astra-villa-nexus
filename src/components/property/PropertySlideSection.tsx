@@ -160,17 +160,17 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold">{title}</h2>
-            {subtitle && <p className="text-gray-600 dark:text-gray-400">{subtitle}</p>}
+            {subtitle && <p className="text-muted-foreground">{subtitle}</p>}
           </div>
         </div>
         <div className="card-grid gap-4">{/* Responsive card grid using utility classes */}
           {[...Array(4)].map((_, i) => (
             <Card key={i} className="animate-pulse">
-              <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-t-lg"></div>
+              <div className="h-48 bg-muted rounded-t-lg"></div>
               <CardContent className="p-4">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-3"></div>
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                <div className="h-4 bg-muted rounded mb-3"></div>
+                <div className="h-3 bg-muted rounded mb-2"></div>
+                <div className="h-3 bg-muted rounded w-3/4"></div>
               </CardContent>
             </Card>
           ))}
@@ -185,10 +185,10 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold">{title}</h2>
-            {subtitle && <p className="text-gray-600 dark:text-gray-400">{subtitle}</p>}
+            {subtitle && <p className="text-muted-foreground">{subtitle}</p>}
           </div>
         </div>
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-muted-foreground">
           No properties available at the moment.
         </div>
       </div>

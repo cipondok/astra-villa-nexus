@@ -151,7 +151,7 @@ const SmartRegistrationFlow: React.FC<SmartRegistrationFlowProps> = ({
               disabled={isLoading}
               className="w-full h-12 justify-start gap-3 active:scale-95"
             >
-              <Chrome className="h-5 w-5 text-red-500" />
+              <Chrome className="h-5 w-5 text-destructive" />
               <span>Continue with Google</span>
               <span className="ml-auto text-xs text-muted-foreground">Fastest</span>
             </Button>
@@ -162,7 +162,7 @@ const SmartRegistrationFlow: React.FC<SmartRegistrationFlowProps> = ({
               onClick={() => { setMethod('phone'); setStep('details'); }}
               className="w-full h-12 justify-start gap-3 active:scale-95"
             >
-              <MessageCircle className="h-5 w-5 text-green-500" />
+              <MessageCircle className="h-5 w-5 text-chart-1" />
               <span>Continue with WhatsApp</span>
               <span className="ml-auto text-xs text-muted-foreground">Popular</span>
             </Button>
@@ -173,7 +173,7 @@ const SmartRegistrationFlow: React.FC<SmartRegistrationFlowProps> = ({
               onClick={() => { setMethod('email'); setStep('details'); }}
               className="w-full h-12 justify-start gap-3 active:scale-95"
             >
-              <Mail className="h-5 w-5 text-blue-500" />
+              <Mail className="h-5 w-5 text-chart-4" />
               <span>Continue with Email</span>
             </Button>
 
@@ -282,9 +282,9 @@ const SmartRegistrationFlow: React.FC<SmartRegistrationFlowProps> = ({
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", delay: 0.2 }}
-              className="w-20 h-20 mx-auto rounded-full bg-green-500/20 flex items-center justify-center"
+              className="w-20 h-20 mx-auto rounded-full bg-chart-1/20 flex items-center justify-center"
             >
-              <Check className="h-10 w-10 text-green-500" />
+              <Check className="h-10 w-10 text-chart-1" />
             </motion.div>
 
             <div className="space-y-2">

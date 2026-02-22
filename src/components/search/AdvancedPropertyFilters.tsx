@@ -382,9 +382,9 @@ const AdvancedPropertyFilters = ({
             <>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+                  <Sparkles className="h-3.5 w-3.5 text-chart-4" />
                   <Label className="text-sm font-semibold">Users Also Searched</Label>
-                  <Badge variant="secondary" className="bg-blue-500/10 text-blue-600 text-xs ml-auto">
+                  <Badge variant="secondary" className="bg-chart-4/10 text-chart-4 text-xs ml-auto">
                     Similar
                   </Badge>
                 </div>
@@ -393,21 +393,21 @@ const AdvancedPropertyFilters = ({
                     <button
                       key={rec.id}
                       onClick={() => handleApplySmartSuggestion(rec.filters)}
-                      className="group p-2.5 rounded-lg border border-blue-500/30 bg-background hover:border-blue-500 hover:shadow-md transition-all text-left"
+                      className="group p-2.5 rounded-lg border border-chart-4/30 bg-background hover:border-chart-4 hover:shadow-md transition-all text-left"
                     >
                       <div className="flex items-center gap-2">
                         <div className="text-xl">
                           {rec.icon}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-xs mb-0.5 group-hover:text-blue-600 transition-colors truncate">
+                          <h3 className="font-semibold text-xs mb-0.5 group-hover:text-chart-4 transition-colors truncate">
                             {rec.title}
                           </h3>
                           <p className="text-xs text-muted-foreground line-clamp-1">
                             {rec.description}
                           </p>
                         </div>
-                        <Badge variant="outline" className="text-xs border-blue-500/30 text-blue-600 shrink-0">
+                        <Badge variant="outline" className="text-xs border-chart-4/30 text-chart-4 shrink-0">
                           {rec.matchCount}
                         </Badge>
                       </div>
@@ -482,7 +482,7 @@ const AdvancedPropertyFilters = ({
           <Collapsible open={expandedSections.price} onOpenChange={() => toggleSection('price')}>
             <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
               <div className="flex items-center gap-2">
-                <DollarSign className="h-3.5 w-3.5 text-green-600" />
+                <DollarSign className="h-3.5 w-3.5 text-chart-1" />
                 <Label className="text-sm font-semibold cursor-pointer">Price Range</Label>
               </div>
               <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.price ? 'rotate-180' : ''}`} />
@@ -501,14 +501,14 @@ const AdvancedPropertyFilters = ({
                 <div className="flex justify-between items-center bg-background rounded-lg p-2 text-xs">
                   <div className="text-center flex-1">
                     <p className="text-muted-foreground">Min</p>
-                    <p className="font-bold text-green-600">
+                    <p className="font-bold text-chart-1">
                       IDR {(localFilters.priceRange[0] / 1000000000).toFixed(1)}B
                     </p>
                   </div>
                   <div className="h-6 w-px bg-border mx-2" />
                   <div className="text-center flex-1">
                     <p className="text-muted-foreground">Max</p>
-                    <p className="font-bold text-green-600">
+                    <p className="font-bold text-chart-1">
                       IDR {(localFilters.priceRange[1] / 1000000000).toFixed(1)}B
                     </p>
                   </div>
@@ -523,7 +523,7 @@ const AdvancedPropertyFilters = ({
           <Collapsible open={expandedSections.location} onOpenChange={() => toggleSection('location')}>
             <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
               <div className="flex items-center gap-2">
-                <MapPin className="h-3.5 w-3.5 text-blue-600" />
+                <MapPin className="h-3.5 w-3.5 text-chart-4" />
                 <Label className="text-sm font-semibold cursor-pointer">Location & Type</Label>
               </div>
               <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.location ? 'rotate-180' : ''}`} />

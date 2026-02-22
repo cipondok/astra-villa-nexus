@@ -411,14 +411,14 @@ const AdvancedSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "bu
 
         {/* Main Content Area */}
         <main className="flex-1 p-4">
-          <Card className="w-full shadow-lg border-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md">
+          <Card className="w-full shadow-lg border-0 bg-card/95 backdrop-blur-md">
             <CardContent className="p-4 lg:p-6">
               <div className="space-y-4">
                 {/* Header with Trigger */}
                 <div className="flex items-center gap-3">
                   <SidebarTrigger className="lg:hidden" />
                   <div className="flex-1">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                    <h2 className="text-xl font-bold text-foreground">
                       {currentText.search}
                     </h2>
                     <p className="text-sm text-muted-foreground">
@@ -515,7 +515,7 @@ const AdvancedSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "bu
                 <div className="flex gap-3 pt-2">
                   <Button
                     onClick={handleSearch}
-                    className="flex-1 h-12 bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 font-semibold rounded-xl shadow-lg transition-all"
+                    className="flex-1 h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 font-semibold rounded-xl shadow-lg transition-all"
                   >
                     <Search className="h-4 w-4 mr-2" />
                     {currentText.search}

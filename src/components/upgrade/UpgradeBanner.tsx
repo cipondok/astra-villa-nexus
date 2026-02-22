@@ -92,7 +92,7 @@ const UpgradeBanner = ({ onDismiss }: UpgradeBannerProps) => {
                   <h3 className="text-sm font-bold text-white truncate">
                     {t.headline}
                   </h3>
-                  <span className="flex-shrink-0 px-1.5 py-0.5 text-[10px] font-bold bg-yellow-400 text-yellow-900 rounded">
+                  <span className="flex-shrink-0 px-1.5 py-0.5 text-[10px] font-bold bg-chart-3 text-chart-3-foreground rounded">
                     {t.discount}
                   </span>
                 </div>

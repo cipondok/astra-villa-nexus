@@ -73,9 +73,9 @@ const PropertyListView = ({
                   <Badge 
                     className={`flex items-center gap-0.5 ${
                       property.listing_type === 'rent' 
-                        ? 'bg-blue-500 hover:bg-blue-600' 
-                        : 'bg-green-500 hover:bg-green-600'
-                    } text-white backdrop-blur-sm text-[10px] font-semibold rounded-md px-2 py-0.5 shadow-lg`}
+                        ? 'bg-chart-4 hover:bg-chart-4/90' 
+                        : 'bg-chart-1 hover:bg-chart-1/90'
+                    } text-primary-foreground backdrop-blur-sm text-[10px] font-semibold rounded-md px-2 py-0.5 shadow-lg`}
                   >
                     {property.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
                     {property.listing_type === 'rent' ? 'Sewa' : 'Jual'}
@@ -106,7 +106,7 @@ const PropertyListView = ({
                     </div>
                     {/* Discount Badge */}
                     {(property as any).discount_percentage && (property as any).discount_percentage > 0 && (
-                      <div className="inline-flex items-center gap-1 bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full shadow-lg animate-pulse">
+                      <div className="inline-flex items-center gap-1 bg-gradient-to-r from-destructive to-chart-3 text-primary-foreground px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full shadow-lg animate-pulse">
                         <Percent className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                         <span className="font-bold text-xs sm:text-sm">{(property as any).discount_percentage}% OFF</span>
                       </div>
@@ -204,7 +204,7 @@ const PropertyListView = ({
                   </Button>
                   <Button 
                     onClick={() => onContact?.(property)}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                    className="flex-1 bg-chart-1 hover:bg-chart-1/90 text-primary-foreground"
                   >
                     <Phone className="h-4 w-4 mr-2" />
                     WhatsApp
