@@ -40,7 +40,7 @@ const ROLE_OPTIONS: RoleOption[] = [
     icon: <Building2 className="h-5 w-5" />,
     benefits: ['List unlimited properties', 'Direct buyer inquiries', 'Property analytics'],
     benefitsId: ['Listing properti tak terbatas', 'Pertanyaan langsung pembeli', 'Analitik properti'],
-    color: 'text-blue-600 bg-blue-500/10 border-blue-500/30'
+    color: 'text-chart-2 bg-chart-2/10 border-chart-2/30'
   },
   {
     id: 'agent',
@@ -53,7 +53,7 @@ const ROLE_OPTIONS: RoleOption[] = [
     benefits: ['Agent dashboard', 'Lead management', 'Commission tracking', 'Featured listings'],
     benefitsId: ['Dashboard agen', 'Manajemen leads', 'Tracking komisi', 'Listing unggulan'],
     registrationPath: '/agent-registration',
-    color: 'text-purple-600 bg-purple-500/10 border-purple-500/30'
+    color: 'text-accent-foreground bg-accent/10 border-accent/30'
   },
   {
     id: 'vendor',
@@ -66,7 +66,7 @@ const ROLE_OPTIONS: RoleOption[] = [
     benefits: ['Service listings', 'Customer bookings', 'Vendor dashboard'],
     benefitsId: ['Listing layanan', 'Booking pelanggan', 'Dashboard vendor'],
     registrationPath: '/vendor-registration',
-    color: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/30'
+    color: 'text-chart-1 bg-chart-1/10 border-chart-1/30'
   }
 ];
 
@@ -225,7 +225,7 @@ const RoleUpgradeSection: React.FC = () => {
                       key={option.id}
                       className={cn(
                         "p-3 rounded-lg border transition-all",
-                        isPending ? "bg-amber-500/5 border-amber-500/30" :
+                        isPending ? "bg-chart-3/5 border-chart-3/30" :
                         isRejected ? "bg-destructive/5 border-destructive/30" :
                         "bg-card hover:bg-muted/50 border-border hover:border-primary/30"
                       )}
@@ -243,7 +243,7 @@ const RoleUpgradeSection: React.FC = () => {
                               {language === 'id' ? option.titleId : option.title}
                             </h5>
                             {isPending && (
-                              <Badge variant="outline" className="text-[10px] h-5 gap-1 border-amber-500/50 text-amber-600">
+                              <Badge variant="outline" className="text-[10px] h-5 gap-1 border-chart-3/50 text-chart-3">
                                 <Clock className="h-3 w-3" />
                                 {t.pendingRequest}
                               </Badge>
@@ -291,7 +291,7 @@ const RoleUpgradeSection: React.FC = () => {
           {/* All roles acquired */}
           {availableRoles.length === 0 && activeRoles.length === ROLE_OPTIONS.length && (
             <div className="text-center py-4">
-              <CheckCircle className="h-8 w-8 text-emerald-500 mx-auto mb-2" />
+              <CheckCircle className="h-8 w-8 text-chart-1 mx-auto mb-2" />
               <p className="text-sm text-muted-foreground">
                 You have access to all available roles!
               </p>

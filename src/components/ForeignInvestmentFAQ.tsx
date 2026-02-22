@@ -12,7 +12,7 @@ export const ForeignInvestmentFAQ = () => {
     {
       category: "Legal & Regulations",
       icon: Shield,
-      color: "text-blue-600",
+      color: "text-chart-2",
       faqs: [
         {
           question: "Can foreigners own freehold (Hak Milik) property in Indonesia?",
@@ -35,7 +35,7 @@ export const ForeignInvestmentFAQ = () => {
     {
       category: "Financial Requirements",
       icon: DollarSign,
-      color: "text-green-600",
+      color: "text-chart-1",
       faqs: [
         {
           question: "What is the minimum investment for foreign property buyers?",
@@ -58,7 +58,7 @@ export const ForeignInvestmentFAQ = () => {
     {
       category: "Documentation & Process",
       icon: FileText,
-      color: "text-purple-600",
+      color: "text-accent-foreground",
       faqs: [
         {
           question: "What documents do I need as a foreign buyer?",
@@ -81,7 +81,7 @@ export const ForeignInvestmentFAQ = () => {
     {
       category: "Property Types & Locations",
       icon: Home,
-      color: "text-orange-600",
+      color: "text-chart-3",
       faqs: [
         {
           question: "Which areas are best for foreign investment?",
@@ -104,7 +104,7 @@ export const ForeignInvestmentFAQ = () => {
     {
       category: "Nationality Eligibility",
       icon: Globe,
-      color: "text-red-600",
+      color: "text-destructive",
       faqs: [
         {
           question: "Which countries are on the green list for investment?",
@@ -127,7 +127,7 @@ export const ForeignInvestmentFAQ = () => {
     {
       category: "Ongoing Obligations",
       icon: BookOpen,
-      color: "text-indigo-600",
+      color: "text-chart-4",
       faqs: [
         {
           question: "What are my ongoing obligations as a foreign property owner?",

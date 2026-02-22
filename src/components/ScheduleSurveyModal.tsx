@@ -52,7 +52,7 @@ const ScheduleSurveyModal = ({ isOpen, onClose, propertyTitle, agentName }: Sche
             <div>
               <Label htmlFor="name">Full Name *</Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="name"
                   type="text"
@@ -68,7 +68,7 @@ const ScheduleSurveyModal = ({ isOpen, onClose, propertyTitle, agentName }: Sche
             <div>
               <Label htmlFor="email">Email *</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
@@ -84,7 +84,7 @@ const ScheduleSurveyModal = ({ isOpen, onClose, propertyTitle, agentName }: Sche
             <div>
               <Label htmlFor="phone">Phone Number *</Label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="phone"
                   type="tel"
@@ -101,7 +101,7 @@ const ScheduleSurveyModal = ({ isOpen, onClose, propertyTitle, agentName }: Sche
               <div>
                 <Label htmlFor="date">Preferred Date *</Label>
                 <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="date"
                     type="date"
@@ -116,7 +116,7 @@ const ScheduleSurveyModal = ({ isOpen, onClose, propertyTitle, agentName }: Sche
               <div>
                 <Label htmlFor="time">Preferred Time *</Label>
                 <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="time"
                     type="time"
