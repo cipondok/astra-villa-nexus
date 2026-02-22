@@ -692,7 +692,7 @@ const EnhancedUserManagement = () => {
                     <div key={log.id} className="p-3 border rounded-lg">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4 text-orange-500" />
+                          <AlertTriangle className="h-4 w-4 text-chart-3" />
                           <span className="font-medium">{log.event_type}</span>
                           {getRiskBadge(log.risk_score)}
                         </div>
@@ -725,7 +725,7 @@ const EnhancedUserManagement = () => {
                     <div key={session.id} className="p-3 border rounded-lg">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${session.is_active ? 'bg-green-500' : 'bg-gray-400'}`} />
+                          <div className={`w-2 h-2 rounded-full ${session.is_active ? 'bg-chart-1' : 'bg-muted-foreground'}`} />
                           <span className="font-medium">Session {session.session_id.slice(0, 8)}...</span>
                           {session.is_active && <Badge variant="outline">Active</Badge>}
                         </div>
