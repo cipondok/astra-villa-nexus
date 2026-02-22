@@ -222,7 +222,7 @@ const CompactPropertyCard = ({
               {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
             </Badge>
             {property.property_type && (
-              <Badge variant="outline" className="bg-background/20 backdrop-blur-lg capitalize text-[9px] sm:text-xs px-1.5 sm:px-2 py-0.5 text-white border-white/30 rounded-full">
+              <Badge variant="outline" className="bg-background/20 backdrop-blur-lg capitalize text-[9px] sm:text-xs px-1.5 sm:px-2 py-0.5 text-primary-foreground border-primary-foreground/30 rounded-full">
                 {property.property_type}
               </Badge>
             )}
@@ -298,7 +298,7 @@ const CompactPropertyCard = ({
             </div>
 
             {/* Title */}
-            <h4 className="text-white text-[10px] sm:text-xs md:text-sm font-medium truncate drop-shadow-lg mt-0.5" title={property.title}>
+            <h4 className="text-primary-foreground text-[10px] sm:text-xs md:text-sm font-medium truncate drop-shadow-lg mt-0.5" title={property.title}>
               {property.title}
             </h4>
 
@@ -307,35 +307,35 @@ const CompactPropertyCard = ({
               {property.bedrooms && property.bedrooms > 0 && (
                 <div className="flex items-center gap-0.5 border border-background/20 bg-gold-primary/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
                   <Bed className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-background/80" />
-                  <span className="text-[10px] sm:text-xs text-white font-bold">{property.bedrooms}</span>
+                  <span className="text-[10px] sm:text-xs text-primary-foreground font-bold">{property.bedrooms}</span>
                   <span className="text-[8px] sm:text-[10px] text-background/70 font-bold">KT</span>
                 </div>
               )}
               {property.bathrooms && property.bathrooms > 0 && (
                 <div className="flex items-center gap-0.5 border border-background/20 bg-gold-primary/20 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
                   <Bath className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-background/80" />
-                  <span className="text-[10px] sm:text-xs text-white font-bold">{property.bathrooms}</span>
+                  <span className="text-[10px] sm:text-xs text-primary-foreground font-bold">{property.bathrooms}</span>
                   <span className="text-[8px] sm:text-[10px] text-background/70 font-bold">KM</span>
                 </div>
               )}
               {property.area_sqm && (
                 <div className="flex items-center gap-0.5 border border-background/20 bg-muted/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
                   <span className="text-[8px] sm:text-[10px] text-background/70 font-bold">LB</span>
-                  <span className="text-[10px] sm:text-xs text-white font-bold">{property.area_sqm}m²</span>
+                  <span className="text-[10px] sm:text-xs text-primary-foreground font-bold">{property.area_sqm}m²</span>
                 </div>
               )}
               {(property.three_d_model_url || property.virtual_tour_url) && (
                 <div className="flex items-center gap-0.5 border border-background/20 bg-gold-primary/40 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
-                  <ViewIcon className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-white" />
-                  <span className="text-[10px] sm:text-xs text-white font-bold">3D</span>
+                  <ViewIcon className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-primary-foreground" />
+                  <span className="text-[10px] sm:text-xs text-primary-foreground font-bold">3D</span>
                 </div>
               )}
             </div>
 
             {/* Location */}
             <div className="flex items-center gap-0.5 mt-1 sm:mt-1.5">
-              <MapPin className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white/80 flex-shrink-0" />
-              <span className="text-[9px] sm:text-[10px] md:text-xs text-white/90 truncate">{property.location}</span>
+              <MapPin className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-primary-foreground/80 flex-shrink-0" />
+              <span className="text-[9px] sm:text-[10px] md:text-xs text-primary-foreground/90 truncate">{property.location}</span>
             </div>
 
             {/* Verification Badges */}

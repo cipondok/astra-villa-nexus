@@ -147,7 +147,7 @@ const OneClickPreApproval: React.FC<OneClickPreApprovalProps> = ({
       <CardHeader className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/20 rounded-xl">
+            <div className="p-2 bg-primary-foreground/20 rounded-xl">
               <CreditCard className="h-6 w-6" />
             </div>
             <div>
@@ -157,12 +157,12 @@ const OneClickPreApproval: React.FC<OneClickPreApprovalProps> = ({
               </p>
             </div>
           </div>
-          <Badge variant="secondary" className="bg-white/20 text-white">
+          <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground">
             <Zap className="h-3 w-3 mr-1" />
             Instant
           </Badge>
         </div>
-        <Progress value={progress[step]} className="mt-4 h-1.5 bg-white/20" />
+        <Progress value={progress[step]} className="mt-4 h-1.5 bg-primary-foreground/20" />
       </CardHeader>
 
       <CardContent className="p-6">

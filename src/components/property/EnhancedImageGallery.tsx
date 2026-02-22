@@ -137,7 +137,7 @@ const EnhancedImageGallery = ({
             
             {/* View Icon on Hover */}
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none">
-              <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-white/80 dark:bg-black/70 backdrop-blur-md flex items-center justify-center shadow-lg border border-primary/20">
+              <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-background/80 dark:bg-background/70 backdrop-blur-md flex items-center justify-center shadow-lg border border-primary/20">
                 <Eye className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               </div>
             </div>

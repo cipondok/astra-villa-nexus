@@ -56,7 +56,7 @@ ${message}`;
         <div className="bg-gradient-to-r from-primary to-primary/80 p-5 text-primary-foreground">
           <DialogHeader className="space-y-1">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm">
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary-foreground/20 backdrop-blur-sm">
                 <MessageCircle className="h-6 w-6" />
               </div>
               <div>

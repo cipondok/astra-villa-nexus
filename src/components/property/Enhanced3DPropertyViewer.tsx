@@ -349,7 +349,7 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
               </Canvas>
               
               {/* 3D Controls Overlay */}
-              <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 space-y-2">
+              <div className="absolute top-4 left-4 bg-card/90 backdrop-blur-sm rounded-lg p-3 space-y-2">
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="sm" onClick={resetCamera}>
                     <RotateCcw className="h-4 w-4" />
