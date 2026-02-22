@@ -155,11 +155,11 @@ const VirtualStagingPanel: React.FC<VirtualStagingPanelProps> = ({
               
               {/* Comparison Slider */}
               <div
-                className="absolute top-0 bottom-0 w-1 bg-white shadow-lg cursor-ew-resize"
+                className="absolute top-0 bottom-0 w-1 bg-background shadow-lg cursor-ew-resize"
                 style={{ left: `${comparisonPosition[0]}%` }}
               >
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-lg flex items-center justify-center">
-                  <ArrowLeftRight className="h-4 w-4 text-gray-600" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-background shadow-lg flex items-center justify-center">
+                  <ArrowLeftRight className="h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
 
@@ -183,12 +183,12 @@ const VirtualStagingPanel: React.FC<VirtualStagingPanelProps> = ({
         {isLoading && (
           <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-4">
             <div className="relative">
-              <Loader2 className="h-10 w-10 sm:h-12 sm:w-12 text-white animate-spin" />
-              <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
+              <Loader2 className="h-10 w-10 sm:h-12 sm:w-12 text-primary-foreground animate-spin" />
+              <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-chart-3 absolute -top-1 -right-1 animate-pulse" />
             </div>
             <div className="text-center">
-              <p className="text-white font-medium text-sm sm:text-base">AI Staging in Progress</p>
-              <p className="text-white/70 text-xs sm:text-sm">Adding {style} furniture...</p>
+              <p className="text-primary-foreground font-medium text-sm sm:text-base">AI Staging in Progress</p>
+              <p className="text-primary-foreground/70 text-xs sm:text-sm">Adding {style} furniture...</p>
             </div>
           </div>
         )}

@@ -98,7 +98,7 @@ const CSSettings = ({ settings, onSettingsChange, onSave, isSaving }: CSSettings
             >
               {isSaving ? (
                 <>
-                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                   <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-primary-foreground mr-1"></div>
                   Saving...
                 </>
               ) : (
@@ -166,7 +166,7 @@ const CSSettings = ({ settings, onSettingsChange, onSave, isSaving }: CSSettings
             >
               {isSaving ? (
                 <>
-                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-primary-foreground mr-1"></div>
                   Saving...
                 </>
               ) : (

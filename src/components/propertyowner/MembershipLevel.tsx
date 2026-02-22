@@ -65,7 +65,7 @@ const MembershipLevel = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full ${currentLevel.color} flex items-center justify-center`}>
-                  <CurrentIcon className="h-5 w-5 text-white" />
+                  <CurrentIcon className="h-5 w-5 text-primary-foreground" />
                 </div>
                 <div>
                   <CardTitle className="text-lg">
@@ -91,7 +91,7 @@ const MembershipLevel = () => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <div className={`w-12 h-12 rounded-full ${currentLevel.color} flex items-center justify-center`}>
-              <CurrentIcon className="h-6 w-6 text-white" />
+              <CurrentIcon className="h-6 w-6 text-primary-foreground" />
             </div>
             Membership Level {currentLevel.level}: {currentLevel.name}
           </DialogTitle>

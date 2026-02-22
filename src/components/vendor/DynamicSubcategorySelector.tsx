@@ -139,7 +139,7 @@ const DynamicSubcategorySelector = ({
                 {/* Pricing Information */}
                 {pricing && (
                   <div className="mb-3">
-                    <div className="flex items-center gap-2 text-xs text-green-700 bg-green-50 px-2 py-1 rounded">
+                    <div className="flex items-center gap-2 text-xs text-chart-1 bg-chart-1/10 px-2 py-1 rounded">
                       {getPricingIcon(pricing.model)}
                       <span className="font-medium">{formatPriceRange(pricing)}</span>
                       <span className="text-muted-foreground">/ {pricing.unit}</span>
@@ -180,8 +180,8 @@ const DynamicSubcategorySelector = ({
       </div>
       
       {/* Smart Suggestions */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <h4 className="text-sm font-medium text-blue-800 mb-2">💡 Smart Suggestions</h4>
+      <div className="mt-6 p-4 bg-chart-4/10 rounded-lg border border-chart-4/20">
+        <h4 className="text-sm font-medium text-chart-4 mb-2">💡 Smart Suggestions</h4>
         <div className="flex flex-wrap gap-2">
           {CategoryLoader.getSmartSuggestions(vendorType).slice(0, 5).map((suggestion) => (
             <Badge key={suggestion} variant="secondary" className="text-xs">

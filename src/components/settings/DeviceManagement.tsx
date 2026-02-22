@@ -98,10 +98,10 @@ export const DeviceManagement = () => {
                         <div className="flex gap-0.5">
                           <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="h-5 text-[10px]" autoFocus />
                           <Button size="icon" variant="ghost" className="h-5 w-5" onClick={() => saveEdit(device.id)}>
-                            <Check className="h-2.5 w-2.5 text-green-500" />
+                            <Check className="h-2.5 w-2.5 text-chart-1" />
                           </Button>
                           <Button size="icon" variant="ghost" className="h-5 w-5" onClick={cancelEdit}>
-                            <X className="h-2.5 w-2.5 text-red-500" />
+                            <X className="h-2.5 w-2.5 text-destructive" />
                           </Button>
                         </div>
                       ) : (
@@ -115,7 +115,7 @@ export const DeviceManagement = () => {
                       <p className="text-[9px] text-muted-foreground truncate">{device.os_name} • {formatDistanceToNow(new Date(device.last_used_at), { addSuffix: true })}</p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
-                      <Switch checked={device.is_trusted} onCheckedChange={() => toggleTrust(device.id, device.is_trusted)} className="h-3 w-6 data-[state=checked]:bg-green-500" />
+                      <Switch checked={device.is_trusted} onCheckedChange={() => toggleTrust(device.id, device.is_trusted)} className="h-3 w-6 data-[state=checked]:bg-chart-1" />
                       <Button size="icon" variant="ghost" className="h-5 w-5 hover:text-destructive" onClick={() => setDeviceToRemove(device.id)}>
                         <Trash2 className="h-2.5 w-2.5" />
                       </Button>

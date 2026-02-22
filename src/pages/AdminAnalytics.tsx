@@ -79,7 +79,7 @@ export const AdminAnalytics = () => {
               onClick={() => setDays(d)}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 days === d
-                  ? 'bg-primary text-white shadow-lg'
+                  ? 'bg-primary text-primary-foreground shadow-lg'
                   : 'bg-muted hover:bg-muted/80'
               }`}
             >
@@ -91,10 +91,10 @@ export const AdminAnalytics = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-6 bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20">
+        <Card className="p-6 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-500/20 rounded-xl">
-              <TrendingUp className="h-6 w-6 text-blue-600" />
+            <div className="p-3 bg-primary/20 rounded-xl">
+              <TrendingUp className="h-6 w-6 text-primary" />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Total Searches</p>
@@ -102,10 +102,10 @@ export const AdminAnalytics = () => {
             </div>
           </div>
         </Card>
-        <Card className="p-6 bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20">
+        <Card className="p-6 bg-gradient-to-br from-chart-1/10 to-chart-1/5 border-chart-1/20">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-green-500/20 rounded-xl">
-              <MapPin className="h-6 w-6 text-green-600" />
+            <div className="p-3 bg-chart-1/20 rounded-xl">
+              <MapPin className="h-6 w-6 text-chart-1" />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Unique Locations</p>
@@ -113,10 +113,10 @@ export const AdminAnalytics = () => {
             </div>
           </div>
         </Card>
-        <Card className="p-6 bg-gradient-to-br from-purple-500/10 to-purple-500/5 border-purple-500/20">
+        <Card className="p-6 bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-purple-500/20 rounded-xl">
-              <Calendar className="h-6 w-6 text-purple-600" />
+            <div className="p-3 bg-accent/20 rounded-xl">
+              <Calendar className="h-6 w-6 text-accent" />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Avg. Searches/Day</p>
@@ -179,7 +179,7 @@ export const AdminAnalytics = () => {
                       {item.searches} searches • {item.estimatedConversions} conversions
                     </p>
                   </div>
-                  <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+                  <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">
                     {(item.conversionRate * 100).toFixed(1)}%
                   </Badge>
                 </div>
