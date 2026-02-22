@@ -528,7 +528,7 @@ const IndonesianVendorOnboardingSystem = () => {
                   </Label>
                 </div>
                 {formData.bpjs_ketenagakerjaan && (
-                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                  <Badge variant="outline" className="bg-chart-1/10 text-chart-1 border-chart-1/20">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     {language === 'id' ? 'Aktif' : 'Active'}
                   </Badge>
@@ -557,7 +557,7 @@ const IndonesianVendorOnboardingSystem = () => {
                   </Label>
                 </div>
                 {formData.bpjs_kesehatan && (
-                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                  <Badge variant="outline" className="bg-chart-1/10 text-chart-1 border-chart-1/20">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     {language === 'id' ? 'Aktif' : 'Active'}
                   </Badge>

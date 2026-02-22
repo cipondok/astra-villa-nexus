@@ -52,8 +52,8 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
             </AvatarFallback>
           </Avatar>
           {verificationStatus === 'verified' && (
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border border-background flex items-center justify-center">
-              <Shield className="w-2 h-2 text-white" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-chart-1 rounded-full border border-background flex items-center justify-center">
+              <Shield className="w-2 h-2 text-primary-foreground" />
             </div>
           )}
         </div>
@@ -90,8 +90,8 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
             </AvatarFallback>
           </Avatar>
           {verificationStatus === 'verified' && (
-            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-background flex items-center justify-center">
-              <Shield className="w-2.5 h-2.5 text-white" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-chart-1 rounded-full border-2 border-background flex items-center justify-center">
+              <Shield className="w-2.5 h-2.5 text-primary-foreground" />
             </div>
           )}
         </div>
@@ -101,7 +101,7 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
             <span className="text-xs font-medium truncate max-w-[100px]">
               {profile?.full_name || 'User'}
             </span>
-            {isHighTier && <Sparkles className="h-3 w-3 text-yellow-500" />}
+            {isHighTier && <Sparkles className="h-3 w-3 text-chart-3" />}
           </div>
           <UserMembershipBadge 
             membershipLevel={membershipLevel} 
@@ -145,8 +145,8 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
               </AvatarFallback>
             </Avatar>
             {verificationStatus === 'verified' && (
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-background flex items-center justify-center">
-                <Shield className="w-3 h-3 text-white" />
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-chart-1 rounded-full border-2 border-background flex items-center justify-center">
+                <Shield className="w-3 h-3 text-primary-foreground" />
               </div>
             )}
           </div>

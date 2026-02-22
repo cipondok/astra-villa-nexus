@@ -58,14 +58,14 @@ const Property3DViewer = ({
     <div 
       ref={containerRef}
       className={cn(
-        "relative w-full overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900",
+        "relative w-full overflow-hidden bg-gradient-to-br from-muted via-primary/5 to-accent/10",
         className
       )}
       style={{ height }}
     >
       {/* Control Panel */}
-      <div className="absolute top-6 left-6 z-30 bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20">
-        <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-3">3D Property View</h3>
+      <div className="absolute top-6 left-6 z-30 bg-card/90 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-border/20">
+        <h3 className="text-sm font-bold text-foreground mb-3">3D Property View</h3>
         
         {/* View Controls */}
         <div className="flex gap-2 mb-3">
@@ -79,8 +79,8 @@ const Property3DViewer = ({
               className={cn(
                 "px-3 py-1 rounded-lg text-xs font-medium transition-all",
                 currentView === view
-                  ? "bg-blue-500 text-white shadow-lg"
-                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  ? "bg-primary text-primary-foreground shadow-lg"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
               )}
             >
               {view.toUpperCase()}
@@ -97,7 +97,7 @@ const Property3DViewer = ({
               onChange={(e) => setIsRotating(e.target.checked)}
               className="rounded"
             />
-            <span className="text-gray-700 dark:text-gray-300">Auto Rotate</span>
+            <span className="text-muted-foreground">Auto Rotate</span>
           </label>
           <label className="flex items-center gap-2 text-xs">
             <input
@@ -106,15 +106,15 @@ const Property3DViewer = ({
               onChange={(e) => setShowDimensions(e.target.checked)}
               className="rounded"
             />
-            <span className="text-gray-700 dark:text-gray-300">Show Dimensions</span>
+            <span className="text-muted-foreground">Show Dimensions</span>
           </label>
         </div>
       </div>
 
       {/* Property Info Panel */}
-      <div className="absolute top-6 right-6 z-30 bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20">
-        <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-3">Property Details</h3>
-        <div className="space-y-2 text-xs text-gray-600 dark:text-gray-300">
+      <div className="absolute top-6 right-6 z-30 bg-card/90 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-border/20">
+        <h3 className="text-sm font-bold text-foreground mb-3">Property Details</h3>
+        <div className="space-y-2 text-xs text-muted-foreground">
           <div className="flex justify-between gap-4">
             <span>Dimensions:</span>
             <span className="font-mono">{propertyData.length}m × {propertyData.width}m</span>
@@ -150,7 +150,7 @@ const Property3DViewer = ({
         >
           {/* Ground Plane */}
           <div 
-            className="absolute bg-green-200 dark:bg-green-800 opacity-60 border-2 border-green-300 dark:border-green-700"
+            className="absolute bg-chart-1/20 opacity-60 border-2 border-chart-1/30"
             style={{
               width: '300px',
               height: '250px',
@@ -159,14 +159,14 @@ const Property3DViewer = ({
               top: '50px'
             }}
           >
-            <div className="absolute inset-2 border border-dashed border-green-400 dark:border-green-600 rounded"></div>
+            <div className="absolute inset-2 border border-dashed border-chart-1/40 rounded"></div>
           </div>
 
           {/* Main House Structure */}
           <div className="relative">
             {/* Foundation */}
             <div 
-              className="absolute bg-gray-300 dark:bg-gray-700 border-2 border-gray-400 dark:border-gray-600"
+              className="absolute bg-muted border-2 border-border"
               style={{
                 width: '200px',
                 height: '160px',
@@ -178,7 +178,7 @@ const Property3DViewer = ({
 
             {/* Front Wall */}
             <div 
-              className="absolute bg-gradient-to-b from-blue-400 to-blue-600 border-2 border-blue-500"
+              className="absolute bg-gradient-to-b from-primary/60 to-primary border-2 border-primary/70"
               style={{
                 width: '200px',
                 height: '120px',
@@ -189,7 +189,7 @@ const Property3DViewer = ({
             >
               {/* Front Door */}
               <div 
-                className="absolute bg-amber-800 border-2 border-amber-900 rounded-t-lg"
+                className="absolute bg-chart-5 border-2 border-chart-5/80 rounded-t-lg"
                 style={{
                   width: '30px',
                   height: '60px',
@@ -197,12 +197,12 @@ const Property3DViewer = ({
                   left: '85px'
                 }}
               >
-                <div className="absolute w-2 h-2 bg-yellow-400 rounded-full top-6 right-1"></div>
+                <div className="absolute w-2 h-2 bg-chart-3 rounded-full top-6 right-1"></div>
               </div>
 
               {/* Front Windows */}
               <div 
-                className="absolute bg-yellow-200 border-2 border-yellow-400 animate-pulse"
+                className="absolute bg-chart-3/30 border-2 border-chart-3/50 animate-pulse"
                 style={{
                   width: '25px',
                   height: '25px',
@@ -211,7 +211,7 @@ const Property3DViewer = ({
                 }}
               />
               <div 
-                className="absolute bg-yellow-200 border-2 border-yellow-400 animate-pulse"
+                className="absolute bg-chart-3/30 border-2 border-chart-3/50 animate-pulse"
                 style={{
                   width: '25px',
                   height: '25px',
@@ -223,7 +223,7 @@ const Property3DViewer = ({
 
             {/* Back Wall */}
             <div 
-              className="absolute bg-gradient-to-b from-blue-300 to-blue-500 border-2 border-blue-400"
+              className="absolute bg-gradient-to-b from-primary/40 to-primary/70 border-2 border-primary/50"
               style={{
                 width: '200px',
                 height: '120px',
@@ -235,7 +235,7 @@ const Property3DViewer = ({
 
             {/* Left Wall */}
             <div 
-              className="absolute bg-gradient-to-b from-blue-350 to-blue-550 border-2 border-blue-450"
+              className="absolute bg-gradient-to-b from-primary/50 to-primary/80 border-2 border-primary/60"
               style={{
                 width: '160px',
                 height: '120px',
@@ -246,7 +246,7 @@ const Property3DViewer = ({
             >
               {/* Side Windows */}
               <div 
-                className="absolute bg-yellow-200 border-2 border-yellow-400 animate-pulse"
+                className="absolute bg-chart-3/30 border-2 border-chart-3/50 animate-pulse"
                 style={{
                   width: '20px',
                   height: '20px',
@@ -255,7 +255,7 @@ const Property3DViewer = ({
                 }}
               />
               <div 
-                className="absolute bg-yellow-200 border-2 border-yellow-400 animate-pulse"
+                className="absolute bg-chart-3/30 border-2 border-chart-3/50 animate-pulse"
                 style={{
                   width: '20px',
                   height: '20px',
@@ -267,7 +267,7 @@ const Property3DViewer = ({
 
             {/* Right Wall */}
             <div 
-              className="absolute bg-gradient-to-b from-blue-350 to-blue-550 border-2 border-blue-450"
+              className="absolute bg-gradient-to-b from-primary/50 to-primary/80 border-2 border-primary/60"
               style={{
                 width: '160px',
                 height: '120px',
@@ -279,7 +279,7 @@ const Property3DViewer = ({
 
             {/* Roof */}
             <div 
-              className="absolute bg-gradient-to-b from-red-500 to-red-700 border-2 border-red-600"
+              className="absolute bg-gradient-to-b from-destructive to-destructive/80 border-2 border-destructive/70"
               style={{
                 width: '220px',
                 height: '180px',
@@ -292,7 +292,7 @@ const Property3DViewer = ({
 
             {/* Chimney */}
             <div 
-              className="absolute bg-gray-600 border-2 border-gray-700"
+              className="absolute bg-muted-foreground/60 border-2 border-muted-foreground/70"
               style={{
                 width: '15px',
                 height: '40px',
@@ -305,7 +305,7 @@ const Property3DViewer = ({
             {/* Second Floor (if applicable) */}
             {propertyData.floors > 1 && (
               <div 
-                className="absolute bg-gradient-to-b from-blue-300 to-blue-500 border-2 border-blue-400 opacity-90"
+                className="absolute bg-gradient-to-b from-primary/40 to-primary/70 border-2 border-primary/50 opacity-90"
                 style={{
                   width: '200px',
                   height: '100px',
@@ -316,7 +316,7 @@ const Property3DViewer = ({
               >
                 {/* Upper Floor Windows */}
                 <div 
-                  className="absolute bg-yellow-200 border-2 border-yellow-400 animate-pulse"
+                  className="absolute bg-chart-3/30 border-2 border-chart-3/50 animate-pulse"
                   style={{
                     width: '20px',
                     height: '20px',
@@ -325,7 +325,7 @@ const Property3DViewer = ({
                   }}
                 />
                 <div 
-                  className="absolute bg-yellow-200 border-2 border-yellow-400 animate-pulse"
+                  className="absolute bg-chart-3/30 border-2 border-chart-3/50 animate-pulse"
                   style={{
                     width: '20px',
                     height: '20px',
@@ -342,7 +342,7 @@ const Property3DViewer = ({
             <>
               {/* Length Dimension */}
               <div 
-                className="absolute text-xs font-mono text-gray-800 dark:text-gray-200 bg-white/80 dark:bg-black/80 px-2 py-1 rounded border backdrop-blur-sm"
+                className="absolute text-xs font-mono text-foreground bg-card/80 px-2 py-1 rounded border backdrop-blur-sm"
                 style={{
                   bottom: '-40px',
                   left: '50%',
@@ -355,7 +355,7 @@ const Property3DViewer = ({
 
               {/* Width Dimension */}
               <div 
-                className="absolute text-xs font-mono text-gray-800 dark:text-gray-200 bg-white/80 dark:bg-black/80 px-2 py-1 rounded border backdrop-blur-sm"
+                className="absolute text-xs font-mono text-foreground bg-card/80 px-2 py-1 rounded border backdrop-blur-sm"
                 style={{
                   top: '50%',
                   right: '-60px',
@@ -368,7 +368,7 @@ const Property3DViewer = ({
 
               {/* Height Dimension */}
               <div 
-                className="absolute text-xs font-mono text-gray-800 dark:text-gray-200 bg-white/80 dark:bg-black/80 px-2 py-1 rounded border backdrop-blur-sm"
+                className="absolute text-xs font-mono text-foreground bg-card/80 px-2 py-1 rounded border backdrop-blur-sm"
                 style={{
                   top: '20px',
                   left: '-50px',
@@ -385,27 +385,27 @@ const Property3DViewer = ({
             <>
               {/* Length measurement line */}
               <div 
-                className="absolute border-t-2 border-dashed border-gray-500 dark:border-gray-400"
+                className="absolute border-t-2 border-dashed border-muted-foreground"
                 style={{
                   width: '200px',
                   bottom: '-25px',
                   left: '0px'
                 }}
               />
-              <div className="absolute w-1 h-4 bg-gray-500 dark:bg-gray-400" style={{ bottom: '-33px', left: '0px' }} />
-              <div className="absolute w-1 h-4 bg-gray-500 dark:bg-gray-400" style={{ bottom: '-33px', left: '200px' }} />
+              <div className="absolute w-1 h-4 bg-muted-foreground" style={{ bottom: '-33px', left: '0px' }} />
+              <div className="absolute w-1 h-4 bg-muted-foreground" style={{ bottom: '-33px', left: '200px' }} />
 
               {/* Width measurement line */}
               <div 
-                className="absolute border-l-2 border-dashed border-gray-500 dark:border-gray-400"
+                className="absolute border-l-2 border-dashed border-muted-foreground"
                 style={{
                   height: '160px',
                   right: '-25px',
                   top: '20px'
                 }}
               />
-              <div className="absolute h-1 w-4 bg-gray-500 dark:bg-gray-400" style={{ right: '-33px', top: '20px' }} />
-              <div className="absolute h-1 w-4 bg-gray-500 dark:bg-gray-400" style={{ right: '-33px', top: '180px' }} />
+              <div className="absolute h-1 w-4 bg-muted-foreground" style={{ right: '-33px', top: '20px' }} />
+              <div className="absolute h-1 w-4 bg-muted-foreground" style={{ right: '-33px', top: '180px' }} />
             </>
           )}
         </div>
@@ -413,15 +413,15 @@ const Property3DViewer = ({
 
       {/* Floating Elements */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 left-20 w-3 h-3 bg-blue-400 rounded-full animate-ping opacity-75"></div>
-        <div className="absolute top-40 right-32 w-2 h-2 bg-purple-400 rounded-full animate-pulse opacity-60"></div>
-        <div className="absolute bottom-32 left-32 w-4 h-4 bg-green-400 rounded-full animate-bounce opacity-70"></div>
-        <div className="absolute bottom-20 right-20 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-80"></div>
+        <div className="absolute top-20 left-20 w-3 h-3 bg-primary/60 rounded-full animate-ping opacity-75"></div>
+        <div className="absolute top-40 right-32 w-2 h-2 bg-accent/60 rounded-full animate-pulse opacity-60"></div>
+        <div className="absolute bottom-32 left-32 w-4 h-4 bg-chart-1/60 rounded-full animate-bounce opacity-70"></div>
+        <div className="absolute bottom-20 right-20 w-2 h-2 bg-chart-3/60 rounded-full animate-ping opacity-80"></div>
       </div>
 
       {/* Bottom Info Bar */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-2xl px-6 py-3 shadow-xl border border-white/20">
-        <p className="text-sm text-gray-700 dark:text-gray-300 text-center">
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-card/90 backdrop-blur-md rounded-2xl px-6 py-3 shadow-xl border border-border/20">
+        <p className="text-sm text-muted-foreground text-center">
           🏠 Interactive 3D Property View • Total Area: {propertyData.length * propertyData.width}m²
         </p>
       </div>
