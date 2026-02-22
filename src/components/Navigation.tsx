@@ -168,7 +168,7 @@ const Navigation = () => {
   const currentText = text[language] || text.en;
 
   // Property navigation items
-  const navIconStyle = 'bg-primary-foreground/5 border-primary-foreground/10 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 hover:shadow-md transition-all duration-300';
+  const navIconStyle = 'bg-muted/50 border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 hover:shadow-md transition-all duration-300';
   const navIconColor = 'text-foreground/70';
 
   const propertyNavItems = [
@@ -260,7 +260,7 @@ const Navigation = () => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-8 px-3 text-xs font-medium rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/80"
+                className="h-8 px-3 text-xs font-medium rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/80"
                 onClick={() => navigate('/')}
               >
                 <HomeIcon className="h-4 w-4 xl:mr-1.5 text-gold-primary" />
@@ -385,7 +385,7 @@ const Navigation = () => {
                       value={headerSearchQuery}
                       onChange={(e) => setHeaderSearchQuery(e.target.value)}
                       placeholder="Search..."
-                      className="px-3 h-7 sm:h-8 w-24 sm:w-32 lg:w-44 xl:w-56 text-[11px] sm:text-xs bg-primary-foreground/5 border-primary-foreground/10 rounded-lg focus:bg-background focus:border-gold-primary/30 focus:w-36 sm:focus:w-44 lg:focus:w-56 transition-all duration-300"
+                      className="px-3 h-7 sm:h-8 w-24 sm:w-32 lg:w-44 xl:w-56 text-[11px] sm:text-xs bg-muted/50 border-border/50 rounded-lg focus:bg-background focus:border-gold-primary/30 focus:w-36 sm:focus:w-44 lg:focus:w-56 transition-all duration-300"
                     />
                   </div>
                   <Button type="submit" size="sm" className="h-7 sm:h-8 w-7 sm:w-8 p-0 rounded-lg bg-gold-primary hover:bg-gold-primary/90 text-background shrink-0">
@@ -399,7 +399,7 @@ const Navigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="w-8 h-8 p-0 rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300"
+                className="w-8 h-8 p-0 rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300"
               >
                 {theme === "light" ? (
                   <Moon className="h-4 w-4 text-foreground/70" />
@@ -425,7 +425,7 @@ const Navigation = () => {
                     onClick={() => setShowAuthModal(true)}
                     variant="ghost"
                     size="sm"
-                    className="w-8 h-8 p-0 rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/70 hover:text-gold-primary"
+                    className="w-8 h-8 p-0 rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/70 hover:text-gold-primary"
                   >
                     <User className="h-4 w-4" />
                   </Button>
@@ -442,7 +442,7 @@ const Navigation = () => {
                   ref={menuButtonRef}
                   variant="ghost"
                   size="sm"
-                  className="w-8 h-8 p-0 rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-all duration-300 text-foreground/70"
+                  className="w-8 h-8 p-0 rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-all duration-300 text-foreground/70"
                   onClick={toggleMenu}
                 >
                   {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}

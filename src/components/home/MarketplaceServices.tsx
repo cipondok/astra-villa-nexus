@@ -60,7 +60,7 @@ const MarketplaceServices = () => {
       </div>
 
       {/* CTA Banner */}
-      <div className="mt-2.5 md:mt-4 p-2.5 md:p-4 rounded-xl bg-primary-foreground/5 backdrop-blur-md border border-primary-foreground/10 hover:border-gold-primary/20 transition-colors">
+      <div className="mt-2.5 md:mt-4 p-2.5 md:p-4 rounded-xl bg-muted/50 backdrop-blur-md border border-border/50 hover:border-gold-primary/20 transition-colors">
         <div className="flex items-center justify-between gap-2">
           <div>
             <h3 className="text-[10px] md:text-sm font-semibold text-foreground">
@@ -92,11 +92,11 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => {
   
   return (
     <div onClick={onClick} className="group cursor-pointer">
-      <div className="relative overflow-hidden rounded-xl bg-primary-foreground/5 backdrop-blur-md border border-primary-foreground/10 hover:border-gold-primary/30 p-2 md:p-3 h-full flex flex-col items-center text-center transition-all duration-300 active:scale-95 md:hover:scale-[1.04] md:hover:shadow-lg md:hover:shadow-gold-primary/10">
+      <div className="relative overflow-hidden rounded-xl bg-muted/50 backdrop-blur-md border border-border/50 hover:border-gold-primary/30 p-2 md:p-3 h-full flex flex-col items-center text-center transition-all duration-300 active:scale-95 md:hover:scale-[1.04] md:hover:shadow-lg md:hover:shadow-gold-primary/10">
         {/* Icon Container */}
         <div className="relative">
-          <div className="relative w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-xl bg-primary-foreground/8">
-            <IconComponent className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-primary-foreground/80 group-hover:text-gold-primary transition-colors duration-300" strokeWidth={1.5} />
+          <div className="relative w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-xl bg-muted">
+            <IconComponent className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-foreground/60 group-hover:text-gold-primary transition-colors duration-300" strokeWidth={1.5} />
           </div>
           {/* Vendor Count Badge */}
           <div className="absolute -top-1 -right-1 w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center bg-gradient-to-br from-gold-primary to-gold-primary/70 shadow-sm border-2 border-background">
@@ -107,7 +107,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => {
         </div>
 
         {/* Title */}
-        <h3 className="hidden md:block mt-1.5 text-[9px] lg:text-[11px] font-semibold text-primary-foreground/60 leading-tight line-clamp-2 group-hover:text-gold-primary transition-colors duration-200">
+        <h3 className="hidden md:block mt-1.5 text-[9px] lg:text-[11px] font-semibold text-foreground/60 leading-tight line-clamp-2 group-hover:text-gold-primary transition-colors duration-200">
           {service.title}
         </h3>
       </div>
