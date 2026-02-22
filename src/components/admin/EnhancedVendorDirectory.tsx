@@ -173,7 +173,7 @@ const EnhancedVendorDirectory = () => {
                 <p className="text-sm text-muted-foreground">Total Vendors</p>
                 <p className="text-2xl font-bold">{vendors.length}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-blue-600" />
+              <CheckCircle className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -183,11 +183,11 @@ const EnhancedVendorDirectory = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Verified Vendors</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-chart-1">
                   {vendors.filter(v => v.is_verified !== false).length}
                 </p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -204,7 +204,7 @@ const EnhancedVendorDirectory = () => {
                   }
                 </p>
               </div>
-              <Star className="h-8 w-8 text-yellow-600" />
+              <Star className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -248,7 +248,7 @@ const EnhancedVendorDirectory = () => {
                 {/* Rating and Reviews */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                    <Star className="h-4 w-4 text-chart-3 fill-current" />
                     <span className="font-medium">{vendor.rating?.toFixed(1) || "0.0"}</span>
                     <span className="text-sm text-muted-foreground">
                       ({vendor.total_reviews || 0} reviews)
@@ -291,7 +291,7 @@ const EnhancedVendorDirectory = () => {
                 )}
 
                 {/* Contact Notice */}
-                <div className="text-xs text-muted-foreground bg-blue-50 p-3 rounded-md">
+                <div className="text-xs text-muted-foreground bg-chart-4/10 p-3 rounded-md">
                   <AlertCircle className="h-4 w-4 mb-1" />
                   Contact information is only available to authenticated users for security reasons.
                 </div>

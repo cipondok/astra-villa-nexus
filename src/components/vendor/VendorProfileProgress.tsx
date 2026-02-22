@@ -257,19 +257,19 @@ const VendorProfileProgress = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{completionPercentage}%</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Profile Complete</div>
+            <div className="text-center p-3 bg-muted/50 rounded-lg">
+              <div className="text-2xl font-bold text-primary">{completionPercentage}%</div>
+              <div className="text-sm text-muted-foreground">Profile Complete</div>
             </div>
-            <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{completedSections}/{totalSections}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Sections Done</div>
+            <div className="text-center p-3 bg-muted/50 rounded-lg">
+              <div className="text-2xl font-bold text-chart-5">{completedSections}/{totalSections}</div>
+              <div className="text-sm text-muted-foreground">Sections Done</div>
             </div>
-            <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+            <div className="text-center p-3 bg-muted/50 rounded-lg">
+              <div className="text-2xl font-bold text-chart-1">
                 {userLevel === 'Expert' ? '🎯' : `${getProgressToNextLevel()}%`}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-sm text-muted-foreground">
                 {userLevel === 'Expert' ? 'Max Level' : `To ${getNextLevel()}`}
               </div>
             </div>
@@ -295,19 +295,19 @@ const VendorProfileProgress = () => {
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <div className="text-lg font-semibold">Current Level: {userLevel}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="text-sm text-muted-foreground">
                     {userLevel === 'Expert' ? 'Maximum level reached!' : `${getProgressToNextLevel()}% needed for ${getNextLevel()}`}
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-blue-600">{completionPercentage}%</div>
-                  <div className="text-xs text-gray-500">Complete</div>
+                  <div className="text-2xl font-bold text-primary">{completionPercentage}%</div>
+                  <div className="text-xs text-muted-foreground">Complete</div>
                 </div>
               </div>
               
               <Progress value={completionPercentage} className="h-4 mb-2" />
               
-              <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
+              <div className="flex justify-between text-xs text-muted-foreground">
                 <span>Newcomer</span>
                 <span>Beginner</span>
                 <span>Intermediate</span>
@@ -324,24 +324,24 @@ const VendorProfileProgress = () => {
               </h4>
               <div className="space-y-2">
                 {userLevel !== 'Expert' && (
-                  <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-chart-4/10 rounded-lg">
                     <div className="flex items-center gap-2">
-                      <Award className="h-4 w-4 text-blue-600" />
+                      <Award className="h-4 w-4 text-chart-4" />
                       <span className="font-medium">Reach {getNextLevel()} Level</span>
                     </div>
-                    <Badge variant="outline" className="bg-blue-100 text-blue-800">
+                    <Badge variant="outline" className="bg-chart-4/10 text-chart-4">
                       {getProgressToNextLevel()}% needed
                     </Badge>
                   </div>
                 )}
                 
                 {completionPercentage < 100 && (
-                  <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-chart-1/10 rounded-lg">
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <CheckCircle className="h-4 w-4 text-chart-1" />
                       <span className="font-medium">Complete Profile</span>
                     </div>
-                    <Badge variant="outline" className="bg-green-100 text-green-800">
+                    <Badge variant="outline" className="bg-chart-1/10 text-chart-1">
                       {100 - completionPercentage}% remaining
                     </Badge>
                   </div>
@@ -363,19 +363,19 @@ const VendorProfileProgress = () => {
         <CardContent>
           <div className="space-y-4">
             {sections.map((section, index) => (
-              <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-3">
                   {section.icon}
                   <div>
                     <div className="font-medium">{section.name}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-sm text-muted-foreground">
                       Weight: {section.weight}%
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   {section.completed ? (
-                    <Badge className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                    <Badge className="bg-chart-1/10 text-chart-1">
                       <CheckCircle className="h-3 w-3 mr-1" />
                       Complete
                     </Badge>

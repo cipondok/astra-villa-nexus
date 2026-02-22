@@ -330,7 +330,7 @@ const BadgeSettingsPreview = ({
         <span
           className={`text-[9px] font-bold leading-none whitespace-nowrap ${
             draft.badgeTextStyle === "pill"
-              ? "px-1.5 py-0.5 rounded-full text-white"
+              ? "px-1.5 py-0.5 rounded-full text-primary-foreground"
               : "text-foreground/80"
           }`}
           style={draft.badgeTextStyle === "pill" ? { backgroundColor: config.shieldColor } : undefined}
