@@ -56,7 +56,7 @@ const LiveAuctionCard = ({ auction }: LiveAuctionCardProps) => {
 
   return (
     <Card className={`group overflow-hidden transition-all duration-300 transform hover:scale-[1.02] border rounded-2xl ${
-      isActive ? 'border-red-200 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950' : 'border-gray-200 bg-white dark:bg-gray-800'
+      isActive ? 'border-destructive/30 bg-gradient-to-br from-destructive/5 to-chart-3/5' : 'border-border bg-card'
     }`}>
       <div className="relative overflow-hidden">
         <img
@@ -68,7 +68,7 @@ const LiveAuctionCard = ({ auction }: LiveAuctionCardProps) => {
         {/* Live Indicator */}
         {isActive && (
           <div className="absolute top-2 left-2">
-            <Badge className="bg-red-500 text-white animate-pulse text-xs px-2 py-1 rounded-full flex items-center gap-1">
+            <Badge className="bg-destructive text-destructive-foreground animate-pulse text-xs px-2 py-1 rounded-full flex items-center gap-1">
               <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
               LIVE
             </Badge>
@@ -78,7 +78,7 @@ const LiveAuctionCard = ({ auction }: LiveAuctionCardProps) => {
         {/* Type Badge */}
         <div className="absolute top-2 right-2">
           <Badge className={`text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 ${
-            auction.type === 'auction' ? 'bg-purple-500' : 'bg-blue-500'
+            auction.type === 'auction' ? 'bg-chart-5' : 'bg-chart-4'
           }`}>
             {auction.type === 'auction' ? <Gavel className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}
             {auction.type === 'auction' ? 'Auction' : 'Live'}
@@ -87,36 +87,36 @@ const LiveAuctionCard = ({ auction }: LiveAuctionCardProps) => {
 
         {/* Time Left */}
         <div className="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-1 rounded-lg flex items-center gap-1 backdrop-blur-sm">
-          <Timer className="h-3 w-3 text-red-400" />
+          <Timer className="h-3 w-3 text-destructive" />
           <span className="text-xs font-medium">{timeLeft}</span>
         </div>
 
         {/* Bidders Count */}
         <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded-lg flex items-center gap-1 backdrop-blur-sm">
-          <Users className="h-3 w-3 text-green-400" />
+          <Users className="h-3 w-3 text-chart-1" />
           <span className="text-xs font-medium">{auction.bidders}</span>
         </div>
       </div>
 
       <CardContent className="p-3">
-        <h3 className="text-sm font-semibold mb-1 group-hover:text-blue-600 transition-colors duration-300 line-clamp-1">
+        <h3 className="text-sm font-semibold mb-1 group-hover:text-primary transition-colors duration-300 line-clamp-1">
           {auction.title}
         </h3>
         
-        <div className="flex items-center text-gray-500 dark:text-gray-400 mb-2">
+        <div className="flex items-center text-muted-foreground mb-2">
           <span className="text-xs line-clamp-1">{auction.location}</span>
         </div>
 
         <div className="space-y-2 mb-3">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-600 dark:text-gray-400">Current Bid</span>
-            <span className="text-sm font-bold text-green-600">{auction.currentBid}</span>
+            <span className="text-xs text-muted-foreground">Current Bid</span>
+            <span className="text-sm font-bold text-chart-1">{auction.currentBid}</span>
           </div>
           
           {auction.type === 'auction' && (
             <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-600 dark:text-gray-400">Next Min Bid</span>
-              <span className="text-sm font-semibold text-blue-600">{auction.nextMinBid}</span>
+              <span className="text-xs text-muted-foreground">Next Min Bid</span>
+              <span className="text-sm font-semibold text-chart-4">{auction.nextMinBid}</span>
             </div>
           )}
         </div>
@@ -125,8 +125,8 @@ const LiveAuctionCard = ({ auction }: LiveAuctionCardProps) => {
           size="sm"
           className={`w-full h-8 font-medium transition-all duration-300 text-xs rounded-xl ${
             auction.type === 'auction' 
-              ? 'bg-gradient-to-r from-purple-600 to-red-500 hover:from-purple-700 hover:to-red-600' 
-              : 'bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600'
+              ? 'bg-gradient-to-r from-chart-5 to-destructive hover:from-chart-5/90 hover:to-destructive/90' 
+              : 'bg-gradient-to-r from-primary to-chart-1 hover:from-primary/90 hover:to-chart-1/90'
           } text-white`}
           onClick={handleViewAuction}
         >

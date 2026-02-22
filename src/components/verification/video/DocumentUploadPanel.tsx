@@ -158,7 +158,7 @@ const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'verified':
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Verified</Badge>;
+        return <Badge className="bg-chart-1"><CheckCircle className="h-3 w-3 mr-1" />Verified</Badge>;
       case 'rejected':
         return <Badge variant="destructive"><FileX className="h-3 w-3 mr-1" />Rejected</Badge>;
       case 'needs_review':
@@ -197,18 +197,18 @@ const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
               key={docType.id}
               className={cn(
                 "transition-colors",
-                uploadedDoc && "border-green-200 bg-green-50/50"
+                uploadedDoc && "border-chart-1/30 bg-chart-1/5"
               )}
             >
               <CardContent className="p-4">
                 <div className="flex items-center gap-4">
                   <div className={cn(
                     "h-12 w-12 rounded-lg flex items-center justify-center",
-                    uploadedDoc ? "bg-green-100" : "bg-muted"
+                    uploadedDoc ? "bg-chart-1/10" : "bg-muted"
                   )}>
                     <Icon className={cn(
                       "h-6 w-6",
-                      uploadedDoc ? "text-green-600" : "text-muted-foreground"
+                      uploadedDoc ? "text-chart-1" : "text-muted-foreground"
                     )} />
                   </div>
 

@@ -71,11 +71,11 @@ const FeedbackAnalytics = () => {
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <Card key={i} className="animate-pulse">
             <CardHeader>
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-4 bg-muted rounded w-3/4"></div>
+              <div className="h-3 bg-muted rounded w-1/2"></div>
             </CardHeader>
             <CardContent>
-              <div className="h-8 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-muted rounded"></div>
             </CardContent>
           </Card>
         ))}
@@ -157,7 +157,7 @@ const FeedbackAnalytics = () => {
           {analytics?.ratingDistribution.map((item) => (
             <div key={item.rating} className="flex items-center gap-4">
               <div className="flex items-center gap-1 w-16">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                <Star className="h-4 w-4 fill-gold-primary text-gold-primary" />
                 <span className="text-sm font-medium">{item.rating}</span>
               </div>
               <div className="flex-1">

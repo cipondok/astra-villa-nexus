@@ -90,16 +90,16 @@ const SmartInquiryFlow: React.FC<SmartInquiryFlowProps> = ({
                   )}
                 </div>
                 {/* Online indicator */}
-                <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-card" />
+                <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-chart-1 border-2 border-card" />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-1.5">
                   <span className="font-semibold text-foreground">{agentName}</span>
-                  <span className="text-xs bg-blue-500/10 text-blue-500 px-1.5 py-0.5 rounded">Verified</span>
+                  <span className="text-xs bg-chart-4/10 text-chart-4 px-1.5 py-0.5 rounded">Verified</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1">
-                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                    <Star className="h-3 w-3 fill-gold-primary text-gold-primary" />
                     4.9
                   </span>
                   <span>•</span>
@@ -107,7 +107,7 @@ const SmartInquiryFlow: React.FC<SmartInquiryFlowProps> = ({
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-lg font-bold text-green-500">{responseRate}</span>
+                <span className="text-lg font-bold text-chart-1">{responseRate}</span>
                 <p className="text-[10px] text-muted-foreground">response rate</p>
               </div>
             </div>
@@ -150,7 +150,7 @@ const SmartInquiryFlow: React.FC<SmartInquiryFlowProps> = ({
               {/* WhatsApp - Primary (Technical) */}
               <Button
                 onClick={handleWhatsAppInquiry}
-                className="w-full h-12 bg-green-600 hover:bg-green-700 active:scale-95"
+                className="w-full h-12 bg-chart-1 hover:bg-chart-1/90 active:scale-95"
               >
                 <MessageCircle className="h-5 w-5 mr-2" />
                 WhatsApp Inquiry
@@ -240,7 +240,7 @@ const SmartInquiryFlow: React.FC<SmartInquiryFlowProps> = ({
                 onClick={handleWhatsAppInquiry}
                 className="h-11 active:scale-95"
               >
-                <MessageCircle className="h-4 w-4 mr-1.5 text-green-500" />
+                <MessageCircle className="h-4 w-4 mr-1.5 text-chart-1" />
                 WhatsApp
               </Button>
               <Button
@@ -279,9 +279,9 @@ const SmartInquiryFlow: React.FC<SmartInquiryFlowProps> = ({
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", delay: 0.1 }}
-              className="w-16 h-16 mx-auto rounded-full bg-green-500/20 flex items-center justify-center"
+              className="w-16 h-16 mx-auto rounded-full bg-chart-1/20 flex items-center justify-center"
             >
-              <Check className="h-8 w-8 text-green-500" />
+              <Check className="h-8 w-8 text-chart-1" />
             </motion.div>
 
             <div className="space-y-2">

@@ -147,32 +147,32 @@ const BookingManagement = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-yellow-500';
+        return 'bg-chart-3';
       case 'confirmed':
-        return 'bg-blue-500';
+        return 'bg-chart-4';
       case 'in_progress':
-        return 'bg-purple-500';
+        return 'bg-accent';
       case 'completed':
-        return 'bg-green-500';
+        return 'bg-chart-1';
       case 'cancelled':
-        return 'bg-red-500';
+        return 'bg-destructive';
       default:
-        return 'bg-gray-500';
+        return 'bg-muted-foreground';
     }
   };
 
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
       case 'paid':
-        return 'bg-green-500';
+        return 'bg-chart-1';
       case 'pending':
-        return 'bg-yellow-500';
+        return 'bg-chart-3';
       case 'failed':
-        return 'bg-red-500';
+        return 'bg-destructive';
       case 'refunded':
-        return 'bg-gray-500';
+        return 'bg-muted-foreground';
       default:
-        return 'bg-gray-400';
+        return 'bg-muted';
     }
   };
 
@@ -188,7 +188,7 @@ const BookingManagement = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         <span className="ml-2">Loading bookings...</span>
       </div>
     );
@@ -223,7 +223,7 @@ const BookingManagement = () => {
       {bookings.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Calendar className="h-12 w-12 text-gray-400 mb-4" />
+            <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">No bookings found</h3>
             <p className="text-muted-foreground">
               {filter === 'all' ? 'You have no bookings yet' : `No ${filter} bookings`}
@@ -259,20 +259,20 @@ const BookingManagement = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-gray-500" />
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
                       <span>{new Date(booking.booking_date).toLocaleDateString()}</span>
                     </div>
                     
                     {booking.booking_time && (
                       <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-gray-500" />
+                        <Clock className="h-4 w-4 text-muted-foreground" />
                         <span>{booking.booking_time}</span>
                       </div>
                     )}
                     
                     {booking.location_address && (
                       <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-gray-500" />
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">{booking.location_address}</span>
                       </div>
                     )}
@@ -280,17 +280,17 @@ const BookingManagement = () => {
                   
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-gray-500" />
+                      <Phone className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">{booking.contact_phone}</span>
                     </div>
                     
                     <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-gray-500" />
+                      <Mail className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">{booking.contact_email}</span>
                     </div>
                     
                     <div className="flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-gray-500" />
+                      <DollarSign className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm font-medium">
                         {new Intl.NumberFormat('id-ID', {
                           style: 'currency',
@@ -302,11 +302,11 @@ const BookingManagement = () => {
                 </div>
                 
                 {booking.customer_notes && (
-                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                <div className="mt-4 p-3 bg-muted/50 rounded-lg">
                     <h4 className="font-medium text-sm mb-1">
                       {isVendor ? 'Customer Notes:' : 'Your Notes:'}
                     </h4>
-                    <p className="text-sm text-gray-600">{booking.customer_notes}</p>
+                    <p className="text-sm text-muted-foreground">{booking.customer_notes}</p>
                   </div>
                 )}
                 
