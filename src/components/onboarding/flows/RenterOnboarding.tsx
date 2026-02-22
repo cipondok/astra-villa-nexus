@@ -51,8 +51,8 @@ const RenterOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
-                <Key className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Key className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Find Your Perfect Rental</h3>
               <p className="text-sm text-muted-foreground">Set your rental preferences</p>
@@ -139,16 +139,16 @@ const RenterOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
-                <Home className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Home className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">18 Rentals Available!</h3>
               <p className="text-sm text-muted-foreground">Here are some matches</p>
             </div>
 
-            <div className="flex items-center gap-2 p-2 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-200">
-              <Flame className="h-4 w-4 text-orange-500" />
-              <span className="text-xs text-orange-700 dark:text-orange-300">
+            <div className="flex items-center gap-2 p-2 rounded-lg bg-chart-3/10 border border-chart-3/30">
+              <Flame className="h-4 w-4 text-chart-3" />
+              <span className="text-xs text-chart-3">
                 3 new listings in the last 24 hours!
               </span>
             </div>
@@ -212,8 +212,8 @@ const RenterOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
-                <Zap className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Zap className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Ready to Find Your Rental!</h3>
               <p className="text-sm text-muted-foreground">Here's what you've unlocked</p>
@@ -223,8 +223,8 @@ const RenterOnboarding = ({
             <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center">
-                    <Zap className="h-5 w-5 text-pink-600" />
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Zap className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold">Quick Apply Feature</p>
@@ -243,8 +243,8 @@ const RenterOnboarding = ({
             <Card className="border-dashed">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center">
-                    <Bell className="h-5 w-5 text-pink-600" />
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Bell className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold">First Action</p>
@@ -257,9 +257,9 @@ const RenterOnboarding = ({
             </Card>
 
             <div className="flex items-center justify-center gap-2 flex-wrap">
-              <Badge className="bg-pink-100 text-pink-700">+25 ASTRA</Badge>
-              <Badge className="bg-blue-100 text-blue-700">Priority Viewing</Badge>
-              <Badge className="bg-purple-100 text-purple-700">Quick Apply</Badge>
+              <Badge className="bg-primary/10 text-primary">+25 ASTRA</Badge>
+              <Badge className="bg-chart-4/10 text-chart-4">Priority Viewing</Badge>
+              <Badge className="bg-accent/10 text-accent-foreground">Quick Apply</Badge>
             </div>
           </div>
         );
@@ -296,7 +296,7 @@ const RenterOnboarding = ({
         <Button 
           onClick={step === 2 ? onComplete : nextStep} 
           disabled={!canProceed()}
-          className="flex-1 bg-gradient-to-r from-pink-500 to-rose-600"
+          className="flex-1 bg-gradient-to-r from-primary to-accent"
         >
           {step === 0 ? "Find Rentals" : step === 2 ? "Complete Setup" : "Continue"}
           <ChevronRight className="h-4 w-4 ml-1" />
