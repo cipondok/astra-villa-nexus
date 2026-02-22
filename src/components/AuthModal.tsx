@@ -111,42 +111,42 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="w-full max-w-md bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl rounded-2xl border border-white/20 dark:border-white/10 shadow-2xl">
+      <div className="w-full max-w-md bg-card/95 backdrop-blur-xl rounded-2xl border border-border/40 shadow-2xl">
         <div className="p-4">
-          <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-200/50 dark:border-white/10">
+          <div className="flex justify-between items-center mb-4 pb-3 border-b border-border/50">
             <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Astra Villa</h2>
-            <Button variant="ghost" size="sm" onClick={onClose} className="hover:bg-gray-100 dark:hover:bg-white/10">
+            <Button variant="ghost" size="sm" onClick={onClose} className="hover:bg-muted">
               <X className="h-4 w-4" />
             </Button>
           </div>
           
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-gray-100/80 dark:bg-white/10">
-              <TabsTrigger value="login" className="data-[state=active]:bg-white dark:data-[state=active]:bg-white/20 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm">{currentText.login}</TabsTrigger>
-              <TabsTrigger value="register" className="data-[state=active]:bg-white dark:data-[state=active]:bg-white/20 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm">{currentText.register}</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-muted/80">
+              <TabsTrigger value="login" className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">{currentText.login}</TabsTrigger>
+              <TabsTrigger value="register" className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">{currentText.register}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="login" className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label htmlFor="login-email" className="text-gray-700 dark:text-gray-300">{currentText.email}</Label>
+                <Label htmlFor="login-email" className="text-foreground/80">{currentText.email}</Label>
                 <Input
                   id="login-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={currentText.email}
-                  className="bg-white/70 dark:bg-white/10 border-gray-200/50 dark:border-white/20 focus:border-primary focus:ring-primary/30"
+                  className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="login-password" className="text-gray-700 dark:text-gray-300">{currentText.password}</Label>
+                <Label htmlFor="login-password" className="text-foreground/80">{currentText.password}</Label>
                 <Input
                   id="login-password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={currentText.password}
-                  className="bg-white/70 dark:bg-white/10 border-gray-200/50 dark:border-white/20 focus:border-primary focus:ring-primary/30"
+                  className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <Button 
@@ -160,45 +160,45 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
             
             <TabsContent value="register" className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label htmlFor="register-name" className="text-gray-700 dark:text-gray-300">{currentText.name}</Label>
+                <Label htmlFor="register-name" className="text-foreground/80">{currentText.name}</Label>
                 <Input
                   id="register-name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={currentText.name}
-                  className="bg-white/70 dark:bg-white/10 border-gray-200/50 dark:border-white/20 focus:border-primary focus:ring-primary/30"
+                  className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-email" className="text-gray-700 dark:text-gray-300">{currentText.email}</Label>
+                <Label htmlFor="register-email" className="text-foreground/80">{currentText.email}</Label>
                 <Input
                   id="register-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={currentText.email}
-                  className="bg-white/70 dark:bg-white/10 border-gray-200/50 dark:border-white/20 focus:border-primary focus:ring-primary/30"
+                  className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-password" className="text-gray-700 dark:text-gray-300">{currentText.password}</Label>
+                <Label htmlFor="register-password" className="text-foreground/80">{currentText.password}</Label>
                 <Input
                   id="register-password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={currentText.password}
-                  className="bg-white/70 dark:bg-white/10 border-gray-200/50 dark:border-white/20 focus:border-primary focus:ring-primary/30"
+                  className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-role" className="text-gray-700 dark:text-gray-300">{currentText.role}</Label>
+                <Label htmlFor="register-role" className="text-foreground/80">{currentText.role}</Label>
                 <Select value={role} onValueChange={setRole}>
-                  <SelectTrigger className="bg-white/70 dark:bg-white/10 border-gray-200/50 dark:border-white/20 focus:border-primary focus:ring-primary/30">
+                  <SelectTrigger className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-neutral-900 border-gray-200 dark:border-white/20">
+                  <SelectContent className="bg-card border-border">
                     <SelectItem value="general_user">{currentText.generalUser}</SelectItem>
                     <SelectItem value="property_owner">{currentText.propertyOwner}</SelectItem>
                     <SelectItem value="agent">{currentText.agent}</SelectItem>

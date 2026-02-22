@@ -259,7 +259,7 @@ const ServiceBookingForm = ({ service, onBookingCreated }: ServiceBookingFormPro
             </div>
 
             {/* Total Amount */}
-            <div className="bg-gray-50 p-4 rounded-lg">
+            <div className="bg-muted p-4 rounded-lg">
               <div className="flex justify-between items-center">
                 <span className="font-medium">Total Amount:</span>
                 <span className="text-lg font-bold">

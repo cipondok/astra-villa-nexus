@@ -157,14 +157,14 @@ const ASTRATokenDisplay = () => {
     switch (tokenInfo.apiStatus) {
       case 'connected':
         return (
-          <Badge className="bg-green-100 text-green-800 border-green-200">
+          <Badge className="bg-chart-1/20 text-chart-1 border-chart-1/30">
             <CheckCircle className="h-3 w-3 mr-1" />
             Connected
           </Badge>
         );
       case 'checking':
         return (
-          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+          <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30">
             <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
             Checking
           </Badge>
@@ -200,12 +200,12 @@ const ASTRATokenDisplay = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
-            <Coins className="h-6 w-6 text-white" />
+          <div className="p-2 bg-gradient-to-r from-primary to-accent rounded-lg">
+            <Coins className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white">ASTRA Token</h2>
-            <p className="text-gray-400">Your digital property token balance</p>
+            <h2 className="text-2xl font-bold text-foreground">ASTRA Token</h2>
+            <p className="text-muted-foreground">Your digital property token balance</p>
           </div>
         </div>
         <div className="flex items-center space-x-2">
@@ -234,61 +234,61 @@ const ASTRATokenDisplay = () => {
 
       {/* Token Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-slate-800/50 border-slate-700/50">
+        <Card className="bg-card/50 border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Token Balance</CardTitle>
-            <Coins className="h-4 w-4 text-blue-400" />
+            <CardTitle className="text-sm font-medium text-foreground">Token Balance</CardTitle>
+            <Coins className="h-4 w-4 text-chart-4" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-2xl font-bold text-foreground">
               {loading ? '...' : `${formatTokenAmount(tokenInfo.balance)} ASTRA`}
             </div>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-muted-foreground">
               ≈ {formatCurrency(tokenInfo.balance * tokenInfo.tokenPrice)}
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-800/50 border-slate-700/50">
+        <Card className="bg-card/50 border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Token Price</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-400" />
+            <CardTitle className="text-sm font-medium text-foreground">Token Price</CardTitle>
+            <TrendingUp className="h-4 w-4 text-chart-1" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-2xl font-bold text-foreground">
               {formatCurrency(tokenInfo.tokenPrice)}
             </div>
-            <p className={`text-xs ${tokenInfo.priceChange24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+            <p className={`text-xs ${tokenInfo.priceChange24h >= 0 ? 'text-chart-1' : 'text-destructive'}`}>
               {tokenInfo.priceChange24h >= 0 ? '+' : ''}{tokenInfo.priceChange24h}% 24h
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-800/50 border-slate-700/50">
+        <Card className="bg-card/50 border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Transactions</CardTitle>
-            <Zap className="h-4 w-4 text-orange-400" />
+            <CardTitle className="text-sm font-medium text-foreground">Transactions</CardTitle>
+            <Zap className="h-4 w-4 text-chart-3" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-2xl font-bold text-foreground">
               {loading ? '...' : tokenInfo.transactions}
             </div>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-muted-foreground">
               Total completed
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-800/50 border-slate-700/50">
+        <Card className="bg-card/50 border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Last Activity</CardTitle>
-            <Clock className="h-4 w-4 text-purple-400" />
+            <CardTitle className="text-sm font-medium text-foreground">Last Activity</CardTitle>
+            <Clock className="h-4 w-4 text-accent" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-2xl font-bold text-foreground">
               {loading ? '...' : tokenInfo.lastTransaction}
             </div>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-muted-foreground">
               Last transaction
             </p>
           </CardContent>
@@ -296,36 +296,36 @@ const ASTRATokenDisplay = () => {
       </div>
 
       {/* Token Features */}
-      <Card className="bg-slate-800/50 border-slate-700/50">
+      <Card className="bg-card/50 border-border/50">
         <CardHeader>
-          <CardTitle className="text-white flex items-center">
+          <CardTitle className="text-foreground flex items-center">
             <Shield className="h-5 w-5 mr-2" />
             ASTRA Token Features
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-slate-700/30 rounded-lg">
-              <h4 className="font-semibold text-white mb-2">Property Transactions</h4>
-              <p className="text-sm text-gray-400">
+            <div className="p-4 bg-muted/30 rounded-lg">
+              <h4 className="font-semibold text-foreground mb-2">Property Transactions</h4>
+              <p className="text-sm text-muted-foreground">
                 Use ASTRA tokens for secure, fast property purchases and investments.
               </p>
             </div>
-            <div className="p-4 bg-slate-700/30 rounded-lg">
-              <h4 className="font-semibold text-white mb-2">Staking Rewards</h4>
-              <p className="text-sm text-gray-400">
+            <div className="p-4 bg-muted/30 rounded-lg">
+              <h4 className="font-semibold text-foreground mb-2">Staking Rewards</h4>
+              <p className="text-sm text-muted-foreground">
                 Earn passive income by staking your ASTRA tokens in property pools.
               </p>
             </div>
-            <div className="p-4 bg-slate-700/30 rounded-lg">
-              <h4 className="font-semibold text-white mb-2">Governance Rights</h4>
-              <p className="text-sm text-gray-400">
+            <div className="p-4 bg-muted/30 rounded-lg">
+              <h4 className="font-semibold text-foreground mb-2">Governance Rights</h4>
+              <p className="text-sm text-muted-foreground">
                 Vote on platform decisions and property development proposals.
               </p>
             </div>
-            <div className="p-4 bg-slate-700/30 rounded-lg">
-              <h4 className="font-semibold text-white mb-2">Low Fees</h4>
-              <p className="text-sm text-gray-400">
+            <div className="p-4 bg-muted/30 rounded-lg">
+              <h4 className="font-semibold text-foreground mb-2">Low Fees</h4>
+              <p className="text-sm text-muted-foreground">
                 Enjoy reduced transaction fees across all platform services.
               </p>
             </div>
@@ -335,13 +335,13 @@ const ASTRATokenDisplay = () => {
 
       {/* Quick Actions */}
       {tokenInfo.apiStatus === 'connected' && (
-        <Card className="bg-slate-800/50 border-slate-700/50">
+        <Card className="bg-card/50 border-border/50">
           <CardHeader>
-            <CardTitle className="text-white">Quick Actions</CardTitle>
+            <CardTitle className="text-foreground">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-3">
-              <Button className="bg-blue-600 hover:bg-blue-700">
+              <Button className="bg-primary hover:bg-primary/90">
                 <Coins className="h-4 w-4 mr-2" />
                 Buy ASTRA
               </Button>
