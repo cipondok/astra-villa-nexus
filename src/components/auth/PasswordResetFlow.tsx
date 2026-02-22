@@ -169,8 +169,8 @@ export const PasswordResetFlow = ({ onComplete, onBack }: PasswordResetFlowProps
                     className="w-full h-24 object-cover"
                   />
                   {captchaAnswer.includes(image.id.toString()) && (
-                    <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center">
-                      <CheckCircle className="h-8 w-8 text-blue-600" />
+                    <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                      <CheckCircle className="h-8 w-8 text-primary" />
                     </div>
                   )}
                 </div>

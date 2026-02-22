@@ -146,10 +146,10 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
 
   const getIconColor = (color: string) => {
     switch (color) {
-      case 'blue': return 'text-blue-600';
-      case 'purple': return 'text-purple-600';
-      case 'green': return 'text-green-600';
-      case 'amber': return 'text-amber-600';
+      case 'blue': return 'text-chart-4';
+      case 'purple': return 'text-chart-5';
+      case 'green': return 'text-chart-1';
+      case 'amber': return 'text-gold-primary';
       default: return 'text-muted-foreground';
     }
   };
@@ -158,8 +158,8 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
     <Card className={cn("border-0 bg-transparent shadow-none", className)}>
       <CardHeader className="pb-1.5 pt-0 px-0">
         <CardTitle className="flex items-center gap-1.5 text-[10px] sm:text-sm">
-          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-green-500/20 to-primary/20 flex items-center justify-center">
-            <CreditCard className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-green-600" />
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-chart-1/20 to-primary/20 flex items-center justify-center">
+            <CreditCard className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-chart-1" />
           </div>
           {t.title}
         </CardTitle>
@@ -194,20 +194,20 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
                     <div className="flex items-center gap-1 flex-wrap">
                       <h3 className="text-[9px] sm:text-xs font-semibold truncate">{methodData.title}</h3>
                       {method.recommended && (
-                        <Badge className="text-[6px] sm:text-[8px] px-0.5 py-0 bg-green-500 text-white">★</Badge>
+                        <Badge className="text-[6px] sm:text-[8px] px-0.5 py-0 bg-chart-1 text-primary-foreground">★</Badge>
                       )}
                     </div>
                     <p className="text-[8px] sm:text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{methodData.desc}</p>
                     
                     <div className="grid grid-cols-2 gap-1.5 mt-1">
                       <div>
-                        <p className="text-[7px] sm:text-[8px] font-medium text-green-600 mb-0.5">✓ Pros</p>
+                        <p className="text-[7px] sm:text-[8px] font-medium text-chart-1 mb-0.5">✓ Pros</p>
                         {methodData.pros.slice(0, 2).map((pro, i) => (
                           <p key={i} className="text-[7px] sm:text-[8px] text-muted-foreground truncate">• {pro}</p>
                         ))}
                       </div>
                       <div>
-                        <p className="text-[7px] sm:text-[8px] font-medium text-amber-600 mb-0.5">○ Cons</p>
+                        <p className="text-[7px] sm:text-[8px] font-medium text-gold-primary mb-0.5">○ Cons</p>
                         {methodData.cons.slice(0, 1).map((con, i) => (
                           <p key={i} className="text-[7px] sm:text-[8px] text-muted-foreground truncate">• {con}</p>
                         ))}
@@ -231,8 +231,8 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
             <h4 className="text-[9px] sm:text-xs font-semibold text-primary">{t.dpPayment}</h4>
             <p className="text-[8px] sm:text-[9px] text-muted-foreground mt-0.5 line-clamp-2">{t.dpDesc}</p>
           </div>
-          <div className="p-1.5 sm:p-2 bg-blue-500/10 border border-blue-500/20 rounded-md">
-            <h4 className="text-[9px] sm:text-xs font-semibold text-blue-600">{t.monthlyPayment}</h4>
+          <div className="p-1.5 sm:p-2 bg-chart-4/10 border border-chart-4/20 rounded-md">
+            <h4 className="text-[9px] sm:text-xs font-semibold text-chart-4">{t.monthlyPayment}</h4>
             <p className="text-[8px] sm:text-[9px] text-muted-foreground mt-0.5 line-clamp-2">{t.monthlyDesc}</p>
           </div>
         </div>
