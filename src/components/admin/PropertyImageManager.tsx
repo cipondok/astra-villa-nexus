@@ -241,9 +241,9 @@ const PropertyImageManager = () => {
   const HealthIcon = ({ result }: { result?: ImageHealthResult }) => {
     if (!result) return null;
     switch (result.status) {
-      case 'ok': return <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />;
+      case 'ok': return <CheckCircle2 className="h-3.5 w-3.5 text-chart-1" />;
       case 'broken': return <XCircle className="h-3.5 w-3.5 text-destructive" />;
-      case 'slow': return <Clock className="h-3.5 w-3.5 text-yellow-500" />;
+      case 'slow': return <Clock className="h-3.5 w-3.5 text-chart-3" />;
       case 'loading': return <Loader2 className="h-3.5 w-3.5 text-primary animate-spin" />;
       default: return null;
     }
@@ -580,9 +580,9 @@ const PropertyImageManager = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] text-muted-foreground">With Images</p>
-                <p className="text-lg font-bold text-green-600">{stats.withImages}</p>
+                <p className="text-lg font-bold text-chart-1">{stats.withImages}</p>
               </div>
-              <CheckCircle className={`h-5 w-5 ${filter === "with-images" ? "text-green-500" : "text-muted-foreground"}`} />
+              <CheckCircle className={`h-5 w-5 ${filter === "with-images" ? "text-chart-1" : "text-muted-foreground"}`} />
             </div>
           </CardContent>
         </Card>
@@ -602,9 +602,9 @@ const PropertyImageManager = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] text-muted-foreground">Broken</p>
-                <p className="text-lg font-bold text-yellow-600">{brokenCount}</p>
+                <p className="text-lg font-bold text-chart-3">{brokenCount}</p>
               </div>
-              <ShieldAlert className={`h-5 w-5 ${filter === "broken" ? "text-yellow-500" : "text-muted-foreground"}`} />
+              <ShieldAlert className={`h-5 w-5 ${filter === "broken" ? "text-chart-3" : "text-muted-foreground"}`} />
             </div>
           </CardContent>
         </Card>
@@ -644,13 +644,13 @@ const PropertyImageManager = () => {
             <div className="space-y-1.5">
               <Progress value={(checkedCount / Math.max(allImageUrls.length, 1)) * 100} className="h-1.5" />
               <div className="flex items-center gap-3 text-[10px]">
-                <span className="flex items-center gap-1 text-green-600">
+                <span className="flex items-center gap-1 text-chart-1">
                   <CheckCircle2 className="h-3 w-3" /> {okCount} OK
                 </span>
                 <span className="flex items-center gap-1 text-destructive">
                   <XCircle className="h-3 w-3" /> {brokenCount} Broken
                 </span>
-                <span className="flex items-center gap-1 text-yellow-600">
+                <span className="flex items-center gap-1 text-chart-3">
                   <Clock className="h-3 w-3" /> {slowCount} Slow
                 </span>
                 <span className="text-muted-foreground ml-auto">
@@ -795,7 +795,7 @@ const PropertyImageManager = () => {
                       {/* Format badge */}
                       {firstImg && (
                         <div className="absolute bottom-1 left-1">
-                          <Badge variant="secondary" className="text-[7px] px-1 py-0 h-3.5 bg-black/60 text-white border-0">
+                          <Badge variant="secondary" className="text-[7px] px-1 py-0 h-3.5 bg-background/80 text-foreground border-0">
                             {getImageFormat(firstImg)}
                           </Badge>
                         </div>
@@ -984,7 +984,7 @@ const PropertyImageManager = () => {
                             {selectedProperty.thumbnail_url === img && (
                               <Badge className="text-[8px] bg-primary h-4">Thumbnail</Badge>
                             )}
-                            <Badge variant="secondary" className="text-[7px] px-1 py-0 h-3.5 bg-black/60 text-white border-0">
+                            <Badge variant="secondary" className="text-[7px] px-1 py-0 h-3.5 bg-background/80 text-foreground border-0">
                               {format}
                             </Badge>
                             {health && (
@@ -1039,7 +1039,7 @@ const PropertyImageManager = () => {
                           )}
 
                           {/* Hover actions */}
-                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-1.5">
+                          <div className="absolute inset-0 bg-background/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-1.5">
                             {!isBroken && (
                               <Button size="sm" variant="secondary" className="h-7 w-7 p-0" onClick={() => setViewImage(img)}>
                                 <Eye className="h-3 w-3" />
@@ -1069,12 +1069,12 @@ const PropertyImageManager = () => {
 
                         {/* AI Result panel below image */}
                         {ai && (
-                          <div className={`px-2 py-1.5 text-[9px] border-t ${ai.relevant ? 'bg-green-50 dark:bg-green-950/20' : 'bg-yellow-50 dark:bg-yellow-950/20'}`}>
+                          <div className={`px-2 py-1.5 text-[9px] border-t ${ai.relevant ? 'bg-chart-1/10' : 'bg-chart-3/10'}`}>
                             <div className="flex items-center gap-1 mb-0.5">
                               {ai.relevant ? (
-                                <CheckCircle2 className="h-3 w-3 text-green-600 shrink-0" />
+                                <CheckCircle2 className="h-3 w-3 text-chart-1 shrink-0" />
                               ) : (
-                                <AlertTriangle className="h-3 w-3 text-yellow-600 shrink-0" />
+                                <AlertTriangle className="h-3 w-3 text-chart-3 shrink-0" />
                               )}
                               <span className="font-medium truncate">
                                 {ai.relevant ? 'Relevant' : 'May not match'} • {ai.imageType}

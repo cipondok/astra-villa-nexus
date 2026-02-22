@@ -18,7 +18,7 @@ const MaintenancePage: React.FC<MaintenancePageProps> = ({ message }) => {
               <Construction className="w-12 h-12 text-chart-3" />
             </div>
             <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-chart-3 flex items-center justify-center">
-              <Clock className="w-3.5 h-3.5 text-white" />
+              <Clock className="w-3.5 h-3.5 text-chart-3-foreground" />
             </div>
           </div>
         </div>

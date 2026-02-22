@@ -76,7 +76,7 @@ const About = () => {
   const currentText = text[language];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       <SEOHead
         title="Tentang Astra Villa"
         description="ASTRA Villa Realty adalah platform properti premium Indonesia. Kenali misi, visi, dan tim profesional kami yang berdedikasi."
@@ -95,10 +95,10 @@ const About = () => {
         <div className="max-w-7xl mx-auto py-12">
           {/* Header */}
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-4xl font-bold text-foreground mb-4">
               {currentText.title}
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               {currentText.subtitle}
             </p>
           </div>
@@ -108,12 +108,12 @@ const About = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Building className="h-6 w-6 text-blue-600" />
+                  <Building className="h-6 w-6 text-primary" />
                   {currentText.mission}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-muted-foreground">
                   {currentText.missionText}
                 </p>
               </CardContent>
@@ -122,12 +122,12 @@ const About = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Globe className="h-6 w-6 text-blue-600" />
+                  <Globe className="h-6 w-6 text-primary" />
                   {currentText.vision}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-muted-foreground">
                   {currentText.visionText}
                 </p>
               </CardContent>
@@ -136,17 +136,17 @@ const About = () => {
 
           {/* Statistics */}
           <div className="mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
               {currentText.stats}
             </h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               {currentText.statsItems.map((stat, index) => (
                 <Card key={index} className="text-center">
                   <CardContent className="pt-6">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">
+                    <div className="text-3xl font-bold text-primary mb-2">
                       {stat.number}
                     </div>
-                    <p className="text-gray-600 dark:text-gray-300">
+                    <p className="text-muted-foreground">
                       {stat.label}
                     </p>
                   </CardContent>
@@ -157,7 +157,7 @@ const About = () => {
 
           {/* Values */}
           <div className="mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
               {currentText.values}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -166,13 +166,13 @@ const About = () => {
                 return (
                   <Card key={index} className="text-center">
                     <CardHeader>
-                      <div className="mx-auto w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mb-4">
-                        <IconComponent className="h-6 w-6 text-blue-600" />
+                      <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                        <IconComponent className="h-6 w-6 text-primary" />
                       </div>
                       <CardTitle className="text-lg">{value.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                      <p className="text-sm text-muted-foreground">
                         {value.description}
                       </p>
                     </CardContent>
@@ -186,12 +186,12 @@ const About = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-center justify-center">
-                <Users className="h-6 w-6 text-blue-600" />
+                <Users className="h-6 w-6 text-primary" />
                 {currentText.team}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              <p className="text-muted-foreground max-w-3xl mx-auto">
                 {currentText.teamText}
               </p>
             </CardContent>

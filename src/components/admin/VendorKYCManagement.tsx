@@ -107,15 +107,15 @@ const VendorKYCManagement = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'verified':
-        return <Badge className="bg-green-100 text-green-800">Verified</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1">Verified</Badge>;
       case 'rejected':
         return <Badge variant="destructive">Rejected</Badge>;
       case 'pending_review':
         return <Badge variant="secondary">Pending Review</Badge>;
       case 'under_verification':
-        return <Badge className="bg-blue-100 text-blue-800">Under Review</Badge>;
+        return <Badge className="bg-chart-4/10 text-chart-4">Under Review</Badge>;
       case 'documents_submitted':
-        return <Badge className="bg-yellow-100 text-yellow-800">Documents Submitted</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3">Documents Submitted</Badge>;
       case 'suspended':
         return <Badge variant="destructive">Suspended</Badge>;
       default:
@@ -126,9 +126,9 @@ const VendorKYCManagement = () => {
   const getAccessBadge = (access: string) => {
     switch (access) {
       case 'full':
-        return <Badge className="bg-emerald-100 text-emerald-800">Full Access</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1">Full Access</Badge>;
       case 'limited':
-        return <Badge className="bg-orange-100 text-orange-800">Limited Access</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3">Limited Access</Badge>;
       case 'restricted':
         return <Badge variant="destructive">Restricted</Badge>;
       default:
@@ -151,14 +151,14 @@ const VendorKYCManagement = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 rounded-lg border border-emerald-200/50 dark:border-emerald-800/50">
-        <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-          <Shield className="h-4 w-4 text-white" />
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-chart-1/10 via-primary/10 to-chart-4/10 rounded-lg border border-border/40">
+        <div className="w-8 h-8 bg-gradient-to-br from-chart-1 to-primary rounded-lg flex items-center justify-center">
+          <Shield className="h-4 w-4 text-primary-foreground" />
         </div>
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold">Vendor KYC Management</h2>
-            <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[9px] px-1.5 py-0 h-4">Verification</Badge>
+            <Badge className="bg-chart-1/20 text-chart-1 text-[9px] px-1.5 py-0 h-4">Verification</Badge>
           </div>
           <p className="text-[10px] text-muted-foreground">Manage vendor verification status and access levels</p>
         </div>
@@ -166,11 +166,11 @@ const VendorKYCManagement = () => {
 
       {/* KYC Statistics */}
       <div className="grid grid-cols-5 gap-2">
-        <Card className="border-blue-200/50 dark:border-blue-800/30">
+        <Card className="border-chart-4/30">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
-                <UserCheck className="h-3 w-3 text-blue-600" />
+              <div className="w-6 h-6 bg-chart-4/20 rounded flex items-center justify-center">
+                <UserCheck className="h-3 w-3 text-chart-4" />
               </div>
               <div>
                 <div className="text-sm font-bold">{stats.total}</div>
@@ -180,56 +180,56 @@ const VendorKYCManagement = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-green-200/50 dark:border-green-800/30">
+        <Card className="border-chart-1/30">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
-                <Shield className="h-3 w-3 text-green-600" />
+              <div className="w-6 h-6 bg-chart-1/20 rounded flex items-center justify-center">
+                <Shield className="h-3 w-3 text-chart-1" />
               </div>
               <div>
-                <div className="text-sm font-bold text-green-600">{stats.verified}</div>
+                <div className="text-sm font-bold text-chart-1">{stats.verified}</div>
                 <div className="text-[9px] text-muted-foreground">Verified</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-orange-200/50 dark:border-orange-800/30">
+        <Card className="border-chart-3/30">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-orange-500/20 rounded flex items-center justify-center">
-                <AlertTriangle className="h-3 w-3 text-orange-600" />
+              <div className="w-6 h-6 bg-chart-3/20 rounded flex items-center justify-center">
+                <AlertTriangle className="h-3 w-3 text-chart-3" />
               </div>
               <div>
-                <div className="text-sm font-bold text-orange-600">{stats.pending}</div>
+                <div className="text-sm font-bold text-chart-3">{stats.pending}</div>
                 <div className="text-[9px] text-muted-foreground">Pending</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-red-200/50 dark:border-red-800/30">
+        <Card className="border-destructive/30">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-red-500/20 rounded flex items-center justify-center">
-                <AlertTriangle className="h-3 w-3 text-red-600" />
+              <div className="w-6 h-6 bg-destructive/20 rounded flex items-center justify-center">
+                <AlertTriangle className="h-3 w-3 text-destructive" />
               </div>
               <div>
-                <div className="text-sm font-bold text-red-600">{stats.rejected}</div>
+                <div className="text-sm font-bold text-destructive">{stats.rejected}</div>
                 <div className="text-[9px] text-muted-foreground">Rejected</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-indigo-200/50 dark:border-indigo-800/30">
+        <Card className="border-chart-5/30">
           <CardContent className="p-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-indigo-500/20 rounded flex items-center justify-center">
-                <FileCheck className="h-3 w-3 text-indigo-600" />
+              <div className="w-6 h-6 bg-chart-5/20 rounded flex items-center justify-center">
+                <FileCheck className="h-3 w-3 text-chart-5" />
               </div>
               <div>
-                <div className="text-sm font-bold text-indigo-600">{stats.fullAccess}</div>
+                <div className="text-sm font-bold text-chart-5">{stats.fullAccess}</div>
                 <div className="text-[9px] text-muted-foreground">Full Access</div>
               </div>
             </div>
@@ -238,11 +238,11 @@ const VendorKYCManagement = () => {
       </div>
 
       {/* KYC Status Table */}
-      <Card className="border-emerald-200/50 dark:border-emerald-800/30">
+      <Card className="border-border/40">
         <CardHeader className="p-3 pb-2">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-emerald-500/20 rounded flex items-center justify-center">
-              <Shield className="h-3 w-3 text-emerald-600" />
+            <div className="w-6 h-6 bg-chart-1/20 rounded flex items-center justify-center">
+              <Shield className="h-3 w-3 text-chart-1" />
             </div>
             <div>
               <CardTitle className="text-xs">Vendor KYC Status</CardTitle>
