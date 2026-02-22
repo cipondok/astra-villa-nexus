@@ -55,11 +55,11 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
       description: t.wniDesc,
       features: t.wniFeatures,
       flag: '🇮🇩',
-      gradient: 'from-red-500 via-red-600 to-orange-500',
-      accentColor: 'text-red-400',
-      bgColor: 'bg-gradient-to-br from-red-500/30 to-orange-500/20',
-      borderColor: 'border-red-400/30',
-      hoverBorder: 'hover:border-red-400/60'
+      gradient: 'from-destructive via-destructive/80 to-chart-3',
+      accentColor: 'text-destructive',
+      bgColor: 'bg-gradient-to-br from-destructive/30 to-chart-3/20',
+      borderColor: 'border-destructive/30',
+      hoverBorder: 'hover:border-destructive/60'
     },
     {
       id: 'wna',
@@ -69,11 +69,11 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
       description: t.wnaDesc,
       features: t.wnaFeatures,
       flag: '🌍',
-      gradient: 'from-blue-500 via-blue-600 to-indigo-500',
-      accentColor: 'text-blue-400',
-      bgColor: 'bg-gradient-to-br from-blue-500/30 to-indigo-500/20',
-      borderColor: 'border-blue-400/30',
-      hoverBorder: 'hover:border-blue-400/60'
+      gradient: 'from-chart-4 via-chart-4/80 to-accent',
+      accentColor: 'text-chart-4',
+      bgColor: 'bg-gradient-to-br from-chart-4/30 to-accent/20',
+      borderColor: 'border-chart-4/30',
+      hoverBorder: 'hover:border-chart-4/60'
     }
   ];
 
@@ -104,7 +104,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary via-primary/80 to-accent shadow-lg">
                 <Building2 className="h-4 w-4 text-white" />
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center">
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-gradient-to-r from-chart-1 to-chart-1/80 flex items-center justify-center">
                 <Bot className="h-2 w-2 text-white" />
               </div>
             </div>
@@ -275,14 +275,14 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
               <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-primary via-primary/80 to-accent shadow-xl">
                 <Building2 className="h-5 w-5 md:h-6 md:w-6 text-white" />
               </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center shadow-md">
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-chart-1 to-chart-1/80 flex items-center justify-center shadow-md">
                 <Bot className="h-2.5 w-2.5 text-white" />
               </div>
             </div>
             <div className="text-left">
               <h2 className="text-sm md:text-base font-bold text-white flex items-center gap-1.5">
                 {t.headline}
-                <TrendingUp className="h-3.5 w-3.5 text-green-400" />
+                <TrendingUp className="h-3.5 w-3.5 text-chart-1" />
               </h2>
               <p className="text-[9px] md:text-[10px] text-white/70">
                 {t.subtitle}
@@ -312,7 +312,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                   "hover:border-white/30 hover:from-white/15 hover:via-white/10",
                   "p-3 sm:p-4 active:scale-[0.98]",
                   "before:absolute before:inset-0 before:rounded-xl before:bg-gradient-to-tr before:from-primary/10 before:via-transparent before:to-accent/10 before:opacity-60",
-                  "after:absolute after:inset-0 after:rounded-xl after:bg-gradient-to-bl after:from-rose-500/5 after:via-transparent after:to-cyan-500/8 after:opacity-50"
+                  "after:absolute after:inset-0 after:rounded-xl after:bg-gradient-to-bl after:from-destructive/5 after:via-transparent after:to-chart-4/8 after:opacity-50"
                 )}
               >
                 
@@ -329,7 +329,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
                       <span className="text-lg">{item.flag}</span>
-                      <Shield className="h-3.5 w-3.5 text-green-500" />
+                      <Shield className="h-3.5 w-3.5 text-chart-1" />
                     </div>
                     <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-gold-primary transition-colors">
                       {item.title}

@@ -76,19 +76,19 @@ const getVerificationInfo = (property: FallbackProperty) => {
   
   // VIP Tiers - Check for specific levels first
   if (level.includes('platinum') || level.includes('diamond')) {
-    return { icon: Gem, label: 'Platinum VIP', color: 'text-cyan-400', bg: 'bg-gradient-to-r from-cyan-500/30 to-blue-500/30', glow: 'shadow-[0_0_8px_rgba(34,211,238,0.5)]' };
+    return { icon: Gem, label: 'Platinum VIP', color: 'text-chart-4', bg: 'bg-gradient-to-r from-chart-4/30 to-chart-4/20', glow: 'shadow-[0_0_8px_hsl(var(--chart-4)/0.5)]' };
   }
   if (level.includes('gold')) {
-    return { icon: Crown, label: 'Gold VIP', color: 'text-amber-400', bg: 'bg-gradient-to-r from-amber-500/30 to-yellow-500/30', glow: 'shadow-[0_0_8px_rgba(251,191,36,0.5)]' };
+    return { icon: Crown, label: 'Gold VIP', color: 'text-gold-primary', bg: 'bg-gradient-to-r from-gold-primary/30 to-chart-3/30', glow: 'shadow-[0_0_8px_hsl(var(--gold-primary)/0.5)]' };
   }
   if (level.includes('silver')) {
-    return { icon: Award, label: 'Silver VIP', color: 'text-slate-300', bg: 'bg-gradient-to-r from-slate-400/30 to-gray-500/30', glow: 'shadow-[0_0_8px_rgba(148,163,184,0.4)]' };
+    return { icon: Award, label: 'Silver VIP', color: 'text-muted-foreground', bg: 'bg-gradient-to-r from-muted-foreground/30 to-muted/30', glow: 'shadow-[0_0_8px_hsl(var(--muted-foreground)/0.4)]' };
   }
   if (level.includes('bronze')) {
-    return { icon: Medal, label: 'Bronze VIP', color: 'text-orange-400', bg: 'bg-gradient-to-r from-orange-600/30 to-amber-700/30', glow: 'shadow-[0_0_6px_rgba(251,146,60,0.4)]' };
+    return { icon: Medal, label: 'Bronze VIP', color: 'text-chart-5', bg: 'bg-gradient-to-r from-chart-5/30 to-chart-3/30', glow: 'shadow-[0_0_6px_hsl(var(--chart-5)/0.4)]' };
   }
   if (level.includes('vip') || level.includes('premium')) {
-    return { icon: Crown, label: 'VIP Member', color: 'text-amber-500', bg: 'bg-amber-500/20', glow: '' };
+    return { icon: Crown, label: 'VIP Member', color: 'text-gold-primary', bg: 'bg-gold-primary/20', glow: '' };
   }
   
   // Verification statuses
@@ -213,7 +213,7 @@ export default function FeaturedAdsCarousel() {
     <div className="relative rounded-xl md:rounded-2xl p-2 md:p-3 overflow-hidden group">
       {/* Compact Header */}
       <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
-        <Star className="h-3 w-3 md:h-4 md:w-4 text-amber-500 dark:text-amber-400" />
+        <Star className="h-3 w-3 md:h-4 md:w-4 text-gold-primary" />
         <h2 className="text-[10px] md:text-xs font-semibold text-foreground">Featured Properties</h2>
       </div>
 
@@ -222,17 +222,17 @@ export default function FeaturedAdsCarousel() {
         variant="outline"
         size="icon"
         onClick={() => scroll('left')}
-        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 md:h-10 md:w-10 rounded-full bg-white/90 dark:bg-black/80 border-amber-200/50 dark:border-amber-800/30 hover:bg-amber-50 dark:hover:bg-amber-900/30 shadow-lg transition-all opacity-0 group-hover:opacity-100"
+        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 md:h-10 md:w-10 rounded-full bg-card/90 border-gold-primary/30 hover:bg-gold-primary/10 shadow-lg transition-all opacity-0 group-hover:opacity-100"
       >
-        <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400" />
+        <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-gold-primary" />
       </Button>
       <Button
         variant="outline"
         size="icon"
         onClick={() => scroll('right')}
-        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 md:h-10 md:w-10 rounded-full bg-white/90 dark:bg-black/80 border-amber-200/50 dark:border-amber-800/30 hover:bg-amber-50 dark:hover:bg-amber-900/30 shadow-lg transition-all opacity-0 group-hover:opacity-100"
+        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 md:h-10 md:w-10 rounded-full bg-card/90 border-gold-primary/30 hover:bg-gold-primary/10 shadow-lg transition-all opacity-0 group-hover:opacity-100"
       >
-        <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400" />
+        <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-gold-primary" />
       </Button>
 
       {/* Carousel - Image cards matching sale/rent style */}

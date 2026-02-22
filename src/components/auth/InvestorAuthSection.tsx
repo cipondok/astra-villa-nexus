@@ -114,7 +114,7 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
   // If already authenticated, show professional welcome with application CTA
   if (isAuthenticated) {
     return (
-      <div className={`bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-sm rounded-lg overflow-hidden ${className}`}>
+      <div className={`bg-card/80 backdrop-blur-xl border border-border/30 shadow-sm rounded-lg overflow-hidden ${className}`}>
         <div className="p-2.5 sm:p-3">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
@@ -200,7 +200,7 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className={`bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-sm rounded-lg overflow-hidden ${className}`}
+        className={`bg-card/80 backdrop-blur-xl border border-border/30 shadow-sm rounded-lg overflow-hidden ${className}`}
       >
         <div className="p-2.5 sm:p-3">
           {/* Compact Layout */}
