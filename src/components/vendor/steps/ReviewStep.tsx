@@ -36,7 +36,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData }) => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <CheckCircle className="h-5 w-5 text-green-500" />
+            <CheckCircle className="h-5 w-5 text-chart-1" />
             Service Overview
           </CardTitle>
         </CardHeader>
@@ -67,7 +67,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData }) => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-blue-500" />
+            <MapPin className="h-5 w-5 text-chart-4" />
             Service Location
           </CardTitle>
         </CardHeader>
@@ -104,7 +104,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData }) => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Camera className="h-5 w-5 text-purple-500" />
+              <Camera className="h-5 w-5 text-accent-foreground" />
               Service Images ({formData.serviceImages.length})
             </CardTitle>
           </CardHeader>
@@ -135,7 +135,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData }) => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5 text-green-500" />
+            <DollarSign className="h-5 w-5 text-chart-1" />
             Pricing Details
           </CardTitle>
         </CardHeader>
@@ -153,7 +153,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="font-medium">Total Price</Label>
-                <p className="text-lg font-semibold text-green-600 mt-1">
+                <p className="text-lg font-semibold text-chart-1 mt-1">
                   {formatIDR(formData.basePrice)}
                 </p>
               </div>
@@ -170,7 +170,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="font-medium">Hourly Rate</Label>
-                <p className="text-lg font-semibold text-green-600 mt-1">
+                <p className="text-lg font-semibold text-chart-1 mt-1">
                   {formatIDR(formData.basePrice)}/hour
                 </p>
               </div>
@@ -194,7 +194,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData }) => {
                       <p className="text-xs text-muted-foreground">{pkg.description}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-green-600">{formatIDR(pkg.price)}</p>
+                      <p className="font-semibold text-chart-1">{formatIDR(pkg.price)}</p>
                       <p className="text-xs text-muted-foreground">{pkg.duration} hours</p>
                     </div>
                   </div>
@@ -238,13 +238,13 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData }) => {
       </Card>
 
       {/* Submission Notice */}
-      <Card className="bg-amber-50 border-amber-200">
+      <Card className="bg-chart-3/10 border-chart-3/30">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
+            <AlertCircle className="h-5 w-5 text-chart-3 mt-0.5" />
             <div>
-              <h4 className="font-medium text-amber-900 mb-1">Service Review Process</h4>
-              <p className="text-sm text-amber-800">
+              <h4 className="font-medium text-foreground mb-1">Service Review Process</h4>
+              <p className="text-sm text-muted-foreground">
                 Your service will be reviewed by our team before going live. This usually takes 1-2 business days. 
                 You'll receive an email notification once your service is approved and visible to customers.
               </p>
@@ -254,13 +254,13 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData }) => {
       </Card>
 
       {/* Final Check */}
-      <Card className="bg-green-50 border-green-200">
+      <Card className="bg-chart-1/10 border-chart-1/30">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+            <CheckCircle className="h-5 w-5 text-chart-1 mt-0.5" />
             <div>
-              <h4 className="font-medium text-green-900 mb-1">Ready to Submit</h4>
-              <p className="text-sm text-green-800">
+              <h4 className="font-medium text-foreground mb-1">Ready to Submit</h4>
+              <p className="text-sm text-muted-foreground">
                 Please review all information above. Once submitted, you can edit your service from your dashboard 
                 at any time. Click "Create Service" to submit your service for review.
               </p>
