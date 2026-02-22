@@ -82,9 +82,9 @@ const VendorServiceMatrix = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-100 text-green-800">Aktif</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1">Aktif</Badge>;
       case 'pending':
-        return <Badge className="bg-yellow-100 text-yellow-800">Menunggu</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3">Menunggu</Badge>;
       default:
         return <Badge variant="secondary">Tidak Aktif</Badge>;
     }
@@ -98,9 +98,9 @@ const VendorServiceMatrix = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {isCommercial ? (
-              <Building2 className="h-5 w-5 text-orange-600" />
+              <Building2 className="h-5 w-5 text-chart-3" />
             ) : (
-              <Home className="h-5 w-5 text-green-600" />
+              <Home className="h-5 w-5 text-chart-1" />
             )}
             <h3 className="text-lg font-semibold">
               Layanan {isCommercial ? 'Komersial' : 'Perumahan'}
@@ -135,7 +135,7 @@ const VendorServiceMatrix = () => {
                   </td>
                   <td className="p-3">
                     <div className="flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-green-600" />
+                      <DollarSign className="h-4 w-4 text-chart-1" />
                       <span className="font-semibold">
                         {formatCurrency(
                           isCommercial ? service.commercial_price : service.residential_price
@@ -150,7 +150,7 @@ const VendorServiceMatrix = () => {
                   </td>
                   <td className="p-3">
                     <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-blue-600" />
+                      <Clock className="h-4 w-4 text-chart-4" />
                       <span className="text-sm">
                         {isCommercial 
                           ? service.approval_time_commercial 
@@ -166,7 +166,7 @@ const VendorServiceMatrix = () => {
                         : service.requirements_residential
                       ).map((req, index) => (
                         <div key={index} className="flex items-center gap-1">
-                          <CheckCircle className="h-3 w-3 text-green-600" />
+                          <CheckCircle className="h-3 w-3 text-chart-1" />
                           <span className="text-xs">{req}</span>
                         </div>
                       ))}
@@ -268,15 +268,15 @@ const VendorServiceMatrix = () => {
         <div className="mt-6 p-4 bg-muted/30 rounded-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-600" />
+              <CheckCircle className="h-4 w-4 text-chart-1" />
               <span>Total Layanan: {services.length}</span>
             </div>
             <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-yellow-600" />
+              <AlertTriangle className="h-4 w-4 text-chart-3" />
               <span>Menunggu Persetujuan: {services.filter(s => s.status === 'pending').length}</span>
             </div>
             <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-green-600" />
+              <DollarSign className="h-4 w-4 text-chart-1" />
               <span>Rata-rata Tarif: {formatCurrency(125000)}</span>
             </div>
           </div>

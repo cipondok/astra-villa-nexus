@@ -111,7 +111,7 @@ const AgentAnalyticsDashboard: React.FC<AgentAnalyticsDashboardProps> = ({ class
         >
           <p className="text-[10px] text-muted-foreground">Total Leads</p>
           <p className="text-xl font-bold text-foreground">{analytics.leads?.totalLeads.toLocaleString()}</p>
-          <p className="text-[10px] text-green-500">+{analytics.leads?.newLeads} this week</p>
+          <p className="text-[10px] text-chart-1">+{analytics.leads?.newLeads} this week</p>
         </motion.div>
 
         <motion.div
@@ -140,10 +140,10 @@ const AgentAnalyticsDashboard: React.FC<AgentAnalyticsDashboardProps> = ({ class
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="bg-gradient-to-br from-green-500/20 to-green-500/5 border border-green-500/30 rounded-xl p-3"
+          className="bg-gradient-to-br from-chart-1/20 to-chart-1/5 border border-chart-1/30 rounded-xl p-3"
         >
           <p className="text-[10px] text-muted-foreground">ROI</p>
-          <p className="text-xl font-bold text-green-500">{analytics.roi?.roi.toFixed(1)}%</p>
+          <p className="text-xl font-bold text-chart-1">{analytics.roi?.roi.toFixed(1)}%</p>
           <p className="text-[10px] text-muted-foreground">Rp {((analytics.roi?.netProfit || 0) / 1_000_000_000).toFixed(1)}B profit</p>
         </motion.div>
       </div>

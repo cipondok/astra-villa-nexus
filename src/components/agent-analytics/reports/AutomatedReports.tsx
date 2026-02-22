@@ -83,9 +83,9 @@ const AutomatedReports: React.FC<{ className?: string }> = ({ className }) => {
   };
 
   const frequencyColors = {
-    daily: 'bg-green-500/10 text-green-600 border-green-500/30',
-    weekly: 'bg-blue-500/10 text-blue-600 border-blue-500/30',
-    monthly: 'bg-purple-500/10 text-purple-600 border-purple-500/30',
+    daily: 'bg-chart-1/10 text-chart-1 border-chart-1/30',
+    weekly: 'bg-chart-4/10 text-chart-4 border-chart-4/30',
+    monthly: 'bg-accent/10 text-accent-foreground border-accent/30',
   };
 
   return (

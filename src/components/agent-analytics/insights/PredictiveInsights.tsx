@@ -17,27 +17,27 @@ interface PredictiveInsightsProps {
 const insightConfig = {
   price: {
     icon: DollarSign,
-    color: 'text-green-500',
-    bg: 'bg-green-500/10',
-    border: 'border-green-500/30',
+    color: 'text-chart-1',
+    bg: 'bg-chart-1/10',
+    border: 'border-chart-1/30',
   },
   timing: {
     icon: Clock,
-    color: 'text-blue-500',
-    bg: 'bg-blue-500/10',
-    border: 'border-blue-500/30',
+    color: 'text-chart-4',
+    bg: 'bg-chart-4/10',
+    border: 'border-chart-4/30',
   },
   demographic: {
     icon: Users,
-    color: 'text-purple-500',
-    bg: 'bg-purple-500/10',
-    border: 'border-purple-500/30',
+    color: 'text-accent-foreground',
+    bg: 'bg-accent/10',
+    border: 'border-accent/30',
   },
   competitor: {
     icon: AlertTriangle,
-    color: 'text-orange-500',
-    bg: 'bg-orange-500/10',
-    border: 'border-orange-500/30',
+    color: 'text-chart-3',
+    bg: 'bg-chart-3/10',
+    border: 'border-chart-3/30',
   },
 };
 
@@ -95,9 +95,9 @@ const PredictiveInsights: React.FC<PredictiveInsightsProps> = ({ insights, class
                       <Target className="h-3 w-3 text-muted-foreground" />
                       <span className={cn(
                         "text-[10px] font-medium",
-                        insight.confidence >= 90 ? "text-green-500" :
+                        insight.confidence >= 90 ? "text-chart-1" :
                         insight.confidence >= 75 ? "text-primary" :
-                        "text-orange-500"
+                        "text-chart-3"
                       )}>
                         {insight.confidence}% confidence
                       </span>
@@ -114,10 +114,10 @@ const PredictiveInsights: React.FC<PredictiveInsightsProps> = ({ insights, class
                           Rp {(insight.data.currentPrice / 1_000_000_000).toFixed(2)}B
                         </p>
                       </div>
-                      <ArrowRight className="h-4 w-4 text-green-500" />
+                      <ArrowRight className="h-4 w-4 text-chart-1" />
                       <div className="text-center">
                         <p className="text-[10px] text-muted-foreground">Suggested</p>
-                        <p className="text-xs font-semibold text-green-500">
+                        <p className="text-xs font-semibold text-chart-1">
                           Rp {(insight.data.suggestedPrice / 1_000_000_000).toFixed(2)}B
                         </p>
                       </div>
@@ -126,7 +126,7 @@ const PredictiveInsights: React.FC<PredictiveInsightsProps> = ({ insights, class
 
                   {insight.type === 'timing' && insight.data && (
                     <div className="flex items-center gap-3 p-2 bg-muted/30 rounded-lg mb-3">
-                      <Calendar className="h-4 w-4 text-blue-500" />
+                      <Calendar className="h-4 w-4 text-chart-4" />
                       <span className="text-xs font-medium text-foreground">
                         {insight.data.bestDay}, {insight.data.bestTime}
                       </span>
@@ -135,7 +135,7 @@ const PredictiveInsights: React.FC<PredictiveInsightsProps> = ({ insights, class
 
                   {insight.type === 'demographic' && insight.data && (
                     <div className="flex items-center gap-3 p-2 bg-muted/30 rounded-lg mb-3">
-                      <Users className="h-4 w-4 text-purple-500" />
+                      <Users className="h-4 w-4 text-accent-foreground" />
                       <div>
                         <p className="text-xs font-medium text-foreground">{insight.data.segment}</p>
                         <p className="text-[10px] text-muted-foreground">{insight.data.preference}</p>
@@ -145,7 +145,7 @@ const PredictiveInsights: React.FC<PredictiveInsightsProps> = ({ insights, class
 
                   {insight.type === 'competitor' && insight.data && (
                     <div className="flex items-center gap-3 p-2 bg-muted/30 rounded-lg mb-3">
-                      <Eye className="h-4 w-4 text-orange-500" />
+                      <Eye className="h-4 w-4 text-chart-3" />
                       <div>
                         <p className="text-xs font-medium text-foreground">
                           {insight.data.newListings} new listings
