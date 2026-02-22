@@ -10,9 +10,9 @@ import { CreateOrderDialog } from './CreateOrderDialog';
 import type { OrderType } from './types';
 
 const orderTypeIcons: Record<OrderType, React.ReactNode> = {
-  property_investment: <Building2 className="h-4 w-4 text-blue-500" />,
-  consultation_request: <Users className="h-4 w-4 text-green-500" />,
-  service_booking: <Wrench className="h-4 w-4 text-amber-500" />,
+  property_investment: <Building2 className="h-4 w-4 text-chart-4" />,
+  consultation_request: <Users className="h-4 w-4 text-chart-1" />,
+  service_booking: <Wrench className="h-4 w-4 text-chart-3" />,
 };
 
 const orderTypeLabels: Record<OrderType, string> = {

@@ -175,7 +175,7 @@ const PartnerDashboard = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-blue-500/5 rounded-xl border border-border/30 px-4 py-3">
+      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-chart-4/5 rounded-xl border border-border/30 px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10">
             <Building2 className="h-5 w-5 text-primary" />
@@ -222,7 +222,7 @@ const PartnerDashboard = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Wallet className="h-4 w-4 text-amber-500" />
+              <Wallet className="h-4 w-4 text-chart-3" />
               <span className="text-xs text-muted-foreground">Pending Payout</span>
             </div>
             <p className="text-lg font-bold mt-1">{formatIDR(partner.pending_payout || 0)}</p>
@@ -257,7 +257,7 @@ const PartnerDashboard = () => {
             )}
             {partner.referral_fee > 0 && (
               <div className="flex items-center gap-2">
-                <Wallet className="h-4 w-4 text-amber-500" />
+                <Wallet className="h-4 w-4 text-chart-3" />
                 <span>Referral Fee: <strong>{formatIDR(partner.referral_fee)}</strong></span>
               </div>
             )}

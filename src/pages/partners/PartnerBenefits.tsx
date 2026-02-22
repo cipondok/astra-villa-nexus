@@ -31,7 +31,6 @@ const PartnerBenefits = () => {
     setIsSubmitting(true);
 
     try {
-      // Validate captcha first
       if (!validateCaptcha(formData.captchaInput, captchaCode)) {
         toast({
           title: language === "en" ? "Invalid Captcha" : "Captcha Tidak Valid",
@@ -112,42 +111,12 @@ const PartnerBenefits = () => {
       subtitle: "Exclusive benefits and rewards for our valued partners",
       description: "Enjoy a comprehensive suite of benefits designed to help you succeed and grow.",
       benefits: [
-        {
-          icon: DollarSign,
-          title: "Competitive Commission",
-          description: "Industry-leading commission structure with performance bonuses",
-          features: ["Base commission up to 3%", "Performance bonuses", "Quarterly incentives"]
-        },
-        {
-          icon: Headphones,
-          title: "Priority Support",
-          description: "Dedicated support team available 24/7 for all your needs",
-          features: ["24/7 customer support", "Dedicated account manager", "Priority response times"]
-        },
-        {
-          icon: GraduationCap,
-          title: "Training & Development",
-          description: "Comprehensive training programs to enhance your skills",
-          features: ["Free certification courses", "Monthly workshops", "Industry expert sessions"]
-        },
-        {
-          icon: Trophy,
-          title: "Performance Rewards",
-          description: "Recognition and rewards for outstanding performance",
-          features: ["Monthly awards", "Annual recognition events", "Exclusive perks"]
-        },
-        {
-          icon: Megaphone,
-          title: "Co-Marketing",
-          description: "Joint marketing campaigns to boost your visibility",
-          features: ["Social media promotion", "Featured listings", "Marketing materials"]
-        },
-        {
-          icon: TrendingUp,
-          title: "Business Growth",
-          description: "Tools and resources to scale your business",
-          features: ["Lead generation tools", "CRM access", "Analytics dashboard"]
-        }
+        { icon: DollarSign, title: "Competitive Commission", description: "Industry-leading commission structure with performance bonuses", features: ["Base commission up to 3%", "Performance bonuses", "Quarterly incentives"] },
+        { icon: Headphones, title: "Priority Support", description: "Dedicated support team available 24/7 for all your needs", features: ["24/7 customer support", "Dedicated account manager", "Priority response times"] },
+        { icon: GraduationCap, title: "Training & Development", description: "Comprehensive training programs to enhance your skills", features: ["Free certification courses", "Monthly workshops", "Industry expert sessions"] },
+        { icon: Trophy, title: "Performance Rewards", description: "Recognition and rewards for outstanding performance", features: ["Monthly awards", "Annual recognition events", "Exclusive perks"] },
+        { icon: Megaphone, title: "Co-Marketing", description: "Joint marketing campaigns to boost your visibility", features: ["Social media promotion", "Featured listings", "Marketing materials"] },
+        { icon: TrendingUp, title: "Business Growth", description: "Tools and resources to scale your business", features: ["Lead generation tools", "CRM access", "Analytics dashboard"] }
       ],
       joinButton: "Join Now",
       learnMore: "Learn More",
@@ -165,42 +134,12 @@ const PartnerBenefits = () => {
       subtitle: "Manfaat dan penghargaan eksklusif untuk mitra berharga kami",
       description: "Nikmati rangkaian manfaat lengkap yang dirancang untuk membantu Anda sukses dan berkembang.",
       benefits: [
-        {
-          icon: DollarSign,
-          title: "Komisi Kompetitif",
-          description: "Struktur komisi terdepan di industri dengan bonus kinerja",
-          features: ["Komisi dasar hingga 3%", "Bonus kinerja", "Insentif kuartalan"]
-        },
-        {
-          icon: Headphones,
-          title: "Dukungan Prioritas",
-          description: "Tim dukungan khusus tersedia 24/7 untuk semua kebutuhan Anda",
-          features: ["Dukungan pelanggan 24/7", "Manajer akun khusus", "Waktu respons prioritas"]
-        },
-        {
-          icon: GraduationCap,
-          title: "Pelatihan & Pengembangan",
-          description: "Program pelatihan komprehensif untuk meningkatkan keterampilan Anda",
-          features: ["Kursus sertifikasi gratis", "Lokakarya bulanan", "Sesi ahli industri"]
-        },
-        {
-          icon: Trophy,
-          title: "Penghargaan Kinerja",
-          description: "Pengakuan dan penghargaan untuk kinerja luar biasa",
-          features: ["Penghargaan bulanan", "Acara pengakuan tahunan", "Fasilitas eksklusif"]
-        },
-        {
-          icon: Megaphone,
-          title: "Co-Marketing",
-          description: "Kampanye pemasaran bersama untuk meningkatkan visibilitas Anda",
-          features: ["Promosi media sosial", "Listing unggulan", "Material pemasaran"]
-        },
-        {
-          icon: TrendingUp,
-          title: "Pertumbuhan Bisnis",
-          description: "Alat dan sumber daya untuk menskalakan bisnis Anda",
-          features: ["Alat generasi prospek", "Akses CRM", "Dashboard analitik"]
-        }
+        { icon: DollarSign, title: "Komisi Kompetitif", description: "Struktur komisi terdepan di industri dengan bonus kinerja", features: ["Komisi dasar hingga 3%", "Bonus kinerja", "Insentif kuartalan"] },
+        { icon: Headphones, title: "Dukungan Prioritas", description: "Tim dukungan khusus tersedia 24/7 untuk semua kebutuhan Anda", features: ["Dukungan pelanggan 24/7", "Manajer akun khusus", "Waktu respons prioritas"] },
+        { icon: GraduationCap, title: "Pelatihan & Pengembangan", description: "Program pelatihan komprehensif untuk meningkatkan keterampilan Anda", features: ["Kursus sertifikasi gratis", "Lokakarya bulanan", "Sesi ahli industri"] },
+        { icon: Trophy, title: "Penghargaan Kinerja", description: "Pengakuan dan penghargaan untuk kinerja luar biasa", features: ["Penghargaan bulanan", "Acara pengakuan tahunan", "Fasilitas eksklusif"] },
+        { icon: Megaphone, title: "Co-Marketing", description: "Kampanye pemasaran bersama untuk meningkatkan visibilitas Anda", features: ["Promosi media sosial", "Listing unggulan", "Material pemasaran"] },
+        { icon: TrendingUp, title: "Pertumbuhan Bisnis", description: "Alat dan sumber daya untuk menskalakan bisnis Anda", features: ["Alat generasi prospek", "Akses CRM", "Dashboard analitik"] }
       ],
       joinButton: "Bergabung Sekarang",
       learnMore: "Pelajari Lebih Lanjut",
@@ -223,20 +162,20 @@ const PartnerBenefits = () => {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center p-3 bg-macos-gradient rounded-2xl mb-6 shadow-macos">
-            <TrendingUp className="w-12 h-12 text-white" />
+            <TrendingUp className="w-12 h-12 text-primary-foreground" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
             {currentText.title}
           </h1>
-          <p className="text-xl text-macos-gray max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             {currentText.subtitle}
           </p>
         </div>
 
         {/* Description */}
         <div className="max-w-4xl mx-auto mb-16">
-          <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos border border-neutral-200 dark:border-neutral-800 text-center">
-            <p className="text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed">
+          <div className="bg-card p-8 rounded-2xl shadow-macos border border-border text-center">
+            <p className="text-lg text-muted-foreground leading-relaxed">
               {currentText.description}
             </p>
           </div>
@@ -247,16 +186,16 @@ const PartnerBenefits = () => {
           {currentText.benefits.map((benefit, index) => {
             const Icon = benefit.icon;
             return (
-              <div key={index} className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-neutral-200 dark:border-neutral-800">
+              <div key={index} className="bg-card p-8 rounded-2xl shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-border">
                 <div className="inline-flex p-4 bg-macos-gradient rounded-2xl mb-4 shadow-macos">
-                  <Icon className="w-8 h-8 text-white" />
+                  <Icon className="w-8 h-8 text-primary-foreground" />
                 </div>
-                <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">{benefit.title}</h3>
-                <p className="text-neutral-600 dark:text-neutral-400 mb-4">{benefit.description}</p>
+                <h3 className="text-xl font-bold text-foreground mb-2">{benefit.title}</h3>
+                <p className="text-muted-foreground mb-4">{benefit.description}</p>
                 <ul className="space-y-2">
                   {benefit.features.map((feature, idx) => (
-                    <li key={idx} className="text-sm text-neutral-600 dark:text-neutral-400 flex items-start gap-2">
-                      <span className="text-macos-blue mt-1 font-bold">✓</span>
+                    <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <span className="text-primary mt-1 font-bold">✓</span>
                       <span>{feature}</span>
                     </li>
                   ))}
@@ -268,20 +207,20 @@ const PartnerBenefits = () => {
 
         {/* Contact Form Section */}
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white dark:bg-neutral-900 p-12 rounded-2xl shadow-macos-hover border border-neutral-200 dark:border-neutral-800 animate-macos-window-in">
+          <div className="bg-card p-12 rounded-2xl shadow-macos-hover border border-border animate-macos-window-in">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
                 {currentText.formTitle}
               </h2>
-              <p className="text-neutral-600 dark:text-neutral-400 text-lg">
+              <p className="text-muted-foreground text-lg">
                 {currentText.formSubtitle}
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
-                  <User className="w-4 h-4 text-macos-blue" />
+                <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                  <User className="w-4 h-4 text-primary" />
                   {currentText.namePlaceholder}
                 </label>
                 <Input
@@ -289,13 +228,13 @@ const PartnerBenefits = () => {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder={currentText.namePlaceholder}
-                  className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  className="h-12 bg-muted border-border focus:border-primary focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-macos-blue" />
+                <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-primary" />
                   {currentText.emailPlaceholder}
                 </label>
                 <div className="relative">
@@ -310,14 +249,14 @@ const PartnerBenefits = () => {
                       setEmailValid(email.length > 0 ? emailRegex.test(email) : null);
                     }}
                     placeholder={currentText.emailPlaceholder}
-                    className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    className="h-12 pr-10 bg-muted border-border focus:border-primary focus:ring-primary"
                   />
                   {emailValid !== null && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
                       {emailValid ? (
-                        <Check className="w-5 h-5 text-green-500" />
+                        <Check className="w-5 h-5 text-chart-1" />
                       ) : (
-                        <X className="w-5 h-5 text-red-500" />
+                        <X className="w-5 h-5 text-destructive" />
                       )}
                     </div>
                   )}
@@ -325,8 +264,8 @@ const PartnerBenefits = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-macos-blue" />
+                <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-primary" />
                   {currentText.phonePlaceholder}
                 </label>
                 <div className="relative">
@@ -345,14 +284,14 @@ const PartnerBenefits = () => {
                       }
                     }}
                     placeholder={currentText.phonePlaceholder}
-                    className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    className="h-12 pr-10 bg-muted border-border focus:border-primary focus:ring-primary"
                   />
                   {phoneValid !== null && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
                       {phoneValid ? (
-                        <Check className="w-5 h-5 text-green-500" />
+                        <Check className="w-5 h-5 text-chart-1" />
                       ) : (
-                        <X className="w-5 h-5 text-red-500" />
+                        <X className="w-5 h-5 text-destructive" />
                       )}
                     </div>
                   )}
@@ -360,7 +299,7 @@ const PartnerBenefits = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="text-sm font-semibold text-muted-foreground">
                   {currentText.messagePlaceholder}
                 </label>
                 <Textarea
@@ -369,12 +308,12 @@ const PartnerBenefits = () => {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder={currentText.messagePlaceholder}
                   rows={4}
-                  className="resize-none bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  className="resize-none bg-muted border-border focus:border-primary focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="text-sm font-semibold text-muted-foreground">
                   {language === "en" ? "Security Check" : "Pemeriksaan Keamanan"}
                 </label>
                 <SimpleCaptcha code={captchaCode} onRefresh={refreshCaptcha} />
@@ -383,7 +322,7 @@ const PartnerBenefits = () => {
                   value={formData.captchaInput}
                   onChange={(e) => setFormData({ ...formData, captchaInput: e.target.value })}
                   placeholder={language === "en" ? "Enter the code above" : "Masukkan kode di atas"}
-                  className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  className="h-12 bg-muted border-border focus:border-primary focus:ring-primary"
                   maxLength={6}
                 />
               </div>
@@ -392,7 +331,7 @@ const PartnerBenefits = () => {
                 type="submit"
                 size="lg"
                 disabled={isSubmitting}
-                className="w-full text-lg h-14 bg-macos-gradient hover:shadow-macos-hover transition-all duration-300 text-white font-semibold border-0"
+                className="w-full text-lg h-14 bg-macos-gradient hover:shadow-macos-hover transition-all duration-300 text-primary-foreground font-semibold border-0"
               >
                 {isSubmitting ? currentText.submitting : currentText.submitButton}
               </Button>

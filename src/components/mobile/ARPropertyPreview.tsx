@@ -197,8 +197,8 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
       >
         {/* Property image or camera feed */}
         {isARMode ? (
-          <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center">
-            <div className="text-center text-white">
+          <div className="w-full h-full bg-gradient-to-br from-background to-muted flex items-center justify-center">
+            <div className="text-center text-foreground">
               <Camera className="h-16 w-16 mx-auto mb-4 animate-pulse" />
               <p className="text-lg font-medium">AR Camera Active</p>
               <p className="text-sm text-white/60">Point at a flat surface</p>
@@ -348,7 +348,7 @@ const ARPropertyPreview = ({ propertyId, propertyImages = [], onClose }: ARPrope
       {/* AR not supported banner */}
       {!hasARSupport && (
         <div className="absolute top-20 left-4 right-4">
-          <Card className="bg-yellow-500/90 border-0">
+          <Card className="bg-chart-3/90 border-0">
             <CardContent className="p-3 flex items-center gap-2">
               <Info className="h-4 w-4 flex-shrink-0" />
               <p className="text-sm">
