@@ -47,7 +47,7 @@ const SmartNotificationManager: React.FC = () => {
       enabled: true,
       frequency: 'instant',
       sample: '🔻 Villa Sunset dropped 15%! Now Rp 1.8M/month',
-      color: 'text-green-500',
+      color: 'text-chart-1',
     },
     {
       id: 'new_matches',
@@ -67,7 +67,7 @@ const SmartNotificationManager: React.FC = () => {
       enabled: true,
       frequency: 'instant',
       sample: '💬 Agent Budi replied to your inquiry',
-      color: 'text-blue-500',
+      color: 'text-chart-4',
     },
     {
       id: 'market_updates',
@@ -77,7 +77,7 @@ const SmartNotificationManager: React.FC = () => {
       enabled: false,
       frequency: 'weekly',
       sample: '📊 Bali market report: +5% prices in Seminyak',
-      color: 'text-purple-500',
+      color: 'text-accent-foreground',
     },
   ]);
 
@@ -247,8 +247,8 @@ const SmartNotificationManager: React.FC = () => {
       )}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center">
-              <Moon className="h-4 w-4 text-purple-500" />
+            <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center">
+              <Moon className="h-4 w-4 text-accent-foreground" />
             </div>
             <div>
               <h4 className="text-sm font-medium text-foreground">Quiet Hours</h4>

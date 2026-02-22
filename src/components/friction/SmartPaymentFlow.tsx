@@ -101,11 +101,11 @@ const SmartPaymentFlow: React.FC<SmartPaymentFlowProps> = ({
             {/* Trust badges (Psychological) */}
             <div className="flex justify-center gap-4">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Shield className="h-4 w-4 text-green-500" />
+                <Shield className="h-4 w-4 text-chart-1" />
                 <span>SSL Encrypted</span>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Lock className="h-4 w-4 text-green-500" />
+                <Lock className="h-4 w-4 text-chart-1" />
                 <span>PCI Compliant</span>
               </div>
             </div>
@@ -236,7 +236,7 @@ const SmartPaymentFlow: React.FC<SmartPaymentFlowProps> = ({
 
             {/* Security note */}
             <div className="flex items-start gap-2 text-xs text-muted-foreground">
-              <Shield className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+              <Shield className="h-4 w-4 text-chart-1 shrink-0 mt-0.5" />
               <span>
                 Your payment is protected by 256-bit SSL encryption and complies with PCI-DSS standards.
               </span>
@@ -244,7 +244,7 @@ const SmartPaymentFlow: React.FC<SmartPaymentFlowProps> = ({
 
             <Button
               onClick={handlePayment}
-              className="w-full h-12 bg-green-600 hover:bg-green-700 active:scale-95"
+              className="w-full h-12 bg-chart-1 hover:bg-chart-1/90 active:scale-95"
             >
               <Lock className="h-4 w-4 mr-2" />
               Pay {formatPrice(total)}
@@ -280,14 +280,14 @@ const SmartPaymentFlow: React.FC<SmartPaymentFlowProps> = ({
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", delay: 0.1 }}
-              className="w-20 h-20 mx-auto rounded-full bg-green-500/20 flex items-center justify-center"
+              className="w-20 h-20 mx-auto rounded-full bg-chart-1/20 flex items-center justify-center"
             >
-              <Check className="h-10 w-10 text-green-500" />
+              <Check className="h-10 w-10 text-chart-1" />
             </motion.div>
 
             <div className="space-y-2">
               <h3 className="text-xl font-bold text-foreground">Payment Successful! 🎉</h3>
-              <p className="text-lg font-semibold text-green-600">{formatPrice(total)}</p>
+              <p className="text-lg font-semibold text-chart-1">{formatPrice(total)}</p>
             </div>
 
             {/* Receipt card */}

@@ -109,7 +109,7 @@ const Property3DViewerModal: React.FC<Property3DViewerModalProps> = ({
             
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="sm" className="glass-effect h-9 w-9 p-0" onClick={() => setIsSaved(!isSaved)}>
-                <Heart className={`h-4 w-4 ${isSaved ? 'fill-red-400 text-red-400' : ''}`} />
+                <Heart className={`h-4 w-4 ${isSaved ? 'fill-destructive text-destructive' : ''}`} />
               </Button>
               <Button variant="ghost" size="sm" className="glass-effect h-9 w-9 p-0">
                 <Share2 className="h-4 w-4" />

@@ -203,9 +203,9 @@ const SmartScheduler: React.FC<SmartSchedulerProps> = ({
             </div>
 
             {/* Agent availability indicator */}
-            <div className="flex items-center gap-2 p-3 bg-green-500/10 rounded-xl">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-xs text-green-600 dark:text-green-400">
+            <div className="flex items-center gap-2 p-3 bg-chart-1/10 rounded-xl">
+              <div className="w-2 h-2 rounded-full bg-chart-1 animate-pulse" />
+              <span className="text-xs text-chart-1">
                 {agentName} has {timeSlots.filter(s => s.available).length} available slots
               </span>
             </div>
@@ -330,7 +330,7 @@ const SmartScheduler: React.FC<SmartSchedulerProps> = ({
             <Button
               onClick={handleConfirm}
               disabled={isSubmitting}
-              className="w-full h-12 bg-green-600 hover:bg-green-700 active:scale-95"
+              className="w-full h-12 bg-chart-1 hover:bg-chart-1/90 active:scale-95"
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
@@ -359,9 +359,9 @@ const SmartScheduler: React.FC<SmartSchedulerProps> = ({
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", delay: 0.1 }}
-              className="w-20 h-20 mx-auto rounded-full bg-green-500/20 flex items-center justify-center"
+              className="w-20 h-20 mx-auto rounded-full bg-chart-1/20 flex items-center justify-center"
             >
-              <Check className="h-10 w-10 text-green-500" />
+              <Check className="h-10 w-10 text-chart-1" />
             </motion.div>
 
             <div className="space-y-2">
@@ -396,7 +396,7 @@ const SmartScheduler: React.FC<SmartSchedulerProps> = ({
             {/* What to look for (Psychological - Preparation) */}
             <div className="text-left p-4 bg-muted/50 rounded-xl space-y-2">
               <p className="text-sm font-medium text-foreground flex items-center gap-2">
-                <Star className="h-4 w-4 text-yellow-500" />
+                <Star className="h-4 w-4 text-chart-3" />
                 What to look for
               </p>
               <ul className="space-y-1 text-xs text-muted-foreground">

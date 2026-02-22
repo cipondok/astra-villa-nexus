@@ -186,8 +186,8 @@ const ReviewStep = ({ formData, features }: ReviewStepProps) => {
                   </div>
                 )}
                 {formData.three_d_model_url && (
-                  <div className="flex items-center gap-2 p-2.5 rounded-lg bg-blue-500/5 border border-blue-500/20">
-                    <Box className="h-4 w-4 text-blue-500" />
+                  <div className="flex items-center gap-2 p-2.5 rounded-lg bg-chart-4/5 border border-chart-4/20">
+                    <Box className="h-4 w-4 text-chart-4" />
                     <span className="text-sm font-medium">3D Model</span>
                     <Badge variant="outline" className="ml-auto text-xs">Added</Badge>
                   </div>
