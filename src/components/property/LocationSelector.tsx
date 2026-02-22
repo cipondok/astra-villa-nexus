@@ -265,9 +265,9 @@ const LocationSelector = ({
 
       {/* No subdistricts available notice */}
       {selectedDistrictCode && subdistrictsData.length === 0 && (
-        <Alert className="bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-800">
-          <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-          <AlertDescription className="text-amber-800 dark:text-amber-200">
+        <Alert className="bg-chart-3/10 border-chart-3/30">
+          <AlertCircle className="h-4 w-4 text-chart-3" />
+          <AlertDescription className="text-foreground">
             {t.noSubdistrictsAvailable}
           </AlertDescription>
         </Alert>

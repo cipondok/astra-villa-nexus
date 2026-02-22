@@ -297,19 +297,19 @@ const PropertyInsertForm = () => {
 
         return (
           <div key={filter.id}>
-            <Label htmlFor={filter.id} className="text-gray-700 font-medium">
+            <Label htmlFor={filter.id} className="text-foreground font-medium">
               {filter.filter_name}
             </Label>
             <Select 
               value={filterValue} 
               onValueChange={(value) => handleFilterChange(filter.id, value)}
             >
-              <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+              <SelectTrigger className="bg-background border-border text-foreground">
                 <SelectValue placeholder={`Pilih ${filter.filter_name}`} />
               </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+              <SelectContent className="bg-popover border border-border shadow-lg z-50">
                 {options.map((option: string, index: number) => (
-                  <SelectItem key={index} value={option} className="text-gray-900 hover:bg-blue-50">
+                  <SelectItem key={index} value={option} className="text-foreground hover:bg-accent/50">
                     {option}
                   </SelectItem>
                 ))}
@@ -327,7 +327,7 @@ const PropertyInsertForm = () => {
 
         return (
           <div key={filter.id}>
-            <Label className="text-gray-700 font-medium mb-2 block">
+            <Label className="text-foreground font-medium mb-2 block">
               {filter.filter_name}
             </Label>
             <div className="space-y-2">
@@ -345,7 +345,7 @@ const PropertyInsertForm = () => {
                       }
                     }}
                   />
-                  <Label htmlFor={`${filter.id}-${index}`} className="text-sm text-gray-900">
+                  <Label htmlFor={`${filter.id}-${index}`} className="text-sm text-foreground">
                     {option}
                   </Label>
                 </div>
@@ -357,7 +357,7 @@ const PropertyInsertForm = () => {
       case 'input':
         return (
           <div key={filter.id}>
-            <Label htmlFor={filter.id} className="text-gray-700 font-medium">
+            <Label htmlFor={filter.id} className="text-foreground font-medium">
               {filter.filter_name}
             </Label>
             <Input
@@ -365,7 +365,7 @@ const PropertyInsertForm = () => {
               value={filterValue}
               onChange={(e) => handleFilterChange(filter.id, e.target.value)}
               placeholder={`Masukkan ${filter.filter_name}`}
-              className="bg-white border-gray-300 text-gray-900"
+              className="bg-background border-border text-foreground"
             />
           </div>
         );
@@ -382,17 +382,17 @@ const PropertyInsertForm = () => {
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'lifestyle':
-        return <Heart className="h-5 w-5 text-pink-600" />;
+        return <Heart className="h-5 w-5 text-destructive" />;
       case 'sustainability':
-        return <Leaf className="h-5 w-5 text-green-600" />;
+        return <Leaf className="h-5 w-5 text-chart-1" />;
       case 'investment':
-        return <TrendingUp className="h-5 w-5 text-blue-600" />;
+        return <TrendingUp className="h-5 w-5 text-chart-4" />;
       case 'neighborhood':
-        return <Volume2 className="h-5 w-5 text-purple-600" />;
+        return <Volume2 className="h-5 w-5 text-accent" />;
       case 'developer':
-        return <Building2 className="h-5 w-5 text-orange-600" />;
+        return <Building2 className="h-5 w-5 text-chart-3" />;
       default:
-        return <Filter className="h-5 w-5 text-gray-600" />;
+        return <Filter className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
@@ -417,18 +417,18 @@ const PropertyInsertForm = () => {
   if (!isAuthenticated || !user) {
     return (
       <div className="max-w-2xl mx-auto p-6 text-center">
-        <Card className="bg-white border border-gray-200 shadow-lg">
+        <Card className="bg-card border border-border shadow-lg">
           <CardContent className="p-8">
-            <LogIn className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-            <h2 className="text-2xl font-bold mb-4 text-gray-900">Login Diperlukan</h2>
-            <p className="text-gray-600 mb-6">
+            <LogIn className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Login Diperlukan</h2>
+            <p className="text-muted-foreground mb-6">
               Anda perlu login atau mendaftar terlebih dahulu untuk menambahkan listing properti.
             </p>
             <div className="space-y-3">
-              <Button onClick={() => navigate('/')} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+              <Button onClick={() => navigate('/')} className="w-full">
                 Ke Halaman Login / Daftar
               </Button>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Belum punya akun? Daftar sebagai Property Owner atau Agent di halaman utama.
               </p>
             </div>
@@ -457,25 +457,25 @@ const PropertyInsertForm = () => {
               variant="ghost"
               size="sm"
               onClick={() => navigate('/')}
-              className="text-gray-600 hover:text-gray-900"
+              className="text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4 mr-1" />
               Kembali
             </Button>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                <Plus className="h-6 w-6 text-blue-600" />
+              <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
+                <Plus className="h-6 w-6 text-primary" />
                 Tambah Listing Properti
                 {profile?.role === 'agent' && (
-                  <span className="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full border border-blue-200">
+                  <span className="text-sm bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">
                     Agen
                   </span>
                 )}
               </h2>
-              <p className="text-gray-600 mt-1">
+              <p className="text-muted-foreground mt-1">
                 Listingkan properti Anda untuk dijual atau disewakan
                 {profile?.role === 'agent' && (
-                  <span className="block text-blue-700 text-sm mt-1 font-medium">
+                  <span className="block text-primary text-sm mt-1 font-medium">
                     Anda login sebagai agen: {profile.full_name || profile.email}
                   </span>
                 )}
@@ -489,7 +489,7 @@ const PropertyInsertForm = () => {
               variant="outline"
               size="sm"
               onClick={generateAiSuggestion}
-              className="flex items-center gap-2 bg-white border-blue-300 text-blue-700 hover:bg-blue-50"
+              className="flex items-center gap-2 bg-background border-primary/30 text-primary hover:bg-primary/5"
             >
               <Bot className="h-4 w-4" />
               Bantuan AI
@@ -499,7 +499,7 @@ const PropertyInsertForm = () => {
               variant="ghost"
               size="sm"
               onClick={handleClose}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-muted-foreground hover:text-foreground"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -509,22 +509,22 @@ const PropertyInsertForm = () => {
         {/* Progress Bar */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-foreground">
               Langkah {getCurrentTabIndex() + 1} dari {tabs.length}: {tabLabels[currentTab as keyof typeof tabLabels]}
             </span>
-            <span className="text-sm text-gray-500">{Math.round(getProgressPercentage())}%</span>
+            <span className="text-sm text-muted-foreground">{Math.round(getProgressPercentage())}%</span>
           </div>
           <Progress value={getProgressPercentage()} className="h-2" />
         </div>
 
         {/* Validation Errors */}
         {validationErrors.length > 0 && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
             <div className="flex items-start">
-              <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-2" />
+              <AlertCircle className="h-5 w-5 text-destructive mt-0.5 mr-2" />
               <div>
-                <h4 className="font-medium text-red-800 mb-1">Harap lengkapi:</h4>
-                <ul className="text-sm text-red-700 list-disc list-inside">
+                <h4 className="font-medium text-destructive mb-1">Harap lengkapi:</h4>
+                <ul className="text-sm text-destructive/80 list-disc list-inside">
                   {validationErrors.map((error, index) => (
                     <li key={index}>{error}</li>
                   ))}
@@ -536,7 +536,7 @@ const PropertyInsertForm = () => {
 
         {/* AI Help Section */}
         {showAiHelp && aiSuggestion && (
-          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+          <div className="mb-6 p-4 bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg border border-primary/20">
             <div className="flex items-start gap-3">
               <Sparkles className="h-5 w-5 text-blue-600 mt-0.5" />
               <div>

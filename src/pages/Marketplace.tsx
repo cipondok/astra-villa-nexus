@@ -24,8 +24,8 @@ const categories: ServiceCategory[] = [
     title: 'Construction Services',
     description: 'Professional builders & contractors',
     vendorCount: 45,
-    bgColor: 'bg-orange-50 dark:bg-orange-950/30',
-    iconColor: 'text-orange-600 dark:text-orange-400'
+    bgColor: 'bg-chart-3/10',
+    iconColor: 'text-chart-3'
   },
   {
     id: 'interior',
@@ -33,8 +33,8 @@ const categories: ServiceCategory[] = [
     title: 'Interior Design',
     description: 'Expert interior designers',
     vendorCount: 32,
-    bgColor: 'bg-pink-50 dark:bg-pink-950/30',
-    iconColor: 'text-pink-600 dark:text-pink-400'
+    bgColor: 'bg-destructive/10',
+    iconColor: 'text-destructive'
   },
   {
     id: 'renovation',
@@ -42,8 +42,8 @@ const categories: ServiceCategory[] = [
     title: 'Renovation & Repair',
     description: 'Home renovation specialists',
     vendorCount: 38,
-    bgColor: 'bg-blue-50 dark:bg-blue-950/30',
-    iconColor: 'text-blue-600 dark:text-blue-400'
+    bgColor: 'bg-chart-4/10',
+    iconColor: 'text-chart-4'
   },
   {
     id: 'electrical',
@@ -51,8 +51,8 @@ const categories: ServiceCategory[] = [
     title: 'Electrical Services',
     description: 'Licensed electricians',
     vendorCount: 28,
-    bgColor: 'bg-yellow-50 dark:bg-yellow-950/30',
-    iconColor: 'text-yellow-600 dark:text-yellow-400'
+    bgColor: 'bg-chart-3/10',
+    iconColor: 'text-chart-3'
   },
   {
     id: 'plumbing',
@@ -60,8 +60,8 @@ const categories: ServiceCategory[] = [
     title: 'Plumbing Services',
     description: 'Professional plumbers',
     vendorCount: 25,
-    bgColor: 'bg-cyan-50 dark:bg-cyan-950/30',
-    iconColor: 'text-cyan-600 dark:text-cyan-400'
+    bgColor: 'bg-chart-4/10',
+    iconColor: 'text-chart-4'
   },
   {
     id: 'landscaping',
@@ -69,8 +69,8 @@ const categories: ServiceCategory[] = [
     title: 'Landscaping',
     description: 'Garden & landscape experts',
     vendorCount: 22,
-    bgColor: 'bg-green-50 dark:bg-green-950/30',
-    iconColor: 'text-green-600 dark:text-green-400'
+    bgColor: 'bg-chart-1/10',
+    iconColor: 'text-chart-1'
   },
   {
     id: 'security',
@@ -78,8 +78,8 @@ const categories: ServiceCategory[] = [
     title: 'Security Systems',
     description: 'Home security installation',
     vendorCount: 18,
-    bgColor: 'bg-red-50 dark:bg-red-950/30',
-    iconColor: 'text-red-600 dark:text-red-400'
+    bgColor: 'bg-destructive/10',
+    iconColor: 'text-destructive'
   },
   {
     id: 'furniture',
@@ -87,8 +87,8 @@ const categories: ServiceCategory[] = [
     title: 'Furniture & Fixtures',
     description: 'Quality furniture suppliers',
     vendorCount: 35,
-    bgColor: 'bg-purple-50 dark:bg-purple-950/30',
-    iconColor: 'text-purple-600 dark:text-purple-400'
+    bgColor: 'bg-accent/10',
+    iconColor: 'text-accent'
   }
 ];
 
