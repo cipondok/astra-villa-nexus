@@ -345,7 +345,7 @@ const VerificationManagement = () => {
       <div className="grid grid-cols-3 gap-2">
         <Card className="p-2">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-blue-500" />
+            <ShieldCheck className="h-4 w-4 text-chart-4" />
             <div>
               <p className="text-lg font-bold">{stats.totalOwners}</p>
               <p className="text-[9px] text-muted-foreground">Owners • {stats.pendingOwners} pending</p>
@@ -355,7 +355,7 @@ const VerificationManagement = () => {
         
         <Card className="p-2">
           <div className="flex items-center gap-2">
-            <Building2 className="h-4 w-4 text-purple-500" />
+            <Building2 className="h-4 w-4 text-accent" />
             <div>
               <p className="text-lg font-bold">{stats.totalVendors}</p>
               <p className="text-[9px] text-muted-foreground">Vendors • {stats.pendingVendors} pending</p>
@@ -365,9 +365,9 @@ const VerificationManagement = () => {
 
         <Card className="p-2">
           <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 text-orange-500" />
+            <AlertCircle className="h-4 w-4 text-chart-3" />
             <div>
-              <p className="text-lg font-bold text-orange-600">{stats.pendingOwners + stats.pendingVendors}</p>
+              <p className="text-lg font-bold text-chart-3">{stats.pendingOwners + stats.pendingVendors}</p>
               <p className="text-[9px] text-muted-foreground">Action Required</p>
             </div>
           </div>
@@ -521,9 +521,9 @@ const VerificationItem = ({ label, verified, verifiedAt, onVerify }: any) => (
   <div className="flex items-center justify-between py-2 border-b">
     <div className="flex items-center gap-2">
       {verified ? (
-        <CheckCircle className="h-4 w-4 text-green-500" />
+        <CheckCircle className="h-4 w-4 text-chart-1" />
       ) : (
-        <XCircle className="h-4 w-4 text-gray-400" />
+        <XCircle className="h-4 w-4 text-muted-foreground" />
       )}
       <span className="text-sm">{label}</span>
     </div>

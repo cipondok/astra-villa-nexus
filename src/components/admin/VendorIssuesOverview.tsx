@@ -155,7 +155,7 @@ const VendorIssuesOverview = () => {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-orange-500" />
+            <AlertTriangle className="h-5 w-5 text-chart-3" />
             Vendor Management Issues
           </h3>
           <p className="text-sm text-muted-foreground">
@@ -174,9 +174,9 @@ const VendorIssuesOverview = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">KYC Pending</p>
-                <p className="text-2xl font-bold text-orange-600">{kycIssuesCount}</p>
+                <p className="text-2xl font-bold text-chart-3">{kycIssuesCount}</p>
               </div>
-              <Shield className="h-8 w-8 text-orange-500" />
+              <Shield className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -186,9 +186,9 @@ const VendorIssuesOverview = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Payment Issues</p>
-                <p className="text-2xl font-bold text-red-600">{paymentIssuesCount}</p>
+                <p className="text-2xl font-bold text-destructive">{paymentIssuesCount}</p>
               </div>
-              <CreditCard className="h-8 w-8 text-red-500" />
+              <CreditCard className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -198,9 +198,9 @@ const VendorIssuesOverview = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Resolution Rate</p>
-                <p className="text-2xl font-bold text-green-600">85%</p>
+                <p className="text-2xl font-bold text-chart-1">85%</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
