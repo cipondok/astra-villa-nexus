@@ -35,45 +35,45 @@ const tierConfig: Record<BadgeTier, {
   bronze: {
     label: 'Bronze Member',
     icon: Shield,
-    colors: 'text-amber-700',
-    bgColors: 'bg-amber-100',
-    borderColors: 'border-amber-300',
+    colors: 'text-chart-3',
+    bgColors: 'bg-chart-3/10',
+    borderColors: 'border-chart-3/30',
     description: 'Email & phone verified',
     trustIndicator: 'Basic Trust'
   },
   silver: {
     label: 'Silver Member',
     icon: ShieldCheck,
-    colors: 'text-slate-500',
-    bgColors: 'bg-slate-100',
-    borderColors: 'border-slate-300',
+    colors: 'text-muted-foreground',
+    bgColors: 'bg-muted',
+    borderColors: 'border-border',
     description: 'Identity verified with documents',
     trustIndicator: 'Enhanced Trust'
   },
   gold: {
     label: 'Gold Member',
     icon: Star,
-    colors: 'text-yellow-600',
-    bgColors: 'bg-yellow-50',
-    borderColors: 'border-yellow-400',
+    colors: 'text-gold-primary',
+    bgColors: 'bg-gold-primary/10',
+    borderColors: 'border-gold-primary/30',
     description: 'Professional credentials verified',
     trustIndicator: 'Professional Trust'
   },
   platinum: {
     label: 'Platinum Member',
     icon: Crown,
-    colors: 'text-purple-600',
-    bgColors: 'bg-purple-50',
-    borderColors: 'border-purple-400',
+    colors: 'text-chart-5',
+    bgColors: 'bg-chart-5/10',
+    borderColors: 'border-chart-5/30',
     description: 'Video verified with references',
     trustIndicator: 'Premium Trust'
   },
   diamond: {
     label: 'Diamond Member',
     icon: Gem,
-    colors: 'text-cyan-500',
-    bgColors: 'bg-gradient-to-r from-cyan-50 to-blue-50',
-    borderColors: 'border-cyan-400',
+    colors: 'text-primary',
+    bgColors: 'bg-primary/10',
+    borderColors: 'border-primary/30',
     description: 'Highest trust level achieved',
     trustIndicator: 'Elite Trust'
   }
@@ -146,8 +146,8 @@ export const VerificationBadge: React.FC<VerificationBadgeProps> = ({
             </div>
             <p className="text-xs text-muted-foreground">{config.description}</p>
             <div className="flex items-center gap-1 text-xs">
-              <CheckCircle2 className="h-3 w-3 text-green-500" />
-              <span className="text-green-600">{config.trustIndicator}</span>
+              <CheckCircle2 className="h-3 w-3 text-chart-1" />
+              <span className="text-chart-1">{config.trustIndicator}</span>
             </div>
           </div>
         </TooltipContent>

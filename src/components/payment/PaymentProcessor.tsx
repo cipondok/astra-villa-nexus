@@ -90,11 +90,11 @@ const PaymentProcessor: React.FC<PaymentProcessorProps> = ({
   const getStatusIcon = () => {
     switch (paymentStatus) {
       case 'processing':
-        return <Loader2 className="h-5 w-5 animate-spin text-blue-500" />;
+        return <Loader2 className="h-5 w-5 animate-spin text-chart-4" />;
       case 'success':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-chart-1" />;
       case 'error':
-        return <AlertCircle className="h-5 w-5 text-red-500" />;
+        return <AlertCircle className="h-5 w-5 text-destructive" />;
       default:
         return <CreditCard className="h-5 w-5 text-muted-foreground" />;
     }

@@ -141,21 +141,21 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
 
   const getBadgeColor = (color?: string) => {
     switch (color) {
-      case 'green': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'blue': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      case 'purple': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
-      case 'cyan': return 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
-      case 'orange': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
-      case 'pink': return 'bg-pink-500/20 text-pink-400 border-pink-500/30';
-      case 'amber': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      case 'emerald': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-      case 'violet': return 'bg-violet-500/20 text-violet-400 border-violet-500/30';
-      case 'red': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      case 'indigo': return 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30';
-      case 'yellow': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'rose': return 'bg-rose-500/20 text-rose-400 border-rose-500/30';
-      case 'gray': return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      case 'green': return 'bg-chart-1/20 text-chart-1 border-chart-1/30';
+      case 'blue': return 'bg-chart-4/20 text-chart-4 border-chart-4/30';
+      case 'purple': return 'bg-chart-5/20 text-chart-5 border-chart-5/30';
+      case 'cyan': return 'bg-accent/20 text-accent-foreground border-accent/30';
+      case 'orange': return 'bg-chart-3/20 text-chart-3 border-chart-3/30';
+      case 'pink': return 'bg-destructive/20 text-destructive border-destructive/30';
+      case 'amber': return 'bg-chart-3/20 text-chart-3 border-chart-3/30';
+      case 'emerald': return 'bg-chart-1/20 text-chart-1 border-chart-1/30';
+      case 'violet': return 'bg-chart-5/20 text-chart-5 border-chart-5/30';
+      case 'red': return 'bg-destructive/20 text-destructive border-destructive/30';
+      case 'indigo': return 'bg-chart-4/20 text-chart-4 border-chart-4/30';
+      case 'yellow': return 'bg-chart-3/20 text-chart-3 border-chart-3/30';
+      case 'rose': return 'bg-destructive/20 text-destructive border-destructive/30';
+      case 'gray': return 'bg-muted/20 text-muted-foreground border-muted/30';
+      default: return 'bg-muted/20 text-muted-foreground border-muted/30';
     }
   };
 
@@ -210,7 +210,7 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
             <span className="text-lg">🔗</span>
             <h3 className="text-sm font-semibold text-white">{getHeaderText()}</h3>
             {expansionState !== 'collapsed' && (
-              <Badge className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30">
+              <Badge className="text-xs bg-chart-4/20 text-chart-4 border-chart-4/30">
                 {displayLinks.length}
               </Badge>
             )}
@@ -229,14 +229,14 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${
-                  expansionState === 'half-open' ? 'bg-yellow-400 animate-pulse' : 'bg-green-400'
+                  expansionState === 'half-open' ? 'bg-chart-3 animate-pulse' : 'bg-chart-1'
                 }`} />
                 <span className="text-xs text-gray-400">
                   {expansionState === 'half-open' ? 'Essential Links' : 'Complete Navigation'}
                 </span>
               </div>
               {expansionState === 'half-open' && (
-                <span className="text-xs text-yellow-400 animate-pulse">
+                <span className="text-xs text-chart-3 animate-pulse">
                   Click again for all links
                 </span>
               )}
@@ -268,7 +268,7 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
                   <Badge 
                     className={`text-xs px-1.5 py-0.5 ml-1 ${
                       link.color === 'green' && link.count === 'LIVE' 
-                        ? 'bg-green-500/20 text-green-400 border-green-500/30 animate-pulse'
+                        ? 'bg-chart-1/20 text-chart-1 border-chart-1/30 animate-pulse'
                         : getBadgeColor(link.color)
                     }`}
                   >

@@ -66,7 +66,7 @@ const ProgressAnalyticsDashboard: React.FC<ProgressAnalyticsProps> = ({ vendorId
                     )}
                   </div>
                 </div>
-                <div className={`flex items-center gap-1 ${metric.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
+                <div className={`flex items-center gap-1 ${metric.trend === 'up' ? 'text-chart-1' : 'text-destructive'}`}>
                   {metric.trend === 'up' ? (
                     <TrendingUp className="h-4 w-4" />
                   ) : (
