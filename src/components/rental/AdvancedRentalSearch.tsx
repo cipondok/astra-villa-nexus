@@ -177,7 +177,7 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
           size="sm"
           onClick={handleSearchNearMe}
           disabled={loading || gettingLocation}
-          className={`h-9 px-3 border-primary/30 ${filters.nearMe ? 'bg-green-500/10 text-green-600 border-green-500/30' : ''}`}
+          className={`h-9 px-3 border-primary/30 ${filters.nearMe ? 'bg-chart-1/10 text-chart-1 border-chart-1/30' : ''}`}
         >
           <MapPin className="h-4 w-4" />
         </Button>

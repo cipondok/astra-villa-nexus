@@ -98,9 +98,9 @@ const FooterNewsletter = ({ language }: FooterNewsletterProps) => {
             </Button>
           </form>
         ) : (
-          <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200/30 dark:border-green-800/30">
-            <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-            <span className="text-green-700 dark:text-green-300 text-sm font-medium">
+          <div className="flex items-center gap-2 p-3 bg-chart-1/10 rounded-lg border border-chart-1/20">
+            <CheckCircle className="h-4 w-4 text-chart-1" />
+            <span className="text-chart-1 text-sm font-medium">
               {currentText.subscribed}
             </span>
           </div>

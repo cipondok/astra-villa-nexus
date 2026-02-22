@@ -500,9 +500,9 @@ const WNAEligibilityChecker: React.FC = () => {
                   <span className="text-[9px] text-muted-foreground">{t.results.score}</span>
                   <Badge className={cn(
                     "text-[8px]",
-                    calculateEligibility.score >= 80 && "bg-green-500",
-                    calculateEligibility.score >= 50 && calculateEligibility.score < 80 && "bg-amber-500",
-                    calculateEligibility.score < 50 && "bg-red-500"
+                    calculateEligibility.score >= 80 && "bg-chart-1",
+                    calculateEligibility.score >= 50 && calculateEligibility.score < 80 && "bg-chart-3",
+                    calculateEligibility.score < 50 && "bg-destructive"
                   )}>
                     {calculateEligibility.score}/100
                   </Badge>
@@ -510,9 +510,9 @@ const WNAEligibilityChecker: React.FC = () => {
                 <Progress value={calculateEligibility.score} className="h-2" />
                 <p className={cn(
                   "text-xs font-medium mt-2 text-center",
-                  calculateEligibility.score >= 80 && "text-green-600",
-                  calculateEligibility.score >= 50 && calculateEligibility.score < 80 && "text-amber-600",
-                  calculateEligibility.score < 50 && "text-red-600"
+                  calculateEligibility.score >= 80 && "text-chart-1",
+                  calculateEligibility.score >= 50 && calculateEligibility.score < 80 && "text-chart-3",
+                  calculateEligibility.score < 50 && "text-destructive"
                 )}>
                   {calculateEligibility.score >= 80 && t.results.eligible}
                   {calculateEligibility.score >= 50 && calculateEligibility.score < 80 && t.results.partiallyEligible}
@@ -524,14 +524,14 @@ const WNAEligibilityChecker: React.FC = () => {
               {calculateEligibility.recommendations.length > 0 && (
                 <div className="mb-3">
                   <h5 className="text-[9px] font-semibold text-foreground mb-1.5 flex items-center gap-1">
-                    <AlertTriangle className="h-3 w-3 text-amber-500" />
+                    <AlertTriangle className="h-3 w-3 text-chart-3" />
                     {t.results.recommendations}
                   </h5>
                   <div className="space-y-1">
                     {calculateEligibility.recommendations.map((rec, i) => (
-                      <div key={i} className="flex items-start gap-1.5 p-1.5 rounded bg-amber-50 dark:bg-amber-950/20">
-                        <XCircle className="h-2.5 w-2.5 text-amber-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-[8px] text-amber-700 dark:text-amber-300">{rec}</span>
+                      <div key={i} className="flex items-start gap-1.5 p-1.5 rounded bg-chart-3/10">
+                        <XCircle className="h-2.5 w-2.5 text-chart-3 flex-shrink-0 mt-0.5" />
+                        <span className="text-[8px] text-chart-3">{rec}</span>
                       </div>
                     ))}
                   </div>
@@ -541,14 +541,14 @@ const WNAEligibilityChecker: React.FC = () => {
               {/* Next Steps */}
               <div>
                 <h5 className="text-[9px] font-semibold text-foreground mb-1.5 flex items-center gap-1">
-                  <FileCheck className="h-3 w-3 text-green-500" />
-                  {t.results.nextSteps}
-                </h5>
-                <div className="space-y-1">
-                  {calculateEligibility.nextSteps.map((step, i) => (
-                    <div key={i} className="flex items-start gap-1.5 p-1.5 rounded bg-green-50 dark:bg-green-950/20">
-                      <CheckCircle className="h-2.5 w-2.5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-[8px] text-green-700 dark:text-green-300">{step}</span>
+                    <FileCheck className="h-3 w-3 text-chart-1" />
+                    {t.results.nextSteps}
+                  </h5>
+                  <div className="space-y-1">
+                    {calculateEligibility.nextSteps.map((step, i) => (
+                      <div key={i} className="flex items-start gap-1.5 p-1.5 rounded bg-chart-1/10">
+                        <CheckCircle className="h-2.5 w-2.5 text-chart-1 flex-shrink-0 mt-0.5" />
+                        <span className="text-[8px] text-chart-1">{step}</span>
                     </div>
                   ))}
                 </div>

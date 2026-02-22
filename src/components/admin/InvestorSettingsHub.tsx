@@ -78,9 +78,9 @@ const InvestorSettingsHub = ({ initialTab = 'wna' }: InvestorSettingsHubProps) =
 
   const getTierBadge = (tier: string) => {
     const colors = {
-      gold: 'bg-amber-500/20 text-amber-600 border-amber-500/30',
-      silver: 'bg-slate-400/20 text-slate-600 border-slate-400/30',
-      bronze: 'bg-orange-600/20 text-orange-700 border-orange-600/30',
+      gold: 'bg-chart-3/20 text-chart-3 border-chart-3/30',
+      silver: 'bg-muted text-muted-foreground border-border',
+      bronze: 'bg-chart-5/20 text-chart-5 border-chart-5/30',
       unlisted: 'bg-muted text-muted-foreground border-border',
     };
     return colors[tier as keyof typeof colors] || colors.unlisted;
@@ -109,8 +109,8 @@ const InvestorSettingsHub = ({ initialTab = 'wna' }: InvestorSettingsHubProps) =
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-              <Plane className="h-4 w-4 text-blue-500" />
+            <div className="h-8 w-8 rounded-lg bg-chart-4/10 flex items-center justify-center">
+              <Plane className="h-4 w-4 text-chart-4" />
             </div>
             <div>
               <p className="text-lg font-bold">47</p>
@@ -120,8 +120,8 @@ const InvestorSettingsHub = ({ initialTab = 'wna' }: InvestorSettingsHubProps) =
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-green-500/10 flex items-center justify-center">
-              <Landmark className="h-4 w-4 text-green-500" />
+            <div className="h-8 w-8 rounded-lg bg-chart-1/10 flex items-center justify-center">
+              <Landmark className="h-4 w-4 text-chart-1" />
             </div>
             <div>
               <p className="text-lg font-bold">82</p>
@@ -131,8 +131,8 @@ const InvestorSettingsHub = ({ initialTab = 'wna' }: InvestorSettingsHubProps) =
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
-              <CheckCircle className="h-4 w-4 text-amber-500" />
+            <div className="h-8 w-8 rounded-lg bg-chart-3/10 flex items-center justify-center">
+              <CheckCircle className="h-4 w-4 text-chart-3" />
             </div>
             <div>
               <p className="text-lg font-bold">23</p>
@@ -142,8 +142,8 @@ const InvestorSettingsHub = ({ initialTab = 'wna' }: InvestorSettingsHubProps) =
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-              <TrendingUp className="h-4 w-4 text-purple-500" />
+            <div className="h-8 w-8 rounded-lg bg-accent/10 flex items-center justify-center">
+              <TrendingUp className="h-4 w-4 text-accent-foreground" />
             </div>
             <div>
               <p className="text-lg font-bold">68%</p>
@@ -318,8 +318,8 @@ const InvestorSettingsHub = ({ initialTab = 'wna' }: InvestorSettingsHubProps) =
                     onCheckedChange={(checked) => setWniSettings({...wniSettings, slikCheckerAdminOnly: checked})}
                   />
                 </div>
-                <div className="p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
-                  <p className="text-[10px] text-amber-700 dark:text-amber-400">
+                <div className="p-3 bg-chart-3/10 rounded-lg border border-chart-3/20">
+                  <p className="text-[10px] text-chart-3">
                     ⚠️ SLIK Credit Checker contains sensitive financial data and should remain admin-only for compliance.
                   </p>
                 </div>
@@ -443,9 +443,9 @@ const InvestorAnalyticsContent = () => {
   ];
 
   const eligibilityStats = [
-    { status: 'Eligible', count: 89, color: 'bg-green-500' },
-    { status: 'Pending Review', count: 23, color: 'bg-amber-500' },
-    { status: 'Not Eligible', count: 17, color: 'bg-red-500' },
+    { status: 'Eligible', count: 89, color: 'bg-chart-1' },
+    { status: 'Pending Review', count: 23, color: 'bg-chart-3' },
+    { status: 'Not Eligible', count: 17, color: 'bg-destructive' },
   ];
 
   const recentInquiries = [
@@ -459,11 +459,11 @@ const InvestorAnalyticsContent = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'eligible':
-        return <Badge className="bg-green-500/20 text-green-600 border-green-500/30 text-[9px]">Eligible</Badge>;
+        return <Badge className="bg-chart-1/20 text-chart-1 border-chart-1/30 text-[9px]">Eligible</Badge>;
       case 'pending':
-        return <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30 text-[9px]">Pending</Badge>;
+        return <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30 text-[9px]">Pending</Badge>;
       case 'not_eligible':
-        return <Badge className="bg-red-500/20 text-red-600 border-red-500/30 text-[9px]">Not Eligible</Badge>;
+        return <Badge className="bg-destructive/20 text-destructive border-destructive/30 text-[9px]">Not Eligible</Badge>;
       default:
         return null;
     }
@@ -479,8 +479,8 @@ const InvestorAnalyticsContent = () => {
               <p className="text-[10px] text-muted-foreground">Total Inquiries</p>
               <p className="text-xl font-bold">129</p>
               <div className="flex items-center gap-1 mt-1">
-                <ArrowUpRight className="h-3 w-3 text-green-500" />
-                <span className="text-[10px] text-green-500">+12.5%</span>
+                <ArrowUpRight className="h-3 w-3 text-chart-1" />
+                <span className="text-[10px] text-chart-1">+12.5%</span>
               </div>
             </div>
             <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -494,12 +494,12 @@ const InvestorAnalyticsContent = () => {
               <p className="text-[10px] text-muted-foreground">Eligibility Checks</p>
               <p className="text-xl font-bold">89</p>
               <div className="flex items-center gap-1 mt-1">
-                <ArrowUpRight className="h-3 w-3 text-green-500" />
-                <span className="text-[10px] text-green-500">+8.3%</span>
+                <ArrowUpRight className="h-3 w-3 text-chart-1" />
+                <span className="text-[10px] text-chart-1">+8.3%</span>
               </div>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-green-500/10 flex items-center justify-center">
-              <UserCheck className="h-5 w-5 text-green-500" />
+            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
+              <UserCheck className="h-5 w-5 text-chart-1" />
             </div>
           </div>
         </Card>
@@ -509,12 +509,12 @@ const InvestorAnalyticsContent = () => {
               <p className="text-[10px] text-muted-foreground">Conversion Rate</p>
               <p className="text-xl font-bold">71%</p>
               <div className="flex items-center gap-1 mt-1">
-                <ArrowUpRight className="h-3 w-3 text-green-500" />
-                <span className="text-[10px] text-green-500">+5.2%</span>
+                <ArrowUpRight className="h-3 w-3 text-chart-1" />
+                <span className="text-[10px] text-chart-1">+5.2%</span>
               </div>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
-              <Target className="h-5 w-5 text-blue-500" />
+            <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
+              <Target className="h-5 w-5 text-chart-4" />
             </div>
           </div>
         </Card>
@@ -524,12 +524,12 @@ const InvestorAnalyticsContent = () => {
               <p className="text-[10px] text-muted-foreground">This Month</p>
               <p className="text-xl font-bold">47</p>
               <div className="flex items-center gap-1 mt-1">
-                <ArrowDownRight className="h-3 w-3 text-red-500" />
-                <span className="text-[10px] text-red-500">-2.1%</span>
+                <ArrowDownRight className="h-3 w-3 text-destructive" />
+                <span className="text-[10px] text-destructive">-2.1%</span>
               </div>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-              <Calendar className="h-5 w-5 text-purple-500" />
+            <div className="h-10 w-10 rounded-xl bg-accent/10 flex items-center justify-center">
+              <Calendar className="h-5 w-5 text-accent-foreground" />
             </div>
           </div>
         </Card>

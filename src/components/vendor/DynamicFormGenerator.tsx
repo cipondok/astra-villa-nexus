@@ -284,7 +284,7 @@ const DynamicFormGenerator = ({
         return (
           <div key={field.name} className="space-y-2">
             <Label htmlFor={field.name}>
-              {field.label} {field.required && <span className="text-red-500">*</span>}
+              {field.label} {field.required && <span className="text-destructive">*</span>}
             </Label>
             <Input
               id={field.name}
@@ -292,7 +292,7 @@ const DynamicFormGenerator = ({
               value={fieldValue || ''}
               onChange={(e) => handleInputChange(field.name, e.target.value)}
               placeholder={field.placeholder}
-              className={error ? 'border-red-500' : ''}
+              className={error ? 'border-destructive' : ''}
             />
             {error && (
               <Alert variant="destructive" className="py-2">
@@ -307,14 +307,14 @@ const DynamicFormGenerator = ({
         return (
           <div key={field.name} className="space-y-2">
             <Label htmlFor={field.name}>
-              {field.label} {field.required && <span className="text-red-500">*</span>}
+              {field.label} {field.required && <span className="text-destructive">*</span>}
             </Label>
             <textarea
               id={field.name}
               value={fieldValue || ''}
               onChange={(e) => handleInputChange(field.name, e.target.value)}
               placeholder={field.placeholder}
-              className={`w-full p-2 border rounded-md ${error ? 'border-red-500' : 'border-input'}`}
+              className={`w-full p-2 border rounded-md ${error ? 'border-destructive' : 'border-input'}`}
               rows={3}
             />
             {error && (
@@ -330,10 +330,10 @@ const DynamicFormGenerator = ({
         return (
           <div key={field.name} className="space-y-2">
             <Label htmlFor={field.name}>
-              {field.label} {field.required && <span className="text-red-500">*</span>}
+              {field.label} {field.required && <span className="text-destructive">*</span>}
             </Label>
             <Select onValueChange={(value) => handleInputChange(field.name, value)}>
-              <SelectTrigger className={error ? 'border-red-500' : ''}>
+              <SelectTrigger className={error ? 'border-destructive' : ''}>
                 <SelectValue placeholder={`Pilih ${field.label}`} />
               </SelectTrigger>
               <SelectContent>
@@ -357,7 +357,7 @@ const DynamicFormGenerator = ({
         return (
           <div key={field.name} className="space-y-3">
             <Label>
-              {field.label} {field.required && <span className="text-red-500">*</span>}
+              {field.label} {field.required && <span className="text-destructive">*</span>}
             </Label>
             <div className="grid grid-cols-2 gap-3">
               {field.options?.map((option) => (
@@ -394,9 +394,9 @@ const DynamicFormGenerator = ({
         return (
           <div key={field.name} className="space-y-2">
             <Label htmlFor={field.name}>
-              {field.label} {field.required && <span className="text-red-500">*</span>}
+              {field.label} {field.required && <span className="text-destructive">*</span>}
             </Label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+            <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
               <input
                 type="file"
                 id={field.name}
@@ -416,11 +416,11 @@ const DynamicFormGenerator = ({
                 <Upload className="h-4 w-4 mr-2" />
                 Upload File
               </Button>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 {field.accept?.toUpperCase()} files, max {field.maxSize}MB
               </p>
               {uploadedFiles[field.name] && (
-                <div className="mt-2 flex items-center justify-center text-green-600">
+                <div className="mt-2 flex items-center justify-center text-chart-1">
                   <CheckCircle className="h-4 w-4 mr-1" />
                   <span className="text-sm">{uploadedFiles[field.name].name}</span>
                 </div>
@@ -463,11 +463,11 @@ const DynamicFormGenerator = ({
       </CardHeader>
       <CardContent className="space-y-6">
         {propertyType === 'commercial' && (
-          <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200">
-            <h4 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">
+          <div className="p-4 bg-chart-3/10 rounded-lg border border-chart-3/30">
+            <h4 className="font-semibold text-chart-3 mb-2">
               ⚠️ Persyaratan Komersial Tambahan
             </h4>
-            <ul className="text-sm text-orange-700 dark:text-orange-300 space-y-1">
+            <ul className="text-sm text-chart-3/80 space-y-1">
               <li>• Surat Izin Usaha wajib dilampirkan</li>
               <li>• Tarif akan disesuaikan 50% lebih tinggi</li>
               <li>• Asuransi komersial mungkin diperlukan</li>
