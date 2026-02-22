@@ -23,7 +23,7 @@ const desktopApps = [
     description: 'View system overview, analytics, and key performance metrics',
     icon: BarChart3, 
     section: 'dashboard',
-    color: 'bg-blue-500'
+    color: 'bg-chart-4'
   },
   { 
     id: 'users', 
@@ -31,7 +31,7 @@ const desktopApps = [
     description: 'Manage user accounts, roles, and permissions',
     icon: Users, 
     section: 'users',
-    color: 'bg-purple-500'
+    color: 'bg-accent'
   },
   { 
     id: 'properties', 
@@ -39,7 +39,7 @@ const desktopApps = [
     description: 'Manage property listings, details, and availability',
     icon: Building2, 
     section: 'properties',
-    color: 'bg-green-500'
+    color: 'bg-chart-1'
   },
   { 
     id: 'security', 
@@ -47,7 +47,7 @@ const desktopApps = [
     description: 'Security settings, audit logs, and access control',
     icon: Shield, 
     section: 'security',
-    color: 'bg-red-500'
+    color: 'bg-destructive'
   },
   { 
     id: 'analytics', 
@@ -55,7 +55,7 @@ const desktopApps = [
     description: 'Advanced analytics, reports, and data insights',
     icon: BarChart3, 
     section: 'analytics',
-    color: 'bg-yellow-500'
+    color: 'bg-chart-3'
   },
   { 
     id: 'messages', 
@@ -63,7 +63,7 @@ const desktopApps = [
     description: 'Customer service, support tickets, and communication',
     icon: MessageSquare, 
     section: 'customer-service',
-    color: 'bg-pink-500'
+    color: 'bg-chart-5'
   },
   { 
     id: 'tools', 
@@ -71,7 +71,7 @@ const desktopApps = [
     description: 'Administrative tools, utilities, and system functions',
     icon: Wrench, 
     section: 'tools',
-    color: 'bg-indigo-500'
+    color: 'bg-primary'
   },
   { 
     id: 'reports', 
@@ -79,7 +79,7 @@ const desktopApps = [
     description: 'Generate and manage system reports and documents',
     icon: FileText, 
     section: 'reports',
-    color: 'bg-orange-500'
+    color: 'bg-chart-3'
   },
   { 
     id: 'settings', 
@@ -87,7 +87,7 @@ const desktopApps = [
     description: 'System configuration, preferences, and setup',
     icon: Settings, 
     section: 'settings',
-    color: 'bg-gray-500'
+    color: 'bg-muted-foreground'
   },
   { 
     id: 'billing', 
@@ -95,7 +95,7 @@ const desktopApps = [
     description: 'Payment management, billing, and financial settings',
     icon: CreditCard, 
     section: 'billing',
-    color: 'bg-emerald-500'
+    color: 'bg-chart-1'
   },
   { 
     id: 'gateway-setup', 
@@ -103,7 +103,7 @@ const desktopApps = [
     description: 'Configure local payment gateways and integrations',
     icon: Settings, 
     section: 'gateway-setup',
-    color: 'bg-cyan-500'
+    color: 'bg-chart-5'
   },
   { 
     id: 'seo', 
@@ -111,7 +111,7 @@ const desktopApps = [
     description: 'Search engine optimization and website configuration',
     icon: Globe, 
     section: 'seo',
-    color: 'bg-cyan-500'
+    color: 'bg-chart-5'
   },
   { 
     id: 'system-tools', 
@@ -119,7 +119,7 @@ const desktopApps = [
     description: 'Database monitoring, error tracking, system health, configuration, and administrative tools',
     icon: Settings, 
     section: 'system-tools',
-    color: 'bg-purple-500',
+    color: 'bg-accent',
     badge: 'NEW',
     badgeType: 'new',
     addedDate: new Date().toISOString()
@@ -130,7 +130,7 @@ const desktopApps = [
     description: 'Know Your Customer verification and compliance',
     icon: CheckCircle, 
     section: 'kyc',
-    color: 'bg-teal-500'
+    color: 'bg-chart-2'
   }
 ];
 
@@ -140,7 +140,7 @@ const fileCategories = [
     id: 'admin',
     name: 'Administration',
     icon: Shield,
-    color: 'bg-red-500',
+    color: 'bg-destructive',
     section: 'users',
     files: [
       { name: 'User Management', section: 'users' },
@@ -153,7 +153,7 @@ const fileCategories = [
     id: 'properties',
     name: 'Properties',
     icon: Building2,
-    color: 'bg-green-500',
+    color: 'bg-chart-1',
     section: 'properties',
     files: [
       { name: 'Property Listings', section: 'properties' },
@@ -166,7 +166,7 @@ const fileCategories = [
     id: 'analytics',
     name: 'Analytics & Reports',
     icon: BarChart3,
-    color: 'bg-blue-500',
+    color: 'bg-chart-4',
     section: 'analytics',
     files: [
       { name: 'Dashboard Stats', section: 'analytics' },
@@ -309,17 +309,17 @@ export const MacOSAdminDesktop = () => {
   };
 
   const getAlertColor = (severity: string, type: string) => {
-    if (severity === 'high') return 'text-red-500';
-    if (severity === 'medium') return 'text-yellow-500';
-    if (type === 'security') return 'text-orange-500';
-    return 'text-blue-500';
+    if (severity === 'high') return 'text-destructive';
+    if (severity === 'medium') return 'text-chart-3';
+    if (type === 'security') return 'text-chart-3';
+    return 'text-chart-4';
   };
 
   const getSeverityBadge = (severity: string) => {
     const colors = {
-      high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-      medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      high: 'bg-destructive/10 text-destructive',
+      medium: 'bg-chart-3/10 text-chart-3',
+      low: 'bg-chart-1/10 text-chart-1'
     };
     return colors[severity as keyof typeof colors] || colors.low;
   };
@@ -476,13 +476,13 @@ export const MacOSAdminDesktop = () => {
   const getBadgeStyle = (badgeType: string) => {
     switch (badgeType) {
       case 'new':
-        return 'bg-green-500 text-white';
+        return 'bg-chart-1 text-primary-foreground';
       case 'updated':
-        return 'bg-blue-500 text-white';
+        return 'bg-chart-4 text-primary-foreground';
       case 'critical':
-        return 'bg-red-500 text-white animate-pulse';
+        return 'bg-destructive text-destructive-foreground animate-pulse';
       default:
-        return 'bg-orange-500 text-white';
+        return 'bg-chart-3 text-primary-foreground';
     }
   };
 
@@ -494,20 +494,20 @@ export const MacOSAdminDesktop = () => {
     <TooltipProvider>
     <div className={`h-screen w-screen bg-gradient-to-br relative overflow-hidden ${
       theme === 'dark' 
-        ? 'from-blue-950 via-blue-900 to-blue-950' 
-        : 'from-blue-100 via-blue-200 to-blue-300'
+        ? 'from-background via-background to-background' 
+        : 'from-muted via-muted/80 to-muted'
     }`}>
       {/* Menu Bar */}
       <div className={`h-8 backdrop-blur-md border-b flex items-center justify-between px-4 text-sm relative z-50 ${
         theme === 'dark'
-          ? 'bg-blue-950/30 border-blue-400/20 text-white'
-          : 'bg-blue-50/30 border-blue-400/30 text-blue-900'
+          ? 'bg-background/30 border-border/20 text-foreground'
+          : 'bg-background/30 border-border/30 text-foreground'
       }`}>
         <div className="flex items-center space-x-4">
             <button 
             onClick={() => setShowStartMenu(!showStartMenu)}
             className={`px-2 py-1 rounded text-xs flex items-center space-x-1 ${
-              theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+              theme === 'dark' ? 'hover:bg-primary/20' : 'hover:bg-primary/10'
             }`}
           >
             <div className="w-4 h-4 flex items-center justify-center">
@@ -518,7 +518,7 @@ export const MacOSAdminDesktop = () => {
           <button 
             onClick={() => setShowSpotlight(true)}
             className={`px-2 py-1 rounded text-xs ${
-              theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+              theme === 'dark' ? 'hover:bg-primary/20' : 'hover:bg-primary/10'
             }`}
           >
             Functions
@@ -526,7 +526,7 @@ export const MacOSAdminDesktop = () => {
           <button 
             onClick={() => setShowConfigurations(true)}
             className={`px-2 py-1 rounded text-xs ${
-              theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+              theme === 'dark' ? 'hover:bg-primary/20' : 'hover:bg-primary/10'
             }`}
           >
             Setting
@@ -537,7 +537,7 @@ export const MacOSAdminDesktop = () => {
           <button
             onClick={goHome}
             className={`flex items-center space-x-1 px-2 py-1 rounded ${
-              theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+              theme === 'dark' ? 'hover:bg-primary/20' : 'hover:bg-primary/10'
             }`}
             title="Go to Home"
           >
@@ -548,7 +548,7 @@ export const MacOSAdminDesktop = () => {
           <button
             onClick={toggleTheme}
             className={`flex items-center space-x-1 px-2 py-1 rounded ${
-              theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+              theme === 'dark' ? 'hover:bg-primary/20' : 'hover:bg-primary/10'
             }`}
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           >
@@ -559,13 +559,13 @@ export const MacOSAdminDesktop = () => {
             <button
               onClick={() => setShowAlerts(!showAlerts)}
               className={`flex items-center space-x-1 px-2 py-1 rounded relative ${
-                theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+                theme === 'dark' ? 'hover:bg-primary/20' : 'hover:bg-primary/10'
               }`}
               title="System Alerts"
             >
               <Bell className="w-3 h-3" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}

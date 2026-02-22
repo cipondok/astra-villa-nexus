@@ -304,8 +304,8 @@ const ASTRATokenHub = () => {
       {/* Header - Same style as Dashboard Overview */}
       <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-yellow-500/5 rounded-xl border border-border/30 px-4 py-3">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-yellow-500/10">
-            <Coins className="h-5 w-5 text-yellow-600" />
+          <div className="p-2 rounded-lg bg-chart-3/10">
+            <Coins className="h-5 w-5 text-chart-3" />
           </div>
           <div>
             <h1 className="text-base font-bold">ASTRA Token Hub</h1>
@@ -370,55 +370,55 @@ const ASTRATokenHub = () => {
         <TabsContent value="overview">
           {/* Overview Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
+            <Card className="bg-gradient-to-br from-chart-4/10 to-chart-4/5 border-chart-4/20">
               <CardContent className="p-3">
                 <div className="flex items-center gap-1.5">
-                  <Users className="h-4 w-4 text-blue-600" />
-                  <span className="text-xs text-blue-700 dark:text-blue-300">Total Users</span>
+                  <Users className="h-4 w-4 text-chart-4" />
+                  <span className="text-xs text-chart-4">Total Users</span>
                 </div>
-                <p className="text-lg font-bold text-blue-900 dark:text-blue-100 mt-1">
+                <p className="text-lg font-bold text-foreground mt-1">
                   {loading ? '...' : analytics.totalUsers.toLocaleString()}
                 </p>
-                <p className="text-[10px] text-blue-600 dark:text-blue-400">+12% from last month</p>
+                <p className="text-[10px] text-chart-4">+12% from last month</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
+            <Card className="bg-gradient-to-br from-chart-1/10 to-chart-1/5 border-chart-1/20">
               <CardContent className="p-3">
                 <div className="flex items-center gap-1.5">
-                  <Coins className="h-4 w-4 text-green-600" />
-                  <span className="text-xs text-green-700 dark:text-green-300">Total Tokens</span>
+                  <Coins className="h-4 w-4 text-chart-1" />
+                  <span className="text-xs text-chart-1">Total Tokens</span>
                 </div>
-                <p className="text-lg font-bold text-green-900 dark:text-green-100 mt-1">
+                <p className="text-lg font-bold text-foreground mt-1">
                   {loading ? '...' : `${analytics.totalTokens.toLocaleString()}`}
                 </p>
-                <p className="text-[10px] text-green-600 dark:text-green-400">+8% from last month</p>
+                <p className="text-[10px] text-chart-1">+8% from last month</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 border-orange-200 dark:border-orange-800">
+            <Card className="bg-gradient-to-br from-chart-3/10 to-chart-3/5 border-chart-3/20">
               <CardContent className="p-3">
                 <div className="flex items-center gap-1.5">
-                  <Activity className="h-4 w-4 text-orange-600" />
-                  <span className="text-xs text-orange-700 dark:text-orange-300">Transactions</span>
+                  <Activity className="h-4 w-4 text-chart-3" />
+                  <span className="text-xs text-chart-3">Transactions</span>
                 </div>
-                <p className="text-lg font-bold text-orange-900 dark:text-orange-100 mt-1">
+                <p className="text-lg font-bold text-foreground mt-1">
                   {loading ? '...' : analytics.totalTransactions.toLocaleString()}
                 </p>
-                <p className="text-[10px] text-orange-600 dark:text-orange-400">+25% from last month</p>
+                <p className="text-[10px] text-chart-3">+25% from last month</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800">
+            <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
               <CardContent className="p-3">
                 <div className="flex items-center gap-1.5">
-                  <TrendingUp className="h-4 w-4 text-purple-600" />
-                  <span className="text-xs text-purple-700 dark:text-purple-300">Active Users</span>
+                  <TrendingUp className="h-4 w-4 text-accent-foreground" />
+                  <span className="text-xs text-accent-foreground">Active Users</span>
                 </div>
-                <p className="text-lg font-bold text-purple-900 dark:text-purple-100 mt-1">
+                <p className="text-lg font-bold text-foreground mt-1">
                   {loading ? '...' : analytics.activeUsers}
                 </p>
-                <p className="text-[10px] text-purple-600 dark:text-purple-400">Currently online</p>
+                <p className="text-[10px] text-accent-foreground">Currently online</p>
               </CardContent>
             </Card>
           </div>

@@ -442,7 +442,7 @@ const IndonesianPaymentMerchantConfig = () => {
                     ) : (
                       <Badge variant="secondary" className="text-[7px] px-1 py-0">Off</Badge>
                     )}
-                    {status === 'connected' && <CheckCircle className="h-2.5 w-2.5 text-emerald-400" />}
+                    {status === 'connected' && <CheckCircle className="h-2.5 w-2.5 text-chart-1" />}
                   </div>
                 </div>
               </CardContent>

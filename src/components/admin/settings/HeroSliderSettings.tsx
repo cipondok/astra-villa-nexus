@@ -200,7 +200,7 @@ const HeroSliderSettings: React.FC = () => {
           <Card className="border-border/50">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs font-semibold flex items-center gap-2">
-                <Zap className="h-3.5 w-3.5 text-amber-500" /> Animation Settings
+                <Zap className="h-3.5 w-3.5 text-chart-3" /> Animation Settings
               </CardTitle>
             </CardHeader>
             <CardContent className="px-3 pb-3 pt-0 space-y-3">
@@ -246,7 +246,7 @@ const HeroSliderSettings: React.FC = () => {
           <Card className="border-border/50">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs font-semibold flex items-center gap-2">
-                <Box className="h-3.5 w-3.5 text-violet-500" /> 3D Effects
+                <Box className="h-3.5 w-3.5 text-accent-foreground" /> 3D Effects
               </CardTitle>
             </CardHeader>
             <CardContent className="px-3 pb-3 pt-0 space-y-3">
@@ -298,7 +298,7 @@ const HeroSliderSettings: React.FC = () => {
           <Card className="border-border/50">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs font-semibold flex items-center gap-2">
-                <Palette className="h-3.5 w-3.5 text-emerald-500" /> Overlay & Visual Effects
+                <Palette className="h-3.5 w-3.5 text-chart-1" /> Overlay & Visual Effects
               </CardTitle>
             </CardHeader>
             <CardContent className="px-3 pb-3 pt-0 space-y-3">

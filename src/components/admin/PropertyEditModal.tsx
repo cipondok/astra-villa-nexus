@@ -627,7 +627,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
               </div>
               <div>
                 <h1 className="text-base sm:text-lg font-bold">Edit Property</h1>
-                <p className="text-indigo-100 text-xs font-normal mt-0.5 hidden sm:block">Update property info</p>
+                <p className="text-primary-foreground/70 text-xs font-normal mt-0.5 hidden sm:block">Update property info</p>
               </div>
             </DialogTitle>
             <Button
@@ -641,9 +641,9 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           </div>
           <DialogDescription className="sr-only">Edit property</DialogDescription>
           {!isAuthorizedForRestrictedTypes() && (
-            <div className="mt-2 flex items-center gap-1.5 p-2 bg-amber-500/20 border border-amber-400/30 rounded-lg backdrop-blur-sm">
-              <AlertTriangle className="h-3 w-3 text-amber-200" />
-              <span className="text-[10px] sm:text-xs text-amber-100">
+            <div className="mt-2 flex items-center gap-1.5 p-2 bg-chart-3/20 border border-chart-3/30 rounded-lg backdrop-blur-sm">
+              <AlertTriangle className="h-3 w-3 text-chart-3" />
+              <span className="text-[10px] sm:text-xs text-chart-3">
                 Note: Cannot set status to "New Project" or "Pre-Launching"
               </span>
             </div>
@@ -690,10 +690,10 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
               <div className="space-y-3 py-2" id="gallery-section">
                 {/* Current Thumbnail Display */}
                 {editData.thumbnail_url && (
-                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-lg p-3 border border-amber-200 dark:border-amber-700">
+                   <div className="bg-gradient-to-r from-chart-3/10 to-chart-3/5 dark:from-chart-3/20 dark:to-chart-3/10 rounded-lg p-3 border border-chart-3/20 dark:border-chart-3/30">
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-xs font-semibold text-amber-800 dark:text-amber-200 flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                      <h4 className="text-xs font-semibold text-foreground flex items-center gap-1">
+                        <Star className="h-3 w-3 fill-chart-3 text-chart-3" />
                         Current Thumbnail
                       </h4>
                       <Button
@@ -701,7 +701,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                         variant="ghost"
                         size="sm"
                         onClick={removeThumbnail}
-                        className="h-6 px-2 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="h-6 px-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
                       >
                         <Trash2 className="h-3 w-3 mr-1" />
                         Remove
@@ -743,11 +743,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                           disabled={uploading}
                           className="border-slate-300 dark:border-slate-600 focus:border-purple-500 h-8 text-xs"
                         />
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                        <p className="text-[10px] text-muted-foreground">
                           JPG, PNG, max 5MB each
                         </p>
                         {uploading && (
-                          <div className="flex items-center gap-1.5 text-purple-600 text-xs">
+                          <div className="flex items-center gap-1.5 text-primary text-xs">
                             <Upload className="h-3 w-3 animate-pulse" />
                             Uploading...
                           </div>
@@ -801,7 +801,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                               type="button"
                               variant="destructive"
                               size="sm"
-                              className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 bg-red-500 hover:bg-red-600"
+                              className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 bg-destructive hover:bg-destructive/90"
                               onClick={() => removeImage(index)}
                             >
                               <Trash2 className="h-3 w-3" />
@@ -813,8 +813,8 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                               size="sm"
                               className={`absolute bottom-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-5 px-1.5 text-[10px] ${
                                 editData.thumbnail_url === url 
-                                  ? 'bg-amber-500 hover:bg-amber-600 text-white' 
-                                  : 'bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500'
+                                  ? 'bg-chart-3 hover:bg-chart-3/90 text-primary-foreground' 
+                                  : 'bg-muted hover:bg-muted/80 text-muted-foreground'
                               }`}
                               onClick={() => {
                                 setEditData(prev => ({ ...prev, thumbnail_url: url }));
@@ -928,7 +928,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                           value={editData.development_status} 
                           onValueChange={(value) => handleInputChange('development_status', value)}
                         >
-                          <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm">
+                            <SelectTrigger className="border-border focus:border-primary h-8 text-sm">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -936,7 +936,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                               <SelectItem key={option.value} value={option.value}>
                                 {option.label}
                                 {['new_project', 'pre_launching'].includes(option.value) && !isAuthorizedForRestrictedTypes() && (
-                                  <span className="text-[10px] text-amber-600 ml-1">(Restricted)</span>
+                                  <span className="text-[10px] text-chart-3 ml-1">(Restricted)</span>
                                 )}
                               </SelectItem>
                             ))}
