@@ -73,14 +73,14 @@ const InvoiceGenerator = ({ invoiceData, onPaymentInitiate }: InvoiceGeneratorPr
     switch (status) {
       case 'paid':
         return (
-          <Badge className="bg-green-100 text-green-800">
+          <Badge className="bg-chart-1/10 text-chart-1">
             <CheckCircle className="h-3 w-3 mr-1" />
             Dibayar
           </Badge>
         );
       case 'pending':
         return (
-          <Badge className="bg-yellow-100 text-yellow-800">
+          <Badge className="bg-chart-3/10 text-chart-3">
             <Clock className="h-3 w-3 mr-1" />
             Menunggu Pembayaran
           </Badge>
@@ -197,35 +197,35 @@ const InvoiceGenerator = ({ invoiceData, onPaymentInitiate }: InvoiceGeneratorPr
 
       {/* Invoice Content */}
       <Card>
-        <div ref={invoiceRef} className="bg-white">
+        <div ref={invoiceRef} className="bg-background">
           {/* Invoice Header */}
           <CardHeader className="border-b">
             <div className="flex justify-between items-start">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">INVOICE</h1>
-                <p className="text-lg text-gray-600">#{invoiceData.invoiceNumber}</p>
+                <h1 className="text-3xl font-bold text-foreground">INVOICE</h1>
+                <p className="text-lg text-muted-foreground">#{invoiceData.invoiceNumber}</p>
               </div>
               
               <div className="text-right">
-                <div className="text-2xl font-bold text-blue-600">ASTRA VILLA</div>
-                <p className="text-sm text-gray-600">Premium Property Rental</p>
-                <p className="text-sm text-gray-600">Jakarta, Indonesia</p>
+                <div className="text-2xl font-bold text-primary">ASTRA VILLA</div>
+                <p className="text-sm text-muted-foreground">Premium Property Rental</p>
+                <p className="text-sm text-muted-foreground">Jakarta, Indonesia</p>
               </div>
             </div>
 
             <div className="flex justify-between items-center mt-6">
               <div>
-                <p className="text-sm text-gray-600">Tanggal Invoice:</p>
+                <p className="text-sm text-muted-foreground">Tanggal Invoice:</p>
                 <p className="font-semibold">{format(new Date(invoiceData.issueDate), 'dd MMMM yyyy', { locale: id })}</p>
               </div>
               
               <div>
-                <p className="text-sm text-gray-600">Jatuh Tempo:</p>
+                <p className="text-sm text-muted-foreground">Jatuh Tempo:</p>
                 <p className="font-semibold">{format(new Date(invoiceData.dueDate), 'dd MMMM yyyy', { locale: id })}</p>
               </div>
               
               <div>
-                <p className="text-sm text-gray-600">Status Pembayaran:</p>
+                <p className="text-sm text-muted-foreground">Status Pembayaran:</p>
                 {getStatusBadge(invoiceData.booking.paymentStatus)}
               </div>
             </div>
@@ -273,18 +273,18 @@ const InvoiceGenerator = ({ invoiceData, onPaymentInitiate }: InvoiceGeneratorPr
                 <Calendar className="h-5 w-5 mr-2" />
                 Detail Booking
               </h3>
-              <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="bg-muted/50 p-4 rounded-lg">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                   <div>
-                    <p className="text-gray-600">Check-in</p>
+                    <p className="text-muted-foreground">Check-in</p>
                     <p className="font-semibold">{format(new Date(invoiceData.booking.checkIn), 'dd MMMM yyyy', { locale: id })}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Check-out</p>
+                    <p className="text-muted-foreground">Check-out</p>
                     <p className="font-semibold">{format(new Date(invoiceData.booking.checkOut), 'dd MMMM yyyy', { locale: id })}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Total Hari</p>
+                    <p className="text-muted-foreground">Total Hari</p>
                     <p className="font-semibold">{invoiceData.booking.totalDays} hari</p>
                   </div>
                 </div>
@@ -296,15 +296,15 @@ const InvoiceGenerator = ({ invoiceData, onPaymentInitiate }: InvoiceGeneratorPr
               <h3 className="text-lg font-semibold mb-3">Rincian Biaya</h3>
               <div className="border rounded-lg overflow-hidden">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-muted/50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Deskripsi</th>
-                      <th className="px-4 py-3 text-right text-sm font-medium text-gray-900">Jumlah</th>
-                      <th className="px-4 py-3 text-right text-sm font-medium text-gray-900">Harga</th>
-                      <th className="px-4 py-3 text-right text-sm font-medium text-gray-900">Total</th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-foreground">Deskripsi</th>
+                      <th className="px-4 py-3 text-right text-sm font-medium text-foreground">Jumlah</th>
+                      <th className="px-4 py-3 text-right text-sm font-medium text-foreground">Harga</th>
+                      <th className="px-4 py-3 text-right text-sm font-medium text-foreground">Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-border">
                     <tr>
                       <td className="px-4 py-3 text-sm">Sewa Properti ({invoiceData.pricing.totalDays} hari)</td>
                       <td className="px-4 py-3 text-sm text-right">{invoiceData.pricing.totalDays}</td>
@@ -324,7 +324,7 @@ const InvoiceGenerator = ({ invoiceData, onPaymentInitiate }: InvoiceGeneratorPr
                       <td className="px-4 py-3 text-sm text-right">{formatCurrency(invoiceData.pricing.serviceCharge)}</td>
                     </tr>
                   </tbody>
-                  <tfoot className="bg-gray-50">
+                  <tfoot className="bg-muted/50">
                     <tr>
                       <td colSpan={3} className="px-4 py-3 text-sm font-semibold text-right">TOTAL</td>
                       <td className="px-4 py-3 text-lg font-bold text-right">{formatCurrency(invoiceData.pricing.total)}</td>
@@ -337,18 +337,18 @@ const InvoiceGenerator = ({ invoiceData, onPaymentInitiate }: InvoiceGeneratorPr
             {/* Payment Information */}
             <div className="mb-8">
               <h3 className="text-lg font-semibold mb-3">Informasi Pembayaran</h3>
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-700 mb-2">
+              <div className="bg-primary/5 p-4 rounded-lg">
+                <p className="text-sm text-foreground mb-2">
                   <strong>Metode Pembayaran:</strong> {invoiceData.paymentMethod}
                 </p>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-foreground">
                   <strong>Booking ID:</strong> {invoiceData.bookingId}
                 </p>
               </div>
             </div>
 
             {/* Terms & Conditions */}
-            <div className="border-t pt-6 text-sm text-gray-600">
+            <div className="border-t pt-6 text-sm text-muted-foreground">
               <h3 className="font-semibold mb-2">Syarat dan Ketentuan:</h3>
               <ul className="list-disc list-inside space-y-1">
                 <li>Pembayaran wajib dilakukan sebelum tanggal jatuh tempo</li>
@@ -360,7 +360,7 @@ const InvoiceGenerator = ({ invoiceData, onPaymentInitiate }: InvoiceGeneratorPr
             </div>
 
             {/* Footer */}
-            <div className="text-center mt-8 pt-6 border-t text-sm text-gray-500">
+            <div className="text-center mt-8 pt-6 border-t text-sm text-muted-foreground">
               <p>Terima kasih telah memilih ASTRA VILLA</p>
               <p>Email: info@astravilla.com | Telepon: +62 21 1234 5678</p>
             </div>
