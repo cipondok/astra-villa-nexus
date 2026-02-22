@@ -70,10 +70,10 @@ const PWAPrompt: React.FC<PWAPromptProps> = ({
         "fixed bottom-4 right-4 z-50 max-w-sm",
         className
       )}>
-        <Card className="border-green-500/30 bg-card/95 backdrop-blur-sm shadow-xl">
+        <Card className="border-chart-1/30 bg-card/95 backdrop-blur-sm shadow-xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <RefreshCw className="h-4 w-4 text-green-500" />
+              <RefreshCw className="h-4 w-4 text-chart-1" />
               Update Available
             </CardTitle>
             <CardDescription className="text-xs">
@@ -84,7 +84,7 @@ const PWAPrompt: React.FC<PWAPromptProps> = ({
             <Button 
               size="sm" 
               onClick={reloadForUpdate}
-              className="w-full h-8 text-xs bg-green-600 hover:bg-green-700"
+              className="w-full h-8 text-xs bg-chart-1 hover:bg-chart-1/90"
             >
               Update Now
             </Button>
@@ -215,8 +215,8 @@ const PWAPrompt: React.FC<PWAPromptProps> = ({
           <div className="space-y-4 py-4">
             <div className="grid gap-3">
               <div className="flex items-start gap-3">
-                <div className="p-1.5 bg-green-500/10 rounded">
-                  <Zap className="h-4 w-4 text-green-500" />
+                <div className="p-1.5 bg-chart-1/10 rounded">
+                  <Zap className="h-4 w-4 text-chart-1" />
                 </div>
                 <div>
                   <p className="font-medium text-sm">Lightning Fast</p>
@@ -226,8 +226,8 @@ const PWAPrompt: React.FC<PWAPromptProps> = ({
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="p-1.5 bg-blue-500/10 rounded">
-                  <WifiOff className="h-4 w-4 text-blue-500" />
+                <div className="p-1.5 bg-chart-4/10 rounded">
+                  <WifiOff className="h-4 w-4 text-chart-4" />
                 </div>
                 <div>
                   <p className="font-medium text-sm">Works Offline</p>
@@ -237,8 +237,8 @@ const PWAPrompt: React.FC<PWAPromptProps> = ({
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="p-1.5 bg-purple-500/10 rounded">
-                  <HardDrive className="h-4 w-4 text-purple-500" />
+                <div className="p-1.5 bg-accent/10 rounded">
+                  <HardDrive className="h-4 w-4 text-accent-foreground" />
                 </div>
                 <div>
                   <p className="font-medium text-sm">Save Your Favorites</p>

@@ -55,8 +55,8 @@ const navigationGroups: NavigationGroup[] = [
     id: 'overview',
     label: 'Overview',
     icon: Home,
-    color: 'from-blue-500 to-cyan-500',
-    gradient: 'bg-gradient-to-br from-blue-500/10 to-cyan-500/10',
+    color: 'from-primary to-primary/70',
+    gradient: 'bg-gradient-to-br from-primary/10 to-primary/5',
     items: [
       {
         id: 'dashboard',
@@ -85,8 +85,8 @@ const navigationGroups: NavigationGroup[] = [
     id: 'business',
     label: 'Business',
     icon: Briefcase,
-    color: 'from-violet-500 to-purple-500',
-    gradient: 'bg-gradient-to-br from-violet-500/10 to-purple-500/10',
+    color: 'from-accent to-accent/70',
+    gradient: 'bg-gradient-to-br from-accent/10 to-accent/5',
     items: [
       {
         id: 'profile',
@@ -116,8 +116,8 @@ const navigationGroups: NavigationGroup[] = [
     id: 'properties',
     label: 'Properties',
     icon: Building2,
-    color: 'from-emerald-500 to-teal-500',
-    gradient: 'bg-gradient-to-br from-emerald-500/10 to-teal-500/10',
+    color: 'from-chart-1 to-chart-1/70',
+    gradient: 'bg-gradient-to-br from-chart-1/10 to-chart-1/5',
     items: [
       {
         id: 'properties',
@@ -140,8 +140,8 @@ const navigationGroups: NavigationGroup[] = [
     id: 'operations',
     label: 'Operations',
     icon: Calendar,
-    color: 'from-orange-500 to-amber-500',
-    gradient: 'bg-gradient-to-br from-orange-500/10 to-amber-500/10',
+    color: 'from-chart-3 to-chart-3/70',
+    gradient: 'bg-gradient-to-br from-chart-3/10 to-chart-3/5',
     items: [
       {
         id: 'bookings',
@@ -180,8 +180,8 @@ const navigationGroups: NavigationGroup[] = [
     id: 'finance',
     label: 'Finance',
     icon: DollarSign,
-    color: 'from-green-500 to-emerald-500',
-    gradient: 'bg-gradient-to-br from-green-500/10 to-emerald-500/10',
+    color: 'from-chart-1 to-chart-1/70',
+    gradient: 'bg-gradient-to-br from-chart-1/10 to-chart-1/5',
     items: [
       {
         id: 'billing',
@@ -205,8 +205,8 @@ const navigationGroups: NavigationGroup[] = [
     id: 'compliance',
     label: 'Compliance',
     icon: Shield,
-    color: 'from-red-500 to-rose-500',
-    gradient: 'bg-gradient-to-br from-red-500/10 to-rose-500/10',
+    color: 'from-destructive to-destructive/70',
+    gradient: 'bg-gradient-to-br from-destructive/10 to-destructive/5',
     items: [
       {
         id: 'kyc-verification',
@@ -238,8 +238,8 @@ const navigationGroups: NavigationGroup[] = [
     id: 'support',
     label: 'Support',
     icon: HeadphonesIcon,
-    color: 'from-pink-500 to-fuchsia-500',
-    gradient: 'bg-gradient-to-br from-pink-500/10 to-fuchsia-500/10',
+    color: 'from-secondary to-secondary/70',
+    gradient: 'bg-gradient-to-br from-secondary/10 to-secondary/5',
     items: [
       {
         id: 'support',
@@ -294,14 +294,14 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
             >
               <CardContent className="p-4 text-center">
                 <div className={`mx-auto w-10 h-10 rounded-xl flex items-center justify-center mb-2 ${
-                  isActive ? 'bg-white/20' : 'bg-white/50'
+                  isActive ? 'bg-primary-foreground/20' : 'bg-background/50'
                 }`}>
-                  <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-foreground'}`} />
+                  <Icon className={`h-5 w-5 ${isActive ? 'text-primary-foreground' : 'text-foreground'}`} />
                 </div>
-                <p className={`text-xs font-semibold truncate ${isActive ? 'text-white' : 'text-foreground'}`}>
+                <p className={`text-xs font-semibold truncate ${isActive ? 'text-primary-foreground' : 'text-foreground'}`}>
                   {group.label}
                 </p>
-                <p className={`text-[10px] mt-1 ${isActive ? 'text-white/70' : 'text-muted-foreground'}`}>
+                <p className={`text-[10px] mt-1 ${isActive ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
                   {implementedCount}/{group.items.length} active
                 </p>
               </CardContent>
@@ -313,11 +313,11 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       {/* Selected Group Details with Tabs */}
       {currentGroup && (
         <Card className="border-0 shadow-lg overflow-hidden">
-          <CardHeader className={`bg-gradient-to-r ${currentGroup.color} text-white py-4`}>
+          <CardHeader className={`bg-gradient-to-r ${currentGroup.color} text-primary-foreground py-4`}>
             <CardTitle className="flex items-center gap-3 text-lg">
               <currentGroup.icon className="h-5 w-5" />
               {currentGroup.label}
-              <Badge variant="secondary" className="bg-white/20 text-white border-0 ml-auto">
+              <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground border-0 ml-auto">
                 {currentGroup.items.length} items
               </Badge>
             </CardTitle>
@@ -334,7 +334,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
                         value={item.id}
                         disabled={!item.isImplemented}
                         className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all
-                          data-[state=active]:bg-gradient-to-r data-[state=active]:${currentGroup.color} data-[state=active]:text-white data-[state=active]:shadow-md
+                          data-[state=active]:bg-gradient-to-r data-[state=active]:${currentGroup.color} data-[state=active]:text-primary-foreground data-[state=active]:shadow-md
                           ${!item.isImplemented ? 'opacity-50 cursor-not-allowed' : 'hover:bg-muted'}
                         `}
                       >
@@ -358,7 +358,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
                 <TabsContent key={item.id} value={item.id} className="p-6 m-0">
                   <div className="flex items-start gap-4">
                     <div className={`p-3 rounded-xl bg-gradient-to-br ${currentGroup.color}`}>
-                      <item.icon className="h-6 w-6 text-white" />
+                      <item.icon className="h-6 w-6 text-primary-foreground" />
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -371,7 +371,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
                       </h3>
                       <p className="text-muted-foreground mt-1">{item.description}</p>
                       <Button 
-                        className={`mt-4 bg-gradient-to-r ${currentGroup.color} text-white border-0 hover:opacity-90`}
+                        className={`mt-4 bg-gradient-to-r ${currentGroup.color} text-primary-foreground border-0 hover:opacity-90`}
                         disabled={!item.isImplemented}
                       >
                         {item.isImplemented ? 'View Section' : 'Coming Soon'}
@@ -388,7 +388,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
 
       {/* Quick Access - All Links */}
       <Card className="border-0 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-slate-700 to-slate-800 text-white py-3">
+        <CardHeader className="bg-gradient-to-r from-muted to-muted/80 text-foreground py-3">
           <CardTitle className="text-sm flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
             Quick Access - All Sections
@@ -407,7 +407,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
                     size="sm"
                     className={`justify-start text-xs h-auto py-2 ${
                       isActive 
-                        ? `bg-gradient-to-r ${group.color} text-white border-0` 
+                        ? `bg-gradient-to-r ${group.color} text-primary-foreground border-0` 
                         : ''
                     } ${!item.isImplemented ? 'opacity-50' : ''}`}
                     disabled={!item.isImplemented}
