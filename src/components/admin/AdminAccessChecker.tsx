@@ -39,7 +39,7 @@ const AdminAccessChecker = () => {
 
   const getStatusIcon = (isSuccess: boolean) => {
     return isSuccess ? (
-      <CheckCircle className="h-3 w-3 text-emerald-500" />
+      <CheckCircle className="h-3 w-3 text-chart-1" />
     ) : (
       <XCircle className="h-3 w-3 text-destructive" />
     );
@@ -47,7 +47,7 @@ const AdminAccessChecker = () => {
 
   const getStatusBadge = (isSuccess: boolean) => {
     return isSuccess ? (
-      <Badge className="text-[9px] h-4 px-1.5 bg-emerald-500/10 text-emerald-600 border-emerald-500/30">✓ Pass</Badge>
+      <Badge className="text-[9px] h-4 px-1.5 bg-chart-1/10 text-chart-1 border-chart-1/30">✓ Pass</Badge>
     ) : (
       <Badge className="text-[9px] h-4 px-1.5 bg-destructive/10 text-destructive border-destructive/30">✗ Fail</Badge>
     );
@@ -182,36 +182,36 @@ const AdminAccessChecker = () => {
           </h3>
           
           {!user && (
-            <Alert className="p-2 border-amber-500/50 bg-amber-500/10">
-              <AlertTriangle className="h-3 w-3 text-amber-500" />
-              <AlertDescription className="text-[10px] text-amber-600 dark:text-amber-400">
+            <Alert className="p-2 border-chart-3/50 bg-chart-3/10">
+              <AlertTriangle className="h-3 w-3 text-chart-3" />
+              <AlertDescription className="text-[10px] text-chart-3">
                 <strong>Please log in</strong> to access property management features.
               </AlertDescription>
             </Alert>
           )}
 
           {user && !profile && (
-            <Alert className="p-2 border-amber-500/50 bg-amber-500/10">
-              <AlertTriangle className="h-3 w-3 text-amber-500" />
-              <AlertDescription className="text-[10px] text-amber-600 dark:text-amber-400">
+            <Alert className="p-2 border-chart-3/50 bg-chart-3/10">
+              <AlertTriangle className="h-3 w-3 text-chart-3" />
+              <AlertDescription className="text-[10px] text-chart-3">
                 <strong>Profile not found.</strong> Your user profile may not be properly set up.
               </AlertDescription>
             </Alert>
           )}
 
           {user && profile && !isAdmin && (
-            <Alert className="p-2 border-amber-500/50 bg-amber-500/10">
-              <AlertTriangle className="h-3 w-3 text-amber-500" />
-              <AlertDescription className="text-[10px] text-amber-600 dark:text-amber-400">
+            <Alert className="p-2 border-chart-3/50 bg-chart-3/10">
+              <AlertTriangle className="h-3 w-3 text-chart-3" />
+              <AlertDescription className="text-[10px] text-chart-3">
                 <strong>Admin access required.</strong> Your current role is "{profile.role}". Contact an administrator.
               </AlertDescription>
             </Alert>
           )}
 
           {isAdmin && (
-            <Alert className="p-2 border-emerald-500/50 bg-emerald-500/10">
-              <CheckCircle className="h-3 w-3 text-emerald-500" />
-              <AlertDescription className="text-[10px] text-emerald-600 dark:text-emerald-400">
+            <Alert className="p-2 border-chart-1/50 bg-chart-1/10">
+              <CheckCircle className="h-3 w-3 text-chart-1" />
+              <AlertDescription className="text-[10px] text-chart-1">
                 <strong>All requirements met!</strong> You have full admin access to property management.
               </AlertDescription>
             </Alert>

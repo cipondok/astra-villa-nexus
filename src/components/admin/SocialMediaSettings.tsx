@@ -539,7 +539,7 @@ const SocialMediaSettings = () => {
                               <Icon className="h-6 w-6" style={{ color }} />
                               <span className="capitalize text-sm font-medium">{setting.platform}</span>
                               {setting.posting_settings?.auto_post && (
-                                <span className="text-xs text-green-600">Auto-post enabled</span>
+                                <span className="text-xs text-chart-1">Auto-post enabled</span>
                               )}
                             </Button>
                           );

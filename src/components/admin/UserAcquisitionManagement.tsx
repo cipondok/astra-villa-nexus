@@ -152,13 +152,13 @@ const UserAcquisitionManagement = () => {
     switch (status) {
       case 'converted':
       case 'rewarded':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-chart-1" />;
       case 'pending':
       case 'signed_up':
-        return <Clock className="h-4 w-4 text-yellow-500" />;
+        return <Clock className="h-4 w-4 text-chart-3" />;
       case 'expired':
       case 'cancelled':
-        return <Ban className="h-4 w-4 text-red-500" />;
+        return <Ban className="h-4 w-4 text-destructive" />;
       default:
         return <Clock className="h-4 w-4 text-muted-foreground" />;
     }
@@ -179,9 +179,9 @@ const UserAcquisitionManagement = () => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3 bg-green-50 dark:bg-green-500/10 px-4 py-2 rounded-[6px] border border-green-200 dark:border-green-500/20">
+        <div className="flex items-center gap-3 bg-chart-1/10 px-4 py-2 rounded-[6px] border border-chart-1/20">
           <span className="text-sm text-muted-foreground">Target CPA</span>
-          <span className="text-lg font-bold text-green-600">&lt; {formatCurrency(targetCPA)}</span>
+          <span className="text-lg font-bold text-chart-1">&lt; {formatCurrency(targetCPA)}</span>
         </div>
       </div>
 
@@ -189,11 +189,11 @@ const UserAcquisitionManagement = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
         <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-[6px] bg-emerald-500/10 flex items-center justify-center">
-              <DollarSign className="h-5 w-5 text-emerald-500" />
+            <div className="h-10 w-10 rounded-[6px] bg-chart-1/10 flex items-center justify-center">
+              <DollarSign className="h-5 w-5 text-chart-1" />
             </div>
             <div>
-              <p className={`text-xl font-bold ${actualCPA <= targetCPA ? 'text-green-600' : 'text-destructive'}`}>
+              <p className={`text-xl font-bold ${actualCPA <= targetCPA ? 'text-chart-1' : 'text-destructive'}`}>
                 {formatCurrency(actualCPA)}
               </p>
               <p className="text-xs text-muted-foreground">Current CPA</p>
@@ -203,8 +203,8 @@ const UserAcquisitionManagement = () => {
 
         <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-[6px] bg-pink-500/10 flex items-center justify-center">
-              <Gift className="h-5 w-5 text-pink-500" />
+            <div className="h-10 w-10 rounded-[6px] bg-accent/10 flex items-center justify-center">
+              <Gift className="h-5 w-5 text-accent-foreground" />
             </div>
             <div>
               <p className="text-xl font-bold text-foreground">{referrals.length}</p>
@@ -229,8 +229,8 @@ const UserAcquisitionManagement = () => {
 
         <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-[6px] bg-green-500/10 flex items-center justify-center">
-              <FileText className="h-5 w-5 text-green-500" />
+            <div className="h-10 w-10 rounded-[6px] bg-chart-1/10 flex items-center justify-center">
+              <FileText className="h-5 w-5 text-chart-1" />
             </div>
             <div>
               <p className="text-xl font-bold text-foreground">{seoContent.length}</p>
@@ -245,8 +245,8 @@ const UserAcquisitionManagement = () => {
 
         <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-[6px] bg-purple-500/10 flex items-center justify-center">
-              <Instagram className="h-5 w-5 text-purple-500" />
+            <div className="h-10 w-10 rounded-[6px] bg-accent/10 flex items-center justify-center">
+              <Instagram className="h-5 w-5 text-accent-foreground" />
             </div>
             <div>
               <p className="text-xl font-bold text-foreground">{influencers.length}</p>
@@ -258,8 +258,8 @@ const UserAcquisitionManagement = () => {
 
         <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-[6px] bg-orange-500/10 flex items-center justify-center">
-              <Building2 className="h-5 w-5 text-orange-500" />
+            <div className="h-10 w-10 rounded-[6px] bg-chart-3/10 flex items-center justify-center">
+              <Building2 className="h-5 w-5 text-chart-3" />
             </div>
             <div>
               <p className="text-xl font-bold text-foreground">{corporatePartnerships.length}</p>
@@ -271,8 +271,8 @@ const UserAcquisitionManagement = () => {
 
         <div className="bg-card border border-border rounded-[6px] p-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-[6px] bg-indigo-500/10 flex items-center justify-center">
-              <GraduationCap className="h-5 w-5 text-indigo-500" />
+            <div className="h-10 w-10 rounded-[6px] bg-chart-4/10 flex items-center justify-center">
+              <GraduationCap className="h-5 w-5 text-chart-4" />
             </div>
             <div>
               <p className="text-xl font-bold text-foreground">{universityPartnerships.length}</p>
