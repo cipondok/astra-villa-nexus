@@ -102,16 +102,16 @@ const ReferralCampaignCard = () => {
 
             {/* Rewards Info */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                <p className="text-sm text-green-600 dark:text-green-400 mb-1">You Earn</p>
-                <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+              <div className="p-4 rounded-lg bg-chart-1/10 border border-chart-1/20">
+                <p className="text-sm text-chart-1 mb-1">You Earn</p>
+                <p className="text-2xl font-bold text-chart-1">
                   {campaign.referrer_reward_amount} {campaign.referrer_reward_type}
                 </p>
                 <p className="text-xs text-muted-foreground">per successful referral</p>
               </div>
-              <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                <p className="text-sm text-blue-600 dark:text-blue-400 mb-1">Friend Gets</p>
-                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              <div className="p-4 rounded-lg bg-chart-4/10 border border-chart-4/20">
+                <p className="text-sm text-chart-4 mb-1">Friend Gets</p>
+                <p className="text-2xl font-bold text-chart-4">
                   {campaign.referee_reward_amount} {campaign.referee_reward_type}
                 </p>
                 <p className="text-xs text-muted-foreground">on sign up</p>
@@ -149,17 +149,17 @@ const ReferralCampaignCard = () => {
                 <p className="text-xs text-muted-foreground">Total Referrals</p>
               </div>
               <div className="p-4 rounded-lg bg-muted/50 text-center">
-                <TrendingUp className="w-6 h-6 mx-auto mb-2 text-green-500" />
+                <TrendingUp className="w-6 h-6 mx-auto mb-2 text-chart-1" />
                 <p className="text-2xl font-bold">{stats.convertedReferrals}</p>
                 <p className="text-xs text-muted-foreground">Converted</p>
               </div>
               <div className="p-4 rounded-lg bg-muted/50 text-center">
-                <Target className="w-6 h-6 mx-auto mb-2 text-yellow-500" />
+                <Target className="w-6 h-6 mx-auto mb-2 text-chart-3" />
                 <p className="text-2xl font-bold">{stats.pendingReferrals}</p>
                 <p className="text-xs text-muted-foreground">Pending</p>
               </div>
               <div className="p-4 rounded-lg bg-muted/50 text-center">
-                <Coins className="w-6 h-6 mx-auto mb-2 text-amber-500" />
+                <Coins className="w-6 h-6 mx-auto mb-2 text-gold-primary" />
                 <p className="text-2xl font-bold">{stats.totalEarnings}</p>
                 <p className="text-xs text-muted-foreground">Total Earned</p>
               </div>
@@ -169,7 +169,7 @@ const ReferralCampaignCard = () => {
             <div className="p-4 rounded-lg border">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <Trophy className="w-5 h-5 text-yellow-500" />
+                  <Trophy className="w-5 h-5 text-gold-primary" />
                   <span className="font-medium">
                     {currentTierInfo?.badge || 'Newcomer'} (Tier {stats.currentTier})
                   </span>

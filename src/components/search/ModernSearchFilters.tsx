@@ -283,7 +283,7 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
                   variant="ghost" 
                   size="sm"
                   onClick={clearAllFilters}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
                 >
                   {currentText.clearAll}
                 </Button>
@@ -293,11 +293,11 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
                   <Badge
                     key={key}
                     variant="secondary"
-                    className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200"
+                    className="flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary border border-primary/20"
                   >
                     <span className="capitalize">{key}: {getFilterDisplayValue(key, value)}</span>
                     <X 
-                      className="h-3 w-3 cursor-pointer hover:text-red-600" 
+                      className="h-3 w-3 cursor-pointer hover:text-destructive" 
                       onClick={() => clearFilter(key)} 
                     />
                   </Badge>
@@ -465,13 +465,13 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
                   <Button 
                     variant="ghost" 
                     onClick={clearAllFilters}
-                    className="text-gray-600 hover:text-red-600 hover:bg-red-50"
+                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                   >
                     {currentText.clearAll}
                   </Button>
                   <Button 
                     onClick={handleSearch}
-                    className="bg-blue-600 hover:bg-blue-700 px-6"
+                    className="bg-primary hover:bg-primary/90 px-6"
                   >
                     <Search className="h-4 w-4 mr-2" />
                     {currentText.searchBtn}

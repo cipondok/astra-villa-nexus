@@ -36,11 +36,11 @@ interface LeaderboardEntry {
 }
 
 const tierConfig: Record<string, { label: string; icon: React.ElementType; color: string; minPoints: number }> = {
-  newcomer: { label: 'Newcomer', icon: Star, color: 'text-slate-500', minPoints: 0 },
-  contributor: { label: 'Contributor', icon: Medal, color: 'text-amber-600', minPoints: 100 },
-  expert: { label: 'Expert', icon: Trophy, color: 'text-yellow-500', minPoints: 500 },
-  champion: { label: 'Champion', icon: Crown, color: 'text-purple-500', minPoints: 1000 },
-  legend: { label: 'Legend', icon: Flame, color: 'text-red-500', minPoints: 2500 },
+  newcomer: { label: 'Newcomer', icon: Star, color: 'text-muted-foreground', minPoints: 0 },
+  contributor: { label: 'Contributor', icon: Medal, color: 'text-chart-3', minPoints: 100 },
+  expert: { label: 'Expert', icon: Trophy, color: 'text-gold-primary', minPoints: 500 },
+  champion: { label: 'Champion', icon: Crown, color: 'text-chart-5', minPoints: 1000 },
+  legend: { label: 'Legend', icon: Flame, color: 'text-destructive', minPoints: 2500 },
 };
 
 const pointsConfig = {
@@ -104,9 +104,9 @@ const CommunityLeaderboard: React.FC<CommunityLeaderboardProps> = ({ className }
   };
 
   const getRankIcon = (rank: number) => {
-    if (rank === 1) return <Trophy className="h-6 w-6 text-yellow-500" />;
-    if (rank === 2) return <Medal className="h-6 w-6 text-slate-400" />;
-    if (rank === 3) return <Medal className="h-6 w-6 text-amber-600" />;
+    if (rank === 1) return <Trophy className="h-6 w-6 text-gold-primary" />;
+    if (rank === 2) return <Medal className="h-6 w-6 text-muted-foreground" />;
+    if (rank === 3) return <Medal className="h-6 w-6 text-chart-3" />;
     return <span className="text-lg font-bold text-muted-foreground">#{rank}</span>;
   };
 
@@ -223,7 +223,7 @@ const CommunityLeaderboard: React.FC<CommunityLeaderboardProps> = ({ className }
                           {tier.label}
                         </Badge>
                         {entry.streak_days >= 7 && (
-                          <Badge className="bg-orange-100 text-orange-700 text-xs">
+                          <Badge className="bg-chart-3/10 text-chart-3 text-xs">
                             <Flame className="h-3 w-3 mr-1" />
                             {entry.streak_days}d streak
                           </Badge>
