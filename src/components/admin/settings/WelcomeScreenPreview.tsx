@@ -46,7 +46,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
   };
 
   return (
-    <Card className="bg-card/50 border-border/50 border-l-4 border-l-blue-500">
+    <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary">
       <CardHeader className="py-2 px-3">
         <CardTitle className="text-xs text-foreground flex items-center gap-2">
           <Monitor className="h-3.5 w-3.5" />
@@ -114,7 +114,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
               {/* Brand Name */}
               <div className="text-center">
                 <h1 className="text-lg font-bold tracking-tight">
-                  <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-primary via-accent to-gold-primary bg-clip-text text-transparent">
                     ASTRA
                   </span>
                   <span className="text-foreground ml-1.5">Villa</span>
@@ -149,7 +149,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
               {/* Progress bar */}
               <div className="w-24 h-0.5 bg-muted/30 rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500"
+                  className="h-full rounded-full bg-gradient-to-r from-primary via-accent to-gold-primary"
                   initial={{ width: '0%' }}
                   animate={{ width: '100%' }}
                   transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}

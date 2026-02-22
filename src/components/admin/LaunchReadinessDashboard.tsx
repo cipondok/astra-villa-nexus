@@ -470,12 +470,12 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className={`p-1.5 rounded-lg ${
-                        module.status === 'complete' ? 'bg-green-500/10' : 
-                        module.status === 'in_progress' ? 'bg-blue-500/10' : 'bg-orange-500/10'
+                        module.status === 'complete' ? 'bg-chart-1/10' : 
+                        module.status === 'in_progress' ? 'bg-chart-4/10' : 'bg-chart-5/10'
                       }`}>
                         <module.icon className={`h-4 w-4 ${
-                          module.status === 'complete' ? 'text-green-500' : 
-                          module.status === 'in_progress' ? 'text-blue-500' : 'text-orange-500'
+                          module.status === 'complete' ? 'text-chart-1' : 
+                          module.status === 'in_progress' ? 'text-chart-4' : 'text-chart-5'
                         }`} />
                       </div>
                       <div>
@@ -537,9 +537,9 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
                   <div 
                     key={item.id} 
                     className={`flex items-center justify-between p-3 rounded-lg border ${
-                      item.status === 'pass' ? 'bg-green-500/5 border-green-500/20' :
-                      item.status === 'warning' ? 'bg-yellow-500/5 border-yellow-500/20' :
-                      'bg-red-500/5 border-red-500/20'
+                      item.status === 'pass' ? 'bg-chart-1/5 border-chart-1/20' :
+                      item.status === 'warning' ? 'bg-chart-3/5 border-chart-3/20' :
+                      'bg-destructive/5 border-destructive/20'
                     }`}
                   >
                     <div className="flex items-center gap-3">

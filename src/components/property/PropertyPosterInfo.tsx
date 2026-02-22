@@ -100,7 +100,7 @@ export const PropertyPosterInfo: React.FC<PropertyPosterInfoProps> = ({
         return {
           icon: Award,
           label: 'Premium Verified',
-          color: 'bg-gradient-to-r from-amber-500 to-yellow-400 text-white',
+          color: 'bg-gradient-to-r from-gold-primary to-gold-primary/80 text-primary-foreground',
           description: 'Terverifikasi Premium'
         };
       case 'trusted':
@@ -279,7 +279,7 @@ export const PropertyPosterInfo: React.FC<PropertyPosterInfoProps> = ({
         {/* Contact Buttons */}
         <div className="space-y-2.5 pt-2">
           <Button 
-            className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white h-11 text-sm font-semibold shadow-lg shadow-green-500/20 rounded-xl"
+            className="w-full bg-gradient-to-r from-chart-1 to-chart-1/90 hover:from-chart-1/90 hover:to-chart-1/80 text-primary-foreground h-11 text-sm font-semibold shadow-lg shadow-chart-1/20 rounded-xl"
             onClick={onWhatsApp}
           >
             <MessageCircle className="h-4 w-4 mr-2" />

@@ -199,7 +199,7 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
   };
 
   return (
-    <div className="bg-gradient-to-br from-gray-900/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg">
+    <div className="bg-gradient-to-br from-background/95 to-muted/95 backdrop-blur-xl border border-border/10 rounded-xl shadow-lg">
       <div className="p-4">
         {/* Clickable Header */}
         <button
@@ -243,7 +243,7 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
             </div>
             
             {/* Navigation Links */}
-            <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
+            <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent">
               {displayLinks.map((link) => {
                   const isActive = activeTab === link.id;
                   
@@ -253,8 +253,8 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
                       onClick={() => onTabChange(link.id)}
                       className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105 whitespace-nowrap ${
                         isActive 
-                          ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white border border-blue-400/30 shadow-lg'
-                          : 'text-gray-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10'
+                          ? 'bg-gradient-to-r from-primary/20 to-accent/20 text-foreground border border-primary/30 shadow-lg'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5 border border-transparent hover:border-foreground/10'
                       }`}
                     >
                 {/* Link Icon */}
@@ -278,14 +278,14 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
 
                 {/* New Badge */}
                 {link.isNew && (
-                  <Badge className="text-xs px-1 py-0.5 bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-400 border-pink-500/30 animate-pulse">
+                  <Badge className="text-xs px-1 py-0.5 bg-gradient-to-r from-accent/20 to-primary/20 text-accent border-accent/30 animate-pulse">
                     NEW
                   </Badge>
                 )}
 
                 {/* Active Indicator */}
                 {isActive && (
-                  <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse ml-1" />
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse ml-1" />
                 )}
               </button>
             );

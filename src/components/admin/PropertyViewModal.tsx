@@ -111,20 +111,20 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950">
-        <DialogHeader className="border-b border-slate-200 dark:border-slate-700 pb-6 bg-gradient-to-r from-blue-600 to-purple-600 -mx-6 -mt-6 px-6 pt-6 text-white">
+      <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden bg-gradient-to-br from-background to-muted/50">
+        <DialogHeader className="border-b border-border pb-6 bg-gradient-to-r from-primary to-accent -mx-6 -mt-6 px-6 pt-6 text-primary-foreground">
           <DialogTitle className="flex items-center justify-between text-2xl font-bold">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+              <div className="p-2 bg-primary-foreground/20 backdrop-blur-sm rounded-lg">
                 <Home className="h-6 w-6" />
               </div>
               <div>
                 <h1 className="text-xl font-bold">{property.title}</h1>
-                <p className="text-blue-100 text-sm font-normal mt-1">Property Details & Information</p>
+                <p className="text-primary-foreground/70 text-sm font-normal mt-1">Property Details & Information</p>
               </div>
             </div>
             {onEdit && (
-              <Button onClick={handleEdit} size="sm" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white">
+              <Button onClick={handleEdit} size="sm" className="bg-primary-foreground/20 hover:bg-primary-foreground/30 backdrop-blur-sm border border-primary-foreground/30 text-primary-foreground">
                 <Edit2 className="h-4 w-4 mr-2" />
                 Edit Property
               </Button>
@@ -137,12 +137,12 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
             {/* Property Images */}
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-                  <ImageIcon className="h-5 w-5 text-white" />
+                <div className="p-2 bg-gradient-to-r from-primary to-accent rounded-lg">
+                  <ImageIcon className="h-5 w-5 text-primary-foreground" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200">
+                <h3 className="text-xl font-bold text-foreground">
                   Property Gallery
-                  <span className="ml-2 px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
+                  <span className="ml-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
                     {propertyImages.length} Images
                   </span>
                 </h3>
@@ -151,7 +151,7 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
               {propertyImages.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {propertyImages.map((image: string, index: number) => (
-                    <div key={index} className="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div key={index} className="group relative overflow-hidden rounded-xl bg-card shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
                       <div className="aspect-video overflow-hidden">
                         <img
                           src={image}
@@ -166,7 +166,7 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
                         <Button
                           size="sm"
-                          className="bg-white/90 hover:bg-white text-slate-800 backdrop-blur-sm"
+                          className="bg-background/90 hover:bg-background text-foreground backdrop-blur-sm"
                           onClick={() => window.open(image, '_blank')}
                         >
                           <Eye className="h-4 w-4 mr-2" />
@@ -174,7 +174,7 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
                         </Button>
                       </div>
                       <div className="absolute top-3 left-3">
-                        <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
+                        <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-3 py-1 rounded-full text-xs font-medium shadow-lg">
                           #{index + 1}
                         </div>
                       </div>
@@ -182,16 +182,16 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-16 bg-gradient-to-br from-slate-100 to-blue-100 dark:from-slate-800 dark:to-blue-900 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-600">
-                  <div className="p-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full w-fit mx-auto mb-4">
-                    <ImageIcon className="h-12 w-12 text-white" />
+                <div className="text-center py-16 bg-gradient-to-br from-muted/50 to-primary/5 rounded-2xl border-2 border-dashed border-border">
+                  <div className="p-4 bg-gradient-to-r from-primary to-accent rounded-full w-fit mx-auto mb-4">
+                    <ImageIcon className="h-12 w-12 text-primary-foreground" />
                   </div>
-                  <h4 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">No Images Available</h4>
-                  <p className="text-slate-500 dark:text-slate-400 mb-6">Generate a professional property image using AI</p>
+                  <h4 className="text-xl font-semibold text-foreground mb-2">No Images Available</h4>
+                  <p className="text-muted-foreground mb-6">Generate a professional property image using AI</p>
                   <Button
                     onClick={generateAIImage}
                     disabled={generatingImage}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg"
+                    className="bg-gradient-to-r from-accent to-destructive hover:from-accent/90 hover:to-destructive/90 text-primary-foreground shadow-lg"
                   >
                     {generatingImage ? (
                       <>
@@ -212,35 +212,35 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
             {/* Property Information Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Basic Information */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-4">
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
+                <div className="bg-gradient-to-r from-chart-1 to-chart-1/80 p-4">
+                  <h3 className="text-lg font-bold text-primary-foreground flex items-center gap-2">
                     <MapPin className="h-5 w-5" />
                     Basic Information
                   </h3>
                 </div>
                 <div className="p-6 space-y-4">
-                  <div className="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                    <MapPin className="h-5 w-5 text-emerald-500 mt-0.5" />
+                  <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-xl">
+                    <MapPin className="h-5 w-5 text-chart-1 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Location</p>
-                      <p className="text-lg font-semibold text-slate-800 dark:text-slate-200">{property.location}</p>
+                      <p className="text-sm font-medium text-muted-foreground">Location</p>
+                      <p className="text-lg font-semibold text-foreground">{property.location}</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl">
-                    <DollarSign className="h-5 w-5 text-emerald-600 mt-0.5" />
+                  <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-chart-1/10 to-chart-1/5 rounded-xl">
+                    <DollarSign className="h-5 w-5 text-chart-1 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Price</p>
-                      <p className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                      <p className="text-sm font-medium text-muted-foreground">Price</p>
+                      <p className="text-2xl font-bold bg-gradient-to-r from-chart-1 to-chart-1/70 bg-clip-text text-transparent">
                         {property.price ? formatIDR(property.price) : 'Price not set'}
                       </p>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0 px-4 py-2">
+                    <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground border-0 px-4 py-2">
                       {property.property_type}
                     </Badge>
-                    <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0 px-4 py-2">
+                    <Badge className="bg-gradient-to-r from-chart-1 to-chart-1/80 text-primary-foreground border-0 px-4 py-2">
                       {property.listing_type}
                     </Badge>
                   </div>
@@ -248,32 +248,32 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
               </div>
               
               {/* Property Details */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                <div className="bg-gradient-to-r from-blue-500 to-purple-500 p-4">
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
+                <div className="bg-gradient-to-r from-primary to-accent p-4">
+                  <h3 className="text-lg font-bold text-primary-foreground flex items-center gap-2">
                     <Home className="h-5 w-5" />
                     Property Specifications
                   </h3>
                 </div>
                 <div className="p-6">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl">
-                      <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    <div className="text-center p-4 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl">
+                      <p className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                         {property.bedrooms || 'N/A'}
                       </p>
-                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Bedrooms</p>
+                      <p className="text-sm font-medium text-muted-foreground">Bedrooms</p>
                     </div>
-                    <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl">
-                      <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    <div className="text-center p-4 bg-gradient-to-br from-accent/10 to-destructive/10 rounded-xl">
+                      <p className="text-3xl font-bold bg-gradient-to-r from-accent to-destructive/70 bg-clip-text text-transparent">
                         {property.bathrooms || 'N/A'}
                       </p>
-                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Bathrooms</p>
+                      <p className="text-sm font-medium text-muted-foreground">Bathrooms</p>
                     </div>
-                    <div className="col-span-2 text-center p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl">
-                      <p className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                    <div className="col-span-2 text-center p-4 bg-gradient-to-br from-gold-primary/10 to-chart-5/10 rounded-xl">
+                      <p className="text-3xl font-bold bg-gradient-to-r from-gold-primary to-chart-5 bg-clip-text text-transparent">
                         {property.area_sqm || 'N/A'} <span className="text-lg">sqm</span>
                       </p>
-                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Area</p>
+                      <p className="text-sm font-medium text-muted-foreground">Total Area</p>
                     </div>
                   </div>
                 </div>
@@ -281,20 +281,20 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
             </div>
 
             {/* Status & Timeline */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-              <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-4">
-                <h3 className="text-lg font-bold text-white">Status & Timeline</h3>
+            <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
+              <div className="bg-gradient-to-r from-accent to-primary p-4">
+                <h3 className="text-lg font-bold text-primary-foreground">Status & Timeline</h3>
               </div>
               <div className="p-6">
                 <div className="flex flex-wrap gap-3">
                   <Badge className={`px-4 py-2 text-sm font-medium ${
                     property.status === 'active' 
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' 
-                      : 'bg-gradient-to-r from-slate-400 to-slate-500 text-white'
+                      ? 'bg-gradient-to-r from-chart-1 to-chart-1/80 text-primary-foreground' 
+                      : 'bg-gradient-to-r from-muted-foreground to-muted-foreground/80 text-primary-foreground'
                   }`}>
                     Status: {property.status || 'pending_approval'}
                   </Badge>
-                  <Badge className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2">
+                  <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-4 py-2">
                     Created: {new Date(property.created_at).toLocaleDateString()}
                   </Badge>
                 </div>
@@ -303,13 +303,13 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
 
             {/* Description */}
             {property.description && (
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                <div className="bg-gradient-to-r from-slate-600 to-slate-700 p-4">
-                  <h3 className="text-lg font-bold text-white">Property Description</h3>
+              <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
+                <div className="bg-gradient-to-r from-muted-foreground to-muted-foreground/80 p-4">
+                  <h3 className="text-lg font-bold text-primary-foreground">Property Description</h3>
                 </div>
                 <div className="p-6">
-                  <div className="prose prose-slate dark:prose-invert max-w-none">
-                    <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-base">
+                  <div className="prose dark:prose-invert max-w-none">
+                    <p className="text-muted-foreground leading-relaxed text-base">
                       {property.description}
                     </p>
                   </div>
@@ -319,28 +319,28 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
 
             {/* Location Details */}
             {(property.city || property.state || property.area) && (
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                <div className="bg-gradient-to-r from-teal-500 to-cyan-500 p-4">
-                  <h3 className="text-lg font-bold text-white">Location Details</h3>
+              <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
+                <div className="bg-gradient-to-r from-chart-4 to-chart-4/80 p-4">
+                  <h3 className="text-lg font-bold text-primary-foreground">Location Details</h3>
                 </div>
                 <div className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {property.city && (
-                      <div className="text-center p-4 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-xl">
-                        <p className="text-lg font-bold text-slate-800 dark:text-slate-200">{property.city}</p>
-                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">City</p>
+                      <div className="text-center p-4 bg-gradient-to-br from-chart-4/10 to-chart-4/5 rounded-xl">
+                        <p className="text-lg font-bold text-foreground">{property.city}</p>
+                        <p className="text-sm font-medium text-muted-foreground">City</p>
                       </div>
                     )}
                     {property.state && (
-                      <div className="text-center p-4 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 rounded-xl">
-                        <p className="text-lg font-bold text-slate-800 dark:text-slate-200">{property.state}</p>
-                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">State</p>
+                      <div className="text-center p-4 bg-gradient-to-br from-chart-4/10 to-primary/10 rounded-xl">
+                        <p className="text-lg font-bold text-foreground">{property.state}</p>
+                        <p className="text-sm font-medium text-muted-foreground">State</p>
                       </div>
                     )}
                     {property.area && (
-                      <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl">
-                        <p className="text-lg font-bold text-slate-800 dark:text-slate-200">{property.area}</p>
-                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Area</p>
+                      <div className="text-center p-4 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl">
+                        <p className="text-lg font-bold text-foreground">{property.area}</p>
+                        <p className="text-sm font-medium text-muted-foreground">Area</p>
                       </div>
                     )}
                   </div>
