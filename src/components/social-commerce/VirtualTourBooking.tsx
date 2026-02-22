@@ -153,7 +153,7 @@ const VirtualTourBooking: React.FC<VirtualTourBookingProps> = ({
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-violet-500 to-purple-600 text-white">
+      <CardHeader className="bg-gradient-to-r from-accent to-primary text-primary-foreground">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-white/20 rounded-xl">

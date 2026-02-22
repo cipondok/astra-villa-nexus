@@ -35,12 +35,12 @@ interface PropertyListingAssistantProps {
 }
 
 const QUICK_ACTIONS = [
-  { id: 'description', label: 'Description', icon: FileText, color: 'text-blue-500' },
-  { id: 'price', label: 'Pricing', icon: DollarSign, color: 'text-green-500' },
-  { id: 'photos', label: 'Photos', icon: Camera, color: 'text-purple-500' },
-  { id: 'keywords', label: 'Keywords', icon: Hash, color: 'text-orange-500' },
-  { id: 'check', label: 'Check', icon: AlertCircle, color: 'text-red-500' },
-  { id: 'success', label: 'Success %', icon: TrendingUp, color: 'text-emerald-500' },
+  { id: 'description', label: 'Description', icon: FileText, color: 'text-chart-4' },
+  { id: 'price', label: 'Pricing', icon: DollarSign, color: 'text-chart-1' },
+  { id: 'photos', label: 'Photos', icon: Camera, color: 'text-accent-foreground' },
+  { id: 'keywords', label: 'Keywords', icon: Hash, color: 'text-chart-3' },
+  { id: 'check', label: 'Check', icon: AlertCircle, color: 'text-destructive' },
+  { id: 'success', label: 'Success %', icon: TrendingUp, color: 'text-chart-1' },
 ];
 
 const SUGGESTED_QUESTIONS = [
@@ -132,7 +132,7 @@ const PropertyListingAssistant = ({
         className="fixed bottom-20 right-4 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary/80 shadow-lg flex items-center justify-center text-primary-foreground hover:scale-105 transition-transform"
       >
         <Bot className="h-6 w-6" />
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-background" />
+        <span className="absolute -top-1 -right-1 w-4 h-4 bg-chart-1 rounded-full border-2 border-background" />
       </motion.button>
     );
   }
@@ -160,7 +160,7 @@ const PropertyListingAssistant = ({
           <div>
             <div className="font-semibold text-sm flex items-center gap-1">
               ASTRA Assistant
-              <Sparkles className="h-3 w-3 text-yellow-500" />
+              <Sparkles className="h-3 w-3 text-gold-primary" />
             </div>
             <div className="text-[10px] text-muted-foreground">Property Listing Expert</div>
           </div>
