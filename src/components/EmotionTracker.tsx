@@ -95,7 +95,7 @@ const EmotionTracker = ({ onEmotionChange, onReady, onError }: EmotionTrackerPro
       playsInline
       width="240"
       height="180"
-      className="absolute bottom-24 right-4 z-20 rounded-lg shadow-lg border-2 border-purple-500"
+      className="absolute bottom-24 right-4 z-20 rounded-lg shadow-lg border-2 border-accent"
       style={{ transform: 'scaleX(-1)' }}
     />
   );

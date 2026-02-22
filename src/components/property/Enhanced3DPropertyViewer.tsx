@@ -311,7 +311,7 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
           </div>
           
           <TabsContent value="3d-model" className="m-0">
-            <div className={`${isFullscreen ? 'h-screen' : 'h-96'} relative bg-gradient-to-b from-sky-100 to-emerald-50 dark:from-slate-900 dark:to-slate-800`}>
+            <div className={`${isFullscreen ? 'h-screen' : 'h-96'} relative bg-gradient-to-b from-muted to-muted/50 dark:from-background dark:to-card`}>
               <Canvas 
                 camera={{ position: validCameraPosition, fov: 50 }}
                 gl={{ antialias: true, alpha: false }}

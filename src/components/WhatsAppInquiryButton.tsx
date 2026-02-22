@@ -344,7 +344,7 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
           <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto bg-background/20 backdrop-blur-2xl border-white/30">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <MessageCircle className="h-5 w-5 text-green-500" />
+                <MessageCircle className="h-5 w-5 text-chart-1" />
                 {t.title}
               </DialogTitle>
               <DialogDescription className="flex items-center gap-2">
@@ -394,7 +394,7 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
       <Button
         onClick={handleQuickSend}
         size="sm"
-        className={`bg-green-500 hover:bg-green-600 text-white ${className}`}>
+        className={`bg-chart-1 hover:bg-chart-1/80 text-primary-foreground ${className}`}>
 
         <MessageCircle className="h-4 w-4" />
       </Button>);
@@ -406,7 +406,7 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
     return (
       <Button
         onClick={handleQuickSend}
-        className={`bg-green-500 hover:bg-green-600 text-white gap-2 ${className}`}>
+        className={`bg-chart-1 hover:bg-chart-1/80 text-primary-foreground gap-2 ${className}`}>
 
         <MessageCircle className="h-4 w-4" />
         <span>{t.quickInquiry}</span>
@@ -419,7 +419,7 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          className={`bg-green-500 hover:bg-green-600 text-white gap-2 ${className}`}>
+          className={`bg-chart-1 hover:bg-chart-1/80 text-primary-foreground gap-2 ${className}`}>
 
           <MessageCircle className="h-4 w-4" />
           <span>{t.quickInquiry}</span>
@@ -428,7 +428,7 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
       <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5 text-green-500" />
+            <MessageCircle className="h-5 w-5 text-chart-1" />
             {t.title}
           </DialogTitle>
           <DialogDescription className="flex items-center gap-2 flex-wrap">
@@ -619,18 +619,18 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
           <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
             <User className="h-2.5 w-2.5" />
             {t.yourName} *
-            {validateName(userName) && <Check className="h-2.5 w-2.5 text-green-500" />}
+            {validateName(userName) && <Check className="h-2.5 w-2.5 text-chart-1" />}
           </Label>
           <div className="relative">
             <Input
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
               placeholder="John Doe"
-              className={`h-7 text-xs pr-6 ${validateName(userName) ? 'border-green-500/50' : ''}`}
+              className={`h-7 text-xs pr-6 ${validateName(userName) ? 'border-chart-1/50' : ''}`}
               disabled={isLoggedIn && !!userName} />
 
             {validateName(userName) &&
-            <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-green-500" />
+            <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-chart-1" />
             }
           </div>
         </div>
@@ -640,19 +640,19 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
           <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
             <Mail className="h-2.5 w-2.5" />
             {t.yourEmail}
-            {userEmail && validateEmail(userEmail) && <Check className="h-2.5 w-2.5 text-green-500" />}
+            {userEmail && validateEmail(userEmail) && <Check className="h-2.5 w-2.5 text-chart-1" />}
           </Label>
           <div className="relative">
             <Input
               value={userEmail}
               onChange={(e) => setUserEmail(e.target.value)}
               placeholder="email@example.com"
-              className={`h-7 text-xs pr-6 ${userEmail && validateEmail(userEmail) ? 'border-green-500/50' : userEmail && !validateEmail(userEmail) ? 'border-destructive/50' : ''}`}
+              className={`h-7 text-xs pr-6 ${userEmail && validateEmail(userEmail) ? 'border-chart-1/50' : userEmail && !validateEmail(userEmail) ? 'border-destructive/50' : ''}`}
               disabled={isLoggedIn && !!userEmail} />
 
             {userEmail && (
             validateEmail(userEmail) ?
-            <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-green-500" /> :
+            <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-chart-1" /> :
 
             <AlertCircle className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-destructive" />)
 
@@ -698,7 +698,7 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
       <Button
         onClick={onSubmit}
         disabled={!validateName(userName) || !validatePhoneNumber(userPhone).isValid || isSending}
-        className="w-full bg-green-500 hover:bg-green-600 disabled:bg-muted text-white gap-1.5 h-8 text-xs font-semibold active:scale-[0.98] transition-transform">
+        className="w-full bg-chart-1 hover:bg-chart-1/80 disabled:bg-muted text-primary-foreground gap-1.5 h-8 text-xs font-semibold active:scale-[0.98] transition-transform">
 
         {isSending ?
         <>
@@ -805,14 +805,14 @@ const PhoneInputWithValidation: React.FC<PhoneInputProps> = ({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
-            className={`h-7 text-xs pr-7 ${validation.isValid ? 'border-green-500/50' : value.length > 3 ? 'border-destructive/50' : ''}`}
+            className={`h-7 text-xs pr-7 ${validation.isValid ? 'border-chart-1/50' : value.length > 3 ? 'border-destructive/50' : ''}`}
             disabled={disabled}
             type="tel" />
 
           {value &&
           <div className="absolute right-1.5 top-1/2 -translate-y-1/2">
               {validation.isValid ?
-            <Check className="h-3 w-3 text-green-500" /> :
+            <Check className="h-3 w-3 text-chart-1" /> :
             value.length > 3 ?
             <AlertCircle className="h-3 w-3 text-destructive" /> :
             null}
@@ -823,7 +823,7 @@ const PhoneInputWithValidation: React.FC<PhoneInputProps> = ({
       
       {/* Validation feedback - compact */}
       {validation.isValid && validation.country ?
-      <div className="flex items-center gap-1 text-[8px] text-green-600">
+      <div className="flex items-center gap-1 text-[8px] text-chart-1">
           <Check className="h-2.5 w-2.5 shrink-0" />
           <span>{validation.country.flag} {validation.country.name} ({validation.country.dialCode})</span>
         </div> :
