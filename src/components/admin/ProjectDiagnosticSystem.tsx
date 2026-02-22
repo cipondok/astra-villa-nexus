@@ -714,7 +714,7 @@ const ProjectDiagnosticSystem = () => {
                     </div>
                     <div className="p-3 bg-background rounded border">
                       <div className="font-medium text-primary mb-1">Priority Tasks</div>
-                      <div className="text-lg font-semibold text-red-600">{pendingModules + inProgressModules}</div>
+                      <div className="text-lg font-semibold text-destructive">{pendingModules + inProgressModules}</div>
                     </div>
                   </div>
 
@@ -841,10 +841,10 @@ const ProjectDiagnosticSystem = () => {
                         <div key={funcIndex} className="flex items-center justify-between p-2 bg-muted/50 rounded text-sm">
                           <div className="flex items-center gap-2">
                             <div className={`w-2 h-2 rounded-full ${
-                              category.priority === 'Critical' ? 'bg-red-500' :
-                              category.priority === 'High' ? 'bg-orange-500' :
-                              category.priority === 'Medium' ? 'bg-yellow-500' :
-                              'bg-green-500'
+                              category.priority === 'Critical' ? 'bg-destructive' :
+                              category.priority === 'High' ? 'bg-chart-5' :
+                              category.priority === 'Medium' ? 'bg-chart-3' :
+                              'bg-chart-1'
                             }`}></div>
                             <span className="font-medium">{func}</span>
                           </div>
@@ -866,8 +866,8 @@ const ProjectDiagnosticSystem = () => {
                 
                 {!uncompletedFunctions || uncompletedFunctions.length === 0 && (
                   <div className="text-center py-12">
-                    <CheckCircle className="mx-auto h-12 w-12 text-green-500 mb-4" />
-                    <h3 className="text-lg font-medium text-green-700 dark:text-green-400 mb-2">
+                    <CheckCircle className="mx-auto h-12 w-12 text-chart-1 mb-4" />
+                    <h3 className="text-lg font-medium text-chart-1 mb-2">
                       All Functions Complete!
                     </h3>
                     <p className="text-muted-foreground">
@@ -952,7 +952,7 @@ const ProjectDiagnosticSystem = () => {
               <CardTitle className="flex items-center justify-between">
                 <span>System Error Reports & Resolution Guide</span>
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                  <Badge variant="secondary" className="bg-chart-1/10 text-chart-1">
                     0 Active Issues
                   </Badge>
                   <Button
@@ -981,8 +981,8 @@ const ProjectDiagnosticSystem = () => {
               <div className="space-y-6">
                 {hideFixedIssues ? (
                   <div className="text-center py-12">
-                    <CheckCircle className="mx-auto h-12 w-12 text-green-500 mb-4" />
-                    <h3 className="text-lg font-medium text-green-700 dark:text-green-400 mb-2">
+                    <CheckCircle className="mx-auto h-12 w-12 text-chart-1 mb-4" />
+                    <h3 className="text-lg font-medium text-chart-1 mb-2">
                       All Issues Resolved!
                     </h3>
                     <p className="text-muted-foreground mb-4">
@@ -998,27 +998,27 @@ const ProjectDiagnosticSystem = () => {
                   </div>
                 ) : (
                   <>
-                    <Alert className="border-green-200 bg-green-50">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                    <Alert className="border-chart-1/30 bg-chart-1/5">
+                      <CheckCircle className="h-4 w-4 text-chart-1" />
                       <AlertDescription>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <strong className="text-green-800">Database Connection Timeout - RESOLVED</strong>
-                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">Fixed</Badge>
+                        <strong className="text-foreground">Database Connection Timeout - RESOLVED</strong>
+                        <Badge variant="secondary" className="text-xs bg-chart-1/10 text-chart-1">Fixed</Badge>
                       </div>
-                      <p className="text-sm text-green-700">
+                      <p className="text-sm text-muted-foreground">
                         Issue resolved with database optimization and enhanced connection handling (Resolved: Just now)
                       </p>
-                      <div className="mt-3 p-3 bg-red-100 rounded border-l-4 border-red-500">
-                        <h5 className="font-medium text-red-800 mb-2">Resolution Steps:</h5>
-                        <ol className="text-sm text-red-700 space-y-1 list-decimal list-inside">
+                      <div className="mt-3 p-3 bg-destructive/10 rounded border-l-4 border-destructive">
+                        <h5 className="font-medium text-destructive mb-2">Resolution Steps:</h5>
+                        <ol className="text-sm text-destructive/80 space-y-1 list-decimal list-inside">
                           <li>Check database connection pool settings in Supabase</li>
                           <li>Review slow query logs for vendor_business_profiles table</li>
                           <li>Add database indexes on frequently queried columns</li>
                           <li>Implement query timeout handling in frontend</li>
                           <li>Consider database connection retry logic</li>
                         </ol>
-                        <p className="text-xs text-red-600 mt-2">
+                        <p className="text-xs text-destructive/70 mt-2">
                           <strong>Impact:</strong> Affects vendor dashboard loading and profile updates
                         </p>
                       </div>
@@ -1026,20 +1026,20 @@ const ProjectDiagnosticSystem = () => {
                   </AlertDescription>
                 </Alert>
                 
-                <Alert className="border-green-200 bg-green-50">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                <Alert className="border-chart-1/30 bg-chart-1/5">
+                  <CheckCircle className="h-4 w-4 text-chart-1" />
                   <AlertDescription>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <strong className="text-green-800">Image Upload Failure - RESOLVED</strong>
-                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">Fixed</Badge>
+                        <strong className="text-foreground">Image Upload Failure - RESOLVED</strong>
+                        <Badge variant="secondary" className="text-xs bg-chart-1/10 text-chart-1">Fixed</Badge>
                       </div>
-                      <p className="text-sm text-green-700">
+                      <p className="text-sm text-muted-foreground">
                         Issue resolved with advanced image compression and optimization pipeline (Resolved: Just now)
                       </p>
-                      <div className="mt-3 p-3 bg-green-100 rounded border-l-4 border-green-500">
-                        <h5 className="font-medium text-green-800 mb-2">✅ Implemented Solutions:</h5>
-                        <ol className="text-sm text-green-700 space-y-1 list-decimal list-inside">
+                      <div className="mt-3 p-3 bg-chart-1/10 rounded border-l-4 border-chart-1">
+                        <h5 className="font-medium text-foreground mb-2">✅ Implemented Solutions:</h5>
+                        <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
                           <li>Advanced client-side compression using browser-image-compression</li>
                           <li>Smart file size validation with 2MB limit</li>
                           <li>WebP conversion for 60-80% smaller file sizes</li>
@@ -1047,7 +1047,7 @@ const ProjectDiagnosticSystem = () => {
                           <li>Real-time progress indicators and error handling</li>
                           <li>Optimized storage bucket configuration</li>
                         </ol>
-                        <p className="text-xs text-green-600 mt-2">
+                        <p className="text-xs text-chart-1 mt-2">
                           <strong>Result:</strong> Users can now upload high-quality images without size limitations
                         </p>
                       </div>
@@ -1055,20 +1055,20 @@ const ProjectDiagnosticSystem = () => {
                   </AlertDescription>
                 </Alert>
                 
-                <Alert className="border-green-200 bg-green-50">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                <Alert className="border-chart-1/30 bg-chart-1/5">
+                  <CheckCircle className="h-4 w-4 text-chart-1" />
                   <AlertDescription>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <strong className="text-green-800">Authentication Rate Limit - RESOLVED</strong>
-                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">Fixed</Badge>
+                        <strong className="text-foreground">Authentication Rate Limit - RESOLVED</strong>
+                        <Badge variant="secondary" className="text-xs bg-chart-1/10 text-chart-1">Fixed</Badge>
                       </div>
-                      <p className="text-sm text-green-700">
+                      <p className="text-sm text-muted-foreground">
                         Enhanced security measures successfully implemented and active
                       </p>
-                      <div className="mt-3 p-3 bg-green-100 rounded border-l-4 border-green-500">
-                        <h5 className="font-medium text-green-800 mb-2">✅ Completed Security Measures:</h5>
-                        <ol className="text-sm text-green-700 space-y-1 list-decimal list-inside">
+                      <div className="mt-3 p-3 bg-chart-1/10 rounded border-l-4 border-chart-1">
+                        <h5 className="font-medium text-foreground mb-2">✅ Completed Security Measures:</h5>
+                        <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
                           <li>✅ Implemented progressive delay for failed login attempts</li>
                           <li>✅ Added CAPTCHA after 3 failed attempts</li>
                           <li>✅ Set up IP-based rate limiting (max 5 attempts per hour)</li>
@@ -1076,7 +1076,7 @@ const ProjectDiagnosticSystem = () => {
                           <li>✅ Added email notifications for suspicious login activity</li>
                           <li>✅ Implemented geolocation-based login verification</li>
                         </ol>
-                        <p className="text-xs text-green-600 mt-2">
+                        <p className="text-xs text-chart-1 mt-2">
                           <strong>Impact:</strong> Enhanced security measures now protect against brute force attacks and suspicious login activity
                         </p>
                       </div>
@@ -1084,20 +1084,20 @@ const ProjectDiagnosticSystem = () => {
                   </AlertDescription>
                 </Alert>
 
-                <Alert className="border-green-200 bg-green-50">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                <Alert className="border-chart-1/30 bg-chart-1/5">
+                  <CheckCircle className="h-4 w-4 text-chart-1" />
                   <AlertDescription>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <strong className="text-green-800">API Response Delays - RESOLVED</strong>
-                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">Fixed</Badge>
+                        <strong className="text-foreground">API Response Delays - RESOLVED</strong>
+                        <Badge variant="secondary" className="text-xs bg-chart-1/10 text-chart-1">Fixed</Badge>
                       </div>
-                      <p className="text-sm text-green-700">
+                      <p className="text-sm text-muted-foreground">
                         Property search API now responds in under 500ms with optimization complete
                       </p>
-                      <div className="mt-3 p-3 bg-green-100 rounded border-l-4 border-green-500">
-                        <h5 className="font-medium text-green-800 mb-2">✅ Performance Optimizations Completed:</h5>
-                        <ol className="text-sm text-green-700 space-y-1 list-decimal list-inside">
+                      <div className="mt-3 p-3 bg-chart-1/10 rounded border-l-4 border-chart-1">
+                        <h5 className="font-medium text-foreground mb-2">✅ Performance Optimizations Completed:</h5>
+                        <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
                           <li>✅ Added 9 database indexes on search columns (location, price, type)</li>
                           <li>✅ Implemented search result caching with 5-minute TTL</li>
                           <li>✅ Optimized SQL queries with full-text search indexes</li>
@@ -1105,7 +1105,7 @@ const ProjectDiagnosticSystem = () => {
                           <li>✅ Implemented search suggestions with autocomplete</li>
                           <li>✅ Added loading states and skeleton screens</li>
                         </ol>
-                        <p className="text-xs text-green-600 mt-2">
+                        <p className="text-xs text-chart-1 mt-2">
                           <strong>Impact:</strong> Search response time improved from 3-5 seconds to under 500ms (90% improvement)
                         </p>
                       </div>
@@ -1122,24 +1122,24 @@ const ProjectDiagnosticSystem = () => {
                   </h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-red-600 mb-1">1</div>
+                      <div className="text-2xl font-bold text-destructive mb-1">1</div>
                       <div className="text-sm text-muted-foreground">Critical Errors</div>
-                      <div className="text-xs text-green-500 mt-1">↘ -1 from yesterday</div>
+                      <div className="text-xs text-chart-1 mt-1">↘ -1 from yesterday</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-yellow-600 mb-1">15</div>
+                      <div className="text-2xl font-bold text-chart-3 mb-1">15</div>
                       <div className="text-sm text-muted-foreground">Warnings</div>
-                      <div className="text-xs text-green-500 mt-1">↘ -30 from yesterday</div>
+                      <div className="text-xs text-chart-1 mt-1">↘ -30 from yesterday</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600 mb-1">234</div>
+                      <div className="text-2xl font-bold text-chart-4 mb-1">234</div>
                       <div className="text-sm text-muted-foreground">Info Messages</div>
-                      <div className="text-xs text-blue-500 mt-1">→ Same as yesterday</div>
+                      <div className="text-xs text-chart-4 mt-1">→ Same as yesterday</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600 mb-1">99.2%</div>
+                      <div className="text-2xl font-bold text-chart-1 mb-1">99.2%</div>
                       <div className="text-sm text-muted-foreground">System Uptime</div>
-                      <div className="text-xs text-green-500 mt-1">↗ +0.7% from yesterday</div>
+                      <div className="text-xs text-chart-1 mt-1">↗ +0.7% from yesterday</div>
                     </div>
                   </div>
                   
@@ -1166,12 +1166,12 @@ const ProjectDiagnosticSystem = () => {
                   </div>
                 </div>
 
-                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <h5 className="font-medium text-green-800 mb-2 flex items-center gap-2">
+                <div className="p-4 bg-chart-1/5 border border-chart-1/20 rounded-lg">
+                  <h5 className="font-medium text-foreground mb-2 flex items-center gap-2">
                     <CheckCircle className="h-4 w-4" />
                     Monitoring Best Practices
                   </h5>
-                  <ul className="text-sm text-green-700 space-y-1">
+                  <ul className="text-sm text-muted-foreground space-y-1">
                     <li>• Set up automated alerts for critical system components</li>
                     <li>• Monitor error rates and response times continuously</li>
                     <li>• Implement health checks for all external dependencies</li>
