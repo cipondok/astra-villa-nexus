@@ -171,7 +171,7 @@ const NotificationCenter = () => {
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
             <Badge 
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs"
+              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-destructive text-destructive-foreground text-xs"
             >
               {unreadCount > 99 ? '99+' : unreadCount}
             </Badge>
@@ -229,7 +229,7 @@ const NotificationCenter = () => {
                              <span className="text-lg">{getNotificationIcon(notification.type)}</span>
                              <h4 className="font-medium">{notification.title}</h4>
                              {!notification.is_read && (
-                               <Badge className="bg-blue-500 text-white text-xs">New</Badge>
+                               <Badge className="bg-primary text-primary-foreground text-xs">New</Badge>
                              )}
                            </div>
                            <p className="text-sm text-muted-foreground mb-2">
@@ -290,7 +290,7 @@ const NotificationCenter = () => {
               <span className="text-2xl">{getNotificationIcon(selectedNotification.type)}</span>
               <h3 className="text-lg font-semibold">{selectedNotification.title}</h3>
               {!selectedNotification.is_read && (
-                <Badge className="bg-blue-500 text-white text-xs">New</Badge>
+                <Badge className="bg-primary text-primary-foreground text-xs">New</Badge>
               )}
             </div>
             <Button

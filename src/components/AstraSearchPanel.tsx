@@ -2096,8 +2096,8 @@ const AstraSearchPanel = ({
               className={cn(
                 "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "all" 
-                  ? "bg-white text-primary shadow-md" 
-                  : "text-white/90 hover:text-white hover:bg-white/20"
+                  ? "bg-primary-foreground text-primary shadow-md" 
+                  : "text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/20"
               )}
             >
               <Layers className="h-3.5 w-3.5" />
@@ -2111,8 +2111,8 @@ const AstraSearchPanel = ({
               className={cn(
                 "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "sale" 
-                  ? "bg-white text-primary shadow-md" 
-                  : "text-white/90 hover:text-white hover:bg-white/20"
+                  ? "bg-primary-foreground text-primary shadow-md" 
+                  : "text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/20"
               )}
             >
               <ShoppingBag className="h-3.5 w-3.5" />
@@ -2126,8 +2126,8 @@ const AstraSearchPanel = ({
               className={cn(
                 "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "rent" 
-                  ? "bg-white text-primary shadow-md" 
-                  : "text-white/90 hover:text-white hover:bg-white/20"
+                  ? "bg-primary-foreground text-primary shadow-md" 
+                  : "text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/20"
               )}
             >
               <Key className="h-3.5 w-3.5" />
@@ -2141,8 +2141,8 @@ const AstraSearchPanel = ({
               className={cn(
                 "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "new_project" 
-                  ? "bg-white text-primary shadow-md" 
-                  : "text-white/90 hover:text-white hover:bg-white/20"
+                  ? "bg-primary-foreground text-primary shadow-md" 
+                  : "text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/20"
               )}
             >
               <Rocket className="h-3.5 w-3.5" />
@@ -2156,7 +2156,7 @@ const AstraSearchPanel = ({
           <div ref={anchorRef} className="flex-1 relative">
             <Search
               className={cn(
-                "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/70 pointer-events-none",
+                "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary-foreground/70 pointer-events-none",
                 searchQuery && "text-primary animate-pulse"
               )}
             />
@@ -2176,7 +2176,7 @@ const AstraSearchPanel = ({
                 requestAnimationFrame(() => window.scrollTo(0, currentScroll));
               }}
               onTouchStart={(e) => e.stopPropagation()}
-              className="pl-10 pr-12 h-12 text-sm bg-white/20 dark:bg-white/10 backdrop-blur-md border border-white/30 focus:ring-2 focus:ring-primary/50 rounded-xl text-white placeholder:text-white/60 shadow-lg"
+              className="pl-10 pr-12 h-12 text-sm bg-primary-foreground/20 dark:bg-primary-foreground/10 backdrop-blur-md border border-primary-foreground/30 focus:ring-2 focus:ring-primary/50 rounded-xl text-primary-foreground placeholder:text-primary-foreground/60 shadow-lg"
             />
             
             {/* Image Search Inside Input */}
@@ -2202,7 +2202,7 @@ const AstraSearchPanel = ({
             size="lg"
             className={cn(
               "h-11 flex-1 rounded-xl flex items-center justify-center gap-2",
-              "bg-white/20 dark:bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 shadow-md"
+              "bg-primary-foreground/20 dark:bg-primary-foreground/10 backdrop-blur-md border border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/30 shadow-md"
             )}
           >
             <SlidersHorizontal className="h-4 w-4" />
@@ -2242,7 +2242,7 @@ const AstraSearchPanel = ({
                   <div className="p-2 border-b border-border/50">
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground">
-                        <Clock className="h-2.5 w-2.5 text-blue-500" />
+                        <Clock className="h-2.5 w-2.5 text-chart-4" />
                         Recent
                       </div>
                       <button 

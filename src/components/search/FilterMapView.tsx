@@ -108,7 +108,7 @@ export const FilterMapView = ({ filters }: FilterMapViewProps) => {
             const coords = cityCoordinates[city];
             if (coords) {
               const el = document.createElement('div');
-              el.className = 'px-3 py-2 bg-primary text-white rounded-full shadow-lg cursor-pointer hover:scale-110 transition-transform border-2 border-white font-bold text-sm';
+              el.className = 'px-3 py-2 bg-primary text-primary-foreground rounded-full shadow-lg cursor-pointer hover:scale-110 transition-transform border-2 border-background font-bold text-sm';
               el.innerHTML = `${count}`;
 
               const marker = new mapboxgl.Marker(el)

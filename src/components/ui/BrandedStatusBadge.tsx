@@ -178,7 +178,7 @@ const BrandedStatusBadge = ({
             sizeConfig.fontSize,
             "font-bold tracking-tight leading-none whitespace-nowrap",
             settings.badgeTextStyle === "pill"
-              ? "px-1.5 py-0.5 rounded-full text-white"
+              ? "px-1.5 py-0.5 rounded-full text-primary-foreground"
               : "text-foreground/80"
           )}
           style={settings.badgeTextStyle === "pill" ? { backgroundColor: shieldColor } : undefined}

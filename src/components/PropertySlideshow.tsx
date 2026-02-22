@@ -213,7 +213,7 @@ const PropertySlideshow = () => {
 
                   {/* Image Count */}
                   {imageCount > 1 && (
-                    <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded-md">
+                    <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-background/50 backdrop-blur-sm text-foreground text-[9px] px-1.5 py-0.5 rounded-md">
                       <Camera className="h-2.5 w-2.5" />
                       <span>{imageCount}</span>
                     </div>

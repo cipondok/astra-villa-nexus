@@ -113,9 +113,9 @@ const AgentCard = ({ agent, showVerifiedBadge = false }: AgentCardProps) => {
             
             {/* Facebook-style Verification Badge */}
             {agent.is_verified && (
-              <div className="absolute -bottom-1 -right-1 bg-white dark:bg-background rounded-full p-0.5 shadow-lg">
+              <div className="absolute -bottom-1 -right-1 bg-background rounded-full p-0.5 shadow-lg">
                 <div className="bg-[#1877F2] rounded-full p-1">
-                  <BadgeCheck className="h-4 w-4 text-white" strokeWidth={3} />
+                  <BadgeCheck className="h-4 w-4 text-primary-foreground" strokeWidth={3} />
                 </div>
               </div>
             )}

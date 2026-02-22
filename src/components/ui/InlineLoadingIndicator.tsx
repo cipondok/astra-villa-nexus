@@ -75,7 +75,7 @@ const InlineLoadingIndicator = ({
         transition={{ delay: 0.1 }}
       >
         <h2 className={cn("font-bold", s.text)}>
-          <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary via-accent to-chart-3 bg-clip-text text-transparent">
             ASTRA
           </span>
           <span className="text-foreground ml-1.5">Villa</span>

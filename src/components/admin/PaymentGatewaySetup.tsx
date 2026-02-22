@@ -365,9 +365,9 @@ const PaymentGatewaySetup = () => {
           <div key={index} className="flex flex-col items-center">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 mb-2 ${
               isCompleted 
-                ? 'bg-green-500 border-green-500 text-white' 
+                ? 'bg-chart-1 border-chart-1 text-primary-foreground' 
                 : isActive 
-                  ? 'bg-primary border-primary text-white' 
+                  ? 'bg-primary border-primary text-primary-foreground' 
                   : 'bg-muted border-muted-foreground/20 text-muted-foreground'
             }`}>
               {isCompleted ? <Check className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
@@ -401,7 +401,7 @@ const PaymentGatewaySetup = () => {
             <Card 
               key={gateway.id}
               className={`cursor-pointer hover:shadow-lg transition-all ${
-                gateway.setupComplete ? 'border-green-500 bg-green-50/50 dark:bg-green-900/10' : ''
+                gateway.setupComplete ? 'border-chart-1 bg-chart-1/10' : ''
               }`}
               onClick={() => handleGatewaySelect(gateway.id)}
             >
@@ -724,7 +724,7 @@ const PaymentGatewaySetup = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <CheckCircle className="h-5 w-5 text-green-500" />
+              <CheckCircle className="h-5 w-5 text-chart-1" />
               <div>
                 <p className="text-sm text-muted-foreground">Configured</p>
                 <p className="text-lg font-semibold">

@@ -65,7 +65,7 @@ const AreaUnitConverter = () => {
         <div className="text-center mb-3 md:mb-4">
           <div className="flex items-center justify-center gap-2 mb-1">
             <Maximize2 className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-            <ArrowRightLeft className="h-3 w-3 md:h-4 md:w-4 text-blue-500" />
+            <ArrowRightLeft className="h-3 w-3 md:h-4 md:w-4 text-chart-4" />
           </div>
           <h1 className="text-sm md:text-lg font-bold text-foreground">Area Unit Converter</h1>
           <p className="text-[10px] md:text-xs text-muted-foreground">Convert between different area measurements instantly</p>

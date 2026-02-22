@@ -128,7 +128,7 @@ const ReferralCampaignCard = () => {
                   return (
                     <Button
                       key={channel}
-                      className={`${colorClass} text-white`}
+                      className={`${colorClass} text-primary-foreground`}
                       onClick={() => shareVia(channel)}
                     >
                       <Icon className="w-4 h-4 mr-2" />

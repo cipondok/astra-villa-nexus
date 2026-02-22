@@ -14,7 +14,7 @@ const UnreadBadge = ({ count, className }: UnreadBadgeProps) => {
         "absolute -top-1 -right-1 z-10",
         "min-w-[20px] h-5 px-1.5",
         "flex items-center justify-center",
-        "bg-red-500 text-white",
+        "bg-destructive text-destructive-foreground",
         "text-xs font-bold rounded-full",
         "shadow-lg border-2 border-background",
         "animate-scale-in",
