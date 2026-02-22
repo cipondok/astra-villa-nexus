@@ -113,12 +113,12 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
           <motion.div 
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="text-center py-4 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-500/20"
+            className="text-center py-4 bg-gradient-to-br from-gold-primary/10 to-gold-primary/5 rounded-xl border border-gold-primary/20"
           >
             <p className="text-xs text-muted-foreground mb-1">Available Balance</p>
             <div className="flex items-center justify-center gap-2">
-              <Coins className="h-6 w-6 text-amber-500" />
-              <span className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+              <Coins className="h-6 w-6 text-gold-primary" />
+              <span className="text-3xl font-bold bg-gradient-to-r from-gold-primary to-gold-primary/70 bg-clip-text text-transparent">
                 {loadingBalance ? '...' : formatTokenAmount(balance?.available_tokens || 0)}
               </span>
             </div>
@@ -138,7 +138,7 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
               <p className="text-[10px] text-muted-foreground">This Week</p>
             </div>
             <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <TrendingUp className="h-4 w-4 mx-auto text-emerald-500 mb-1" />
+              <TrendingUp className="h-4 w-4 mx-auto text-chart-1 mb-1" />
               <p className="text-sm font-semibold">{formatTokenAmount(walletStats.totalRewards)}</p>
               <p className="text-[10px] text-muted-foreground">Total</p>
             </div>
@@ -161,9 +161,9 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
                   key={dayData.day}
                   className={`text-center p-1.5 rounded-lg transition-all ${
                     dayData.isToday 
-                      ? 'bg-amber-500/20 ring-2 ring-amber-500/50' 
+                      ? 'bg-gold-primary/20 ring-2 ring-gold-primary/50' 
                       : dayData.wasCheckedIn 
-                        ? 'bg-emerald-500/20' 
+                        ? 'bg-chart-1/20' 
                         : dayData.isPast 
                           ? 'bg-destructive/10' 
                           : 'bg-background/50'
@@ -171,9 +171,9 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
                 >
                   <p className={`text-[10px] font-medium ${
                     dayData.isToday 
-                      ? 'text-amber-500' 
+                      ? 'text-gold-primary' 
                       : dayData.wasCheckedIn 
-                        ? 'text-emerald-500' 
+                        ? 'text-chart-1' 
                         : dayData.isPast 
                           ? 'text-destructive' 
                           : 'text-muted-foreground'
@@ -182,11 +182,11 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
                   </p>
                   <div className="h-5 flex items-center justify-center">
                     {dayData.wasCheckedIn ? (
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                      <CheckCircle2 className="h-4 w-4 text-chart-1" />
                     ) : dayData.isPast ? (
                       <span className="text-[9px] text-destructive">-{dayData.missedReward}</span>
                     ) : dayData.isToday ? (
-                      <Sparkles className="h-4 w-4 text-amber-500" />
+                      <Sparkles className="h-4 w-4 text-gold-primary" />
                     ) : (
                       <span className="text-[9px] text-muted-foreground">+10</span>
                     )}
@@ -201,7 +201,7 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
             <Button 
               onClick={() => performCheckin()}
               disabled={isCheckingIn}
-              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+              className="w-full bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70"
             >
               {isCheckingIn ? (
                 <>
@@ -216,7 +216,7 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
               )}
             </Button>
           ) : (
-            <div className="flex items-center justify-center gap-2 py-3 text-emerald-600 bg-emerald-500/10 rounded-lg">
+            <div className="flex items-center justify-center gap-2 py-3 text-chart-1 bg-chart-1/10 rounded-lg">
               <CheckCircle2 className="h-4 w-4" />
               <span className="text-sm font-medium">Daily reward claimed!</span>
             </div>
@@ -249,7 +249,7 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
           <div className="text-center pt-2 border-t border-border/50">
             {isVerified ? (
               canTransfer ? (
-                <p className="text-xs text-emerald-600">
+                <p className="text-xs text-chart-1">
                   <ShieldCheck className="h-3 w-3 inline mr-1" />
                   You can transfer tokens to other users
                 </p>
@@ -259,7 +259,7 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
                 </p>
               )
             ) : (
-              <p className="text-xs text-amber-600">
+              <p className="text-xs text-chart-3">
                 Verify your account to enable transfers
               </p>
             )}

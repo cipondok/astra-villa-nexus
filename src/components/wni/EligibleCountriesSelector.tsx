@@ -58,11 +58,11 @@ const CountryNotListedCTA: React.FC<{
   };
 
   return (
-    <div className="p-2 sm:p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+    <div className="p-2 sm:p-2.5 bg-chart-3/10 border border-chart-3/20 rounded-lg">
       <div className="flex items-start gap-1.5 mb-1.5">
-        <AlertTriangle className="h-3 w-3 text-amber-500 flex-shrink-0 mt-0.5" />
+        <AlertTriangle className="h-3 w-3 text-chart-3 flex-shrink-0 mt-0.5" />
         <div>
-          <p className="text-[9px] sm:text-xs font-medium text-amber-700 dark:text-amber-400">{notListed}</p>
+          <p className="text-[9px] sm:text-xs font-medium text-chart-3">{notListed}</p>
           <p className="text-[8px] sm:text-[10px] text-muted-foreground">{notListedDesc}</p>
         </div>
       </div>
@@ -70,7 +70,7 @@ const CountryNotListedCTA: React.FC<{
         <Button
           size="sm"
           onClick={() => navigate('/contact')}
-          className="gap-1 text-[9px] sm:text-xs h-6 sm:h-7 px-2 bg-amber-600 hover:bg-amber-700 active:scale-95"
+          className="gap-1 text-[9px] sm:text-xs h-6 sm:h-7 px-2 bg-chart-3 hover:bg-chart-3/90 active:scale-95"
         >
           <Phone className="h-2.5 w-2.5" />
           {contactUs}
@@ -79,7 +79,7 @@ const CountryNotListedCTA: React.FC<{
           size="sm"
           variant="outline"
           onClick={openChat}
-          className="gap-1 text-[9px] sm:text-xs h-6 sm:h-7 px-2 border-amber-500/50 text-amber-700 hover:bg-amber-500/10 active:scale-95"
+          className="gap-1 text-[9px] sm:text-xs h-6 sm:h-7 px-2 border-chart-3/50 text-chart-3 hover:bg-chart-3/10 active:scale-95"
         >
           <MessageSquare className="h-2.5 w-2.5" />
           {chatWithUs}
@@ -149,8 +149,8 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
     <Card className={cn("border-0 bg-transparent shadow-none", className)}>
       <CardHeader className="pb-1.5 pt-0 px-0">
         <CardTitle className="flex items-center gap-1.5 text-[10px] sm:text-sm">
-          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-blue-500/20 to-primary/20 flex items-center justify-center">
-            <Globe className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-blue-600" />
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-chart-4/20 to-primary/20 flex items-center justify-center">
+            <Globe className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-chart-4" />
           </div>
           {t.title}
         </CardTitle>
@@ -175,8 +175,8 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
             className={cn(
               "px-2 py-1 rounded-md text-[9px] sm:text-[10px] font-medium transition-all flex items-center gap-0.5 whitespace-nowrap flex-shrink-0 active:scale-95",
               filter === 1 
-                ? "bg-green-500 text-white" 
-                : "bg-green-500/10 text-green-600 hover:bg-green-500/20"
+                ? "bg-chart-1 text-primary-foreground" 
+                : "bg-chart-1/10 text-chart-1 hover:bg-chart-1/20"
             )}
           >
             <Shield className="h-2.5 w-2.5" />
@@ -187,8 +187,8 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
             className={cn(
               "px-2 py-1 rounded-md text-[9px] sm:text-[10px] font-medium transition-all whitespace-nowrap flex-shrink-0 active:scale-95",
               filter === 2 
-                ? "bg-blue-500 text-white" 
-                : "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20"
+                ? "bg-chart-4 text-primary-foreground" 
+                : "bg-chart-4/10 text-chart-4 hover:bg-chart-4/20"
             )}
           >
             {t.tier2}
@@ -222,7 +222,7 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
                     </div>
                   )}
                   {!isSelected && country.tier === 1 && (
-                    <Badge className="text-[6px] px-0.5 py-0 bg-green-500/20 text-green-600 border-0 hidden sm:inline-flex">
+                    <Badge className="text-[6px] px-0.5 py-0 bg-chart-1/20 text-chart-1 border-0 hidden sm:inline-flex">
                       ★
                     </Badge>
                   )}
