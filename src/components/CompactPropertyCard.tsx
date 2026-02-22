@@ -48,13 +48,13 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'sale':
-        return 'bg-green-500';
+        return 'bg-chart-1';
       case 'rent':
-        return 'bg-blue-500';
+        return 'bg-chart-4';
       case 'new-project':
-        return 'bg-orange-500';
+        return 'bg-chart-3';
       default:
-        return 'bg-gray-500';
+        return 'bg-muted-foreground';
     }
   };
 
@@ -145,7 +145,7 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
         {/* Hot Deal Badge */}
         {property.isHotDeal && (
           <div className="absolute top-2 left-2 mt-6">
-            <Badge className="bg-red-500 text-white animate-pulse text-xs px-2 py-1 rounded-full">
+            <Badge className="bg-destructive text-destructive-foreground animate-pulse text-xs px-2 py-1 rounded-full">
               🔥 Hot
             </Badge>
           </div>
@@ -189,8 +189,8 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
               </div>
               {property.posted_by.rating && (
                 <div className="flex items-center gap-1 ml-auto">
-                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                  <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">
+                  <Star className="h-3 w-3 fill-chart-3 text-chart-3" />
+                  <span className="text-xs font-bold text-chart-3">
                     {property.posted_by.rating.toFixed(1)}
                   </span>
                 </div>
@@ -201,9 +201,9 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
             <div className="grid grid-cols-1 gap-1.5 text-xs">
               {/* Customer Feedback Status */}
               {property.posted_by.customer_feedback_rating && (
-                <div className="flex items-center gap-1 px-2 py-1 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-200 dark:border-amber-800">
-                  <TrendingUp className="h-3 w-3 text-amber-600 flex-shrink-0" />
-                  <span className="text-amber-700 dark:text-amber-300 font-medium truncate">
+                <div className="flex items-center gap-1 px-2 py-1 bg-chart-3/10 rounded border border-chart-3/20">
+                  <TrendingUp className="h-3 w-3 text-chart-3 flex-shrink-0" />
+                  <span className="text-chart-3 font-medium truncate">
                     Rating: {property.posted_by.customer_feedback_rating.toFixed(1)}
                     {property.posted_by.customer_feedback_count && ` (${property.posted_by.customer_feedback_count})`}
                   </span>
@@ -213,18 +213,18 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
               {/* Joining Date and Posting Time */}
               <div className="grid grid-cols-2 gap-1.5">
                 {property.posted_by.joining_date && (
-                  <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
-                    <Calendar className="h-3 w-3 text-blue-600 flex-shrink-0" />
-                    <span className="text-blue-700 dark:text-blue-300 font-medium text-xs truncate">
+                  <div className="flex items-center gap-1 px-2 py-1 bg-chart-4/10 rounded border border-chart-4/20">
+                    <Calendar className="h-3 w-3 text-chart-4 flex-shrink-0" />
+                    <span className="text-chart-4 font-medium text-xs truncate">
                       {formatJoiningDate(property.posted_by.joining_date)}
                     </span>
                   </div>
                 )}
 
                 {(property.created_at || property.posted_at) && (
-                  <div className="flex items-center gap-1 px-2 py-1 bg-gray-50 dark:bg-gray-900/20 rounded border border-gray-200 dark:border-gray-700">
-                    <Clock className="h-3 w-3 text-gray-600 flex-shrink-0" />
-                    <span className="text-gray-700 dark:text-gray-300 font-medium text-xs truncate">
+                  <div className="flex items-center gap-1 px-2 py-1 bg-muted/50 rounded border border-border">
+                    <Clock className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                    <span className="text-muted-foreground font-medium text-xs truncate">
                       {formatTimeAgo(property.posted_at || property.created_at || '')}
                     </span>
                   </div>

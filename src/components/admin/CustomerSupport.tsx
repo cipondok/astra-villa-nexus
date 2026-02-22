@@ -147,29 +147,29 @@ const CustomerSupport = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Open': return 'bg-red-100 text-red-800';
-      case 'In Progress': return 'bg-yellow-100 text-yellow-800';
-      case 'Resolved': return 'bg-green-100 text-green-800';
-      case 'Closed': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Open': return 'bg-destructive/10 text-destructive';
+      case 'In Progress': return 'bg-chart-3/10 text-chart-3';
+      case 'Resolved': return 'bg-chart-1/10 text-chart-1';
+      case 'Closed': return 'bg-muted text-muted-foreground';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'High': return 'bg-red-100 text-red-800';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800';
-      case 'Low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'High': return 'bg-destructive/10 text-destructive';
+      case 'Medium': return 'bg-chart-3/10 text-chart-3';
+      case 'Low': return 'bg-chart-1/10 text-chart-1';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getAgentStatusColor = (status: string) => {
     switch (status) {
-      case 'Online': return 'bg-green-500';
-      case 'Away': return 'bg-yellow-500';
-      case 'Offline': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'Online': return 'bg-chart-1';
+      case 'Away': return 'bg-chart-3';
+      case 'Offline': return 'bg-destructive';
+      default: return 'bg-muted-foreground';
     }
   };
 
@@ -179,8 +179,8 @@ const CustomerSupport = () => {
         key={i}
         className={`h-4 w-4 ${
           i < rating 
-            ? 'text-yellow-500 fill-current' 
-            : 'text-gray-300'
+            ? 'text-chart-3 fill-current' 
+            : 'text-muted-foreground/30'
         }`}
       />
     ));
@@ -208,7 +208,7 @@ const CustomerSupport = () => {
                       {tickets.filter(t => t.status === 'Open').length}
                     </p>
                   </div>
-                  <AlertTriangle className="h-8 w-8 text-red-500" />
+                  <AlertTriangle className="h-8 w-8 text-destructive" />
                 </div>
               </CardContent>
             </Card>
@@ -222,7 +222,7 @@ const CustomerSupport = () => {
                       {tickets.filter(t => t.status === 'In Progress').length}
                     </p>
                   </div>
-                  <Clock className="h-8 w-8 text-yellow-500" />
+                  <Clock className="h-8 w-8 text-chart-3" />
                 </div>
               </CardContent>
             </Card>
@@ -236,7 +236,7 @@ const CustomerSupport = () => {
                       {tickets.filter(t => t.status === 'Resolved').length}
                     </p>
                   </div>
-                  <CheckCircle className="h-8 w-8 text-green-500" />
+                  <CheckCircle className="h-8 w-8 text-chart-1" />
                 </div>
               </CardContent>
             </Card>
@@ -248,7 +248,7 @@ const CustomerSupport = () => {
                     <p className="text-sm font-medium text-muted-foreground">Avg Rating</p>
                     <p className="text-2xl font-bold">4.7</p>
                   </div>
-                  <Star className="h-8 w-8 text-yellow-500" />
+                  <Star className="h-8 w-8 text-chart-3" />
                 </div>
               </CardContent>
             </Card>
@@ -302,8 +302,8 @@ const CustomerSupport = () => {
                   <div key={ticket.id} className="p-4 border rounded-lg">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <MessageSquare className="h-5 w-5 text-blue-600" />
+                        <div className="w-10 h-10 bg-chart-4/10 rounded-lg flex items-center justify-center">
+                          <MessageSquare className="h-5 w-5 text-chart-4" />
                         </div>
                         <div>
                           <h4 className="font-semibold">{ticket.subject}</h4>
@@ -365,8 +365,8 @@ const CustomerSupport = () => {
                   <div key={item.id} className="p-4 border rounded-lg">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                          <User className="h-5 w-5 text-purple-600" />
+                        <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
+                          <User className="h-5 w-5 text-accent-foreground" />
                         </div>
                         <div>
                           <h4 className="font-semibold">{item.customer}</h4>
@@ -416,8 +416,8 @@ const CustomerSupport = () => {
                     <CardContent className="p-6">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="relative">
-                          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                            <User className="h-6 w-6 text-gray-600" />
+                          <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
+                            <User className="h-6 w-6 text-muted-foreground" />
                           </div>
                           <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${getAgentStatusColor(agent.status)}`}></div>
                         </div>
@@ -438,7 +438,7 @@ const CustomerSupport = () => {
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-muted-foreground">Avg Rating</span>
                           <div className="flex items-center gap-1">
-                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                            <Star className="h-4 w-4 text-chart-3 fill-current" />
                             <span className="font-semibold">{agent.avgRating}</span>
                           </div>
                         </div>
@@ -464,11 +464,11 @@ const CustomerSupport = () => {
                     <p className="text-sm font-medium text-muted-foreground">Total Tickets</p>
                     <p className="text-2xl font-bold">1,247</p>
                   </div>
-                  <MessageCircle className="h-8 w-8 text-blue-500" />
+                  <MessageCircle className="h-8 w-8 text-chart-4" />
                 </div>
                 <div className="flex items-center gap-1 mt-2">
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                  <span className="text-sm text-green-600">+12% from last month</span>
+                  <TrendingUp className="h-4 w-4 text-chart-1" />
+                  <span className="text-sm text-chart-1">+12% from last month</span>
                 </div>
               </CardContent>
             </Card>
@@ -480,11 +480,11 @@ const CustomerSupport = () => {
                     <p className="text-sm font-medium text-muted-foreground">Resolution Rate</p>
                     <p className="text-2xl font-bold">94.5%</p>
                   </div>
-                  <Target className="h-8 w-8 text-green-500" />
+                  <Target className="h-8 w-8 text-chart-1" />
                 </div>
                 <div className="flex items-center gap-1 mt-2">
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                  <span className="text-sm text-green-600">+2.3% from last month</span>
+                  <TrendingUp className="h-4 w-4 text-chart-1" />
+                  <span className="text-sm text-chart-1">+2.3% from last month</span>
                 </div>
               </CardContent>
             </Card>
@@ -496,11 +496,11 @@ const CustomerSupport = () => {
                     <p className="text-sm font-medium text-muted-foreground">Avg Response Time</p>
                     <p className="text-2xl font-bold">2m 30s</p>
                   </div>
-                  <Zap className="h-8 w-8 text-yellow-500" />
+                  <Zap className="h-8 w-8 text-chart-3" />
                 </div>
                 <div className="flex items-center gap-1 mt-2">
-                  <TrendingDown className="h-4 w-4 text-green-500" />
-                  <span className="text-sm text-green-600">-15s from last month</span>
+                  <TrendingDown className="h-4 w-4 text-chart-1" />
+                  <span className="text-sm text-chart-1">-15s from last month</span>
                 </div>
               </CardContent>
             </Card>
@@ -512,11 +512,11 @@ const CustomerSupport = () => {
                     <p className="text-sm font-medium text-muted-foreground">Customer Satisfaction</p>
                     <p className="text-2xl font-bold">4.7/5</p>
                   </div>
-                  <Award className="h-8 w-8 text-purple-500" />
+                  <Award className="h-8 w-8 text-accent-foreground" />
                 </div>
                 <div className="flex items-center gap-1 mt-2">
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                  <span className="text-sm text-green-600">+0.2 from last month</span>
+                  <TrendingUp className="h-4 w-4 text-chart-1" />
+                  <span className="text-sm text-chart-1">+0.2 from last month</span>
                 </div>
               </CardContent>
             </Card>
@@ -557,21 +557,21 @@ const CustomerSupport = () => {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                      <MessageSquare className="h-4 w-4 text-blue-500" />
+                      <MessageSquare className="h-4 w-4 text-chart-4" />
                       <span>Live Chat</span>
                     </div>
                     <span className="font-semibold">45%</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-green-500" />
+                      <Mail className="h-4 w-4 text-chart-1" />
                       <span>Email</span>
                     </div>
                     <span className="font-semibold">35%</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-purple-500" />
+                      <Phone className="h-4 w-4 text-accent-foreground" />
                       <span>Phone</span>
                     </div>
                     <span className="font-semibold">20%</span>
