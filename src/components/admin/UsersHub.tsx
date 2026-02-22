@@ -108,7 +108,7 @@ const UsersHub = () => {
 
       {/* Compact Micro Statistics */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
-        <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
+        <Card className="bg-gradient-to-br from-chart-4 to-chart-4/80 text-primary-foreground border-0">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
@@ -120,7 +120,7 @@ const UsersHub = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
+        <Card className="bg-gradient-to-br from-accent to-accent/80 text-primary-foreground border-0">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
@@ -132,7 +132,7 @@ const UsersHub = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
+        <Card className="bg-gradient-to-br from-chart-1 to-chart-1/80 text-primary-foreground border-0">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
@@ -144,7 +144,7 @@ const UsersHub = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
+        <Card className="bg-gradient-to-br from-chart-3 to-chart-3/80 text-primary-foreground border-0">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
@@ -156,7 +156,7 @@ const UsersHub = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-red-500 to-red-600 text-white border-0">
+        <Card className="bg-gradient-to-br from-destructive to-destructive/80 text-destructive-foreground border-0">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>

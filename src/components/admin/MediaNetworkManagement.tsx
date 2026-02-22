@@ -151,7 +151,7 @@ const MediaNetworkManagement = () => {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-2">
-              <Youtube className="h-5 w-5 text-red-500" />
+              <Youtube className="h-5 w-5 text-destructive" />
               <div>
                 <p className="text-xs text-muted-foreground">Videos</p>
                 <p className="text-xl font-bold">{videos.length}</p>
@@ -164,7 +164,7 @@ const MediaNetworkManagement = () => {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-2">
-              <Podcast className="h-5 w-5 text-purple-500" />
+              <Podcast className="h-5 w-5 text-accent-foreground" />
               <div>
                 <p className="text-xs text-muted-foreground">Episodes</p>
                 <p className="text-xl font-bold">{podcasts.length}</p>
@@ -177,7 +177,7 @@ const MediaNetworkManagement = () => {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-2">
-              <Mail className="h-5 w-5 text-blue-500" />
+              <Mail className="h-5 w-5 text-chart-4" />
               <div>
                 <p className="text-xs text-muted-foreground">Subscribers</p>
                 <p className="text-xl font-bold">{activeSubscribers.toLocaleString()}</p>
@@ -191,7 +191,7 @@ const MediaNetworkManagement = () => {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-green-500" />
+              <FileText className="h-5 w-5 text-chart-1" />
               <div>
                 <p className="text-xs text-muted-foreground">Reports</p>
                 <p className="text-xl font-bold">{reports.length}</p>
@@ -204,7 +204,7 @@ const MediaNetworkManagement = () => {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-orange-500" />
+              <Calendar className="h-5 w-5 text-chart-5" />
               <div>
                 <p className="text-xs text-muted-foreground">Events</p>
                 <p className="text-xl font-bold">{events.length}</p>
@@ -217,7 +217,7 @@ const MediaNetworkManagement = () => {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-emerald-500" />
+              <DollarSign className="h-5 w-5 text-chart-1" />
               <div>
                 <p className="text-xs text-muted-foreground">Revenue</p>
                 <p className="text-xl font-bold">{formatCurrency(totalSponsorRevenue)}</p>
@@ -247,7 +247,7 @@ const MediaNetworkManagement = () => {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <Youtube className="h-4 w-4 text-red-500" />
+                    <Youtube className="h-4 w-4 text-destructive" />
                     Recent Videos
                   </CardTitle>
                   <Button size="sm" variant="outline" onClick={() => setActiveTab("youtube")}>
@@ -281,7 +281,7 @@ const MediaNetworkManagement = () => {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <Podcast className="h-4 w-4 text-purple-500" />
+                    <Podcast className="h-4 w-4 text-accent-foreground" />
                     Recent Episodes
                   </CardTitle>
                   <Button size="sm" variant="outline" onClick={() => setActiveTab("podcast")}>
@@ -292,8 +292,8 @@ const MediaNetworkManagement = () => {
               <CardContent>
                 {podcasts.slice(0, 3).map((episode) => (
                   <div key={episode.id} className="flex items-center gap-3 py-2 border-b last:border-0">
-                    <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
-                      <span className="text-sm font-bold text-purple-600">#{episode.episode_number}</span>
+                    <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
+                      <span className="text-sm font-bold text-accent-foreground">#{episode.episode_number}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{episode.title}</p>
@@ -317,7 +317,7 @@ const MediaNetworkManagement = () => {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-orange-500" />
+                    <Calendar className="h-4 w-4 text-chart-5" />
                     Upcoming Events
                   </CardTitle>
                   <Button size="sm" variant="outline" onClick={() => setActiveTab("events")}>
@@ -353,7 +353,7 @@ const MediaNetworkManagement = () => {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <Target className="h-4 w-4 text-blue-500" />
+                    <Target className="h-4 w-4 text-chart-4" />
                     100K Subscriber Goal
                   </CardTitle>
                 </div>
