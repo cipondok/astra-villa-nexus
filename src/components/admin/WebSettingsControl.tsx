@@ -241,7 +241,7 @@ const WebSettingsControl = () => {
                     {['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B'].map((color) => (
                       <div 
                         key={color} 
-                        className={`w-8 h-8 rounded cursor-pointer border-2 ${settings.primaryColor === color ? 'border-gray-800' : 'border-gray-300'}`}
+                        className={`w-8 h-8 rounded cursor-pointer border-2 ${settings.primaryColor === color ? 'border-foreground' : 'border-border'}`}
                         style={{backgroundColor: color}}
                         onClick={() => handleInputChange('primaryColor', color)}
                       />

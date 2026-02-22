@@ -988,37 +988,37 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
             <TabsContent value="seo" className="mt-0" id="seo-section">
               <div className="space-y-3 py-2">
-                <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700 overflow-hidden">
-                  <div className="bg-gradient-to-r from-green-500 to-teal-500 p-2">
-                    <h3 className="text-sm font-bold text-white">SEO Settings</h3>
+                <div className="bg-background rounded-lg shadow border border-border overflow-hidden">
+                  <div className="bg-gradient-to-r from-chart-1 to-chart-1/80 p-2">
+                    <h3 className="text-sm font-bold text-primary-foreground">SEO Settings</h3>
                   </div>
                   <div className="p-3 space-y-2">
                     <div className="space-y-1">
-                      <Label className="text-slate-700 dark:text-slate-300 font-medium text-xs">Meta Title</Label>
+                      <Label className="text-muted-foreground font-medium text-xs">Meta Title</Label>
                       <Input
                         value={editData.seo_title || ''}
                         onChange={(e) => handleInputChange('seo_title', e.target.value)}
                         placeholder="SEO title"
-                        className="border-slate-300 dark:border-slate-600 h-8 text-sm"
+                        className="border-border h-8 text-sm"
                       />
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-slate-700 dark:text-slate-300 font-medium text-xs">Meta Description</Label>
+                      <Label className="text-muted-foreground font-medium text-xs">Meta Description</Label>
                       <Textarea
                         rows={2}
                         value={editData.seo_description || ''}
                         onChange={(e) => handleInputChange('seo_description', e.target.value)}
                         placeholder="SEO description"
-                        className="border-slate-300 dark:border-slate-600 text-sm resize-none"
+                        className="border-border text-sm resize-none"
                       />
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-slate-700 dark:text-slate-300 font-medium text-xs">Keywords</Label>
+                      <Label className="text-muted-foreground font-medium text-xs">Keywords</Label>
                       <Input
                         value={editData.seo_keywords || ''}
                         onChange={(e) => handleInputChange('seo_keywords', e.target.value)}
                         placeholder="keyword1, keyword2"
-                        className="border-slate-300 dark:border-slate-600 h-8 text-sm"
+                        className="border-border h-8 text-sm"
                       />
                     </div>
                   </div>
@@ -1029,21 +1029,21 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             <TabsContent value="advanced" className="mt-0" id="advanced-section">
               <div className="space-y-6 py-4">
                 {/* SEO & Marketing */}
-                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                  <div className="bg-gradient-to-r from-pink-500 to-rose-500 p-4">
-                    <h3 className="text-lg font-bold text-white">SEO & Marketing</h3>
+                <div className="bg-background rounded-2xl shadow-lg border border-border overflow-hidden">
+                  <div className="bg-gradient-to-r from-accent to-destructive/80 p-4">
+                    <h3 className="text-lg font-bold text-primary-foreground">SEO & Marketing</h3>
                   </div>
                   <div className="p-6 space-y-4">
                     <div className="space-y-2">
-                      <Label className="text-slate-700 dark:text-slate-300 font-medium">SEO Keywords</Label>
+                      <Label className="text-muted-foreground font-medium">SEO Keywords</Label>
                       <Textarea
                         value={editData.seo_keywords}
                         onChange={(e) => handleInputChange('seo_keywords', e.target.value)}
                         placeholder="luxury apartment, modern design, city center, investment property..."
                         rows={3}
-                        className="border-slate-300 dark:border-slate-600 focus:border-pink-500"
+                        className="border-border focus:border-accent"
                       />
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-muted-foreground">
                         Comma-separated keywords for better search visibility
                       </p>
                     </div>
@@ -1054,9 +1054,9 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           </div>
         </Tabs>
 
-        <DialogFooter className="border-t border-slate-200 dark:border-slate-700 pt-2 pb-1 sm:pt-3 bg-white dark:bg-slate-800 flex-col sm:flex-row justify-between items-center gap-2">
+        <DialogFooter className="border-t border-border pt-2 pb-1 sm:pt-3 bg-background flex-col sm:flex-row justify-between items-center gap-2">
           <div className="flex items-center gap-1.5 hidden sm:flex">
-            <Badge variant="secondary" className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] px-1.5 py-0.5">
+            <Badge variant="secondary" className="flex items-center gap-1 bg-muted text-muted-foreground text-[10px] px-1.5 py-0.5">
               ID: {property.id?.slice(0, 8)}...
             </Badge>
           </div>
@@ -1064,7 +1064,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             <Button 
               variant="outline" 
               onClick={onClose}
-              className="flex-1 sm:flex-none hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-600 h-8 text-xs"
+              className="flex-1 sm:flex-none hover:bg-muted border-border h-8 text-xs"
             >
               <X className="h-3 w-3 mr-1.5" />
               Cancel
@@ -1072,7 +1072,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             <Button 
               onClick={handleUpdate} 
               disabled={updatePropertyMutation.isPending || uploading || generatingImage}
-              className="flex-1 sm:flex-none bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow h-8 text-xs"
+              className="flex-1 sm:flex-none bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow h-8 text-xs"
             >
               <Save className="h-3 w-3 mr-1.5" />
               {updatePropertyMutation.isPending ? "Saving..." : "Save"}

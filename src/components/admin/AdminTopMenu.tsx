@@ -323,7 +323,7 @@ const AdminTopMenu = ({
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="w-11 h-11 p-0 rounded-xl bg-white/20 hover:bg-white/30 hover:scale-105 transition-all duration-200 border border-white/30 text-gray-900 dark:text-white shadow-lg relative"
+                  className="w-11 h-11 p-0 rounded-xl bg-background/20 hover:bg-background/30 hover:scale-105 transition-all duration-200 border border-border/30 text-foreground shadow-lg relative"
                 >
                   {unreadCount > 0 ? (
                     <BellRing className="h-5 w-5" />
@@ -340,7 +340,7 @@ const AdminTopMenu = ({
               <PopoverContent className="w-96 p-0" align="end">
                 <div className="p-4 border-b">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Admin Alerts</h3>
+                    <h3 className="font-semibold text-foreground">Admin Alerts</h3>
                     {unreadCount > 0 && (
                       <Badge variant="destructive" className="text-xs">
                         {unreadCount} unread
@@ -438,7 +438,7 @@ const AdminTopMenu = ({
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="w-11 h-11 p-0 rounded-xl bg-white/20 hover:bg-white/30 hover:scale-105 transition-all duration-200 border border-white/30 text-gray-900 dark:text-white shadow-lg"
+                  className="w-11 h-11 p-0 rounded-xl bg-background/20 hover:bg-background/30 hover:scale-105 transition-all duration-200 border border-border/30 text-foreground shadow-lg"
                 >
                   <User className="h-5 w-5" />
                 </Button>
@@ -467,7 +467,7 @@ const AdminTopMenu = ({
 
       
       {/* Enhanced Quick Actions Section - Below Header */}
-      <div className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border-b border-white/20 dark:border-gray-800/50">
+      <div className="bg-background/60 backdrop-blur-sm border-b border-border/20">
         <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-16 py-4">
           <div className="flex flex-col gap-4">
             {/* Main Quick Actions Row */}
@@ -477,14 +477,14 @@ const AdminTopMenu = ({
                   <a
                     key={index}
                     href={action.href}
-                    className="flex items-center gap-2 bg-white/70 dark:bg-gray-800/70 rounded-xl px-3 py-2 min-w-[100px] backdrop-blur-sm border border-white/30 dark:border-gray-700/50 hover:scale-105 transition-all duration-200 group cursor-pointer"
+                    className="flex items-center gap-2 bg-background/70 rounded-xl px-3 py-2 min-w-[100px] backdrop-blur-sm border border-border/30 hover:scale-105 transition-all duration-200 group cursor-pointer"
                   >
                     <div className={`p-1.5 rounded-lg ${action.color} group-hover:scale-110 transition-transform duration-200`}>
                       <action.icon className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="text-xs text-gray-600 dark:text-gray-300">{action.label}</p>
-                      <p className="font-semibold text-gray-900 dark:text-white">{action.count}</p>
+                      <p className="text-xs text-muted-foreground">{action.label}</p>
+                      <p className="font-semibold text-foreground">{action.count}</p>
                     </div>
                   </a>
                 ))}
@@ -508,19 +508,19 @@ const AdminTopMenu = ({
             </div>
 
             {/* Additional Web Navigation Links */}
-            <div className="flex items-center gap-3 pt-2 border-t border-white/20 dark:border-gray-700/50">
-              <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Quick Links:</span>
+            <div className="flex items-center gap-3 pt-2 border-t border-border/20">
+              <span className="text-xs text-muted-foreground font-medium">Quick Links:</span>
               {webNavLinks.map((link, index) => (
                 <a
                   key={index}
                   href={link.href}
-                  className="flex items-center gap-2 bg-white/50 dark:bg-gray-800/50 rounded-lg px-2.5 py-1.5 backdrop-blur-sm border border-white/20 dark:border-gray-700/30 hover:scale-105 transition-all duration-200 group cursor-pointer"
+                  className="flex items-center gap-2 bg-background/50 rounded-lg px-2.5 py-1.5 backdrop-blur-sm border border-border/20 hover:scale-105 transition-all duration-200 group cursor-pointer"
                 >
                   <div className={`p-1 rounded-md ${link.color} group-hover:scale-110 transition-transform duration-200`}>
                     <link.icon className="h-3 w-3" />
                   </div>
-                  <span className="text-xs text-gray-700 dark:text-gray-300 font-medium">{link.label}</span>
-                  <Badge variant="outline" className="text-xs h-4 px-1.5 bg-white/70 dark:bg-gray-800/70">
+                  <span className="text-xs text-muted-foreground font-medium">{link.label}</span>
+                  <Badge variant="outline" className="text-xs h-4 px-1.5 bg-background/70">
                     {link.count}
                   </Badge>
                 </a>
