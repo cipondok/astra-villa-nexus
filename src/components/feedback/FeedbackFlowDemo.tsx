@@ -61,7 +61,7 @@ const FeedbackFlowDemo = () => {
               </Badge>
               
               {feedbackCompleted && (
-                <Badge variant="outline" className="flex items-center gap-2 text-green-600 border-green-600">
+                <Badge variant="outline" className="flex items-center gap-2 text-chart-1 border-chart-1">
                   <Star className="h-4 w-4" />
                   Feedback Submitted
                 </Badge>
@@ -74,7 +74,7 @@ const FeedbackFlowDemo = () => {
             <Button 
               onClick={handleCompleteTransaction}
               disabled={demoTransactionComplete}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-primary hover:bg-primary/90"
             >
               {demoTransactionComplete ? 'Transaction Completed' : 'Complete Transaction'}
             </Button>
@@ -97,37 +97,37 @@ const FeedbackFlowDemo = () => {
           {/* Feature Highlights */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t">
             <div className="space-y-3">
-              <h4 className="font-semibold text-green-600">✓ Implemented Features</h4>
+              <h4 className="font-semibold text-chart-1">✓ Implemented Features</h4>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <CheckCircle className="h-4 w-4 text-chart-1" />
                   Auto-trigger on transaction completion
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <CheckCircle className="h-4 w-4 text-chart-1" />
                   1-5 star rating system
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <CheckCircle className="h-4 w-4 text-chart-1" />
                   Optional detailed feedback
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <CheckCircle className="h-4 w-4 text-chart-1" />
                   Service aspect checkboxes
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <CheckCircle className="h-4 w-4 text-chart-1" />
                   Non-blocking design (dismissible)
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <CheckCircle className="h-4 w-4 text-chart-1" />
                   Analytics tracking ready
                 </li>
               </ul>
             </div>
             
             <div className="space-y-3">
-              <h4 className="font-semibold text-blue-600">📊 Analytics Tracked</h4>
+              <h4 className="font-semibold text-chart-4">📊 Analytics Tracked</h4>
               <ul className="space-y-2 text-sm">
                 <li>• Feedback completion rates</li>
                 <li>• Rating distribution</li>
