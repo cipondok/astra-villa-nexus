@@ -409,7 +409,7 @@ export const VerificationProgress: React.FC<VerificationProgressProps> = ({
                 >
                   <span>{platform}</span>
                   {verification?.social_media_linked?.includes(platform) ? (
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    <CheckCircle2 className="h-4 w-4 text-chart-1" />
                   ) : (
                     <ExternalLink className="h-4 w-4" />
                   )}
