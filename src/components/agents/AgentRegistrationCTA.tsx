@@ -84,32 +84,32 @@ const AgentRegistrationCTA = () => {
           <div className="relative">
             <Card className="bg-gradient-to-br from-primary to-primary/80 border-0 overflow-hidden">
               <CardContent className="p-8">
-                <div className="text-center text-white">
-                  <div className="w-20 h-20 mx-auto mb-6 bg-white/20 rounded-full flex items-center justify-center">
+                <div className="text-center text-primary-foreground">
+                  <div className="w-20 h-20 mx-auto mb-6 bg-primary-foreground/20 rounded-full flex items-center justify-center">
                     <Award className="h-10 w-10" />
                   </div>
                   
                   <h3 className="text-2xl font-bold mb-2">Gratis Pendaftaran!</h3>
-                  <p className="text-white/90 mb-6">
+                  <p className="text-primary-foreground/90 mb-6">
                     Tidak ada biaya pendaftaran. Mulai jual properti hari ini.
                   </p>
 
                   <div className="grid grid-cols-3 gap-4 text-center mb-6">
-                    <div className="bg-white/10 rounded-lg p-3">
+                    <div className="bg-primary-foreground/10 rounded-lg p-3">
                       <div className="text-2xl font-bold">5000+</div>
-                      <div className="text-sm text-white/80">Agen Aktif</div>
+                      <div className="text-sm text-primary-foreground/80">Agen Aktif</div>
                     </div>
-                    <div className="bg-white/10 rounded-lg p-3">
+                    <div className="bg-primary-foreground/10 rounded-lg p-3">
                       <div className="text-2xl font-bold">50K+</div>
-                      <div className="text-sm text-white/80">Properti</div>
+                      <div className="text-sm text-primary-foreground/80">Properti</div>
                     </div>
-                    <div className="bg-white/10 rounded-lg p-3">
+                    <div className="bg-primary-foreground/10 rounded-lg p-3">
                       <div className="text-2xl font-bold">98%</div>
-                      <div className="text-sm text-white/80">Puas</div>
+                      <div className="text-sm text-primary-foreground/80">Puas</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center gap-2 text-sm text-white/90">
+                  <div className="flex items-center justify-center gap-2 text-sm text-primary-foreground/90">
                     <CheckCircle className="h-4 w-4" />
                     <span>Proses verifikasi cepat 1-2 hari kerja</span>
                   </div>

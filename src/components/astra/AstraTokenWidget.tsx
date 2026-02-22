@@ -195,7 +195,7 @@ const AstraTokenWidget: React.FC<AstraTokenWidgetProps> = ({
             <Coins className="h-6 w-6 text-chart-3" />
             <span>ASTRA Tokens</span>
           </div>
-          <Badge variant="outline" className="bg-white">
+          <Badge variant="outline" className="bg-background">
             {formatTokenAmount(balance?.total_tokens || 0)}
           </Badge>
         </CardTitle>
@@ -245,7 +245,7 @@ const AstraTokenWidget: React.FC<AstraTokenWidgetProps> = ({
             <Button 
               onClick={() => checkinMutation.mutate()}
               disabled={checkinMutation.isPending}
-              className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+              className="w-full bg-gradient-to-r from-chart-1 to-chart-1/80 hover:from-chart-1/90 hover:to-chart-1/70"
             >
               <Calendar className="h-4 w-4 mr-2" />
               {checkinMutation.isPending ? 'Checking In...' : 'Check In Now'}

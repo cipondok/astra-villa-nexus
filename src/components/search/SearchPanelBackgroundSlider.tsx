@@ -84,8 +84,8 @@ export const SearchPanelBackgroundSlider: React.FC<SearchPanelBackgroundSliderPr
               "w-1.5 h-1.5 rounded-full transition-all duration-300",
               "hover:scale-125",
               index === currentIndex
-                ? "bg-white w-4"
-                : "bg-white/50 hover:bg-white/70"
+                ? "bg-primary-foreground w-4"
+                : "bg-primary-foreground/50 hover:bg-primary-foreground/70"
             )}
             aria-label={`Go to slide ${index + 1}`}
           />

@@ -929,7 +929,7 @@ const EnhancedPropertyInsertForm = () => {
                         </div>
 
                         {/* Image Info */}
-                        <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-2 text-xs">
+                        <div className="absolute bottom-0 left-0 right-0 bg-background/60 text-foreground p-2 text-xs">
                           <div className="truncate">{image.newName}</div>
                           <div className="flex justify-between">
                             <span>Original: {(image.size / 1024).toFixed(0)}KB</span>

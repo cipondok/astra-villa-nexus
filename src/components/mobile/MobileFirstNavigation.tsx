@@ -110,8 +110,8 @@ const MobileFirstNavigation: React.FC = () => {
                     action.color
                   )}
                 >
-                  <action.icon className="h-5 w-5 text-white" />
-                  <span className="text-[10px] font-medium text-white whitespace-nowrap">{action.label}</span>
+                  <action.icon className="h-5 w-5 text-primary-foreground" />
+                  <span className="text-[10px] font-medium text-primary-foreground whitespace-nowrap">{action.label}</span>
                 </motion.button>
               ))}
             </div>

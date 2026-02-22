@@ -74,8 +74,8 @@ export const RecentImageSearches = ({ onRerunSearch, className }: RecentImageSea
                 alt="Recent search"
                 className="h-full w-full object-cover"
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
-                <RotateCcw className="h-4 w-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-background/0 group-hover:bg-background/40 transition-all flex items-center justify-center">
+                <RotateCcw className="h-4 w-4 text-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             </button>
             

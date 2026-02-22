@@ -222,7 +222,7 @@ export const PropertyPosterInfo: React.FC<PropertyPosterInfoProps> = ({
           }`}>
             <VerifyIcon className={`h-5 w-5 ${
               poster.verification_status === 'premium' || poster.verification_status === 'trusted' || poster.verification_status === 'verified'
-                ? 'text-white'
+                ? 'text-primary-foreground'
                 : 'text-muted-foreground'
             }`} />
           </div>

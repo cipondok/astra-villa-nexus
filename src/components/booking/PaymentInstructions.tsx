@@ -61,13 +61,13 @@ const PaymentInstructions = ({ paymentData, onPaymentConfirmed }: PaymentInstruc
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'succeeded':
-        return <Badge className="bg-green-100 text-green-800">Berhasil</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1">Berhasil</Badge>;
       case 'pending':
-        return <Badge className="bg-yellow-100 text-yellow-800">Menunggu Pembayaran</Badge>;
+        return <Badge className="bg-gold-primary/10 text-gold-primary">Menunggu Pembayaran</Badge>;
       case 'failed':
-        return <Badge className="bg-red-100 text-red-800">Gagal</Badge>;
+        return <Badge className="bg-destructive/10 text-destructive">Gagal</Badge>;
       default:
-        return <Badge className="bg-gray-100 text-gray-800">{status}</Badge>;
+        return <Badge className="bg-muted text-muted-foreground">{status}</Badge>;
     }
   };
 
@@ -76,8 +76,8 @@ const PaymentInstructions = ({ paymentData, onPaymentConfirmed }: PaymentInstruc
     return (
       <Card className="w-full max-w-2xl mx-auto">
         <CardContent className="p-6 text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-8 w-8 text-green-600" />
+          <div className="w-16 h-16 bg-chart-1/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-8 w-8 text-chart-1" />
           </div>
           <h3 className="text-xl font-semibold mb-2">Pembayaran Berhasil!</h3>
           <p className="text-muted-foreground mb-4">
@@ -106,10 +106,10 @@ const PaymentInstructions = ({ paymentData, onPaymentConfirmed }: PaymentInstruc
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Payment Amount */}
-          <div className="bg-blue-50 p-4 rounded-lg">
+          <div className="bg-primary/10 p-4 rounded-lg">
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Total Pembayaran:</span>
-              <span className="text-xl font-bold text-blue-600">
+              <span className="text-xl font-bold text-primary">
                 {/* Amount would come from booking data */}
                 {formatCurrency(0)}
               </span>
@@ -118,7 +118,7 @@ const PaymentInstructions = ({ paymentData, onPaymentConfirmed }: PaymentInstruc
 
           {/* Expiry Time */}
           {instructions.expiryTime && (
-            <div className="flex items-center text-sm text-orange-600 bg-orange-50 p-3 rounded-lg">
+            <div className="flex items-center text-sm text-chart-3 bg-chart-3/10 p-3 rounded-lg">
               <Clock className="h-4 w-4 mr-2" />
               <span>
                 Batas waktu pembayaran: {new Date(instructions.expiryTime).toLocaleString('id-ID')}
@@ -135,7 +135,7 @@ const PaymentInstructions = ({ paymentData, onPaymentConfirmed }: PaymentInstruc
               </h4>
               
               {/* QR Code Section */}
-              <div className="bg-gray-50 p-4 rounded-lg mb-4">
+               <div className="bg-muted p-4 rounded-lg mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium">QR Code Payment</span>
                   <Button
@@ -147,8 +147,8 @@ const PaymentInstructions = ({ paymentData, onPaymentConfirmed }: PaymentInstruc
                     Buka App
                   </Button>
                 </div>
-                <div className="bg-white p-4 rounded border-2 border-dashed border-gray-300 text-center">
-                  <QrCode className="h-16 w-16 mx-auto text-gray-400 mb-2" />
+                <div className="bg-background p-4 rounded border-2 border-dashed border-border text-center">
+                  <QrCode className="h-16 w-16 mx-auto text-muted-foreground mb-2" />
                   <p className="text-sm text-muted-foreground">QR Code akan muncul di sini</p>
                 </div>
               </div>

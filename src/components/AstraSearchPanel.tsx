@@ -2295,7 +2295,7 @@ const AstraSearchPanel = ({
                 {filteredSuggestions.locations.length > 0 && (
                   <div className="p-2 border-b border-border/50">
                     <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
-                      <MapPin className="h-2.5 w-2.5 text-purple-500" />
+                      <MapPin className="h-2.5 w-2.5 text-accent" />
                       Locations
                     </div>
                     <div className="space-y-0.5">
@@ -2314,7 +2314,7 @@ const AstraSearchPanel = ({
                             requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
-                          className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-purple-500/10 rounded-lg transition-colors flex items-center gap-2"
+                          className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-accent/10 rounded-lg transition-colors flex items-center gap-2"
                         >
                           <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
                           {location}
@@ -2333,7 +2333,7 @@ const AstraSearchPanel = ({
                 {filteredSuggestions.trending.length > 0 && (
                   <div className="p-2">
                     <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
-                      <TrendingUp className="h-2.5 w-2.5 text-green-500" />
+                      <TrendingUp className="h-2.5 w-2.5 text-chart-1" />
                       Trending
                     </div>
                     <div className="space-y-0.5">
@@ -2379,7 +2379,7 @@ const AstraSearchPanel = ({
             {/* Quick Preset Filters */}
             <div className="hidden px-2 pb-1">
               <div className="flex items-center gap-1 mb-1">
-                <Zap className="h-2.5 w-2.5 text-yellow-500" />
+                <Zap className="h-2.5 w-2.5 text-gold-primary" />
                 <span className="text-[9px] font-semibold text-muted-foreground">Quick Search</span>
               </div>
               <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
@@ -2406,7 +2406,7 @@ const AstraSearchPanel = ({
                     setSearchQuery('Near MRT');
                     setTimeout(handleSearch, 100);
                   }}
-                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/20 text-blue-700 dark:text-blue-300 font-medium animate-in fade-in duration-200"
+                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-primary/30 bg-primary/5 hover:bg-primary/20 text-primary font-medium animate-in fade-in duration-200"
                   style={{ animationDelay: '50ms' }}
                 >
                   <MapPin className="h-2.5 w-2.5 mr-0.5" />
@@ -2421,7 +2421,7 @@ const AstraSearchPanel = ({
                     handleFilterChange('bedrooms', '2');
                     handleSearch();
                   }}
-                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-purple-500/30 bg-purple-500/5 hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 font-medium animate-in fade-in duration-200"
+                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-accent/30 bg-accent/5 hover:bg-accent/20 text-accent font-medium animate-in fade-in duration-200"
                   style={{ animationDelay: '100ms' }}
                 >
                   <Bed className="h-2.5 w-2.5 mr-0.5" />
@@ -2713,7 +2713,7 @@ const AstraSearchPanel = ({
                   {/* Location Suggestions */}
                   {filteredSuggestions.locations.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
-                        <MapPin className="h-2.5 w-2.5 text-purple-500" />
+                        <MapPin className="h-2.5 w-2.5 text-accent" />
                         Locations
                       </div>
                       <div className="space-y-0.5">
@@ -2752,7 +2752,7 @@ const AstraSearchPanel = ({
                   {/* Trending */}
                   {filteredSuggestions.trending.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
-                        <TrendingUp className="h-2.5 w-2.5 text-green-500" />
+                        <TrendingUp className="h-2.5 w-2.5 text-chart-1" />
                         Trending
                       </div>
                       <div className="space-y-0.5">
@@ -3315,8 +3315,8 @@ const AstraSearchPanel = ({
           {/* Radius Selector - Shows when Near Me is active */}
           {useNearbyLocation && userLocation && <div className="flex items-center justify-center gap-2 animate-fade-in">
               <Select value={nearbyRadius.toString()} onValueChange={value => setNearbyRadius(parseInt(value))}>
-                <SelectTrigger className="w-32 h-7 text-[9px] rounded-lg border-blue-300 dark:border-blue-700">
-                  <MapPin className="h-2 w-2 mr-1 text-blue-500" />
+                <SelectTrigger className="w-32 h-7 text-[9px] rounded-lg border-primary/30 dark:border-primary/50">
+                  <MapPin className="h-2 w-2 mr-1 text-primary" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

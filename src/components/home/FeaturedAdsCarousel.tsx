@@ -340,15 +340,15 @@ export default function FeaturedAdsCarousel() {
                 </div>
                 
                 {/* Title */}
-                <h3 className="text-xs sm:text-sm md:text-base font-bold text-white line-clamp-1 drop-shadow-lg mb-1">
+                <h3 className="text-xs sm:text-sm md:text-base font-bold text-primary-foreground line-clamp-1 drop-shadow-lg mb-1">
                   {p.title}
                 </h3>
                 
                 {/* Location & Time */}
-                <div className="flex items-center gap-2 text-[10px] sm:text-xs text-white/90 mb-1.5">
+                <div className="flex items-center gap-2 text-[10px] sm:text-xs text-primary-foreground/90 mb-1.5">
                   <span className="truncate drop-shadow-md">📍 {p.city || p.state || 'Indonesia'}</span>
                   {p.created_at && (
-                    <span className="flex items-center gap-0.5 text-white/70">
+                    <span className="flex items-center gap-0.5 text-primary-foreground/70">
                       <Clock className="h-2.5 w-2.5" />
                       {formatDistanceToNow(new Date(p.created_at), { addSuffix: true })}
                     </span>
@@ -356,21 +356,21 @@ export default function FeaturedAdsCarousel() {
                 </div>
                 
                 {/* Property Stats - Bedroom, Bathroom, Area with bigger icons */}
-                <div className="flex items-center gap-3 bg-black/40 rounded-lg px-2 py-1.5 backdrop-blur-sm">
+                <div className="flex items-center gap-3 bg-background/40 rounded-lg px-2 py-1.5 backdrop-blur-sm">
                   {p.bedrooms !== null && p.bedrooms > 0 && (
-                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-white font-medium">
+                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-primary-foreground font-medium">
                       <Bed className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       <span>{p.bedrooms}</span>
                     </span>
                   )}
                   {p.bathrooms !== null && p.bathrooms > 0 && (
-                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-white font-medium">
+                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-primary-foreground font-medium">
                       <Bath className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       <span>{p.bathrooms}</span>
                     </span>
                   )}
                   {p.area_sqm !== null && p.area_sqm > 0 && (
-                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-white font-medium">
+                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-primary-foreground font-medium">
                       <Maximize className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       <span>{p.area_sqm}m²</span>
                     </span>
@@ -416,11 +416,11 @@ export default function FeaturedAdsCarousel() {
               
               {/* Bottom Content */}
               <div className="absolute bottom-0 left-0 right-0 p-2 md:p-2.5">
-                <h3 className="text-[10px] md:text-xs font-bold text-white line-clamp-1 drop-shadow-lg">
+                <h3 className="text-[10px] md:text-xs font-bold text-primary-foreground line-clamp-1 drop-shadow-lg">
                   {ad.title}
                 </h3>
                 {ad.subtitle && (
-                  <p className="text-[8px] md:text-[10px] text-white/95 line-clamp-1 drop-shadow-md mt-0.5">
+                  <p className="text-[8px] md:text-[10px] text-primary-foreground/95 line-clamp-1 drop-shadow-md mt-0.5">
                     {ad.subtitle}
                   </p>
                 )}

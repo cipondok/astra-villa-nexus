@@ -250,13 +250,13 @@ const AdvancedPropertyFilters = ({
       <DialogTrigger asChild>
         <Button
           variant="default"
-          className="relative group overflow-hidden bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-md hover:shadow-lg transition-all rounded-full px-4 py-1.5 text-sm font-medium"
+          className="relative group overflow-hidden bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-md hover:shadow-lg transition-all rounded-full px-4 py-1.5 text-sm font-medium"
         >
           <div className="relative flex items-center gap-1.5">
             <Filter className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Filters</span>
             {getActiveFiltersCount() > 0 && (
-              <Badge className="ml-1 bg-white text-primary px-1.5 py-0 text-xs font-bold">
+              <Badge className="ml-1 bg-primary-foreground text-primary px-1.5 py-0 text-xs font-bold">
                 {getActiveFiltersCount()}
               </Badge>
             )}
@@ -286,7 +286,7 @@ const AdvancedPropertyFilters = ({
                 </div>
               </div>
               {getActiveFiltersCount() > 0 && (
-                <Badge className="bg-primary text-white px-2 py-0.5 text-xs font-semibold ml-auto">
+                <Badge className="bg-primary text-primary-foreground px-2 py-0.5 text-xs font-semibold ml-auto">
                   {getActiveFiltersCount()}
                 </Badge>
               )}
@@ -819,7 +819,7 @@ const AdvancedPropertyFilters = ({
           <Button 
             size="sm"
             onClick={handleApplyFilters}
-            className="flex-1 text-xs bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white"
+            className="flex-1 text-xs bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground"
           >
             Apply
           </Button>

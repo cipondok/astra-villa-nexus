@@ -25,7 +25,7 @@ const CollaborativeCursor = ({ x, y, name, color, userId }: CollaborativeCursorP
           fill={color}
         />
         <div 
-          className="absolute left-6 top-0 px-2 py-1 rounded text-xs font-medium whitespace-nowrap text-white shadow-lg"
+          className="absolute left-6 top-0 px-2 py-1 rounded text-xs font-medium whitespace-nowrap text-primary-foreground shadow-lg"
           style={{ backgroundColor: color }}
         >
           {name}

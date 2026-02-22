@@ -185,7 +185,7 @@ const PropertyPreview = ({ isOpen, onClose, onConfirm, propertyData, isSubmittin
                         alt={`Properti ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg border border-border group-hover:scale-105 transition-transform"
                       />
-                      <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                      <div className="absolute bottom-2 left-2 bg-background/60 text-foreground text-xs px-2 py-1 rounded">
                         Foto {index + 1}
                       </div>
                     </div>

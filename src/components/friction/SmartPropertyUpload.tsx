@@ -166,9 +166,9 @@ const SmartPropertyUpload: React.FC = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="absolute bottom-1 left-1 right-1 px-2 py-1 bg-black/60 backdrop-blur-sm rounded-lg"
+                  className="absolute bottom-1 left-1 right-1 px-2 py-1 bg-background/60 backdrop-blur-sm rounded-lg"
                 >
-                  <span className="text-[10px] text-white flex items-center gap-1">
+                  <span className="text-[10px] text-foreground flex items-center gap-1">
                     <Sparkles className="h-3 w-3 text-gold-primary" />
                     {photo.aiTag}
                   </span>
@@ -177,17 +177,17 @@ const SmartPropertyUpload: React.FC = () => {
 
               {/* Processing indicator */}
               {photo.isProcessing && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <Loader2 className="h-5 w-5 text-white animate-spin" />
+                <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+                  <Loader2 className="h-5 w-5 text-foreground animate-spin" />
                 </div>
               )}
 
               {/* Remove button */}
               <button
                 onClick={() => removePhoto(photo.id)}
-                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 flex items-center justify-center"
+                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-background/60 flex items-center justify-center"
               >
-                <X className="h-3 w-3 text-white" />
+                <X className="h-3 w-3 text-foreground" />
               </button>
             </motion.div>
           ))}

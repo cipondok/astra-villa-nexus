@@ -336,7 +336,7 @@ const WNIPage = () => {
               <Button 
                 size="sm" 
                 onClick={() => navigate('/contact')} 
-                className="gap-1 h-7 sm:h-8 text-[9px] sm:text-xs bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-md active:scale-95"
+                className="gap-1 h-7 sm:h-8 text-[9px] sm:text-xs bg-gradient-to-r from-destructive to-destructive/90 hover:from-destructive/90 hover:to-destructive/80 shadow-md active:scale-95"
               >
                 <Phone className="h-3 w-3" />
                 {t.ctaButton}
