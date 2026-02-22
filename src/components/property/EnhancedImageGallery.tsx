@@ -148,8 +148,8 @@ const EnhancedImageGallery = ({
                 <Badge 
                   className={`text-[10px] sm:text-xs px-2.5 py-1 font-bold shadow-lg border ${
                     listingType === 'sale' 
-                      ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-400/50' 
-                      : 'bg-blue-600 hover:bg-blue-700 text-white border-blue-400/50'
+                      ? 'bg-chart-1 hover:bg-chart-1/90 text-primary-foreground border-chart-1/50' 
+                      : 'bg-chart-4 hover:bg-chart-4/90 text-primary-foreground border-chart-4/50'
                   }`}
                 >
                   {listingType === 'sale' ? (

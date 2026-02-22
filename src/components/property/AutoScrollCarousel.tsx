@@ -496,7 +496,7 @@ const AutoScrollCarousel = ({
                   key={index}
                   onClick={() => setCurrentIndex(index)}
                   className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentIndex ? 'bg-blue-600' : 'bg-gray-300'
+                    index === currentIndex ? 'bg-primary' : 'bg-muted-foreground/30'
                   }`}
                 />
               ))}
@@ -514,7 +514,7 @@ const AutoScrollCarousel = ({
                   key={index}
                   onClick={() => setCurrentIndex(index)}
                   className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentIndex ? 'bg-blue-600' : 'bg-gray-300'
+                    index === currentIndex ? 'bg-primary' : 'bg-muted-foreground/30'
                   }`}
                 />
               ))}
@@ -522,9 +522,9 @@ const AutoScrollCarousel = ({
 
             {/* Auto-scroll progress bar */}
             {isAutoScrolling && (
-              <div className="mt-2 w-full bg-gray-200 rounded-full h-1">
+              <div className="mt-2 w-full bg-muted rounded-full h-1">
                 <div 
-                  className="bg-blue-600 h-1 rounded-full transition-all duration-100"
+                  className="bg-primary h-1 rounded-full transition-all duration-100"
                   style={{
                     width: `${((Date.now() % autoScrollInterval) / autoScrollInterval) * 100}%`
                   }}

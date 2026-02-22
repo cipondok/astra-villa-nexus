@@ -609,20 +609,20 @@ const PropertyInsertForm = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="property_type" className="text-gray-700 font-medium">Tipe Properti *</Label>
+                    <Label htmlFor="property_type" className="text-foreground font-medium">Tipe Properti *</Label>
                     <Select value={formData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
-                      <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                      <SelectTrigger className="bg-card border-border text-foreground">
                         <SelectValue placeholder="Pilih tipe properti" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                        <SelectItem value="house" className="text-gray-900 hover:bg-blue-50">🏠 Rumah</SelectItem>
-                        <SelectItem value="apartment" className="text-gray-900 hover:bg-blue-50">🏢 Apartemen</SelectItem>
-                        <SelectItem value="condo" className="text-gray-900 hover:bg-blue-50">🏙️ Kondominium</SelectItem>
-                        <SelectItem value="townhouse" className="text-gray-900 hover:bg-blue-50">🏘️ Rumah Teras</SelectItem>
-                        <SelectItem value="land" className="text-gray-900 hover:bg-blue-50">🌍 Tanah</SelectItem>
-                        <SelectItem value="commercial" className="text-gray-900 hover:bg-blue-50">🏪 Komersial</SelectItem>
-                        <SelectItem value="villa" className="text-gray-900 hover:bg-blue-50">🏖️ Villa</SelectItem>
-                        <SelectItem value="shop" className="text-gray-900 hover:bg-blue-50">🏬 Ruko</SelectItem>
+                      <SelectContent className="bg-card border border-border shadow-lg z-50">
+                        <SelectItem value="house">🏠 Rumah</SelectItem>
+                        <SelectItem value="apartment">🏢 Apartemen</SelectItem>
+                        <SelectItem value="condo">🏙️ Kondominium</SelectItem>
+                        <SelectItem value="townhouse">🏘️ Rumah Teras</SelectItem>
+                        <SelectItem value="land">🌍 Tanah</SelectItem>
+                        <SelectItem value="commercial">🏪 Komersial</SelectItem>
+                        <SelectItem value="villa">🏖️ Villa</SelectItem>
+                        <SelectItem value="shop">🏬 Ruko</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -679,14 +679,14 @@ const PropertyInsertForm = () => {
               <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="bedrooms" className="text-gray-700 font-medium">🛏️ Kamar Tidur</Label>
+                    <Label htmlFor="bedrooms" className="text-foreground font-medium">🛏️ Kamar Tidur</Label>
                     <Select value={formData.bedrooms} onValueChange={(value) => handleInputChange('bedrooms', value)}>
-                      <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                      <SelectTrigger className="bg-card border-border text-foreground">
                         <SelectValue placeholder="Pilih" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                      <SelectContent className="bg-card border border-border shadow-lg z-50">
                         {[0,1,2,3,4,5,6].map(num => (
-                          <SelectItem key={num} value={num.toString()} className="text-gray-900 hover:bg-blue-50">
+                          <SelectItem key={num} value={num.toString()}>
                             {num}+ Kamar
                           </SelectItem>
                         ))}
@@ -695,14 +695,14 @@ const PropertyInsertForm = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="bathrooms" className="text-gray-700 font-medium">🚿 Kamar Mandi</Label>
+                    <Label htmlFor="bathrooms" className="text-foreground font-medium">🚿 Kamar Mandi</Label>
                     <Select value={formData.bathrooms} onValueChange={(value) => handleInputChange('bathrooms', value)}>
-                      <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                      <SelectTrigger className="bg-card border-border text-foreground">
                         <SelectValue placeholder="Pilih" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                      <SelectContent className="bg-card border border-border shadow-lg z-50">
                         {[1,2,3,4,5,6].map(num => (
-                          <SelectItem key={num} value={num.toString()} className="text-gray-900 hover:bg-blue-50">
+                          <SelectItem key={num} value={num.toString()}>
                             {num}+ Kamar
                           </SelectItem>
                         ))}
@@ -711,7 +711,7 @@ const PropertyInsertForm = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="area_sqm" className="text-gray-700 font-medium">📐 Luas (m²)</Label>
+                    <Label htmlFor="area_sqm" className="text-foreground font-medium">📐 Luas (m²)</Label>
                     <Input
                       id="area_sqm"
                       type="number"
@@ -719,47 +719,46 @@ const PropertyInsertForm = () => {
                       onChange={(e) => handleInputChange('area_sqm', e.target.value)}
                       placeholder="120"
                       min="0"
-                      className="bg-white border-gray-300 text-gray-900"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                   <div>
-                    <Label className="text-gray-700 font-medium">🪑 Kondisi Furnitur</Label>
+                    <Label className="text-foreground font-medium">🪑 Kondisi Furnitur</Label>
                     <RadioGroup 
                       value={formData.furnishing} 
                       onValueChange={(value) => handleInputChange('furnishing', value)}
                       className="flex flex-col space-y-2 mt-2"
                     >
-                      <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                      <div className="flex items-center space-x-2 bg-card border border-border rounded-lg px-3 py-2 shadow-sm">
                         <RadioGroupItem value="unfurnished" id="unfurnished" />
-                        <Label htmlFor="unfurnished" className="text-sm text-gray-900">Tidak Berperabot</Label>
+                        <Label htmlFor="unfurnished" className="text-sm text-foreground">Tidak Berperabot</Label>
                       </div>
-                      <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                      <div className="flex items-center space-x-2 bg-card border border-border rounded-lg px-3 py-2 shadow-sm">
                         <RadioGroupItem value="semi-furnished" id="semi-furnished" />
-                        <Label htmlFor="semi-furnished" className="text-sm text-gray-900">Semi Furnished</Label>
+                        <Label htmlFor="semi-furnished" className="text-sm text-foreground">Semi Furnished</Label>
                       </div>
-                      <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                      <div className="flex items-center space-x-2 bg-card border border-border rounded-lg px-3 py-2 shadow-sm">
                         <RadioGroupItem value="fully-furnished" id="fully-furnished" />
-                        <Label htmlFor="fully-furnished" className="text-sm text-gray-900">Fully Furnished</Label>
+                        <Label htmlFor="fully-furnished" className="text-sm text-foreground">Fully Furnished</Label>
                       </div>
                     </RadioGroup>
                   </div>
 
                   <div>
-                    <Label htmlFor="parking" className="text-gray-700 font-medium">🚗 Parkir</Label>
+                    <Label htmlFor="parking" className="text-foreground font-medium">🚗 Parkir</Label>
                     <Select value={formData.parking} onValueChange={(value) => handleInputChange('parking', value)}>
-                      <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                      <SelectTrigger className="bg-card border-border text-foreground">
                         <SelectValue placeholder="Pilih kapasitas parkir" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                        <SelectItem value="0" className="text-gray-900 hover:bg-blue-50">❌ Tidak Ada</SelectItem>
-                        <SelectItem value="1" className="text-gray-900 hover:bg-blue-50">🚗 1 Mobil</SelectItem>
-                        <SelectItem value="2" className="text-gray-900 hover:bg-blue-50">🚗🚗 2 Mobil</SelectItem>
-                        <SelectItem value="3" className="text-gray-900 hover:bg-blue-50">🚗🚗🚗 3+ Mobil</SelectItem>
-                        <SelectItem value="carport" className="text-gray-900 hover:bg-blue-50">🏠 Carport</SelectItem>
-                        <SelectItem value="garage" className="text-gray-900 hover:bg-blue-50">🏢 Garasi Tertutup</SelectItem>
+                      <SelectContent className="bg-card border border-border shadow-lg z-50">
+                        <SelectItem value="0">❌ Tidak Ada</SelectItem>
+                        <SelectItem value="1">🚗 1 Mobil</SelectItem>
+                        <SelectItem value="2">🚗🚗 2 Mobil</SelectItem>
+                        <SelectItem value="3">🚗🚗🚗 3+ Mobil</SelectItem>
+                        <SelectItem value="carport">🏠 Carport</SelectItem>
+                        <SelectItem value="garage">🏢 Garasi Tertutup</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -890,7 +889,7 @@ const PropertyInsertForm = () => {
                 <Button 
                   type="button"
                   onClick={handleNextTab}
-                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                  className="flex items-center gap-2"
                 >
                   Selanjutnya
                   <ChevronRight className="h-4 w-4" />
