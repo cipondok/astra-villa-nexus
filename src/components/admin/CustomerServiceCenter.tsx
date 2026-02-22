@@ -248,10 +248,10 @@ const CustomerServiceCenter = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Open Tickets</p>
+                <p className="text-sm font-medium text-muted-foreground">Open Tickets</p>
                 <p className="text-2xl font-bold">42</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-500" />
+              <AlertTriangle className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -260,10 +260,10 @@ const CustomerServiceCenter = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Resolved Today</p>
+                <p className="text-sm font-medium text-muted-foreground">Resolved Today</p>
                 <p className="text-2xl font-bold">18</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -272,10 +272,10 @@ const CustomerServiceCenter = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Avg Response Time</p>
+                <p className="text-sm font-medium text-muted-foreground">Avg Response Time</p>
                 <p className="text-2xl font-bold">2.5h</p>
               </div>
-              <Clock className="h-8 w-8 text-blue-500" />
+              <Clock className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -284,10 +284,10 @@ const CustomerServiceCenter = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Satisfaction Rate</p>
+                <p className="text-sm font-medium text-muted-foreground">Satisfaction Rate</p>
                 <p className="text-2xl font-bold">94%</p>
               </div>
-              <HeadphonesIcon className="h-8 w-8 text-purple-500" />
+              <HeadphonesIcon className="h-8 w-8 text-chart-5" />
             </div>
           </CardContent>
         </Card>

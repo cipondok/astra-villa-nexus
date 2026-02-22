@@ -51,15 +51,15 @@ const SmartPropertyCard = ({ recommendation, onSave }: SmartPropertyCardProps) =
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-orange-600';
+    if (score >= 80) return 'text-chart-1';
+    if (score >= 60) return 'text-chart-3';
+    return 'text-chart-3';
   };
 
   const getScoreBg = (score: number) => {
-    if (score >= 80) return 'bg-green-100';
-    if (score >= 60) return 'bg-yellow-100';
-    return 'bg-orange-100';
+    if (score >= 80) return 'bg-chart-1/10';
+    if (score >= 60) return 'bg-chart-3/10';
+    return 'bg-chart-3/10';
   };
 
   return (
@@ -99,7 +99,7 @@ const SmartPropertyCard = ({ recommendation, onSave }: SmartPropertyCardProps) =
 
         {/* Discovery Badge */}
         {isDiscoveryMatch && (
-          <Badge className="absolute top-2 right-2 bg-purple-500 text-white">
+          <Badge className="absolute top-2 right-2 bg-chart-5 text-white">
             <Lightbulb className="h-3 w-3 mr-1" />
             Discovery
           </Badge>

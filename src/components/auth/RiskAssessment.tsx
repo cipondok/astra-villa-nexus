@@ -14,11 +14,11 @@ export const RiskAssessment = ({ riskLevel, factors, className }: RiskAssessment
   const getRiskIcon = () => {
     switch (riskLevel) {
       case "low":
-        return <Shield className="h-4 w-4 text-green-600" />;
+        return <Shield className="h-4 w-4 text-chart-1" />;
       case "medium":
-        return <Info className="h-4 w-4 text-yellow-600" />;
+        return <Info className="h-4 w-4 text-chart-3" />;
       case "high":
-        return <AlertTriangle className="h-4 w-4 text-red-600" />;
+        return <AlertTriangle className="h-4 w-4 text-destructive" />;
     }
   };
 

@@ -139,7 +139,7 @@ const LocalServiceDirectory: React.FC<LocalServiceDirectoryProps> = ({ city, cla
                   <h3 className="font-semibold flex items-center gap-2">
                     {provider.business_name}
                     {provider.is_verified && (
-                      <CheckCircle2 className="h-4 w-4 text-green-500" />
+                      <CheckCircle2 className="h-4 w-4 text-chart-1" />
                     )}
                   </h3>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -168,7 +168,7 @@ const LocalServiceDirectory: React.FC<LocalServiceDirectoryProps> = ({ city, cla
               
               <div className="flex flex-wrap items-center gap-3 mt-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
-                  <Star className="h-3 w-3 text-yellow-500" />
+                  <Star className="h-3 w-3 text-chart-3" />
                   {provider.rating_avg?.toFixed(1) || 'New'} ({provider.review_count || 0})
                 </span>
                 <span className="flex items-center gap-1">
