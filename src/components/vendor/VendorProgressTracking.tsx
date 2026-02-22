@@ -138,11 +138,11 @@ const VendorProgressTracking = () => {
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      not_started: "bg-gray-100 text-gray-800",
-      in_progress: "bg-blue-100 text-blue-800",
-      completed: "bg-green-100 text-green-800",
-      on_hold: "bg-yellow-100 text-yellow-800",
-      cancelled: "bg-red-100 text-red-800"
+      not_started: "bg-muted text-muted-foreground",
+      in_progress: "bg-chart-4/10 text-chart-4",
+      completed: "bg-chart-1/10 text-chart-1",
+      on_hold: "bg-chart-3/10 text-chart-3",
+      cancelled: "bg-destructive/10 text-destructive"
     };
 
     const icons = {
@@ -154,7 +154,7 @@ const VendorProgressTracking = () => {
     };
 
     return (
-      <Badge variant="outline" className={colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800"}>
+      <Badge variant="outline" className={colors[status as keyof typeof colors] || "bg-muted text-muted-foreground"}>
         <div className="flex items-center gap-1">
           {icons[status as keyof typeof icons]}
           {status.replace('_', ' ').toUpperCase()}
@@ -164,10 +164,10 @@ const VendorProgressTracking = () => {
   };
 
   const getProgressColor = (percentage: number) => {
-    if (percentage >= 75) return "bg-green-500";
-    if (percentage >= 50) return "bg-blue-500";
-    if (percentage >= 25) return "bg-yellow-500";
-    return "bg-red-500";
+    if (percentage >= 75) return "bg-chart-1";
+    if (percentage >= 50) return "bg-chart-4";
+    if (percentage >= 25) return "bg-chart-3";
+    return "bg-destructive";
   };
 
   const handleUpdateProgress = (project: ProjectProgress) => {
@@ -220,9 +220,9 @@ const VendorProgressTracking = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">In Progress</p>
-                <p className="text-2xl font-bold text-blue-600">{inProgressProjects}</p>
+                <p className="text-2xl font-bold text-chart-4">{inProgressProjects}</p>
               </div>
-              <Play className="h-8 w-8 text-blue-600" />
+              <Play className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -232,9 +232,9 @@ const VendorProgressTracking = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Completed</p>
-                <p className="text-2xl font-bold text-green-600">{completedProjects}</p>
+                <p className="text-2xl font-bold text-chart-1">{completedProjects}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -244,9 +244,9 @@ const VendorProgressTracking = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Avg Progress</p>
-                <p className="text-2xl font-bold text-purple-600">{averageProgress.toFixed(0)}%</p>
+                <p className="text-2xl font-bold text-accent">{averageProgress.toFixed(0)}%</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-purple-600" />
+              <TrendingUp className="h-8 w-8 text-accent" />
             </div>
           </CardContent>
         </Card>

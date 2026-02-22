@@ -427,11 +427,11 @@ const WNAFamilyBenefits: React.FC = () => {
   const t = copy[language];
 
   const colorClasses = {
-    rose: { bg: 'bg-rose-100 dark:bg-rose-900/50', text: 'text-rose-600 dark:text-rose-400' },
-    blue: { bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-400' },
-    green: { bg: 'bg-green-100 dark:bg-green-900/50', text: 'text-green-600 dark:text-green-400' },
-    purple: { bg: 'bg-purple-100 dark:bg-purple-900/50', text: 'text-purple-600 dark:text-purple-400' },
-    amber: { bg: 'bg-amber-100 dark:bg-amber-900/50', text: 'text-amber-600 dark:text-amber-400' }
+    rose: { bg: 'bg-destructive/10', text: 'text-destructive' },
+    blue: { bg: 'bg-chart-4/10', text: 'text-chart-4' },
+    green: { bg: 'bg-chart-1/10', text: 'text-chart-1' },
+    purple: { bg: 'bg-accent/10', text: 'text-accent' },
+    amber: { bg: 'bg-chart-3/10', text: 'text-chart-3' }
   };
 
   return (
@@ -446,10 +446,10 @@ const WNAFamilyBenefits: React.FC = () => {
       </div>
 
       {/* Important Note */}
-      <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/20 border-2 border-green-300 dark:border-green-700">
+      <div className="p-3 rounded-lg bg-chart-1/10 border-2 border-chart-1/30">
         <div className="flex items-start gap-2">
-          <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-          <p className="text-xs sm:text-sm font-medium text-green-800 dark:text-green-200">{t.importantNote}</p>
+          <CheckCircle className="h-5 w-5 text-chart-1 flex-shrink-0 mt-0.5" />
+          <p className="text-xs sm:text-sm font-medium text-foreground">{t.importantNote}</p>
         </div>
       </div>
 
@@ -520,7 +520,7 @@ const WNAFamilyBenefits: React.FC = () => {
                           <div className="space-y-1">
                             {member.requirements.map((req, i) => (
                               <div key={i} className="flex items-start gap-1.5">
-                                <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0 mt-0.5" />
+                                <CheckCircle className="h-3 w-3 text-chart-1 flex-shrink-0 mt-0.5" />
                                 <span className="text-[9px] sm:text-[10px] text-foreground/80">{req}</span>
                               </div>
                             ))}
@@ -530,7 +530,7 @@ const WNAFamilyBenefits: React.FC = () => {
                         {/* Benefits */}
                         <div className={cn("p-2.5 rounded-lg", colors.bg, "bg-opacity-30")}>
                           <h5 className="text-[10px] sm:text-xs font-semibold text-foreground mb-2 flex items-center gap-1">
-                            <Star className="h-3.5 w-3.5 text-amber-500" />
+                            <Star className="h-3.5 w-3.5 text-chart-3" />
                             {language === 'en' ? 'Benefits' : 'Manfaat'}
                           </h5>
                           <div className="space-y-1">
@@ -546,15 +546,15 @@ const WNAFamilyBenefits: React.FC = () => {
 
                       {/* Restrictions if any */}
                       {member.restrictions && (
-                        <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
-                          <h5 className="text-[10px] sm:text-xs font-semibold text-amber-700 dark:text-amber-400 mb-1.5 flex items-center gap-1">
+                        <div className="p-2.5 rounded-lg bg-chart-3/10 border border-chart-3/30">
+                          <h5 className="text-[10px] sm:text-xs font-semibold text-chart-3 mb-1.5 flex items-center gap-1">
                             <AlertTriangle className="h-3 w-3" />
                             {language === 'en' ? 'Limitations' : 'Batasan'}
                           </h5>
                           <div className="space-y-1">
                             {member.restrictions.map((restriction, i) => (
                               <div key={i} className="flex items-start gap-1.5">
-                                <span className="text-[9px] sm:text-[10px] text-amber-700 dark:text-amber-300">• {restriction}</span>
+                                <span className="text-[9px] sm:text-[10px] text-chart-3">• {restriction}</span>
                               </div>
                             ))}
                           </div>
