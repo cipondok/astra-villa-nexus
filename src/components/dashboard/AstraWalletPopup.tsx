@@ -84,12 +84,12 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
 
   return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-gradient-to-br from-background via-background to-amber-500/5 border-amber-500/20" autoClose={false}>
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-gradient-to-br from-background via-background to-gold-primary/5 border-gold-primary/20" autoClose={false}>
         <VisuallyHidden>
           <DialogTitle>ASTRA Wallet</DialogTitle>
           <DialogDescription>View your ASTRA token balance, claim daily rewards, and manage wallet actions.</DialogDescription>
         </VisuallyHidden>
-        <div className="relative bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 p-4 text-white">
+        <div className="relative bg-gradient-to-r from-gold-primary via-chart-5 to-gold-primary p-4 text-primary-foreground">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yIDItNCAyLTRzMiAyIDIgNC0yIDQtMiA0LTItMi0yLTR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
           <div className="relative flex items-center gap-3">
             <div className="h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">

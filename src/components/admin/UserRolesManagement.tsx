@@ -283,11 +283,11 @@ const UserRolesManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Admin Users</p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-2xl font-bold text-destructive">
                   {users?.filter(u => u.role === 'admin').length || 0}
                 </p>
               </div>
-              <Shield className="h-8 w-8 text-red-600" />
+              <Shield className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -297,11 +297,11 @@ const UserRolesManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Agents</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-2xl font-bold text-chart-4">
                   {users?.filter(u => u.role === 'agent').length || 0}
                 </p>
               </div>
-              <UserPlus className="h-8 w-8 text-blue-600" />
+              <UserPlus className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -311,11 +311,11 @@ const UserRolesManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Vendors</p>
-                <p className="text-2xl font-bold text-purple-600">
+                <p className="text-2xl font-bold text-accent-foreground">
                   {users?.filter(u => u.role === 'vendor').length || 0}
                 </p>
               </div>
-              <Settings className="h-8 w-8 text-purple-600" />
+              <Settings className="h-8 w-8 text-accent-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -327,7 +327,7 @@ const UserRolesManagement = () => {
           <div className="flex gap-4 items-center">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder="Search users by name or email..."
                   value={searchTerm}

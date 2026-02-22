@@ -257,12 +257,12 @@ export default function FeaturedAdsCarousel() {
               />
 
               {/* Gradient Overlay - Amber tint */}
-              <div className="absolute inset-0 bg-gradient-to-t from-amber-900/90 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-gold-primary/90 via-background/40 to-transparent" />
 
               {/* View Icon - Center on hover */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
-                <div className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-white/80 dark:bg-black/70 backdrop-blur-md flex items-center justify-center shadow-lg border border-amber-200/40 dark:border-amber-500/30">
-                  <Eye className="h-4 w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400" />
+                <div className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-background/80 backdrop-blur-md flex items-center justify-center shadow-lg border border-gold-primary/30">
+                  <Eye className="h-4 w-4 md:h-5 md:w-5 text-gold-primary" />
                 </div>
               </div>
 
@@ -271,7 +271,7 @@ export default function FeaturedAdsCarousel() {
                 {/* Left side badges */}
                 <div className="flex flex-col gap-1">
                   {/* Featured Badge - Compact icon with glow, text on hover */}
-                  <span className="group/badge flex items-center gap-0.5 font-bold px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white shadow-[0_0_10px_rgba(251,191,36,0.5)] transition-all duration-300 hover:shadow-[0_0_16px_rgba(251,191,36,0.7)]">
+                  <span className="group/badge flex items-center gap-0.5 font-bold px-1.5 py-0.5 rounded-full bg-gradient-to-r from-gold-primary via-gold-primary to-chart-5 text-primary-foreground shadow-[0_0_10px_hsl(var(--gold-primary)/0.5)] transition-all duration-300 hover:shadow-[0_0_16px_hsl(var(--gold-primary)/0.7)]">
                     <Star className="h-3 w-3 md:h-3.5 md:w-3.5 fill-white stroke-white drop-shadow-[0_0_3px_rgba(255,255,255,0.7)]" />
                     <span className="text-[9px] sm:text-[10px] md:text-xs max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[60px] font-semibold">
                       Featured
@@ -323,7 +323,7 @@ export default function FeaturedAdsCarousel() {
               <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3 z-10">
               {/* Price Badge - Prominent positioning */}
                 <div className="mb-1.5">
-                  <span className="inline-flex items-baseline text-xs sm:text-sm md:text-base font-bold px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-xl">
+                  <span className="inline-flex items-baseline text-xs sm:text-sm md:text-base font-bold px-2.5 py-1 rounded-lg bg-gradient-to-r from-gold-primary to-chart-5 text-primary-foreground shadow-xl">
                     <span className="text-[0.7em] font-medium opacity-90">Rp</span>
                     {p.price >= 1000000000 ? (
                       <>
@@ -395,18 +395,18 @@ export default function FeaturedAdsCarousel() {
               />
               
               {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-amber-900/90 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-gold-primary/90 via-background/40 to-transparent" />
               
               {/* View Icon - Center on hover */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
-                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
-                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-amber-600 dark:text-amber-400" />
+                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-background/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
+                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-gold-primary" />
                 </div>
               </div>
               
               {/* Top Badge - Polished icon with glow, text on hover */}
               <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2 z-10">
-                <span className="group/badge flex items-center gap-1 font-bold px-2 py-1 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white shadow-[0_0_12px_rgba(251,191,36,0.6)] transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.8)]">
+                <span className="group/badge flex items-center gap-1 font-bold px-2 py-1 rounded-full bg-gradient-to-r from-gold-primary via-gold-primary to-chart-5 text-primary-foreground shadow-[0_0_12px_hsl(var(--gold-primary)/0.6)] transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--gold-primary)/0.8)]">
                   <Star className="h-3.5 w-3.5 md:h-4 md:w-4 fill-white stroke-white drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
                   <span className="text-[8px] md:text-[10px] max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[70px] font-semibold">
                     Featured
