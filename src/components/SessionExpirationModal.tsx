@@ -48,22 +48,22 @@ const SessionExpirationModal = ({
 
   const getIcon = () => {
     if (errorMessage?.includes('network') || errorMessage?.includes('fetch')) {
-      return <RefreshCw className="h-7 w-7 text-blue-600 dark:text-blue-400" />;
+      return <RefreshCw className="h-7 w-7 text-chart-4" />;
     }
     if (errorMessage?.includes('invalid') || errorMessage?.includes('refresh')) {
-      return <ShieldAlert className="h-7 w-7 text-red-600 dark:text-red-400" />;
+      return <ShieldAlert className="h-7 w-7 text-destructive" />;
     }
-    return <AlertTriangle className="h-7 w-7 text-amber-600 dark:text-amber-400" />;
+    return <AlertTriangle className="h-7 w-7 text-chart-3" />;
   };
 
   const getIconBg = () => {
     if (errorMessage?.includes('network') || errorMessage?.includes('fetch')) {
-      return 'bg-blue-100 dark:bg-blue-900/30';
+      return 'bg-chart-4/10';
     }
     if (errorMessage?.includes('invalid') || errorMessage?.includes('refresh')) {
-      return 'bg-red-100 dark:bg-red-900/30';
+      return 'bg-destructive/10';
     }
-    return 'bg-amber-100 dark:bg-amber-900/30';
+    return 'bg-chart-3/10';
   };
 
   return (
@@ -85,9 +85,9 @@ const SessionExpirationModal = ({
         </DialogHeader>
 
         {remainingTime !== undefined && remainingTime > 0 && (
-          <div className="flex items-center justify-center gap-2 py-3 px-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800/30">
-            <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-            <span className="text-sm text-amber-700 dark:text-amber-300">
+          <div className="flex items-center justify-center gap-2 py-3 px-4 bg-chart-3/5 rounded-lg border border-chart-3/20">
+            <Clock className="h-4 w-4 text-chart-3" />
+            <span className="text-sm text-chart-3">
               Auto-redirect in {remainingTime} seconds
             </span>
           </div>
