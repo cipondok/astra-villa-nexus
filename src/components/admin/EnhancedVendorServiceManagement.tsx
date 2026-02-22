@@ -200,7 +200,7 @@ const EnhancedVendorServiceManagement = () => {
                 <p className="text-sm text-muted-foreground">Total Services</p>
                 <p className="text-2xl font-bold">{stats.total}</p>
               </div>
-              <BarChart3 className="h-8 w-8 text-blue-500" />
+              <BarChart3 className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -210,9 +210,9 @@ const EnhancedVendorServiceManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Active Services</p>
-                <p className="text-2xl font-bold text-green-600">{stats.active}</p>
+                <p className="text-2xl font-bold text-chart-1">{stats.active}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -222,9 +222,9 @@ const EnhancedVendorServiceManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Pending/Inactive</p>
-                <p className="text-2xl font-bold text-orange-600">{stats.pending}</p>
+                <p className="text-2xl font-bold text-chart-3">{stats.pending}</p>
               </div>
-              <Pause className="h-8 w-8 text-orange-500" />
+              <Pause className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -236,7 +236,7 @@ const EnhancedVendorServiceManagement = () => {
                 <p className="text-sm text-muted-foreground">Categories</p>
                 <p className="text-2xl font-bold">{stats.categories}</p>
               </div>
-              <Filter className="h-8 w-8 text-purple-500" />
+              <Filter className="h-8 w-8 text-chart-5" />
             </div>
           </CardContent>
         </Card>
@@ -415,9 +415,9 @@ const EnhancedVendorServiceManagement = () => {
         <TabsContent value="pending">
           <div className="grid gap-4">
             {filteredServices?.filter(s => !s.is_active).map((service) => (
-              <Card key={service.id} className="border-orange-200">
+              <Card key={service.id} className="border-chart-3/30">
                 <CardHeader>
-                  <CardTitle className="text-lg text-orange-800">{service.service_name}</CardTitle>
+                  <CardTitle className="text-lg text-chart-3">{service.service_name}</CardTitle>
                   <CardDescription>Pending approval from {service.vendor_business_profiles?.business_name}</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -455,15 +455,15 @@ const EnhancedVendorServiceManagement = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center p-4 border rounded-lg">
-                    <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
+                    <p className="text-2xl font-bold text-chart-4">{stats.total}</p>
                     <p className="text-sm text-muted-foreground">Total Services</p>
                   </div>
                   <div className="text-center p-4 border rounded-lg">
-                    <p className="text-2xl font-bold text-green-600">{Math.round((stats.active / stats.total) * 100)}%</p>
+                    <p className="text-2xl font-bold text-chart-1">{Math.round((stats.active / stats.total) * 100)}%</p>
                     <p className="text-sm text-muted-foreground">Active Rate</p>
                   </div>
                   <div className="text-center p-4 border rounded-lg">
-                    <p className="text-2xl font-bold text-purple-600">{stats.categories}</p>
+                    <p className="text-2xl font-bold text-chart-5">{stats.categories}</p>
                     <p className="text-sm text-muted-foreground">Categories</p>
                   </div>
                 </div>
