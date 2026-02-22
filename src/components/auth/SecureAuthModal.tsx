@@ -354,18 +354,18 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
 
   const getEmailIcon = () => {
     if (emailValidation.isChecking) {
-      return <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />;
+      return <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />;
     }
     if (emailValidation.type === "success") {
-      return <CheckCircle className="h-4 w-4 text-green-500" />;
+      return <CheckCircle className="h-4 w-4 text-chart-1" />;
     }
     if (emailValidation.type === "error") {
-      return <XCircle className="h-4 w-4 text-red-500" />;
+      return <XCircle className="h-4 w-4 text-destructive" />;
     }
     if (emailValidation.type === "warning") {
-      return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      return <AlertTriangle className="h-4 w-4 text-chart-3" />;
     }
-    return <Mail className="h-4 w-4 text-gray-400" />;
+    return <Mail className="h-4 w-4 text-muted-foreground" />;
   };
 
   if (!isOpen) return null;
@@ -451,8 +451,8 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                     {emailValidation.message && (
                       <p className={`text-[9px] ${
                         emailValidation.type === "error" ? "text-destructive" :
-                        emailValidation.type === "warning" ? "text-yellow-500" :
-                        emailValidation.type === "success" ? "text-green-500" :
+                        emailValidation.type === "warning" ? "text-chart-3" :
+                        emailValidation.type === "success" ? "text-chart-1" :
                         "text-muted-foreground"
                       }`}>
                         {emailValidation.message}
@@ -475,17 +475,17 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                       <Phone className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                       <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2">
                         {whatsappValidation.type === "success" ? (
-                          <CheckCircle className="h-3 w-3 text-green-500" />
+                          <CheckCircle className="h-3 w-3 text-chart-1" />
                         ) : whatsappValidation.type === "error" ? (
                           <XCircle className="h-3 w-3 text-destructive" />
                         ) : (
-                          <MessageCircle className="h-3 w-3 text-green-600" />
+                          <MessageCircle className="h-3 w-3 text-chart-1" />
                         )}
                       </div>
                     </div>
                     {whatsappValidation.message && (
                       <p className={`text-[9px] ${
-                        whatsappValidation.type === "error" ? "text-destructive" : "text-green-500"
+                        whatsappValidation.type === "error" ? "text-destructive" : "text-chart-1"
                       }`}>
                         {whatsappValidation.message}
                       </p>
@@ -611,8 +611,8 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                     {emailValidation.message && (
                       <p className={`text-[9px] ${
                         emailValidation.type === "error" ? "text-destructive" :
-                        emailValidation.type === "warning" ? "text-yellow-500" :
-                        emailValidation.type === "success" ? "text-green-500" :
+                        emailValidation.type === "warning" ? "text-chart-3" :
+                        emailValidation.type === "success" ? "text-chart-1" :
                         "text-muted-foreground"
                       }`}>
                         {emailValidation.message}
