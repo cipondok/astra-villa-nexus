@@ -349,14 +349,14 @@ export const EligibilityChecker = () => {
           {/* Requirements */}
           {result.requirements.length > 0 && (
             <div className="space-y-3">
-              <h3 className="font-semibold text-red-600 flex items-center gap-2">
+              <h3 className="font-semibold text-destructive flex items-center gap-2">
                 <XCircle className="h-5 w-5" />
                 {language === "id" ? "Persyaratan yang Harus Dipenuhi" : "Required to Meet"}
               </h3>
               <ul className="space-y-2">
                 {result.requirements.map((req, index) => (
                   <li key={index} className="flex items-start gap-2 text-sm">
-                    <span className="text-red-600 mt-1">•</span>
+                    <span className="text-destructive mt-1">•</span>
                     <span>{req}</span>
                   </li>
                 ))}
@@ -367,14 +367,14 @@ export const EligibilityChecker = () => {
           {/* Suggestions */}
           {result.suggestions.length > 0 && (
             <div className="space-y-3">
-              <h3 className="font-semibold text-orange-600 flex items-center gap-2">
+              <h3 className="font-semibold text-gold-primary flex items-center gap-2">
                 <AlertCircle className="h-5 w-5" />
                 {language === "id" ? "Saran untuk Meningkatkan Kelayakan" : "Suggestions to Improve Eligibility"}
               </h3>
               <ul className="space-y-2">
                 {result.suggestions.map((suggestion, index) => (
                   <li key={index} className="flex items-start gap-2 text-sm">
-                    <span className="text-orange-600 mt-1">•</span>
+                    <span className="text-gold-primary mt-1">•</span>
                     <span>{suggestion}</span>
                   </li>
                 ))}
@@ -436,7 +436,7 @@ export const EligibilityChecker = () => {
                   <SelectItem value="ID">🇮🇩 {language === "id" ? "Indonesia (WNI)" : "Indonesia (Indonesian Citizen)"}</SelectItem>
                   
                   {/* Green Status - Fully Allowed */}
-                  <div className="px-2 py-1.5 text-xs font-semibold text-green-600 bg-green-50 dark:bg-green-950 dark:text-green-400 sticky top-0 z-10">
+                  <div className="px-2 py-1.5 text-xs font-semibold text-chart-1 bg-chart-1/10 dark:bg-chart-1/20 sticky top-0 z-10">
                     ✓ {language === "id" ? "Status Hijau - Diizinkan Penuh" : "Green Status - Fully Allowed"}
                   </div>
                   {INVESTMENT_COUNTRIES.green.map(country => (
@@ -446,7 +446,7 @@ export const EligibilityChecker = () => {
                   ))}
                   
                   {/* Yellow Status - Restricted Sectors */}
-                  <div className="px-2 py-1.5 text-xs font-semibold text-yellow-600 bg-yellow-50 dark:bg-yellow-950 dark:text-yellow-400 sticky top-0 z-10 mt-1">
+                  <div className="px-2 py-1.5 text-xs font-semibold text-gold-primary bg-gold-primary/10 dark:bg-gold-primary/20 sticky top-0 z-10 mt-1">
                     ⚠ {language === "id" ? "Status Kuning - Sektor Terbatas" : "Yellow Status - Restricted Sectors"}
                   </div>
                   {INVESTMENT_COUNTRIES.yellow.map(country => (
@@ -456,11 +456,11 @@ export const EligibilityChecker = () => {
                   ))}
                   
                   {/* Red Status - High Scrutiny */}
-                  <div className="px-2 py-1.5 text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-950 dark:text-red-400 sticky top-0 z-10 mt-1">
+                  <div className="px-2 py-1.5 text-xs font-semibold text-destructive bg-destructive/10 dark:bg-destructive/20 sticky top-0 z-10 mt-1">
                     ⛔ {language === "id" ? "Status Merah - Pengawasan Ketat" : "Red Status - High Scrutiny"}
                   </div>
                   {INVESTMENT_COUNTRIES.red.map(country => (
-                    <SelectItem key={country.value} value={country.value} className="text-red-600 dark:text-red-400">
+                    <SelectItem key={country.value} value={country.value} className="text-destructive">
                       {country.label}
                     </SelectItem>
                   ))}

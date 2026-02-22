@@ -208,7 +208,7 @@ const VRPanoramaViewer: React.FC<VRPanoramaViewerProps> = ({
 
       {/* Dark overlay for night mode */}
       {!isDayMode && (
-        <div className="absolute inset-0 bg-blue-900/30 pointer-events-none" />
+        <div className="absolute inset-0 bg-background/30 pointer-events-none" />
       )}
 
       {/* Hotspots */}

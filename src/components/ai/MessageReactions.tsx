@@ -25,8 +25,8 @@ const MessageReactions = ({ messageId, currentReaction, onReaction }: MessageRea
         onClick={() => handleReaction('positive')}
         className={`h-7 w-7 p-0 ${
           currentReaction === 'positive' 
-            ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' 
-            : 'hover:bg-green-50 dark:hover:bg-green-900/20'
+            ? 'bg-chart-1/20 text-chart-1' 
+            : 'hover:bg-chart-1/10'
         } ${isAnimating === 'positive' ? 'animate-macos-bounce' : ''}`}
         disabled={!!currentReaction}
       >
@@ -38,8 +38,8 @@ const MessageReactions = ({ messageId, currentReaction, onReaction }: MessageRea
         onClick={() => handleReaction('negative')}
         className={`h-7 w-7 p-0 ${
           currentReaction === 'negative' 
-            ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' 
-            : 'hover:bg-red-50 dark:hover:bg-red-900/20'
+            ? 'bg-destructive/20 text-destructive' 
+            : 'hover:bg-destructive/10'
         } ${isAnimating === 'negative' ? 'animate-macos-bounce' : ''}`}
         disabled={!!currentReaction}
       >

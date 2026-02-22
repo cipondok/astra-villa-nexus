@@ -54,7 +54,7 @@ const UpgradeBanner = ({ onDismiss }: UpgradeBannerProps) => {
               {[...Array(5)].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-1 h-1 bg-white/30 rounded-full"
+                  className="absolute w-1 h-1 bg-primary-foreground/30 rounded-full"
                   style={{
                     left: `${20 + i * 15}%`,
                     top: `${30 + (i % 3) * 20}%`,
@@ -105,7 +105,7 @@ const UpgradeBanner = ({ onDismiss }: UpgradeBannerProps) => {
               <Button
                 onClick={handleUpgrade}
                 size="sm"
-                className="flex-shrink-0 bg-white text-primary hover:bg-white/90 gap-1"
+                className="flex-shrink-0 bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-1"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">{t.cta}</span>

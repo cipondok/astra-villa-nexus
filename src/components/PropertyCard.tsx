@@ -150,7 +150,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           {/* Featured Badge */}
           {property.featured && (
             <div className="absolute top-1.5 right-8">
-              <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-[8px] font-bold shadow px-1 py-0.5">
+              <Badge className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-primary-foreground text-[8px] font-bold shadow px-1 py-0.5">
                 ⭐ Featured
               </Badge>
             </div>
@@ -198,8 +198,8 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
               </div>
               {property.posted_by.rating && (
                 <div className="flex items-center gap-0.5 ml-auto">
-                  <Star className="h-2.5 w-2.5 fill-yellow-500 text-yellow-500" />
-                  <span className="text-[9px] font-bold text-yellow-600">
+                  <Star className="h-2.5 w-2.5 fill-gold-primary text-gold-primary" />
+                  <span className="text-[9px] font-bold text-gold-primary">
                     {property.posted_by.rating.toFixed(1)}
                   </span>
                 </div>

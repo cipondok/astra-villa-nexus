@@ -65,7 +65,7 @@ const InquiryExpiringModal = ({ open, onClose, inquiryCount, hoursLeft }: Inquir
     navigate('/pricing');
   };
 
-  const urgencyColor = hoursLeft <= 6 ? 'text-red-500' : hoursLeft <= 12 ? 'text-orange-500' : 'text-yellow-500';
+  const urgencyColor = hoursLeft <= 6 ? 'text-destructive' : hoursLeft <= 12 ? 'text-gold-primary' : 'text-chart-3';
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -73,11 +73,11 @@ const InquiryExpiringModal = ({ open, onClose, inquiryCount, hoursLeft }: Inquir
         <DialogHeader>
           <div className="flex items-center gap-2">
             <motion.div 
-              className="p-2 rounded-full bg-red-500/10"
+              className="p-2 rounded-full bg-destructive/10"
               animate={{ rotate: [0, -10, 10, -10, 0] }}
               transition={{ repeat: Infinity, duration: 0.5, repeatDelay: 2 }}
             >
-              <AlertTriangle className="h-5 w-5 text-red-500" />
+              <AlertTriangle className="h-5 w-5 text-destructive" />
             </motion.div>
             <Badge variant="destructive" className="animate-pulse">
               {t.urgency}
@@ -91,7 +91,7 @@ const InquiryExpiringModal = ({ open, onClose, inquiryCount, hoursLeft }: Inquir
 
         <div className="space-y-4 py-4">
           {/* Countdown Timer */}
-          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-center">
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 text-center">
             <p className="text-xs text-muted-foreground mb-1">{t.warning}</p>
             <div className="flex items-center justify-center gap-2">
               <Clock className={`h-6 w-6 ${urgencyColor}`} />
@@ -125,7 +125,7 @@ const InquiryExpiringModal = ({ open, onClose, inquiryCount, hoursLeft }: Inquir
             ))}
           </div>
 
-          <p className="text-sm text-red-500 font-medium text-center">
+          <p className="text-sm text-destructive font-medium text-center">
             💸 {t.missedOpportunity}
           </p>
 
@@ -158,7 +158,7 @@ const InquiryExpiringModal = ({ open, onClose, inquiryCount, hoursLeft }: Inquir
           </Button>
           <Button 
             onClick={handleUpgrade} 
-            className="w-full sm:w-auto gap-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
+            className="w-full sm:w-auto gap-2 bg-gradient-to-r from-destructive to-gold-primary hover:from-destructive/90 hover:to-gold-primary/90"
           >
             <MessageSquare className="h-4 w-4" />
             {t.upgradeNow}

@@ -198,7 +198,7 @@ const ForeignInvestment = () => {
                 onClick={() => navigate(item.path)}
                 className={cn(
                   "group relative overflow-hidden rounded-xl cursor-pointer",
-                  "bg-white/80 dark:bg-white/10 backdrop-blur-md",
+                  "bg-card/80 dark:bg-card/10 backdrop-blur-md",
                   "border-2", item.borderColor, item.hoverBorder,
                   "shadow-md hover:shadow-xl transition-all duration-300",
                   "p-3 sm:p-4 active:scale-[0.98]"
@@ -248,7 +248,7 @@ const ForeignInvestment = () => {
                       key={idx}
                       className={cn(
                         "px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-medium",
-                        "bg-background/70 dark:bg-white/10 border border-border/30",
+                        "bg-background/70 dark:bg-muted/20 border border-border/30",
                         item.accentColor
                       )}
                     >
