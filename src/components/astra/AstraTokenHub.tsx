@@ -500,22 +500,22 @@ const AstraTokenHub = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="text-center space-y-2 p-4 border rounded-lg">
-                  <Calendar className="h-8 w-8 mx-auto text-green-600" />
+                  <Calendar className="h-8 w-8 mx-auto text-chart-1" />
                   <h3 className="font-medium">Daily Check-in</h3>
                   <p className="text-sm text-muted-foreground">Earn tokens daily with streak bonuses</p>
                 </div>
                 <div className="text-center space-y-2 p-4 border rounded-lg">
-                  <TrendingUp className="h-8 w-8 mx-auto text-orange-600" />
+                  <TrendingUp className="h-8 w-8 mx-auto text-chart-3" />
                   <h3 className="font-medium">Transactions</h3>
                   <p className="text-sm text-muted-foreground">Earn % rewards on platform transactions</p>
                 </div>
                 <div className="text-center space-y-2 p-4 border rounded-lg">
-                  <Users className="h-8 w-8 mx-auto text-purple-600" />
+                  <Users className="h-8 w-8 mx-auto text-chart-5" />
                   <h3 className="font-medium">Referrals</h3>
                   <p className="text-sm text-muted-foreground">Invite friends and earn bonus tokens</p>
                 </div>
                 <div className="text-center space-y-2 p-4 border rounded-lg">
-                  <Star className="h-8 w-8 mx-auto text-blue-600" />
+                  <Star className="h-8 w-8 mx-auto text-chart-4" />
                   <h3 className="font-medium">Special Events</h3>
                   <p className="text-sm text-muted-foreground">Participate in platform events</p>
                 </div>
@@ -583,7 +583,7 @@ const AstraTokenHub = () => {
               <CardDescription>Invite friends and both of you earn bonus tokens!</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg">
+              <div className="bg-gradient-to-r from-chart-5/10 to-chart-4/10 p-4 rounded-lg">
                 <h3 className="font-semibold mb-2">How Referrals Work</h3>
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <p>• Share your unique referral link with friends</p>
@@ -609,12 +609,12 @@ const AstraTokenHub = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="text-center p-4 border rounded-lg">
-                  <Users className="h-8 w-8 mx-auto text-purple-600 mb-2" />
+                  <Users className="h-8 w-8 mx-auto text-chart-5 mb-2" />
                   <h3 className="font-medium">Friends Referred</h3>
                   <p className="text-2xl font-bold">0</p>
                 </div>
                 <div className="text-center p-4 border rounded-lg">
-                  <Coins className="h-8 w-8 mx-auto text-yellow-600 mb-2" />
+                  <Coins className="h-8 w-8 mx-auto text-gold-primary mb-2" />
                   <h3 className="font-medium">Referral Earnings</h3>
                   <p className="text-2xl font-bold">0 ASTRA</p>
                 </div>
@@ -678,15 +678,15 @@ const AstraTokenHub = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between items-center p-3 border rounded-lg">
                       <span>7 Day Streak</span>
-                      <Badge variant="outline" className="text-blue-600">1.5x Multiplier</Badge>
+                      <Badge variant="outline" className="text-chart-4">1.5x Multiplier</Badge>
                     </div>
                     <div className="flex justify-between items-center p-3 border rounded-lg">
                       <span>14 Day Streak</span>
-                      <Badge variant="outline" className="text-orange-600">2x Multiplier</Badge>
+                      <Badge variant="outline" className="text-chart-3">2x Multiplier</Badge>
                     </div>
                     <div className="flex justify-between items-center p-3 border rounded-lg">
                       <span>30 Day Streak</span>
-                      <Badge variant="outline" className="text-purple-600">3x Multiplier</Badge>
+                      <Badge variant="outline" className="text-chart-5">3x Multiplier</Badge>
                     </div>
                   </div>
                 </div>
