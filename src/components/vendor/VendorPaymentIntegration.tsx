@@ -193,7 +193,7 @@ const VendorPaymentIntegration = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Earnings</p>
                 <p className="text-2xl font-bold">{formatCurrency(calculateTotalEarnings())}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-green-600" />
+              <TrendingUp className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -205,7 +205,7 @@ const VendorPaymentIntegration = () => {
                 <p className="text-sm font-medium text-muted-foreground">Pending Payouts</p>
                 <p className="text-2xl font-bold">{formatCurrency(calculatePendingPayouts())}</p>
               </div>
-              <Clock className="h-8 w-8 text-yellow-600" />
+              <Clock className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -217,7 +217,7 @@ const VendorPaymentIntegration = () => {
                 <p className="text-sm font-medium text-muted-foreground">Commission Rate</p>
                 <p className="text-2xl font-bold">15%</p>
               </div>
-              <Banknote className="h-8 w-8 text-blue-600" />
+              <Banknote className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>

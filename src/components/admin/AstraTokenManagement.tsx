@@ -176,22 +176,22 @@ const AstraTokenManagement = () => {
 
   const getRewardTypeColor = (type: string) => {
     switch (type) {
-      case 'welcome_bonus': return 'bg-blue-100 text-blue-800';
-      case 'daily_checkin': return 'bg-green-100 text-green-800';
-      case 'transaction_percentage': return 'bg-orange-100 text-orange-800';
-      case 'referral_bonus': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'welcome_bonus': return 'bg-chart-4/20 text-chart-4';
+      case 'daily_checkin': return 'bg-chart-1/20 text-chart-1';
+      case 'transaction_percentage': return 'bg-chart-3/20 text-chart-3';
+      case 'referral_bonus': return 'bg-chart-5/20 text-chart-5';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getUserRoleColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'bg-red-100 text-red-800';
-      case 'agent': return 'bg-blue-100 text-blue-800';
-      case 'vendor': return 'bg-green-100 text-green-800';
-      case 'property_owner': return 'bg-yellow-100 text-yellow-800';
-      case 'general_user': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'admin': return 'bg-destructive/20 text-destructive';
+      case 'agent': return 'bg-chart-4/20 text-chart-4';
+      case 'vendor': return 'bg-chart-1/20 text-chart-1';
+      case 'property_owner': return 'bg-chart-3/20 text-chart-3';
+      case 'general_user': return 'bg-muted text-muted-foreground';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -215,7 +215,7 @@ const AstraTokenManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Coins className="h-8 w-8 text-yellow-600" />
+              <Coins className="h-8 w-8 text-gold-primary" />
               <div>
                 <p className="text-sm text-muted-foreground">Total Tokens</p>
                 <p className="text-2xl font-bold">{tokenStats?.totalTokens?.toLocaleString() || '0'}</p>
@@ -227,7 +227,7 @@ const AstraTokenManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Users className="h-8 w-8 text-blue-600" />
+              <Users className="h-8 w-8 text-chart-4" />
               <div>
                 <p className="text-sm text-muted-foreground">Token Holders</p>
                 <p className="text-2xl font-bold">{tokenStats?.totalUsers || '0'}</p>
@@ -239,7 +239,7 @@ const AstraTokenManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Gift className="h-8 w-8 text-green-600" />
+              <Gift className="h-8 w-8 text-chart-1" />
               <div>
                 <p className="text-sm text-muted-foreground">Today's Rewards</p>
                 <p className="text-2xl font-bold">{tokenStats?.todayRewards?.toLocaleString() || '0'}</p>
@@ -251,7 +251,7 @@ const AstraTokenManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-8 w-8 text-purple-600" />
+              <TrendingUp className="h-8 w-8 text-chart-5" />
               <div>
                 <p className="text-sm text-muted-foreground">Today's Transactions</p>
                 <p className="text-2xl font-bold">{tokenStats?.todayTransactions || '0'}</p>

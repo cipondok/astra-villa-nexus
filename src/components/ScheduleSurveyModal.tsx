@@ -43,7 +43,7 @@ const ScheduleSurveyModal = ({ isOpen, onClose, propertyTitle, agentName }: Sche
         </DialogHeader>
         
         <div className="space-y-4">
-          <div className="text-sm text-gray-600 dark:text-gray-300">
+          <div className="text-sm text-muted-foreground">
             <p><strong>Property:</strong> {propertyTitle}</p>
             <p><strong>Agent:</strong> {agentName}</p>
           </div>
