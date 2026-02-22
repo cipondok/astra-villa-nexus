@@ -96,11 +96,11 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
 
   const getConnectionColor = () => {
     switch (connectionStatus) {
-      case 'connecting': return 'bg-yellow-400';
-      case 'connected': return 'bg-green-400';
-      case 'error': return 'bg-red-400';
-      case 'offline': return 'bg-gray-400';
-      default: return 'bg-gray-400';
+      case 'connecting': return 'bg-chart-3';
+      case 'connected': return 'bg-chart-1';
+      case 'error': return 'bg-destructive';
+      case 'offline': return 'bg-muted-foreground';
+      default: return 'bg-muted-foreground';
     }
   };
 
@@ -121,7 +121,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
         <motion.div
           className="absolute -inset-[100px] opacity-30"
           style={{
-            background: 'radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 50%)'
+            background: 'radial-gradient(circle at 30% 50%, hsl(var(--primary) / 0.3) 0%, transparent 50%), radial-gradient(circle at 70% 50%, hsl(var(--accent) / 0.3) 0%, transparent 50%)'
           }}
           animate={{
             scale: [1, 1.1, 1],
@@ -142,9 +142,9 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
           className="relative"
           animate={{ 
             boxShadow: [
-              '0 0 0px rgba(127, 90, 240, 0)',
-              '0 0 40px rgba(127, 90, 240, 0.4)',
-              '0 0 0px rgba(127, 90, 240, 0)'
+              '0 0 0px hsl(var(--accent) / 0)',
+              '0 0 40px hsl(var(--accent) / 0.4)',
+              '0 0 0px hsl(var(--accent) / 0)'
             ]
           }}
           transition={{ duration: 2.5, repeat: Infinity }}
@@ -161,8 +161,8 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
           <motion.div
             className="absolute inset-0 rounded-2xl border-2 border-transparent"
             style={{
-              borderTopColor: 'rgba(59, 130, 246, 0.6)',
-              borderRightColor: 'rgba(139, 92, 246, 0.4)'
+              borderTopColor: 'hsl(var(--primary) / 0.6)',
+              borderRightColor: 'hsl(var(--accent) / 0.4)'
             }}
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
@@ -178,7 +178,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
         >
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
             <motion.span 
-              className="bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 bg-clip-text text-transparent"
+              className="bg-gradient-to-r from-primary via-accent to-chart-3 bg-clip-text text-transparent"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
               }}
@@ -206,7 +206,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
               key={i}
               className="w-2.5 h-2.5 rounded-full"
               style={{
-                background: i % 3 === 0 ? '#3b82f6' : i % 3 === 1 ? '#8b5cf6' : '#f97316'
+                background: i % 3 === 0 ? 'hsl(var(--primary))' : i % 3 === 1 ? 'hsl(var(--accent))' : 'hsl(var(--chart-3))'
               }}
               animate={{
                 y: [0, -10, 0],
@@ -235,7 +235,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full blur-sm"
               style={{
-                background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #f97316)',
+                background: 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--chart-3)))',
               }}
               initial={{ width: '0%' }}
               animate={{ width: `${Math.min(progress, 100)}%` }}
@@ -245,7 +245,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full"
               style={{
-                background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #f97316, #3b82f6)',
+                background: 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--chart-3)), hsl(var(--primary)))',
                 backgroundSize: '300% 100%'
               }}
               initial={{ width: '0%' }}
@@ -271,7 +271,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
           </div>
           <div className="flex justify-between mt-2">
             <span className="text-[10px] text-muted-foreground">{displayMessage}</span>
-            <span className="text-[10px] font-medium bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+            <span className="text-[10px] font-medium bg-gradient-to-r from-primary via-accent to-chart-3 bg-clip-text text-transparent">
               {Math.round(Math.min(progress, 100))}%
             </span>
           </div>

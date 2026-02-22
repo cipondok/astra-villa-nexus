@@ -89,11 +89,11 @@ const PropertyOwnerSettings = () => {
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
+              <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center">
                 {settings.profileImage ? (
                   <img src={settings.profileImage} alt="Profile" className="w-20 h-20 rounded-full object-cover" />
                 ) : (
-                  <User className="h-8 w-8 text-gray-400" />
+                  <User className="h-8 w-8 text-muted-foreground" />
                 )}
               </div>
               <Button size="sm" variant="outline" className="absolute -bottom-2 -right-2 p-1 h-8 w-8">
