@@ -56,8 +56,8 @@ const BuyerOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center">
-                <Search className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-chart-3 to-chart-3/70 flex items-center justify-center">
+                <Search className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Find Your Dream Home</h3>
               <p className="text-sm text-muted-foreground">Tell us what you're looking for</p>
@@ -127,8 +127,8 @@ const BuyerOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center">
-                <Home className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-chart-3 to-chart-3/70 flex items-center justify-center">
+                <Home className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">23 Properties Match!</h3>
               <p className="text-sm text-muted-foreground">Based on your preferences</p>
@@ -174,8 +174,8 @@ const BuyerOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center">
-                <Sparkles className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-chart-3 to-chart-3/70 flex items-center justify-center">
+                <Sparkles className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">You're Ready to Find Your Home!</h3>
               <p className="text-sm text-muted-foreground">Here's what you've unlocked</p>
@@ -258,7 +258,7 @@ const BuyerOnboarding = ({
         <Button 
           onClick={step === 2 ? onComplete : nextStep} 
           disabled={!canProceed()}
-          className="flex-1 bg-gradient-to-r from-orange-500 to-amber-600"
+          className="flex-1 bg-gradient-to-r from-chart-3 to-chart-3/70"
         >
           {step === 0 ? "Show Properties" : step === 2 ? "Complete Setup" : "Continue"}
           <ChevronRight className="h-4 w-4 ml-1" />

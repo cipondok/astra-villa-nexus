@@ -40,17 +40,17 @@ const AgentOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
-                <Users className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-accent to-accent/70 flex items-center justify-center">
+                <Users className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Join 500+ Verified Agents</h3>
               <p className="text-sm text-muted-foreground">Set up your agent profile</p>
             </div>
 
-            <Card className="bg-purple-50 dark:bg-purple-900/20 border-purple-200">
+            <Card className="bg-accent/10 border-accent/30">
               <CardContent className="p-3 flex items-start gap-2">
-                <Shield className="h-4 w-4 text-purple-600 mt-0.5" />
-                <p className="text-xs text-purple-700 dark:text-purple-300">
+                <Shield className="h-4 w-4 text-accent-foreground mt-0.5" />
+                <p className="text-xs text-accent-foreground">
                   Verified agents get <strong>5x more client inquiries</strong>
                 </p>
               </CardContent>
@@ -117,8 +117,8 @@ const AgentOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
-                <Award className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-accent to-accent/70 flex items-center justify-center">
+                <Award className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Build Your Profile</h3>
               <p className="text-sm text-muted-foreground">Stand out to potential clients</p>
@@ -184,8 +184,8 @@ const AgentOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
-                <Trophy className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-accent to-accent/70 flex items-center justify-center">
+                <Trophy className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Welcome to Agent Central!</h3>
               <p className="text-sm text-muted-foreground">Your agent dashboard is ready</p>
@@ -214,7 +214,7 @@ const AgentOnboarding = ({
                   </div>
                   <div className="p-2 rounded-lg bg-background/50">
                     <div className="text-[10px] text-muted-foreground">Status</div>
-                    <div className="text-sm font-bold text-emerald-600">Active</div>
+                    <div className="text-sm font-bold text-chart-1">Active</div>
                   </div>
                 </div>
               </CardContent>
@@ -233,9 +233,9 @@ const AgentOnboarding = ({
             </Card>
 
             <div className="flex items-center justify-center gap-2 flex-wrap">
-              <Badge className="bg-purple-100 text-purple-700">+100 ASTRA</Badge>
-              <Badge className="bg-emerald-100 text-emerald-700">1 Free Featured</Badge>
-              <Badge className="bg-blue-100 text-blue-700">Verified Badge</Badge>
+              <Badge className="bg-accent/10 text-accent-foreground">+100 ASTRA</Badge>
+              <Badge className="bg-chart-1/10 text-chart-1">1 Free Featured</Badge>
+              <Badge className="bg-chart-4/10 text-chart-4">Verified Badge</Badge>
             </div>
           </div>
         );
@@ -272,7 +272,7 @@ const AgentOnboarding = ({
         <Button 
           onClick={step === 2 ? onComplete : nextStep} 
           disabled={!canProceed()}
-          className="flex-1 bg-gradient-to-r from-purple-500 to-violet-600"
+          className="flex-1 bg-gradient-to-r from-accent to-accent/70"
         >
           {step === 2 ? "Complete Setup" : step === 1 ? "Skip / Continue" : "Continue"}
           <ChevronRight className="h-4 w-4 ml-1" />

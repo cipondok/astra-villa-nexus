@@ -22,7 +22,7 @@ const userTypes = [
     title: "Selling Property",
     subtitle: "I want to sell my home",
     icon: Home,
-    color: "from-emerald-500 to-green-600",
+    color: "from-chart-1 to-chart-1/70",
     reward: "Free Featured Boost"
   },
   {
@@ -30,7 +30,7 @@ const userTypes = [
     title: "Renting Out",
     subtitle: "I want to rent my property",
     icon: Building2,
-    color: "from-blue-500 to-cyan-600",
+    color: "from-chart-4 to-chart-4/70",
     reward: "Tenant Screening Tool"
   },
   {
@@ -38,7 +38,7 @@ const userTypes = [
     title: "Real Estate Agent",
     subtitle: "I'm a property professional",
     icon: Users,
-    color: "from-purple-500 to-violet-600",
+    color: "from-accent to-accent/70",
     reward: "100 ASTRA + Verified Badge"
   },
   {
@@ -46,7 +46,7 @@ const userTypes = [
     title: "Buying Property",
     subtitle: "I'm looking to buy",
     icon: Search,
-    color: "from-orange-500 to-amber-600",
+    color: "from-chart-3 to-chart-3/70",
     reward: "AI Property Assistant"
   },
   {
@@ -54,7 +54,7 @@ const userTypes = [
     title: "Looking to Rent",
     subtitle: "I need a rental",
     icon: Key,
-    color: "from-pink-500 to-rose-600",
+    color: "from-primary to-primary/70",
     reward: "Priority Viewing"
   }
 ];
@@ -65,7 +65,7 @@ const UserTypeSelector = ({ onSelect }: UserTypeSelectorProps) => {
       {/* Header */}
       <div className="text-center space-y-1.5">
         <div className="w-10 h-10 mx-auto rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-          <Sparkles className="h-5 w-5 text-white" />
+          <Sparkles className="h-5 w-5 text-primary-foreground" />
         </div>
         <h2 className="text-base font-bold">Welcome to ASTRA Villa</h2>
         <p className="text-xs text-muted-foreground px-2">
@@ -91,7 +91,7 @@ const UserTypeSelector = ({ onSelect }: UserTypeSelectorProps) => {
               >
                 <CardContent className="p-2.5 flex items-center gap-2.5">
                   <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${type.color} flex items-center justify-center shadow-sm flex-shrink-0`}>
-                    <Icon className="h-4 w-4 text-white" />
+                    <Icon className="h-4 w-4 text-primary-foreground" />
                   </div>
                   
                   <div className="flex-1 min-w-0">

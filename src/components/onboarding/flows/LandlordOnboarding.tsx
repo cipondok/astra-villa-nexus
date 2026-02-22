@@ -40,8 +40,8 @@ const LandlordOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
-                <Building2 className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-chart-4 to-chart-4/70 flex items-center justify-center">
+                <Building2 className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Find Quality Tenants Faster</h3>
               <p className="text-sm text-muted-foreground">Set up your landlord profile</p>
@@ -109,17 +109,17 @@ const LandlordOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
-                <Calendar className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-chart-4 to-chart-4/70 flex items-center justify-center">
+                <Calendar className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Add Your First Rental</h3>
               <p className="text-sm text-muted-foreground">List your property for rent</p>
             </div>
 
-            <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200">
+            <Card className="bg-chart-4/10 border-chart-4/30">
               <CardContent className="p-3 flex items-start gap-2">
-                <Lightbulb className="h-4 w-4 text-blue-600 mt-0.5" />
-                <p className="text-xs text-blue-700 dark:text-blue-300">
+                <Lightbulb className="h-4 w-4 text-chart-4 mt-0.5" />
+                <p className="text-xs text-chart-4">
                   Add availability dates to get <strong>3x more inquiries</strong>
                 </p>
               </CardContent>
@@ -188,8 +188,8 @@ const LandlordOnboarding = ({
         return (
           <div className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
-                <Users className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-chart-4 to-chart-4/70 flex items-center justify-center">
+                <Users className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-bold">Tenant Matching Ready!</h3>
               <p className="text-sm text-muted-foreground">Active renters looking for properties like yours</p>
@@ -220,7 +220,7 @@ const LandlordOnboarding = ({
             <Card className="border-dashed">
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <Shield className="h-4 w-4 text-blue-600" />
+                  <Shield className="h-4 w-4 text-chart-4" />
                   <span className="text-sm font-semibold">Set Tenant Preferences</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
@@ -246,7 +246,7 @@ const LandlordOnboarding = ({
             </Card>
 
             <div className="flex items-center justify-center gap-2">
-              <Badge className="bg-emerald-100 text-emerald-700">+50 ASTRA</Badge>
+              <Badge className="bg-chart-1/10 text-chart-1">+50 ASTRA</Badge>
               <span className="text-xs text-muted-foreground">+ Tenant Screening Tool</span>
             </div>
           </div>
@@ -284,7 +284,7 @@ const LandlordOnboarding = ({
         <Button 
           onClick={step === 2 ? onComplete : nextStep} 
           disabled={!canProceed()}
-          className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-600"
+          className="flex-1 bg-gradient-to-r from-chart-4 to-chart-4/70"
         >
           {step === 2 ? "Complete Setup" : "Continue"}
           <ChevronRight className="h-4 w-4 ml-1" />
