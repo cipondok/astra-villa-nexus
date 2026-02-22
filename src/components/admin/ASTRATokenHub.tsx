@@ -667,7 +667,7 @@ const ASTRATokenHub = () => {
                 </p>
               </div>
 
-              <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+              <Alert className="border-chart-4/20 bg-chart-4/5">
                 <Shield className="h-3.5 w-3.5" />
                 <AlertDescription className="text-xs">
                   Webhooks will be sent for token transfers, balance changes, and transaction confirmations.

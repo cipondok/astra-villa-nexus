@@ -908,9 +908,9 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                         </div>
 
                         <div className="space-y-1">
-                          <Label htmlFor="edit-listing-type" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Listing Type</Label>
+                          <Label htmlFor="edit-listing-type" className="text-foreground font-medium text-xs">Listing Type</Label>
                           <Select value={editData.listing_type} onValueChange={(value) => handleInputChange('listing_type', value)}>
-                            <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm">
+                            <SelectTrigger className="border-border focus:border-primary h-8 text-sm">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -923,7 +923,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                       </div>
 
                       <div className="space-y-1">
-                        <Label htmlFor="edit-development-status" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Development Status</Label>
+                        <Label htmlFor="edit-development-status" className="text-foreground font-medium text-xs">Development Status</Label>
                         <Select 
                           value={editData.development_status} 
                           onValueChange={(value) => handleInputChange('development_status', value)}
@@ -946,10 +946,10 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-1">
-                          <Label htmlFor="edit-price" className="text-slate-700 dark:text-slate-300 font-medium text-xs">
+                          <Label htmlFor="edit-price" className="text-foreground font-medium text-xs">
                             Price (IDR)
                             {editData.price && (
-                              <Badge className="ml-1 text-[10px] bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                              <Badge className="ml-1 text-[10px] bg-gradient-to-r from-chart-1 to-chart-1/80 text-primary-foreground">
                                 {formatPriceDisplay(editData.price)}
                               </Badge>
                             )}
@@ -960,14 +960,14 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                             value={editData.price}
                             onChange={(e) => handleInputChange('price', e.target.value)}
                             placeholder="Price"
-                            className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm"
+                            className="border-border focus:border-primary h-8 text-sm"
                           />
                         </div>
 
                         <div className="space-y-1">
-                          <Label htmlFor="edit-status" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Status</Label>
+                          <Label htmlFor="edit-status" className="text-foreground font-medium text-xs">Status</Label>
                           <Select value={editData.status} onValueChange={(value) => handleInputChange('status', value)}>
-                            <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm">
+                            <SelectTrigger className="border-border focus:border-primary h-8 text-sm">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>

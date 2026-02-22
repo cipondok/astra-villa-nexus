@@ -1216,29 +1216,29 @@ const ProjectDiagnosticSystem = () => {
               <div className="space-y-6">
                 {/* Show unfixed issues only if hideFixedIssues is true */}
                 {!hideFixedIssues && (
-                  <div className="p-4 border rounded-lg border-green-200 bg-green-50">
+                  <div className="p-4 border rounded-lg border-chart-1/20 bg-chart-1/5">
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-medium text-lg text-green-800">Security Updates - COMPLETED</h4>
-                      <Badge className="bg-green-100 text-green-800 border-green-200">
+                      <h4 className="font-medium text-lg text-chart-1">Security Updates - COMPLETED</h4>
+                      <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">
                         ✅ Fixed
                       </Badge>
                     </div>
-                    <ul className="space-y-2 text-sm text-green-700">
+                    <ul className="space-y-2 text-sm text-chart-1">
                       <li>• ✅ Updated authentication library to v4.2.1 (security patch)</li>
                       <li>• ✅ Implemented CSRF protection for form submissions</li>
                       <li>• ✅ Added rate limiting to API endpoints</li>
                       <li>• ✅ Updated password hashing algorithm</li>
                     </ul>
-                    <div className="mt-2 text-xs text-green-600">
+                    <div className="mt-2 text-xs text-chart-1/80">
                       Status changed: Ready → Completed (Just now)
                     </div>
                   </div>
                 )}
 
-                <div className="p-4 border rounded-lg border-blue-200 bg-blue-50">
+                <div className="p-4 border rounded-lg border-chart-4/20 bg-chart-4/5">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-medium text-lg">Performance Optimizations</h4>
-                    <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                    <Badge className="bg-chart-4/10 text-chart-4 border-chart-4/20">
                       Medium Priority
                     </Badge>
                   </div>
@@ -1250,10 +1250,10 @@ const ProjectDiagnosticSystem = () => {
                   </ul>
                 </div>
 
-                <div className="p-4 border rounded-lg border-green-200 bg-green-50">
+                <div className="p-4 border rounded-lg border-chart-1/20 bg-chart-1/5">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-medium text-lg">Feature Enhancements</h4>
-                    <Badge className="bg-green-100 text-green-800 border-green-200">
+                    <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">
                       Low Priority
                     </Badge>
                   </div>
@@ -1276,9 +1276,9 @@ const ProjectDiagnosticSystem = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                <div className="p-4 border rounded-lg border-blue-200 bg-blue-50">
+                <div className="p-4 border rounded-lg border-chart-4/20 bg-chart-4/5">
                   <h4 className="font-medium text-lg mb-3 flex items-center gap-2">
-                    <Zap className="h-5 w-5 text-blue-600" />
+                    <Zap className="h-5 w-5 text-chart-4" />
                     Performance Tips
                   </h4>
                   <ul className="space-y-2 text-sm">
@@ -1289,9 +1289,9 @@ const ProjectDiagnosticSystem = () => {
                   </ul>
                 </div>
 
-                <div className="p-4 border rounded-lg border-green-200 bg-green-50">
+                <div className="p-4 border rounded-lg border-chart-1/20 bg-chart-1/5">
                   <h4 className="font-medium text-lg mb-3 flex items-center gap-2">
-                    <Users className="h-5 w-5 text-green-600" />
+                    <Users className="h-5 w-5 text-chart-1" />
                     User Engagement
                   </h4>
                   <ul className="space-y-2 text-sm">
@@ -1302,9 +1302,9 @@ const ProjectDiagnosticSystem = () => {
                   </ul>
                 </div>
 
-                <div className="p-4 border rounded-lg border-purple-200 bg-purple-50">
+                <div className="p-4 border rounded-lg border-accent/20 bg-accent/5">
                   <h4 className="font-medium text-lg mb-3 flex items-center gap-2">
-                    <Settings className="h-5 w-5 text-purple-600" />
+                    <Settings className="h-5 w-5 text-accent-foreground" />
                     System Optimization
                   </h4>
                   <ul className="space-y-2 text-sm">
@@ -1315,9 +1315,9 @@ const ProjectDiagnosticSystem = () => {
                   </ul>
                 </div>
 
-                <div className="p-4 border rounded-lg border-yellow-200 bg-yellow-50">
+                <div className="p-4 border rounded-lg border-chart-3/20 bg-chart-3/5">
                   <h4 className="font-medium text-lg mb-3 flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-yellow-600" />
+                    <FileText className="h-5 w-5 text-chart-3" />
                     Best Practices
                   </h4>
                   <ul className="space-y-2 text-sm">
