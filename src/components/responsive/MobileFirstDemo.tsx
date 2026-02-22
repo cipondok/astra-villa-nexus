@@ -40,7 +40,7 @@ const MobileFirstDemo: React.FC = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
+            <div className="w-8 h-8 bg-gradient-to-r from-primary to-accent rounded-lg"></div>
             <span className="text-mobile-h3 font-bold hide-mobile">
               PropertyApp
             </span>
@@ -184,8 +184,8 @@ const MobileFirstDemo: React.FC = () => {
           {sampleCards.map((property) => (
             <div key={property.id} className="card-mobile group cursor-pointer">
               {/* Property Image Placeholder */}
-              <div className="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg mb-4 transition-transform group-hover:scale-105">
-                <div className="w-full h-full flex items-center justify-center text-white font-semibold">
+              <div className="w-full h-48 bg-gradient-to-br from-primary to-accent rounded-lg mb-4 transition-transform group-hover:scale-105">
+                <div className="w-full h-full flex items-center justify-center text-primary-foreground font-semibold">
                   Property Image
                 </div>
               </div>
@@ -210,7 +210,7 @@ const MobileFirstDemo: React.FC = () => {
         </h2>
         
         <div className="model-container-mobile">
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
             <div className="text-center">
               <div className="w-16 h-16 bg-primary rounded-full mx-auto mb-4 animate-pulse"></div>
               <p className="text-mobile-body text-muted-foreground">
