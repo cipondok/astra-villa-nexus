@@ -618,11 +618,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[95vh] overflow-hidden p-3 sm:p-4 bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950">
-        <DialogHeader className="border-b border-slate-200 dark:border-slate-700 pb-3 bg-gradient-to-r from-indigo-600 to-purple-600 -mx-3 sm:-mx-4 -mt-3 sm:-mt-4 px-3 sm:px-4 pt-3 sm:pt-4 text-white">
+      <DialogContent className="max-w-3xl max-h-[95vh] overflow-hidden p-3 sm:p-4 bg-gradient-to-br from-background to-muted/50">
+        <DialogHeader className="border-b border-border pb-3 bg-gradient-to-r from-accent to-primary -mx-3 sm:-mx-4 -mt-3 sm:-mt-4 px-3 sm:px-4 pt-3 sm:pt-4 text-primary-foreground">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-              <div className="p-1.5 bg-white/20 backdrop-blur-sm rounded-lg hidden sm:block">
+            <DialogTitle className="text-base sm:text-lg font-bold text-primary-foreground flex items-center gap-2">
+              <div className="p-1.5 bg-primary-foreground/20 backdrop-blur-sm rounded-lg hidden sm:block">
                 <Edit className="h-4 w-4" />
               </div>
               <div>
@@ -634,7 +634,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="text-white hover:bg-white/10 h-7 w-7 p-0"
+              className="text-primary-foreground hover:bg-primary-foreground/10 h-7 w-7 p-0"
             >
               <X className="h-3.5 w-3.5" />
             </Button>
@@ -651,33 +651,33 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         </DialogHeader>
         
         <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v as "gallery" | "info" | "seo" | "advanced"); scrollToTab(v); }} className="w-full">
-          <div className="px-2 pt-2 sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950">
-            <TabsList className="h-8 grid w-full grid-cols-4 gap-1 bg-slate-200 dark:bg-slate-800 p-0.5">
+          <div className="px-2 pt-2 sticky top-0 z-10 bg-gradient-to-br from-background to-muted/50">
+            <TabsList className="h-8 grid w-full grid-cols-4 gap-1 bg-muted p-0.5">
               <TabsTrigger 
                 value="gallery" 
                 onClick={() => scrollToTab("gallery")}
-                className={`text-xs h-7 ${activeTab === "gallery" ? "bg-white dark:bg-slate-700" : ""}`}
+                className={`text-xs h-7 ${activeTab === "gallery" ? "bg-card" : ""}`}
               >
                 Gallery
               </TabsTrigger>
               <TabsTrigger 
                 value="info" 
                 onClick={() => scrollToTab("info")}
-                className={`text-xs h-7 ${activeTab === "info" ? "bg-white dark:bg-slate-700" : ""}`}
+                className={`text-xs h-7 ${activeTab === "info" ? "bg-card" : ""}`}
               >
                 Info
               </TabsTrigger>
               <TabsTrigger 
                 value="seo" 
                 onClick={() => scrollToTab("seo")}
-                className={`text-xs h-7 ${activeTab === "seo" ? "bg-white dark:bg-slate-700" : ""}`}
+                className={`text-xs h-7 ${activeTab === "seo" ? "bg-card" : ""}`}
               >
                 SEO
               </TabsTrigger>
               <TabsTrigger 
                 value="advanced" 
                 onClick={() => scrollToTab("advanced")}
-                className={`text-xs h-7 ${activeTab === "advanced" ? "bg-white dark:bg-slate-700" : ""}`}
+                className={`text-xs h-7 ${activeTab === "advanced" ? "bg-card" : ""}`}
               >
                 Advanced
               </TabsTrigger>
@@ -722,9 +722,9 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 )}
 
                 {/* Image Management Section */}
-                <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700 overflow-hidden">
-                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-2 sm:p-3">
-                    <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
+                <div className="bg-card rounded-lg shadow border border-border overflow-hidden">
+                  <div className="bg-gradient-to-r from-accent to-destructive/70 p-2 sm:p-3">
+                    <h3 className="text-sm sm:text-base font-bold text-primary-foreground flex items-center gap-1.5">
                       <ImageIcon className="h-4 w-4" />
                       Gallery ({images.length})
                     </h3>
@@ -733,7 +733,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                     {/* Upload Section */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1.5">
-                        <Label htmlFor="image-upload" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Upload Images</Label>
+                        <Label htmlFor="image-upload" className="text-foreground font-medium text-xs">Upload Images</Label>
                         <Input
                           id="image-upload"
                           type="file"
@@ -741,7 +741,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                           multiple
                           onChange={handleFileUpload}
                           disabled={uploading}
-                          className="border-slate-300 dark:border-slate-600 focus:border-purple-500 h-8 text-xs"
+                          className="border-border focus:border-primary h-8 text-xs"
                         />
                         <p className="text-[10px] text-muted-foreground">
                           JPG, PNG, max 5MB each
@@ -755,12 +755,12 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                       </div>
 
                       <div className="space-y-1.5">
-                        <Label className="text-slate-700 dark:text-slate-300 font-medium text-xs">AI Generate</Label>
+                        <Label className="text-foreground font-medium text-xs">AI Generate</Label>
                         <Button
                           type="button"
                           onClick={generateAIImage}
                           disabled={generatingImage}
-                          className="w-full h-8 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-xs"
+                          className="w-full h-8 bg-gradient-to-r from-accent to-destructive/70 hover:from-accent/90 hover:to-destructive/60 text-primary-foreground text-xs"
                         >
                           {generatingImage ? (
                             <>
@@ -774,7 +774,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                             </>
                           )}
                         </Button>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                        <p className="text-[10px] text-muted-foreground">
                           AI-powered image generation
                         </p>
                       </div>
@@ -784,7 +784,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                     {images.length > 0 ? (
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                         {images.map((url, index) => (
-                          <div key={index} className={`group relative overflow-hidden rounded-lg bg-white dark:bg-slate-700 shadow ${editData.thumbnail_url === url ? 'ring-1 ring-amber-500' : ''}`}>
+                          <div key={index} className={`group relative overflow-hidden rounded-lg bg-card shadow ${editData.thumbnail_url === url ? 'ring-1 ring-gold-primary' : ''}`}>
                             <div className="aspect-square overflow-hidden">
                               <img
                                 src={url}
@@ -835,28 +835,28 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                             </Button>
                             {/* Badges */}
                             <div className="absolute bottom-1 left-1 flex items-center gap-1">
-                              <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-1.5 py-0.5 rounded-full text-[10px] font-medium">
+                              <div className="bg-gradient-to-r from-accent to-destructive/70 text-primary-foreground px-1.5 py-0.5 rounded-full text-[10px] font-medium">
                                 #{index + 1}
                               </div>
                               {editData.thumbnail_url === url && (
-                                <div className="bg-amber-500 text-white px-1.5 py-0.5 rounded-full text-[10px] font-medium">★</div>
+                                <div className="bg-gold-primary text-primary-foreground px-1.5 py-0.5 rounded-full text-[10px] font-medium">★</div>
                               )}
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-6 bg-gradient-to-br from-slate-100 to-purple-100 dark:from-slate-800 dark:to-purple-900 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600">
-                        <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full w-fit mx-auto mb-2">
-                          <ImageIcon className="h-5 w-5 text-white" />
+                      <div className="text-center py-6 bg-gradient-to-br from-muted/50 to-accent/10 rounded-lg border-2 border-dashed border-border">
+                        <div className="p-2 bg-gradient-to-r from-accent to-destructive/70 rounded-full w-fit mx-auto mb-2">
+                          <ImageIcon className="h-5 w-5 text-primary-foreground" />
                         </div>
-                        <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">No Images</h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Upload or generate</p>
+                        <h4 className="text-sm font-semibold text-foreground mb-1">No Images</h4>
+                        <p className="text-xs text-muted-foreground mb-3">Upload or generate</p>
                         <Button
                           type="button"
                           onClick={generateAIImage}
                           disabled={generatingImage}
-                          className="h-8 text-xs bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                          className="h-8 text-xs bg-gradient-to-r from-accent to-destructive/70 hover:from-accent/90 hover:to-destructive/60 text-primary-foreground"
                         >
                           <Wand2 className="h-3 w-3 mr-1.5" />
                           Generate
@@ -873,27 +873,27 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 {/* Property Information */}
                 <div className="grid grid-cols-1 gap-3">
                   {/* Basic Information */}
-                  <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700 overflow-hidden">
-                    <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-2">
-                      <h3 className="text-sm font-bold text-white">Basic Information</h3>
+                  <div className="bg-card rounded-lg shadow border border-border overflow-hidden">
+                    <div className="bg-gradient-to-r from-primary to-accent p-2">
+                      <h3 className="text-sm font-bold text-primary-foreground">Basic Information</h3>
                     </div>
                     <div className="p-3 space-y-2">
                       <div className="space-y-1">
-                        <Label htmlFor="edit-title" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Property Title</Label>
+                        <Label htmlFor="edit-title" className="text-foreground font-medium text-xs">Property Title</Label>
                         <Input
                           id="edit-title"
                           value={editData.title}
                           onChange={(e) => handleInputChange('title', e.target.value)}
                           placeholder="Enter title"
-                          className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm"
+                          className="border-border focus:border-primary h-8 text-sm"
                         />
                       </div>
                       
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-1">
-                          <Label htmlFor="edit-property-type" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Property Type</Label>
+                          <Label htmlFor="edit-property-type" className="text-foreground font-medium text-xs">Property Type</Label>
                           <Select value={editData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
-                            <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm">
+                            <SelectTrigger className="border-border focus:border-primary h-8 text-sm">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
