@@ -169,7 +169,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
         {/* Loading Popup Preview - separate from welcome screen */}
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
-            <Loader2 className="h-3 w-3 text-purple-500" />
+            <Loader2 className="h-3 w-3 text-chart-5" />
             <span className="text-[10px] font-medium text-foreground">Loading Popup</span>
             <span className="text-[8px] text-muted-foreground">(during data loading)</span>
           </div>
@@ -207,7 +207,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
         {/* PWA Install Prompt Preview */}
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
-            <Download className="h-3 w-3 text-green-500" />
+            <Download className="h-3 w-3 text-chart-1" />
             <span className="text-[10px] font-medium text-foreground">PWA Install Prompt</span>
             <span className="text-[8px] text-muted-foreground">(browser install)</span>
           </div>

@@ -149,7 +149,7 @@ const AstraWalletPopup: React.FC<AstraWalletPopupProps> = ({ open, onOpenChange 
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-medium">Weekly Check-ins</span>
               {walletStats.currentStreak > 0 && (
-                <div className="flex items-center gap-1 text-orange-500">
+                <div className="flex items-center gap-1 text-chart-3">
                   <Flame className="h-4 w-4" />
                   <span className="text-xs font-bold">{walletStats.currentStreak} day streak</span>
                 </div>

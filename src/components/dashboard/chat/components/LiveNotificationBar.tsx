@@ -54,7 +54,7 @@ const LiveNotificationBar = memo<LiveNotificationBarProps>(({
                     </span>
                   )}
                   {highCount > 0 && urgentCount === 0 && (
-                    <span className="text-orange-500 font-medium">
+                    <span className="text-chart-3 font-medium">
                       {' '}({highCount} high priority)
                     </span>
                   )}
