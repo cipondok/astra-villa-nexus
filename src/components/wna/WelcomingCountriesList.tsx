@@ -91,15 +91,15 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
   });
 
   const tierColors = {
-    platinum: 'from-slate-500 to-slate-700 border-slate-500/50 text-white',
-    gold: 'from-orange-500 to-orange-700 border-orange-500/50 text-white',
-    silver: 'from-gray-400 to-gray-600 border-gray-500/50 text-white'
+    platinum: 'from-muted-foreground to-muted-foreground/80 border-muted-foreground/50 text-primary-foreground',
+    gold: 'from-chart-3 to-chart-3/80 border-chart-3/50 text-primary-foreground',
+    silver: 'from-muted-foreground/60 to-muted-foreground/40 border-muted-foreground/50 text-primary-foreground'
   };
 
   const tierBgColors = {
-    platinum: 'bg-slate-200 dark:bg-slate-900/50 text-slate-800 dark:text-slate-300',
-    gold: 'bg-orange-200 dark:bg-orange-900/50 text-orange-800 dark:text-orange-300',
-    silver: 'bg-gray-200 dark:bg-gray-800/50 text-gray-800 dark:text-gray-300'
+    platinum: 'bg-muted text-muted-foreground',
+    gold: 'bg-chart-3/20 text-chart-3',
+    silver: 'bg-muted/50 text-muted-foreground'
   };
 
   return (
@@ -185,7 +185,7 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
                     <Users className="h-2.5 w-2.5" />
                     {country.investorCount} {t.investors}
                   </span>
-                  <span className="flex items-center gap-0.5 text-[8px] text-green-600">
+                  <span className="flex items-center gap-0.5 text-[8px] text-chart-1">
                     <TrendingUp className="h-2.5 w-2.5" />
                     {country.processingDays} {t.days}
                   </span>
@@ -198,7 +198,7 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
               {country.benefits.map((benefit, i) => (
                 <span
                   key={i}
-                  className="inline-flex items-center gap-0.5 text-[7px] sm:text-[8px] px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full font-semibold"
+                  className="inline-flex items-center gap-0.5 text-[7px] sm:text-[8px] px-1.5 py-0.5 bg-chart-1/10 text-chart-1 rounded-full font-semibold"
                 >
                   <CheckCircle className="h-2 w-2" />
                   {benefit}
@@ -208,8 +208,8 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
 
             {/* Treaty Status */}
             <div className="mt-1.5 flex items-center gap-1">
-              <Shield className="h-2.5 w-2.5 text-blue-500" />
-              <span className="text-[7px] text-blue-700 dark:text-blue-400 font-medium">{country.treatyStatus}</span>
+              <Shield className="h-2.5 w-2.5 text-chart-4" />
+              <span className="text-[7px] text-chart-4 font-medium">{country.treatyStatus}</span>
             </div>
 
             {/* Selected indicator */}
@@ -227,20 +227,20 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
 
       {/* Stats Summary */}
       <div className="grid grid-cols-3 gap-2 mt-3">
-        <div className="text-center p-2 rounded-lg bg-slate-200 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700">
-          <Star className="h-3 w-3 mx-auto text-slate-600 dark:text-slate-400 mb-0.5" />
-          <p className="text-[9px] font-semibold text-slate-700 dark:text-slate-400">{t.platinum}</p>
-          <p className="text-xs font-bold text-slate-800 dark:text-slate-300">{countries.filter(c => c.tier === 'platinum').length}</p>
+        <div className="text-center p-2 rounded-lg bg-muted border border-border">
+          <Star className="h-3 w-3 mx-auto text-muted-foreground mb-0.5" />
+          <p className="text-[9px] font-semibold text-muted-foreground">{t.platinum}</p>
+          <p className="text-xs font-bold text-foreground">{countries.filter(c => c.tier === 'platinum').length}</p>
         </div>
-        <div className="text-center p-2 rounded-lg bg-orange-200 dark:bg-orange-900/50 border border-orange-300 dark:border-orange-700">
-          <Star className="h-3 w-3 mx-auto text-orange-600 dark:text-orange-400 mb-0.5" />
-          <p className="text-[9px] font-semibold text-orange-700 dark:text-orange-400">{t.gold}</p>
-          <p className="text-xs font-bold text-orange-800 dark:text-orange-300">{countries.filter(c => c.tier === 'gold').length}</p>
+        <div className="text-center p-2 rounded-lg bg-chart-3/10 border border-chart-3/20">
+          <Star className="h-3 w-3 mx-auto text-chart-3 mb-0.5" />
+          <p className="text-[9px] font-semibold text-chart-3">{t.gold}</p>
+          <p className="text-xs font-bold text-chart-3">{countries.filter(c => c.tier === 'gold').length}</p>
         </div>
-        <div className="text-center p-2 rounded-lg bg-gray-200 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600">
-          <Star className="h-3 w-3 mx-auto text-gray-600 dark:text-gray-400 mb-0.5" />
-          <p className="text-[9px] font-semibold text-gray-700 dark:text-gray-400">{t.silver}</p>
-          <p className="text-xs font-bold text-gray-800 dark:text-gray-300">{countries.filter(c => c.tier === 'silver').length}</p>
+        <div className="text-center p-2 rounded-lg bg-muted/50 border border-border">
+          <Star className="h-3 w-3 mx-auto text-muted-foreground mb-0.5" />
+          <p className="text-[9px] font-semibold text-muted-foreground">{t.silver}</p>
+          <p className="text-xs font-bold text-foreground">{countries.filter(c => c.tier === 'silver').length}</p>
         </div>
       </div>
     </div>
