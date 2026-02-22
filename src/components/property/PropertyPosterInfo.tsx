@@ -74,7 +74,7 @@ export const PropertyPosterInfo: React.FC<PropertyPosterInfoProps> = ({
         return {
           icon: Landmark,
           label: 'Developer',
-          color: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
+          color: 'bg-accent/10 text-accent-foreground border-accent/20',
           description: 'Pengembang Properti Resmi'
         };
       case 'pt':
@@ -107,7 +107,7 @@ export const PropertyPosterInfo: React.FC<PropertyPosterInfoProps> = ({
         return {
           icon: ShieldCheck,
           label: 'Trusted',
-          color: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white',
+          color: 'bg-gradient-to-r from-chart-1 to-chart-1/80 text-primary-foreground',
           description: 'Terpercaya & Terverifikasi'
         };
       case 'verified':
@@ -128,7 +128,7 @@ export const PropertyPosterInfo: React.FC<PropertyPosterInfoProps> = ({
         return {
           icon: ShieldAlert,
           label: 'Unverified',
-          color: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
+          color: 'bg-muted text-muted-foreground border-border',
           description: 'Belum Terverifikasi'
         };
     }
@@ -210,14 +210,14 @@ export const PropertyPosterInfo: React.FC<PropertyPosterInfoProps> = ({
         {/* Verification Status Card */}
         <div className={`flex items-center gap-3 p-3 rounded-xl border ${
           poster.verification_status === 'premium' || poster.verification_status === 'trusted'
-            ? 'bg-gradient-to-r from-green-500/10 via-emerald-500/5 to-green-500/10 border-green-500/20'
+            ? 'bg-gradient-to-r from-chart-1/10 via-chart-1/5 to-chart-1/10 border-chart-1/20'
             : 'bg-muted/30 border-border/30'
         }`}>
           <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
             poster.verification_status === 'premium' 
-              ? 'bg-gradient-to-br from-amber-400 to-yellow-500' 
+              ? 'bg-gradient-to-br from-gold-primary to-gold-primary/80' 
               : poster.verification_status === 'trusted' || poster.verification_status === 'verified'
-                ? 'bg-gradient-to-br from-green-400 to-emerald-500'
+                ? 'bg-gradient-to-br from-chart-1 to-chart-1/80'
                 : 'bg-muted'
           }`}>
             <VerifyIcon className={`h-5 w-5 ${

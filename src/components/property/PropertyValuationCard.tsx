@@ -87,9 +87,9 @@ export function PropertyValuationCard({
   const getTrendColor = (trend: string) => {
     switch (trend) {
       case 'rising':
-        return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
+        return 'bg-chart-1/10 text-chart-1';
       case 'declining':
-        return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
+        return 'bg-destructive/10 text-destructive';
       default:
         return 'bg-muted text-muted-foreground';
     }
@@ -98,9 +98,9 @@ export function PropertyValuationCard({
   const getImpactIcon = (impact: string) => {
     switch (impact) {
       case 'positive':
-        return <CheckCircle className="h-3.5 w-3.5 text-green-500" />;
+        return <CheckCircle className="h-3.5 w-3.5 text-chart-1" />;
       case 'negative':
-        return <XCircle className="h-3.5 w-3.5 text-red-500" />;
+        return <XCircle className="h-3.5 w-3.5 text-destructive" />;
       default:
         return <Minus className="h-3.5 w-3.5 text-muted-foreground" />;
     }
