@@ -139,11 +139,11 @@ const NeighborhoodGuides: React.FC = () => {
             </Badge>
           )}
           <div className="absolute bottom-2 right-2 flex gap-2">
-            <Badge variant="secondary" className="bg-black/60 text-white">
+            <Badge variant="secondary" className="bg-background/60 backdrop-blur-sm text-foreground">
               <Eye className="h-3 w-3 mr-1" />
               {guide.view_count}
             </Badge>
-            <Badge variant="secondary" className="bg-black/60 text-white">
+            <Badge variant="secondary" className="bg-background/60 backdrop-blur-sm text-foreground">
               <Heart className="h-3 w-3 mr-1" />
               {guide.like_count}
             </Badge>

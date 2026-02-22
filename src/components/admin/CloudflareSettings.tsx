@@ -306,7 +306,7 @@ const CloudflareSettings = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Cloud className="h-8 w-8 text-orange-500" />
+            <Cloud className="h-8 w-8 text-chart-3" />
             Cloudflare Configuration
           </h2>
           <p className="text-muted-foreground mt-1">
@@ -371,13 +371,13 @@ const CloudflareSettings = () => {
                   className="flex items-start gap-3 p-3 rounded-lg border bg-card"
                 >
                   {test.status === "success" && (
-                    <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
+                    <CheckCircle2 className="h-5 w-5 text-chart-1 mt-0.5" />
                   )}
                   {test.status === "error" && (
                     <XCircle className="h-5 w-5 text-destructive mt-0.5" />
                   )}
                   {test.status === "warning" && (
-                    <AlertCircle className="h-5 w-5 text-yellow-500 mt-0.5" />
+                    <AlertCircle className="h-5 w-5 text-chart-3 mt-0.5" />
                   )}
                   <div className="flex-1">
                     <div className="font-medium">{test.name}</div>

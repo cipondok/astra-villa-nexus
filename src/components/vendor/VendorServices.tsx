@@ -191,7 +191,7 @@ const VendorServices = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -204,11 +204,11 @@ const VendorServices = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Total Services</p>
+                <p className="text-sm text-muted-foreground">Total Services</p>
                 <p className="text-2xl font-bold">{services.length}</p>
               </div>
-              <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                <Star className="h-5 w-5 text-blue-600" />
+              <div className="p-2 bg-chart-4/10 rounded-lg">
+                <Star className="h-5 w-5 text-chart-4" />
               </div>
             </div>
           </CardContent>
@@ -218,11 +218,11 @@ const VendorServices = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Active Services</p>
+                <p className="text-sm text-muted-foreground">Active Services</p>
                 <p className="text-2xl font-bold">{services.filter(s => s.is_active).length}</p>
               </div>
-              <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+              <div className="p-2 bg-chart-1/10 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-chart-1" />
               </div>
             </div>
           </CardContent>
@@ -232,11 +232,11 @@ const VendorServices = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Total Bookings</p>
+                <p className="text-sm text-muted-foreground">Total Bookings</p>
                 <p className="text-2xl font-bold">{services.reduce((sum, s) => sum + (s.total_bookings || 0), 0)}</p>
               </div>
-              <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                <Calendar className="h-5 w-5 text-purple-600" />
+              <div className="p-2 bg-accent/10 rounded-lg">
+                <Calendar className="h-5 w-5 text-accent" />
               </div>
             </div>
           </CardContent>
@@ -246,11 +246,11 @@ const VendorServices = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Monthly Revenue</p>
+                <p className="text-sm text-muted-foreground">Monthly Revenue</p>
                 <p className="text-2xl font-bold">Rp {(services.reduce((sum, s) => sum + (s.monthly_revenue || 0), 0)).toLocaleString()}</p>
               </div>
-              <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
-                <Star className="h-5 w-5 text-orange-600" />
+              <div className="p-2 bg-chart-3/10 rounded-lg">
+                <Star className="h-5 w-5 text-chart-3" />
               </div>
             </div>
           </CardContent>
@@ -259,8 +259,8 @@ const VendorServices = () => {
 
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Services</h2>
-          <p className="text-gray-600 dark:text-gray-400">Manage your service offerings and track performance</p>
+          <h2 className="text-2xl font-bold text-foreground">My Services</h2>
+          <p className="text-muted-foreground">Manage your service offerings and track performance</p>
         </div>
         <Button onClick={() => setShowForm(true)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -282,10 +282,10 @@ const VendorServices = () => {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 No services yet
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Start by adding your first service offering
               </p>
               <Button onClick={() => setShowForm(true)}>
@@ -300,7 +300,7 @@ const VendorServices = () => {
           {services.map((service) => (
             <Card key={service.id} className="relative">
               {service.featured && (
-                <Badge className="absolute top-2 right-2 bg-yellow-500 text-white">
+                <Badge className="absolute top-2 right-2 bg-gold-primary text-primary-foreground">
                   Featured
                 </Badge>
               )}
@@ -344,29 +344,29 @@ const VendorServices = () => {
               </CardHeader>
               
               <CardContent>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                   {service.service_description}
                 </p>
                 
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-gray-500" />
+                      <Clock className="h-4 w-4 text-muted-foreground" />
                       <span>{service.duration_minutes} min</span>
                     </div>
                     
                     <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-gray-500" />
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
                       <span className="capitalize">{service.location_type?.replace('_', ' ')}</span>
                     </div>
                     
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 text-yellow-500" />
+                      <Star className="h-4 w-4 text-gold-primary" />
                       <span>{service.rating || 0}</span>
                     </div>
                     
                     <div className="text-right">
-                      <span className="text-xs text-gray-500">{service.total_bookings || 0} bookings</span>
+                      <span className="text-xs text-muted-foreground">{service.total_bookings || 0} bookings</span>
                     </div>
                   </div>
 
@@ -377,8 +377,8 @@ const VendorServices = () => {
                       <span className="text-sm font-bold">Rp {(service.monthly_revenue || 0).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-gray-500">Growth Rate</span>
-                      <span className={`text-sm font-medium ${(service.growth_rate || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      <span className="text-sm text-muted-foreground">Growth Rate</span>
+                      <span className={`text-sm font-medium ${(service.growth_rate || 0) >= 0 ? 'text-chart-1' : 'text-destructive'}`}>
                         {(service.growth_rate || 0) >= 0 ? '+' : ''}{service.growth_rate || 0}%
                       </span>
                     </div>

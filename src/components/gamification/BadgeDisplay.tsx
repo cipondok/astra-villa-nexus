@@ -70,7 +70,7 @@ const BadgeDisplay = ({
                 <TooltipContent side="top" className="text-xs">
                   <div className="font-semibold">{badge.name}</div>
                   <div className="text-muted-foreground">{badge.description}</div>
-                  {!isEarned && <div className="text-orange-500 mt-1">🔒 Not earned yet</div>}
+                  {!isEarned && <div className="text-chart-3 mt-1">🔒 Not earned yet</div>}
                 </TooltipContent>
               </Tooltip>
             );
@@ -103,7 +103,7 @@ const BadgeDisplay = ({
                 
                 <div className="mt-4 flex items-center justify-center gap-2">
                   {hasBadge(selectedBadge.badge_key) ? (
-                    <BadgeUI className="bg-green-500/10 text-green-600">
+                    <BadgeUI className="bg-chart-1/10 text-chart-1">
                       <Check className="h-3 w-3 mr-1" /> Earned
                     </BadgeUI>
                   ) : (

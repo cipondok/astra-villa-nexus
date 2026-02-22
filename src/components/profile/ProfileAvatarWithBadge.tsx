@@ -16,33 +16,33 @@ interface ProfileAvatarWithBadgeProps {
 const LEVEL_BADGE_ICONS: Record<MembershipLevel, { icon: React.ComponentType<any>; bgColor: string; iconColor: string }> = {
   basic: {
     icon: Shield,
-    bgColor: 'bg-slate-500',
-    iconColor: 'text-white'
+    bgColor: 'bg-muted-foreground',
+    iconColor: 'text-primary-foreground'
   },
   verified: {
     icon: CheckCircle2,
-    bgColor: 'bg-blue-500',
-    iconColor: 'text-white'
+    bgColor: 'bg-chart-4',
+    iconColor: 'text-primary-foreground'
   },
   vip: {
     icon: Star,
-    bgColor: 'bg-purple-500',
-    iconColor: 'text-white'
+    bgColor: 'bg-accent',
+    iconColor: 'text-accent-foreground'
   },
   gold: {
     icon: Award,
-    bgColor: 'bg-gradient-to-br from-yellow-400 to-amber-500',
-    iconColor: 'text-white'
+    bgColor: 'bg-gradient-to-br from-gold-primary to-gold-primary/80',
+    iconColor: 'text-primary-foreground'
   },
   platinum: {
     icon: Crown,
-    bgColor: 'bg-gradient-to-br from-cyan-400 to-slate-400',
-    iconColor: 'text-white'
+    bgColor: 'bg-gradient-to-br from-chart-4 to-muted-foreground',
+    iconColor: 'text-primary-foreground'
   },
   diamond: {
     icon: Gem,
-    bgColor: 'bg-gradient-to-br from-sky-400 via-indigo-400 to-violet-400',
-    iconColor: 'text-white'
+    bgColor: 'bg-gradient-to-br from-chart-4 via-accent to-primary',
+    iconColor: 'text-primary-foreground'
   }
 };
 
@@ -114,7 +114,7 @@ export const ProfileAvatarWithBadge: React.FC<ProfileAvatarWithBadgeProps> = ({
           'rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center border-background shadow-lg',
           config.border
         )}>
-          <User className="h-8 w-8 text-white" />
+          <User className="h-8 w-8 text-primary-foreground" />
         </div>
       )}
 
@@ -136,13 +136,13 @@ export const ProfileAvatarWithBadge: React.FC<ProfileAvatarWithBadgeProps> = ({
       {isVerified && membershipLevel !== 'verified' && (
         <div 
           className={cn(
-            'absolute -top-0.5 -right-0.5 flex items-center justify-center rounded-full bg-blue-500 border-2 border-background shadow-sm',
+            'absolute -top-0.5 -right-0.5 flex items-center justify-center rounded-full bg-chart-4 border-2 border-background shadow-sm',
             size === 'sm' ? 'w-4 h-4' : 'w-5 h-5'
           )}
           title="Verified"
         >
           <CheckCircle2 className={cn(
-            'text-white',
+            'text-primary-foreground',
             size === 'sm' ? 'h-2.5 w-2.5' : 'h-3 w-3'
           )} />
         </div>
