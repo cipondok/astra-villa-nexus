@@ -36,7 +36,7 @@ const Offers = () => {
       <div className="relative bg-gradient-to-br from-primary/20 via-primary/10 to-background py-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 mb-6 animate-pulse">
-            <Gift className="w-10 h-10 text-white" />
+            <Gift className="w-10 h-10 text-primary-foreground" />
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
             Exclusive Villa Offers
@@ -53,7 +53,7 @@ const Offers = () => {
           {offers.map((offer) => (
             <div
               key={offer.id}
-              className="group glass-effect rounded-2xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              className="group glass-effect rounded-2xl border border-border/20 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
             >
               {/* Image */}
               <div className="relative h-64 overflow-hidden">
@@ -62,7 +62,7 @@ const Offers = () => {
                   alt={offer.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute top-4 right-4 bg-gradient-to-r from-primary to-primary/80 text-white px-4 py-2 rounded-full font-bold shadow-lg">
+                <div className="absolute top-4 right-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-4 py-2 rounded-full font-bold shadow-lg">
                   {offer.discount}
                 </div>
               </div>
