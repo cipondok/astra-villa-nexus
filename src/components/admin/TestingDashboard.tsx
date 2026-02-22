@@ -294,9 +294,9 @@ const TestingDashboard = () => {
                     </div>
                     <Progress value={(suite.passed / (suite.passed + suite.failed + suite.pending)) * 100} className="h-2" />
                     <div className="flex gap-4 text-xs text-muted-foreground">
-                      <span className="text-green-600">✓ {suite.passed} passed</span>
-                      <span className="text-red-600">✗ {suite.failed} failed</span>
-                      <span className="text-yellow-600">◷ {suite.pending} pending</span>
+                      <span className="text-chart-1">✓ {suite.passed} passed</span>
+                      <span className="text-destructive">✗ {suite.failed} failed</span>
+                      <span className="text-chart-3">◷ {suite.pending} pending</span>
                     </div>
                   </div>
                 ))}
@@ -418,16 +418,16 @@ const TestingDashboard = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-4 gap-4 text-center">
-                  <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-                    <p className="text-2xl font-bold text-green-600">{unitTests.passed}</p>
+                  <div className="p-3 rounded-lg bg-chart-1/10 border border-chart-1/20">
+                    <p className="text-2xl font-bold text-chart-1">{unitTests.passed}</p>
                     <p className="text-xs text-muted-foreground">Passed</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <p className="text-2xl font-bold text-red-600">{unitTests.failed}</p>
+                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                    <p className="text-2xl font-bold text-destructive">{unitTests.failed}</p>
                     <p className="text-xs text-muted-foreground">Failed</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-                    <p className="text-2xl font-bold text-yellow-600">{unitTests.pending}</p>
+                  <div className="p-3 rounded-lg bg-chart-3/10 border border-chart-3/20">
+                    <p className="text-2xl font-bold text-chart-3">{unitTests.pending}</p>
                     <p className="text-xs text-muted-foreground">Pending</p>
                   </div>
                   <div className="p-3 rounded-lg bg-muted/50 border">
@@ -446,7 +446,7 @@ const TestingDashboard = () => {
                   <Progress value={unitTests.coverage} className="h-3" />
                   <div className="flex justify-between mt-1 text-xs text-muted-foreground">
                     <span>Target: 70%</span>
-                    <span className={unitTests.coverage >= 70 ? 'text-green-600' : 'text-red-600'}>
+                    <span className={unitTests.coverage >= 70 ? 'text-chart-1' : 'text-destructive'}>
                       {unitTests.coverage >= 70 ? '✓ Above threshold' : '✗ Below threshold'}
                     </span>
                   </div>
@@ -506,16 +506,16 @@ const TestingDashboard = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                  <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-                    <p className="text-2xl font-bold text-green-600">{e2eTests.passed}</p>
+                  <div className="p-3 rounded-lg bg-chart-1/10 border border-chart-1/20">
+                    <p className="text-2xl font-bold text-chart-1">{e2eTests.passed}</p>
                     <p className="text-xs text-muted-foreground">Passed</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <p className="text-2xl font-bold text-red-600">{e2eTests.failed}</p>
+                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                    <p className="text-2xl font-bold text-destructive">{e2eTests.failed}</p>
                     <p className="text-xs text-muted-foreground">Failed</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-                    <p className="text-2xl font-bold text-yellow-600">{e2eTests.pending}</p>
+                  <div className="p-3 rounded-lg bg-chart-3/10 border border-chart-3/20">
+                    <p className="text-2xl font-bold text-chart-3">{e2eTests.pending}</p>
                     <p className="text-xs text-muted-foreground">Pending</p>
                   </div>
                   <div className="p-3 rounded-lg bg-muted/50 border">
@@ -559,7 +559,7 @@ const TestingDashboard = () => {
                           <FileText className="h-4 w-4 text-muted-foreground" />
                           <span className="text-sm">{spec}</span>
                         </div>
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <CheckCircle2 className="h-4 w-4 text-chart-1" />
                       </div>
                     ))}
                   </div>

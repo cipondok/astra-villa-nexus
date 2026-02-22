@@ -100,7 +100,7 @@ const CustomerServiceCenter = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Customer Service Center</h2>
-          <p className="text-gray-600">Advanced customer support and ticket management</p>
+          <p className="text-muted-foreground">Advanced customer support and ticket management</p>
         </div>
         <Dialog open={isNewTicketOpen} onOpenChange={setIsNewTicketOpen}>
           <DialogTrigger asChild>
@@ -355,7 +355,7 @@ const CustomerServiceCenter = () => {
               <CardTitle>Live Chat Management</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-64 flex items-center justify-center text-gray-500">
+              <div className="h-64 flex items-center justify-center text-muted-foreground">
                 Live Chat Interface
               </div>
             </CardContent>
@@ -368,7 +368,7 @@ const CustomerServiceCenter = () => {
               <CardTitle>Knowledge Base</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-64 flex items-center justify-center text-gray-500">
+              <div className="h-64 flex items-center justify-center text-muted-foreground">
                 Knowledge Base Management
               </div>
             </CardContent>
@@ -381,7 +381,7 @@ const CustomerServiceCenter = () => {
               <CardTitle>Customer Service Reports</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-64 flex items-center justify-center text-gray-500">
+              <div className="h-64 flex items-center justify-center text-muted-foreground">
                 Customer Service Analytics
               </div>
             </CardContent>

@@ -32,14 +32,14 @@ const CSSettings = ({ settings, onSettingsChange, onSave, isSaving }: CSSettings
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-slate-500/10 via-gray-500/10 to-zinc-500/10 rounded-lg border border-slate-200/50 dark:border-slate-800/50">
-        <div className="w-8 h-8 bg-gradient-to-br from-slate-500 to-gray-600 rounded-lg flex items-center justify-center">
-          <Cog className="h-4 w-4 text-white" />
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-muted/50 via-muted/30 to-muted/50 rounded-lg border border-border/50">
+        <div className="w-8 h-8 bg-gradient-to-br from-muted-foreground to-muted-foreground/80 rounded-lg flex items-center justify-center">
+          <Cog className="h-4 w-4 text-primary-foreground" />
         </div>
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold">Settings</h2>
-            <Badge className="bg-slate-500/20 text-slate-700 dark:text-slate-400 text-[9px] px-1.5 py-0 h-4">Preferences</Badge>
+            <Badge className="bg-muted text-muted-foreground text-[9px] px-1.5 py-0 h-4">Preferences</Badge>
           </div>
           <p className="text-[10px] text-muted-foreground">Configure your CS workspace</p>
         </div>
