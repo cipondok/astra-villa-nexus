@@ -595,10 +595,10 @@ const EnhancedUserManagement = () => {
       </Card>
 
       {/* Users Table */}
-      <Card className="border-indigo-200/50 dark:border-indigo-800/50">
+      <Card className="border-accent/50">
         <CardHeader className="py-2 px-3">
           <CardTitle className="text-xs font-medium flex items-center gap-1.5">
-            <Shield className="h-3.5 w-3.5 text-indigo-600" />
+            <Shield className="h-3.5 w-3.5 text-accent" />
             Users ({filteredUsers.length})
           </CardTitle>
           {usersError && (
