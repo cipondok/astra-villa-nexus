@@ -84,8 +84,8 @@ const AstraTokenTransfer: React.FC<AstraTokenTransferProps> = ({ className }) =>
       </CardHeader>
       <CardContent className="space-y-6">
         {!isVerified && (
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
-            <div className="flex items-center gap-2 text-amber-600">
+          <div className="bg-chart-3/10 border border-chart-3/20 rounded-lg p-4">
+            <div className="flex items-center gap-2 text-chart-3">
               <ShieldCheck className="h-5 w-5" />
               <span className="font-medium">Verification Required</span>
             </div>
