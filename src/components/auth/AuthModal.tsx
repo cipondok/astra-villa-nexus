@@ -250,7 +250,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="flex flex-row items-center justify-between pb-4">
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-gold-primary bg-clip-text text-transparent">
             Astra Villa
           </CardTitle>
           <Button 
@@ -484,7 +484,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
+                  className="w-full bg-gradient-to-r from-primary to-gold-primary"
                   disabled={authLoading || authSuccess}
                 >
                   {authLoading ? (

@@ -61,7 +61,7 @@ export const EnhancedPasswordStrengthMeter = ({ password, onStrengthChange }: En
   return (
     <div className="space-y-3 mt-2">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-700">Password Strength</span>
+        <span className="text-sm font-medium text-foreground">Password Strength</span>
         <div className="flex items-center gap-2">
           <div 
             className="w-2 h-2 rounded-full"
@@ -77,7 +77,7 @@ export const EnhancedPasswordStrengthMeter = ({ password, onStrengthChange }: En
       </div>
       
       <div className="space-y-2">
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-muted rounded-full h-2">
           <div 
             className="h-2 rounded-full transition-all duration-300 ease-out"
             style={{ 
@@ -94,9 +94,9 @@ export const EnhancedPasswordStrengthMeter = ({ password, onStrengthChange }: En
             {criterion.met ? (
               <CheckCircle className="h-3 w-3 text-[#2ECC71] flex-shrink-0" />
             ) : (
-              <XCircle className="h-3 w-3 text-gray-400 flex-shrink-0" />
+              <XCircle className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             )}
-            <span className={`${criterion.met ? "text-[#2ECC71]" : "text-gray-500"} transition-colors duration-200`}>
+            <span className={`${criterion.met ? "text-[#2ECC71]" : "text-muted-foreground"} transition-colors duration-200`}>
               {criterion.label}
             </span>
           </div>

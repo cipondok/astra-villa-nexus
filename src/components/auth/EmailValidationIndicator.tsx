@@ -59,8 +59,8 @@ export const EmailValidationIndicator = ({ email }: EmailValidationIndicatorProp
       )}
       {validation.status === 'warning' && (
         <>
-          <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
-          <span className="text-amber-600">{validation.message}</span>
+          <AlertCircle className="h-3.5 w-3.5 text-chart-3" />
+          <span className="text-chart-3">{validation.message}</span>
         </>
       )}
     </div>

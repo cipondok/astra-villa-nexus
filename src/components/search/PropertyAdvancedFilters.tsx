@@ -377,7 +377,7 @@ const PropertyAdvancedFilters = ({
         {/* Main Search */}
         <div className="flex gap-3 xl:gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 xl:h-5 xl:w-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 xl:h-5 xl:w-5" />
             <Input
               placeholder={currentText.search}
               value={searchQuery}
@@ -461,7 +461,7 @@ const PropertyAdvancedFilters = ({
               <div className="space-y-2">
                 <Label className="font-medium">{currentText.location}</Label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
                     placeholder={currentText.location}
                     value={filters.location}

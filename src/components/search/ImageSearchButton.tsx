@@ -170,8 +170,8 @@ export const ImageSearchButton = ({
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="bg-background/95 border-2 border-dashed border-primary rounded-2xl p-8 shadow-2xl animate-in zoom-in duration-200">
               <div className="flex flex-col items-center gap-4">
-                <div className="p-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-600">
-                  <Camera className="h-12 w-12 text-white" />
+                <div className="p-4 rounded-full bg-gradient-to-r from-accent to-destructive">
+                  <Camera className="h-12 w-12 text-primary-foreground" />
                 </div>
                 <div className="text-center">
                   <p className="text-xl font-bold text-foreground mb-1">Drop your image here</p>

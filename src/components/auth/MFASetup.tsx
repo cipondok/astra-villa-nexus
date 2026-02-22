@@ -121,12 +121,12 @@ export const MFASetup = ({ onComplete }: MFASetupProps) => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-center">
-                  <div className="w-32 h-32 bg-gray-200 flex items-center justify-center rounded">
-                    <QrCode className="h-16 w-16 text-gray-400" />
+                  <div className="w-32 h-32 bg-muted flex items-center justify-center rounded">
+                    <QrCode className="h-16 w-16 text-muted-foreground" />
                     {/* In real implementation, generate actual QR code */}
                   </div>
                 </div>
-                <p className="text-xs text-center text-gray-600">
+                <p className="text-xs text-center text-muted-foreground">
                   Scan this QR code with your authenticator app
                 </p>
                 <Button onClick={() => setStep("verify")} className="w-full">
@@ -210,7 +210,7 @@ export const MFASetup = ({ onComplete }: MFASetupProps) => {
             
             {mfaMethod === "sms" && (
               <div className="text-center">
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-muted-foreground">
                   Resend code in {timeLeft}s
                 </p>
               </div>
@@ -236,9 +236,9 @@ export const MFASetup = ({ onComplete }: MFASetupProps) => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-2 p-4 bg-gray-50 rounded">
+            <div className="grid grid-cols-2 gap-2 p-4 bg-muted/50 rounded">
               {backupCodes.map((code, index) => (
-                <div key={index} className="text-xs font-mono text-center p-2 bg-white rounded">
+                <div key={index} className="text-xs font-mono text-center p-2 bg-background rounded">
                   {code}
                 </div>
               ))}

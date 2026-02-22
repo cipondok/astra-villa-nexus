@@ -152,8 +152,8 @@ export const PasswordResetFlow = ({ onComplete, onBack }: PasswordResetFlowProps
                   key={image.id}
                   className={`relative cursor-pointer border-2 rounded-lg overflow-hidden transition-all ${
                     captchaAnswer.includes(image.id.toString()) 
-                      ? 'border-blue-500 ring-2 ring-blue-200' 
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-primary ring-2 ring-primary/20' 
+                      : 'border-border hover:border-border/80'
                   }`}
                   onClick={() => {
                     if (captchaAnswer.includes(image.id.toString())) {

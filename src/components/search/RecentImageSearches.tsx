@@ -66,7 +66,7 @@ export const RecentImageSearches = ({ onRerunSearch, className }: RecentImageSea
           >
             <button
               onClick={() => onRerunSearch(search.thumbnail)}
-              className="relative h-16 w-16 rounded-lg overflow-hidden border-2 border-border hover:border-purple-500 transition-all shadow-sm hover:shadow-md"
+              className="relative h-16 w-16 rounded-lg overflow-hidden border-2 border-border hover:border-accent transition-all shadow-sm hover:shadow-md"
               title="Click to rerun this search"
             >
               <img

@@ -94,19 +94,19 @@ const SearchSuggestions = ({ query, onSelect, isVisible, language }: SearchSugge
   }
 
   return (
-    <Card className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-200 shadow-lg">
+    <Card className="absolute top-full left-0 right-0 z-50 mt-1 bg-card border border-border shadow-lg">
       <CardContent className="p-2">
         <div className="space-y-1">
           {suggestions.map((suggestion, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer rounded-md transition-colors"
+              className="flex items-center gap-2 p-2 hover:bg-muted/50 cursor-pointer rounded-md transition-colors"
               onClick={() => onSelect(suggestion)}
             >
               {suggestion.icon}
               <div className="flex-1">
                 <div className="text-sm font-medium">{suggestion.label}</div>
-                <div className="text-xs text-gray-500 capitalize">{suggestion.type}</div>
+                <div className="text-xs text-muted-foreground capitalize">{suggestion.type}</div>
               </div>
             </div>
           ))}
