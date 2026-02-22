@@ -182,7 +182,7 @@ const DistanceMeasurementTool: React.FC<DistanceMeasurementToolProps> = ({
                     y1={`${measurement.startPoint.y}%`}
                     x2={`${measurement.endPoint.x}%`}
                     y2={`${measurement.endPoint.y}%`}
-                    stroke={selectedMeasurement === measurement.id ? '#3b82f6' : '#ef4444'}
+                    stroke={selectedMeasurement === measurement.id ? 'hsl(var(--primary))' : 'hsl(var(--destructive))'}
                     strokeWidth="2"
                     strokeDasharray={selectedMeasurement === measurement.id ? 'none' : '5,5'}
                   />
@@ -190,13 +190,13 @@ const DistanceMeasurementTool: React.FC<DistanceMeasurementToolProps> = ({
 
                 {/* Start point */}
                 <div
-                  className="absolute w-4 h-4 rounded-full bg-green-500 border-2 border-white shadow-lg -translate-x-1/2 -translate-y-1/2"
+                  className="absolute w-4 h-4 rounded-full bg-chart-1 border-2 border-background shadow-lg -translate-x-1/2 -translate-y-1/2"
                   style={{ left: `${measurement.startPoint.x}%`, top: `${measurement.startPoint.y}%` }}
                 />
 
                 {/* End point */}
                 <div
-                  className="absolute w-4 h-4 rounded-full bg-red-500 border-2 border-white shadow-lg -translate-x-1/2 -translate-y-1/2"
+                  className="absolute w-4 h-4 rounded-full bg-destructive border-2 border-background shadow-lg -translate-x-1/2 -translate-y-1/2"
                   style={{ left: `${measurement.endPoint.x}%`, top: `${measurement.endPoint.y}%` }}
                 />
 
@@ -224,11 +224,11 @@ const DistanceMeasurementTool: React.FC<DistanceMeasurementToolProps> = ({
           {currentPoints.length > 0 && (
             <>
               <div
-                className="absolute w-5 h-5 rounded-full bg-blue-500 border-2 border-white shadow-lg animate-pulse -translate-x-1/2 -translate-y-1/2"
+                className="absolute w-5 h-5 rounded-full bg-primary border-2 border-background shadow-lg animate-pulse -translate-x-1/2 -translate-y-1/2"
                 style={{ left: `${currentPoints[0].x}%`, top: `${currentPoints[0].y}%` }}
               />
               <div
-                className="absolute text-xs text-white bg-blue-500 px-2 py-1 rounded -translate-x-1/2"
+                className="absolute text-xs text-primary-foreground bg-primary px-2 py-1 rounded -translate-x-1/2"
                 style={{ left: `${currentPoints[0].x}%`, top: `${currentPoints[0].y + 3}%` }}
               >
                 Click to set end point

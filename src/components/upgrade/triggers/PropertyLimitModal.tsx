@@ -73,7 +73,7 @@ const PropertyLimitModal = ({ open, onClose, currentCount, limit }: PropertyLimi
             <div className="p-2 rounded-full bg-primary/10">
               <Building2 className="h-5 w-5 text-primary" />
             </div>
-            <Badge variant="secondary" className="bg-green-500/10 text-green-600 border-green-500/20">
+            <Badge variant="secondary" className="bg-chart-1/10 text-chart-1 border-chart-1/20">
               {t.limitedOffer}
             </Badge>
           </div>
@@ -96,7 +96,7 @@ const PropertyLimitModal = ({ open, onClose, currentCount, limit }: PropertyLimi
           {/* Benefits */}
           <div className="space-y-2 bg-muted/50 rounded-lg p-3">
             <h4 className="text-sm font-medium flex items-center gap-2">
-              <Crown className="h-4 w-4 text-yellow-500" />
+              <Crown className="h-4 w-4 text-chart-3" />
               {t.benefits}
             </h4>
             <ul className="space-y-1.5 text-sm">
