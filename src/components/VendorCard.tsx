@@ -29,7 +29,7 @@ const VendorCard = ({ vendor }: VendorCardProps) => {
         />
         
         {vendor.verified && (
-          <div className="absolute top-4 right-4 bg-green-500 text-white p-2 rounded-full">
+          <div className="absolute top-4 right-4 bg-chart-1 text-primary-foreground p-2 rounded-full">
             <Shield className="h-4 w-4" />
           </div>
         )}
@@ -38,7 +38,7 @@ const VendorCard = ({ vendor }: VendorCardProps) => {
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-3">
           <div>
-            <h3 className="text-xl font-bold mb-1 group-hover:text-blue-600 transition-colors">
+            <h3 className="text-xl font-bold mb-1 group-hover:text-primary transition-colors">
               {vendor.name}
             </h3>
             <Badge variant="secondary" className="text-xs">
@@ -49,10 +49,10 @@ const VendorCard = ({ vendor }: VendorCardProps) => {
 
         <div className="flex items-center gap-2 mb-4">
           <div className="flex items-center gap-1">
-            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <Star className="h-4 w-4 fill-chart-3 text-chart-3" />
             <span className="font-medium">{vendor.rating}</span>
           </div>
-          <span className="text-sm text-gray-600 dark:text-gray-400">
+          <span className="text-sm text-muted-foreground">
             ({vendor.reviews} reviews)
           </span>
         </div>
@@ -61,7 +61,7 @@ const VendorCard = ({ vendor }: VendorCardProps) => {
           <Button variant="outline" className="flex-1">
             View Profile
           </Button>
-          <Button className="flex-1 bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600">
+          <Button className="flex-1 bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-primary-foreground">
             Book Service
           </Button>
         </div>

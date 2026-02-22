@@ -136,7 +136,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
               variant={isProfileComplete ? "default" : "outline"}
               className={cn(
                 "text-xs",
-                isProfileComplete && "bg-green-500 hover:bg-green-600"
+                isProfileComplete && "bg-chart-1 hover:bg-chart-1/90"
               )}
             >
               {completionPercentage}% {t.complete}
@@ -152,11 +152,11 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
 
           {/* Congratulations or Steps */}
           {isProfileComplete ? (
-            <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-3 text-center">
-              <p className="text-lg font-bold text-green-600 dark:text-green-400 mb-1">
+            <div className="bg-chart-1/10 rounded-lg p-3 text-center">
+              <p className="text-lg font-bold text-chart-1 mb-1">
                 {t.congratulations}
               </p>
-              <p className="text-sm text-green-600/80 dark:text-green-400/80">
+              <p className="text-sm text-chart-1/80">
                 {t.profileComplete}
               </p>
             </div>
@@ -169,12 +169,12 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
                   className={cn(
                     "flex items-center gap-2 p-2 rounded-lg transition-colors",
                     step.isComplete 
-                      ? "bg-green-50 dark:bg-green-950/20" 
+                      ? "bg-chart-1/10" 
                       : "bg-muted/50 hover:bg-muted"
                   )}
                 >
                   {step.isComplete ? (
-                    <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-chart-1 shrink-0" />
                   ) : (
                     <Circle className="h-4 w-4 text-muted-foreground shrink-0" />
                   )}
@@ -198,7 +198,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
       <Card className="border-border">
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-3">
-            <Trophy className="h-4 w-4 text-amber-500" />
+            <Trophy className="h-4 w-4 text-gold-primary" />
             <span className="font-semibold text-sm">{t.nextTarget}</span>
           </div>
 
@@ -219,7 +219,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
               </div>
             </div>
             {verificationStatus === 'verified' && (
-              <Badge className="bg-blue-500 text-white text-[10px]">
+              <Badge className="bg-chart-4 text-primary-foreground text-[10px]">
                 <Shield className="h-3 w-3 mr-0.5" />
                 Verified
               </Badge>

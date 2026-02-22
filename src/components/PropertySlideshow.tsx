@@ -198,8 +198,8 @@ const PropertySlideshow = () => {
                     <Badge className={cn(
                       "flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md shadow-sm backdrop-blur-sm",
                       isRent 
-                        ? "bg-blue-600/90 text-white border border-blue-500/30" 
-                        : "bg-emerald-600/90 text-white border border-emerald-500/30"
+                        ? "bg-chart-4/90 text-primary-foreground border border-chart-4/30" 
+                        : "bg-chart-1/90 text-primary-foreground border border-chart-1/30"
                     )}>
                       <ListingIcon className="h-2.5 w-2.5" />
                       {getListingLabel(property.listing_type, isRent)}
@@ -233,18 +233,18 @@ const PropertySlideshow = () => {
                   <div className={cn(
                     "rounded-lg px-2.5 py-1.5 border",
                     isRent 
-                      ? "bg-blue-500/5 border-blue-500/15" 
-                      : "bg-emerald-500/5 border-emerald-500/15"
+                      ? "bg-chart-4/5 border-chart-4/15" 
+                      : "bg-chart-1/5 border-chart-1/15"
                   )}>
                     <div className="flex items-baseline gap-1 flex-nowrap overflow-hidden whitespace-nowrap">
                       <span className={cn(
                         "text-sm font-black tracking-tight",
-                        isRent ? "text-blue-600 dark:text-blue-400" : "text-emerald-600 dark:text-emerald-400"
+                        isRent ? "text-chart-4" : "text-chart-1"
                       )}>{priceInfo.main}</span>
                       {priceInfo.suffix && (
                         <span className={cn(
                           "text-xs font-bold",
-                          isRent ? "text-blue-500/70" : "text-emerald-500/70"
+                          isRent ? "text-chart-4/70" : "text-chart-1/70"
                         )}>{priceInfo.suffix}</span>
                       )}
                       {isRent && (
