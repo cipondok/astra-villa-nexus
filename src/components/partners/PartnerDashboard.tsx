@@ -204,7 +204,7 @@ const PartnerDashboard = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-blue-500" />
+              <Users className="h-4 w-4 text-chart-4" />
               <span className="text-xs text-muted-foreground">Total Referrals</span>
             </div>
             <p className="text-2xl font-bold mt-1">{partner.total_referrals || 0}</p>
@@ -213,7 +213,7 @@ const PartnerDashboard = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-500" />
+              <CheckCircle className="h-4 w-4 text-chart-1" />
               <span className="text-xs text-muted-foreground">Conversions</span>
             </div>
             <p className="text-2xl font-bold mt-1">{partner.successful_conversions || 0}</p>
@@ -245,13 +245,13 @@ const PartnerDashboard = () => {
           <div className="flex flex-wrap gap-4 text-sm">
             {partner.commission_rate > 0 && (
               <div className="flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-green-500" />
+                <DollarSign className="h-4 w-4 text-chart-1" />
                 <span>Commission: <strong>{partner.commission_rate}%</strong></span>
               </div>
             )}
             {partner.revenue_share_rate > 0 && (
               <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-blue-500" />
+                <TrendingUp className="h-4 w-4 text-chart-4" />
                 <span>Revenue Share: <strong>{partner.revenue_share_rate}%</strong></span>
               </div>
             )}
@@ -375,7 +375,7 @@ const PartnerDashboard = () => {
                       <div className="text-right">
                         {getStatusBadge(referral.status)}
                         {referral.commission_amount && (
-                          <p className="text-xs text-green-600 mt-1">
+                          <p className="text-xs text-chart-1 mt-1">
                             {formatIDR(referral.commission_amount)}
                           </p>
                         )}
@@ -447,7 +447,7 @@ const PartnerDashboard = () => {
                       </div>
                       <div className="text-right">
                         <p className="text-sm line-through text-muted-foreground">{formatIDR(pkg.original_price)}</p>
-                        <p className="font-bold text-green-600">{formatIDR(pkg.discounted_price)}</p>
+                        <p className="font-bold text-chart-1">{formatIDR(pkg.discounted_price)}</p>
                       </div>
                     </div>
                   </CardContent>

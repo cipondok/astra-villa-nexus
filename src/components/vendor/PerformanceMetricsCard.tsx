@@ -27,10 +27,10 @@ const PerformanceMetricsCard = ({
 }: PerformanceMetricsCardProps) => {
   const getColorClasses = (colorName: string) => {
     const colors = {
-      green: "text-green-600 border-green-200 bg-green-50",
-      yellow: "text-yellow-600 border-yellow-200 bg-yellow-50",
-      red: "text-red-600 border-red-200 bg-red-50",
-      blue: "text-blue-600 border-blue-200 bg-blue-50"
+      green: "text-chart-1 border-chart-1/30 bg-chart-1/5",
+      yellow: "text-chart-3 border-chart-3/30 bg-chart-3/5",
+      red: "text-destructive border-destructive/30 bg-destructive/5",
+      blue: "text-chart-4 border-chart-4/30 bg-chart-4/5"
     };
     return colors[colorName as keyof typeof colors] || colors.blue;
   };

@@ -21,11 +21,11 @@ const CHANNEL_ICONS: Record<string, any> = {
 };
 
 const CHANNEL_COLORS: Record<string, string> = {
-  whatsapp: "bg-green-500 hover:bg-green-600",
-  facebook: "bg-blue-600 hover:bg-blue-700",
-  twitter: "bg-sky-500 hover:bg-sky-600",
-  linkedin: "bg-blue-700 hover:bg-blue-800",
-  email: "bg-gray-600 hover:bg-gray-700",
+  whatsapp: "bg-chart-1 hover:bg-chart-1/90",
+  facebook: "bg-primary hover:bg-primary/90",
+  twitter: "bg-chart-4 hover:bg-chart-4/90",
+  linkedin: "bg-primary hover:bg-primary/80",
+  email: "bg-muted-foreground hover:bg-muted-foreground/90",
   copy: "bg-primary hover:bg-primary/90"
 };
 

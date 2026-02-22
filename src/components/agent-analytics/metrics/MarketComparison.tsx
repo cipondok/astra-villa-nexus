@@ -42,7 +42,7 @@ const MarketComparison: React.FC<MarketComparisonProps> = ({ data, className }) 
           <p className="text-lg font-bold text-foreground">Rp {formatPrice(data.yourAvgPrice)}</p>
           <div className={cn(
             "flex items-center gap-1 text-[10px]",
-            priceDiff < 0 ? "text-green-500" : "text-destructive"
+            priceDiff < 0 ? "text-chart-1" : "text-destructive"
           )}>
             {priceDiff < 0 ? <TrendingDown className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}
             {Math.abs(priceDiff).toFixed(1)}% vs market
@@ -62,7 +62,7 @@ const MarketComparison: React.FC<MarketComparisonProps> = ({ data, className }) 
           <p className="text-lg font-bold text-foreground">Rp {formatPrice(data.pricePerSqm)}</p>
           <div className={cn(
             "flex items-center gap-1 text-[10px]",
-            sqmDiff < 0 ? "text-green-500" : "text-destructive"
+            sqmDiff < 0 ? "text-chart-1" : "text-destructive"
           )}>
             {sqmDiff < 0 ? <TrendingDown className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}
             {Math.abs(sqmDiff).toFixed(1)}% vs market
@@ -76,7 +76,7 @@ const MarketComparison: React.FC<MarketComparisonProps> = ({ data, className }) 
           className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-3"
         >
           <div className="flex items-center gap-2 mb-2">
-            <PieChart className="h-4 w-4 text-green-500" />
+            <PieChart className="h-4 w-4 text-chart-1" />
             <span className="text-[10px] text-muted-foreground">Market Share</span>
           </div>
           <p className="text-lg font-bold text-foreground">{data.marketShare}%</p>
