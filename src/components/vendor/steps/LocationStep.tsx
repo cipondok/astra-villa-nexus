@@ -231,10 +231,10 @@ const LocationStep: React.FC<LocationStepProps> = ({ formData, updateFormData })
       )}
 
       {/* Location Summary */}
-      <Card className="bg-green-50 border-green-200">
+      <Card className="bg-chart-1/10 border-chart-1/20">
         <CardContent className="p-4">
-          <h4 className="font-medium text-green-900 mb-2">📍 Location Summary</h4>
-          <div className="space-y-2 text-sm text-green-800">
+          <h4 className="font-medium text-foreground mb-2">📍 Location Summary</h4>
+          <div className="space-y-2 text-sm text-muted-foreground">
             <p><strong>Service Type:</strong> {
               formData.locationType === 'on_site' ? 'On-site service' :
               formData.locationType === 'remote' ? 'Remote service' :
@@ -252,9 +252,9 @@ const LocationStep: React.FC<LocationStepProps> = ({ formData, updateFormData })
         </CardContent>
       </Card>
 
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <h4 className="font-medium text-blue-900 mb-2">💡 Location Tips</h4>
-        <ul className="text-sm text-blue-800 space-y-1">
+      <div className="bg-chart-4/10 p-4 rounded-lg">
+        <h4 className="font-medium text-foreground mb-2">💡 Location Tips</h4>
+        <ul className="text-sm text-muted-foreground space-y-1">
           <li>• Add specific neighborhoods or districts you serve</li>
           <li>• Consider travel time and costs when setting your radius</li>
           <li>• More service areas = more potential customers</li>

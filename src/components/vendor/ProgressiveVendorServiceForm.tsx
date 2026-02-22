@@ -305,9 +305,9 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
                       <h4 className="font-semibold text-lg">Perumahan</h4>
                       <p className="text-sm text-muted-foreground mb-3">Residential</p>
                       <div className="text-sm space-y-1">
-                        <p className="text-green-600">✓ Dokumen standar</p>
-                        <p className="text-green-600">✓ Tarif normal</p>
-                        <p className="text-green-600">✓ Proses cepat</p>
+                        <p className="text-chart-1">✓ Dokumen standar</p>
+                        <p className="text-chart-1">✓ Tarif normal</p>
+                        <p className="text-chart-1">✓ Proses cepat</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -325,9 +325,9 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
                       <h4 className="font-semibold text-lg">Komersial</h4>
                       <p className="text-sm text-muted-foreground mb-3">Commercial</p>
                       <div className="text-sm space-y-1">
-                        <p className="text-orange-600">⚠ Surat izin usaha</p>
-                        <p className="text-orange-600">⚠ Tarif +50%</p>
-                        <p className="text-orange-600">⚠ Review tambahan</p>
+                        <p className="text-chart-3">⚠ Surat izin usaha</p>
+                        <p className="text-chart-3">⚠ Tarif +50%</p>
+                        <p className="text-chart-3">⚠ Review tambahan</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -730,9 +730,9 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
               </Select>
             </div>
 
-            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-              <h4 className="font-semibold text-green-800 mb-2">Ringkasan Layanan</h4>
-              <div className="space-y-1 text-sm text-green-700">
+            <div className="p-4 bg-chart-1/10 rounded-lg border border-chart-1/20">
+              <h4 className="font-semibold text-chart-1 mb-2">Ringkasan Layanan</h4>
+              <div className="space-y-1 text-sm text-foreground">
                 <p><strong>Jenis:</strong> {formData.vendor_type === 'product' ? 'Jual Produk' : 'Tawarkan Jasa'}</p>
                 <p><strong>Kategori:</strong> {level3Categories?.find(c => c.id === formData.level3_category)?.name_id}</p>
                 {level4Categories?.find(c => c.id === formData.level4_category) && (

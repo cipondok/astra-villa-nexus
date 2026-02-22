@@ -449,13 +449,13 @@ const VendorProfileProgress = () => {
 
       {/* Achievement Celebration */}
       {completionPercentage >= 100 && userLevel === 'Expert' && (
-        <Card className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200">
+        <Card className="bg-gradient-to-r from-chart-1/10 to-primary/10 border-chart-1/20">
           <CardContent className="text-center py-6">
             <div className="text-4xl mb-2">🎉</div>
-            <div className="text-lg font-semibold text-green-600 dark:text-green-400 mb-1">
+            <div className="text-lg font-semibold text-chart-1 mb-1">
               Congratulations!
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="text-sm text-muted-foreground">
               You've completed your vendor profile and reached Expert level!
             </div>
             <Button className="mt-4" onClick={handlePreviewProfile}>

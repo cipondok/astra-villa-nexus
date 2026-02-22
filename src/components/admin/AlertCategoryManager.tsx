@@ -156,11 +156,11 @@ const AlertCategoryManager = () => {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-100 text-red-800 border-red-200';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-blue-100 text-blue-800 border-blue-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'urgent': return 'bg-destructive/10 text-destructive border-destructive/20';
+      case 'high': return 'bg-chart-3/10 text-chart-3 border-chart-3/20';
+      case 'medium': return 'bg-chart-3/10 text-chart-3 border-chart-3/20';
+      case 'low': return 'bg-chart-4/10 text-chart-4 border-chart-4/20';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -321,7 +321,7 @@ const AlertCategoryManager = () => {
                       variant="outline" 
                       size="sm" 
                       onClick={() => deleteCategory(category.id)}
-                      className="text-red-600 hover:text-red-700"
+                      className="text-destructive hover:text-destructive/80"
                     >
                       <Trash2 className="h-3 w-3 mr-1" />
                       Delete
