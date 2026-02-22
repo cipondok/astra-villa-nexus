@@ -610,7 +610,7 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
                       placeholder="Enter custom service name"
                       disabled={!formData.sub_category_id}
                     />
-                    <p className="text-sm text-yellow-600">⚠️ Custom service names require admin approval</p>
+                    <p className="text-sm text-chart-3">⚠️ Custom service names require admin approval</p>
                   </div>
                 )}
               </div>

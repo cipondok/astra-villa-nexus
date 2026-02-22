@@ -50,11 +50,11 @@ const EXAMPLE_SCENARIOS = [
 
 const getGradeColor = (grade: string) => {
   switch (grade) {
-    case 'A': return 'text-green-500 bg-green-500/10 border-green-500/30';
-    case 'B': return 'text-blue-500 bg-blue-500/10 border-blue-500/30';
-    case 'C': return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/30';
-    case 'D': return 'text-orange-500 bg-orange-500/10 border-orange-500/30';
-    case 'F': return 'text-red-500 bg-red-500/10 border-red-500/30';
+    case 'A': return 'text-chart-1 bg-chart-1/10 border-chart-1/30';
+    case 'B': return 'text-chart-4 bg-chart-4/10 border-chart-4/30';
+    case 'C': return 'text-chart-3 bg-chart-3/10 border-chart-3/30';
+    case 'D': return 'text-chart-3 bg-chart-3/10 border-chart-3/30';
+    case 'F': return 'text-destructive bg-destructive/10 border-destructive/30';
     default: return 'text-muted-foreground bg-muted';
   }
 };

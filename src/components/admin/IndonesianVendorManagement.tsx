@@ -370,12 +370,12 @@ const IndonesianVendorManagement = () => {
                   {application.fraud_score}/100
                 </Badge>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-muted rounded-full h-2">
                 <div 
                   className={`h-2 rounded-full ${
-                    application.fraud_score > 70 ? 'bg-red-500' :
-                    application.fraud_score > 40 ? 'bg-yellow-500' :
-                    'bg-green-500'
+                    application.fraud_score > 70 ? 'bg-destructive' :
+                    application.fraud_score > 40 ? 'bg-chart-3' :
+                    'bg-chart-1'
                   }`}
                   style={{ width: `${application.fraud_score}%` }}
                 />

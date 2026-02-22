@@ -113,22 +113,22 @@ const BPJSVerification = ({
       case 'verified':
         return <CheckCircle className="h-4 w-4 text-green-600" />;
       case 'failed':
-        return <X className="h-4 w-4 text-red-600" />;
+        return <X className="h-4 w-4 text-destructive" />;
       case 'pending':
-        return <Clock className="h-4 w-4 text-yellow-600" />;
+        return <Clock className="h-4 w-4 text-chart-3" />;
       default:
-        return <Shield className="h-4 w-4 text-gray-400" />;
+        return <Shield className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'verified':
-        return <Badge className="bg-green-100 text-green-800">Verified</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1">Verified</Badge>;
       case 'failed':
         return <Badge variant="destructive">Failed</Badge>;
       case 'pending':
-        return <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3">Pending</Badge>;
       default:
         return <Badge variant="secondary">Not Verified</Badge>;
     }

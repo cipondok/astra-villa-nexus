@@ -186,22 +186,22 @@ const VendorApplicationManagement = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
       case 'rejected':
-        return <Badge className="bg-red-100 text-red-800"><XCircle className="h-3 w-3 mr-1" />Rejected</Badge>;
+        return <Badge className="bg-destructive/10 text-destructive"><XCircle className="h-3 w-3 mr-1" />Rejected</Badge>;
       case 'under_review':
-        return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Under Review</Badge>;
+        return <Badge className="bg-chart-3/10 text-chart-3"><Clock className="h-3 w-3 mr-1" />Under Review</Badge>;
       case 'submitted':
-        return <Badge className="bg-blue-100 text-blue-800"><FileText className="h-3 w-3 mr-1" />Submitted</Badge>;
+        return <Badge className="bg-chart-4/10 text-chart-4"><FileText className="h-3 w-3 mr-1" />Submitted</Badge>;
       default:
         return <Badge variant="outline">Draft</Badge>;
     }
   };
 
   const getFraudScoreBadge = (score: number) => {
-    if (score >= 80) return <Badge className="bg-red-100 text-red-800">High Risk</Badge>;
-    if (score >= 50) return <Badge className="bg-yellow-100 text-yellow-800">Medium Risk</Badge>;
-    return <Badge className="bg-green-100 text-green-800">Low Risk</Badge>;
+    if (score >= 80) return <Badge className="bg-destructive/10 text-destructive">High Risk</Badge>;
+    if (score >= 50) return <Badge className="bg-chart-3/10 text-chart-3">Medium Risk</Badge>;
+    return <Badge className="bg-chart-1/10 text-chart-1">Low Risk</Badge>;
   };
 
   const renderStatsCards = () => (
@@ -385,7 +385,7 @@ const VendorApplicationManagement = () => {
                   <Button 
                     onClick={() => approveApplicationMutation.mutate(reviewingApplication.id)}
                     disabled={approveApplicationMutation.isPending}
-                    className="w-full bg-green-600 hover:bg-green-700"
+                    className="w-full bg-chart-1 hover:bg-chart-1/90 text-primary-foreground"
                   >
                     <CheckCircle className="h-4 w-4 mr-2" />
                     Approve Application
@@ -441,7 +441,7 @@ const VendorApplicationManagement = () => {
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold">Vendor Applications</h2>
-            <Badge className="bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 text-[9px] px-1.5 py-0 h-4">Applications</Badge>
+            <Badge className="bg-chart-3/20 text-chart-3 text-[9px] px-1.5 py-0 h-4">Applications</Badge>
           </div>
           <p className="text-[10px] text-muted-foreground">Review and manage vendor registration applications</p>
         </div>

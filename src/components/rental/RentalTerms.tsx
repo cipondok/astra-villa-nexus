@@ -46,15 +46,15 @@ const RentalTerms: React.FC<RentalTermsProps> = ({ terms, compact = false }) => 
   const getTermColor = (termType: string, isMandatory: boolean) => {
     if (isMandatory) {
       const colors: Record<string, string> = {
-        'deposit': 'bg-orange-100 text-orange-800 border-orange-200',
-        'check_in': 'bg-green-100 text-green-800 border-green-200',
-        'check_out': 'bg-blue-100 text-blue-800 border-blue-200',
-        'cancellation': 'bg-red-100 text-red-800 border-red-200',
-        'house_rules': 'bg-purple-100 text-purple-800 border-purple-200'
+        'deposit': 'bg-chart-3/10 text-chart-3 border-chart-3/20',
+        'check_in': 'bg-chart-1/10 text-chart-1 border-chart-1/20',
+        'check_out': 'bg-chart-4/10 text-chart-4 border-chart-4/20',
+        'cancellation': 'bg-destructive/10 text-destructive border-destructive/20',
+        'house_rules': 'bg-accent/10 text-accent-foreground border-accent/20'
       };
-      return colors[termType] || 'bg-gray-100 text-gray-800 border-gray-200';
+      return colors[termType] || 'bg-muted text-muted-foreground border-border';
     }
-    return 'bg-gray-50 text-gray-600 border-gray-100';
+    return 'bg-muted/50 text-muted-foreground border-border';
   };
 
   const getTermTypeLabel = (termType: string) => {
