@@ -167,11 +167,11 @@ const CSKnowledgeBaseManager = () => {
 
   const getCategoryVariant = (category: string) => {
     switch (category) {
-      case 'technical': return 'bg-blue-100 text-blue-800';
-      case 'billing': return 'bg-green-100 text-green-800';
-      case 'account': return 'bg-purple-100 text-purple-800';
-      case 'troubleshooting': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'technical': return 'bg-chart-4/10 text-chart-4';
+      case 'billing': return 'bg-chart-1/10 text-chart-1';
+      case 'account': return 'bg-chart-5/10 text-chart-5';
+      case 'troubleshooting': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 

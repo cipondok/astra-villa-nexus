@@ -275,8 +275,8 @@ const VendorServicesList = ({ onAddService, onEditService }: VendorServicesListP
                 <p className="text-sm text-muted-foreground">Total Services</p>
                 <p className="text-2xl font-bold">{services.length}</p>
               </div>
-              <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                <Star className="h-5 w-5 text-blue-600" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Star className="h-5 w-5 text-primary" />
               </div>
             </div>
           </CardContent>
@@ -287,10 +287,10 @@ const VendorServicesList = ({ onAddService, onEditService }: VendorServicesListP
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Active Services</p>
-                <p className="text-2xl font-bold text-green-600">{services.filter(s => s.is_active).length}</p>
+                <p className="text-2xl font-bold text-chart-1">{services.filter(s => s.is_active).length}</p>
               </div>
-              <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+              <div className="p-2 bg-chart-1/10 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-chart-1" />
               </div>
             </div>
           </CardContent>
@@ -301,10 +301,10 @@ const VendorServicesList = ({ onAddService, onEditService }: VendorServicesListP
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Bookings</p>
-                <p className="text-2xl font-bold text-purple-600">{services.reduce((sum, s) => sum + (s.total_bookings || 0), 0)}</p>
+                <p className="text-2xl font-bold text-chart-5">{services.reduce((sum, s) => sum + (s.total_bookings || 0), 0)}</p>
               </div>
-              <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                <Calendar className="h-5 w-5 text-purple-600" />
+              <div className="p-2 bg-chart-5/10 rounded-lg">
+                <Calendar className="h-5 w-5 text-chart-5" />
               </div>
             </div>
           </CardContent>
@@ -315,10 +315,10 @@ const VendorServicesList = ({ onAddService, onEditService }: VendorServicesListP
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Monthly Revenue</p>
-                <p className="text-2xl font-bold text-orange-600">Rp {(services.reduce((sum, s) => sum + (s.monthly_revenue || 0), 0)).toLocaleString()}</p>
+                <p className="text-2xl font-bold text-chart-3">Rp {(services.reduce((sum, s) => sum + (s.monthly_revenue || 0), 0)).toLocaleString()}</p>
               </div>
-              <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
-                <Star className="h-5 w-5 text-orange-600" />
+              <div className="p-2 bg-chart-3/10 rounded-lg">
+                <Star className="h-5 w-5 text-chart-3" />
               </div>
             </div>
           </CardContent>

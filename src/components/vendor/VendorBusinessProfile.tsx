@@ -534,7 +534,7 @@ const VendorBusinessProfile = () => {
           </div>
 
           {/* GPS Location Section */}
-          <div className="space-y-4 p-4 border rounded-lg bg-blue-50 dark:bg-blue-950">
+          <div className="space-y-4 p-4 border rounded-lg bg-chart-4/10">
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-base font-semibold">Lokasi GPS (untuk Area Layanan)</Label>

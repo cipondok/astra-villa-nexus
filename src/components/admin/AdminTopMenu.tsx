@@ -189,13 +189,13 @@ const AdminTopMenu = ({
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-destructive';
       case 'medium':
-        return 'text-orange-600 dark:text-orange-400';
+        return 'text-chart-3';
       case 'low':
-        return 'text-blue-600 dark:text-blue-400';
+        return 'text-chart-4';
       default:
-        return 'text-gray-600 dark:text-gray-400';
+        return 'text-muted-foreground';
     }
   };
 
@@ -221,28 +221,28 @@ const AdminTopMenu = ({
       icon: Globe,
       label: "Provinces",
       count: locationStats?.provinces?.toString() || "0",
-      color: "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400",
+      color: "bg-chart-4/10 text-chart-4",
       href: "/admin-dashboard?section=locations"
     },
     {
       icon: Building2,
       label: "Cities",
       count: locationStats?.cities?.toString() || "0",
-      color: "bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400",
+      color: "bg-chart-1/10 text-chart-1",
       href: "/admin-dashboard?section=property-management"
     },
     {
       icon: Users,
       label: "Users",
       count: "2.4k",
-      color: "bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400",
+      color: "bg-chart-5/10 text-chart-5",
       href: "/admin-dashboard?section=user-management"
     },
     {
       icon: ShoppingBag,
       label: "Vendors",
       count: "147",
-      color: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400",
+      color: "bg-chart-3/10 text-chart-3",
       href: "/admin-dashboard?section=vendors-hub"
     }
   ];
@@ -253,28 +253,28 @@ const AdminTopMenu = ({
       icon: BarChart3,
       label: "Analytics",
       count: "Real-time",
-      color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400",
+      color: "bg-chart-5/10 text-chart-5",
       href: "/admin-dashboard?section=analytics"
     },
     {
       icon: MessageSquare,
       label: "Support",
       count: "12",
-      color: "bg-pink-100 text-pink-600 dark:bg-pink-900/50 dark:text-pink-400",
+      color: "bg-destructive/10 text-destructive",
       href: "/admin-dashboard?section=customer-service"
     },
     {
       icon: Wrench,
       label: "Tools",
       count: "8",
-      color: "bg-cyan-100 text-cyan-600 dark:bg-cyan-900/50 dark:text-cyan-400",
+      color: "bg-chart-4/10 text-chart-4",
       href: "/admin-dashboard?section=tools-management"
     },
     {
       icon: FileText,
       label: "Reports",
       count: "5",
-      color: "bg-yellow-100 text-yellow-600 dark:bg-yellow-900/50 dark:text-yellow-400",
+      color: "bg-chart-3/10 text-chart-3",
       href: "/admin-dashboard?section=system-reports"
     }
   ];
@@ -331,7 +331,7 @@ const AdminTopMenu = ({
                     <Bell className="h-5 w-5" />
                   )}
                   {unreadCount > 0 && (
-                    <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs border-2 border-white dark:border-gray-800 animate-pulse rounded-full">
+                    <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-destructive text-destructive-foreground text-xs border-2 border-background animate-pulse rounded-full">
                       {unreadCount > 99 ? '99+' : unreadCount}
                     </Badge>
                   )}
@@ -363,7 +363,7 @@ const AdminTopMenu = ({
                              key={alert.id}
                              className={`p-3 border rounded-lg transition-colors hover:bg-muted/50 cursor-pointer ${
                                !alert.is_read 
-                                 ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800' 
+                                 ? 'bg-primary/10 border-primary/20' 
                                  : 'hover:bg-muted/50'
                              }`}
                              onClick={() => {
@@ -396,7 +396,7 @@ const AdminTopMenu = ({
                                     {formatTimeAgo(alert.created_at)}
                                   </span>
                                   {!alert.is_read && (
-                                    <Badge variant="default" className="text-xs bg-blue-500">
+                                    <Badge variant="default" className="text-xs bg-primary">
                                       New
                                     </Badge>
                                   )}
@@ -492,15 +492,15 @@ const AdminTopMenu = ({
 
               {/* Status Indicators */}
               <div className="flex items-center gap-3">
-                <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 border border-green-200 dark:border-green-800">
+                <Badge variant="secondary" className="bg-chart-1/10 text-chart-1 border border-chart-1/20">
                   <Activity className="h-3 w-3 mr-1" />
                   Online
                 </Badge>
-                <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                <Badge variant="secondary" className="bg-chart-4/10 text-chart-4 border border-chart-4/20">
                   <Database className="h-3 w-3 mr-1" />
                   Connected
                 </Badge>
-                <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                <Badge variant="secondary" className="bg-chart-5/10 text-chart-5 border border-chart-5/20">
                   <Shield className="h-3 w-3 mr-1" />
                   Secure
                 </Badge>

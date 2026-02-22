@@ -181,7 +181,7 @@ const VendorPropertyTypeToggle = () => {
                 <p className="text-sm text-muted-foreground">{currentInfo.description}</p>
               </div>
             </div>
-            <CheckCircle className="h-5 w-5 text-green-600" />
+            <CheckCircle className="h-5 w-5 text-chart-1" />
           </div>
         </div>
 
@@ -195,7 +195,7 @@ const VendorPropertyTypeToggle = () => {
             <ul className="space-y-2">
               {currentInfo.requirements.map((req, index) => (
                 <li key={index} className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-chart-1" />
                   {req}
                 </li>
               ))}

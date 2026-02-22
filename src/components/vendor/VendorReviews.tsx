@@ -127,7 +127,7 @@ const VendorReviews = () => {
       <Star
         key={index}
         className={`h-4 w-4 ${
-          index < rating ? 'text-yellow-500 fill-current' : 'text-gray-300'
+          index < rating ? 'text-chart-3 fill-current' : 'text-muted-foreground/30'
         }`}
       />
     ));
@@ -136,7 +136,7 @@ const VendorReviews = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
