@@ -148,14 +148,14 @@ const WNIPage = () => {
 
       {/* Hero Section - Compact */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-primary/5 pointer-events-none" />
-        <div className="absolute top-10 right-10 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-br from-red-500/10 to-primary/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-destructive/5 via-transparent to-primary/5 pointer-events-none" />
+        <div className="absolute top-10 right-10 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-br from-destructive/10 to-primary/10 rounded-full blur-3xl pointer-events-none" />
         
         <div className="relative max-w-6xl mx-auto px-3 py-4 sm:py-6">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="text-center">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2.5 bg-gradient-to-r from-red-500/10 to-primary/10 border border-red-500/20 rounded-full backdrop-blur-xl">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2.5 bg-gradient-to-r from-destructive/10 to-primary/10 border border-destructive/20 rounded-full backdrop-blur-xl">
               <span className="text-sm">🇮🇩</span>
-              <span className="text-[9px] font-semibold text-red-600 dark:text-red-400 uppercase tracking-wide">{t.badge}</span>
+              <span className="text-[9px] font-semibold text-destructive uppercase tracking-wide">{t.badge}</span>
             </div>
             <h1 className="text-sm sm:text-lg md:text-xl font-bold text-foreground mb-1.5 px-2">{t.title}</h1>
             <p className="text-[10px] sm:text-xs text-muted-foreground max-w-lg mx-auto leading-relaxed px-2">{t.subtitle}</p>
@@ -178,12 +178,12 @@ const WNIPage = () => {
           <div className="grid grid-cols-3 lg:grid-cols-6 gap-1.5 sm:gap-2">
             {t.benefits.map((benefit, idx) => {
               const iconColors = [
-                { bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-400' },
-                { bg: 'bg-amber-100 dark:bg-amber-900/50', text: 'text-amber-600 dark:text-amber-400' },
-                { bg: 'bg-green-100 dark:bg-green-900/50', text: 'text-green-600 dark:text-green-400' },
-                { bg: 'bg-purple-100 dark:bg-purple-900/50', text: 'text-purple-600 dark:text-purple-400' },
-                { bg: 'bg-cyan-100 dark:bg-cyan-900/50', text: 'text-cyan-600 dark:text-cyan-400' },
-                { bg: 'bg-rose-100 dark:bg-rose-900/50', text: 'text-rose-600 dark:text-rose-400' },
+                { bg: 'bg-primary/10', text: 'text-primary' },
+                { bg: 'bg-chart-3/10', text: 'text-chart-3' },
+                { bg: 'bg-chart-1/10', text: 'text-chart-1' },
+                { bg: 'bg-chart-5/10', text: 'text-chart-5' },
+                { bg: 'bg-chart-4/10', text: 'text-chart-4' },
+                { bg: 'bg-destructive/10', text: 'text-destructive' },
               ];
               const colorSet = iconColors[idx % iconColors.length];
               
@@ -317,7 +317,7 @@ const WNIPage = () => {
             <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
               {t.vipFeatures.map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-1">
-                  <CheckCircle className="h-2.5 w-2.5 text-green-500 flex-shrink-0" />
+                  <CheckCircle className="h-2.5 w-2.5 text-chart-1 flex-shrink-0" />
                   <span className="text-[8px] sm:text-[10px] text-foreground/80 truncate">{feature}</span>
                 </div>
               ))}

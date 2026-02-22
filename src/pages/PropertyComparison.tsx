@@ -145,8 +145,8 @@ const PropertyComparison = () => {
                 {/* Price */}
                 <div 
                   className={`text-xl font-bold ${
-                    property.price === minPrice ? 'text-green-600' : 
-                    property.price === maxPrice ? 'text-orange-600' : 
+                    property.price === minPrice ? 'text-chart-1' : 
+                    property.price === maxPrice ? 'text-chart-3' : 
                     'text-foreground'
                   }`}
                 >
@@ -154,8 +154,8 @@ const PropertyComparison = () => {
                   {property.listing_type === 'rent' && (
                     <span className="text-sm font-normal text-muted-foreground">/month</span>
                   )}
-                  {property.price === minPrice && <Badge variant="outline" className="ml-2 text-green-600">Lowest</Badge>}
-                  {property.price === maxPrice && <Badge variant="outline" className="ml-2 text-orange-600">Highest</Badge>}
+                  {property.price === minPrice && <Badge variant="outline" className="ml-2 text-chart-1">Lowest</Badge>}
+                  {property.price === maxPrice && <Badge variant="outline" className="ml-2 text-chart-3">Highest</Badge>}
                 </div>
 
                 <Separator />
@@ -186,16 +186,16 @@ const PropertyComparison = () => {
                   {property.area_sqm && (
                     <div 
                       className={`flex items-center gap-2 ${
-                        property.area_sqm === minArea ? 'text-orange-600' : 
-                        property.area_sqm === maxArea ? 'text-green-600' : 
+                        property.area_sqm === minArea ? 'text-chart-3' : 
+                        property.area_sqm === maxArea ? 'text-chart-1' : 
                         'text-foreground'
                       }`}
                     >
                       <Square className="h-4 w-4" />
                       <span className="text-sm font-medium">
                         {property.area_sqm} m²
-                        {property.area_sqm === minArea && <Badge variant="outline" className="ml-2 text-orange-600">Smallest</Badge>}
-                        {property.area_sqm === maxArea && <Badge variant="outline" className="ml-2 text-green-600">Largest</Badge>}
+                        {property.area_sqm === minArea && <Badge variant="outline" className="ml-2 text-chart-3">Smallest</Badge>}
+                        {property.area_sqm === maxArea && <Badge variant="outline" className="ml-2 text-chart-1">Largest</Badge>}
                       </span>
                     </div>
                   )}
@@ -221,7 +221,7 @@ const PropertyComparison = () => {
                   </Button>
                   
                   {(property.three_d_model_url || property.virtual_tour_url) && (
-                    <Badge className="w-full justify-center bg-blue-100 text-blue-800 hover:bg-blue-200">
+                    <Badge className="w-full justify-center bg-primary/10 text-primary hover:bg-primary/20">
                       3D Tour Available
                     </Badge>
                   )}
@@ -274,7 +274,7 @@ const PropertyComparison = () => {
                       .sort((a, b) => a.pricePerSqm - b.pricePerSqm);
                     
                     return pricePerSqm.length > 0 ? (
-                      <p className="text-xs text-green-600 font-medium mt-1">
+                      <p className="text-xs text-chart-1 font-medium mt-1">
                         {pricePerSqm[0].title.split(' ').slice(0, 3).join(' ')}...
                       </p>
                     ) : (

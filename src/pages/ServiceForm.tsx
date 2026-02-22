@@ -56,14 +56,14 @@ const ServiceForm = () => {
               onClick={() => navigate('/services')}
               variant="outline"
               size="sm"
-              className="flex items-center gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30"
+              className="flex items-center gap-2 bg-primary-foreground/20 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/30"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Services
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-white">Create New Service</h1>
-              <p className="text-white/80 mt-1">Add a new service to your offerings</p>
+              <h1 className="text-3xl font-bold text-primary-foreground">Create New Service</h1>
+              <p className="text-primary-foreground/80 mt-1">Add a new service to your offerings</p>
             </div>
           </div>
         </div>

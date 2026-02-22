@@ -409,21 +409,21 @@ const OptimizedImageUpload = ({
         {/* Upload Progress */}
         {uploadTasks.length > 0 && (
           <div className="space-y-3">
-            <h4 className="text-sm font-medium text-gray-900">Upload Progress</h4>
+            <h4 className="text-sm font-medium text-foreground">Upload Progress</h4>
             {uploadTasks.map((task) => (
-              <div key={task.id} className="bg-gray-50 rounded-lg p-3">
+              <div key={task.id} className="bg-muted/50 rounded-lg p-3">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium truncate max-w-[200px]">
                     {task.file.name}
                   </span>
                   <div className="flex items-center gap-2">
                     {task.status === 'completed' && (
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <CheckCircle className="h-4 w-4 text-chart-1" />
                     )}
                     {task.status === 'error' && (
-                      <AlertTriangle className="h-4 w-4 text-red-600" />
+                      <AlertTriangle className="h-4 w-4 text-destructive" />
                     )}
-                    <span className="text-xs text-gray-600">
+                    <span className="text-xs text-muted-foreground">
                       {formatFileSize(task.originalSize)}
                       {task.compressedSize && ` → ${formatFileSize(task.compressedSize)}`}
                     </span>
@@ -432,15 +432,15 @@ const OptimizedImageUpload = ({
                 
                 <Progress value={task.progress} className="h-2 mb-1" />
                 
-                <div className="flex justify-between text-xs text-gray-600">
+                <div className="flex justify-between text-xs text-muted-foreground">
                   <span className="capitalize">{task.status.replace('_', ' ')}</span>
                   {task.compressedSize && task.status === 'completed' && (
-                    <span className="text-green-600">
+                    <span className="text-chart-1">
                       {Math.round(((task.originalSize - task.compressedSize) / task.originalSize) * 100)}% smaller
                     </span>
                   )}
                   {task.error && (
-                    <span className="text-red-600">{task.error}</span>
+                    <span className="text-destructive">{task.error}</span>
                   )}
                 </div>
               </div>
@@ -452,11 +452,11 @@ const OptimizedImageUpload = ({
         {images.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-medium text-gray-900">
+              <h4 className="text-sm font-medium text-foreground">
                 Uploaded Images ({images.length}/{maxFiles})
               </h4>
               {compressionStats.saved > 0 && (
-                <div className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                <div className="text-xs text-chart-1 bg-chart-1/10 px-2 py-1 rounded">
                   Saved {formatFileSize(compressionStats.saved)} total
                 </div>
               )}
@@ -464,7 +464,7 @@ const OptimizedImageUpload = ({
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {images.map((url, index) => (
-                <div key={index} className="relative group bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <div key={index} className="relative group bg-card rounded-lg border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="aspect-square relative">
                     <img
                       src={url}
@@ -476,7 +476,7 @@ const OptimizedImageUpload = ({
                     {/* Thumbnail Badge */}
                     {index === thumbnailIndex && (
                       <div className="absolute top-2 left-2">
-                        <Badge className="bg-blue-600 text-white text-xs px-2 py-1">
+                        <Badge className="bg-primary text-primary-foreground text-xs px-2 py-1">
                           <Star className="h-3 w-3 mr-1" />
                           Main Photo
                         </Badge>
@@ -498,7 +498,7 @@ const OptimizedImageUpload = ({
                           <Button
                             variant="secondary"
                             size="sm"
-                            className="h-8 w-8 p-0 bg-blue-600 hover:bg-blue-700 text-white"
+                            className="h-8 w-8 p-0 bg-primary hover:bg-primary/90 text-primary-foreground"
                             onClick={() => setAsThumbnail(index)}
                           >
                             <Star className="h-4 w-4" />
@@ -509,10 +509,10 @@ const OptimizedImageUpload = ({
                   </div>
                   
                   <div className="p-2">
-                    <p className="text-xs text-gray-600 truncate">
+                    <p className="text-xs text-muted-foreground truncate">
                       Photo {index + 1}
                       {index === thumbnailIndex && (
-                        <span className="text-blue-600 font-medium"> • Main</span>
+                        <span className="text-primary font-medium"> • Main</span>
                       )}
                     </p>
                   </div>

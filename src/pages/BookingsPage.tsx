@@ -29,11 +29,11 @@ import {
 import { cn } from '@/lib/utils';
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle }> = {
-  pending: { label: 'Pending', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/30', icon: AlertCircle },
-  confirmed: { label: 'Confirmed', color: 'bg-green-500/10 text-green-600 border-green-500/30', icon: CheckCircle },
-  completed: { label: 'Completed', color: 'bg-blue-500/10 text-blue-600 border-blue-500/30', icon: CheckCircle },
-  cancelled: { label: 'Cancelled', color: 'bg-red-500/10 text-red-600 border-red-500/30', icon: XCircle },
-  no_show: { label: 'No Show', color: 'bg-gray-500/10 text-gray-600 border-gray-500/30', icon: XCircle },
+  pending: { label: 'Pending', color: 'bg-chart-3/10 text-chart-3 border-chart-3/30', icon: AlertCircle },
+  confirmed: { label: 'Confirmed', color: 'bg-chart-1/10 text-chart-1 border-chart-1/30', icon: CheckCircle },
+  completed: { label: 'Completed', color: 'bg-primary/10 text-primary border-primary/30', icon: CheckCircle },
+  cancelled: { label: 'Cancelled', color: 'bg-destructive/10 text-destructive border-destructive/30', icon: XCircle },
+  no_show: { label: 'No Show', color: 'bg-muted text-muted-foreground border-border', icon: XCircle },
 };
 
 const typeIcons = {

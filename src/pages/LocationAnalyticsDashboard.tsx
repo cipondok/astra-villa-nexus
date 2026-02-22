@@ -60,27 +60,27 @@ const LocationAnalyticsDashboard = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="border-blue-500/20">
+        <Card className="border-primary/20">
           <CardContent className="flex items-center gap-4 p-6">
-            <div className="p-3 bg-blue-500/10 rounded-xl"><Users className="h-6 w-6 text-blue-600" /></div>
+            <div className="p-3 bg-primary/10 rounded-xl"><Users className="h-6 w-6 text-primary" /></div>
             <div>
               <p className="text-sm text-muted-foreground">Unique Visitors</p>
               <p className="text-3xl font-bold">{totalVisitors.toLocaleString()}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-green-500/20">
+        <Card className="border-chart-1/20">
           <CardContent className="flex items-center gap-4 p-6">
-            <div className="p-3 bg-green-500/10 rounded-xl"><Search className="h-6 w-6 text-green-600" /></div>
+            <div className="p-3 bg-chart-1/10 rounded-xl"><Search className="h-6 w-6 text-chart-1" /></div>
             <div>
               <p className="text-sm text-muted-foreground">Total Searches</p>
               <p className="text-3xl font-bold">{totalSearches.toLocaleString()}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-purple-500/20">
+        <Card className="border-chart-5/20">
           <CardContent className="flex items-center gap-4 p-6">
-            <div className="p-3 bg-purple-500/10 rounded-xl"><Eye className="h-6 w-6 text-purple-600" /></div>
+            <div className="p-3 bg-chart-5/10 rounded-xl"><Eye className="h-6 w-6 text-chart-5" /></div>
             <div>
               <p className="text-sm text-muted-foreground">Property Views</p>
               <p className="text-3xl font-bold">{totalPropViews.toLocaleString()}</p>
