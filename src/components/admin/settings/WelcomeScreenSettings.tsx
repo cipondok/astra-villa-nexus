@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGlobalLoading } from '@/hooks/useGlobalLoading';
-import astraLogo from '@/assets/astra-logo.svg';
+import { useWelcomeScreenLogo } from '@/hooks/useBrandingLogo';
 
 interface WelcomeScreenSettingsProps {
   settings: any;
@@ -40,6 +40,7 @@ interface WelcomeScreenSettingsProps {
 }
 
 const WelcomeScreenSettings = ({ settings, loading, onInputChange, onSave }: WelcomeScreenSettingsProps) => {
+  const { logoUrl: welcomeLogo } = useWelcomeScreenLogo();
   const { startLoading, updateProgress, finishLoading, isLoading: globalLoading } = useGlobalLoading();
   const [previewActive, setPreviewActive] = useState(false);
   const [previewProgress, setPreviewProgress] = useState(0);
@@ -765,7 +766,7 @@ const WelcomeScreenSettings = ({ settings, loading, onInputChange, onSave }: Wel
                             {/* Logo */}
                             <motion.div className="relative">
                               <img 
-                                src={astraLogo} 
+                                src={welcomeLogo} 
                                 alt="ASTRA" 
                                 className="w-8 h-8 object-contain rounded-lg"
                               />

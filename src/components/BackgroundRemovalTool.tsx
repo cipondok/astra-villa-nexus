@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { removeBackground, loadImage } from "@/utils/backgroundRemoval";
 import { toast } from "sonner";
-import astraLogo from "@/assets/astra-logo.svg";
+import { useHeaderLogo } from "@/hooks/useBrandingLogo";
 
 const BackgroundRemovalTool = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
+  const { logoUrl: headerLogo } = useHeaderLogo();
 
   const handleRemoveBackground = async () => {
     setIsProcessing(true);
@@ -14,7 +15,7 @@ const BackgroundRemovalTool = () => {
       toast.info("Loading image...");
       
       // Fetch the logo image
-      const response = await fetch(astraLogo);
+      const response = await fetch(headerLogo);
       const blob = await response.blob();
       
       toast.info("Removing background... This may take a moment.");
