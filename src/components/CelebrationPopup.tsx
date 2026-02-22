@@ -153,59 +153,59 @@ const CelebrationPopup = ({
             <div className="firework firework-5"></div>
             
             {/* Floating sparkles */}
-            <div className="absolute top-1/4 left-1/4 text-yellow-400 sparkle">
+            <div className="absolute top-1/4 left-1/4 text-gold-primary sparkle">
               <Sparkles className="h-6 w-6" />
             </div>
-            <div className="absolute top-1/3 right-1/4 text-pink-400 sparkle" style={{ animationDelay: '0.5s' }}>
+            <div className="absolute top-1/3 right-1/4 text-destructive sparkle" style={{ animationDelay: '0.5s' }}>
               <Star className="h-5 w-5" />
             </div>
-            <div className="absolute bottom-1/3 left-1/3 text-blue-400 sparkle" style={{ animationDelay: '1s' }}>
+            <div className="absolute bottom-1/3 left-1/3 text-chart-4 sparkle" style={{ animationDelay: '1s' }}>
               <Heart className="h-4 w-4" />
             </div>
-            <div className="absolute top-1/2 right-1/3 text-green-400 sparkle" style={{ animationDelay: '1.5s' }}>
+            <div className="absolute top-1/2 right-1/3 text-chart-1 sparkle" style={{ animationDelay: '1.5s' }}>
               <Sparkles className="h-5 w-5" />
             </div>
             
             {/* More floating elements */}
-            <div className="absolute bottom-1/4 right-1/2 text-purple-400 float-up">
+            <div className="absolute bottom-1/4 right-1/2 text-accent-foreground float-up">
               <Star className="h-3 w-3" />
             </div>
-            <div className="absolute top-1/2 left-1/2 text-orange-400 float-up" style={{ animationDelay: '0.8s' }}>
+            <div className="absolute top-1/2 left-1/2 text-chart-3 float-up" style={{ animationDelay: '0.8s' }}>
               <Heart className="h-4 w-4" />
             </div>
           </div>
         )}
         
         {/* Celebration Modal */}
-        <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl border-2 border-gradient-to-r from-blue-400 to-purple-500 relative overflow-hidden">
+        <div className="bg-card rounded-2xl p-8 max-w-md w-full shadow-2xl border-2 border-primary/30 relative overflow-hidden">
           {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 opacity-60"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 opacity-60"></div>
           
           {/* Content */}
           <div className="relative z-10 text-center">
             {/* Success Icon */}
             <div className="mb-6 flex justify-center">
-              <div className="bg-gradient-to-r from-green-400 to-blue-500 rounded-full p-4 pulse-scale">
-                <CheckCircle className="h-12 w-12 text-white" />
+              <div className="bg-gradient-to-r from-chart-1 to-primary rounded-full p-4 pulse-scale">
+                <CheckCircle className="h-12 w-12 text-primary-foreground" />
               </div>
             </div>
             
             {/* Title */}
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {title}
             </h2>
             
             {/* Message */}
-            <p className="text-gray-700 mb-6 leading-relaxed">
+            <p className="text-muted-foreground mb-6 leading-relaxed">
               {message}
             </p>
             
             {/* Additional Info */}
-            <div className="bg-blue-50 rounded-lg p-4 mb-6 border border-blue-200">
-              <p className="text-sm text-blue-800">
+            <div className="bg-chart-4/10 rounded-lg p-4 mb-6 border border-chart-4/20">
+              <p className="text-sm text-chart-4">
                 <span className="font-semibold">📧 Tim admin kami akan meninjau properti Anda dalam 24 jam</span>
               </p>
-              <p className="text-xs text-blue-600 mt-1">
+              <p className="text-xs text-chart-4/70 mt-1">
                 Anda akan mendapat notifikasi email setelah review selesai
               </p>
             </div>
@@ -213,13 +213,13 @@ const CelebrationPopup = ({
             {/* Action Button */}
             <Button 
               onClick={onClose}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105"
+              className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105"
             >
               Kembali ke Beranda ✨
             </Button>
             
             {/* Auto close indicator */}
-            <p className="text-xs text-gray-500 mt-4">
+            <p className="text-xs text-muted-foreground mt-4">
               Popup ini akan otomatis tertutup dalam 5 detik
             </p>
           </div>

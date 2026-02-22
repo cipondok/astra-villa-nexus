@@ -44,19 +44,19 @@ const OnboardingTooltip = () => {
         "animate-in slide-in-from-left-5 fade-in duration-500"
       )}
     >
-      <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg shadow-2xl p-1">
-        <div className="bg-gray-900 rounded-lg p-4 text-white">
+      <div className="bg-gradient-to-br from-primary to-accent rounded-lg shadow-2xl p-1">
+        <div className="bg-popover rounded-lg p-4 text-popover-foreground">
           {/* Header */}
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-yellow-400" />
+              <Sparkles className="h-5 w-5 text-gold-primary" />
               <h3 className="font-bold text-sm">Developer Tools Available!</h3>
             </div>
             <Button
               onClick={handleDismiss}
               variant="ghost"
               size="icon"
-              className="h-6 w-6 text-gray-400 hover:text-white -mt-1 -mr-1"
+              className="h-6 w-6 text-muted-foreground hover:text-foreground -mt-1 -mr-1"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -64,22 +64,22 @@ const OnboardingTooltip = () => {
 
           {/* Content */}
           <div className="space-y-3 text-xs">
-            <p className="text-gray-300">
+            <p className="text-muted-foreground">
               🎉 New debugging tools are available to help you test animations!
             </p>
 
             {/* Features */}
             <div className="space-y-2">
-              <div className="flex items-start gap-2 text-gray-200">
-                <Settings className="h-4 w-4 mt-0.5 text-blue-400 flex-shrink-0" />
+              <div className="flex items-start gap-2 text-foreground/80">
+                <Settings className="h-4 w-4 mt-0.5 text-primary flex-shrink-0" />
                 <div>
                   <span className="font-semibold">Debug Panel:</span> Control animations
                   without changing OS settings
                 </div>
               </div>
 
-              <div className="flex items-start gap-2 text-gray-200">
-                <Keyboard className="h-4 w-4 mt-0.5 text-purple-400 flex-shrink-0" />
+              <div className="flex items-start gap-2 text-foreground/80">
+                <Keyboard className="h-4 w-4 mt-0.5 text-accent-foreground flex-shrink-0" />
                 <div>
                   <span className="font-semibold">Keyboard Shortcuts:</span> Fast access
                   to all features
@@ -88,26 +88,26 @@ const OnboardingTooltip = () => {
             </div>
 
             {/* Quick shortcuts */}
-            <div className="bg-gray-800 rounded p-2 space-y-1">
-              <p className="font-semibold text-[10px] text-gray-400 uppercase">
+            <div className="bg-muted rounded p-2 space-y-1">
+              <p className="font-semibold text-[10px] text-muted-foreground uppercase">
                 Quick Shortcuts:
               </p>
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Toggle panel</span>
-                  <kbd className="px-2 py-0.5 bg-gray-700 rounded text-[10px] font-mono">
+                  <span className="text-foreground/70">Toggle panel</span>
+                  <kbd className="px-2 py-0.5 bg-background rounded text-[10px] font-mono">
                     ⌘/Ctrl + D
                   </kbd>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Toggle animations</span>
-                  <kbd className="px-2 py-0.5 bg-gray-700 rounded text-[10px] font-mono">
+                  <span className="text-foreground/70">Toggle animations</span>
+                  <kbd className="px-2 py-0.5 bg-background rounded text-[10px] font-mono">
                     ⌘/Ctrl + A
                   </kbd>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-300">View all shortcuts</span>
-                  <kbd className="px-2 py-0.5 bg-gray-700 rounded text-[10px] font-mono">
+                  <span className="text-foreground/70">View all shortcuts</span>
+                  <kbd className="px-2 py-0.5 bg-background rounded text-[10px] font-mono">
                     ?
                   </kbd>
                 </div>
@@ -118,14 +118,14 @@ const OnboardingTooltip = () => {
             <div className="flex gap-2 pt-2">
               <Button
                 onClick={handleTryIt}
-                className="flex-1 h-8 text-xs bg-blue-600 hover:bg-blue-700"
+                className="flex-1 h-8 text-xs bg-primary hover:bg-primary/90"
               >
                 Try It Now
               </Button>
               <Button
                 onClick={handleDismiss}
                 variant="outline"
-                className="flex-1 h-8 text-xs border-gray-600 hover:bg-gray-800"
+                className="flex-1 h-8 text-xs border-border hover:bg-muted"
               >
                 Got It
               </Button>
@@ -133,16 +133,16 @@ const OnboardingTooltip = () => {
           </div>
 
           {/* Footer note */}
-          <div className="mt-3 pt-3 border-t border-gray-700">
-            <p className="text-[10px] text-gray-500">
-              💡 This tooltip won't show again. Press <kbd className="px-1 bg-gray-800 rounded">?</kbd> anytime for help.
+          <div className="mt-3 pt-3 border-t border-border">
+            <p className="text-[10px] text-muted-foreground">
+              💡 This tooltip won't show again. Press <kbd className="px-1 bg-muted rounded">?</kbd> anytime for help.
             </p>
           </div>
         </div>
       </div>
 
       {/* Arrow pointer */}
-      <div className="absolute -bottom-2 left-8 w-4 h-4 bg-gray-900 transform rotate-45" />
+      <div className="absolute -bottom-2 left-8 w-4 h-4 bg-popover transform rotate-45" />
     </div>
   );
 };
