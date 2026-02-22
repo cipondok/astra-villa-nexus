@@ -40,7 +40,7 @@ const SocialCommerceManagement: React.FC = () => {
       name: 'instagram',
       displayName: 'Instagram Storefront',
       icon: Instagram,
-      color: 'text-pink-500',
+      color: 'text-chart-5',
       isEnabled: true,
       impressions: 45200,
       clicks: 3420,
@@ -64,7 +64,7 @@ const SocialCommerceManagement: React.FC = () => {
       name: 'pinterest',
       displayName: 'Pinterest Ideas',
       icon: Image,
-      color: 'text-red-600',
+      color: 'text-destructive',
       isEnabled: true,
       impressions: 23400,
       clicks: 1890,
@@ -76,7 +76,7 @@ const SocialCommerceManagement: React.FC = () => {
       name: 'facebook',
       displayName: 'Facebook Marketplace',
       icon: Facebook,
-      color: 'text-blue-600',
+      color: 'text-primary',
       isEnabled: true,
       impressions: 67800,
       clicks: 4560,
@@ -88,7 +88,7 @@ const SocialCommerceManagement: React.FC = () => {
       name: 'whatsapp',
       displayName: 'WhatsApp Business',
       icon: MessageCircle,
-      color: 'text-green-500',
+      color: 'text-chart-1',
       isEnabled: true,
       impressions: 12300,
       clicks: 2100,
@@ -188,7 +188,7 @@ const SocialCommerceManagement: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Total Impressions</p>
                 <p className="text-2xl font-bold">{formatNumber(totalStats.impressions)}</p>
               </div>
-              <Eye className="h-8 w-8 text-blue-500 opacity-20" />
+              <Eye className="h-8 w-8 text-primary opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -199,7 +199,7 @@ const SocialCommerceManagement: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Total Clicks</p>
                 <p className="text-2xl font-bold">{formatNumber(totalStats.clicks)}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-green-500 opacity-20" />
+              <TrendingUp className="h-8 w-8 text-chart-1 opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -210,7 +210,7 @@ const SocialCommerceManagement: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Conversions</p>
                 <p className="text-2xl font-bold">{totalStats.conversions}</p>
               </div>
-              <Zap className="h-8 w-8 text-amber-500 opacity-20" />
+              <Zap className="h-8 w-8 text-chart-3 opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -223,7 +223,7 @@ const SocialCommerceManagement: React.FC = () => {
                   {((totalStats.conversions / totalStats.clicks) * 100).toFixed(1)}%
                 </p>
               </div>
-              <Target className="h-8 w-8 text-purple-500 opacity-20" />
+              <Target className="h-8 w-8 text-chart-5 opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -390,7 +390,7 @@ const SocialCommerceManagement: React.FC = () => {
               {['Viewing Request', 'Pre-Approval Inquiry', 'General Inquiry'].map((flow) => (
                 <div key={flow} className="flex items-center justify-between p-4 rounded-lg border">
                   <div className="flex items-center gap-3">
-                    <MessageCircle className="h-5 w-5 text-green-500" />
+                    <MessageCircle className="h-5 w-5 text-chart-1" />
                     <div>
                       <div className="font-medium">{flow}</div>
                       <div className="text-xs text-muted-foreground">

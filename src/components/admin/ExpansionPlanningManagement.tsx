@@ -498,7 +498,7 @@ const ExpansionPlanningManagement = () => {
                           <Badge 
                             key={key} 
                             variant={value ? "default" : "outline"}
-                            className={value ? "bg-green-500" : ""}
+                            className={value ? "bg-chart-1" : ""}
                           >
                             {value ? <CheckCircle className="h-3 w-3 mr-1" /> : <Clock className="h-3 w-3 mr-1" />}
                             {key.charAt(0).toUpperCase() + key.slice(1)}
