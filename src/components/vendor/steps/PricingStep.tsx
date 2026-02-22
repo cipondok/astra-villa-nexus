@@ -72,7 +72,7 @@ const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData, cat
                     <Label htmlFor="fixed" className="font-medium">Fixed Price</Label>
                     <p className="text-sm text-muted-foreground">Set one price for the entire service</p>
                   </div>
-                  <DollarSign className="h-5 w-5 text-green-500" />
+                  <DollarSign className="h-5 w-5 text-chart-1" />
                 </div>
               </Card>
 
@@ -83,7 +83,7 @@ const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData, cat
                     <Label htmlFor="hourly" className="font-medium">Hourly Rate</Label>
                     <p className="text-sm text-muted-foreground">Charge per hour of work</p>
                   </div>
-                  <Clock className="h-5 w-5 text-blue-500" />
+                  <Clock className="h-5 w-5 text-chart-4" />
                 </div>
               </Card>
 
@@ -94,7 +94,7 @@ const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData, cat
                     <Label htmlFor="package" className="font-medium">Service Packages</Label>
                     <p className="text-sm text-muted-foreground">Offer multiple pricing tiers</p>
                   </div>
-                  <Package className="h-5 w-5 text-purple-500" />
+                  <Package className="h-5 w-5 text-accent" />
                 </div>
               </Card>
             </div>
@@ -320,7 +320,7 @@ const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData, cat
                 </div>
                 <div className="text-sm space-y-1">
                   <p>Original Price: {formatIDR(formData.basePrice || 0)}</p>
-                  <p className="text-green-600 font-medium">
+                  <p className="text-chart-1 font-medium">
                     Discounted Price: {formatIDR((formData.basePrice || 0) * (1 - (formData.discountPercentage || 0) / 100))}
                   </p>
                   <p className="text-xs text-muted-foreground">
@@ -344,13 +344,13 @@ const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData, cat
       )}
 
       {/* Pricing Summary */}
-      <Card className="bg-green-50 border-green-200">
+      <Card className="bg-chart-1/10 border-chart-1/30">
         <CardContent className="p-4">
-          <h4 className="font-medium text-green-900 mb-2 flex items-center">
+          <h4 className="font-medium text-chart-1 mb-2 flex items-center">
             <DollarSign className="h-4 w-4 mr-2" />
             Pricing Summary
           </h4>
-          <div className="text-sm text-green-800">
+          <div className="text-sm text-foreground">
             {formData.priceType === 'fixed' && (
               <p>Fixed price: {formatIDR(formData.basePrice)} for {formData.duration} {formData.durationUnit}</p>
             )}

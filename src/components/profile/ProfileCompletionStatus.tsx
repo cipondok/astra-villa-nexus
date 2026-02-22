@@ -253,9 +253,9 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
               <ArrowRight className={cn("h-5 w-5", nextLevelConfig.color)} />
             </button>
           ) : (
-            <div className="p-3 rounded-lg bg-gradient-to-r from-sky-50 via-indigo-50 to-violet-50 dark:from-sky-950/50 dark:via-indigo-950/50 dark:to-violet-950/50 text-center">
-              <Gem className="h-6 w-6 mx-auto mb-1 text-sky-500" />
-              <p className="text-sm font-medium text-sky-600 dark:text-sky-400">
+            <div className="p-3 rounded-lg bg-gradient-to-r from-accent/10 via-primary/10 to-accent/10 text-center">
+              <Gem className="h-6 w-6 mx-auto mb-1 text-accent" />
+              <p className="text-sm font-medium text-accent">
                 {t.maxLevel}
               </p>
             </div>
@@ -280,7 +280,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
                 key={index}
                 className="flex items-center gap-2 p-2 rounded-lg bg-muted/30"
               >
-                <Star className="h-3 w-3 text-amber-500 shrink-0" />
+                <Star className="h-3 w-3 text-chart-3 shrink-0" />
                 <span className="text-xs truncate">{benefit}</span>
               </div>
             ))}

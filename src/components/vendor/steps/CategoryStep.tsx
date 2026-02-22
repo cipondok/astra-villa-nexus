@@ -247,9 +247,9 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
           Pilih Kategori Utama Layanan
         </Label>
         {isMainCategoryLocked && vendorProfile?.vendor_main_categories && (
-          <Alert className="mb-4 border-orange-200 bg-orange-50">
-            <Lock className="h-4 w-4 text-orange-600" />
-            <AlertDescription className="text-orange-800">
+          <Alert className="mb-4 border-chart-3/30 bg-chart-3/10">
+            <Lock className="h-4 w-4 text-chart-3" />
+            <AlertDescription className="text-foreground">
               <div className="space-y-2">
                 <div className="font-medium">
                   Kategori Utama Terkunci: {vendorProfile.vendor_main_categories.name}
@@ -313,7 +313,7 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
                         {category.type === 'products' ? 'Produk' : 'Layanan'}
                       </Badge>
                       {isMainCategoryLocked && formData.mainCategory === category.id && (
-                        <Badge variant="outline" className="text-xs text-orange-600 border-orange-300">
+                        <Badge variant="outline" className="text-xs text-chart-3 border-chart-3/30">
                           <Lock className="h-3 w-3 mr-1" />
                           Terkunci
                         </Badge>
@@ -412,12 +412,12 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
 
       {/* Show image upload hint for products */}
       {isProductCategory && (
-        <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-          <h4 className="font-medium text-amber-900 mb-2 flex items-center">
+        <div className="bg-chart-3/10 p-4 rounded-lg border border-chart-3/20">
+          <h4 className="font-medium text-foreground mb-2 flex items-center">
             <Package className="h-4 w-4 mr-2" />
             Kategori Produk Terpilih
           </h4>
-          <p className="text-sm text-amber-800">
+          <p className="text-sm text-muted-foreground">
             Karena ini adalah kategori produk, Anda akan dapat mengunggah gambar produk di langkah berikutnya. 
             Gambar berkualitas tinggi sangat penting untuk daftar produk.
           </p>
@@ -425,9 +425,9 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
       )}
 
       {/* Tips */}
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <h4 className="font-medium text-blue-900 mb-2">💡 Tips untuk Daftar Layanan yang Baik</h4>
-        <ul className="text-sm text-blue-800 space-y-1">
+      <div className="bg-chart-4/10 p-4 rounded-lg">
+        <h4 className="font-medium text-foreground mb-2">💡 Tips untuk Daftar Layanan yang Baik</h4>
+        <ul className="text-sm text-muted-foreground space-y-1">
           <li>• Pilih kategori yang paling spesifik sesuai dengan layanan Anda</li>
           <li>• Gunakan nama layanan yang jelas dan deskriptif</li>
           <li>• Tonjolkan apa yang membuat layanan Anda unik dalam deskripsi</li>
