@@ -154,17 +154,17 @@ const VendorBookings = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-yellow-500';
+        return 'bg-chart-3';
       case 'confirmed':
-        return 'bg-blue-500';
+        return 'bg-chart-4';
       case 'in_progress':
-        return 'bg-purple-500';
+        return 'bg-chart-5';
       case 'completed':
-        return 'bg-green-500';
+        return 'bg-chart-1';
       case 'cancelled':
-        return 'bg-red-500';
+        return 'bg-destructive';
       default:
-        return 'bg-gray-500';
+        return 'bg-muted-foreground';
     }
   };
 
