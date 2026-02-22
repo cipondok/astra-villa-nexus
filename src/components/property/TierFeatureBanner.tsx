@@ -101,7 +101,7 @@ const TierFeatureBanner: React.FC = () => {
               {maxImages} {t.images}
             </Badge>
             {canUseVirtualTour && (
-              <Badge variant="secondary" className="text-xs gap-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30">
+              <Badge variant="secondary" className="text-xs gap-1 bg-chart-1/10 text-chart-1 border-chart-1/30">
                 <Box className="h-3 w-3" />
                 {t.virtualTour}
               </Badge>
@@ -113,7 +113,7 @@ const TierFeatureBanner: React.FC = () => {
               </Badge>
             )}
             {canBeFeatured && (
-              <Badge variant="secondary" className="text-xs gap-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30">
+              <Badge variant="secondary" className="text-xs gap-1 bg-gold-primary/10 text-gold-primary border-gold-primary/30">
                 <Star className="h-3 w-3" />
                 {t.featuredBadge}
               </Badge>

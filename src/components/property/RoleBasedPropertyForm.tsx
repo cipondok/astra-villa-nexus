@@ -453,7 +453,7 @@ const RoleBasedPropertyForm = () => {
                             }));
                           }
                         }}
-                        className="rounded border-gray-300"
+                        className="rounded border-border"
                       />
                       <Label htmlFor={period.value} className="text-sm">{period.label}</Label>
                     </div>
@@ -496,7 +496,7 @@ const RoleBasedPropertyForm = () => {
                           id="domicile_services"
                           checked={formData.domicile_services || false}
                           onChange={(e) => setFormData(prev => ({ ...prev, domicile_services: e.target.checked }))}
-                          className="rounded border-gray-300"
+                          className="rounded border-border"
                         />
                         <Label htmlFor="domicile_services" className="text-sm">
                           Business domicile address services provided
@@ -511,7 +511,7 @@ const RoleBasedPropertyForm = () => {
                           id="mail_handling"
                           checked={formData.mail_handling || false}
                           onChange={(e) => setFormData(prev => ({ ...prev, mail_handling: e.target.checked }))}
-                          className="rounded border-gray-300"
+                          className="rounded border-border"
                         />
                         <Label htmlFor="mail_handling" className="text-sm">
                           Mail and package handling included

@@ -226,9 +226,9 @@ export function AnalyticsSettings() {
                 {isTestingConnection ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : connectionStatus === 'success' ? (
-                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <CheckCircle className="h-4 w-4 text-chart-1" />
                 ) : connectionStatus === 'error' ? (
-                  <XCircle className="h-4 w-4 text-red-500" />
+                  <XCircle className="h-4 w-4 text-destructive" />
                 ) : (
                   <Activity className="h-4 w-4" />
                 )}
