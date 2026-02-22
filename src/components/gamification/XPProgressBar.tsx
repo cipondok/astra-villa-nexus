@@ -72,7 +72,7 @@ const XPProgressBar = ({
         </div>
         
         {stats.current_streak > 0 && (
-          <Badge className="bg-orange-500/10 text-orange-600 border-orange-200">
+          <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/20">
             🔥 {stats.current_streak} day streak
           </Badge>
         )}
@@ -103,7 +103,7 @@ const XPProgressBar = ({
               animate={{ scale: 1 }}
               className="absolute -right-1 -top-1"
             >
-              <Sparkles className="h-4 w-4 text-yellow-500" />
+              <Sparkles className="h-4 w-4 text-gold-primary" />
             </motion.div>
           )}
         </div>

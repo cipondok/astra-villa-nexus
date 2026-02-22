@@ -194,11 +194,11 @@ const ListingHealthCheck = ({ propertyContext, className }: ListingHealthCheckPr
   const failCount = checks.filter(c => c.status === 'fail').length;
 
   const gradeColors = {
-    'A': 'text-green-500 bg-green-500/10',
-    'B': 'text-blue-500 bg-blue-500/10',
-    'C': 'text-yellow-500 bg-yellow-500/10',
-    'D': 'text-orange-500 bg-orange-500/10',
-    'F': 'text-red-500 bg-red-500/10'
+    'A': 'text-chart-1 bg-chart-1/10',
+    'B': 'text-chart-4 bg-chart-4/10',
+    'C': 'text-chart-3 bg-chart-3/10',
+    'D': 'text-gold-primary bg-gold-primary/10',
+    'F': 'text-destructive bg-destructive/10'
   };
 
   return (
@@ -240,13 +240,13 @@ const ListingHealthCheck = ({ propertyContext, className }: ListingHealthCheckPr
             )}
             <div className="flex-1">
               <div className="flex items-center gap-2 text-xs mb-1">
-                <Badge variant="secondary" className="gap-1 text-green-600 bg-green-500/10">
+                <Badge variant="secondary" className="gap-1 text-chart-1 bg-chart-1/10">
                   <Check className="h-2.5 w-2.5" /> {passCount}
                 </Badge>
-                <Badge variant="secondary" className="gap-1 text-yellow-600 bg-yellow-500/10">
+                <Badge variant="secondary" className="gap-1 text-chart-3 bg-chart-3/10">
                   <AlertTriangle className="h-2.5 w-2.5" /> {warningCount}
                 </Badge>
-                <Badge variant="secondary" className="gap-1 text-red-600 bg-red-500/10">
+                <Badge variant="secondary" className="gap-1 text-destructive bg-destructive/10">
                   <X className="h-2.5 w-2.5" /> {failCount}
                 </Badge>
               </div>
@@ -274,9 +274,9 @@ const ListingHealthCheck = ({ propertyContext, className }: ListingHealthCheckPr
                   animate={{ opacity: 1, x: 0 }}
                   className="flex items-center gap-2 text-xs"
                 >
-                  {check.status === 'pass' && <Check className="h-3.5 w-3.5 text-green-500" />}
-                  {check.status === 'warning' && <AlertTriangle className="h-3.5 w-3.5 text-yellow-500" />}
-                  {check.status === 'fail' && <X className="h-3.5 w-3.5 text-red-500" />}
+                  {check.status === 'pass' && <Check className="h-3.5 w-3.5 text-chart-1" />}
+                  {check.status === 'warning' && <AlertTriangle className="h-3.5 w-3.5 text-chart-3" />}
+                  {check.status === 'fail' && <X className="h-3.5 w-3.5 text-destructive" />}
                   <span className="font-medium">{check.label}:</span>
                   <span className="text-muted-foreground flex-1 truncate">{check.message}</span>
                 </motion.div>
