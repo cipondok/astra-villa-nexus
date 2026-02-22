@@ -60,7 +60,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
       {/* Placeholder/Blur overlay */}
       {!isLoaded && (
         <div 
-          className="absolute inset-0 bg-gray-200 animate-pulse"
+          className="absolute inset-0 bg-muted animate-pulse"
           style={{
             backgroundImage: `url(${placeholderUrl})`,
             backgroundSize: 'cover',

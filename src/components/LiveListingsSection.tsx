@@ -136,7 +136,7 @@ const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {
   return (
     <div className="space-y-8">
       {/* Header Section */}
-      <section className="p-4 bg-gradient-to-r from-red-50 via-orange-50 to-yellow-50 dark:from-red-950 dark:via-orange-950 dark:to-yellow-950 rounded-2xl mx-3 md:mx-4">
+      <section className="p-4 bg-gradient-to-r from-destructive/5 via-chart-3/5 to-chart-3/10 rounded-2xl mx-3 md:mx-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <div className="flex items-center gap-3 mb-4 sm:mb-0">
             <div className="relative">
@@ -224,35 +224,35 @@ const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {
       {/* Stats Section */}
       <section className="p-3 md:p-4">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <Card className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950 dark:to-red-900 border-red-200">
+          <Card className="bg-gradient-to-br from-destructive/5 to-destructive/10 border-destructive/20">
             <CardContent className="p-4 text-center">
-              <Gavel className="h-6 w-6 text-red-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-red-600">24</div>
-              <div className="text-xs text-red-500">Live Auctions</div>
+              <Gavel className="h-6 w-6 text-destructive mx-auto mb-2" />
+              <div className="text-2xl font-bold text-destructive">24</div>
+              <div className="text-xs text-destructive/70">Live Auctions</div>
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200">
+          <Card className="bg-gradient-to-br from-chart-1/5 to-chart-1/10 border-chart-1/20">
             <CardContent className="p-4 text-center">
-              <Users className="h-6 w-6 text-green-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-green-600">147</div>
-              <div className="text-xs text-green-500">Active Bidders</div>
+              <Users className="h-6 w-6 text-chart-1 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-chart-1">147</div>
+              <div className="text-xs text-chart-1/70">Active Bidders</div>
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200">
+          <Card className="bg-gradient-to-br from-chart-4/5 to-chart-4/10 border-chart-4/20">
             <CardContent className="p-4 text-center">
-              <TrendingUp className="h-6 w-6 text-blue-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-blue-600">89%</div>
-              <div className="text-xs text-blue-500">Success Rate</div>
+              <TrendingUp className="h-6 w-6 text-chart-4 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-chart-4">89%</div>
+              <div className="text-xs text-chart-4/70">Success Rate</div>
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200">
+          <Card className="bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20">
             <CardContent className="p-4 text-center">
-              <Clock className="h-6 w-6 text-purple-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-purple-600">2.5B</div>
-              <div className="text-xs text-purple-500">Total Value</div>
+              <Clock className="h-6 w-6 text-accent-foreground mx-auto mb-2" />
+              <div className="text-2xl font-bold text-accent-foreground">2.5B</div>
+              <div className="text-xs text-accent-foreground/70">Total Value</div>
             </CardContent>
           </Card>
         </div>

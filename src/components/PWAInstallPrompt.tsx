@@ -88,7 +88,7 @@ const PWAInstallPrompt = () => {
 
       {/* Update Available Prompt */}
       {updateAvailable && (
-        <Card className="mb-2 border-green-500/20 bg-card/95 backdrop-blur-sm">
+        <Card className="mb-2 border-chart-1/20 bg-card/95 backdrop-blur-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               <RefreshCw className="h-4 w-4" />
@@ -112,9 +112,9 @@ const PWAInstallPrompt = () => {
 
       {/* Offline Indicator */}
       {!isOnline && (
-        <Card className="border-yellow-500/20 bg-card/95 backdrop-blur-sm">
+        <Card className="border-chart-3/20 bg-card/95 backdrop-blur-sm">
           <CardContent className="p-3">
-            <div className="flex items-center gap-2 text-yellow-600">
+            <div className="flex items-center gap-2 text-chart-3">
               <WifiOff className="h-4 w-4" />
               <span className="text-xs">You're offline</span>
             </div>
