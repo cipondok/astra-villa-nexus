@@ -27,46 +27,46 @@ interface AgentCardProps {
 }
 
 const getLevelBadgeStyle = (levelName: string | null | undefined) => {
-  if (!levelName) return { bg: 'bg-gray-100', text: 'text-gray-700', icon: null, glow: '' };
+  if (!levelName) return { bg: 'bg-muted', text: 'text-muted-foreground', icon: null, glow: '' };
   
   const name = levelName.toLowerCase();
   if (name.includes('platinum')) return { 
-    bg: 'bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100', 
-    text: 'text-slate-700', 
+    bg: 'bg-gradient-to-r from-muted via-muted/80 to-muted', 
+    text: 'text-foreground', 
     icon: Gem,
-    glow: 'shadow-lg shadow-slate-300/50'
+    glow: 'shadow-lg shadow-muted/50'
   };
   if (name.includes('gold')) return { 
-    bg: 'bg-gradient-to-r from-amber-100 via-yellow-200 to-amber-100', 
-    text: 'text-amber-700', 
+    bg: 'bg-gradient-to-r from-chart-3/10 via-chart-3/20 to-chart-3/10', 
+    text: 'text-chart-3', 
     icon: Crown,
-    glow: 'shadow-lg shadow-amber-300/50'
+    glow: 'shadow-lg shadow-chart-3/30'
   };
   if (name.includes('silver')) return { 
-    bg: 'bg-gradient-to-r from-gray-100 via-slate-200 to-gray-100', 
-    text: 'text-gray-600', 
+    bg: 'bg-gradient-to-r from-muted via-muted/80 to-muted', 
+    text: 'text-muted-foreground', 
     icon: Medal,
     glow: ''
   };
   if (name.includes('bronze')) return { 
-    bg: 'bg-gradient-to-r from-orange-100 via-amber-100 to-orange-100', 
-    text: 'text-orange-700', 
+    bg: 'bg-gradient-to-r from-chart-3/10 via-chart-3/5 to-chart-3/10', 
+    text: 'text-chart-3', 
     icon: Medal,
     glow: ''
   };
   if (name.includes('vip')) return { 
-    bg: 'bg-gradient-to-r from-purple-100 via-violet-200 to-purple-100', 
-    text: 'text-purple-700', 
+    bg: 'bg-gradient-to-r from-accent/10 via-accent/20 to-accent/10', 
+    text: 'text-accent-foreground', 
     icon: Crown,
-    glow: 'shadow-lg shadow-purple-300/50'
+    glow: 'shadow-lg shadow-accent/30'
   };
   if (name.includes('premium')) return { 
-    bg: 'bg-gradient-to-r from-blue-100 via-sky-200 to-blue-100', 
-    text: 'text-blue-700', 
+    bg: 'bg-gradient-to-r from-chart-4/10 via-chart-4/20 to-chart-4/10', 
+    text: 'text-chart-4', 
     icon: Star,
     glow: ''
   };
-  return { bg: 'bg-gray-100', text: 'text-gray-700', icon: null, glow: '' };
+  return { bg: 'bg-muted', text: 'text-muted-foreground', icon: null, glow: '' };
 };
 
 const AgentCard = ({ agent, showVerifiedBadge = false }: AgentCardProps) => {
@@ -93,7 +93,7 @@ const AgentCard = ({ agent, showVerifiedBadge = false }: AgentCardProps) => {
             <div className={cn(
               "w-20 h-20 rounded-full overflow-hidden ring-4 transition-all duration-300",
               agent.is_verified 
-                ? "ring-blue-500/30 group-hover:ring-blue-500/50" 
+                ? "ring-primary/30 group-hover:ring-primary/50" 
                 : "ring-border/30 group-hover:ring-primary/30"
             )}>
               {agent.avatar_url ? (
@@ -148,12 +148,12 @@ const AgentCard = ({ agent, showVerifiedBadge = false }: AgentCardProps) => {
         {/* Rating & Response Row */}
         <div className="flex items-center justify-center gap-4 mb-4">
           <div className="flex items-center gap-1">
-            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            <Star className="h-4 w-4 fill-chart-3 text-chart-3" />
             <span className="font-semibold text-sm">{agent.rating.toFixed(1)}</span>
           </div>
           <div className="w-px h-4 bg-border" />
           <div className="flex items-center gap-1 text-muted-foreground">
-            <TrendingUp className="h-3.5 w-3.5 text-green-500" />
+            <TrendingUp className="h-3.5 w-3.5 text-chart-1" />
             <span className="text-xs">{agent.response_rate}%</span>
           </div>
         </div>
@@ -165,11 +165,11 @@ const AgentCard = ({ agent, showVerifiedBadge = false }: AgentCardProps) => {
             <div className="text-[10px] text-muted-foreground uppercase tracking-wide">Listings</div>
           </div>
           <div className="text-center border-x border-border/50">
-            <div className="text-lg font-bold text-green-600">{agent.total_sold}</div>
+            <div className="text-lg font-bold text-chart-1">{agent.total_sold}</div>
             <div className="text-[10px] text-muted-foreground uppercase tracking-wide">Sold</div>
           </div>
           <div className="text-center">
-            <div className="text-lg font-bold text-blue-600">{agent.total_rented}</div>
+            <div className="text-lg font-bold text-chart-4">{agent.total_rented}</div>
             <div className="text-[10px] text-muted-foreground uppercase tracking-wide">Rented</div>
           </div>
         </div>
