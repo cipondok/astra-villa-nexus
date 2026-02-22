@@ -302,7 +302,7 @@ const UserAcquisitionManagement = () => {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base font-semibold flex items-center gap-2">
-                    <Gift className="h-4 w-4 text-pink-500" />
+                    <Gift className="h-4 w-4 text-accent-foreground" />
                     Referral Program 2.0
                   </CardTitle>
                   <Badge variant="outline" className="text-xs border-primary/30 text-primary">Give Rp 1.5jt, Get Rp 1.5jt</Badge>
@@ -314,12 +314,12 @@ const UserAcquisitionManagement = () => {
                     <p className="text-2xl font-bold text-foreground">{referrals.length}</p>
                     <p className="text-xs text-muted-foreground">Total Referrals</p>
                   </div>
-                  <div className="bg-green-50 dark:bg-green-500/10 rounded-[6px] p-3">
-                    <p className="text-2xl font-bold text-green-600">{convertedReferrals}</p>
+                   <div className="bg-chart-1/10 rounded-[6px] p-3">
+                    <p className="text-2xl font-bold text-chart-1">{convertedReferrals}</p>
                     <p className="text-xs text-muted-foreground">Converted</p>
                   </div>
-                  <div className="bg-amber-50 dark:bg-amber-500/10 rounded-[6px] p-3">
-                    <p className="text-2xl font-bold text-amber-600">{pendingReferrals}</p>
+                  <div className="bg-chart-3/10 rounded-[6px] p-3">
+                    <p className="text-2xl font-bold text-chart-3">{pendingReferrals}</p>
                     <p className="text-xs text-muted-foreground">Pending</p>
                   </div>
                 </div>
@@ -334,7 +334,7 @@ const UserAcquisitionManagement = () => {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base font-semibold flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-green-500" />
+                    <FileText className="h-4 w-4 text-chart-1" />
                     SEO Content Factory
                   </CardTitle>
                   <Badge variant="outline" className="text-xs">{seoContent.length} / 1,000 articles</Badge>
@@ -367,7 +367,7 @@ const UserAcquisitionManagement = () => {
             <Card className="bg-card border border-border rounded-[6px] shadow-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
-                  <Instagram className="h-4 w-4 text-purple-500" />
+                  <Instagram className="h-4 w-4 text-accent-foreground" />
                   Influencer Network
                 </CardTitle>
               </CardHeader>
@@ -397,7 +397,7 @@ const UserAcquisitionManagement = () => {
             <Card className="bg-card border border-border rounded-[6px] shadow-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
-                  <Building2 className="h-4 w-4 text-orange-500" />
+                   <Building2 className="h-4 w-4 text-chart-3" />
                   Strategic Partnerships
                 </CardTitle>
               </CardHeader>
@@ -412,17 +412,17 @@ const UserAcquisitionManagement = () => {
                   </div>
                   <div className="flex items-center justify-between p-3 bg-muted/30 rounded-[6px]">
                     <div className="flex items-center gap-2">
-                      <Building2 className="h-4 w-4 text-orange-500" />
+                      <Building2 className="h-4 w-4 text-chart-3" />
                       <span className="text-sm font-medium text-foreground">Corporate HR Programs</span>
                     </div>
-                    <Badge className="bg-orange-500/10 text-orange-600 border-0">{corporatePartnerships.length}</Badge>
+                    <Badge className="bg-chart-3/10 text-chart-3 border-0">{corporatePartnerships.length}</Badge>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-muted/30 rounded-[6px]">
                     <div className="flex items-center gap-2">
-                      <GraduationCap className="h-4 w-4 text-indigo-500" />
+                       <GraduationCap className="h-4 w-4 text-chart-4" />
                       <span className="text-sm font-medium text-foreground">University Housing</span>
                     </div>
-                    <Badge className="bg-indigo-500/10 text-indigo-600 border-0">{universityPartnerships.length}</Badge>
+                    <Badge className="bg-chart-4/10 text-chart-4 border-0">{universityPartnerships.length}</Badge>
                   </div>
                 </div>
               </CardContent>
@@ -437,7 +437,7 @@ const UserAcquisitionManagement = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
-                    <Gift className="h-5 w-5 text-pink-500" />
+                    <Gift className="h-5 w-5 text-accent-foreground" />
                     Referral Program 2.0
                   </CardTitle>
                   <CardDescription>Give Rp 1,500,000, Get Rp 1,500,000</CardDescription>
@@ -605,7 +605,7 @@ const UserAcquisitionManagement = () => {
                     <TableRow key={influencer.id}>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                          <div className="w-8 h-8 bg-gradient-to-br from-accent to-chart-5 rounded-full flex items-center justify-center text-primary-foreground text-xs font-bold">
                             {influencer.influencer_name?.charAt(0)}
                           </div>
                           <div>
@@ -651,7 +651,7 @@ const UserAcquisitionManagement = () => {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
-                    <Building2 className="h-5 w-5 text-orange-500" />
+                    <Building2 className="h-5 w-5 text-chart-3" />
                     Corporate HR Programs
                   </CardTitle>
                   <Button size="sm">
@@ -696,7 +696,7 @@ const UserAcquisitionManagement = () => {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5 text-indigo-500" />
+                    <GraduationCap className="h-5 w-5 text-chart-4" />
                     University Student Housing
                   </CardTitle>
                   <Button size="sm">
@@ -711,8 +711,8 @@ const UserAcquisitionManagement = () => {
                   {universityPartnerships.map((uni) => (
                     <div key={uni.id} className="flex items-center justify-between p-3 border rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/20 rounded flex items-center justify-center">
-                          <GraduationCap className="h-5 w-5 text-indigo-600" />
+                         <div className="w-10 h-10 bg-chart-4/10 rounded flex items-center justify-center">
+                           <GraduationCap className="h-5 w-5 text-chart-4" />
                         </div>
                         <div>
                           <p className="font-medium">{uni.university_name}</p>
