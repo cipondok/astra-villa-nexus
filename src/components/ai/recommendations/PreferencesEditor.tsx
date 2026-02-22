@@ -240,7 +240,7 @@ const PreferencesEditor = ({ onSave }: PreferencesEditorProps) => {
 
       {/* Deal Breakers */}
       <div>
-        <Label className="flex items-center gap-2 mb-3 text-red-600">
+        <Label className="flex items-center gap-2 mb-3 text-destructive">
           <X className="h-4 w-4" />
           Deal Breakers (avoid these)
         </Label>

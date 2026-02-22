@@ -259,49 +259,49 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
   ) || searchQuery !== '';
 
   return (
-    <Card className="w-full max-w-6xl mx-auto shadow-xl border-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg">
+    <Card className="w-full max-w-6xl mx-auto shadow-xl border-0 bg-card/95 backdrop-blur-lg">
       <CardContent className="p-6">
         {/* Main Search Bar */}
         <div className="space-y-4">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               placeholder={currentText.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-12 h-14 text-lg border-2 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-xl shadow-sm"
+              className="pl-12 h-14 text-lg border-2 border-border focus:border-primary bg-background text-foreground placeholder:text-muted-foreground rounded-xl shadow-sm"
             />
           </div>
 
           {/* Quick Filters Row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <Select value={filters.location || "all"} onValueChange={(value) => handleFilterChange('location', value)}>
-              <SelectTrigger className="h-12 border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
+              <SelectTrigger className="h-12 border-2 border-border bg-background text-foreground rounded-lg">
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <MapPin className="h-4 w-4 text-primary" />
                   <SelectValue placeholder={currentText.location} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
-                <SelectItem value="jakarta" className="text-gray-900 dark:text-gray-100">Jakarta</SelectItem>
-                <SelectItem value="bali" className="text-gray-900 dark:text-gray-100">Bali</SelectItem>
-                <SelectItem value="surabaya" className="text-gray-900 dark:text-gray-100">Surabaya</SelectItem>
-                <SelectItem value="bandung" className="text-gray-900 dark:text-gray-100">Bandung</SelectItem>
+              <SelectContent className="bg-popover border-border">
+                <SelectItem value="all">{currentText.any}</SelectItem>
+                <SelectItem value="jakarta">Jakarta</SelectItem>
+                <SelectItem value="bali">Bali</SelectItem>
+                <SelectItem value="surabaya">Surabaya</SelectItem>
+                <SelectItem value="bandung">Bandung</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-              <SelectTrigger className="h-12 border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
+              <SelectTrigger className="h-12 border-2 border-border bg-background text-foreground rounded-lg">
                 <div className="flex items-center gap-2">
-                  <Home className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <Home className="h-4 w-4 text-primary" />
                   <SelectValue placeholder={currentText.propertyType} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+              <SelectContent className="bg-popover border-border">
+                <SelectItem value="all">{currentText.any}</SelectItem>
                 {propertyTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100">
+                  <SelectItem key={type.value} value={type.value}>
                     {type.icon} {type.label}
                   </SelectItem>
                 ))}
@@ -309,16 +309,16 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
             </Select>
 
             <Select value={filters.listingType || "all"} onValueChange={(value) => handleFilterChange('listingType', value)}>
-              <SelectTrigger className="h-12 border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
+              <SelectTrigger className="h-12 border-2 border-border bg-background text-foreground rounded-lg">
                 <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <DollarSign className="h-4 w-4 text-primary" />
                   <SelectValue placeholder={currentText.listingType} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+              <SelectContent className="bg-popover border-border">
+                <SelectItem value="all">{currentText.any}</SelectItem>
                 {listingTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100">
+                  <SelectItem key={type.value} value={type.value}>
                     {type.icon} {type.label}
                   </SelectItem>
                 ))}
@@ -328,7 +328,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
             <Button
               onClick={() => setShowAdvanced(!showAdvanced)}
               variant="outline"
-              className="h-12 border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg"
+              className="h-12 border-2 border-border bg-background text-foreground hover:bg-muted rounded-lg"
             >
               <Filter className="h-4 w-4 mr-2" />
               {currentText.advancedFilters}
@@ -337,27 +337,27 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
 
           {/* Advanced Filters */}
           {showAdvanced && (
-            <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="space-y-4 pt-4 border-t border-border">
               {/* Price Range */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-900 dark:text-gray-100">{currentText.priceRange}</label>
+                <label className="text-sm font-medium text-foreground">{currentText.priceRange}</label>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder={currentText.from}
                       value={filters.priceMin}
                       onChange={(e) => handleFilterChange('priceMin', e.target.value)}
-                      className="pl-10 h-11 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg"
+                      className="pl-10 h-11 border-border bg-background text-foreground rounded-lg"
                     />
                   </div>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder={currentText.to}
                       value={filters.priceMax}
                       onChange={(e) => handleFilterChange('priceMax', e.target.value)}
-                      className="pl-10 h-11 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg"
+                      className="pl-10 h-11 border-border bg-background text-foreground rounded-lg"
                     />
                   </div>
                 </div>
@@ -366,7 +366,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
               {/* Bedrooms & Bathrooms */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
                     <Bed className="h-4 w-4" />
                     {currentText.bedrooms}
                   </label>
@@ -394,7 +394,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
                     <Bath className="h-4 w-4" />
                     {currentText.bathrooms}
                   </label>
@@ -428,7 +428,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
                   {/* Date Selection */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
                         <CalendarIcon className="h-4 w-4" />
                         {currentText.checkIn}
                       </label>
@@ -436,7 +436,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
-                            className="w-full h-11 justify-start text-left font-normal border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                            className="w-full h-11 justify-start text-left font-normal border-border bg-background text-foreground"
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {filters.checkInDate ? format(filters.checkInDate, "PPP") : currentText.selectDate}
@@ -456,7 +456,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
                         <CalendarIcon className="h-4 w-4" />
                         {currentText.checkOut}
                       </label>
@@ -464,7 +464,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
-                            className="w-full h-11 justify-start text-left font-normal border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                            className="w-full h-11 justify-start text-left font-normal border-border bg-background text-foreground"
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {filters.checkOutDate ? format(filters.checkOutDate, "PPP") : currentText.selectDate}
@@ -486,8 +486,8 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
 
                   {/* Days Counter */}
                   {filters.checkInDate && filters.checkOutDate && (
-                    <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                      <div className="text-lg font-semibold text-blue-700 dark:text-blue-300">
+                    <div className="text-center p-3 bg-primary/10 rounded-lg">
+                      <div className="text-lg font-semibold text-primary">
                         {calculateDays()} {currentText.days}
                       </div>
                     </div>
@@ -495,18 +495,18 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
 
                   {/* Rental Duration */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <label className="text-sm font-medium text-foreground flex items-center gap-2">
                       <Clock className="h-4 w-4" />
                       {currentText.rentalDuration}
                     </label>
                     <Select value={filters.rentalDuration} onValueChange={(value) => handleFilterChange('rentalDuration', value)}>
-                      <SelectTrigger className="h-11 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                      <SelectTrigger className="h-11 border-border bg-background text-foreground">
                         <SelectValue placeholder={`${currentText.any} ${currentText.rentalDuration.toLowerCase()}`} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                        <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+                      <SelectContent className="bg-popover border-border">
+                        <SelectItem value="all">{currentText.any}</SelectItem>
                         {rentalDurationOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value} className="text-gray-900 dark:text-gray-100">
+                          <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>
                         ))}
@@ -516,7 +516,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
 
                   {/* Trip Purpose */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <label className="text-sm font-medium text-foreground flex items-center gap-2">
                       <Users className="h-4 w-4" />
                       {currentText.tripPurpose}
                     </label>
@@ -547,7 +547,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
 
               {/* Amenities */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-900 dark:text-gray-100">{currentText.amenities}</label>
+                <label className="text-sm font-medium text-foreground">{currentText.amenities}</label>
                 <div className="flex gap-2 flex-wrap">
                   {amenitiesList.map((amenity) => (
                     <Badge
@@ -571,7 +571,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
           <div className="flex gap-3 pt-2">
             <Button
               onClick={handleSearch}
-              className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              className="flex-1 h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Search className="h-5 w-5 mr-2" />
               {currentText.search}
@@ -580,7 +580,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
               <Button
                 onClick={clearAllFilters}
                 variant="outline"
-                className="h-12 px-6 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg"
+                className="h-12 px-6 border-2 border-border text-muted-foreground hover:bg-muted rounded-lg"
               >
                 <X className="h-4 w-4 mr-2" />
                 {currentText.clearAll}

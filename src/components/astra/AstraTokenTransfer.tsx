@@ -110,8 +110,8 @@ const AstraTokenTransfer: React.FC<AstraTokenTransferProps> = ({ className }) =>
         )}
 
         {isEligible && (
-          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4">
-            <div className="flex items-center gap-2 text-emerald-600">
+          <div className="bg-chart-1/10 border border-chart-1/20 rounded-lg p-4">
+            <div className="flex items-center gap-2 text-chart-1">
               <ShieldCheck className="h-5 w-5" />
               <span className="font-medium">Transfers Enabled</span>
             </div>

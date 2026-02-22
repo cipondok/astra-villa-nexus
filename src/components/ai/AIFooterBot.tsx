@@ -218,7 +218,7 @@ const AIFooterBot = () => {
                 {/* Status indicator */}
                 <div className="flex items-center gap-2 mt-3 px-1">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-sm shadow-emerald-400/50" />
+                    <div className="w-2 h-2 bg-chart-1 rounded-full animate-pulse shadow-sm shadow-chart-1/50" />
                     <span className="text-xs text-white/80">Online</span>
                   </div>
                   <span className="text-white/40">•</span>

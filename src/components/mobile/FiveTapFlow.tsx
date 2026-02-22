@@ -106,8 +106,8 @@ const FiveTapFlow: React.FC<FiveTapFlowProps> = ({
         animate={{ opacity: 1, scale: 1 }}
         className="flex flex-col items-center justify-center py-12 text-center"
       >
-        <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-4">
-          <Check className="h-8 w-8 text-green-500" />
+        <div className="w-16 h-16 rounded-full bg-chart-1/20 flex items-center justify-center mb-4">
+          <Check className="h-8 w-8 text-chart-1" />
         </div>
         <h3 className="text-lg font-semibold text-foreground mb-2">Complete!</h3>
         <p className="text-sm text-muted-foreground">Action completed successfully</p>
@@ -212,7 +212,7 @@ const FiveTapFlow: React.FC<FiveTapFlowProps> = ({
           ) : (
             <Button
               onClick={complete}
-              className="flex-1 h-12 bg-green-600 hover:bg-green-700 active:scale-95"
+              className="flex-1 h-12 bg-chart-1 hover:bg-chart-1/90 text-primary-foreground active:scale-95"
             >
               <Check className="h-4 w-4 mr-1" />
               Complete
