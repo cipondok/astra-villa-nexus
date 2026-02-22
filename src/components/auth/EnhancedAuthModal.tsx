@@ -505,9 +505,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
             )}
             {/* Success State */}
             {isSuccess && (
-              <Alert className="border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800/50 py-2">
-                <CheckCircle className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
-                <AlertDescription className="text-xs text-green-800 dark:text-green-300">
+              <Alert className="border-chart-1/30 bg-chart-1/5 py-2">
+                <CheckCircle className="h-3.5 w-3.5 text-chart-1" />
+                <AlertDescription className="text-xs text-chart-1">
                   {isLogin ? currentText.loginSuccess : currentText.signupSuccess}
                 </AlertDescription>
               </Alert>
@@ -845,7 +845,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     <p className="text-[10px] text-destructive">Passwords do not match</p>
                   )}
                   {registerData.confirmPassword && registerData.password === registerData.confirmPassword && registerData.confirmPassword.length > 0 && (
-                    <p className="text-[10px] text-green-600">✓ Passwords match</p>
+                    <p className="text-[10px] text-chart-1">✓ Passwords match</p>
                   )}
                 </div>
 

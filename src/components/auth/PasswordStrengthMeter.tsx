@@ -40,10 +40,10 @@ export const PasswordStrengthMeter = ({ password, onStrengthChange }: PasswordSt
   }, [password, onStrengthChange]);
 
   const getStrengthColor = () => {
-    if (strength <= 2) return "bg-red-500";
-    if (strength <= 3) return "bg-yellow-500";
-    if (strength <= 4) return "bg-blue-500";
-    return "bg-green-500";
+    if (strength <= 2) return "bg-destructive";
+    if (strength <= 3) return "bg-chart-3";
+    if (strength <= 4) return "bg-chart-4";
+    return "bg-chart-1";
   };
 
   const getStrengthLabel = () => {
@@ -81,11 +81,11 @@ export const PasswordStrengthMeter = ({ password, onStrengthChange }: PasswordSt
         {criteria.map((criterion, index) => (
           <div key={index} className="flex items-center gap-2 text-xs">
             {criterion.met ? (
-              <CheckCircle className="h-3 w-3 text-green-500" />
+              <CheckCircle className="h-3 w-3 text-chart-1" />
             ) : (
-              <XCircle className="h-3 w-3 text-gray-400" />
+              <XCircle className="h-3 w-3 text-muted-foreground" />
             )}
-            <span className={criterion.met ? "text-green-600" : "text-gray-500"}>
+            <span className={criterion.met ? "text-chart-1" : "text-muted-foreground"}>
               {criterion.label}
             </span>
           </div>

@@ -47,14 +47,14 @@ export const EmailValidationIndicator = ({ email }: EmailValidationIndicatorProp
     <div className="flex items-center gap-2 mt-1.5 text-xs">
       {validation.status === 'valid' && (
         <>
-          <CheckCircle className="h-3.5 w-3.5 text-green-500" />
-          <span className="text-green-600">{validation.message}</span>
+          <CheckCircle className="h-3.5 w-3.5 text-chart-1" />
+          <span className="text-chart-1">{validation.message}</span>
         </>
       )}
       {validation.status === 'invalid' && (
         <>
-          <XCircle className="h-3.5 w-3.5 text-red-500" />
-          <span className="text-red-600">{validation.message}</span>
+          <XCircle className="h-3.5 w-3.5 text-destructive" />
+          <span className="text-destructive">{validation.message}</span>
         </>
       )}
       {validation.status === 'warning' && (

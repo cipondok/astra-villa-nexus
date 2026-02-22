@@ -266,9 +266,9 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
         <CardContent>
           {/* Success State */}
           {authSuccess && (
-            <Alert className="mb-4 border-green-200 bg-green-50">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">
+            <Alert className="mb-4 border-chart-1/30 bg-chart-1/5">
+              <CheckCircle className="h-4 w-4 text-chart-1" />
+              <AlertDescription className="text-chart-1">
                 {activeTab === "login" ? currentText.loginSuccess : currentText.signupSuccess}
               </AlertDescription>
             </Alert>
@@ -375,7 +375,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
                   <button
                     type="button"
                     onClick={() => setActiveTab("register")}
-                    className="text-blue-600 hover:underline"
+                    className="text-primary hover:underline"
                     disabled={authLoading}
                   >
                     {currentText.switchToRegister}
@@ -507,7 +507,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
                   <button
                     type="button"
                     onClick={() => setActiveTab("login")}
-                    className="text-blue-600 hover:underline"
+                    className="text-primary hover:underline"
                     disabled={authLoading}
                   >
                     {currentText.switchToLogin}
