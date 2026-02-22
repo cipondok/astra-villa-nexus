@@ -192,13 +192,13 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
   
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'complete': return 'bg-green-500/10 text-green-600 border-green-500/30';
-      case 'in_progress': return 'bg-blue-500/10 text-blue-600 border-blue-500/30';
-      case 'pending': return 'bg-orange-500/10 text-orange-600 border-orange-500/30';
-      case 'pass': return 'bg-green-500/10 text-green-600 border-green-500/30';
-      case 'warning': return 'bg-yellow-500/10 text-yellow-600 border-yellow-500/30';
-      case 'fail': return 'bg-red-500/10 text-red-600 border-red-500/30';
-      case 'active': return 'bg-green-500/10 text-green-600 border-green-500/30';
+      case 'complete': return 'bg-chart-1/10 text-chart-1 border-chart-1/30';
+      case 'in_progress': return 'bg-chart-4/10 text-chart-4 border-chart-4/30';
+      case 'pending': return 'bg-chart-3/10 text-chart-3 border-chart-3/30';
+      case 'pass': return 'bg-chart-1/10 text-chart-1 border-chart-1/30';
+      case 'warning': return 'bg-chart-3/10 text-chart-3 border-chart-3/30';
+      case 'fail': return 'bg-destructive/10 text-destructive border-destructive/30';
+      case 'active': return 'bg-chart-1/10 text-chart-1 border-chart-1/30';
       default: return 'bg-muted text-muted-foreground border-border';
     }
   };
@@ -208,14 +208,14 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
       case 'complete':
       case 'pass':
       case 'active':
-        return <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />;
+        return <CheckCircle2 className="h-3.5 w-3.5 text-chart-1" />;
       case 'in_progress':
-        return <Clock className="h-3.5 w-3.5 text-blue-500" />;
+        return <Clock className="h-3.5 w-3.5 text-chart-4" />;
       case 'warning':
       case 'pending':
-        return <AlertTriangle className="h-3.5 w-3.5 text-yellow-500" />;
+        return <AlertTriangle className="h-3.5 w-3.5 text-chart-3" />;
       case 'fail':
-        return <XCircle className="h-3.5 w-3.5 text-red-500" />;
+        return <XCircle className="h-3.5 w-3.5 text-destructive" />;
       default:
         return <Clock className="h-3.5 w-3.5 text-muted-foreground" />;
     }
@@ -249,10 +249,10 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
               </Button>
               <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                 overallProgress >= 90 
-                  ? 'bg-green-500/10 border border-green-500/30 text-green-600' 
+                  ? 'bg-chart-1/10 border border-chart-1/30 text-chart-1' 
                   : overallProgress >= 70
-                  ? 'bg-yellow-500/10 border border-yellow-500/30 text-yellow-600'
-                  : 'bg-red-500/10 border border-red-500/30 text-red-600'
+                  ? 'bg-chart-3/10 border border-chart-3/30 text-chart-3'
+                  : 'bg-destructive/10 border border-destructive/30 text-destructive'
               }`}>
                 <Target className="h-3.5 w-3.5" />
                 <span>{overallProgress}% Ready</span>
@@ -275,7 +275,7 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
       <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
         <Card className="border-border/30 bg-background/50">
           <CardContent className="p-2 text-center">
-            <Users className="h-4 w-4 mx-auto text-blue-500 mb-1" />
+            <Users className="h-4 w-4 mx-auto text-chart-4 mb-1" />
             <p className="text-lg font-bold">{dbStats?.totalUsers || 0}</p>
             <p className="text-[9px] text-muted-foreground">Users</p>
           </CardContent>
@@ -289,28 +289,28 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
         </Card>
         <Card className="border-border/30 bg-background/50">
           <CardContent className="p-2 text-center">
-            <Activity className="h-4 w-4 mx-auto text-green-500 mb-1" />
+            <Activity className="h-4 w-4 mx-auto text-chart-1 mb-1" />
             <p className="text-lg font-bold">{dbStats?.totalActivities || 0}</p>
             <p className="text-[9px] text-muted-foreground">Activities</p>
           </CardContent>
         </Card>
         <Card className="border-border/30 bg-background/50">
           <CardContent className="p-2 text-center">
-            <Shield className="h-4 w-4 mx-auto text-purple-500 mb-1" />
+            <Shield className="h-4 w-4 mx-auto text-chart-5 mb-1" />
             <p className="text-lg font-bold">{dbStats?.adminCount || 0}</p>
             <p className="text-[9px] text-muted-foreground">Admins</p>
           </CardContent>
         </Card>
         <Card className="border-border/30 bg-background/50">
           <CardContent className="p-2 text-center">
-            <Bug className="h-4 w-4 mx-auto text-red-500 mb-1" />
+            <Bug className="h-4 w-4 mx-auto text-destructive mb-1" />
             <p className="text-lg font-bold">{dbStats?.errorCount || 0}</p>
             <p className="text-[9px] text-muted-foreground">Errors</p>
           </CardContent>
         </Card>
         <Card className="border-border/30 bg-background/50">
           <CardContent className="p-2 text-center">
-            <Server className="h-4 w-4 mx-auto text-orange-500 mb-1" />
+            <Server className="h-4 w-4 mx-auto text-chart-3 mb-1" />
             <p className="text-lg font-bold">{edgeFunctions.length}</p>
             <p className="text-[9px] text-muted-foreground">Functions</p>
           </CardContent>

@@ -112,7 +112,7 @@ const SmartPropertyUpload: React.FC = () => {
           <h1 className="text-xl font-bold text-foreground">List Your Property</h1>
           {lastSaved && (
             <span className="text-xs text-muted-foreground flex items-center gap-1">
-              <Check className="h-3 w-3 text-green-500" />
+              <Check className="h-3 w-3 text-chart-1" />
               Saved {lastSaved.toLocaleTimeString()}
             </span>
           )}
@@ -124,8 +124,8 @@ const SmartPropertyUpload: React.FC = () => {
             <span className="text-muted-foreground">Listing Quality</span>
             <span className={cn(
               "font-semibold",
-              completionScore >= 80 ? "text-green-500" : 
-              completionScore >= 50 ? "text-yellow-500" : "text-muted-foreground"
+              completionScore >= 80 ? "text-chart-1" : 
+              completionScore >= 50 ? "text-chart-3" : "text-muted-foreground"
             )}>
               {completionScore >= 80 ? '⭐ Featured Ready!' : 
                completionScore >= 50 ? '📈 Good Progress' : 'Just starting'}
@@ -169,7 +169,7 @@ const SmartPropertyUpload: React.FC = () => {
                   className="absolute bottom-1 left-1 right-1 px-2 py-1 bg-black/60 backdrop-blur-sm rounded-lg"
                 >
                   <span className="text-[10px] text-white flex items-center gap-1">
-                    <Sparkles className="h-3 w-3 text-yellow-400" />
+                    <Sparkles className="h-3 w-3 text-gold-primary" />
                     {photo.aiTag}
                   </span>
                 </motion.div>
@@ -323,7 +323,7 @@ const SmartPropertyUpload: React.FC = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsRecording(!isRecording)}
-                className={cn("h-7 px-2", isRecording && "text-red-500")}
+                className={cn("h-7 px-2", isRecording && "text-destructive")}
               >
                 {isRecording ? <MicOff className="h-3.5 w-3.5" /> : <Mic className="h-3.5 w-3.5" />}
               </Button>
@@ -354,9 +354,9 @@ const SmartPropertyUpload: React.FC = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex items-center gap-2 text-xs text-red-500"
+              className="flex items-center gap-2 text-xs text-destructive"
             >
-              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
               Listening... speak now
             </motion.div>
           )}
