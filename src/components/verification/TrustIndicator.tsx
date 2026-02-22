@@ -31,11 +31,11 @@ export const TrustIndicator: React.FC<TrustIndicatorProps> = ({
   className
 }) => {
   const getTrustLevel = () => {
-    if (trustScore >= 90) return { label: 'Excellent Trust', color: 'text-emerald-600', bg: 'bg-emerald-100' };
-    if (trustScore >= 75) return { label: 'High Trust', color: 'text-green-600', bg: 'bg-green-100' };
-    if (trustScore >= 50) return { label: 'Good Trust', color: 'text-blue-600', bg: 'bg-blue-100' };
-    if (trustScore >= 25) return { label: 'Basic Trust', color: 'text-amber-600', bg: 'bg-amber-100' };
-    return { label: 'Unverified', color: 'text-gray-600', bg: 'bg-gray-100' };
+    if (trustScore >= 90) return { label: 'Excellent Trust', color: 'text-chart-1', bg: 'bg-chart-1/10' };
+    if (trustScore >= 75) return { label: 'High Trust', color: 'text-chart-1', bg: 'bg-chart-1/10' };
+    if (trustScore >= 50) return { label: 'Good Trust', color: 'text-chart-4', bg: 'bg-chart-4/10' };
+    if (trustScore >= 25) return { label: 'Basic Trust', color: 'text-chart-3', bg: 'bg-chart-3/10' };
+    return { label: 'Unverified', color: 'text-muted-foreground', bg: 'bg-muted' };
   };
 
   const trustLevel = getTrustLevel();

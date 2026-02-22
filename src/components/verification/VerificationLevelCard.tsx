@@ -80,7 +80,7 @@ export const VerificationLevelCard: React.FC<VerificationLevelCardProps> = ({
           <div className="flex items-center gap-3">
             <div className={cn(
               'flex items-center justify-center w-10 h-10 rounded-full font-bold text-lg',
-              isComplete ? 'bg-green-100 text-green-700' : 
+              isComplete ? 'bg-chart-1/10 text-chart-1' : 
               isCurrentLevel ? 'bg-primary/10 text-primary' : 
               'bg-muted text-muted-foreground'
             )}>
@@ -90,7 +90,7 @@ export const VerificationLevelCard: React.FC<VerificationLevelCardProps> = ({
               <CardTitle className="text-lg flex items-center gap-2">
                 {config.name}
                 {isComplete && (
-                  <Badge variant="secondary" className="bg-green-100 text-green-700">
+                  <Badge variant="secondary" className="bg-chart-1/10 text-chart-1">
                     <CheckCircle2 className="h-3 w-3 mr-1" />
                     Complete
                   </Badge>
@@ -133,22 +133,22 @@ export const VerificationLevelCard: React.FC<VerificationLevelCardProps> = ({
               key={step.id}
               className={cn(
                 'flex items-center gap-3 p-2 rounded-lg transition-colors',
-                step.completed && 'bg-green-50',
-                step.inProgress && 'bg-blue-50',
+                step.completed && 'bg-chart-1/10',
+                step.inProgress && 'bg-chart-4/10',
                 !step.completed && !step.inProgress && isUnlocked && 'hover:bg-muted/50 cursor-pointer'
               )}
               onClick={() => !step.completed && isUnlocked && onStartVerification?.(step.id)}
             >
               <div className={cn(
                 'flex items-center justify-center w-8 h-8 rounded-full',
-                step.completed && 'bg-green-100',
-                step.inProgress && 'bg-blue-100',
+                step.completed && 'bg-chart-1/10',
+                step.inProgress && 'bg-chart-4/10',
                 !step.completed && !step.inProgress && 'bg-muted'
               )}>
                 {step.completed ? (
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 text-chart-1" />
                 ) : step.inProgress ? (
-                  <Clock className="h-4 w-4 text-blue-600 animate-pulse" />
+                  <Clock className="h-4 w-4 text-chart-4 animate-pulse" />
                 ) : (
                   <step.icon className="h-4 w-4 text-muted-foreground" />
                 )}
@@ -157,8 +157,8 @@ export const VerificationLevelCard: React.FC<VerificationLevelCardProps> = ({
               <div className="flex-1 min-w-0">
                 <p className={cn(
                   'text-sm font-medium',
-                  step.completed && 'text-green-700',
-                  step.inProgress && 'text-blue-700'
+                  step.completed && 'text-chart-1',
+                  step.inProgress && 'text-chart-4'
                 )}>
                   {step.label}
                 </p>
@@ -192,8 +192,8 @@ export const VerificationLevelCard: React.FC<VerificationLevelCardProps> = ({
 
         {/* Drop-off Prevention Tip */}
         {isCurrentLevel && !isComplete && (
-          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-            <p className="text-xs text-amber-800">
+          <div className="p-3 bg-chart-3/10 border border-chart-3/20 rounded-lg">
+            <p className="text-xs text-chart-3">
               <span className="font-semibold">💡 Tip:</span> {config.dropOffTip}
             </p>
           </div>

@@ -72,14 +72,14 @@ const PaymentStatusChecker: React.FC = () => {
 
   const getStatusIcon = () => {
     if (isVerifying) {
-      return <Loader2 className="h-8 w-8 animate-spin text-blue-500" />;
+      return <Loader2 className="h-8 w-8 animate-spin text-chart-4" />;
     }
     
     if (paymentResult?.success) {
-      return <CheckCircle className="h-8 w-8 text-green-500" />;
+      return <CheckCircle className="h-8 w-8 text-chart-1" />;
     }
     
-    return <XCircle className="h-8 w-8 text-red-500" />;
+    return <XCircle className="h-8 w-8 text-destructive" />;
   };
 
   const getStatusColor = () => {
@@ -103,7 +103,7 @@ const PaymentStatusChecker: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <XCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
+            <XCircle className="h-8 w-8 text-destructive mx-auto mb-2" />
             <CardTitle>Invalid Payment Session</CardTitle>
             <CardDescription>
               No payment session ID found. Please try again.
@@ -189,16 +189,16 @@ const PaymentStatusChecker: React.FC = () => {
 
           {/* Additional Information */}
           {paymentResult?.success && (
-            <div className="mt-4 p-3 bg-green-100 rounded-lg border border-green-200">
-              <p className="text-sm text-green-800">
+            <div className="mt-4 p-3 bg-chart-1/10 rounded-lg border border-chart-1/20">
+              <p className="text-sm text-chart-1">
                 ✅ Your booking has been confirmed and an invoice will be generated shortly.
               </p>
             </div>
           )}
           
           {paymentResult && !paymentResult.success && (
-            <div className="mt-4 p-3 bg-red-100 rounded-lg border border-red-200">
-              <p className="text-sm text-red-800">
+            <div className="mt-4 p-3 bg-destructive/10 rounded-lg border border-destructive/20">
+              <p className="text-sm text-destructive">
                 ❌ If money was deducted, it will be refunded within 3-5 business days.
               </p>
             </div>
