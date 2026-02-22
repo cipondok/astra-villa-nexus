@@ -34,8 +34,8 @@ const AstraVillaFeatures: React.FC<AstraVillaFeaturesProps> = ({ variant = 'defa
         <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />
         <h2 className={`font-bold uppercase tracking-widest ${
           isHero
-            ? 'text-[10px] md:text-xs text-primary-foreground/80'
-            : 'text-[9px] sm:text-xs md:text-sm text-primary-foreground/80'
+            ? 'text-[10px] md:text-xs text-foreground/80'
+            : 'text-[9px] sm:text-xs md:text-sm text-foreground/80'
         }`}>
           AI Tools & Features
         </h2>
@@ -83,17 +83,17 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
     <div onClick={handleClick} className="group cursor-pointer">
       <div className={`relative overflow-hidden rounded-xl h-full flex flex-col items-center text-center transition-all duration-300 active:scale-95 md:hover:scale-[1.04] md:hover:shadow-lg md:hover:shadow-primary/10 ${
         isHero
-          ? 'border border-primary-foreground/10 hover:border-gold-primary/30 p-2.5 md:p-3 bg-primary-foreground/5 backdrop-blur-md'
-          : 'border border-primary-foreground/10 hover:border-gold-primary/30 p-2.5 md:p-3 bg-primary-foreground/5 backdrop-blur-md'
+          ? 'border border-border/50 hover:border-gold-primary/30 p-2.5 md:p-3 bg-muted/50 backdrop-blur-md'
+          : 'border border-border/50 hover:border-gold-primary/30 p-2.5 md:p-3 bg-muted/50 backdrop-blur-md'
       }`}>
         {/* Icon */}
         <div className="relative mb-1">
-          <div className={`relative flex items-center justify-center rounded-xl bg-primary-foreground/8 ${
+          <div className={`relative flex items-center justify-center rounded-xl bg-muted ${
             isHero
               ? 'w-10 h-10 md:w-11 md:h-11 lg:w-12 lg:h-12'
               : 'w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14'
           }`}>
-            <IconComponent className={`text-primary-foreground/80 group-hover:text-gold-primary transition-colors duration-300 ${
+            <IconComponent className={`text-foreground/60 group-hover:text-gold-primary transition-colors duration-300 ${
               isHero
                 ? 'w-5 h-5 md:w-5 md:h-5 lg:w-6 lg:h-6'
                 : 'w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7'
@@ -110,8 +110,8 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
         {/* Title */}
         <h3 className={`leading-tight line-clamp-2 transition-colors duration-200 hidden md:block ${
           isHero
-            ? 'mt-0.5 text-[8px] lg:text-[9px] font-medium text-primary-foreground/60 group-hover:text-gold-primary'
-            : 'mt-1 text-[9px] lg:text-[11px] font-semibold text-primary-foreground/60 group-hover:text-gold-primary'
+            ? 'mt-0.5 text-[8px] lg:text-[9px] font-medium text-foreground/60 group-hover:text-gold-primary'
+            : 'mt-1 text-[9px] lg:text-[11px] font-semibold text-foreground/60 group-hover:text-gold-primary'
         }`}>
           {feature.title}
         </h3>

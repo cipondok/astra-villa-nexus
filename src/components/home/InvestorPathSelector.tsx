@@ -5,6 +5,38 @@ import { cn } from '@/lib/utils';
 import { ArrowRight, Globe, Home, Sparkles, Bot, Shield, TrendingUp, Building2, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+interface Path {
+  id: string;
+  path: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  title: string;
+  description: string;
+  features: string[];
+  flag: string;
+  gradient: string;
+  accentColor: string;
+  bgColor: string;
+  borderColor: string;
+  hoverBorder: string;
+}
+
+interface LanguageCopy {
+  headline: string;
+  subtitle: string;
+  wniTitle: string;
+  wniDesc: string;
+  wniFeatures: string[];
+  wnaTitle: string;
+  wnaDesc: string;
+  wnaFeatures: string[];
+  explore: string;
+}
+
+interface Copy {
+  en: LanguageCopy;
+  id: LanguageCopy;
+}
+
 interface InvestorPathSelectorProps {
   variant?: 'default' | 'hero';
 }
@@ -15,7 +47,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
 
   const isHero = variant === 'hero';
 
-  const copy = {
+  const copy: Copy = {
     en: {
       headline: "Global Investment Platform",
       subtitle: "Choose your investment pathway",
@@ -46,7 +78,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
     navigate(path);
   };
 
-  const paths = [
+  const paths: Path[] = [
     {
       id: 'wni',
       path: '/investor/wni',
@@ -77,8 +109,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
     }
   ];
 
-  // Add central "All Investment Options" card for navigation to /foreign-investment
-  const centralPath = {
+  const centralPath: Path = {
     id: 'all',
     path: '/foreign-investment',
     icon: Building2,
@@ -93,19 +124,18 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
     hoverBorder: 'hover:border-primary dark:hover:border-primary/70'
   };
 
-  // Hero variant - ultra compact inline style
+  // Hero variant
   if (isHero) {
     return (
       <div className="rounded-xl">
-        {/* Section Header with Platform Logo */}
         <div className="flex flex-col items-center gap-1.5 mb-3">
           <div className="flex items-center gap-2">
             <div className="relative">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary via-primary/80 to-accent shadow-lg">
-                <Building2 className="h-4 w-4 text-primary-foreground" />
+                <Building2 className="h-4 w-4 text-background" />
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-gradient-to-r from-chart-1 to-chart-1/80 flex items-center justify-center">
-                <Bot className="h-2 w-2 text-primary-foreground" />
+                <Bot className="h-2 w-2 text-background" />
               </div>
             </div>
             <div className="text-left">
@@ -119,7 +149,6 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
           </div>
         </div>
 
-        {/* Modern Cards */}
         <div className="flex items-stretch justify-center gap-2 md:gap-3 flex-wrap">
           {paths.map((item, index) => {
             const IconComponent = item.icon;
@@ -139,13 +168,11 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                   "min-w-[110px] md:min-w-[140px]"
                 )}
               >
-                {/* Glow Effect */}
                 <div className={cn(
                   "absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300",
                   `bg-gradient-to-br ${item.gradient} blur-xl -z-10`
                 )} style={{ transform: 'scale(0.8)', opacity: 0.15 }} />
 
-                {/* Icon with Flag */}
                 <div className="relative">
                   <div className={cn(
                     "flex items-center justify-center",
@@ -158,7 +185,6 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                   <span className="absolute -bottom-1 -right-1 text-sm md:text-base drop-shadow-sm">{item.flag}</span>
                 </div>
 
-                {/* Text Content */}
                 <div className="text-center">
                   <h3 className="text-[10px] md:text-xs font-bold text-foreground">
                     {item.title}
@@ -168,14 +194,13 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                   </p>
                 </div>
 
-                {/* Features Pills */}
                 <div className="flex flex-wrap justify-center gap-0.5">
                   {item.features.map((feature, idx) => (
                     <span 
                       key={idx}
                       className={cn(
                         "px-1.5 py-0.5 rounded-full text-[6px] md:text-[7px] font-medium",
-                        "bg-background/60 dark:bg-muted/20",
+                        "bg-muted/50",
                         item.accentColor
                       )}
                     >
@@ -184,8 +209,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                   ))}
                 </div>
 
-                {/* AI Badge */}
-                <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[6px] text-primary-foreground font-bold shadow-lg">
+                <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[6px] text-background font-bold shadow-lg">
                   <Sparkles className="w-2 h-2" />
                   AI
                 </div>
@@ -193,7 +217,6 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
             );
           })}
 
-          {/* Central "All Options" Card */}
           <motion.button
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -208,13 +231,11 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
               "min-w-[110px] md:min-w-[140px]"
             )}
           >
-            {/* Glow Effect */}
             <div className={cn(
               "absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300",
               `bg-gradient-to-br ${centralPath.gradient} blur-xl -z-10`
             )} style={{ transform: 'scale(0.8)', opacity: 0.15 }} />
 
-            {/* Icon with Flag */}
             <div className="relative">
               <div className={cn(
                 "flex items-center justify-center",
@@ -227,7 +248,6 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
               <span className="absolute -bottom-1 -right-1 text-sm md:text-base drop-shadow-sm">{centralPath.flag}</span>
             </div>
 
-            {/* Text Content */}
             <div className="text-center">
               <h3 className="text-[10px] md:text-xs font-bold text-foreground">
                 {centralPath.title}
@@ -237,14 +257,13 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
               </p>
             </div>
 
-            {/* Features Pills */}
             <div className="flex flex-wrap justify-center gap-0.5">
               {centralPath.features.map((feature, idx) => (
                 <span 
                   key={idx}
                   className={cn(
                     "px-1.5 py-0.5 rounded-full text-[6px] md:text-[7px] font-medium",
-                    "bg-background/60 dark:bg-muted/20",
+                    "bg-muted/50",
                     centralPath.accentColor
                   )}
                 >
@@ -253,8 +272,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
               ))}
             </div>
 
-            {/* Guide Badge */}
-            <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[6px] text-primary-foreground font-bold shadow-lg">
+            <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[6px] text-background font-bold shadow-lg">
               <Globe className="w-2 h-2" />
               Guide
             </div>
@@ -264,34 +282,32 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
     );
   }
 
-  // Default variant - modern card style
+  // Default variant
   return (
     <section className="py-4 sm:py-6 px-3 sm:px-4">
       <div className="max-w-5xl mx-auto">
-        {/* Section Header with Platform Logo */}
         <div className="flex flex-col items-center gap-2 mb-4">
           <div className="flex items-center gap-3">
             <div className="relative">
               <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-primary via-primary/80 to-accent shadow-xl">
-                <Building2 className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground" />
+                <Building2 className="h-5 w-5 md:h-6 md:w-6 text-background" />
               </div>
               <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-chart-1 to-chart-1/80 flex items-center justify-center shadow-md">
-                <Bot className="h-2.5 w-2.5 text-primary-foreground" />
+                <Bot className="h-2.5 w-2.5 text-background" />
               </div>
             </div>
             <div className="text-left">
-              <h2 className="text-sm md:text-base font-bold text-primary-foreground flex items-center gap-1.5">
+              <h2 className="text-sm md:text-base font-bold text-foreground flex items-center gap-1.5">
                 {t.headline}
                 <TrendingUp className="h-3.5 w-3.5 text-chart-1" />
               </h2>
-              <p className="text-[9px] md:text-[10px] text-primary-foreground/70">
+              <p className="text-[9px] md:text-[10px] text-muted-foreground">
                 {t.subtitle}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Modern Cards Grid */}
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {paths.map((item, index) => {
             const IconComponent = item.icon;
@@ -305,18 +321,14 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                 onClick={() => handleCardClick(item.path)}
                 className={cn(
                   "group relative overflow-hidden rounded-xl cursor-pointer",
-                  "border border-white/20",
-                  "bg-gradient-to-br from-white/10 via-white/5 to-transparent",
-                  "backdrop-blur-xl shadow-lg shadow-black/5",
+                  "border border-border/50",
+                  "bg-card/80 backdrop-blur-xl shadow-lg shadow-black/5",
                   "transition-all duration-300 hover:shadow-xl hover:shadow-primary/10",
-                  "hover:border-white/30 hover:from-white/15 hover:via-white/10",
-                  "p-3 sm:p-4 active:scale-[0.98]",
-                  "before:absolute before:inset-0 before:rounded-xl before:bg-gradient-to-tr before:from-primary/10 before:via-transparent before:to-accent/10 before:opacity-60",
-                  "after:absolute after:inset-0 after:rounded-xl after:bg-gradient-to-bl after:from-destructive/5 after:via-transparent after:to-chart-4/8 after:opacity-50"
+                  "hover:border-border",
+                  "p-3 sm:p-4 active:scale-[0.98]"
                 )}
               >
                 
-                {/* Header Row */}
                 <div className="relative flex items-start gap-3 mb-3">
                   <div className={cn(
                     "flex items-center justify-center",
@@ -331,29 +343,27 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                       <span className="text-lg">{item.flag}</span>
                       <Shield className="h-3.5 w-3.5 text-chart-1" />
                     </div>
-                    <h3 className="text-xs sm:text-sm font-bold text-primary-foreground group-hover:text-gold-primary transition-colors">
+                    <h3 className="text-xs sm:text-sm font-bold text-foreground group-hover:text-gold-primary transition-colors">
                       {item.title}
                     </h3>
-                    <p className="text-[9px] sm:text-[10px] text-primary-foreground/70">
+                    <p className="text-[9px] sm:text-[10px] text-muted-foreground">
                       {item.description}
                     </p>
                   </div>
                   
-                  {/* AI Badge */}
-                  <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[7px] text-primary-foreground font-bold shadow-lg">
+                  <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[7px] text-background font-bold shadow-lg">
                     <Sparkles className="w-2.5 h-2.5" />
                     AI
                   </div>
                 </div>
 
-                {/* Features */}
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {item.features.map((feature, idx) => (
                     <span 
                       key={idx}
                       className={cn(
                         "px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-medium",
-                        "border border-white/20",
+                        "border border-border/50",
                         item.accentColor
                       )}
                     >
@@ -362,7 +372,6 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                   ))}
                 </div>
 
-                {/* CTA */}
                 <div className={cn(
                   "flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold",
                   item.accentColor,
