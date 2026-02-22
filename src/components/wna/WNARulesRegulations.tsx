@@ -202,17 +202,17 @@ const WNARulesRegulations: React.FC = () => {
   const t = copy[language];
 
   const colorClasses = {
-    blue: { bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-400' },
-    green: { bg: 'bg-green-100 dark:bg-green-900/50', text: 'text-green-600 dark:text-green-400' },
-    amber: { bg: 'bg-amber-100 dark:bg-amber-900/50', text: 'text-amber-600 dark:text-amber-400' },
-    purple: { bg: 'bg-purple-100 dark:bg-purple-900/50', text: 'text-purple-600 dark:text-purple-400' },
-    rose: { bg: 'bg-rose-100 dark:bg-rose-900/50', text: 'text-rose-600 dark:text-rose-400' }
+    blue: { bg: 'bg-chart-4/10', text: 'text-chart-4' },
+    green: { bg: 'bg-chart-1/10', text: 'text-chart-1' },
+    amber: { bg: 'bg-chart-3/10', text: 'text-chart-3' },
+    purple: { bg: 'bg-accent/10', text: 'text-accent' },
+    rose: { bg: 'bg-destructive/10', text: 'text-destructive' }
   };
 
   const ruleIcons = {
-    allowed: { icon: CheckCircle, color: 'text-green-500' },
-    prohibited: { icon: XCircle, color: 'text-red-500' },
-    info: { icon: Info, color: 'text-blue-500' }
+    allowed: { icon: CheckCircle, color: 'text-chart-1' },
+    prohibited: { icon: XCircle, color: 'text-destructive' },
+    info: { icon: Info, color: 'text-chart-4' }
   };
 
   return (
@@ -296,9 +296,9 @@ const WNARulesRegulations: React.FC = () => {
                             key={idx}
                             className={cn(
                               "flex items-start gap-2 p-1.5 rounded-md",
-                              rule.type === 'prohibited' && "bg-red-50 dark:bg-red-950/20",
-                              rule.type === 'allowed' && "bg-green-50 dark:bg-green-950/20",
-                              rule.type === 'info' && "bg-blue-50 dark:bg-blue-950/20"
+                              rule.type === 'prohibited' && "bg-destructive/10",
+                              rule.type === 'allowed' && "bg-chart-1/10",
+                              rule.type === 'info' && "bg-chart-4/10"
                             )}
                           >
                             <RuleIcon className={cn("h-3 w-3 flex-shrink-0 mt-0.5", color)} />
@@ -316,10 +316,10 @@ const WNARulesRegulations: React.FC = () => {
       </div>
 
       {/* Disclaimer */}
-      <div className="mt-3 p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
+      <div className="mt-3 p-2.5 rounded-lg bg-chart-3/10 border border-chart-3/20">
         <div className="flex items-start gap-2">
-          <AlertTriangle className="h-3.5 w-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-          <p className="text-[8px] sm:text-[9px] text-amber-700 dark:text-amber-300">{t.disclaimer}</p>
+          <AlertTriangle className="h-3.5 w-3.5 text-chart-3 flex-shrink-0 mt-0.5" />
+          <p className="text-[8px] sm:text-[9px] text-muted-foreground">{t.disclaimer}</p>
         </div>
       </div>
     </div>

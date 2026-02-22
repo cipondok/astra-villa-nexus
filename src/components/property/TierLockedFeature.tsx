@@ -65,7 +65,7 @@ const TierLockedFeature: React.FC<TierLockedFeatureProps> = ({
       <Badge 
         variant="outline" 
         className={cn(
-          "gap-1 text-xs border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400",
+          "gap-1 text-xs border-chart-3/30 bg-chart-3/10 text-chart-3",
           className
         )}
       >
@@ -81,9 +81,9 @@ const TierLockedFeature: React.FC<TierLockedFeatureProps> = ({
         "flex items-center gap-2 text-sm text-muted-foreground py-1",
         className
       )}>
-        <Lock className="h-3.5 w-3.5 text-amber-500" />
+        <Lock className="h-3.5 w-3.5 text-chart-3" />
         <span>{name}</span>
-        <Badge variant="outline" className="text-[10px] h-5 border-amber-500/30 text-amber-600 dark:text-amber-400">
+        <Badge variant="outline" className="text-[10px] h-5 border-chart-3/30 text-chart-3">
           {levelConfig.shortLabel}+
         </Badge>
       </div>
@@ -96,10 +96,10 @@ const TierLockedFeature: React.FC<TierLockedFeatureProps> = ({
         <div className="opacity-30 pointer-events-none select-none">
           {children}
         </div>
-        <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-lg border border-dashed border-amber-500/50">
+        <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-lg border border-dashed border-chart-3/50">
           <div className="text-center p-4 max-w-xs">
-            <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mx-auto mb-3">
-              <Lock className="h-6 w-6 text-amber-500" />
+            <div className="w-12 h-12 rounded-xl bg-chart-3/10 flex items-center justify-center mx-auto mb-3">
+              <Lock className="h-6 w-6 text-chart-3" />
             </div>
             <h4 className="font-semibold text-sm mb-1">{name}</h4>
             <p className="text-xs text-muted-foreground mb-3">
@@ -124,18 +124,18 @@ const TierLockedFeature: React.FC<TierLockedFeatureProps> = ({
   // Card variant (default)
   return (
     <Card className={cn(
-      "border-dashed border-amber-500/40 bg-amber-500/5",
+      "border-dashed border-chart-3/40 bg-chart-3/5",
       className
     )}>
       <CardContent className="p-4 sm:p-5">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
-            <Lock className="h-5 w-5 text-amber-500" />
+          <div className="w-10 h-10 rounded-xl bg-chart-3/10 flex items-center justify-center shrink-0">
+            <Lock className="h-5 w-5 text-chart-3" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h4 className="font-semibold text-sm">{name}</h4>
-              <Badge variant="outline" className="text-[10px] h-5 border-amber-500/30 text-amber-600 dark:text-amber-400">
+              <Badge variant="outline" className="text-[10px] h-5 border-chart-3/30 text-chart-3">
                 {levelConfig.shortLabel}+
               </Badge>
             </div>

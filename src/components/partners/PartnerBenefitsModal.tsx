@@ -87,25 +87,25 @@ const PartnerBenefitsModal = ({ isOpen, onClose }: PartnerBenefitsModalProps) =>
       name: "Bronze Partner",
       requirements: "5+ successful referrals",
       benefits: ["Basic commission rates", "Access to training materials", "Monthly newsletter"],
-      color: "bg-orange-100 text-orange-800"
+      color: "bg-chart-5/10 text-chart-5"
     },
     {
       name: "Silver Partner",
       requirements: "15+ successful referrals",
       benefits: ["Higher commission rates", "Priority lead assignment", "Quarterly business reviews"],
-      color: "bg-gray-100 text-gray-800"
+      color: "bg-muted text-muted-foreground"
     },
     {
       name: "Gold Partner",
       requirements: "30+ successful referrals",
       benefits: ["Premium commission rates", "Dedicated account manager", "Exclusive events access"],
-      color: "bg-yellow-100 text-yellow-800"
+      color: "bg-chart-3/10 text-chart-3"
     },
     {
       name: "Platinum Partner",
       requirements: "50+ successful referrals",
       benefits: ["Maximum commission rates", "Strategic partnership opportunities", "Board advisory positions"],
-      color: "bg-purple-100 text-purple-800"
+      color: "bg-accent/10 text-accent"
     }
   ];
 

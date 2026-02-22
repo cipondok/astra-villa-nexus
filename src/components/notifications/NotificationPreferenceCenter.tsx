@@ -77,7 +77,7 @@ export const NotificationPreferenceCenter: React.FC = () => {
       description: 'When properties in your favorites drop in price',
       icon: TrendingDown,
       enabled: localPrefs.priceDrops,
-      color: 'text-emerald-500'
+      color: 'text-chart-1'
     },
     {
       id: 'newMatches',
@@ -85,7 +85,7 @@ export const NotificationPreferenceCenter: React.FC = () => {
       description: 'Properties matching your saved search criteria',
       icon: Home,
       enabled: localPrefs.newMatches,
-      color: 'text-blue-500'
+      color: 'text-chart-4'
     },
     {
       id: 'messageAlerts',
@@ -93,7 +93,7 @@ export const NotificationPreferenceCenter: React.FC = () => {
       description: 'New messages from agents and property owners',
       icon: MessageSquare,
       enabled: localPrefs.messageAlerts,
-      color: 'text-purple-500'
+      color: 'text-accent'
     },
     {
       id: 'marketUpdates',
@@ -101,7 +101,7 @@ export const NotificationPreferenceCenter: React.FC = () => {
       description: 'Weekly market reports and investment tips',
       icon: BarChart3,
       enabled: localPrefs.marketUpdates,
-      color: 'text-cyan-500'
+      color: 'text-chart-4'
     },
     {
       id: 'dailyDigest',
@@ -109,7 +109,7 @@ export const NotificationPreferenceCenter: React.FC = () => {
       description: 'Summary of activity and new listings',
       icon: Calendar,
       enabled: localPrefs.dailyDigest,
-      color: 'text-amber-500'
+      color: 'text-chart-3'
     }
   ];
 
@@ -162,9 +162,9 @@ export const NotificationPreferenceCenter: React.FC = () => {
       return { icon: BellOff, text: 'Blocked by Browser', color: 'text-destructive' };
     }
     if (isSubscribed) {
-      return { icon: BellRing, text: 'Active', color: 'text-emerald-500' };
+      return { icon: BellRing, text: 'Active', color: 'text-chart-1' };
     }
-    return { icon: Bell, text: 'Not Enabled', color: 'text-amber-500' };
+    return { icon: Bell, text: 'Not Enabled', color: 'text-chart-3' };
   };
 
   const status = getPermissionStatus();
@@ -285,8 +285,8 @@ export const NotificationPreferenceCenter: React.FC = () => {
 
           <div className="flex items-center justify-between p-3 rounded-lg border">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-500/10">
-                <Mail className="h-4 w-4 text-blue-500" />
+              <div className="p-2 rounded-lg bg-chart-4/10">
+                <Mail className="h-4 w-4 text-chart-4" />
               </div>
               <div>
                 <Label className="font-medium">Email Notifications</Label>
