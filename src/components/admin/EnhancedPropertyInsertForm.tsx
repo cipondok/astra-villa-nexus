@@ -791,7 +791,7 @@ const EnhancedPropertyInsertForm = () => {
                     <SelectTrigger>
                       <SelectValue placeholder="Select province" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border shadow-lg z-50 max-h-60 overflow-y-auto">
+                    <SelectContent className="bg-popover border shadow-lg z-50 max-h-60 overflow-y-auto">
                       {provinces.map((province) => (
                         <SelectItem key={province} value={province}>{province}</SelectItem>
                       ))}
@@ -808,7 +808,7 @@ const EnhancedPropertyInsertForm = () => {
                     <SelectTrigger>
                       <SelectValue placeholder={formData.state ? "Select city" : "Select province first"} />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border shadow-lg z-50 max-h-60 overflow-y-auto">
+                    <SelectContent className="bg-popover border shadow-lg z-50 max-h-60 overflow-y-auto">
                       {cities.map((city) => (
                         <SelectItem key={city} value={city}>{city}</SelectItem>
                       ))}
@@ -825,7 +825,7 @@ const EnhancedPropertyInsertForm = () => {
                     <SelectTrigger>
                       <SelectValue placeholder={formData.city ? "Select area" : "Select city first"} />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border shadow-lg z-50 max-h-60 overflow-y-auto">
+                    <SelectContent className="bg-popover border shadow-lg z-50 max-h-60 overflow-y-auto">
                       {areas.map((area) => (
                         <SelectItem key={area} value={area}>{area}</SelectItem>
                       ))}

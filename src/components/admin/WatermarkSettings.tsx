@@ -243,7 +243,7 @@ const WatermarkSettings = ({ propertyId }: WatermarkSettingsProps) => {
 
                 {/* Text Settings */}
                 {(settings.watermark_type === 'text' || settings.watermark_type === 'both') && (
-                  <div className="space-y-4 p-4 border rounded-lg bg-blue-50">
+                  <div className="space-y-4 p-4 border rounded-lg bg-chart-4/10">
                     <h4 className="font-medium flex items-center gap-2">
                       <Type className="h-4 w-4" />
                       Text Watermark Settings
@@ -319,7 +319,7 @@ const WatermarkSettings = ({ propertyId }: WatermarkSettingsProps) => {
 
                 {/* Image Settings */}
                 {(settings.watermark_type === 'image' || settings.watermark_type === 'both') && (
-                  <div className="space-y-4 p-4 border rounded-lg bg-green-50">
+                  <div className="space-y-4 p-4 border rounded-lg bg-chart-1/10">
                     <h4 className="font-medium flex items-center gap-2">
                       <ImageIcon className="h-4 w-4" />
                       Image Watermark Settings
@@ -344,7 +344,7 @@ const WatermarkSettings = ({ propertyId }: WatermarkSettingsProps) => {
                             Upload Image
                           </Button>
                           {watermarkImageFile && (
-                            <span className="text-sm text-green-600 flex items-center">
+                            <span className="text-sm text-chart-1 flex items-center">
                               Selected: {watermarkImageFile.name}
                             </span>
                           )}
@@ -382,7 +382,7 @@ const WatermarkSettings = ({ propertyId }: WatermarkSettingsProps) => {
                 )}
 
                 {/* Position Settings */}
-                <div className="space-y-4 p-4 border rounded-lg bg-purple-50">
+                <div className="space-y-4 p-4 border rounded-lg bg-accent/10">
                   <h4 className="font-medium">Position Settings</h4>
                   
                   <div className="grid grid-cols-2 gap-4">
@@ -441,13 +441,13 @@ const WatermarkSettings = ({ propertyId }: WatermarkSettingsProps) => {
                 {/* Preview */}
                 <div className="space-y-2">
                   <Label>Preview</Label>
-                  <div className="border rounded-lg p-4 bg-gray-50">
+                  <div className="border rounded-lg p-4 bg-muted/50">
                     <img src={previewWatermark()} alt="Watermark preview" className="max-w-full h-auto" />
                   </div>
                 </div>
 
                 {/* Global Setting */}
-                <div className="flex items-center justify-between p-4 border rounded-lg bg-yellow-50">
+                <div className="flex items-center justify-between p-4 border rounded-lg bg-chart-3/10">
                   <div>
                     <Label className="text-base font-medium">Apply to All Properties</Label>
                     <p className="text-sm text-muted-foreground">Use these settings for all properties by default</p>

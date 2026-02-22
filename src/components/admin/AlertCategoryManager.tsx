@@ -217,7 +217,7 @@ const AlertCategoryManager = () => {
         </CardHeader>
         <CardContent>
           {/* Add New Category */}
-          <div className="mb-6 p-4 border rounded-lg bg-gray-50 dark:bg-gray-900">
+          <div className="mb-6 p-4 border rounded-lg bg-muted/50">
             <h3 className="text-sm font-medium mb-3">Add New Category</h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <Input

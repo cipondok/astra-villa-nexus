@@ -259,12 +259,12 @@ const LocationDatabaseManager = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <MapPin className="h-5 w-5 text-blue-600" />
+              <div className="p-2 bg-chart-4/10 rounded-lg">
+                <MapPin className="h-5 w-5 text-chart-4" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Provinsi</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-sm text-muted-foreground">Total Provinsi</p>
+                <p className="text-2xl font-bold text-chart-4">
                   {statsLoading ? <Skeleton className="h-6 w-8" /> : stats?.total_provinces || 0}
                 </p>
               </div>
@@ -275,12 +275,12 @@ const LocationDatabaseManager = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <BarChart3 className="h-5 w-5 text-green-600" />
+              <div className="p-2 bg-chart-1/10 rounded-lg">
+                <BarChart3 className="h-5 w-5 text-chart-1" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Kota/Kabupaten</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-sm text-muted-foreground">Total Kota/Kabupaten</p>
+                <p className="text-2xl font-bold text-chart-1">
                   {statsLoading ? <Skeleton className="h-6 w-8" /> : stats?.total_cities || 0}
                 </p>
               </div>
@@ -291,12 +291,12 @@ const LocationDatabaseManager = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <MapPin className="h-5 w-5 text-purple-600" />
+              <div className="p-2 bg-accent/10 rounded-lg">
+                <MapPin className="h-5 w-5 text-accent-foreground" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Area</p>
-                <p className="text-2xl font-bold text-purple-600">
+                <p className="text-sm text-muted-foreground">Total Area</p>
+                <p className="text-2xl font-bold text-accent-foreground">
                   {statsLoading ? <Skeleton className="h-6 w-8" /> : stats?.total_areas || 0}
                 </p>
               </div>
@@ -307,12 +307,12 @@ const LocationDatabaseManager = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <AlertCircle className="h-5 w-5 text-orange-600" />
+              <div className="p-2 bg-chart-3/10 rounded-lg">
+                <AlertCircle className="h-5 w-5 text-chart-3" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Lokasi Aktif</p>
-                <p className="text-2xl font-bold text-orange-600">
+                <p className="text-sm text-muted-foreground">Lokasi Aktif</p>
+                <p className="text-2xl font-bold text-chart-3">
                   {statsLoading ? <Skeleton className="h-6 w-8" /> : stats?.active_locations || 0}
                 </p>
               </div>
@@ -454,7 +454,7 @@ const LocationDatabaseManager = () => {
           <CardTitle>Daftar Lokasi</CardTitle>
           <CardDescription>
             Menampilkan {locations.length} lokasi
-            {isLoading && <span className="ml-2 text-blue-600">Loading...</span>}
+            {isLoading && <span className="ml-2 text-primary">Loading...</span>}
           </CardDescription>
         </CardHeader>
         <CardContent>
