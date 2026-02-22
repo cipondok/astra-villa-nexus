@@ -549,28 +549,28 @@ const PropertyInsertForm = () => {
 
         <form onSubmit={handleSubmit}>
           <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-5 bg-white border border-gray-200 shadow-sm">
-              <TabsTrigger value="basic" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
+            <TabsList className="grid w-full grid-cols-5 bg-card border border-border shadow-sm">
+              <TabsTrigger value="basic" className="flex items-center gap-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:border-primary/30">
                 <Home className="h-4 w-4" />
                 <span className="hidden sm:inline">Informasi Dasar</span>
                 <span className="sm:hidden">Dasar</span>
               </TabsTrigger>
-              <TabsTrigger value="location" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
+              <TabsTrigger value="location" className="flex items-center gap-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:border-primary/30">
                 <MapPin className="h-4 w-4" />
                 <span className="hidden sm:inline">Lokasi</span>
                 <span className="sm:hidden">Lokasi</span>
               </TabsTrigger>
-              <TabsTrigger value="details" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
+              <TabsTrigger value="details" className="flex items-center gap-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:border-primary/30">
                 <CheckCircle className="h-4 w-4" />
                 <span className="hidden sm:inline">Detail & Fitur</span>
                 <span className="sm:hidden">Detail</span>
               </TabsTrigger>
-              <TabsTrigger value="specifications" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
+              <TabsTrigger value="specifications" className="flex items-center gap-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:border-primary/30">
                 <CheckCircle className="h-4 w-4" />
                 <span className="hidden sm:inline">Spesifikasi</span>
                 <span className="sm:hidden">Spec</span>
               </TabsTrigger>
-              <TabsTrigger value="media" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
+              <TabsTrigger value="media" className="flex items-center gap-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:border-primary/30">
                 <Camera className="h-4 w-4" />
                 <span className="hidden sm:inline">Media & 3D</span>
                 <span className="sm:hidden">Media</span>
