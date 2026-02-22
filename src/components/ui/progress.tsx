@@ -20,7 +20,7 @@ const Progress = React.forwardRef<
       className={cn(
         "h-full w-full flex-1 transition-all duration-500 ease-out",
         multiColor 
-          ? "bg-gradient-to-r from-rose-500 via-amber-500 via-50% to-emerald-500" 
+          ? "bg-gradient-to-r from-destructive via-chart-3 via-50% to-chart-1" 
           : "bg-gradient-to-r from-primary to-primary/80"
       )}
       style={{ transform: `translateX(-${100 - (value || 0)}%)` }}

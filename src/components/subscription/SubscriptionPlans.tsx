@@ -15,9 +15,9 @@ const PLAN_ICONS: Record<string, React.ElementType> = {
 };
 
 const PLAN_COLORS: Record<string, string> = {
-  free: 'from-slate-500 to-slate-600',
-  pro: 'from-blue-500 to-indigo-600',
-  enterprise: 'from-purple-500 to-pink-600'
+  free: 'from-muted-foreground to-muted-foreground/80',
+  pro: 'from-primary to-accent',
+  enterprise: 'from-accent to-chart-5'
 };
 
 export const SubscriptionPlans: React.FC = () => {

@@ -92,16 +92,16 @@ const sampleAgents: TopAgent[] = [
 ];
 
 const getLevelBadgeStyle = (levelName: string | null) => {
-  if (!levelName) return { bg: 'bg-gray-100', text: 'text-gray-700', icon: null };
+   if (!levelName) return { bg: 'bg-muted', text: 'text-muted-foreground', icon: null };
   
   const name = levelName.toLowerCase();
-  if (name.includes('platinum')) return { bg: 'bg-gradient-to-r from-slate-200 to-slate-300', text: 'text-slate-800', icon: Gem };
-  if (name.includes('gold')) return { bg: 'bg-gradient-to-r from-amber-200 to-yellow-300', text: 'text-amber-800', icon: Crown };
-  if (name.includes('silver')) return { bg: 'bg-gradient-to-r from-gray-200 to-slate-300', text: 'text-gray-700', icon: Medal };
-  if (name.includes('bronze')) return { bg: 'bg-gradient-to-r from-orange-200 to-amber-200', text: 'text-orange-800', icon: Medal };
-  if (name.includes('vip')) return { bg: 'bg-purple-100', text: 'text-purple-700', icon: Crown };
-  if (name.includes('premium')) return { bg: 'bg-blue-100', text: 'text-blue-700', icon: Star };
-  return { bg: 'bg-gray-100', text: 'text-gray-700', icon: null };
+  if (name.includes('platinum')) return { bg: 'bg-gradient-to-r from-muted to-secondary', text: 'text-foreground', icon: Gem };
+  if (name.includes('gold')) return { bg: 'bg-gradient-to-r from-gold-primary/30 to-gold-primary/50', text: 'text-gold-primary', icon: Crown };
+  if (name.includes('silver')) return { bg: 'bg-gradient-to-r from-muted to-secondary', text: 'text-muted-foreground', icon: Medal };
+  if (name.includes('bronze')) return { bg: 'bg-gradient-to-r from-chart-3/20 to-gold-primary/20', text: 'text-chart-3', icon: Medal };
+  if (name.includes('vip')) return { bg: 'bg-accent/10', text: 'text-accent', icon: Crown };
+  if (name.includes('premium')) return { bg: 'bg-primary/10', text: 'text-primary', icon: Star };
+  return { bg: 'bg-muted', text: 'text-muted-foreground', icon: null };
 };
 
 const TopAgentsCarousel = () => {
@@ -245,13 +245,13 @@ const TopAgentsCarousel = () => {
       >
         {/* Award Banner Card */}
         <div className="flex-shrink-0 w-64 sm:w-72">
-          <Card className="h-full bg-gradient-to-br from-amber-500 to-amber-600 border-0 overflow-hidden">
-            <CardContent className="p-6 h-full flex flex-col justify-center items-center text-center">
-              <Award className="h-16 w-16 text-white mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">Agent Awards 2024</h3>
-              <p className="text-white/90 text-sm">
-                Penghargaan untuk agen properti terbaik dengan performa luar biasa
-              </p>
+           <Card className="h-full bg-gradient-to-br from-gold-primary to-chart-3 border-0 overflow-hidden">
+             <CardContent className="p-6 h-full flex flex-col justify-center items-center text-center">
+               <Award className="h-16 w-16 text-primary-foreground mb-4" />
+               <h3 className="text-xl font-bold text-primary-foreground mb-2">Agent Awards 2024</h3>
+               <p className="text-primary-foreground/90 text-sm">
+                 Penghargaan untuk agen properti terbaik dengan performa luar biasa
+               </p>
             </CardContent>
           </Card>
         </div>
@@ -275,9 +275,9 @@ const TopAgentsCarousel = () => {
                         </AvatarFallback>
                       </Avatar>
                       {agent.is_verified && (
-                        <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1">
-                          <CheckCircle className="h-4 w-4 text-white" />
-                        </div>
+                         <div className="absolute -bottom-1 -right-1 bg-chart-1 rounded-full p-1">
+                           <CheckCircle className="h-4 w-4 text-primary-foreground" />
+                         </div>
                       )}
                     </div>
                     
@@ -304,7 +304,7 @@ const TopAgentsCarousel = () => {
                       {agent.awards > 0 && (
                         <>
                           <span className="mx-1">•</span>
-                          <Award className="h-3 w-3 text-amber-500" />
+                          <Award className="h-3 w-3 text-gold-primary" />
                           <span>{agent.awards} Award</span>
                         </>
                       )}
@@ -315,8 +315,8 @@ const TopAgentsCarousel = () => {
                   {agent.awards > 0 && (
                     <div className="flex justify-center gap-2 mb-4">
                       {[...Array(Math.min(agent.awards, 3))].map((_, i) => (
-                        <div key={i} className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                          <Award className="h-5 w-5 text-amber-600" />
+                         <div key={i} className="w-10 h-10 rounded-full bg-gold-primary/10 flex items-center justify-center">
+                           <Award className="h-5 w-5 text-gold-primary" />
                         </div>
                       ))}
                     </div>

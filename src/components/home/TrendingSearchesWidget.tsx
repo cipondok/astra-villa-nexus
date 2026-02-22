@@ -91,7 +91,7 @@ export const TrendingSearchesWidget = ({ onSearchClick }: TrendingSearchesWidget
           <h3 className="text-xs md:text-base font-bold">Trending Searches</h3>
           <p className="text-[9px] md:text-xs text-muted-foreground">Popular in the last 7 days</p>
         </div>
-        <Badge className="bg-gradient-to-r from-primary to-accent text-white text-[8px] md:text-xs px-1.5 py-0.5">
+        <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-[8px] md:text-xs px-1.5 py-0.5">
           <Sparkles className="h-2.5 w-2.5 md:h-3 md:w-3 mr-0.5" />
           Live
         </Badge>

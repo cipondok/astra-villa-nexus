@@ -82,7 +82,7 @@ const AstraWalletCard: React.FC<AstraWalletCardProps> = ({ compact = false }) =>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-gradient-to-br from-gold-primary to-chart-3 flex items-center justify-center shadow-lg">
-                <Coins className="h-5 w-5 text-white" />
+                <Coins className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">ASTRA Balance</p>
@@ -189,7 +189,7 @@ const AstraWalletCard: React.FC<AstraWalletCardProps> = ({ compact = false }) =>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-gold-primary to-chart-3 flex items-center justify-center">
-              <Wallet className="h-3.5 w-3.5 text-white" />
+              <Wallet className="h-3.5 w-3.5 text-primary-foreground" />
             </div>
             <span className="text-xs font-semibold">ASTRA Wallet</span>
           </div>

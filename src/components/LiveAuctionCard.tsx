@@ -69,7 +69,7 @@ const LiveAuctionCard = ({ auction }: LiveAuctionCardProps) => {
         {isActive && (
           <div className="absolute top-2 left-2">
             <Badge className="bg-destructive text-destructive-foreground animate-pulse text-xs px-2 py-1 rounded-full flex items-center gap-1">
-              <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
+              <div className="w-2 h-2 bg-destructive-foreground rounded-full animate-ping"></div>
               LIVE
             </Badge>
           </div>
@@ -77,7 +77,7 @@ const LiveAuctionCard = ({ auction }: LiveAuctionCardProps) => {
 
         {/* Type Badge */}
         <div className="absolute top-2 right-2">
-          <Badge className={`text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 ${
+          <Badge className={`text-primary-foreground text-xs px-2 py-1 rounded-full flex items-center gap-1 ${
             auction.type === 'auction' ? 'bg-chart-5' : 'bg-chart-4'
           }`}>
             {auction.type === 'auction' ? <Gavel className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}
@@ -86,13 +86,13 @@ const LiveAuctionCard = ({ auction }: LiveAuctionCardProps) => {
         </div>
 
         {/* Time Left */}
-        <div className="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-1 rounded-lg flex items-center gap-1 backdrop-blur-sm">
+        <div className="absolute bottom-2 left-2 bg-background/70 text-foreground px-2 py-1 rounded-lg flex items-center gap-1 backdrop-blur-sm">
           <Timer className="h-3 w-3 text-destructive" />
           <span className="text-xs font-medium">{timeLeft}</span>
         </div>
 
         {/* Bidders Count */}
-        <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded-lg flex items-center gap-1 backdrop-blur-sm">
+        <div className="absolute bottom-2 right-2 bg-background/70 text-foreground px-2 py-1 rounded-lg flex items-center gap-1 backdrop-blur-sm">
           <Users className="h-3 w-3 text-chart-1" />
           <span className="text-xs font-medium">{auction.bidders}</span>
         </div>
@@ -127,7 +127,7 @@ const LiveAuctionCard = ({ auction }: LiveAuctionCardProps) => {
             auction.type === 'auction' 
               ? 'bg-gradient-to-r from-chart-5 to-destructive hover:from-chart-5/90 hover:to-destructive/90' 
               : 'bg-gradient-to-r from-primary to-chart-1 hover:from-primary/90 hover:to-chart-1/90'
-          } text-white`}
+          } text-primary-foreground`}
           onClick={handleViewAuction}
         >
           {auction.type === 'auction' ? (
