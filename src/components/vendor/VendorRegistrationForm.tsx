@@ -85,10 +85,10 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
   const renderFieldIndicator = (field: keyof typeof fieldValidation) => {
     const status = getFieldStatus(field);
     if (status === 'valid') {
-      return <Check className="h-4 w-4 text-green-500" />;
+      return <Check className="h-4 w-4 text-chart-1" />;
     }
     if (status === 'invalid') {
-      return <AlertCircle className="h-4 w-4 text-red-500" />;
+      return <AlertCircle className="h-4 w-4 text-destructive" />;
     }
     return null;
   };
@@ -209,7 +209,7 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                   value={formData.property_type}
                   onValueChange={(value) => handleSelectChange('property_type', value)}
                 >
-                  <SelectTrigger className={getFieldStatus('property_type') === 'invalid' ? 'border-red-500' : getFieldStatus('property_type') === 'valid' ? 'border-green-500' : ''}>
+                  <SelectTrigger className={getFieldStatus('property_type') === 'invalid' ? 'border-destructive' : getFieldStatus('property_type') === 'valid' ? 'border-chart-1' : ''}>
                     <SelectValue placeholder="Pilih tipe properti" />
                   </SelectTrigger>
                   <SelectContent>
@@ -236,10 +236,10 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                   onChange={(e) => handleFieldChange('full_name', e.target.value)}
                   onBlur={() => setTouchedFields(prev => ({ ...prev, full_name: true }))}
                   placeholder="Enter your full name"
-                  className={getFieldStatus('full_name') === 'invalid' ? 'border-red-500' : getFieldStatus('full_name') === 'valid' ? 'border-green-500' : ''}
+                  className={getFieldStatus('full_name') === 'invalid' ? 'border-destructive' : getFieldStatus('full_name') === 'valid' ? 'border-chart-1' : ''}
                 />
                 {getFieldStatus('full_name') === 'invalid' && (
-                  <p className="text-xs text-red-500 flex items-center gap-1">
+                  <p className="text-xs text-destructive flex items-center gap-1">
                     <AlertCircle className="h-3 w-3" /> Full Name is required (min 2 characters)
                   </p>
                 )}
@@ -248,14 +248,14 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
               <div className="space-y-2">
                 <Label htmlFor="email" className="flex items-center gap-2">
                   Email *
-                  <Check className="h-4 w-4 text-green-500" />
+                  <Check className="h-4 w-4 text-chart-1" />
                 </Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   disabled
-                  className="border-green-500 bg-muted"
+                  className="border-chart-1 bg-muted"
                 />
               </div>
 
@@ -270,10 +270,10 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                   onChange={(e) => handleFieldChange('phone', e.target.value)}
                   onBlur={() => setTouchedFields(prev => ({ ...prev, phone: true }))}
                   placeholder="Enter your phone number"
-                  className={getFieldStatus('phone') === 'invalid' ? 'border-red-500' : getFieldStatus('phone') === 'valid' ? 'border-green-500' : ''}
+                  className={getFieldStatus('phone') === 'invalid' ? 'border-destructive' : getFieldStatus('phone') === 'valid' ? 'border-chart-1' : ''}
                 />
                 {getFieldStatus('phone') === 'invalid' && (
-                  <p className="text-xs text-red-500 flex items-center gap-1">
+                  <p className="text-xs text-destructive flex items-center gap-1">
                     <AlertCircle className="h-3 w-3" /> Phone Number is required (min 8 digits)
                   </p>
                 )}
@@ -290,10 +290,10 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                   onChange={(e) => handleFieldChange('business_name', e.target.value)}
                   onBlur={() => setTouchedFields(prev => ({ ...prev, business_name: true }))}
                   placeholder="Enter your business name"
-                  className={getFieldStatus('business_name') === 'invalid' ? 'border-red-500' : getFieldStatus('business_name') === 'valid' ? 'border-green-500' : ''}
+                  className={getFieldStatus('business_name') === 'invalid' ? 'border-destructive' : getFieldStatus('business_name') === 'valid' ? 'border-chart-1' : ''}
                 />
                 {getFieldStatus('business_name') === 'invalid' && (
-                  <p className="text-xs text-red-500 flex items-center gap-1">
+                  <p className="text-xs text-destructive flex items-center gap-1">
                     <AlertCircle className="h-3 w-3" /> Business Name is required (min 2 characters)
                   </p>
                 )}
@@ -308,7 +308,7 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                   value={formData.business_type}
                   onValueChange={(value) => handleSelectChange('business_type', value)}
                 >
-                  <SelectTrigger className={getFieldStatus('business_type') === 'invalid' ? 'border-red-500' : getFieldStatus('business_type') === 'valid' ? 'border-green-500' : ''}>
+                  <SelectTrigger className={getFieldStatus('business_type') === 'invalid' ? 'border-destructive' : getFieldStatus('business_type') === 'valid' ? 'border-chart-1' : ''}>
                     <SelectValue placeholder="Select business type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -318,7 +318,7 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                   </SelectContent>
                 </Select>
                 {getFieldStatus('business_type') === 'invalid' && (
-                  <p className="text-xs text-red-500 flex items-center gap-1">
+                  <p className="text-xs text-destructive flex items-center gap-1">
                     <AlertCircle className="h-3 w-3" /> Please select a business type
                   </p>
                 )}
@@ -347,14 +347,14 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                     onChange={(e) => handleFieldChange('surat_izin_usaha', e.target.value)}
                     onBlur={() => setTouchedFields(prev => ({ ...prev, surat_izin_usaha: true }))}
                     placeholder="Nomor surat izin usaha"
-                    className={getFieldStatus('surat_izin_usaha') === 'invalid' ? 'border-red-500' : getFieldStatus('surat_izin_usaha') === 'valid' ? 'border-green-500' : ''}
+                    className={getFieldStatus('surat_izin_usaha') === 'invalid' ? 'border-destructive' : getFieldStatus('surat_izin_usaha') === 'valid' ? 'border-chart-1' : ''}
                   />
                   {getFieldStatus('surat_izin_usaha') === 'invalid' && (
-                    <p className="text-xs text-red-500 flex items-center gap-1">
+                    <p className="text-xs text-destructive flex items-center gap-1">
                       <AlertCircle className="h-3 w-3" /> Surat Izin Usaha is required for commercial
                     </p>
                   )}
-                  <p className="text-sm text-orange-600">
+                  <p className="text-sm text-chart-3">
                     📋 Wajib untuk layanan komersial
                   </p>
                 </div>
@@ -381,13 +381,13 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
               {/* Property Type Requirements Info */}
               <div className={`p-4 rounded-lg ${
                 formData.property_type === 'commercial' 
-                  ? 'bg-orange-50 dark:bg-orange-900/20' 
-                  : 'bg-green-50 dark:bg-green-900/20'
+                  ? 'bg-chart-3/5' 
+                  : 'bg-chart-1/5'
               }`}>
                 <h3 className={`font-semibold mb-2 ${
                   formData.property_type === 'commercial'
-                    ? 'text-orange-800 dark:text-orange-200'
-                    : 'text-green-800 dark:text-green-200'
+                    ? 'text-chart-3'
+                    : 'text-chart-1'
                 }`}>
                   {formData.property_type === 'commercial' 
                     ? '🏢 Persyaratan Komersial' 
@@ -396,8 +396,8 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                 </h3>
                 <ul className={`space-y-1 text-sm ${
                   formData.property_type === 'commercial'
-                    ? 'text-orange-700 dark:text-orange-300'
-                    : 'text-green-700 dark:text-green-300'
+                    ? 'text-chart-3/80'
+                    : 'text-chart-1/80'
                 }`}>
                   {formData.property_type === 'commercial' ? (
                     <>
@@ -433,11 +433,11 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                 </ul>
               </div>
 
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">
+              <div className="p-4 bg-chart-4/5 rounded-lg">
+                <h3 className="font-semibold text-chart-4 mb-2">
                   What happens next?
                 </h3>
-                <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
+                <ul className="space-y-1 text-sm text-chart-4/80">
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4" />
                     Your application will be reviewed by our team

@@ -60,10 +60,10 @@ const getGradeColor = (grade: string) => {
 };
 
 const getScoreColor = (score: number) => {
-  if (score >= 80) return 'text-green-500';
-  if (score >= 60) return 'text-blue-500';
-  if (score >= 40) return 'text-yellow-500';
-  return 'text-red-500';
+  if (score >= 80) return 'text-chart-1';
+  if (score >= 60) return 'text-chart-4';
+  if (score >= 40) return 'text-chart-3';
+  return 'text-destructive';
 };
 
 const getCategoryIcon = (category: string) => {
@@ -498,7 +498,7 @@ const ListingSuccessPredictor = () => {
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-blue-500" />
+                      <Clock className="h-4 w-4 text-chart-4" />
                       Timeline Prediction
                     </CardTitle>
                   </CardHeader>
@@ -519,7 +519,7 @@ const ListingSuccessPredictor = () => {
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base flex items-center gap-2">
-                      <BarChart3 className="h-4 w-4 text-purple-500" />
+                      <BarChart3 className="h-4 w-4 text-accent-foreground" />
                       Strength Analysis
                     </CardTitle>
                   </CardHeader>
@@ -540,7 +540,7 @@ const ListingSuccessPredictor = () => {
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base flex items-center gap-2">
-                      <Lightbulb className="h-4 w-4 text-yellow-500" />
+                      <Lightbulb className="h-4 w-4 text-chart-3" />
                       Top 3 Recommendations
                     </CardTitle>
                   </CardHeader>
@@ -557,7 +557,7 @@ const ListingSuccessPredictor = () => {
                             <span className="font-medium capitalize">{rec.category}</span>
                           </div>
                           <p className="text-sm"><strong>Issue:</strong> {rec.issue}</p>
-                          <p className="text-sm text-green-600 dark:text-green-400">
+                          <p className="text-sm text-chart-1">
                             <strong>Action:</strong> {rec.action}
                           </p>
                           <p className="text-xs text-muted-foreground">
@@ -574,7 +574,7 @@ const ListingSuccessPredictor = () => {
                   <Card>
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm flex items-center gap-2">
-                        <Users className="h-4 w-4 text-blue-500" />
+                        <Users className="h-4 w-4 text-chart-4" />
                         Target Demographics
                       </CardTitle>
                     </CardHeader>
@@ -592,7 +592,7 @@ const ListingSuccessPredictor = () => {
                   <Card>
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm flex items-center gap-2">
-                        <AlertTriangle className="h-4 w-4 text-orange-500" />
+                        <AlertTriangle className="h-4 w-4 text-chart-3" />
                         Risk Factors
                       </CardTitle>
                     </CardHeader>
@@ -600,7 +600,7 @@ const ListingSuccessPredictor = () => {
                       <ul className="space-y-1">
                         {prediction.riskFactors.map((risk, idx) => (
                           <li key={idx} className="text-xs text-muted-foreground flex items-start gap-1">
-                            <span className="text-orange-500 mt-0.5">•</span>
+                            <span className="text-chart-3 mt-0.5">•</span>
                             {risk}
                           </li>
                         ))}
@@ -613,7 +613,7 @@ const ListingSuccessPredictor = () => {
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4 text-green-500" />
+                      <TrendingUp className="h-4 w-4 text-chart-1" />
                       Competitive Position
                     </CardTitle>
                   </CardHeader>
