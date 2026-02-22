@@ -532,7 +532,7 @@ const AdvancedPropertyFilters = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 text-blue-600" />
+                    <MapPin className="h-3.5 w-3.5 text-chart-4" />
                     <Label className="text-sm font-semibold">Location</Label>
                   </div>
                   <Select value={localFilters.location} onValueChange={(value) => updateFilter('location', value)}>
@@ -550,7 +550,7 @@ const AdvancedPropertyFilters = ({
 
                 <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
                   <div className="flex items-center gap-1.5">
-                    <Building2 className="h-3.5 w-3.5 text-purple-600" />
+                    <Building2 className="h-3.5 w-3.5 text-accent-foreground" />
                     <Label className="text-sm font-semibold">Listing Type</Label>
                   </div>
                   <Select value={localFilters.listingType} onValueChange={(value) => updateFilter('listingType', value)}>
@@ -574,7 +574,7 @@ const AdvancedPropertyFilters = ({
           <Collapsible open={expandedSections.propertyTypes} onOpenChange={() => toggleSection('propertyTypes')}>
             <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
               <div className="flex items-center gap-2">
-                <Home className="h-3.5 w-3.5 text-orange-600" />
+                <Home className="h-3.5 w-3.5 text-chart-5" />
                 <Label className="text-sm font-semibold cursor-pointer">Property Types</Label>
               </div>
               <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.propertyTypes ? 'rotate-180' : ''}`} />
@@ -587,8 +587,8 @@ const AdvancedPropertyFilters = ({
                       key={type} 
                       className={`flex items-center space-x-1.5 p-2 rounded-md border text-xs cursor-pointer transition-all ${
                         localFilters.propertyTypes.includes(type) 
-                          ? 'bg-orange-500/10 border-orange-500/40' 
-                          : 'bg-background border-border hover:border-orange-500/30'
+                          ? 'bg-chart-5/10 border-chart-5/40' 
+                          : 'bg-background border-border hover:border-chart-5/30'
                       }`}
                       onClick={() => togglePropertyType(type)}
                     >
@@ -616,7 +616,7 @@ const AdvancedPropertyFilters = ({
           <Collapsible open={expandedSections.rooms} onOpenChange={() => toggleSection('rooms')}>
             <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
               <div className="flex items-center gap-2">
-                <Bed className="h-3.5 w-3.5 text-pink-600" />
+                <Bed className="h-3.5 w-3.5 text-chart-2" />
                 <Label className="text-sm font-semibold cursor-pointer">Bedrooms & Bathrooms</Label>
               </div>
               <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.rooms ? 'rotate-180' : ''}`} />
@@ -625,7 +625,7 @@ const AdvancedPropertyFilters = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
                   <div className="flex items-center gap-1.5">
-                    <Bed className="h-3.5 w-3.5 text-pink-600" />
+                    <Bed className="h-3.5 w-3.5 text-chart-2" />
                     <Label className="text-sm font-semibold">Bedrooms</Label>
                   </div>
                   <Select 
@@ -646,7 +646,7 @@ const AdvancedPropertyFilters = ({
 
                 <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
                   <div className="flex items-center gap-1.5">
-                    <Bath className="h-3.5 w-3.5 text-cyan-600" />
+                    <Bath className="h-3.5 w-3.5 text-chart-4" />
                     <Label className="text-sm font-semibold">Bathrooms</Label>
                   </div>
                   <Select 
@@ -674,7 +674,7 @@ const AdvancedPropertyFilters = ({
           <Collapsible open={expandedSections.area} onOpenChange={() => toggleSection('area')}>
             <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
               <div className="flex items-center gap-2">
-                <Maximize2 className="h-3.5 w-3.5 text-teal-600" />
+                <Maximize2 className="h-3.5 w-3.5 text-chart-1" />
                 <Label className="text-sm font-semibold cursor-pointer">Area Range</Label>
               </div>
               <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.area ? 'rotate-180' : ''}`} />
@@ -683,7 +683,7 @@ const AdvancedPropertyFilters = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
                   <div className="flex items-center gap-1.5">
-                    <Maximize2 className="h-3.5 w-3.5 text-teal-600" />
+                    <Maximize2 className="h-3.5 w-3.5 text-chart-1" />
                     <Label htmlFor="minArea" className="text-sm font-semibold">Min Area (sqm)</Label>
                   </div>
                   <Input
@@ -698,7 +698,7 @@ const AdvancedPropertyFilters = ({
 
                 <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
                   <div className="flex items-center gap-1.5">
-                    <Maximize2 className="h-3.5 w-3.5 text-teal-600" />
+                    <Maximize2 className="h-3.5 w-3.5 text-chart-1" />
                     <Label htmlFor="maxArea" className="text-sm font-semibold">Max Area (sqm)</Label>
                   </div>
                   <Input
@@ -720,7 +720,7 @@ const AdvancedPropertyFilters = ({
           <Collapsible open={expandedSections.sort} onOpenChange={() => toggleSection('sort')}>
             <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
               <div className="flex items-center gap-2">
-                <SortAsc className="h-3.5 w-3.5 text-indigo-600" />
+                <SortAsc className="h-3.5 w-3.5 text-accent-foreground" />
                 <Label className="text-sm font-semibold cursor-pointer">Sort By</Label>
               </div>
               <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.sort ? 'rotate-180' : ''}`} />
