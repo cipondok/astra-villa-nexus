@@ -82,12 +82,12 @@ const PropertyFiltersManagement = ({
 
   const getFilterTypeColor = (type: string) => {
     const colors: Record<string, string> = {
-      checkbox: 'bg-blue-500/10 text-blue-700 border-blue-200',
-      select: 'bg-purple-500/10 text-purple-700 border-purple-200',
-      input: 'bg-green-500/10 text-green-700 border-green-200',
-      range: 'bg-orange-500/10 text-orange-700 border-orange-200'
+      checkbox: 'bg-chart-4/10 text-chart-4 border-chart-4/20',
+      select: 'bg-accent/10 text-accent-foreground border-accent/20',
+      input: 'bg-chart-1/10 text-chart-1 border-chart-1/20',
+      range: 'bg-chart-3/10 text-chart-3 border-chart-3/20'
     };
-    return colors[type] || 'bg-gray-500/10 text-gray-700 border-gray-200';
+    return colors[type] || 'bg-muted text-muted-foreground border-border';
   };
 
   const filteredCategories = filters.map(category => ({
@@ -161,11 +161,11 @@ const PropertyFiltersManagement = ({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Active</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-chart-1">
                   {filters.reduce((acc, cat) => acc + cat.options.filter(o => o.is_active).length, 0)}
                 </p>
               </div>
-              <CheckCircle2 className="h-8 w-8 text-green-600/30" />
+              <CheckCircle2 className="h-8 w-8 text-chart-1/30" />
             </div>
           </CardContent>
         </Card>
@@ -252,7 +252,7 @@ const PropertyFiltersManagement = ({
                       <Switch
                         checked={filter.is_active}
                         onCheckedChange={() => handleToggleFilter(filter.id, filter.is_active)}
-                        className="data-[state=checked]:bg-green-600"
+                        className="data-[state=checked]:bg-chart-1"
                       />
                       <Button
                         size="sm"

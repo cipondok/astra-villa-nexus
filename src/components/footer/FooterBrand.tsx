@@ -30,12 +30,12 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
   const currentText = text[language];
 
   const socialLinks = [
-    { url: settings.facebookUrl, icon: Facebook, label: 'Facebook', colorClass: 'from-blue-500/20 to-blue-600/10 hover:from-blue-500/30 hover:to-blue-600/20 border-blue-500/30 hover:border-blue-500/50', iconColor: 'text-blue-500' },
-    { url: settings.twitterUrl, icon: Twitter, label: 'Twitter / X', colorClass: 'from-sky-400/20 to-sky-500/10 hover:from-sky-400/30 hover:to-sky-500/20 border-sky-400/30 hover:border-sky-400/50', iconColor: 'text-sky-400' },
-    { url: settings.instagramUrl, icon: Instagram, label: 'Instagram', colorClass: 'from-pink-500/20 to-purple-500/10 hover:from-pink-500/30 hover:to-purple-500/20 border-pink-500/30 hover:border-pink-500/50', iconColor: 'text-pink-500' },
+    { url: settings.facebookUrl, icon: Facebook, label: 'Facebook', colorClass: 'from-chart-4/20 to-chart-4/10 hover:from-chart-4/30 hover:to-chart-4/20 border-chart-4/30 hover:border-chart-4/50', iconColor: 'text-chart-4' },
+    { url: settings.twitterUrl, icon: Twitter, label: 'Twitter / X', colorClass: 'from-chart-4/20 to-chart-4/10 hover:from-chart-4/30 hover:to-chart-4/20 border-chart-4/30 hover:border-chart-4/50', iconColor: 'text-chart-4' },
+    { url: settings.instagramUrl, icon: Instagram, label: 'Instagram', colorClass: 'from-destructive/20 to-accent/10 hover:from-destructive/30 hover:to-accent/20 border-destructive/30 hover:border-destructive/50', iconColor: 'text-destructive' },
     { url: settings.tiktokUrl, icon: Music2, label: 'TikTok', colorClass: 'from-foreground/10 to-foreground/5 hover:from-foreground/20 hover:to-foreground/10 border-foreground/20 hover:border-foreground/40', iconColor: 'text-foreground' },
-    { url: settings.youtubeUrl, icon: Youtube, label: 'YouTube', colorClass: 'from-red-500/20 to-red-600/10 hover:from-red-500/30 hover:to-red-600/20 border-red-500/30 hover:border-red-500/50', iconColor: 'text-red-500' },
-    { url: settings.whatsappNumber, icon: MessageCircle, label: 'WhatsApp', colorClass: 'from-green-500/20 to-green-600/10 hover:from-green-500/30 hover:to-green-600/20 border-green-500/30 hover:border-green-500/50', iconColor: 'text-green-500', isPhone: true },
+    { url: settings.youtubeUrl, icon: Youtube, label: 'YouTube', colorClass: 'from-destructive/20 to-destructive/10 hover:from-destructive/30 hover:to-destructive/20 border-destructive/30 hover:border-destructive/50', iconColor: 'text-destructive' },
+    { url: settings.whatsappNumber, icon: MessageCircle, label: 'WhatsApp', colorClass: 'from-chart-1/20 to-chart-1/10 hover:from-chart-1/30 hover:to-chart-1/20 border-chart-1/30 hover:border-chart-1/50', iconColor: 'text-chart-1', isPhone: true },
   ];
 
   const getHref = (link: typeof socialLinks[0]) => {
@@ -63,13 +63,13 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
 
       <div className="space-y-4">
         <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border/30">
-          <Shield className="h-5 w-5 text-green-500 flex-shrink-0" />
+          <Shield className="h-5 w-5 text-chart-1 flex-shrink-0" />
           <span className="text-xs text-foreground font-medium">{currentText.trustedBy}</span>
         </div>
         <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-border/30">
           <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => (
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" key={i} />
+              <Star className="h-4 w-4 fill-chart-3 text-chart-3" key={i} />
             ))}
           </div>
           <span className="text-sm text-foreground font-medium">4.9/5</span>

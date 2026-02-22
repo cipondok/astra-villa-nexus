@@ -171,13 +171,13 @@ const PropertyBooking: React.FC<PropertyBookingProps> = ({
           </span>
           <div className="flex space-x-2">
             {canBookOnline && (
-              <Badge className="bg-green-100 text-green-800">
+              <Badge className="bg-chart-1/10 text-chart-1">
                 <Zap className="h-3 w-3 mr-1" />
                 Online Booking
               </Badge>
             )}
             {property.booking_type === 'owner_only' && (
-              <Badge variant="outline" className="bg-orange-100 text-orange-800">
+              <Badge variant="outline" className="bg-chart-3/10 text-chart-3">
                 <User className="h-3 w-3 mr-1" />
                 Owner Only
               </Badge>
@@ -255,8 +255,8 @@ const PropertyBooking: React.FC<PropertyBookingProps> = ({
 
         {/* Booking Summary */}
         {checkInDate && checkOutDate && totalDays > 0 && (
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-purple-900 mb-2">Ringkasan Booking</h4>
+          <div className="bg-accent/10 p-4 rounded-lg">
+            <h4 className="font-semibold text-accent-foreground mb-2">Ringkasan Booking</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>Durasi sewa:</span>
@@ -266,12 +266,12 @@ const PropertyBooking: React.FC<PropertyBookingProps> = ({
                 <span>Harga per hari:</span>
                 <span className="font-medium">Rp {property.price?.toLocaleString('id-ID')}</span>
               </div>
-              <div className="flex justify-between text-base font-semibold text-purple-900 border-t pt-2">
+              <div className="flex justify-between text-base font-semibold text-accent-foreground border-t pt-2">
                 <span>Total:</span>
                 <span>Rp {totalAmount.toLocaleString('id-ID')}</span>
               </div>
               {canBookOnline && (
-                <div className="flex justify-between text-sm text-orange-700">
+                <div className="flex justify-between text-sm text-chart-3">
                   <span>Deposit (30%):</span>
                   <span className="font-medium">Rp {depositAmount.toLocaleString('id-ID')}</span>
                 </div>
@@ -298,8 +298,8 @@ const PropertyBooking: React.FC<PropertyBookingProps> = ({
 
         {/* Agent/Owner Contact Info */}
         {agentInfo && (
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-900 mb-3">Kontak {agentInfo.company_name ? 'Agent' : 'Pemilik'}</h4>
+          <div className="bg-muted/50 p-4 rounded-lg">
+            <h4 className="font-semibold text-foreground mb-3">Kontak {agentInfo.company_name ? 'Agent' : 'Pemilik'}</h4>
             <div className="flex items-start space-x-3">
               {agentInfo.avatar_url && (
                 <img 
@@ -309,9 +309,9 @@ const PropertyBooking: React.FC<PropertyBookingProps> = ({
                 />
               )}
               <div className="flex-1">
-                <p className="font-medium text-gray-900">{agentInfo.full_name}</p>
+                <p className="font-medium text-foreground">{agentInfo.full_name}</p>
                 {agentInfo.company_name && (
-                  <p className="text-sm text-gray-600">{agentInfo.company_name}</p>
+                  <p className="text-sm text-muted-foreground">{agentInfo.company_name}</p>
                 )}
                 <div className="flex flex-wrap gap-2 mt-2">
                   {agentInfo.whatsapp_number && (
@@ -319,7 +319,7 @@ const PropertyBooking: React.FC<PropertyBookingProps> = ({
                       size="sm"
                       variant="outline"
                       onClick={handleWhatsAppContact}
-                      className="text-green-600 border-green-200 hover:bg-green-50"
+                      className="text-chart-1 border-chart-1/20 hover:bg-chart-1/10"
                     >
                       <MessageCircle className="h-4 w-4 mr-1" />
                       WhatsApp
@@ -381,7 +381,7 @@ const PropertyBooking: React.FC<PropertyBookingProps> = ({
             <Button
               onClick={handleBookingSubmit}
               disabled={isSubmitting || !checkInDate || !checkOutDate || !termsAccepted}
-              className="w-full bg-green-600 hover:bg-green-700"
+              className="w-full bg-chart-1 hover:bg-chart-1/90 text-primary-foreground"
             >
               <CheckCircle className="h-4 w-4 mr-2" />
               {isSubmitting ? 'Memproses...' : 'Book Sekarang'}
@@ -403,7 +403,7 @@ const PropertyBooking: React.FC<PropertyBookingProps> = ({
             <Button
               onClick={handleWhatsAppContact}
               variant="outline"
-              className="w-full text-green-600 border-green-200 hover:bg-green-50"
+              className="w-full text-chart-1 border-chart-1/20 hover:bg-chart-1/10"
             >
               <MessageCircle className="h-4 w-4 mr-2" />
               Chat WhatsApp Langsung
@@ -412,10 +412,10 @@ const PropertyBooking: React.FC<PropertyBookingProps> = ({
         </div>
 
         {/* Booking Notice */}
-        <div className="bg-blue-50 p-4 rounded-lg">
+        <div className="bg-chart-4/10 p-4 rounded-lg">
           <div className="flex items-start space-x-2">
-            <AlertTriangle className="h-5 w-5 text-blue-600 mt-0.5" />
-            <div className="text-sm text-blue-800">
+            <AlertTriangle className="h-5 w-5 text-chart-4 mt-0.5" />
+            <div className="text-sm text-chart-4">
               <p className="font-medium mb-1">Catatan Penting:</p>
               <ul className="space-y-1 text-sm">
                 <li>• Minimum sewa: {property.minimum_rental_days} hari</li>
