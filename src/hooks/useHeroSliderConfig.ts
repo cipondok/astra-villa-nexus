@@ -2,6 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface HeroSliderConfig {
+  bannerImages: string[];
+  sliderHeight: number;
+  sliderMinHeight: number;
+  sliderMaxHeight: number;
+  autoSlideInterval: number;
   backgroundImage: string;
   imageBrightness: number;
   imageSaturation: number;
@@ -30,6 +35,11 @@ export interface HeroSliderConfig {
 }
 
 const defaultConfig: HeroSliderConfig = {
+  bannerImages: [],
+  sliderHeight: 550,
+  sliderMinHeight: 400,
+  sliderMaxHeight: 650,
+  autoSlideInterval: 5,
   backgroundImage: '',
   imageBrightness: 110,
   imageSaturation: 110,

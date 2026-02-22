@@ -283,13 +283,20 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Compute banner images - use admin config or fallback to defaults
+  const bannerImages = heroConfig?.bannerImages && heroConfig.bannerImages.length > 0
+    ? heroConfig.bannerImages
+    : [astraBanner1, astraBanner2];
+  
+  const slideInterval = (heroConfig?.autoSlideInterval || 5) * 1000;
+
   // Auto-slide hero banner
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 2);
-    }, 5000);
+      setCurrentSlide((prev) => (prev + 1) % bannerImages.length);
+    }, slideInterval);
     return () => clearInterval(interval);
-  }, []);
+  }, [bannerImages.length, slideInterval]);
   const [showShortcutsPanel, setShowShortcutsPanel] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -515,9 +522,11 @@ const Index = () => {
           {/* Hero Banner Slider */}
           <div
             className="w-full overflow-hidden relative"
-            style={{ height: 'clamp(400px, 60vw, 650px)' }}
+            style={{ 
+              height: `clamp(${heroConfig?.sliderMinHeight || 400}px, 60vw, ${heroConfig?.sliderMaxHeight || 650}px)` 
+            }}
           >
-            {[astraBanner1, astraBanner2].map((banner, index) => (
+            {bannerImages.map((banner, index) => (
               <img 
                 key={index}
                 src={banner} 
@@ -533,7 +542,7 @@ const Index = () => {
             
             {/* Slide indicators */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
-              {[0, 1].map((i) => (
+              {bannerImages.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentSlide(i)}
