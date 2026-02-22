@@ -279,7 +279,7 @@ const VendorServicesCategoryShowcase = () => {
             <Card className="bg-gradient-to-r from-primary/5 to-chart-5/5 border-none">
               <CardHeader className="text-center">
                 <div className="flex justify-center items-center gap-4 mb-4">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center text-4xl shadow-lg">
+                  <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center text-4xl shadow-lg">
                     {mainCategory.icon}
                   </div>
                   <div className="text-left">

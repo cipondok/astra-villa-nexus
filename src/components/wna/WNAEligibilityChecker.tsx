@@ -488,7 +488,7 @@ const WNAEligibilityChecker: React.FC = () => {
               exit={{ opacity: 0, x: 20 }}
               className={cn(
                 "p-3 rounded-lg",
-                "bg-white/80 dark:bg-white/5",
+                "bg-background/80 dark:bg-background/5",
                 "border border-accent/30"
               )}
             >
