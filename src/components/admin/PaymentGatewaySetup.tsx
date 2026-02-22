@@ -738,7 +738,7 @@ const PaymentGatewaySetup = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Globe className="h-5 w-5 text-blue-500" />
+              <Globe className="h-5 w-5 text-chart-4" />
               <div>
                 <p className="text-sm text-muted-foreground">Live Gateways</p>
                 <p className="text-lg font-semibold">
@@ -752,7 +752,7 @@ const PaymentGatewaySetup = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Shield className="h-5 w-5 text-purple-500" />
+              <Shield className="h-5 w-5 text-accent" />
               <div>
                 <p className="text-sm text-muted-foreground">Setup Complete</p>
                 <p className="text-lg font-semibold">

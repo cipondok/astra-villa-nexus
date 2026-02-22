@@ -152,28 +152,28 @@ const VendorSmartSummary = () => {
       value: formatRupiah(stats.totalEarnings),
       trend: stats.earningsTrend,
       icon: <DollarSign className="h-6 w-6" />,
-      bgColor: "from-green-500 to-green-600"
+      bgColor: "from-chart-1 to-chart-1/80"
     },
     {
       title: "Bulan Ini",
       value: formatRupiah(stats.monthlyEarnings),
       trend: stats.earningsTrend,
       icon: <Calendar className="h-6 w-6" />,
-      bgColor: "from-blue-500 to-blue-600"
+      bgColor: "from-primary to-primary/80"
     },
     {
       title: "Rating Rata-rata",
       value: stats.avgRating.toFixed(1),
       icon: <Star className="h-6 w-6" />,
-      bgColor: "from-yellow-500 to-orange-500"
+      bgColor: "from-gold-primary to-chart-3"
     },
     {
       title: "Status BPJS",
       value: getBPJSBadge(),
       icon: <Shield className="h-6 w-6" />,
       bgColor: stats.bpjsStatus === 'active' 
-        ? "from-green-500 to-green-600" 
-        : "from-orange-500 to-red-500"
+        ? "from-chart-1 to-chart-1/80" 
+        : "from-chart-3 to-destructive"
     }
   ];
 
@@ -186,10 +186,10 @@ const VendorSmartSummary = () => {
             <div className="flex items-center gap-3">
               {getPropertyTypeIcon()}
               <div>
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="text-2xl font-bold text-primary-foreground">
                   Dashboard {stats.propertyType === 'commercial' ? 'Komersial' : 'Perumahan'}
                 </h2>
-                <p className="text-white/80">
+                <p className="text-primary-foreground/80">
                   {stats.propertyType === 'commercial' 
                     ? 'Layanan untuk kantor dan toko' 
                     : 'Layanan untuk rumah dan properti pribadi'
@@ -199,7 +199,7 @@ const VendorSmartSummary = () => {
             </div>
             <Badge 
               variant="outline" 
-              className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+              className="bg-primary-foreground/20 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/30"
             >
               {stats.propertyType === 'commercial' ? 'Commercial' : 'Residential'}
             </Badge>
@@ -214,7 +214,7 @@ const VendorSmartSummary = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-white">{card.title}</p>
+                  <p className="text-sm font-medium text-primary-foreground">{card.title}</p>
                   {typeof card.value === 'string' ? (
                     <p className="text-2xl font-bold">{card.value}</p>
                   ) : (
@@ -231,7 +231,7 @@ const VendorSmartSummary = () => {
                     </div>
                   )}
                 </div>
-                <div className="text-white/80">
+                <div className="text-primary-foreground/80">
                   {card.icon}
                 </div>
               </div>

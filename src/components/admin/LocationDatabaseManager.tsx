@@ -533,8 +533,8 @@ const LocationDatabaseManager = () => {
 
       {/* Edit Location Modal */}
       {editingLocation && (
-        <Card className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <Card className="fixed inset-0 z-50 flex items-center justify-center bg-background/50">
+          <div className="bg-card p-6 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Edit Lokasi</h3>
               <Button

@@ -166,7 +166,7 @@ const EnhancedImageGallery = ({
                 </Badge>
               )}
               {propertyType && (
-                <Badge variant="outline" className="bg-white/80 dark:bg-black/70 backdrop-blur-md border-white/40 dark:border-white/20 text-foreground px-2 py-1 text-[10px] sm:text-xs capitalize">
+                <Badge variant="outline" className="bg-card/80 dark:bg-background/70 backdrop-blur-md border-border/40 dark:border-border/20 text-foreground px-2 py-1 text-[10px] sm:text-xs capitalize">
                   <PropertyIcon className="h-3 w-3 mr-1" />
                   {propertyType}
                 </Badge>
@@ -175,7 +175,7 @@ const EnhancedImageGallery = ({
 
             {/* Top Right - Image Counter & Camera Icon */}
             <div className="absolute top-3 sm:top-4 right-3 sm:right-4 flex items-center gap-2">
-              <Badge className="bg-black/60 text-white backdrop-blur-md border-0 px-2.5 py-1 text-xs">
+              <Badge className="bg-background/60 text-foreground backdrop-blur-md border-0 px-2.5 py-1 text-xs">
                 <Camera className="h-3 w-3 mr-1" />
                 {currentImageIndex + 1} / {images.length}
               </Badge>
@@ -188,19 +188,19 @@ const EnhancedImageGallery = ({
                 {(bedrooms || bathrooms || areaSqm) && (
                   <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-md rounded-lg px-2.5 py-1.5">
                     {bedrooms && (
-                      <span className="flex items-center gap-1 text-white text-xs">
+                      <span className="flex items-center gap-1 text-primary-foreground text-xs">
                         <Bed className="h-3 w-3" />
                         {bedrooms}
                       </span>
                     )}
                     {bathrooms && (
-                      <span className="flex items-center gap-1 text-white text-xs">
+                      <span className="flex items-center gap-1 text-primary-foreground text-xs">
                         <Bath className="h-3 w-3" />
                         {bathrooms}
                       </span>
                     )}
                     {areaSqm && (
-                      <span className="flex items-center gap-1 text-white text-xs">
+                      <span className="flex items-center gap-1 text-primary-foreground text-xs">
                         <Square className="h-3 w-3" />
                         {areaSqm}m²
                       </span>
@@ -211,8 +211,8 @@ const EnhancedImageGallery = ({
                 {/* Time Ago */}
                 {createdAt && (
                   <div className="flex items-center gap-1 bg-black/50 backdrop-blur-md rounded-lg px-2.5 py-1.5">
-                    <Clock className="h-3 w-3 text-white/80" />
-                    <span className="text-white/90 text-xs">
+                    <Clock className="h-3 w-3 text-primary-foreground/80" />
+                    <span className="text-primary-foreground/90 text-xs">
                       {formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: id })}
                     </span>
                   </div>
@@ -221,7 +221,7 @@ const EnhancedImageGallery = ({
               
               {/* Location */}
               {location && (
-                <div className="flex items-center gap-1 text-white/90 text-xs sm:text-sm">
+                <div className="flex items-center gap-1 text-primary-foreground/90 text-xs sm:text-sm">
                   <MapPin className="h-3.5 w-3.5" />
                   <span className="line-clamp-1">{location}</span>
                 </div>
@@ -234,7 +234,7 @@ const EnhancedImageGallery = ({
                 <Button
                   variant="outline"
                   size="icon"
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 border-white/20 text-white hover:bg-black/90 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/70 border-border/20 text-foreground hover:bg-background/90 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={previousImage}
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -242,7 +242,7 @@ const EnhancedImageGallery = ({
                 <Button
                   variant="outline"
                   size="icon"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/70 border-white/20 text-white hover:bg-black/90 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/70 border-border/20 text-foreground hover:bg-background/90 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={nextImage}
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -255,7 +255,7 @@ const EnhancedImageGallery = ({
               <Button
                 variant="outline"
                 size="sm"
-                className="bg-black/70 border-white/20 text-white hover:bg-black/90"
+                className="bg-background/70 border-border/20 text-foreground hover:bg-background/90"
                 onClick={() => setShowFullscreen(true)}
               >
                 <Maximize className="h-4 w-4 mr-1" />
@@ -264,7 +264,7 @@ const EnhancedImageGallery = ({
               <Button
                 variant="outline"
                 size="sm"
-                className="bg-black/70 border-white/20 text-white hover:bg-black/90"
+                className="bg-background/70 border-border/20 text-foreground hover:bg-background/90"
                 onClick={handleDownloadImage}
               >
                 <Download className="h-4 w-4" />
@@ -317,7 +317,7 @@ const EnhancedImageGallery = ({
             <Button
               variant="outline"
               size="icon"
-              className="absolute top-4 right-4 z-10 bg-black/70 border-white/20 text-white hover:bg-black/90"
+              className="absolute top-4 right-4 z-10 bg-background/70 border-border/20 text-foreground hover:bg-background/90"
               onClick={() => setShowFullscreen(false)}
             >
               <X className="h-4 w-4" />
@@ -325,7 +325,7 @@ const EnhancedImageGallery = ({
 
             {/* Image Counter */}
             <div className="absolute top-4 left-4 z-10">
-              <Badge className="bg-black/70 text-white backdrop-blur-sm">
+              <Badge className="bg-background/70 text-foreground backdrop-blur-sm">
                 {currentImageIndex + 1} / {images.length}
               </Badge>
             </div>
@@ -358,7 +358,7 @@ const EnhancedImageGallery = ({
                 <Button
                   variant="outline"
                   size="icon"
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 border-white/20 text-white hover:bg-black/90"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/70 border-border/20 text-foreground hover:bg-background/90"
                   onClick={previousImage}
                 >
                   <ChevronLeft className="h-5 w-5" />
@@ -366,7 +366,7 @@ const EnhancedImageGallery = ({
                 <Button
                   variant="outline"
                   size="icon"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/70 border-white/20 text-white hover:bg-black/90"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/70 border-border/20 text-foreground hover:bg-background/90"
                   onClick={nextImage}
                 >
                   <ChevronRight className="h-5 w-5" />
@@ -379,7 +379,7 @@ const EnhancedImageGallery = ({
               <Button
                 variant="outline"
                 size="sm"
-                className="bg-black/70 border-white/20 text-white hover:bg-black/90"
+                className="bg-background/70 border-border/20 text-foreground hover:bg-background/90"
                 onClick={handleDownloadImage}
               >
                 <Download className="h-4 w-4 mr-1" />

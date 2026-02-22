@@ -129,7 +129,7 @@ const Analytics = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-12">
+        <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-12">
           <div className="container mx-auto px-4">
             <div className="flex items-center gap-3 mb-4">
               <BarChart3 className="h-8 w-8" />

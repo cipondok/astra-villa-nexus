@@ -180,7 +180,7 @@ const BPJSVerification = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <Label className="text-base font-semibold">
-                BPJS Ketenagakerjaan {isCommercialRequired && <span className="text-red-500">*</span>}
+                BPJS Ketenagakerjaan {isCommercialRequired && <span className="text-destructive">*</span>}
               </Label>
               {getStatusBadge(verificationStatus.ketenagakerjaan)}
             </div>

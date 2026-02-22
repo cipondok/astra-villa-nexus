@@ -47,7 +47,7 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
 
   return (
     <Card 
-      className="group cursor-pointer overflow-hidden bg-white/70 dark:bg-white/5 border-2 border-border/50 backdrop-blur-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 active:scale-[0.98]"
+      className="group cursor-pointer overflow-hidden bg-card/70 dark:bg-card/5 border-2 border-border/50 backdrop-blur-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 active:scale-[0.98]"
       onClick={onClick}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -89,7 +89,7 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
 
         {/* Listing Type */}
         <div className="absolute bottom-1.5 right-1.5">
-          <Badge variant="secondary" className="text-[8px] px-1 py-0.5 capitalize bg-white/80 dark:bg-black/50">
+          <Badge variant="secondary" className="text-[8px] px-1 py-0.5 capitalize bg-card/80 dark:bg-background/50">
             {property.listing_type || 'sale'}
           </Badge>
         </div>
@@ -133,7 +133,7 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
 };
 
 const PropertyCardSkeleton = () => (
-  <Card className="overflow-hidden bg-white/70 dark:bg-white/5 border-2 border-border/50">
+  <Card className="overflow-hidden bg-card/70 dark:bg-card/5 border-2 border-border/50">
     <Skeleton className="aspect-[4/3] w-full" />
     <CardContent className="p-2 space-y-1.5">
       <Skeleton className="h-3 w-3/4" />
@@ -165,7 +165,7 @@ const PropertySection = ({
   const navigate = useNavigate();
 
   return (
-    <Card className="bg-white/50 dark:bg-white/5 border-2 border-border/50 backdrop-blur-sm">
+    <Card className="bg-card/50 dark:bg-card/5 border-2 border-border/50 backdrop-blur-sm">
       <CardHeader className="p-2.5 sm:p-3 pb-1.5 flex flex-row items-center justify-between">
         <div className="flex items-center gap-1.5">
           {icon && <div className="flex-shrink-0">{icon}</div>}

@@ -333,7 +333,7 @@ const CSEmailTemplatesManager = () => {
                 <div>
                   <label className="text-sm font-medium">HTML Preview:</label>
                   <div 
-                    className="border rounded p-4 bg-white text-black min-h-[200px]"
+                    className="border rounded p-4 bg-background text-foreground min-h-[200px]"
                     dangerouslySetInnerHTML={{ 
                       __html: DOMPurify.sanitize(
                         selectedTemplate.body_html.replace(/{{.*?}}/g, '[VARIABLE]')

@@ -484,7 +484,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                         <Checkbox
                           checked={selectedProperties.has(property.id)}
                           onCheckedChange={(checked) => handleSelect(property.id, checked as boolean)}
-                          className="bg-white shadow-sm h-3.5 w-3.5"
+                          className="bg-background shadow-sm h-3.5 w-3.5"
                         />
                       </div>
                       {(() => {
@@ -515,7 +515,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                               <Building2 className="h-6 w-6 text-primary/30" />
                             </div>
                             {imgCount > 1 && (
-                              <div className="absolute bottom-1 right-1 bg-black/60 text-white text-[8px] px-1 py-0.5 rounded">
+                              <div className="absolute bottom-1 right-1 bg-background/60 text-foreground text-[8px] px-1 py-0.5 rounded">
                                 📷 {imgCount}
                               </div>
                             )}
