@@ -293,7 +293,7 @@ const WNAPropertyTypes: React.FC = () => {
               transition={{ delay: idx * 0.05 }}
               className={cn(
                 "rounded-lg p-3 transition-all duration-200",
-                "bg-white/60 dark:bg-white/5",
+                "bg-card/60 dark:bg-muted/10",
                 "border-2",
                 isProhibited 
                   ? "border-destructive/30" 
@@ -349,7 +349,7 @@ const WNAPropertyTypes: React.FC = () => {
       {/* Minimum Values Table */}
       <div className={cn(
         "rounded-lg p-3",
-        "bg-white/60 dark:bg-white/5",
+        "bg-card/60 dark:bg-muted/10",
         "border-2 border-accent/30"
       )}>
         <div className="flex items-center gap-2 mb-2">

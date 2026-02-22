@@ -55,10 +55,10 @@ const ThemeToggleSwitch = ({ language = "en", className = "", showLabel = true }
       onClick={toggleTheme}
       className={`
         flex items-center space-x-2 px-3 py-2 rounded-xl transition-all duration-300
-        backdrop-blur-xl bg-white/10 dark:bg-black/20 
-        border border-white/20 dark:border-yellow-500/30
-        hover:bg-white/20 dark:hover:bg-yellow-500/10 
-        hover:border-white/30 dark:hover:border-yellow-500/40
+        backdrop-blur-xl bg-muted/10 dark:bg-muted/20 
+        border border-border/20 dark:border-gold-primary/30
+        hover:bg-muted/20 dark:hover:bg-gold-primary/10 
+        hover:border-border/30 dark:hover:border-gold-primary/40
         hover:scale-105 shadow-lg hover:shadow-xl
         ${className}
       `}

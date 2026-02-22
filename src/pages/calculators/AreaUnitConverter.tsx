@@ -71,7 +71,7 @@ const AreaUnitConverter = () => {
           <p className="text-[10px] md:text-xs text-muted-foreground">Convert between different area measurements instantly</p>
         </div>
 
-      <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+      <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
         <CardHeader className="p-3">
           <CardTitle className="text-xs md:text-sm">Convert Area Units</CardTitle>
           <CardDescription className="text-[10px] md:text-xs">Enter a value and select units to convert</CardDescription>

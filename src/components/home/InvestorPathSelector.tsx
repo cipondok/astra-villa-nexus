@@ -133,7 +133,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                 className={cn(
                   "group relative flex flex-col items-center gap-2 px-3 md:px-4 py-2.5 md:py-3",
                   "rounded-xl cursor-pointer transition-all duration-300",
-                  "bg-white/70 dark:bg-white/10 backdrop-blur-md",
+                  "bg-card/70 dark:bg-muted/10 backdrop-blur-md",
                   "border-2", item.borderColor, item.hoverBorder,
                   "hover:shadow-xl hover:scale-[1.03] active:scale-[0.98]",
                   "min-w-[110px] md:min-w-[140px]"
@@ -175,7 +175,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                       key={idx}
                       className={cn(
                         "px-1.5 py-0.5 rounded-full text-[6px] md:text-[7px] font-medium",
-                        "bg-background/60 dark:bg-white/10",
+                        "bg-background/60 dark:bg-muted/20",
                         item.accentColor
                       )}
                     >
@@ -202,7 +202,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
             className={cn(
               "group relative flex flex-col items-center gap-2 px-3 md:px-4 py-2.5 md:py-3",
               "rounded-xl cursor-pointer transition-all duration-300",
-              "bg-white/70 dark:bg-white/10 backdrop-blur-md",
+              "bg-card/70 dark:bg-muted/10 backdrop-blur-md",
               "border-2", centralPath.borderColor, centralPath.hoverBorder,
               "hover:shadow-xl hover:scale-[1.03] active:scale-[0.98]",
               "min-w-[110px] md:min-w-[140px]"
@@ -244,7 +244,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                   key={idx}
                   className={cn(
                     "px-1.5 py-0.5 rounded-full text-[6px] md:text-[7px] font-medium",
-                    "bg-background/60 dark:bg-white/10",
+                    "bg-background/60 dark:bg-muted/20",
                     centralPath.accentColor
                   )}
                 >

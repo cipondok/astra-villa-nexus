@@ -290,7 +290,7 @@ const TopAgentsCarousel = () => {
                     )}
                     
                     {agent.is_verified && (
-                      <Badge className="bg-green-100 text-green-700 mb-2">
+                      <Badge className="bg-chart-1/10 text-chart-1 mb-2">
                         <CheckCircle className="h-3 w-3 mr-1" />
                         VERIFIED
                       </Badge>

@@ -196,8 +196,8 @@ const WNIPage = () => {
                   transition={{ delay: idx * 0.03, duration: 0.3 }}
                   className={cn(
                     "relative overflow-hidden rounded-lg p-2 sm:p-2.5",
-                    "bg-white/70 dark:bg-white/5",
-                    "border border-border/30 dark:border-white/10",
+                    "bg-card/70 dark:bg-muted/10",
+                    "border border-border/30 dark:border-border/20",
                     "hover:border-primary/40 active:scale-95",
                     "transition-all duration-200 group flex flex-col items-center text-center"
                   )}
@@ -231,7 +231,7 @@ const WNIPage = () => {
         <div className="max-w-6xl mx-auto">
           <div className={cn(
             "rounded-lg p-2.5 sm:p-4",
-            "bg-white/80 dark:bg-white/5",
+            "bg-card/80 dark:bg-muted/10",
             "border border-border/30 dark:border-primary/10",
             "backdrop-blur-xl shadow-sm"
           )}>
