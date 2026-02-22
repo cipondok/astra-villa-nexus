@@ -320,7 +320,7 @@ const Disewa = () => {
                         Disewa
                       </Badge>
                       {property.online_booking_enabled && property.booking_type !== 'owner_only' && (
-                        <Badge className="bg-green-500 text-white text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1">
+                        <Badge className="bg-chart-1 text-primary-foreground text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1">
                           <Zap className="h-3 w-3" />
                           Online
                         </Badge>
@@ -393,9 +393,9 @@ const Disewa = () => {
                   Properti dengan badge "Online" dapat langsung dibooking melalui sistem.
                 </p>
               </div>
-              <div className="p-4 bg-green-500/5 rounded-md border border-green-500/10">
-                <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center mb-3">
-                  <Calendar className="h-5 w-5 text-green-600" />
+              <div className="p-4 bg-chart-1/5 rounded-md border border-chart-1/10">
+                <div className="w-10 h-10 rounded-full bg-chart-1/10 flex items-center justify-center mb-3">
+                  <Calendar className="h-5 w-5 text-chart-1" />
                 </div>
                 <h3 className="font-semibold text-foreground mb-1 text-sm">Periode Fleksibel</h3>
                 <p className="text-xs text-muted-foreground">

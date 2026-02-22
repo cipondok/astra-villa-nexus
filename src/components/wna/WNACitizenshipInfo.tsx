@@ -378,7 +378,7 @@ const WNACitizenshipInfo: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className={cn(
                 "rounded-lg overflow-hidden transition-all duration-200",
-                "bg-white/60 dark:bg-white/5",
+                "bg-card/60 dark:bg-card/5",
                 "border-2",
                 isExpanded ? "border-accent/50 shadow-md" : "border-border/50"
               )}
@@ -474,7 +474,7 @@ const WNACitizenshipInfo: React.FC = () => {
       {/* Naturalization Process */}
       <div className={cn(
         "rounded-lg p-3",
-        "bg-white/60 dark:bg-white/5",
+        "bg-card/60 dark:bg-card/5",
         "border-2 border-accent/30"
       )}>
         <h4 className="text-xs sm:text-sm font-bold text-foreground mb-3 flex items-center gap-2">

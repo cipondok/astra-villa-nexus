@@ -131,7 +131,7 @@ const VerificationCenter: React.FC = () => {
                       <ul className="space-y-2">
                         {badge.benefits.map((benefit, i) => (
                           <li key={i} className="flex items-start gap-2 text-sm">
-                            <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                            <CheckCircle2 className="h-4 w-4 text-chart-1 shrink-0 mt-0.5" />
                             <span>{benefit}</span>
                           </li>
                         ))}
