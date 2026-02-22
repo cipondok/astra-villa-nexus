@@ -419,7 +419,7 @@ const VendorServicesList = ({ onAddService, onEditService }: VendorServicesListP
                     </div>
                     
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 text-yellow-500" />
+                      <Star className="h-4 w-4 text-chart-3" />
                       <span>{service.rating || 0}</span>
                     </div>
                     
@@ -436,7 +436,7 @@ const VendorServicesList = ({ onAddService, onEditService }: VendorServicesListP
                     </div>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-muted-foreground">Growth Rate</span>
-                      <span className={`text-sm font-medium ${(service.growth_rate || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      <span className={`text-sm font-medium ${(service.growth_rate || 0) >= 0 ? 'text-chart-1' : 'text-destructive'}`}>
                         {(service.growth_rate || 0) >= 0 ? '+' : ''}{service.growth_rate || 0}%
                       </span>
                     </div>
