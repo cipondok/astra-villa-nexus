@@ -22,15 +22,15 @@ const MembershipLevel = () => {
     name: "Silver",
     level: 2,
     icon: Star,
-    color: "bg-gradient-to-r from-gray-400 to-gray-600",
-    textColor: "text-gray-600"
+    color: "bg-gradient-to-r from-muted-foreground to-muted-foreground/70",
+    textColor: "text-muted-foreground"
   };
 
   const nextLevel = {
     name: "Gold",
     level: 3,
     icon: Crown,
-    color: "bg-gradient-to-r from-yellow-400 to-yellow-600"
+    color: "bg-gradient-to-r from-gold-primary to-gold-primary/70"
   };
 
   const progress = {
@@ -130,13 +130,13 @@ const MembershipLevel = () => {
                       <TableRow key={index}>
                         <TableCell>
                           {req.completed ? (
-                            <CheckCircle className="h-4 w-4 text-green-500" />
+                            <CheckCircle className="h-4 w-4 text-chart-1" />
                           ) : (
-                            <Clock className="h-4 w-4 text-orange-500" />
+                            <Clock className="h-4 w-4 text-chart-3" />
                           )}
                         </TableCell>
                         <TableCell className="font-medium">{req.name}</TableCell>
-                        <TableCell className={req.completed ? "text-green-600" : "text-muted-foreground"}>
+                        <TableCell className={req.completed ? "text-chart-1" : "text-muted-foreground"}>
                           {req.current}
                         </TableCell>
                         <TableCell className="text-muted-foreground">{req.required}</TableCell>
@@ -172,7 +172,7 @@ const MembershipLevel = () => {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="border-yellow-500 text-yellow-700">
+                          <Badge variant="outline" className="border-gold-primary text-gold-primary">
                             {benefit.next}
                           </Badge>
                         </TableCell>

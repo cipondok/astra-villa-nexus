@@ -106,11 +106,11 @@ export const EscrowDashboard: React.FC<EscrowDashboardProps> = ({
 
   const getStatusColor = (status: EscrowStatus) => {
     switch (status) {
-      case EscrowStatus.Created: return 'bg-yellow-500/20 text-yellow-700';
-      case EscrowStatus.Funded: return 'bg-blue-500/20 text-blue-700';
-      case EscrowStatus.Released: return 'bg-green-500/20 text-green-700';
-      case EscrowStatus.Refunded: return 'bg-gray-500/20 text-gray-700';
-      case EscrowStatus.Disputed: return 'bg-red-500/20 text-red-700';
+      case EscrowStatus.Created: return 'bg-chart-3/20 text-chart-3';
+      case EscrowStatus.Funded: return 'bg-chart-4/20 text-chart-4';
+      case EscrowStatus.Released: return 'bg-chart-1/20 text-chart-1';
+      case EscrowStatus.Refunded: return 'bg-muted text-muted-foreground';
+      case EscrowStatus.Disputed: return 'bg-destructive/20 text-destructive';
       default: return 'bg-muted text-muted-foreground';
     }
   };
@@ -132,7 +132,7 @@ export const EscrowDashboard: React.FC<EscrowDashboardProps> = ({
     return (
       <Card className="w-full">
         <CardContent className="flex flex-col items-center justify-center py-12">
-          <AlertTriangle className="h-12 w-12 text-yellow-500 mb-4" />
+          <AlertTriangle className="h-12 w-12 text-chart-3 mb-4" />
           <p className="text-muted-foreground text-center">
             Please switch to Polygon network to use escrow features
           </p>
