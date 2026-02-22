@@ -210,19 +210,19 @@ const PictureUploadStep: React.FC<PictureUploadStepProps> = ({ formData, updateF
       {/* Suggested Image Types */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="text-center p-4">
-          <ImageIcon className="h-8 w-8 mx-auto text-blue-500 mb-2" />
+          <ImageIcon className="h-8 w-8 mx-auto text-chart-4 mb-2" />
           <h4 className="font-medium mb-1">Work Examples</h4>
           <p className="text-xs text-muted-foreground">Photos of completed projects</p>
         </Card>
         
         <Card className="text-center p-4">
-          <Camera className="h-8 w-8 mx-auto text-green-500 mb-2" />
+          <Camera className="h-8 w-8 mx-auto text-chart-1 mb-2" />
           <h4 className="font-medium mb-1">Process Photos</h4>
           <p className="text-xs text-muted-foreground">Show how you work</p>
         </Card>
         
         <Card className="text-center p-4">
-          <Upload className="h-8 w-8 mx-auto text-purple-500 mb-2" />
+          <Upload className="h-8 w-8 mx-auto text-chart-5 mb-2" />
           <h4 className="font-medium mb-1">Equipment</h4>
           <p className="text-xs text-muted-foreground">Professional tools & materials</p>
         </Card>
