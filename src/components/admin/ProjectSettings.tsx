@@ -546,7 +546,7 @@ const ProjectSettings = () => {
                             : config.allowed_file_types.filter(t => t !== type);
                           handleConfigChange('allowed_file_types', newTypes);
                         }}
-                        className="rounded border-gray-300"
+                        className="rounded border-border"
                       />
                       <Label htmlFor={`file-${type}`} className="text-sm">
                         .{type}

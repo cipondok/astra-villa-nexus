@@ -213,7 +213,7 @@ const VendorApplicationManagement = () => {
               <p className="text-sm text-muted-foreground">Total Applications</p>
               <p className="text-2xl font-bold">{stats?.total || 0}</p>
             </div>
-            <Users className="h-8 w-8 text-blue-600" />
+            <Users className="h-8 w-8 text-chart-4" />
           </div>
         </CardContent>
       </Card>
@@ -225,7 +225,7 @@ const VendorApplicationManagement = () => {
               <p className="text-sm text-muted-foreground">Pending Review</p>
               <p className="text-2xl font-bold">{stats?.pending || 0}</p>
             </div>
-            <Clock className="h-8 w-8 text-yellow-600" />
+            <Clock className="h-8 w-8 text-chart-3" />
           </div>
         </CardContent>
       </Card>
@@ -237,7 +237,7 @@ const VendorApplicationManagement = () => {
               <p className="text-sm text-muted-foreground">Approved</p>
               <p className="text-2xl font-bold">{stats?.approved || 0}</p>
             </div>
-            <CheckCircle className="h-8 w-8 text-green-600" />
+            <CheckCircle className="h-8 w-8 text-chart-1" />
           </div>
         </CardContent>
       </Card>
@@ -249,7 +249,7 @@ const VendorApplicationManagement = () => {
               <p className="text-sm text-muted-foreground">Rejected</p>
               <p className="text-2xl font-bold">{stats?.rejected || 0}</p>
             </div>
-            <XCircle className="h-8 w-8 text-red-600" />
+            <XCircle className="h-8 w-8 text-destructive" />
           </div>
         </CardContent>
       </Card>
@@ -434,9 +434,9 @@ const VendorApplicationManagement = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-orange-500/10 rounded-lg border border-yellow-200/50 dark:border-yellow-800/50">
-        <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-lg flex items-center justify-center">
-          <ClipboardList className="h-4 w-4 text-white" />
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-chart-3/10 via-gold-primary/10 to-chart-5/10 rounded-lg border border-chart-3/30">
+        <div className="w-8 h-8 bg-gradient-to-br from-chart-3 to-gold-primary rounded-lg flex items-center justify-center">
+          <ClipboardList className="h-4 w-4 text-primary-foreground" />
         </div>
         <div>
           <div className="flex items-center gap-2">
@@ -450,11 +450,11 @@ const VendorApplicationManagement = () => {
       {renderStatsCards()}
       {renderFilters()}
 
-      <Card className="border-yellow-200/50 dark:border-yellow-800/30">
+      <Card className="border-chart-3/30">
         <CardHeader className="p-3 pb-2">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-yellow-500/20 rounded flex items-center justify-center">
-              <FileText className="h-3 w-3 text-yellow-600" />
+            <div className="w-6 h-6 bg-chart-3/20 rounded flex items-center justify-center">
+              <FileText className="h-3 w-3 text-chart-3" />
             </div>
             <div>
               <CardTitle className="text-xs">Applications</CardTitle>
