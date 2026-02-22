@@ -461,12 +461,12 @@ const VirtualTourBooking: React.FC<VirtualTourBookingProps> = ({
               animate={{ opacity: 1, scale: 1 }}
               className="py-6 text-center space-y-4"
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-600 mb-2">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-chart-1/10 text-chart-1 mb-2">
                 <CheckCircle2 className="h-8 w-8" />
               </div>
 
               <div>
-                <h3 className="text-xl font-bold text-green-600">Tour Booked!</h3>
+                <h3 className="text-xl font-bold text-chart-1">Tour Booked!</h3>
                 <p className="text-sm text-muted-foreground mt-1">
                   A confirmation email has been sent to {formData.guestEmail}
                 </p>

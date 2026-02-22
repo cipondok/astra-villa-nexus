@@ -164,10 +164,10 @@ const LocalPartnershipCard = () => {
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-emerald-500/10 to-teal-500/5">
+      <CardHeader className="bg-gradient-to-r from-chart-1/10 to-chart-1/5">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-emerald-500/20">
-            <Handshake className="w-6 h-6 text-emerald-600" />
+          <div className="p-2 rounded-lg bg-chart-1/20">
+            <Handshake className="w-6 h-6 text-chart-1" />
           </div>
           <div>
             <CardTitle>Local Business Partnerships</CardTitle>

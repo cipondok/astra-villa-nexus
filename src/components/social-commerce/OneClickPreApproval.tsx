@@ -183,12 +183,12 @@ const OneClickPreApproval: React.FC<OneClickPreApprovalProps> = ({
                   <div className="text-xs text-muted-foreground">Quick Process</div>
                 </div>
                 <div className="p-4 rounded-xl bg-muted/50">
-                  <Shield className="h-8 w-8 mx-auto text-green-500 mb-2" />
+                  <Shield className="h-8 w-8 mx-auto text-chart-1 mb-2" />
                   <div className="text-sm font-medium">Secure</div>
                   <div className="text-xs text-muted-foreground">Bank-Level</div>
                 </div>
                 <div className="p-4 rounded-xl bg-muted/50">
-                  <BadgeCheck className="h-8 w-8 mx-auto text-blue-500 mb-2" />
+                  <BadgeCheck className="h-8 w-8 mx-auto text-chart-4 mb-2" />
                   <div className="text-sm font-medium">No Impact</div>
                   <div className="text-xs text-muted-foreground">Soft Check</div>
                 </div>
@@ -389,19 +389,19 @@ const OneClickPreApproval: React.FC<OneClickPreApprovalProps> = ({
               {preApprovalResult.approved ? (
                 <>
                   <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-600 mb-4">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-chart-1/10 text-chart-1 mb-4">
                       <CheckCircle2 className="h-8 w-8" />
                     </div>
-                    <h3 className="text-xl font-bold text-green-600">Pre-Approved!</h3>
+                    <h3 className="text-xl font-bold text-chart-1">Pre-Approved!</h3>
                     <p className="text-sm text-muted-foreground mt-1">
                       Congratulations! You qualify for a mortgage
                     </p>
                   </div>
 
                   <div className="space-y-3">
-                    <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                    <div className="p-4 rounded-xl bg-chart-1/10 dark:bg-chart-1/20 border border-chart-1/20 dark:border-chart-1/30">
                       <div className="text-sm text-muted-foreground">Approved Amount</div>
-                      <div className="text-2xl font-bold text-green-600">
+                      <div className="text-2xl font-bold text-chart-1">
                         {formatCurrency(preApprovalResult.amount)}
                       </div>
                     </div>
@@ -430,7 +430,7 @@ const OneClickPreApproval: React.FC<OneClickPreApprovalProps> = ({
               ) : (
                 <>
                   <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-100 text-amber-600 mb-4">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-chart-3/10 text-chart-3 mb-4">
                       <AlertCircle className="h-8 w-8" />
                     </div>
                     <h3 className="text-xl font-bold">Under Review</h3>
