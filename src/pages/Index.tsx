@@ -534,11 +534,11 @@ const Index = () => {
             {/* Cinematic overlays - layered for depth */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50 pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/15 via-transparent to-black/15 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-hero-from via-hero-from/20 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent pointer-events-none" />
           </div>
           
           {/* Seamless fade into search section */}
-          <div className="absolute bottom-0 left-0 right-0 h-20 sm:h-28 bg-gradient-to-t from-hero-from via-hero-from/80 to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-20 sm:h-28 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none" />
         </section>
 
         {/* Search Section */}
