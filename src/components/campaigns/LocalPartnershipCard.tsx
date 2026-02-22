@@ -51,9 +51,9 @@ const PARTNER_TYPES = [
 ];
 
 const TIER_BADGES: Record<string, { label: string; color: string }> = {
-  basic: { label: 'Partner', color: 'bg-gray-500' },
-  premium: { label: 'Premium Partner', color: 'bg-blue-500' },
-  exclusive: { label: 'Exclusive Partner', color: 'bg-amber-500' }
+  basic: { label: 'Partner', color: 'bg-muted-foreground' },
+  premium: { label: 'Premium Partner', color: 'bg-chart-4' },
+  exclusive: { label: 'Exclusive Partner', color: 'bg-gold-primary' }
 };
 
 const LocalPartnershipCard = () => {
@@ -250,7 +250,7 @@ const LocalPartnershipCard = () => {
                             </p>
                             <div className="flex items-center gap-3">
                               <div className="flex items-center gap-1">
-                                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                                <Star className="w-4 h-4 text-gold-primary fill-gold-primary" />
                                 <span className="text-sm font-medium">
                                   {partner.customer_rating.toFixed(1)}
                                 </span>
@@ -258,7 +258,7 @@ const LocalPartnershipCard = () => {
                                   ({partner.review_count})
                                 </span>
                               </div>
-                              <Badge className={`${tierInfo.color} text-white text-xs`}>
+                              <Badge className={`${tierInfo.color} text-primary-foreground text-xs`}>
                                 {tierInfo.label}
                               </Badge>
                             </div>
@@ -290,45 +290,45 @@ const LocalPartnershipCard = () => {
           {/* Benefits Tab */}
           <TabsContent value="benefits" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-lg bg-emerald-500/5 border border-emerald-500/20">
-                <h4 className="font-medium text-emerald-600 mb-4 flex items-center gap-2">
+              <div className="p-6 rounded-lg bg-chart-1/5 border border-chart-1/20">
+                <h4 className="font-medium text-chart-1 mb-4 flex items-center gap-2">
                   <Building2 className="w-5 h-5" />
                   For Partners
                 </h4>
                 <ul className="space-y-3">
                   {valueProposition.forPartners.map((benefit, index) => (
                     <li key={index} className="flex items-start gap-2 text-sm">
-                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-chart-1 mt-0.5 flex-shrink-0" />
                       <span>{benefit}</span>
                     </li>
                   ))}
                 </ul>
               </div>
               
-              <div className="p-6 rounded-lg bg-blue-500/5 border border-blue-500/20">
-                <h4 className="font-medium text-blue-600 mb-4 flex items-center gap-2">
+              <div className="p-6 rounded-lg bg-chart-4/5 border border-chart-4/20">
+                <h4 className="font-medium text-chart-4 mb-4 flex items-center gap-2">
                   <TrendingUp className="w-5 h-5" />
                   Co-Marketing Ideas
                 </h4>
                 <ul className="space-y-3 text-sm">
                   <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-blue-500 mt-0.5" />
+                    <CheckCircle className="w-4 h-4 text-chart-4 mt-0.5" />
                     Joint webinars on home buying tips
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-blue-500 mt-0.5" />
+                    <CheckCircle className="w-4 h-4 text-chart-4 mt-0.5" />
                     Exclusive discounts for platform users
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-blue-500 mt-0.5" />
+                    <CheckCircle className="w-4 h-4 text-chart-4 mt-0.5" />
                     Featured blog posts and case studies
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-blue-500 mt-0.5" />
+                    <CheckCircle className="w-4 h-4 text-chart-4 mt-0.5" />
                     Social media cross-promotion
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-blue-500 mt-0.5" />
+                    <CheckCircle className="w-4 h-4 text-chart-4 mt-0.5" />
                     Open house event sponsorship
                   </li>
                 </ul>
@@ -344,15 +344,15 @@ const LocalPartnershipCard = () => {
                   <p className="text-xs text-muted-foreground">Target Partners</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-green-500">IDR 25M</p>
+                  <p className="text-2xl font-bold text-chart-1">IDR 25M</p>
                   <p className="text-xs text-muted-foreground">Marketing Budget</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-blue-500">10,000+</p>
+                  <p className="text-2xl font-bold text-chart-4">10,000+</p>
                   <p className="text-xs text-muted-foreground">Monthly Leads</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-amber-500">15%</p>
+                  <p className="text-2xl font-bold text-gold-primary">15%</p>
                   <p className="text-xs text-muted-foreground">Avg Conversion</p>
                 </div>
               </div>

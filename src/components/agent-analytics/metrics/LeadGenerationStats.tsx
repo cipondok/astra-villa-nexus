@@ -36,14 +36,14 @@ const LeadGenerationStats: React.FC<LeadGenerationStatsProps> = ({ data, classNa
       value: data.qualifiedLeads, 
       icon: UserCheck, 
       change: +15.2,
-      color: 'text-green-500' 
+      color: 'text-chart-1' 
     },
     { 
       label: 'Converted', 
       value: data.convertedLeads, 
       icon: Target, 
       change: +5.7,
-      color: 'text-orange-500' 
+      color: 'text-chart-3' 
     },
   ];
 
@@ -63,7 +63,7 @@ const LeadGenerationStats: React.FC<LeadGenerationStatsProps> = ({ data, classNa
               <stat.icon className={cn("h-4 w-4", stat.color)} />
               <span className={cn(
                 "flex items-center text-[10px] font-medium",
-                stat.change >= 0 ? "text-green-500" : "text-destructive"
+                stat.change >= 0 ? "text-chart-1" : "text-destructive"
               )}>
                 {stat.change >= 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
                 {Math.abs(stat.change)}%
@@ -188,7 +188,7 @@ const LeadGenerationStats: React.FC<LeadGenerationStatsProps> = ({ data, classNa
                 initial={{ width: 0 }}
                 animate={{ width: `${parseFloat(conversionRate) * 5}%` }}
                 transition={{ duration: 1, delay: 0.3 }}
-                className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full"
+                className="h-full bg-gradient-to-r from-chart-1 to-chart-1/70 rounded-full"
               />
             </div>
           </div>
