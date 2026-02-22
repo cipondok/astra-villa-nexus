@@ -173,9 +173,9 @@ const VendorComplianceAlerts = () => {
 
   if (alerts.length === 0) {
     return (
-      <Alert className="border-green-200 bg-green-50">
-        <CheckCircle className="h-4 w-4 text-green-600" />
-        <AlertDescription className="text-green-700">
+      <Alert className="border-chart-1/30 bg-chart-1/5">
+        <CheckCircle className="h-4 w-4 text-chart-1" />
+        <AlertDescription className="text-chart-1">
           ✅ Semua persyaratan compliance terpenuhi untuk layanan {propertyType === 'commercial' ? 'komersial' : 'perumahan'}
         </AlertDescription>
       </Alert>
@@ -223,9 +223,9 @@ const VendorComplianceAlerts = () => {
       <div className="p-4 bg-muted/50 rounded-lg">
         <div className="flex items-center gap-2 mb-2">
           {propertyType === 'commercial' ? (
-            <FileText className="h-4 w-4 text-orange-600" />
+            <FileText className="h-4 w-4 text-chart-3" />
           ) : (
-            <CheckCircle className="h-4 w-4 text-green-600" />
+            <CheckCircle className="h-4 w-4 text-chart-1" />
           )}
           <span className="font-medium">
             Persyaratan {propertyType === 'commercial' ? 'Komersial' : 'Perumahan'}

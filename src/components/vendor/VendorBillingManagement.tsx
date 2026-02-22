@@ -200,11 +200,11 @@ const VendorBillingManagement = () => {
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      draft: "bg-gray-100 text-gray-800",
-      sent: "bg-blue-100 text-blue-800",
-      paid: "bg-green-100 text-green-800",
-      overdue: "bg-red-100 text-red-800",
-      cancelled: "bg-red-100 text-red-800"
+      draft: "bg-muted text-muted-foreground",
+      sent: "bg-chart-4/10 text-chart-4",
+      paid: "bg-chart-1/10 text-chart-1",
+      overdue: "bg-destructive/10 text-destructive",
+      cancelled: "bg-destructive/10 text-destructive"
     };
 
     return (
@@ -252,9 +252,9 @@ const VendorBillingManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold text-green-600">${totalRevenue.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-chart-1">${totalRevenue.toFixed(2)}</p>
               </div>
-              <DollarSign className="h-8 w-8 text-green-600" />
+              <DollarSign className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -264,9 +264,9 @@ const VendorBillingManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Pending Amount</p>
-                <p className="text-2xl font-bold text-blue-600">${pendingAmount.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-chart-4">${pendingAmount.toFixed(2)}</p>
               </div>
-              <Calendar className="h-8 w-8 text-blue-600" />
+              <Calendar className="h-8 w-8 text-chart-4" />
             </div>
           </CardContent>
         </Card>
@@ -276,9 +276,9 @@ const VendorBillingManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Overdue Amount</p>
-                <p className="text-2xl font-bold text-red-600">${overdueAmount.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-destructive">${overdueAmount.toFixed(2)}</p>
               </div>
-              <AlertCircle className="h-8 w-8 text-red-600" />
+              <AlertCircle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
