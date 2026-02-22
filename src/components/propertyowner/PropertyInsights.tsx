@@ -89,7 +89,7 @@ const PropertyInsights = () => {
 
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <Star className="h-3 w-3 text-yellow-500" />
+                    <Star className="h-3 w-3 text-gold-primary" />
                     <span className="text-sm font-medium">{insight.metrics.rating.value}</span>
                     <span className="text-xs text-muted-foreground">({insight.metrics.rating.reviews})</span>
                   </div>
