@@ -87,7 +87,7 @@ const AstraDevelopment = () => {
     {
       icon: Building2,
       title: "Architectural & Structural Development",
-      color: "from-blue-500 to-cyan-500",
+      color: "from-chart-4 to-chart-4/70",
       items: [
         "Full villa planning & blueprint creation",
         "Structural engineering following international standards",
@@ -98,7 +98,7 @@ const AstraDevelopment = () => {
     {
       icon: Palette,
       title: "Interior & Landscape Design",
-      color: "from-purple-500 to-pink-500",
+      color: "from-chart-5 to-accent",
       items: [
         "Premium interior styling",
         "Custom material selection",
@@ -110,7 +110,7 @@ const AstraDevelopment = () => {
     {
       icon: Wrench,
       title: "Smart & Technical Integration",
-      color: "from-amber-500 to-orange-500",
+      color: "from-gold-primary to-chart-3",
       items: [
         "Smart home systems (IoT, voice AI, automation)",
         "High-performance materials and eco-friendly solutions",
@@ -120,7 +120,7 @@ const AstraDevelopment = () => {
     {
       icon: Globe,
       title: "Virtual Experience & Technology",
-      color: "from-emerald-500 to-teal-500",
+      color: "from-chart-1 to-chart-1/70",
       items: [
         "Interactive 3D villa viewer",
         "Three.js virtual tours",
@@ -255,7 +255,7 @@ const AstraDevelopment = () => {
             viewport={{ once: true }}
             className="text-center mb-6"
           >
-            <Badge className="mb-2 px-3 py-1 text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">
+            <Badge className="mb-2 px-3 py-1 text-xs bg-chart-1/10 text-chart-1 border-chart-1/20">
               <TrendingUp className="h-3 w-3 mr-1" />
               Featured Projects
             </Badge>
@@ -425,7 +425,7 @@ const AstraDevelopment = () => {
                     <ul className="space-y-1.5">
                       {service.items.map((item, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-xs text-muted-foreground">
-                          <CheckCircle2 className="h-3 w-3 text-emerald-500 shrink-0 mt-0.5" />
+                          <CheckCircle2 className="h-3 w-3 text-chart-1 shrink-0 mt-0.5" />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -476,7 +476,7 @@ const AstraDevelopment = () => {
                           transition={{ delay: index * 0.05 }}
                           className="flex items-center gap-1.5 p-1.5 rounded-lg bg-muted/50 hover:bg-primary/10 transition-colors"
                         >
-                          <CheckCircle2 className="h-3 w-3 text-emerald-500 shrink-0" />
+                          <CheckCircle2 className="h-3 w-3 text-chart-1 shrink-0" />
                           <span className="text-xs">{type}</span>
                         </motion.div>
                       ))}
@@ -494,7 +494,7 @@ const AstraDevelopment = () => {
                 <Card className="h-full bg-background/60 backdrop-blur-sm border-border/40">
                   <CardHeader className="p-3 pb-2">
                     <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                      <Award className="h-4 w-4 text-amber-500" />
+                      <Award className="h-4 w-4 text-gold-primary" />
                       Benefits of Partnering
                     </CardTitle>
                   </CardHeader>
