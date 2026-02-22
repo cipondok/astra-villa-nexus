@@ -73,13 +73,13 @@ const PropertyFacilities: React.FC<PropertyFacilitiesProps> = ({
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      'basic': 'bg-blue-100 text-blue-800',
-      'kitchen': 'bg-green-100 text-green-800',
-      'entertainment': 'bg-purple-100 text-purple-800',
-      'outdoor': 'bg-emerald-100 text-emerald-800',
-      'security': 'bg-red-100 text-red-800'
+      'basic': 'bg-chart-4/10 text-chart-4',
+      'kitchen': 'bg-chart-1/10 text-chart-1',
+      'entertainment': 'bg-accent/10 text-accent-foreground',
+      'outdoor': 'bg-chart-5/10 text-chart-5',
+      'security': 'bg-destructive/10 text-destructive'
     };
-    return colors[category] || 'bg-gray-100 text-gray-800';
+    return colors[category] || 'bg-muted text-muted-foreground';
   };
 
   const availableFacilities = facilities.filter(f => f.is_available);
@@ -92,7 +92,6 @@ const PropertyFacilities: React.FC<PropertyFacilitiesProps> = ({
   }, {} as Record<string, Facility[]>);
 
   if (compact) {
-    // Compact view for property cards
     return (
       <div className="flex flex-wrap gap-1">
         {availableFacilities.slice(0, 6).map((facility) => {
@@ -101,7 +100,7 @@ const PropertyFacilities: React.FC<PropertyFacilitiesProps> = ({
             <Badge
               key={facility.id}
               variant="secondary"
-              className="text-xs px-2 py-1 bg-gray-100 text-gray-700"
+              className="text-xs px-2 py-1"
               title={facility.description || facility.name}
             >
               <IconComponent className="h-3 w-3 mr-1" />
@@ -110,7 +109,7 @@ const PropertyFacilities: React.FC<PropertyFacilitiesProps> = ({
           );
         })}
         {availableFacilities.length > 6 && (
-          <Badge variant="secondary" className="text-xs px-2 py-1 bg-gray-100 text-gray-700">
+          <Badge variant="secondary" className="text-xs px-2 py-1">
             +{availableFacilities.length - 6} lainnya
           </Badge>
         )}
@@ -118,7 +117,6 @@ const PropertyFacilities: React.FC<PropertyFacilitiesProps> = ({
     );
   }
 
-  // Full view for property details
   return (
     <Card>
       <CardHeader>
@@ -129,7 +127,7 @@ const PropertyFacilities: React.FC<PropertyFacilitiesProps> = ({
       </CardHeader>
       <CardContent>
         {Object.keys(groupedFacilities).length === 0 ? (
-          <p className="text-gray-500 text-center py-4">
+          <p className="text-muted-foreground text-center py-4">
             Informasi fasilitas belum tersedia
           </p>
         ) : (
@@ -147,20 +145,20 @@ const PropertyFacilities: React.FC<PropertyFacilitiesProps> = ({
                     return (
                       <div
                         key={facility.id}
-                        className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                        className="flex items-center p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
                       >
-                        <IconComponent className="h-5 w-5 text-gray-600 mr-3 flex-shrink-0" />
+                        <IconComponent className="h-5 w-5 text-muted-foreground mr-3 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-gray-900 truncate">
+                          <p className="font-medium text-foreground truncate">
                             {facility.name}
                           </p>
                           {facility.description && (
-                            <p className="text-sm text-gray-500 truncate">
+                            <p className="text-sm text-muted-foreground truncate">
                               {facility.description}
                             </p>
                           )}
                           {facility.additional_cost && facility.additional_cost > 0 && (
-                            <p className="text-sm text-orange-600 font-medium">
+                            <p className="text-sm text-chart-3 font-medium">
                               +Rp {facility.additional_cost.toLocaleString('id-ID')}
                             </p>
                           )}

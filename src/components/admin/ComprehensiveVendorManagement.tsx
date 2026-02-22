@@ -24,14 +24,14 @@ const ComprehensiveVendorManagement = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-fuchsia-500/10 rounded-lg border border-violet-200/50 dark:border-violet-800/50">
-        <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center">
-          <Bot className="h-4 w-4 text-white" />
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-accent/10 via-primary/10 to-accent/10 rounded-lg border border-accent/20 dark:border-accent/30">
+        <div className="w-8 h-8 bg-gradient-to-br from-accent to-primary rounded-lg flex items-center justify-center">
+          <Bot className="h-4 w-4 text-primary-foreground" />
         </div>
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold">AI-Powered Vendor Management</h2>
-            <Badge className="bg-violet-500/20 text-violet-700 dark:text-violet-400 text-[9px] px-1.5 py-0 h-4">AI System</Badge>
+            <Badge className="bg-accent/20 text-accent-foreground text-[9px] px-1.5 py-0 h-4">AI System</Badge>
           </div>
           <p className="text-[10px] text-muted-foreground">Complete vendor lifecycle with AI verification, fraud detection & analytics</p>
         </div>
@@ -39,31 +39,31 @@ const ComprehensiveVendorManagement = () => {
 
       <Tabs defaultValue="verification" className="space-y-3">
         <TabsList className="grid w-full grid-cols-7 h-8 p-0.5 bg-muted/50">
-          <TabsTrigger value="verification" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-violet-500/20 data-[state=active]:text-violet-700 dark:data-[state=active]:text-violet-400">
+          <TabsTrigger value="verification" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-accent/20 data-[state=active]:text-accent-foreground">
             <Shield className="h-3 w-3" />
             Verify
           </TabsTrigger>
-          <TabsTrigger value="fraud" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-red-500/20 data-[state=active]:text-red-700 dark:data-[state=active]:text-red-400">
+          <TabsTrigger value="fraud" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-destructive/20 data-[state=active]:text-destructive">
             <Brain className="h-3 w-3" />
             Fraud
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-700 dark:data-[state=active]:text-green-400">
+          <TabsTrigger value="analytics" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-chart-1/20 data-[state=active]:text-chart-1">
             <TrendingUp className="h-3 w-3" />
             Perf
           </TabsTrigger>
-          <TabsTrigger value="matching" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-700 dark:data-[state=active]:text-blue-400">
+          <TabsTrigger value="matching" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-chart-4/20 data-[state=active]:text-chart-4">
             <Search className="h-3 w-3" />
             Match
           </TabsTrigger>
-          <TabsTrigger value="management" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-700 dark:data-[state=active]:text-orange-400">
+          <TabsTrigger value="management" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-chart-3/20 data-[state=active]:text-chart-3">
             <Users className="h-3 w-3" />
             Mgmt
           </TabsTrigger>
-          <TabsTrigger value="categories" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-700 dark:data-[state=active]:text-cyan-400">
+          <TabsTrigger value="categories" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-chart-5/20 data-[state=active]:text-chart-5">
             <List className="h-3 w-3" />
             Cat
           </TabsTrigger>
-          <TabsTrigger value="services" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">
+          <TabsTrigger value="services" className="flex items-center gap-1 text-[9px] h-7 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             <Settings className="h-3 w-3" />
             Svc
           </TabsTrigger>
@@ -99,11 +99,11 @@ const ComprehensiveVendorManagement = () => {
       </Tabs>
 
       {/* System Architecture Overview */}
-      <Card className="border-indigo-200/50 dark:border-indigo-800/30">
+      <Card className="border-accent/20 dark:border-accent/30">
         <CardHeader className="p-3 pb-2">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-indigo-500/20 rounded flex items-center justify-center">
-              <Brain className="h-3 w-3 text-indigo-600" />
+            <div className="w-6 h-6 bg-accent/20 rounded flex items-center justify-center">
+              <Brain className="h-3 w-3 text-accent-foreground" />
             </div>
             <div>
               <CardTitle className="text-xs">AI Architecture Overview</CardTitle>
