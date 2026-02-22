@@ -180,7 +180,7 @@ const VendorBookings = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         <span className="ml-2">Loading bookings...</span>
       </div>
     );
@@ -190,11 +190,11 @@ const VendorBookings = () => {
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
-          <AlertCircle className="h-12 w-12 text-red-400 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <AlertCircle className="h-12 w-12 text-destructive/60 mb-4" />
+          <h3 className="text-lg font-semibold text-foreground mb-2">
             Error Loading Bookings
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-muted-foreground mb-4">
             {error}
           </p>
           <Button onClick={fetchBookings}>
