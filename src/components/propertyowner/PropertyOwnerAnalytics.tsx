@@ -51,7 +51,7 @@ const PropertyOwnerAnalytics = () => {
           <CardContent>
             <div className="text-2xl font-bold">1,340</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+12%</span> from last month
+              <span className="text-chart-1">+12%</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -64,7 +64,7 @@ const PropertyOwnerAnalytics = () => {
           <CardContent>
             <div className="text-2xl font-bold">147</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+8%</span> from last month
+              <span className="text-chart-1">+8%</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -77,7 +77,7 @@ const PropertyOwnerAnalytics = () => {
           <CardContent>
             <div className="text-2xl font-bold">2.4h</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-red-600">+15min</span> from last month
+              <span className="text-destructive">+15min</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -90,7 +90,7 @@ const PropertyOwnerAnalytics = () => {
           <CardContent>
             <div className="text-2xl font-bold">$125K</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+24%</span> from last month
+              <span className="text-chart-1">+24%</span> from last month
             </p>
           </CardContent>
         </Card>

@@ -125,7 +125,7 @@ export const PayoutSettings: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-amber-600">
+            <div className="text-2xl font-bold text-chart-5">
               {formatIDR(pendingBalance)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Processing or held</p>

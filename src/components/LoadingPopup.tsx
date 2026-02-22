@@ -41,9 +41,9 @@ const LoadingPopup = ({
   const getIcon = () => {
     switch (type) {
       case "success":
-        return <CheckCircle className="w-16 h-16 text-green-500" />;
+        return <CheckCircle className="w-16 h-16 text-chart-1" />;
       case "error":
-        return <AlertCircle className="w-16 h-16 text-red-500" />;
+        return <AlertCircle className="w-16 h-16 text-destructive" />;
       default:
         return <LoaderCircle className="w-16 h-16 text-primary animate-spin" />;
     }
@@ -77,9 +77,9 @@ const LoadingPopup = ({
           <div className="flex flex-col items-center space-y-4 text-center">
             {getIcon()}
             <p className={`text-lg ${type === 'loading' ? 'animate-pulse' : ''} ${
-              type === 'success' ? 'text-green-600 dark:text-green-400' : 
-              type === 'error' ? 'text-red-600 dark:text-red-400' : 
-              'text-gray-600 dark:text-gray-400'
+              type === 'success' ? 'text-chart-1' : 
+              type === 'error' ? 'text-destructive' : 
+              'text-muted-foreground'
             }`}>
               {message || getDefaultMessage()}
             </p>
@@ -92,8 +92,8 @@ const LoadingPopup = ({
                 onClick={onClose}
                 className={`px-6 py-2 rounded-lg font-medium transition-all shadow-lg ${
                   type === 'success' 
-                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:opacity-90'
-                    : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:opacity-90'
+                    ? 'bg-chart-1 text-primary-foreground hover:opacity-90'
+                    : 'bg-destructive text-destructive-foreground hover:opacity-90'
                 }`}
               >
                 {currentText.close}

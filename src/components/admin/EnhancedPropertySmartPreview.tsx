@@ -431,10 +431,10 @@ const EnhancedPropertySmartPreview = () => {
 
   const getSizeIndicator = (value: number, min: number, max: number) => {
     const percentage = ((value - min) / (max - min)) * 100;
-    if (percentage < 25) return { color: 'text-green-500', text: 'Small' };
-    if (percentage < 50) return { color: 'text-blue-500', text: 'Medium' };
-    if (percentage < 75) return { color: 'text-orange-500', text: 'Large' };
-    return { color: 'text-red-500', text: 'Extra Large' };
+    if (percentage < 25) return { color: 'text-chart-1', text: 'Small' };
+    if (percentage < 50) return { color: 'text-chart-4', text: 'Medium' };
+    if (percentage < 75) return { color: 'text-chart-5', text: 'Large' };
+    return { color: 'text-destructive', text: 'Extra Large' };
   };
 
   const CustomPropertyCard = ({ property }: { property: PreviewProperty }) => {
@@ -485,10 +485,10 @@ const EnhancedPropertySmartPreview = () => {
                 />
               ) : (
                 <div 
-                  className="w-full flex items-center justify-center bg-gray-200"
+                  className="w-full flex items-center justify-center bg-muted"
                   style={{ height: `${previewSettings.imageHeight}px` }}
                 >
-                  <Building2 className="h-12 w-12 text-gray-400" />
+                  <Building2 className="h-12 w-12 text-muted-foreground" />
                 </div>
               )}
               
@@ -817,12 +817,12 @@ const EnhancedPropertySmartPreview = () => {
                 ))}
               </div>
               
-              <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+              <div className="mt-6 p-4 bg-primary/10 border border-primary/30 rounded-lg">
                 <div className="flex items-start space-x-3">
-                  <Lightbulb className="h-5 w-5 text-blue-400 mt-0.5" />
+                  <Lightbulb className="h-5 w-5 text-primary mt-0.5" />
                   <div>
-                    <h4 className="text-blue-300 font-medium">Template Tips</h4>
-                    <p className="text-blue-200 text-sm mt-1">
+                    <h4 className="text-foreground font-medium">Template Tips</h4>
+                    <p className="text-muted-foreground text-sm mt-1">
                       Templates provide a quick starting point. After applying a template, you can further customize 
                       colors, sizes, and layout in the Customize tab to match your brand perfectly.
                     </p>
@@ -836,9 +836,9 @@ const EnhancedPropertySmartPreview = () => {
         <TabsContent value="customize" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Content Settings */}
-            <Card className="bg-slate-800/50 border-slate-700/50">
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
+                <CardTitle className="flex items-center">
                   <Eye className="h-5 w-5 mr-2" />
                   Content Display
                 </CardTitle>
@@ -850,74 +850,74 @@ const EnhancedPropertySmartPreview = () => {
                       checked={previewSettings.showTitle}
                       onCheckedChange={(checked) => updateSetting('showTitle', checked)}
                     />
-                    <Label className="text-white text-sm">Show Title</Label>
+                    <Label className="text-sm">Show Title</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch
                       checked={previewSettings.showPrice}
                       onCheckedChange={(checked) => updateSetting('showPrice', checked)}
                     />
-                    <Label className="text-white text-sm">Show Price</Label>
+                    <Label className="text-sm">Show Price</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch
                       checked={previewSettings.showLocation}
                       onCheckedChange={(checked) => updateSetting('showLocation', checked)}
                     />
-                    <Label className="text-white text-sm">Show Location</Label>
+                    <Label className="text-sm">Show Location</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch
                       checked={previewSettings.showDescription}
                       onCheckedChange={(checked) => updateSetting('showDescription', checked)}
                     />
-                    <Label className="text-white text-sm">Show Description</Label>
+                    <Label className="text-sm">Show Description</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch
                       checked={previewSettings.showBedrooms}
                       onCheckedChange={(checked) => updateSetting('showBedrooms', checked)}
                     />
-                    <Label className="text-white text-sm">Show Bedrooms</Label>
+                    <Label className="text-sm">Show Bedrooms</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch
                       checked={previewSettings.showBathrooms}
                       onCheckedChange={(checked) => updateSetting('showBathrooms', checked)}
                     />
-                    <Label className="text-white text-sm">Show Bathrooms</Label>
+                    <Label className="text-sm">Show Bathrooms</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch
                       checked={previewSettings.showArea}
                       onCheckedChange={(checked) => updateSetting('showArea', checked)}
                     />
-                    <Label className="text-white text-sm">Show Area</Label>
+                    <Label className="text-sm">Show Area</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch
                       checked={previewSettings.show3DButton}
                       onCheckedChange={(checked) => updateSetting('show3DButton', checked)}
                     />
-                    <Label className="text-white text-sm">Show 3D Button</Label>
+                    <Label className="text-sm">Show 3D Button</Label>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Layout Settings */}
-            <Card className="bg-slate-800/50 border-slate-700/50">
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
+                <CardTitle className="flex items-center">
                   <Layout className="h-5 w-5 mr-2" />
                   Layout & Style
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-white">Layout Style</Label>
+                  <Label>Layout Style</Label>
                   <Select value={previewSettings.layoutStyle} onValueChange={(value: any) => updateSetting('layoutStyle', value)}>
-                    <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                    <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -929,9 +929,9 @@ const EnhancedPropertySmartPreview = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">Price Position</Label>
+                  <Label>Price Position</Label>
                   <Select value={previewSettings.pricePosition} onValueChange={(value: any) => updateSetting('pricePosition', value)}>
-                    <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                    <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -943,9 +943,9 @@ const EnhancedPropertySmartPreview = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">Button Style</Label>
+                  <Label>Button Style</Label>
                   <Select value={previewSettings.buttonStyle} onValueChange={(value: any) => updateSetting('buttonStyle', value)}>
-                    <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                    <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -959,9 +959,9 @@ const EnhancedPropertySmartPreview = () => {
             </Card>
 
             {/* Enhanced Size Settings */}
-            <Card className="bg-slate-800/50 border-slate-700/50">
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
+                <CardTitle className="flex items-center">
                   <Maximize2 className="h-5 w-5 mr-2" />
                   Size Controls
                 </CardTitle>
