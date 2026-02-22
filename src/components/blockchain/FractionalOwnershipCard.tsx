@@ -89,7 +89,7 @@ export const FractionalOwnershipCard: React.FC<FractionalOwnershipCardProps> = (
     return (
       <Card className="overflow-hidden">
         <CardContent className="py-8 text-center">
-          <AlertTriangle className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
+          <AlertTriangle className="h-8 w-8 text-chart-3 mx-auto mb-2" />
           <p className="text-sm text-muted-foreground">
             Switch to Polygon network
           </p>
