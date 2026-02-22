@@ -198,8 +198,8 @@ const PartnerNetwork = () => {
 
         {/* Description */}
         <div className="max-w-4xl mx-auto mb-16">
-          <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos border border-neutral-200 dark:border-neutral-800">
-            <p className="text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed">
+          <div className="bg-card dark:bg-card p-8 rounded-2xl shadow-macos border border-border">
+            <p className="text-lg text-muted-foreground leading-relaxed">
               {currentText.description}
             </p>
           </div>
@@ -210,7 +210,7 @@ const PartnerNetwork = () => {
           {currentText.features.map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <div key={index} className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-neutral-200 dark:border-neutral-800">
+              <div key={index} className="bg-card dark:bg-card p-8 rounded-2xl shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-border">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-macos-gradient rounded-xl shadow-macos">
                     <Icon className="w-8 h-8 text-primary-foreground" />
@@ -227,12 +227,12 @@ const PartnerNetwork = () => {
 
         {/* Application Form Section */}
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white dark:bg-neutral-900 p-12 rounded-2xl shadow-macos-hover border border-neutral-200 dark:border-neutral-800 animate-macos-window-in">
+          <div className="bg-card dark:bg-card p-12 rounded-2xl shadow-macos-hover border border-border animate-macos-window-in">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
                 {currentText.formTitle}
               </h2>
-              <p className="text-neutral-600 dark:text-neutral-400 text-lg">
+              <p className="text-muted-foreground text-lg">
                 {currentText.formSubtitle}
               </p>
             </div>
@@ -240,7 +240,7 @@ const PartnerNetwork = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                  <label className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <User className="w-4 h-4 text-macos-blue" />
                     {currentText.namePlaceholder}
                   </label>
@@ -249,12 +249,12 @@ const PartnerNetwork = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder={currentText.namePlaceholder}
-                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    className="h-12 bg-muted dark:bg-muted border-border focus:border-macos-blue focus:ring-macos-blue"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                  <label className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <Mail className="w-4 h-4 text-macos-blue" />
                     {currentText.emailPlaceholder}
                   </label>
@@ -270,7 +270,7 @@ const PartnerNetwork = () => {
                         setEmailValid(email.length > 0 ? emailRegex.test(email) : null);
                       }}
                       placeholder={currentText.emailPlaceholder}
-                      className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                      className="h-12 pr-10 bg-muted dark:bg-muted border-border focus:border-macos-blue focus:ring-macos-blue"
                     />
                     {emailValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -285,7 +285,7 @@ const PartnerNetwork = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                  <label className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <Phone className="w-4 h-4 text-macos-blue" />
                     {currentText.phonePlaceholder}
                   </label>
@@ -305,7 +305,7 @@ const PartnerNetwork = () => {
                         }
                       }}
                       placeholder={currentText.phonePlaceholder}
-                      className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                      className="h-12 pr-10 bg-muted dark:bg-muted border-border focus:border-macos-blue focus:ring-macos-blue"
                     />
                     {phoneValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -320,7 +320,7 @@ const PartnerNetwork = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                  <label className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <Building className="w-4 h-4 text-macos-blue" />
                     {currentText.companyPlaceholder}
                   </label>
@@ -329,13 +329,13 @@ const PartnerNetwork = () => {
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                     placeholder={currentText.companyPlaceholder}
-                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    className="h-12 bg-muted dark:bg-muted border-border focus:border-macos-blue focus:ring-macos-blue"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="text-sm font-semibold text-foreground">
                   {currentText.messagePlaceholder}
                 </label>
                 <Textarea
@@ -344,12 +344,12 @@ const PartnerNetwork = () => {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder={currentText.messagePlaceholder}
                   rows={5}
-                  className="resize-none bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  className="resize-none bg-muted dark:bg-muted border-border focus:border-macos-blue focus:ring-macos-blue"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="text-sm font-semibold text-foreground">
                   {language === "en" ? "Security Check" : "Pemeriksaan Keamanan"}
                 </label>
                 <SimpleCaptcha code={captchaCode} onRefresh={refreshCaptcha} />
@@ -358,7 +358,7 @@ const PartnerNetwork = () => {
                   value={formData.captchaInput}
                   onChange={(e) => setFormData({ ...formData, captchaInput: e.target.value })}
                   placeholder={language === "en" ? "Enter the code above" : "Masukkan kode di atas"}
-                  className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  className="h-12 bg-muted dark:bg-muted border-border focus:border-macos-blue focus:ring-macos-blue"
                   maxLength={6}
                 />
               </div>

@@ -1605,7 +1605,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
         <div className="fixed bottom-4 right-4 z-[99999] flex flex-col-reverse items-center gap-3 group" onMouseEnter={handleFirstHover}>
           {/* Pulsing glow hint animation for first-time users */}
           {!hasSeenQuickActions && !showQuickActionsHint && (
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 animate-pulse blur-xl" />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/30 to-accent/30 animate-pulse blur-xl" />
           )}
           
           {/* First-time tooltip */}
@@ -1637,10 +1637,10 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 <div className="relative">
                   <Button
                     onClick={onScrollToTop}
-                    className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
+                    className="h-12 w-12 rounded-full bg-gradient-to-r from-chart-3 to-destructive hover:from-chart-3/80 hover:to-destructive/80 shadow-2xl border-2 border-background/20"
                     size="icon"
                   >
-                    <ArrowUp className="h-5 w-5 text-white" />
+                    <ArrowUp className="h-5 w-5 text-primary-foreground" />
                   </Button>
                   <Button
                     onClick={(e) => {
@@ -1670,10 +1670,10 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 <div className="relative">
                   <Button
                     onClick={onImageSearch}
-                    className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
+                    className="h-12 w-12 rounded-full bg-gradient-to-r from-accent to-chart-5 hover:from-accent/80 hover:to-chart-5/80 shadow-2xl border-2 border-background/20"
                     size="icon"
                   >
-                    <Camera className="h-5 w-5 text-white" />
+                    <Camera className="h-5 w-5 text-primary-foreground" />
                   </Button>
                   <Button
                     onClick={(e) => {
@@ -1753,30 +1753,30 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             <>
               {/* Edge indicators */}
               {snapIndicator === 'left' && (
-                <div className="fixed left-0 top-0 bottom-0 w-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse" />
+                <div className="fixed left-0 top-0 bottom-0 w-1 bg-primary/60 shadow-lg shadow-primary/50 z-[99997] animate-pulse" />
               )}
               {snapIndicator === 'right' && (
-                <div className="fixed right-0 top-0 bottom-0 w-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse" />
+                <div className="fixed right-0 top-0 bottom-0 w-1 bg-primary/60 shadow-lg shadow-primary/50 z-[99997] animate-pulse" />
               )}
               {snapIndicator === 'top' && (
-                <div className="fixed top-0 left-0 right-0 h-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse" />
+                <div className="fixed top-0 left-0 right-0 h-1 bg-primary/60 shadow-lg shadow-primary/50 z-[99997] animate-pulse" />
               )}
               {snapIndicator === 'bottom' && (
-                <div className="fixed bottom-0 left-0 right-0 h-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse" />
+                <div className="fixed bottom-0 left-0 right-0 h-1 bg-primary/60 shadow-lg shadow-primary/50 z-[99997] animate-pulse" />
               )}
               
               {/* Corner indicators */}
               {snapIndicator === 'top-left' && (
-                <div className="fixed top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse rounded-br-lg" />
+                <div className="fixed top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-primary bg-primary/20 shadow-lg shadow-primary/50 z-[99997] animate-pulse rounded-br-lg" />
               )}
               {snapIndicator === 'top-right' && (
-                <div className="fixed top-0 right-0 w-20 h-20 border-t-2 border-r-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse rounded-bl-lg" />
+                <div className="fixed top-0 right-0 w-20 h-20 border-t-2 border-r-2 border-primary bg-primary/20 shadow-lg shadow-primary/50 z-[99997] animate-pulse rounded-bl-lg" />
               )}
               {snapIndicator === 'bottom-left' && (
-                <div className="fixed bottom-0 left-0 w-20 h-20 border-b-2 border-l-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse rounded-tr-lg" />
+                <div className="fixed bottom-0 left-0 w-20 h-20 border-b-2 border-l-2 border-primary bg-primary/20 shadow-lg shadow-primary/50 z-[99997] animate-pulse rounded-tr-lg" />
               )}
               {snapIndicator === 'bottom-right' && (
-                <div className="fixed bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse rounded-tl-lg" />
+                <div className="fixed bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-primary bg-primary/20 shadow-lg shadow-primary/50 z-[99997] animate-pulse rounded-tl-lg" />
               )}
             </>
           )}
@@ -1832,7 +1832,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 <div className="relative p-1.5 rounded-xl bg-primary/10 border border-primary/20">
                   <Icons.aiLogo className="h-6 w-6" logoUrl={chatbotLogoUrl} />
                   {/* Online indicator */}
-                  <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-background" />
+                  <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-chart-1 border-2 border-background" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-bold tracking-wide bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ASTRA AI</span>
