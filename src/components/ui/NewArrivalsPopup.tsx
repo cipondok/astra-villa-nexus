@@ -87,29 +87,29 @@ export const NewArrivalsPopup = () => {
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-[10000] mx-auto max-w-[220px] sm:max-w-[260px]"
           >
-            <div className="bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-white/30 dark:border-white/10 rounded-lg shadow-2xl overflow-hidden">
+            <div className="bg-card/80 backdrop-blur-xl border border-border/30 rounded-lg shadow-2xl overflow-hidden">
               {/* Header - slim */}
               <div className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/70 px-2.5 py-2 sm:px-3 sm:py-2.5">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleClose}
-                  className="absolute top-1 right-1 h-5 w-5 p-0 text-white/80 hover:text-white hover:bg-white/20"
+                  className="absolute top-1 right-1 h-5 w-5 p-0 text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20"
                 >
                   <X className="h-3 w-3" />
                 </Button>
 
                 <div className="flex items-center gap-1">
-                  <Sparkles className="h-2.5 w-2.5 text-white/90" />
-                  <span className="text-[8px] font-medium text-white/80 uppercase tracking-wider">
+                  <Sparkles className="h-2.5 w-2.5 text-primary-foreground/90" />
+                  <span className="text-[8px] font-medium text-primary-foreground/80 uppercase tracking-wider">
                     Baru Tiba
                   </span>
                 </div>
 
-                <h2 className="mt-0.5 text-xs font-semibold text-white leading-tight sm:text-sm">
+                <h2 className="mt-0.5 text-xs font-semibold text-primary-foreground leading-tight sm:text-sm">
                   Selamat Datang! 🎉
                 </h2>
-                <p className="text-[9px] text-white/70 leading-tight sm:text-[10px]">
+                <p className="text-[9px] text-primary-foreground/70 leading-tight sm:text-[10px]">
                   Temukan properti impian Anda
                 </p>
               </div>
@@ -128,8 +128,8 @@ export const NewArrivalsPopup = () => {
                   </div>
                   
                   <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="h-8 w-8 rounded-md bg-orange-500/10 flex items-center justify-center shrink-0 sm:h-9 sm:w-9 sm:rounded-lg">
-                      <MapPin className="h-4 w-4 text-orange-500 sm:h-4.5 sm:w-4.5" />
+                    <div className="h-8 w-8 rounded-md bg-chart-3/10 flex items-center justify-center shrink-0 sm:h-9 sm:w-9 sm:rounded-lg">
+                      <MapPin className="h-4 w-4 text-chart-3 sm:h-4.5 sm:w-4.5" />
                     </div>
                     <div>
                       <h3 className="text-xs font-semibold text-foreground sm:text-sm">Jelajahi Peta</h3>

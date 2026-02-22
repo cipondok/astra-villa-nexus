@@ -60,8 +60,8 @@ const OnboardingComplete = ({ userType, rewards, onAction }: OnboardingCompleteP
         transition={{ type: "spring", duration: 0.6 }}
         className="relative"
       >
-        <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-          <PartyPopper className="h-10 w-10 text-white" />
+        <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-chart-1 to-chart-1/80 flex items-center justify-center shadow-lg shadow-chart-1/30">
+          <PartyPopper className="h-10 w-10 text-primary-foreground" />
         </div>
         <motion.div
           initial={{ scale: 0 }}
@@ -156,7 +156,7 @@ const OnboardingComplete = ({ userType, rewards, onAction }: OnboardingCompleteP
         transition={{ delay: 0.9 }}
         className="flex items-center justify-center gap-2"
       >
-        <Trophy className="h-4 w-4 text-yellow-500" />
+        <Trophy className="h-4 w-4 text-chart-3" />
         <span className="text-xs text-muted-foreground">
           Achievement Unlocked: Early Adopter
         </span>
