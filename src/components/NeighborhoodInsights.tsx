@@ -23,9 +23,9 @@ interface NeighborhoodInsightsProps {
 
 const NeighborhoodInsights = ({ neighborhood }: NeighborhoodInsightsProps) => {
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'bg-green-500';
-    if (score >= 60) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (score >= 80) return 'bg-chart-1';
+    if (score >= 60) return 'bg-chart-3';
+    return 'bg-destructive';
   };
 
   const getScoreLabel = (score: number) => {
@@ -43,14 +43,14 @@ const NeighborhoodInsights = ({ neighborhood }: NeighborhoodInsightsProps) => {
             <MapPin className="h-5 w-5" />
             Neighborhood Intelligence
           </CardTitle>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
+          <p className="text-sm text-muted-foreground">
             Comprehensive demographic data and area analytics for informed decisions
           </p>
         </CardHeader>
         <CardContent>
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2">Know Before You Go</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+            <p className="text-muted-foreground mb-4">
               Our platform integrates real-time data on schools, transportation, crime rates, and local amenities to give you complete neighborhood transparency.
             </p>
           </div>
@@ -63,26 +63,26 @@ const NeighborhoodInsights = ({ neighborhood }: NeighborhoodInsightsProps) => {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <GraduationCap className="h-5 w-5 text-blue-600" />
+              <GraduationCap className="h-5 w-5 text-chart-4" />
               Education
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+            <div className="text-sm text-muted-foreground mb-3">
               School ratings and distances
             </div>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm">Primary Schools</span>
-                <Badge className="bg-green-500 text-white">9.2/10</Badge>
+                <Badge className="bg-chart-1 text-primary-foreground">9.2/10</Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Secondary Schools</span>
-                <Badge className="bg-blue-500 text-white">8.8/10</Badge>
+                <Badge className="bg-chart-4 text-primary-foreground">8.8/10</Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Universities</span>
-                <Badge className="bg-purple-500 text-white">2.5km</Badge>
+                <Badge className="bg-chart-5 text-primary-foreground">2.5km</Badge>
               </div>
             </div>
           </CardContent>
@@ -92,26 +92,26 @@ const NeighborhoodInsights = ({ neighborhood }: NeighborhoodInsightsProps) => {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Bus className="h-5 w-5 text-green-600" />
+              <Bus className="h-5 w-5 text-chart-1" />
               Transportation
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+            <div className="text-sm text-muted-foreground mb-3">
               MRT access and traffic patterns
             </div>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm">MRT Station</span>
-                <Badge className="bg-green-500 text-white">800m</Badge>
+                <Badge className="bg-chart-1 text-primary-foreground">800m</Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Bus Stops</span>
-                <Badge className="bg-blue-500 text-white">5 nearby</Badge>
+                <Badge className="bg-chart-4 text-primary-foreground">5 nearby</Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Traffic Level</span>
-                <Badge className="bg-yellow-500 text-white">Moderate</Badge>
+                <Badge className="bg-chart-3 text-primary-foreground">Moderate</Badge>
               </div>
             </div>
           </CardContent>
@@ -121,26 +121,26 @@ const NeighborhoodInsights = ({ neighborhood }: NeighborhoodInsightsProps) => {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Shield className="h-5 w-5 text-red-600" />
+              <Shield className="h-5 w-5 text-destructive" />
               Safety
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+            <div className="text-sm text-muted-foreground mb-3">
               Crime statistics and trends
             </div>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm">Crime Rate</span>
-                <Badge className="bg-green-500 text-white">Low</Badge>
+                <Badge className="bg-chart-1 text-primary-foreground">Low</Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Police Response</span>
-                <Badge className="bg-blue-500 text-white">5 min</Badge>
+                <Badge className="bg-chart-4 text-primary-foreground">5 min</Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Safety Trend</span>
-                <Badge className="bg-green-500 text-white">Improving</Badge>
+                <Badge className="bg-chart-1 text-primary-foreground">Improving</Badge>
               </div>
             </div>
           </CardContent>
@@ -155,27 +155,27 @@ const NeighborhoodInsights = ({ neighborhood }: NeighborhoodInsightsProps) => {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4 border rounded-lg">
-              <Footprints className="h-6 w-6 mx-auto mb-2 text-blue-500" />
+              <Footprints className="h-6 w-6 mx-auto mb-2 text-chart-4" />
               <div className="text-2xl font-bold">{neighborhood.walkScore}</div>
-              <div className="text-sm text-gray-600">Walk Score</div>
+              <div className="text-sm text-muted-foreground">Walk Score</div>
               <Badge className={`mt-2 text-white ${getScoreColor(neighborhood.walkScore)}`}>
                 {getScoreLabel(neighborhood.walkScore)}
               </Badge>
             </div>
             
             <div className="text-center p-4 border rounded-lg">
-              <Car className="h-6 w-6 mx-auto mb-2 text-green-500" />
+              <Car className="h-6 w-6 mx-auto mb-2 text-chart-1" />
               <div className="text-2xl font-bold">{neighborhood.transitScore}</div>
-              <div className="text-sm text-gray-600">Transit Score</div>
+              <div className="text-sm text-muted-foreground">Transit Score</div>
               <Badge className={`mt-2 text-white ${getScoreColor(neighborhood.transitScore)}`}>
                 {getScoreLabel(neighborhood.transitScore)}
               </Badge>
             </div>
             
             <div className="text-center p-4 border rounded-lg">
-              <Bike className="h-6 w-6 mx-auto mb-2 text-orange-500" />
+              <Bike className="h-6 w-6 mx-auto mb-2 text-chart-3" />
               <div className="text-2xl font-bold">{neighborhood.bikeScore}</div>
-              <div className="text-sm text-gray-600">Bike Score</div>
+              <div className="text-sm text-muted-foreground">Bike Score</div>
               <Badge className={`mt-2 text-white ${getScoreColor(neighborhood.bikeScore)}`}>
                 {getScoreLabel(neighborhood.bikeScore)}
               </Badge>

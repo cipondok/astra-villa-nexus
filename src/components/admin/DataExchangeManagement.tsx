@@ -102,7 +102,7 @@ const DataExchangeManagement: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Data Revenue</p>
                 <p className="text-2xl font-bold">{formatCurrency(totalRevenue)}</p>
               </div>
-              <DollarSign className="h-8 w-8 text-green-500 opacity-20" />
+              <DollarSign className="h-8 w-8 text-chart-1 opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -113,7 +113,7 @@ const DataExchangeManagement: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Subscribers</p>
                 <p className="text-2xl font-bold">{totalSubscribers}</p>
               </div>
-              <Users className="h-8 w-8 text-blue-500 opacity-20" />
+              <Users className="h-8 w-8 text-chart-4 opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -124,7 +124,7 @@ const DataExchangeManagement: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Syndicated Listings</p>
                 <p className="text-2xl font-bold">{formatNumber(totalListings)}</p>
               </div>
-              <Share2 className="h-8 w-8 text-purple-500 opacity-20" />
+              <Share2 className="h-8 w-8 text-chart-5 opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -135,7 +135,7 @@ const DataExchangeManagement: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Leads Generated</p>
                 <p className="text-2xl font-bold">{totalLeads}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-amber-500 opacity-20" />
+              <TrendingUp className="h-8 w-8 text-chart-3 opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -146,7 +146,7 @@ const DataExchangeManagement: React.FC = () => {
                 <p className="text-sm text-muted-foreground">API Calls (MTD)</p>
                 <p className="text-2xl font-bold">{formatNumber(apiUsageStats.thisMonth)}</p>
               </div>
-              <Zap className="h-8 w-8 text-cyan-500 opacity-20" />
+              <Zap className="h-8 w-8 text-accent-foreground opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -190,7 +190,7 @@ const DataExchangeManagement: React.FC = () => {
                     </div>
                     <div className="text-right">
                       <div className="font-semibold">{network.listings} listings</div>
-                      <div className="text-xs text-green-600">+{network.leads} leads</div>
+                      <div className="text-xs text-chart-1">+{network.leads} leads</div>
                     </div>
                   </div>
                 ))}
@@ -257,7 +257,7 @@ const DataExchangeManagement: React.FC = () => {
                   <div className="text-sm text-muted-foreground">Avg Response</div>
                 </div>
                 <div className="p-4 rounded-xl bg-muted/50 text-center">
-                  <div className="text-3xl font-bold text-green-600">{apiUsageStats.successRate}%</div>
+                  <div className="text-3xl font-bold text-chart-1">{apiUsageStats.successRate}%</div>
                   <div className="text-sm text-muted-foreground">Success Rate</div>
                 </div>
                 <div className="p-4 rounded-xl bg-muted/50 text-center">

@@ -227,12 +227,12 @@ const WNAProcessProcedure: React.FC = () => {
   const t = copy[language];
 
   const colorClasses = {
-    blue: { bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-400', line: 'bg-blue-400' },
-    purple: { bg: 'bg-purple-100 dark:bg-purple-900/50', text: 'text-purple-600 dark:text-purple-400', line: 'bg-purple-400' },
-    amber: { bg: 'bg-amber-100 dark:bg-amber-900/50', text: 'text-amber-600 dark:text-amber-400', line: 'bg-amber-400' },
-    green: { bg: 'bg-green-100 dark:bg-green-900/50', text: 'text-green-600 dark:text-green-400', line: 'bg-green-400' },
-    rose: { bg: 'bg-rose-100 dark:bg-rose-900/50', text: 'text-rose-600 dark:text-rose-400', line: 'bg-rose-400' },
-    cyan: { bg: 'bg-cyan-100 dark:bg-cyan-900/50', text: 'text-cyan-600 dark:text-cyan-400', line: 'bg-cyan-400' }
+    blue: { bg: 'bg-chart-4/10', text: 'text-chart-4', line: 'bg-chart-4' },
+    purple: { bg: 'bg-chart-5/10', text: 'text-chart-5', line: 'bg-chart-5' },
+    amber: { bg: 'bg-chart-3/10', text: 'text-chart-3', line: 'bg-chart-3' },
+    green: { bg: 'bg-chart-1/10', text: 'text-chart-1', line: 'bg-chart-1' },
+    rose: { bg: 'bg-destructive/10', text: 'text-destructive', line: 'bg-destructive' },
+    cyan: { bg: 'bg-accent/10', text: 'text-accent-foreground', line: 'bg-accent-foreground' }
   };
 
   return (
