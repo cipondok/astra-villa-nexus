@@ -227,7 +227,7 @@ html {
     --card-foreground: 210 60% 12%;
     --popover: 0 0% 100%;
     --popover-foreground: 210 60% 12%;
-    --primary: 200 100% 48%; /* Bright sky blue #00A3F5 */
+    --primary: 200 100% 48%; /* Bright Sky Blue #00A3F5 */
     --primary-foreground: 0 0% 100%;
     --secondary: 200 50% 92%; /* Light sky blue */
     --secondary-foreground: 210 60% 12%;
@@ -243,7 +243,7 @@ html {
     --radius: 10px;
     
     /* ASTRA Brand Colors - Light Mode */
-    --gold-primary: 48 100% 52%; /* Bright yellow badges */
+    --gold-primary: 48 100% 52%; /* Bright Yellow #FFCC0A */
     --gold-secondary: 42 95% 50%;
     --navy-primary: 200 100% 48%;
     --navy-secondary: 205 85% 42%;
