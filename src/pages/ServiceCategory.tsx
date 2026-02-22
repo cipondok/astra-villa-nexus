@@ -258,7 +258,7 @@ const ServiceCategory = () => {
                               {service.vendor_business_profiles.business_name}
                             </h4>
                             <div className="flex items-center gap-1">
-                              <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                              <Star className="h-3 w-3 fill-gold-primary text-gold-primary" />
                               <span className="text-[10px] md:text-xs text-muted-foreground">
                                 {service.vendor_business_profiles.rating || '0.0'} 
                                 ({service.vendor_business_profiles.total_reviews || 0} {t.reviews})
