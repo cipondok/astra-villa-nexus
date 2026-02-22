@@ -191,12 +191,12 @@ const WNAProcessingTime: React.FC = () => {
   const t = copy[language];
 
   const colorClasses = {
-    blue: { bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-400', bar: 'bg-blue-500' },
-    purple: { bg: 'bg-purple-100 dark:bg-purple-900/50', text: 'text-purple-600 dark:text-purple-400', bar: 'bg-purple-500' },
-    amber: { bg: 'bg-amber-100 dark:bg-amber-900/50', text: 'text-amber-600 dark:text-amber-400', bar: 'bg-amber-500' },
-    green: { bg: 'bg-green-100 dark:bg-green-900/50', text: 'text-green-600 dark:text-green-400', bar: 'bg-green-500' },
-    rose: { bg: 'bg-rose-100 dark:bg-rose-900/50', text: 'text-rose-600 dark:text-rose-400', bar: 'bg-rose-500' },
-    cyan: { bg: 'bg-cyan-100 dark:bg-cyan-900/50', text: 'text-cyan-600 dark:text-cyan-400', bar: 'bg-cyan-500' }
+    blue: { bg: 'bg-chart-4/10', text: 'text-chart-4', bar: 'bg-chart-4' },
+    purple: { bg: 'bg-accent/10', text: 'text-accent-foreground', bar: 'bg-accent' },
+    amber: { bg: 'bg-chart-3/10', text: 'text-chart-3', bar: 'bg-chart-3' },
+    green: { bg: 'bg-chart-1/10', text: 'text-chart-1', bar: 'bg-chart-1' },
+    rose: { bg: 'bg-destructive/10', text: 'text-destructive', bar: 'bg-destructive' },
+    cyan: { bg: 'bg-primary/10', text: 'text-primary', bar: 'bg-primary' }
   };
 
   return (
@@ -285,17 +285,17 @@ const WNAProcessingTime: React.FC = () => {
         <div className={cn(
           "p-2.5 rounded-lg",
           "bg-transparent dark:bg-white/5",
-          "border border-amber-200 dark:border-amber-800"
+          "border border-chart-3/30"
         )}>
           <h4 className="text-[9px] sm:text-[10px] font-semibold text-foreground mb-2 flex items-center gap-1">
-            <AlertCircle className="h-3 w-3 text-amber-500" />
+            <AlertCircle className="h-3 w-3 text-chart-3" />
             {t.factors.title}
           </h4>
           <div className="space-y-1">
             {t.factors.items.map((item, i) => (
               <div key={i} className="flex items-center justify-between gap-2 text-[8px]">
                 <span className="text-muted-foreground">{item.factor}</span>
-                <span className="text-amber-600 dark:text-amber-400 flex items-center gap-0.5">
+                <span className="text-chart-3 flex items-center gap-0.5">
                   <TrendingUp className="h-2 w-2" />
                   {item.impact}
                 </span>
@@ -308,16 +308,16 @@ const WNAProcessingTime: React.FC = () => {
         <div className={cn(
           "p-2.5 rounded-lg",
           "bg-transparent dark:bg-white/5",
-          "border border-green-200 dark:border-green-800"
+          "border border-chart-1/30"
         )}>
           <h4 className="text-[9px] sm:text-[10px] font-semibold text-foreground mb-2 flex items-center gap-1">
-            <Zap className="h-3 w-3 text-green-500" />
+            <Zap className="h-3 w-3 text-chart-1" />
             {t.tips.title}
           </h4>
           <div className="space-y-1">
             {t.tips.items.map((tip, i) => (
               <div key={i} className="flex items-start gap-1.5">
-                <CheckCircle className="h-2.5 w-2.5 text-green-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="h-2.5 w-2.5 text-chart-1 flex-shrink-0 mt-0.5" />
                 <span className="text-[8px] text-foreground/80">{tip}</span>
               </div>
             ))}

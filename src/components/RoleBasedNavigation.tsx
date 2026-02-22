@@ -158,7 +158,7 @@ const RoleBasedNavigation = ({
             className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity" 
             onClick={handleHomeClick}
           >
-            <h1 className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-800 dark:from-white dark:to-white/90 bg-clip-text text-transparent drop-shadow-lg">
+            <h1 className="text-lg font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent drop-shadow-lg">
               Astra Villa
             </h1>
           </div>
@@ -205,36 +205,36 @@ const RoleBasedNavigation = ({
                         </span>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56 bg-white/95 backdrop-blur-xl border border-white/20 shadow-xl rounded-2xl">
+                    <DropdownMenuContent align="end" className="w-56 bg-card/95 backdrop-blur-xl border border-border/20 shadow-xl rounded-2xl">
                       <DropdownMenuLabel>
                         <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium text-gray-900">{profile.full_name || 'User'}</p>
-                          <p className="text-xs text-gray-600">{profile.email}</p>
-                          <p className="text-xs text-gray-600 capitalize">{profile.role.replace('_', ' ')}</p>
+                          <p className="text-sm font-medium text-foreground">{profile.full_name || 'User'}</p>
+                          <p className="text-xs text-muted-foreground">{profile.email}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
                         </div>
                       </DropdownMenuLabel>
-                      <DropdownMenuSeparator className="border-gray-200" />
-                      <DropdownMenuItem onClick={() => navigate(getDashboardRoute())} className="text-gray-900 hover:bg-blue-50/80">
+                      <DropdownMenuSeparator className="border-border" />
+                      <DropdownMenuItem onClick={() => navigate(getDashboardRoute())} className="text-foreground hover:bg-primary/10">
                         {currentText.dashboard}
                       </DropdownMenuItem>
                       {profile.role !== 'vendor' && (
-                        <DropdownMenuItem onClick={() => navigate('/wallet')} className="text-gray-900 hover:bg-blue-50/80">
+                        <DropdownMenuItem onClick={() => navigate('/wallet')} className="text-foreground hover:bg-primary/10">
                           <Wallet className="h-4 w-4 mr-2" />
                           {currentText.wallet}
                         </DropdownMenuItem>
                       )}
                       {getRoleSpecificMenuItems().map((item, index) => (
-                        <DropdownMenuItem key={index} onClick={() => navigate(item.route)} className="text-gray-900 hover:bg-blue-50/80">
+                        <DropdownMenuItem key={index} onClick={() => navigate(item.route)} className="text-foreground hover:bg-primary/10">
                           {item.label}
                         </DropdownMenuItem>
                       ))}
                       {getVendorMenuItems().map((item, index) => (
-                        <DropdownMenuItem key={`vendor-${index}`} onClick={() => navigate(item.route)} className="text-gray-900 hover:bg-blue-50/80">
+                        <DropdownMenuItem key={`vendor-${index}`} onClick={() => navigate(item.route)} className="text-foreground hover:bg-primary/10">
                           {item.label}
                         </DropdownMenuItem>
                       ))}
-                      <DropdownMenuSeparator className="border-gray-200" />
-                      <DropdownMenuItem onClick={handleSignOut} className="text-red-600 hover:bg-red-50/80">
+                      <DropdownMenuSeparator className="border-border" />
+                      <DropdownMenuItem onClick={handleSignOut} className="text-destructive hover:bg-destructive/10">
                         <LogOut className="h-4 w-4 mr-2" />
                         {currentText.logout}
                       </DropdownMenuItem>
@@ -269,15 +269,15 @@ const RoleBasedNavigation = ({
 
         {/* Enhanced Mobile Navigation Menu */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-white/20 shadow-2xl rounded-b-2xl">
+          <div className="md:hidden absolute top-16 left-0 right-0 bg-card/95 backdrop-blur-xl border-t border-border/20 shadow-2xl rounded-b-2xl">
             <div className="px-4 pt-4 pb-6 space-y-3">
               {/* Theme and Language toggles for mobile */}
-              <div className="flex justify-between items-center p-3 border-b border-gray-200/50 bg-gray-50/50 rounded-xl">
+              <div className="flex justify-between items-center p-3 border-b border-border/50 bg-muted/50 rounded-xl">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onLanguageToggle}
-                  className="flex-1 mr-2 bg-white/70 hover:bg-white/90 text-gray-900 border border-gray-200/50 rounded-lg"
+                  className="flex-1 mr-2 bg-card/70 hover:bg-card/90 text-foreground border border-border/50 rounded-lg"
                 >
                   <Globe className="h-4 w-4 mr-1" />
                   {language.toUpperCase()}
@@ -286,7 +286,7 @@ const RoleBasedNavigation = ({
                   variant="ghost"
                   size="sm"
                   onClick={onThemeToggle}
-                  className="flex-1 bg-white/70 hover:bg-white/90 text-gray-900 border border-gray-200/50 rounded-lg"
+                  className="flex-1 bg-card/70 hover:bg-card/90 text-foreground border border-border/50 rounded-lg"
                 >
                   {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
                 </Button>
@@ -369,7 +369,7 @@ const RoleBasedNavigation = ({
                       handleSignOut();
                       setIsMenuOpen(false);
                     }}
-                    className="w-full justify-start text-red-600"
+                    className="w-full justify-start text-destructive"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     {currentText.logout}

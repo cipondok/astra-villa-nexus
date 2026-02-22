@@ -52,13 +52,13 @@ const Property3DAnimation = ({ className, isMobile }: Property3DAnimationProps) 
       >
         {/* House Base */}
         <div className={cn(
-          "relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg",
+          "relative bg-gradient-to-br from-primary to-primary/80 rounded-lg shadow-lg",
           isMobile ? "w-8 h-6" : "w-10 h-8"
         )}>
           {/* Roof */}
           <div 
             className={cn(
-              "absolute -top-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-br from-red-500 to-red-600 shadow-md",
+              "absolute -top-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-br from-destructive to-destructive/80 shadow-md",
               isMobile ? "w-10 h-3" : "w-12 h-4"
             )}
             style={{
@@ -67,8 +67,8 @@ const Property3DAnimation = ({ className, isMobile }: Property3DAnimationProps) 
           />
           
           {/* Windows */}
-          <div className="absolute top-1 left-1 w-1.5 h-1.5 bg-yellow-300 rounded-sm animate-pulse" />
-          <div className="absolute top-1 right-1 w-1.5 h-1.5 bg-yellow-300 rounded-sm animate-pulse" />
+          <div className="absolute top-1 left-1 w-1.5 h-1.5 bg-chart-3 rounded-sm animate-pulse" />
+          <div className="absolute top-1 right-1 w-1.5 h-1.5 bg-chart-3 rounded-sm animate-pulse" />
           
           {/* Door */}
           <div className={cn(
@@ -78,8 +78,8 @@ const Property3DAnimation = ({ className, isMobile }: Property3DAnimationProps) 
         </div>
 
         {/* Floating Elements */}
-        <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-bounce opacity-80" />
-        <div className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse opacity-70" />
+        <div className="absolute -top-1 -right-1 w-2 h-2 bg-chart-1 rounded-full animate-bounce opacity-80" />
+        <div className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-accent rounded-full animate-pulse opacity-70" />
         
         {/* 3D Shadow */}
         <div 
@@ -95,9 +95,9 @@ const Property3DAnimation = ({ className, isMobile }: Property3DAnimationProps) 
 
       {/* Sparkle Effects */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1 left-1 w-1 h-1 bg-white rounded-full animate-ping opacity-75" />
-        <div className="absolute top-3 right-2 w-0.5 h-0.5 bg-blue-300 rounded-full animate-pulse" />
-        <div className="absolute bottom-2 left-2 w-0.5 h-0.5 bg-purple-300 rounded-full animate-bounce" />
+        <div className="absolute top-1 left-1 w-1 h-1 bg-primary-foreground rounded-full animate-ping opacity-75" />
+        <div className="absolute top-3 right-2 w-0.5 h-0.5 bg-primary/50 rounded-full animate-pulse" />
+        <div className="absolute bottom-2 left-2 w-0.5 h-0.5 bg-accent/50 rounded-full animate-bounce" />
       </div>
 
       {/* Text Label */}
@@ -105,7 +105,7 @@ const Property3DAnimation = ({ className, isMobile }: Property3DAnimationProps) 
         "absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-center",
         isMobile ? "text-xs" : "text-sm"
       )}>
-        <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-bold">
+        <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">
           3D View
         </span>
       </div>

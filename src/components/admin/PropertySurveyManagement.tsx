@@ -343,14 +343,14 @@ const PropertySurveyManagement = () => {
             <Button
               onClick={() => handleStatusUpdate('confirmed')}
               disabled={updateSurveyMutation.isPending}
-              className="bg-chart-1 hover:bg-chart-1/90 text-white"
+              className="bg-chart-1 hover:bg-chart-1/90 text-primary-foreground"
             >
               Confirm
             </Button>
             <Button
               onClick={() => handleStatusUpdate('completed')}
               disabled={updateSurveyMutation.isPending}
-              className="bg-chart-2 hover:bg-chart-2/90 text-white"
+              className="bg-chart-2 hover:bg-chart-2/90 text-primary-foreground"
             >
               Mark Completed
             </Button>

@@ -102,10 +102,10 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
           <div className="flex items-center gap-2">
             <div className="relative">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary via-primary/80 to-accent shadow-lg">
-                <Building2 className="h-4 w-4 text-white" />
+                <Building2 className="h-4 w-4 text-primary-foreground" />
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-gradient-to-r from-chart-1 to-chart-1/80 flex items-center justify-center">
-                <Bot className="h-2 w-2 text-white" />
+                <Bot className="h-2 w-2 text-primary-foreground" />
               </div>
             </div>
             <div className="text-left">
@@ -273,10 +273,10 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
           <div className="flex items-center gap-3">
             <div className="relative">
               <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-primary via-primary/80 to-accent shadow-xl">
-                <Building2 className="h-5 w-5 md:h-6 md:w-6 text-white" />
+                <Building2 className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground" />
               </div>
               <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-chart-1 to-chart-1/80 flex items-center justify-center shadow-md">
-                <Bot className="h-2.5 w-2.5 text-white" />
+                <Bot className="h-2.5 w-2.5 text-primary-foreground" />
               </div>
             </div>
             <div className="text-left">
