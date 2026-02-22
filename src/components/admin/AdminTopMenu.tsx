@@ -285,15 +285,15 @@ const AdminTopMenu = ({
         {/* Top Row - Title and User Info */}
         <div className="flex items-center justify-between h-14">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg">
-              <Crown className="h-6 w-6 text-white animate-pulse" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-primary backdrop-blur-sm border border-border/30 flex items-center justify-center shadow-lg">
+              <Crown className="h-6 w-6 text-primary-foreground animate-pulse" />
             </div>
             <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent drop-shadow-lg">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent drop-shadow-lg">
                 {title}
               </h1>
               {subtitle && (
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   {subtitle}
                 </p>
               )}
@@ -304,18 +304,18 @@ const AdminTopMenu = ({
             {/* Search */}
             {showSearch && (
               <div className="hidden md:flex relative w-80">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search admin panel..."
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full bg-white/20 border border-white/30 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500/20 rounded-xl backdrop-blur-sm"
+                  className="pl-10 pr-4 py-2 w-full bg-background/20 border border-border/30 focus:border-primary focus:ring-primary/20 rounded-xl backdrop-blur-sm"
                 />
               </div>
             )}
 
             {/* Theme Switcher */}
-            <ThemeSwitcher variant="compact" className="w-11 h-11 p-0 rounded-xl bg-white/20 hover:bg-white/30 hover:scale-105 transition-all duration-200 border border-white/30 text-gray-900 dark:text-white shadow-lg" />
+            <ThemeSwitcher variant="compact" className="w-11 h-11 p-0 rounded-xl bg-background/20 hover:bg-background/30 hover:scale-105 transition-all duration-200 border border-border/30 text-foreground shadow-lg" />
 
             {/* Enhanced Notifications with Alert Dropdown */}
             <Popover open={showAlerts} onOpenChange={setShowAlerts}>

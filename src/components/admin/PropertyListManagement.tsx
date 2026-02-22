@@ -88,9 +88,9 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
       <Card className="max-w-md mx-auto mt-8">
         <CardContent className="pt-6">
           <div className="text-center">
-            <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-red-800 mb-2">Authentication Required</h3>
-            <p className="text-red-600">Please log in to access property management.</p>
+            <AlertTriangle className="h-12 w-12 text-destructive/60 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-destructive mb-2">Authentication Required</h3>
+            <p className="text-destructive">Please log in to access property management.</p>
           </div>
         </CardContent>
       </Card>
@@ -102,10 +102,10 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
       <Card className="max-w-md mx-auto mt-8">
         <CardContent className="pt-6">
           <div className="text-center">
-            <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-red-800 mb-2">Access Denied</h3>
-            <p className="text-red-600">You need admin privileges to access property management.</p>
-            <p className="text-sm text-gray-500 mt-2">Current role: {profile?.role || 'No role assigned'}</p>
+            <AlertTriangle className="h-12 w-12 text-destructive/60 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-destructive mb-2">Access Denied</h3>
+            <p className="text-destructive">You need admin privileges to access property management.</p>
+            <p className="text-sm text-muted-foreground mt-2">Current role: {profile?.role || 'No role assigned'}</p>
           </div>
         </CardContent>
       </Card>
@@ -385,10 +385,10 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold flex items-center gap-2">
-              <Building2 className="h-6 w-6 text-blue-600" />
+              <Building2 className="h-6 w-6 text-primary" />
               Property Management
             </h2>
-            <p className="text-gray-600">Loading properties...</p>
+            <p className="text-muted-foreground">Loading properties...</p>
           </div>
           <Button onClick={onAddProperty}>
             <Plus className="h-4 w-4 mr-2" />
@@ -399,9 +399,9 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         <Card>
           <CardContent className="pt-6">
             <div className="text-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
+              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
               <h3 className="text-lg font-medium mb-2">Loading Properties</h3>
-              <p className="text-gray-600">Fetching data from database...</p>
+              <p className="text-muted-foreground">Fetching data from database...</p>
             </div>
           </CardContent>
         </Card>
@@ -416,10 +416,10 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold flex items-center gap-2">
-              <Building2 className="h-6 w-6 text-blue-600" />
+              <Building2 className="h-6 w-6 text-primary" />
               Property Management
             </h2>
-            <p className="text-gray-600">Database connection error</p>
+            <p className="text-muted-foreground">Database connection error</p>
           </div>
           <Button onClick={onAddProperty}>
             <Plus className="h-4 w-4 mr-2" />
@@ -427,21 +427,21 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
           </Button>
         </div>
 
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-destructive/30 bg-destructive/5">
           <CardContent className="pt-6">
             <div className="text-center py-6">
-              <AlertTriangle className="h-8 w-8 text-red-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2 text-red-800">Database Connection Error</h3>
-              <p className="text-red-600 mb-4">
+              <AlertTriangle className="h-8 w-8 text-destructive/60 mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2 text-destructive">Database Connection Error</h3>
+              <p className="text-destructive mb-4">
                 {error instanceof Error ? error.message : 'Unable to connect to the database.'}
               </p>
               
               <div className="flex justify-center gap-2">
-                <Button onClick={handleRetry} variant="outline" className="border-red-300 text-red-700 hover:bg-red-100">
+                <Button onClick={handleRetry} variant="outline" className="border-destructive/30 text-destructive hover:bg-destructive/10">
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Retry
                 </Button>
-                <Button onClick={handleForceRefresh} variant="outline" className="border-red-300 text-red-700 hover:bg-red-100">
+                <Button onClick={handleForceRefresh} variant="outline" className="border-destructive/30 text-destructive hover:bg-destructive/10">
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Force Refresh
                 </Button>
@@ -479,7 +479,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                 
                 <div className="flex items-center gap-6 text-sm">
                   <div className="flex items-center gap-2 bg-white/10 rounded-lg px-4 py-2">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-chart-1 rounded-full animate-pulse"></div>
                     <span>{properties.length} Properties Loaded</span>
                   </div>
                   <div className="flex items-center gap-2 bg-white/10 rounded-lg px-4 py-2">
@@ -513,21 +513,21 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         </div>
 
         {/* Enhanced Search & Filters */}
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="md:col-span-2 relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
                 <Input
                   placeholder="Search properties by title, location, or city..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-12 h-12 text-lg rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-all duration-300"
+                  className="pl-12 h-12 text-lg rounded-xl border-2 border-border focus:border-primary transition-all duration-300"
                 />
               </div>
               
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500">
+                <SelectTrigger className="h-12 rounded-xl border-2 border-border focus:border-primary">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -541,7 +541,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
               </Select>
               
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500">
+                <SelectTrigger className="h-12 rounded-xl border-2 border-border focus:border-primary">
                   <SelectValue placeholder="Filter by type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -560,7 +560,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                   <Button 
                     variant="outline" 
                     onClick={handleRetry} 
-                    className="h-12 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all duration-300"
+                    className="h-12 rounded-xl border-2 border-border hover:border-primary hover:bg-primary/5 transition-all duration-300"
                   >
                     <RefreshCw className="h-5 w-5 mr-2" />
                     Refresh
@@ -652,19 +652,19 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
             <div>
               <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
                 <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                  <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  <Building2 className="h-6 w-6 text-primary" />
                 </div>
                 Properties Database ({properties.length})
               </CardTitle>
-              <CardDescription className="text-lg text-gray-600 dark:text-gray-400">
+              <CardDescription className="text-lg text-muted-foreground">
                 Complete management interface for all property listings
               </CardDescription>
             </div>
             
             {selectedProperties.size > 0 && (
-              <div className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900 rounded-lg px-4 py-2">
-                <CheckSquare className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                <span className="font-semibold text-blue-800 dark:text-blue-200">
+              <div className="flex items-center gap-2 bg-primary/10 rounded-lg px-4 py-2">
+                <CheckSquare className="h-5 w-5 text-primary" />
+                <span className="font-semibold text-primary">
                   {selectedProperties.size} Selected
                 </span>
               </div>
@@ -674,12 +674,12 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         
         <CardContent className="p-0">
           {properties.length === 0 ? (
-            <div className="text-center py-16 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900">
+            <div className="text-center py-16 bg-gradient-to-br from-muted/50 to-primary/5">
               <div className="max-w-md mx-auto">
-                <div className="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-lg mb-6">
-                  <Building2 className="h-20 w-20 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">No Properties Found</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                <div className="p-6 bg-card rounded-2xl shadow-lg mb-6">
+                  <Building2 className="h-20 w-20 text-muted-foreground/40 mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold mb-3 text-foreground">No Properties Found</h3>
+                  <p className="text-muted-foreground mb-6 leading-relaxed">
                     {searchTerm || statusFilter !== "all" || typeFilter !== "all" 
                       ? "No properties match your current search criteria. Try adjusting your filters or search terms."
                       : "Ready to add your first property? Create a new listing to get started with the property management system."
@@ -762,20 +762,20 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                         
                         <TableCell className="py-4">
                           <div className="space-y-1">
-                            <div className="font-bold text-gray-900 dark:text-white text-lg leading-tight">
+                            <div className="font-bold text-foreground text-lg leading-tight">
                               {property.title}
                             </div>
-                            <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <div className="flex items-center gap-3 text-sm text-muted-foreground">
                               <span className="flex items-center gap-1">
-                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                                <div className="w-1.5 h-1.5 bg-chart-4 rounded-full"></div>
                                 {property.bedrooms || 0} Bedrooms
                               </span>
                               <span className="flex items-center gap-1">
-                                <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                                <div className="w-1.5 h-1.5 bg-chart-1 rounded-full"></div>
                                 {property.bathrooms || 0} Bathrooms
                               </span>
                               <span className="flex items-center gap-1">
-                                <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+                                <div className="w-1.5 h-1.5 bg-accent-foreground rounded-full"></div>
                                 {property.area_sqm || 0}m²
                               </span>
                             </div>
@@ -785,7 +785,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                         <TableCell className="py-4">
                           <Badge 
                             variant="outline" 
-                            className="capitalize font-medium px-3 py-1 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 border-gray-300 dark:border-gray-600"
+                            className="capitalize font-medium px-3 py-1 bg-gradient-to-r from-muted to-muted/80 border-border"
                           >
                             {property.property_type}
                           </Badge>
@@ -793,10 +793,10 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                         
                         <TableCell className="py-4">
                           <div className="space-y-1">
-                            <div className="font-semibold text-gray-900 dark:text-white">{property.location}</div>
+                            <div className="font-semibold text-foreground">{property.location}</div>
                             {property.city && (
-                              <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                              <div className="text-sm text-muted-foreground flex items-center gap-1">
+                                <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
                                 {property.city}
                               </div>
                             )}

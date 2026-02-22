@@ -216,21 +216,21 @@ const ProgressAnalyticsDashboard: React.FC<ProgressAnalyticsProps> = ({ vendorId
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-start gap-3">
-            <div className="h-2 w-2 rounded-full bg-green-500 mt-2" />
+            <div className="h-2 w-2 rounded-full bg-chart-1 mt-2" />
             <p className="text-sm text-muted-foreground">
               <span className="font-medium text-foreground">Strong Progress: </span>
               85% completion rate shows excellent momentum toward next level
             </p>
           </div>
           <div className="flex items-start gap-3">
-            <div className="h-2 w-2 rounded-full bg-blue-500 mt-2" />
+            <div className="h-2 w-2 rounded-full bg-chart-4 mt-2" />
             <p className="text-sm text-muted-foreground">
               <span className="font-medium text-foreground">Improving Quality: </span>
               Rating increased by 0.3 points in the last month
             </p>
           </div>
           <div className="flex items-start gap-3">
-            <div className="h-2 w-2 rounded-full bg-yellow-500 mt-2" />
+            <div className="h-2 w-2 rounded-full bg-chart-3 mt-2" />
             <p className="text-sm text-muted-foreground">
               <span className="font-medium text-foreground">Productivity Peak: </span>
               Task completion rate increased by 12% this month

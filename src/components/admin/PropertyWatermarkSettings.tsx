@@ -310,10 +310,10 @@ const PropertyWatermarkSettings = () => {
               >
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center space-y-2">
-                    <div className="w-16 h-16 mx-auto rounded-lg bg-gray-200 flex items-center justify-center">
-                      <div className="w-8 h-8 bg-gray-300 rounded"></div>
+                    <div className="w-16 h-16 mx-auto rounded-lg bg-muted flex items-center justify-center">
+                      <div className="w-8 h-8 bg-muted-foreground/30 rounded"></div>
                     </div>
-                    <p className="text-gray-500 text-sm font-medium">Property Image Preview</p>
+                    <p className="text-muted-foreground text-sm font-medium">Property Image Preview</p>
                   </div>
                 </div>
                 
