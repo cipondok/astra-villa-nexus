@@ -148,10 +148,10 @@ const VendorServicesCategoryShowcase = () => {
 
   const getCategoryTypeColor = (categoryType: string) => {
     switch (categoryType) {
-      case 'products': return 'bg-blue-500';
-      case 'services': return 'bg-green-500';
-      case 'mixed': return 'bg-purple-500';
-      default: return 'bg-gray-500';
+      case 'products': return 'bg-primary';
+      case 'services': return 'bg-chart-1';
+      case 'mixed': return 'bg-chart-5';
+      default: return 'bg-muted-foreground';
     }
   };
 
@@ -159,7 +159,7 @@ const VendorServicesCategoryShowcase = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-chart-5 bg-clip-text text-transparent">
           Vendor Services Categories
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
@@ -217,7 +217,7 @@ const VendorServicesCategoryShowcase = () => {
                 <p className="text-sm text-muted-foreground">Categories</p>
                 <p className="text-2xl font-bold">{mainCategories?.length || 0}</p>
               </div>
-              <Zap className="h-8 w-8 text-blue-600" />
+              <Zap className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -229,7 +229,7 @@ const VendorServicesCategoryShowcase = () => {
                 <p className="text-sm text-muted-foreground">Subcategories</p>
                 <p className="text-2xl font-bold">{subcategories?.length || 0}</p>
               </div>
-              <Users className="h-8 w-8 text-green-600" />
+              <Users className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -241,7 +241,7 @@ const VendorServicesCategoryShowcase = () => {
                 <p className="text-sm text-muted-foreground">Total Services</p>
                 <p className="text-2xl font-bold">{vendorServices?.length || 0}</p>
               </div>
-              <Package className="h-8 w-8 text-purple-600" />
+              <Package className="h-8 w-8 text-chart-5" />
             </div>
           </CardContent>
         </Card>
@@ -253,7 +253,7 @@ const VendorServicesCategoryShowcase = () => {
                 <p className="text-sm text-muted-foreground">Featured</p>
                 <p className="text-2xl font-bold">{vendorServices?.filter(s => s.featured).length || 0}</p>
               </div>
-              <Star className="h-8 w-8 text-orange-600" />
+              <Star className="h-8 w-8 text-chart-3" />
             </div>
           </CardContent>
         </Card>
@@ -266,7 +266,7 @@ const VendorServicesCategoryShowcase = () => {
             <TabsTrigger key={category.id} value={category.id} className="flex flex-col items-center gap-1 p-2 text-xs">
               <div className="flex items-center gap-1">
                 <span className="text-lg">{category.icon}</span>
-                <div className="w-2 h-2 rounded-full bg-purple-500" />
+                <div className="w-2 h-2 rounded-full bg-chart-5" />
               </div>
               <span className="hidden sm:inline text-center leading-tight">{category.name}</span>
             </TabsTrigger>
@@ -276,7 +276,7 @@ const VendorServicesCategoryShowcase = () => {
         {mainCategories?.map((mainCategory) => (
           <TabsContent key={mainCategory.id} value={mainCategory.id} className="space-y-6">
             {/* Category Header */}
-            <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-none">
+            <Card className="bg-gradient-to-r from-primary/5 to-chart-5/5 border-none">
               <CardHeader className="text-center">
                 <div className="flex justify-center items-center gap-4 mb-4">
                   <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center text-4xl shadow-lg">
@@ -331,7 +331,7 @@ const VendorServicesCategoryShowcase = () => {
                                 </div>
                                 <div className="flex items-center gap-1">
                                   {service.featured && (
-                                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                    <Star className="h-4 w-4 text-chart-3 fill-current" />
                                   )}
                                 </div>
                               </div>
@@ -386,7 +386,7 @@ const VendorServicesCategoryShowcase = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Star className="h-5 w-5 text-yellow-500" />
+            <Star className="h-5 w-5 text-chart-3" />
             Featured Services
           </CardTitle>
           <CardDescription>
@@ -400,12 +400,12 @@ const VendorServicesCategoryShowcase = () => {
               const mainCategory = mainCategories?.find(main => main.id === service.main_category_id);
               
               return (
-                <Card key={service.id} className="border-2 border-yellow-200 bg-yellow-50/50">
+                <Card key={service.id} className="border-2 border-chart-3/30 bg-chart-3/5">
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <span className="text-lg">{subcategory?.icon || mainCategory?.icon}</span>
-                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        <Star className="h-4 w-4 text-chart-3 fill-current" />
                         {getBusinessModelIcon('service_only')}
                       </div>
                       <div className="flex flex-col items-end gap-1">
@@ -421,12 +421,12 @@ const VendorServicesCategoryShowcase = () => {
                     </p>
                     
                     <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-1 text-green-600">
+                      <div className="flex items-center gap-1 text-chart-1">
                         <DollarSign className="h-4 w-4" />
                         <span className="font-medium">{formatPrice(service.price_range)}</span>
                       </div>
                       
-                      <div className="flex items-center gap-1 text-blue-600">
+                      <div className="flex items-center gap-1 text-primary">
                         <MapPin className="h-4 w-4" />
                         <span>{getLocationIcon(service.location_type)}</span>
                       </div>

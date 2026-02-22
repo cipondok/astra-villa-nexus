@@ -50,7 +50,7 @@ const PropertyOwnerOverview = () => {
                 {profile?.full_name?.split(' ')[0] || 'Owner'}
               </h1>
               <div className="flex items-center gap-1">
-                <div className="w-1 h-1 bg-green-400 rounded-full"></div>
+                <div className="w-1 h-1 bg-chart-1 rounded-full"></div>
                 <span className="text-[8px] text-primary-foreground/80">Property Owner</span>
               </div>
             </div>
@@ -79,12 +79,12 @@ const PropertyOwnerOverview = () => {
       {/* Stats Grid - 3x2 Ultra Compact */}
       <div className="grid grid-cols-3 gap-1.5">
         {[
-          { icon: Building, value: stats.totalProperties, label: 'Total', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
-          { icon: Activity, value: stats.activeListings, label: 'Active', color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-900/20' },
-          { icon: Target, value: stats.pendingApprovals, label: 'Pending', color: 'text-orange-600', bg: 'bg-orange-50 dark:bg-orange-900/20' },
-          { icon: Eye, value: stats.totalViews, label: 'Views', color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-900/20' },
-          { icon: Heart, value: stats.savedCount, label: 'Saved', color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-900/20' },
-          { icon: MessageSquare, value: stats.totalInquiries, label: 'Inquiries', color: 'text-yellow-600', bg: 'bg-yellow-50 dark:bg-yellow-900/20' },
+          { icon: Building, value: stats.totalProperties, label: 'Total', color: 'text-primary', bg: 'bg-primary/10' },
+          { icon: Activity, value: stats.activeListings, label: 'Active', color: 'text-chart-1', bg: 'bg-chart-1/10' },
+          { icon: Target, value: stats.pendingApprovals, label: 'Pending', color: 'text-chart-3', bg: 'bg-chart-3/10' },
+          { icon: Eye, value: stats.totalViews, label: 'Views', color: 'text-chart-5', bg: 'bg-chart-5/10' },
+          { icon: Heart, value: stats.savedCount, label: 'Saved', color: 'text-destructive', bg: 'bg-destructive/10' },
+          { icon: MessageSquare, value: stats.totalInquiries, label: 'Inquiries', color: 'text-chart-2', bg: 'bg-chart-2/10' },
         ].map((stat, i) => (
           <Card key={i} className="p-1.5">
             <div className="flex items-center gap-1.5">
@@ -104,8 +104,8 @@ const PropertyOwnerOverview = () => {
       <div className="grid grid-cols-4 gap-1">
         {[
           { icon: PlusCircle, label: 'Add', color: 'text-primary', action: () => navigate('/add-property', { state: { from: 'dashboard' } }) },
-          { icon: Search, label: 'Browse', color: 'text-blue-500', action: () => navigate('/dijual', { state: { from: 'dashboard' } }) },
-          { icon: TrendingUp, label: 'Stats', color: 'text-green-500', action: () => navigate('/dashboard/property-owner?tab=insights') },
+          { icon: Search, label: 'Browse', color: 'text-accent-foreground', action: () => navigate('/dijual', { state: { from: 'dashboard' } }) },
+          { icon: TrendingUp, label: 'Stats', color: 'text-chart-1', action: () => navigate('/dashboard/property-owner?tab=insights') },
           { icon: Settings, label: 'Settings', color: 'text-muted-foreground', action: () => navigate('/settings', { state: { from: 'dashboard' } }) },
         ].map((item, i) => (
           <Button 
@@ -241,16 +241,16 @@ const PropertyOwnerOverview = () => {
           <Card className="p-2">
             <CardHeader className="p-0 pb-1.5">
               <CardTitle className="text-[10px] flex items-center gap-1">
-                <TrendingUp className="h-3 w-3 text-green-500" />
+                <TrendingUp className="h-3 w-3 text-chart-1" />
                 Performance
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-1">
               {[
                 { label: 'Total Properties', value: stats.totalProperties, color: '' },
-                { label: 'Active Listings', value: stats.activeListings, color: 'text-green-600' },
-                { label: 'Pending Approval', value: stats.pendingApprovals, color: 'text-orange-600' },
-                { label: 'Times Saved', value: stats.savedCount, color: 'text-red-600' },
+                { label: 'Active Listings', value: stats.activeListings, color: 'text-chart-1' },
+                { label: 'Pending Approval', value: stats.pendingApprovals, color: 'text-chart-3' },
+                { label: 'Times Saved', value: stats.savedCount, color: 'text-destructive' },
               ].map((item, i) => (
                 <div key={i} className="flex items-center justify-between p-1.5 bg-muted/50 rounded">
                   <span className="text-[9px]">{item.label}</span>
@@ -263,15 +263,15 @@ const PropertyOwnerOverview = () => {
           <Card className="p-2">
             <CardHeader className="p-0 pb-1.5">
               <CardTitle className="text-[10px] flex items-center gap-1">
-                <Clock className="h-3 w-3 text-blue-500" />
+                <Clock className="h-3 w-3 text-primary" />
                 Tips
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-1">
               {[
-                { text: '📸 Add quality photos for +40% views', bg: 'bg-blue-50 dark:bg-blue-900/20', color: 'text-blue-700 dark:text-blue-300' },
-                { text: '📝 Complete descriptions get 2x inquiries', bg: 'bg-green-50 dark:bg-green-900/20', color: 'text-green-700 dark:text-green-300' },
-                { text: '💰 Competitive pricing sells faster', bg: 'bg-purple-50 dark:bg-purple-900/20', color: 'text-purple-700 dark:text-purple-300' },
+                { text: '📸 Add quality photos for +40% views', bg: 'bg-primary/10', color: 'text-primary' },
+                { text: '📝 Complete descriptions get 2x inquiries', bg: 'bg-chart-1/10', color: 'text-chart-1' },
+                { text: '💰 Competitive pricing sells faster', bg: 'bg-chart-5/10', color: 'text-chart-5' },
               ].map((tip, i) => (
                 <div key={i} className={`p-1.5 rounded ${tip.bg}`}>
                   <p className={`text-[8px] ${tip.color}`}>{tip.text}</p>
