@@ -1167,12 +1167,12 @@ const EnhancedPropertySmartPreview = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-white font-medium">Save Current Settings</h3>
-                    <p className="text-gray-400 text-sm">Save these settings as default for the property preview</p>
+                    <p className="text-muted-foreground text-sm">Save these settings as default for the property preview</p>
                   </div>
                   <Button 
                     onClick={savePreviewSettings} 
                     disabled={!hasUnsavedChanges}
-                    className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                    className="bg-primary hover:bg-primary/90 disabled:opacity-50"
                   >
                     <Save className="h-4 w-4 mr-2" />
                     Save Settings
@@ -1182,7 +1182,7 @@ const EnhancedPropertySmartPreview = () => {
                 <div className="flex items-center justify-between pt-4 border-t border-slate-600">
                   <div>
                     <h3 className="text-white font-medium">Reset to Defaults</h3>
-                    <p className="text-gray-400 text-sm">Restore all settings to their default values</p>
+                    <p className="text-muted-foreground text-sm">Restore all settings to their default values</p>
                   </div>
                   <Button onClick={resetToDefaults} variant="outline">
                     <RotateCcw className="h-4 w-4 mr-2" />
@@ -1198,7 +1198,7 @@ const EnhancedPropertySmartPreview = () => {
                       {isSettingsCopied ? 'Copied!' : 'Export'}
                     </Button>
                   </div>
-                  <p className="text-gray-400 text-sm mb-3">Export current settings as JSON for backup or sharing</p>
+                  <p className="text-muted-foreground text-sm mb-3">Export current settings as JSON for backup or sharing</p>
                   {exportedSettings && (
                     <Textarea
                       value={exportedSettings}
@@ -1222,7 +1222,7 @@ const EnhancedPropertySmartPreview = () => {
               <CardContent className="space-y-4">
                 <div>
                   <Label className="text-white font-medium">Import Settings</Label>
-                  <p className="text-gray-400 text-sm mb-3">Paste JSON settings to import configuration</p>
+                  <p className="text-muted-foreground text-sm mb-3">Paste JSON settings to import configuration</p>
                   <Textarea
                     value={importSettings}
                     onChange={(e) => setImportSettings(e.target.value)}
@@ -1242,7 +1242,7 @@ const EnhancedPropertySmartPreview = () => {
 
                 <div className="pt-4 border-t border-slate-600">
                   <Label className="text-white font-medium">Custom CSS</Label>
-                  <p className="text-gray-400 text-sm mb-3">Add custom CSS for advanced styling (Coming Soon)</p>
+                  <p className="text-muted-foreground text-sm mb-3">Add custom CSS for advanced styling (Coming Soon)</p>
                   <Textarea
                     value={customCSS}
                     onChange={(e) => setCustomCSS(e.target.value)}
@@ -1270,7 +1270,7 @@ const EnhancedPropertySmartPreview = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-white font-medium">Live Preview Mode</h3>
-                    <p className="text-gray-400 text-sm">Toggle real-time updates for better performance</p>
+                    <p className="text-muted-foreground text-sm">Toggle real-time updates for better performance</p>
                   </div>
                   <Switch
                     checked={isLivePreview}
@@ -1282,12 +1282,12 @@ const EnhancedPropertySmartPreview = () => {
                   <h3 className="text-white font-medium mb-2">Preview Statistics</h3>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div className="bg-slate-700/30 p-3 rounded">
-                      <div className="text-gray-400">Properties Loaded</div>
-                      <div className="text-white font-semibold">{properties?.length || 0}</div>
+                      <div className="text-muted-foreground">Properties Loaded</div>
+                      <div className="text-foreground font-semibold">{properties?.length || 0}</div>
                     </div>
                     <div className="bg-slate-700/30 p-3 rounded">
-                      <div className="text-gray-400">Render Updates</div>
-                      <div className="text-white font-semibold">{previewKey}</div>
+                      <div className="text-muted-foreground">Render Updates</div>
+                      <div className="text-foreground font-semibold">{previewKey}</div>
                     </div>
                   </div>
                 </div>
@@ -1318,20 +1318,20 @@ const EnhancedPropertySmartPreview = () => {
                   <h3 className="text-white font-medium mb-2">Data Source Information</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Table:</span>
-                      <span className="text-white">properties</span>
+                      <span className="text-muted-foreground">Table:</span>
+                      <span className="text-foreground">properties</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Status Filter:</span>
-                      <span className="text-white">{statusFilter}</span>
+                      <span className="text-muted-foreground">Status Filter:</span>
+                      <span className="text-foreground">{statusFilter}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Search Term:</span>
-                      <span className="text-white">{searchTerm || 'None'}</span>
+                      <span className="text-muted-foreground">Search Term:</span>
+                      <span className="text-foreground">{searchTerm || 'None'}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Loading:</span>
-                      <span className="text-white">{isLoading ? 'Yes' : 'No'}</span>
+                      <span className="text-muted-foreground">Loading:</span>
+                      <span className="text-foreground">{isLoading ? 'Yes' : 'No'}</span>
                     </div>
                   </div>
                 </div>
@@ -1347,8 +1347,8 @@ const EnhancedPropertySmartPreview = () => {
                 </Button>
 
                 {error && (
-                  <div className="bg-red-900/20 border border-red-500/30 p-3 rounded">
-                    <div className="text-red-400 text-sm">
+                  <div className="bg-destructive/10 border border-destructive/30 p-3 rounded">
+                    <div className="text-destructive text-sm">
                       <AlertCircle className="h-4 w-4 inline mr-2" />
                       Database Error: {error.message}
                     </div>

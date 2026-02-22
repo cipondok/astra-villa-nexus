@@ -156,11 +156,11 @@ export const BulkKYCOperations = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'verified':
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="w-3 h-3 mr-1" />Verified</Badge>;
+        return <Badge className="bg-chart-1/10 text-chart-1"><CheckCircle className="w-3 h-3 mr-1" />Verified</Badge>;
       case 'rejected':
         return <Badge variant="destructive"><XCircle className="w-3 h-3 mr-1" />Rejected</Badge>;
       case 'under_verification':
-        return <Badge className="bg-blue-100 text-blue-800"><Clock className="w-3 h-3 mr-1" />Under Review</Badge>;
+        return <Badge className="bg-chart-4/10 text-chart-4"><Clock className="w-3 h-3 mr-1" />Under Review</Badge>;
       default:
         return <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
     }
@@ -190,7 +190,7 @@ export const BulkKYCOperations = () => {
           <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:gap-2">
             <Button 
               onClick={() => handleBulkAction('approve')}
-              className="bg-green-600 hover:bg-green-700 w-full md:w-auto text-sm md:text-base"
+              className="bg-chart-1 hover:bg-chart-1/90 w-full md:w-auto text-sm md:text-base"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
               Approve ({selectedIds.length})
@@ -315,10 +315,10 @@ export const BulkKYCOperations = () => {
                     <div className="flex items-center gap-2">
                       <span className="text-sm">{submission.compliance_score}</span>
                       {submission.compliance_score >= 80 && (
-                        <CheckCircle className="w-4 h-4 text-green-500" />
+                        <CheckCircle className="w-4 h-4 text-chart-1" />
                       )}
                       {submission.compliance_score < 50 && (
-                        <AlertTriangle className="w-4 h-4 text-amber-500" />
+                        <AlertTriangle className="w-4 h-4 text-chart-3" />
                       )}
                     </div>
                   </TableCell>
@@ -378,7 +378,7 @@ export const BulkKYCOperations = () => {
             <Button 
               onClick={executeBulkAction}
               disabled={bulkUpdateMutation.isPending}
-              className={bulkAction === 'approve' ? 'bg-green-600 hover:bg-green-700' : ''}
+              className={bulkAction === 'approve' ? 'bg-chart-1 hover:bg-chart-1/90' : ''}
               variant={bulkAction === 'reject' ? 'destructive' : 'default'}
             >
               {bulkUpdateMutation.isPending ? 'Processing...' : `${bulkAction === 'approve' ? 'Approve' : 'Reject'} Selected`}
