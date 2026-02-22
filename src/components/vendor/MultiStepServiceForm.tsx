@@ -259,9 +259,9 @@ const MultiStepServiceForm: React.FC<MultiStepServiceFormProps> = ({ onClose, on
             <div key={step.id} className="flex flex-col items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 currentStep > step.id 
-                  ? 'bg-green-500 text-white' 
+                  ? 'bg-chart-1 text-primary-foreground' 
                   : currentStep === step.id 
-                    ? 'bg-primary text-white' 
+                    ? 'bg-primary text-primary-foreground' 
                     : 'bg-muted text-muted-foreground'
               }`}>
                 {currentStep > step.id ? <Check className="h-4 w-4" /> : step.id}
@@ -321,7 +321,7 @@ const MultiStepServiceForm: React.FC<MultiStepServiceFormProps> = ({ onClose, on
           <Button
             onClick={handleSubmit}
             disabled={!canProceed || isSubmitting}
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-chart-1 hover:bg-chart-1/90 text-primary-foreground"
           >
             {isSubmitting ? 'Creating...' : 'Create Service'}
             <Check className="h-4 w-4 ml-2" />

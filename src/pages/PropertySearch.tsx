@@ -237,17 +237,17 @@ const PropertySearch = () => {
   const currentText = text[language];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-muted/50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+              <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
                 <Search className="h-8 w-8" />
                 {currentText.title}
               </h1>
-              <p className="text-gray-600 mt-2">{currentText.subtitle}</p>
+              <p className="text-muted-foreground mt-2">{currentText.subtitle}</p>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -508,35 +508,35 @@ const PropertySearch = () => {
                         variant="ghost"
                         size="sm"
                         onClick={clearImageSearch}
-                        className="text-red-600 hover:text-red-700"
+                         className="text-destructive hover:text-destructive/80"
                       >
                         <X className="h-4 w-4 mr-1" />
                         Clear Image Search
                       </Button>
                     ) : getActiveFiltersCount() > 0 ? (
                       <>
-                        <Filter className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm text-gray-600">
+                         <Filter className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
                           {getActiveFiltersCount()} active filters
                         </span>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={clearSearch}
-                          className="text-red-600 hover:text-red-700"
+                          className="text-destructive hover:text-destructive/80"
                         >
                           {currentText.clearAll}
                         </Button>
                       </>
                     ) : (
-                      <span className="text-sm text-gray-500">{currentText.noFilters}</span>
+                      <span className="text-sm text-muted-foreground">{currentText.noFilters}</span>
                     )}
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600 mr-2">{currentText.viewMode}:</span>
-                  <div className="flex border border-gray-200 rounded-md overflow-hidden">
+                  <span className="text-sm text-muted-foreground mr-2">{currentText.viewMode}:</span>
+                  <div className="flex border border-border rounded-md overflow-hidden">
                     <Button
                       size="sm"
                       variant={viewMode === 'grid' ? 'default' : 'ghost'}
@@ -570,9 +570,9 @@ const PropertySearch = () => {
 
         {/* Error Display */}
         {error && (
-          <Card className="mb-6 border-red-200">
+          <Card className="mb-6 border-destructive/30">
             <CardContent className="pt-6">
-              <div className="text-red-600">
+              <div className="text-destructive">
                 Error loading properties: {error.message}
               </div>
             </CardContent>

@@ -259,7 +259,7 @@ const VendorServicesList = ({ onAddService, onEditService }: VendorServicesListP
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -358,7 +358,7 @@ const VendorServicesList = ({ onAddService, onEditService }: VendorServicesListP
           {services.map((service) => (
             <Card key={service.id} className="relative hover:shadow-lg transition-shadow">
               {service.featured && (
-                <Badge className="absolute top-2 right-2 bg-yellow-500 text-white z-10">
+                <Badge className="absolute top-2 right-2 bg-chart-3 text-chart-3-foreground z-10">
                   Featured
                 </Badge>
               )}
