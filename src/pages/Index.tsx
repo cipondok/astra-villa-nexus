@@ -535,7 +535,7 @@ const Index = () => {
               <div className={cn(
                 "inline-flex items-center gap-2 mb-3 sm:mb-4",
                 "px-4 py-1.5 sm:px-6 sm:py-2",
-                "bg-primary-foreground/8 backdrop-blur-xl",
+                "bg-foreground/5 backdrop-blur-xl dark:bg-primary-foreground/8",
                 "rounded-full border border-gold-primary/25",
                 "shadow-[0_0_20px_-5px_hsl(var(--gold-primary)/0.15)]",
                 "animate-in fade-in-50 slide-in-from-bottom-2 duration-700"
@@ -548,12 +548,12 @@ const Index = () => {
               </div>
               
               <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black leading-[1.1] mb-2.5 sm:mb-3 animate-in fade-in-50 slide-in-from-bottom-3 duration-700 delay-150">
-                <span className="bg-gradient-to-r from-primary-foreground via-primary-foreground to-primary-foreground/70 bg-clip-text text-transparent drop-shadow-lg">
+                <span className="bg-gradient-to-r from-foreground via-foreground to-foreground/70 dark:from-primary-foreground dark:via-primary-foreground dark:to-primary-foreground/70 bg-clip-text text-transparent drop-shadow-lg">
                   {t.findYour}
                 </span>
               </h2>
-              <p className="flex text-xs sm:text-sm md:text-base text-primary-foreground/45 items-center justify-center gap-2 font-medium tracking-wide animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-300">
-                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary-foreground/35" />
+              <p className="flex text-xs sm:text-sm md:text-base text-muted-foreground items-center justify-center gap-2 font-medium tracking-wide animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-300">
+                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
                 {t.searchPowered}
               </p>
             </div>
@@ -587,7 +587,7 @@ const Index = () => {
             <div className="flex items-center justify-center gap-2.5 mb-3">
               <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent to-gold-primary/40" />
               <Star className="h-3 w-3 md:h-3.5 md:w-3.5 text-gold-primary fill-gold-primary/40" />
-              <h3 className="text-[11px] md:text-sm font-semibold text-primary-foreground/80 uppercase tracking-widest">
+              <h3 className="text-[11px] md:text-sm font-semibold text-foreground/80 uppercase tracking-widest">
                 {t.featuredProperties}
               </h3>
               <Star className="h-3 w-3 md:h-3.5 md:w-3.5 text-gold-primary fill-gold-primary/40" />
@@ -597,8 +597,8 @@ const Index = () => {
               <div className="flex gap-2 px-3 overflow-hidden justify-center">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="flex-shrink-0 w-[130px] md:w-[160px] animate-pulse">
-                    <div className="h-16 md:h-24 bg-primary-foreground/10 rounded-lg mb-1" />
-                    <div className="h-2 bg-primary-foreground/10 rounded w-3/4" />
+                    <div className="h-16 md:h-24 bg-muted rounded-lg mb-1" />
+                    <div className="h-2 bg-muted rounded w-3/4" />
                   </div>
                 ))}
               </div>

@@ -253,12 +253,12 @@ html {
     --text-muted: 210 20% 45%;
     
     /* Hero & Search Section Gradients - Light Mode */
-    --hero-from: 210 55% 25%;
-    --hero-via: 210 50% 30%;
-    --hero-to: 210 45% 35%;
-    --hero-mid: 210 40% 40%;
-    --hero-end: 210 35% 45%;
-    --hero-fade: 210 30% 50%;
+    --hero-from: 210 30% 88%;
+    --hero-via: 210 25% 90%;
+    --hero-to: 210 20% 92%;
+    --hero-mid: 210 18% 94%;
+    --hero-end: 210 15% 95%;
+    --hero-fade: 210 12% 96%;
     
     /* Glassy effect colors - Light Mode */
     --glass-bg: 200 100% 98%;
