@@ -109,7 +109,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
         <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-chart-1 to-primary flex items-center justify-center shadow-md shadow-chart-1/30">
           <Home className="h-3.5 w-3.5 text-primary-foreground" />
         </div>
-        <h2 className="text-sm font-bold bg-gradient-to-r from-chart-1 via-primary to-chart-1 bg-clip-text text-transparent">Properti Dijual</h2>
+        <h2 className="text-sm font-bold text-foreground">Properti Dijual</h2>
       </div>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3">
