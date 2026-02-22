@@ -23,7 +23,7 @@ const VendorPlaceholder = ({ title, description, icon: Icon, comingSoon = true }
       </CardHeader>
       <CardContent>
         <div className="text-center py-8">
-          <Icon className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+          <Icon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
           <h3 className="text-lg font-semibold mb-2">
             {comingSoon ? 'Coming Soon' : 'Not Available'}
           </h3>

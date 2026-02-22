@@ -206,7 +206,7 @@ const TopAgentsCarousel = () => {
     return (
       <div className="flex gap-4 overflow-hidden">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="flex-shrink-0 w-72 h-64 bg-white/10 rounded-xl animate-pulse" />
+          <div key={i} className="flex-shrink-0 w-72 h-64 bg-primary-foreground/10 rounded-xl animate-pulse" />
         ))}
       </div>
     );

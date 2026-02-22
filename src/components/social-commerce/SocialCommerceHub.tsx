@@ -163,7 +163,7 @@ const SocialCommerceHub: React.FC<SocialCommerceHubProps> = ({
                       "p-2 rounded-xl bg-gradient-to-br",
                       platform.bgGradient
                     )}>
-                      <platform.icon className="h-5 w-5 text-white" />
+                      <platform.icon className="h-5 w-5 text-primary-foreground" />
                     </div>
                     <CardTitle className="text-base">{platform.name}</CardTitle>
                   </div>
@@ -203,7 +203,7 @@ const SocialCommerceHub: React.FC<SocialCommerceHubProps> = ({
                 {/* CTA Button */}
                 <Button 
                   className={cn(
-                    "w-full gap-2 bg-gradient-to-r text-white",
+                    "w-full gap-2 bg-gradient-to-r text-primary-foreground",
                     platform.bgGradient
                   )}
                   onClick={() => handlePlatformAction(platform)}

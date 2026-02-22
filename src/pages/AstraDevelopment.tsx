@@ -416,7 +416,7 @@ const AstraDevelopment = () => {
                   <CardHeader className="p-3 pb-2">
                     <div className="flex items-center gap-2">
                       <div className={`p-2 rounded-lg bg-gradient-to-br ${service.color} shadow-lg`}>
-                        <service.icon className="h-4 w-4 text-white" />
+                        <service.icon className="h-4 w-4 text-primary-foreground" />
                       </div>
                       <CardTitle className="text-sm font-semibold">{service.title}</CardTitle>
                     </div>

@@ -75,28 +75,28 @@ const UpgradeBanner = ({ onDismiss }: UpgradeBannerProps) => {
             {/* Close button */}
             <button
               onClick={handleDismiss}
-              className="absolute top-2 right-2 p-1 rounded-full hover:bg-white/20 transition-colors"
+              className="absolute top-2 right-2 p-1 rounded-full hover:bg-primary-foreground/20 transition-colors"
             >
-              <X className="h-4 w-4 text-white/80" />
+              <X className="h-4 w-4 text-primary-foreground/80" />
             </button>
 
             <div className="relative flex items-center gap-3">
               {/* Icon */}
-              <div className="flex-shrink-0 p-2 bg-white/20 rounded-lg">
-                <Crown className="h-6 w-6 text-white" />
+              <div className="flex-shrink-0 p-2 bg-primary-foreground/20 rounded-lg">
+                <Crown className="h-6 w-6 text-primary-foreground" />
               </div>
 
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <h3 className="text-sm font-bold text-white truncate">
+                  <h3 className="text-sm font-bold text-primary-foreground truncate">
                     {t.headline}
                   </h3>
                   <span className="flex-shrink-0 px-1.5 py-0.5 text-[10px] font-bold bg-chart-3 text-chart-3-foreground rounded">
                     {t.discount}
                   </span>
                 </div>
-                <p className="text-xs text-white/80 line-clamp-1">
+                <p className="text-xs text-primary-foreground/80 line-clamp-1">
                   {t.subtext}
                 </p>
               </div>

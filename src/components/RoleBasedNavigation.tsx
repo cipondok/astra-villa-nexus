@@ -196,11 +196,11 @@ const RoleBasedNavigation = ({
                       <Button variant="ghost" className="header-button-ios flex items-center space-x-2 px-2 py-1 h-8">
                         <Avatar className="h-7 w-7">
                           <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
-                          <AvatarFallback className="text-xs bg-white/20 text-white border border-white/20">
+                          <AvatarFallback className="text-xs bg-primary-foreground/20 text-primary-foreground border border-primary-foreground/20">
                             {getUserInitials()}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="hidden md:block text-xs font-medium text-white">
+                        <span className="hidden md:block text-xs font-medium text-primary-foreground">
                           {profile.full_name || profile.email}
                         </span>
                       </Button>

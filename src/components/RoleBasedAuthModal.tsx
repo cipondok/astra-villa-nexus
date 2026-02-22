@@ -235,11 +235,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
               {/* Tabs with Animation */}
               <motion.div variants={itemVariants}>
                 <Tabs value={isLogin ? "signin" : "signup"} className="w-full">
-                  <TabsList className="grid w-full grid-cols-2 bg-muted/50 dark:bg-white/5 p-1 rounded-lg">
+                  <TabsList className="grid w-full grid-cols-2 bg-muted/50 dark:bg-muted/20 p-1 rounded-lg">
                     <TabsTrigger 
                       value="signin" 
                       onClick={() => { setIsLogin(true); setError(null); }}
-                      className="gap-2 data-[state=active]:bg-background dark:data-[state=active]:bg-white/10 data-[state=active]:shadow-sm transition-all duration-200"
+                      className="gap-2 data-[state=active]:bg-background dark:data-[state=active]:bg-muted/30 data-[state=active]:shadow-sm transition-all duration-200"
                     >
                       <LogIn className="h-4 w-4" />
                       Sign In
@@ -247,7 +247,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                     <TabsTrigger 
                       value="signup" 
                       onClick={() => { setIsLogin(false); setError(null); }}
-                      className="gap-2 data-[state=active]:bg-background dark:data-[state=active]:bg-white/10 data-[state=active]:shadow-sm transition-all duration-200"
+                      className="gap-2 data-[state=active]:bg-background dark:data-[state=active]:bg-muted/30 data-[state=active]:shadow-sm transition-all duration-200"
                     >
                       <UserPlus className="h-4 w-4" />
                       Sign Up

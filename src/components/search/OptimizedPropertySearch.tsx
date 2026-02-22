@@ -4192,7 +4192,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 animate-fade-in">
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 animate-pulse">
-                      <span className="text-white text-xs font-bold">👈</span>
+                      <span className="text-primary-foreground text-xs font-bold">👈</span>
                     </div>
                     <div className="text-sm">
                       <p className="font-medium mb-1">Look at the highlighted button!</p>
@@ -4300,10 +4300,10 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                   <h3 className="text-xl font-semibold">Customize Your Search</h3>
                   <p className="text-muted-foreground">Adjust what matters most to you</p>
                 </div>
-                <Alert className="border-green-200 bg-green-50/50 animate-fade-in">
+                <Alert className="border-chart-1/20 bg-chart-1/5 animate-fade-in">
                   <div className="flex items-start gap-2">
-                    <div className="w-6 h-6 rounded-full bg-green-600 flex items-center justify-center flex-shrink-0 animate-pulse mt-0.5">
-                      <SlidersHorizontal className="h-3 w-3 text-white" />
+                    <div className="w-6 h-6 rounded-full bg-chart-1 flex items-center justify-center flex-shrink-0 animate-pulse mt-0.5">
+                      <SlidersHorizontal className="h-3 w-3 text-primary-foreground" />
                     </div>
                     <AlertDescription className="text-sm">
                       <span className="font-medium">Weight sliders will appear in the upload dialog!</span>

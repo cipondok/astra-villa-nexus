@@ -2392,7 +2392,7 @@ const AstraSearchPanel = ({
                     handleFilterChange('maxPrice', 1000000000);
                     handleSearch();
                   }}
-                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-medium animate-in fade-in duration-200"
+                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-chart-1/30 bg-chart-1/5 hover:bg-chart-1/20 text-chart-1 font-medium animate-in fade-in duration-200"
                 >
                   <DollarSign className="h-2.5 w-2.5 mr-0.5" />
                   Under 1B
@@ -2436,7 +2436,7 @@ const AstraSearchPanel = ({
                     setActiveTab('new_project');
                     handleSearch();
                   }}
-                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 font-medium animate-in fade-in duration-200"
+                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-gold-primary/30 bg-gold-primary/5 hover:bg-gold-primary/20 text-gold-primary font-medium animate-in fade-in duration-200"
                   style={{ animationDelay: '150ms' }}
                 >
                   <Rocket className="h-2.5 w-2.5 mr-0.5" />
@@ -2451,7 +2451,7 @@ const AstraSearchPanel = ({
                     handleFilterChange('propertyType', 'apartment');
                     handleSearch();
                   }}
-                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-cyan-500/30 bg-cyan-500/5 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 font-medium animate-in fade-in duration-200"
+                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-chart-4/30 bg-chart-4/5 hover:bg-chart-4/20 text-chart-4 font-medium animate-in fade-in duration-200"
                   style={{ animationDelay: '200ms' }}
                 >
                   <Building className="h-2.5 w-2.5 mr-0.5" />

@@ -223,11 +223,11 @@ const WNAFaqHelp: React.FC = () => {
                 transition={{ delay: idx * 0.03 }}
                 className={cn(
                   "rounded-lg overflow-hidden transition-all duration-200",
-                  "bg-white/60 dark:bg-white/5",
+                  "bg-background/60 dark:bg-muted/20",
                   "border-2",
                   isExpanded 
                     ? "border-accent/50 shadow-md" 
-                    : "border-border/50 dark:border-white/10 hover:border-accent/30"
+                    : "border-border/50 dark:border-border/30 hover:border-accent/30"
                 )}
               >
                 <button
@@ -276,8 +276,8 @@ const WNAFaqHelp: React.FC = () => {
         {/* Help Options */}
         <div className={cn(
           "rounded-lg p-4",
-          "bg-white/60 dark:bg-white/5",
-          "border-2 border-border/50 dark:border-white/10"
+          "bg-background/60 dark:bg-muted/20",
+          "border-2 border-border/50 dark:border-border/30"
         )}>
           <div className="flex items-center gap-2 mb-3">
             <MessageSquare className="h-5 w-5 text-accent" />

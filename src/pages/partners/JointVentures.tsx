@@ -448,12 +448,12 @@ const JointVentures = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
-                    <Building className="w-4 h-4 text-macos-blue" />
+                  <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                    <Building className="w-4 h-4 text-primary" />
                     {currentText.projectType}
                   </label>
                   <Select value={formData.projectType} onValueChange={(value) => setFormData({ ...formData, projectType: value })}>
-                    <SelectTrigger className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue">
+                    <SelectTrigger className="h-12 bg-muted/50 dark:bg-muted/20 border-border focus:border-primary focus:ring-primary">
                       <SelectValue placeholder={currentText.selectProject} />
                     </SelectTrigger>
                     <SelectContent>
@@ -467,7 +467,7 @@ const JointVentures = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="text-sm font-semibold text-muted-foreground">
                   {currentText.messagePlaceholder}
                 </label>
                 <Textarea
@@ -476,12 +476,12 @@ const JointVentures = () => {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder={currentText.messagePlaceholder}
                   rows={5}
-                  className="resize-none bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  className="resize-none bg-muted/50 dark:bg-muted/20 border-border focus:border-primary focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="text-sm font-semibold text-muted-foreground">
                   {language === "en" ? "Security Check" : "Pemeriksaan Keamanan"}
                 </label>
                 <SimpleCaptcha code={captchaCode} onRefresh={refreshCaptcha} />
@@ -490,7 +490,7 @@ const JointVentures = () => {
                   value={formData.captchaInput}
                   onChange={(e) => setFormData({ ...formData, captchaInput: e.target.value })}
                   placeholder={language === "en" ? "Enter the code above" : "Masukkan kode di atas"}
-                  className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  className="h-12 bg-muted/50 dark:bg-muted/20 border-border focus:border-primary focus:ring-primary"
                   maxLength={6}
                 />
               </div>

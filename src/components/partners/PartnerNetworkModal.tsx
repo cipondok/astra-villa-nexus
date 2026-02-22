@@ -86,7 +86,7 @@ const PartnerNetworkModal = ({ isOpen, onClose }: PartnerNetworkModalProps) => {
                       <CardDescription>{partner.type}</CardDescription>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-4 w-4 fill-gold-primary text-gold-primary" />
                       <span className="text-sm font-medium">{partner.rating}</span>
                     </div>
                   </div>
