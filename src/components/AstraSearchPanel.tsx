@@ -2646,7 +2646,7 @@ const AstraSearchPanel = ({
               </div>
               
               {/* Geolocation loading overlay */}
-              {isGettingLocation && <div className="absolute inset-0 bg-white/50 dark:bg-black/30 backdrop-blur-sm flex items-center justify-center rounded-xl z-10 border border-primary/20">
+              {isGettingLocation && <div className="absolute inset-0 bg-background/50 dark:bg-background/30 backdrop-blur-sm flex items-center justify-center rounded-xl z-10 border border-primary/20">
                   <div className="flex items-center gap-2 text-xs font-medium">
                     <div className="animate-spin h-4 w-4 border-2 border-primary rounded-full border-t-transparent" />
                     <span className="text-primary">{currentText.gettingLocation}</span>

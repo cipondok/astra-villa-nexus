@@ -65,14 +65,14 @@ const provinces = [
 
 // Vivid color palette for province badges
 const badgeColors = [
-  'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-400/30 hover:bg-blue-500/25',
-  'bg-violet-500/15 text-violet-600 dark:text-violet-400 border-violet-400/30 hover:bg-violet-500/25',
-  'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-400/30 hover:bg-emerald-500/25',
-  'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-400/30 hover:bg-amber-500/25',
-  'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-400/30 hover:bg-rose-500/25',
-  'bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border-cyan-400/30 hover:bg-cyan-500/25',
-  'bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-400/30 hover:bg-orange-500/25',
-  'bg-pink-500/15 text-pink-600 dark:text-pink-400 border-pink-400/30 hover:bg-pink-500/25',
+  'bg-primary/15 text-primary border-primary/30 hover:bg-primary/25',
+  'bg-accent/15 text-accent border-accent/30 hover:bg-accent/25',
+  'bg-chart-1/15 text-chart-1 border-chart-1/30 hover:bg-chart-1/25',
+  'bg-gold-primary/15 text-gold-primary border-gold-primary/30 hover:bg-gold-primary/25',
+  'bg-destructive/15 text-destructive border-destructive/30 hover:bg-destructive/25',
+  'bg-chart-4/15 text-chart-4 border-chart-4/30 hover:bg-chart-4/25',
+  'bg-chart-3/15 text-chart-3 border-chart-3/30 hover:bg-chart-3/25',
+  'bg-chart-5/15 text-chart-5 border-chart-5/30 hover:bg-chart-5/25',
 ];
 
 const getBadgeColor = (index: number) => badgeColors[index % badgeColors.length];
@@ -100,12 +100,12 @@ const LocationMap = () => {
   };
 
   const popularProvinces = [
-    { id: 'bali', name: 'Bali', icon: Star, gradient: 'from-amber-500 to-orange-500' },
-    { id: 'jabar', name: 'Jawa Barat', icon: Home, gradient: 'from-emerald-500 to-teal-500' },
-    { id: 'jakarta', name: 'DKI Jakarta', icon: Building2, gradient: 'from-blue-500 to-cyan-500' },
-    { id: 'jatim', name: 'Jawa Timur', icon: Building2, gradient: 'from-violet-500 to-purple-500' },
-    { id: 'yogya', name: 'Yogyakarta', icon: Home, gradient: 'from-rose-500 to-pink-500' },
-    { id: 'jateng', name: 'Jawa Tengah', icon: Building2, gradient: 'from-cyan-500 to-sky-500' },
+    { id: 'bali', name: 'Bali', icon: Star, gradient: 'from-gold-primary to-chart-3' },
+    { id: 'jabar', name: 'Jawa Barat', icon: Home, gradient: 'from-chart-1 to-chart-4' },
+    { id: 'jakarta', name: 'DKI Jakarta', icon: Building2, gradient: 'from-primary to-chart-4' },
+    { id: 'jatim', name: 'Jawa Timur', icon: Building2, gradient: 'from-accent to-chart-5' },
+    { id: 'yogya', name: 'Yogyakarta', icon: Home, gradient: 'from-destructive to-chart-5' },
+    { id: 'jateng', name: 'Jawa Tengah', icon: Building2, gradient: 'from-chart-4 to-primary' },
   ].map(p => ({ ...p, properties: getPropertyCount(p.name) }));
 
   const handleProvinceSelect = (province: Province) => {
@@ -127,10 +127,10 @@ const LocationMap = () => {
   };
 
   const stats = [
-    { label: 'Total Provinsi', value: '38', icon: Globe2, gradient: 'from-blue-500 to-cyan-500', bg: 'bg-blue-500/10 dark:bg-blue-500/20', text: 'text-blue-600 dark:text-blue-400' },
-    { label: 'Total Properti', value: isLoading ? '...' : totalProperties.toLocaleString(), icon: Building2, gradient: 'from-violet-500 to-purple-500', bg: 'bg-violet-500/10 dark:bg-violet-500/20', text: 'text-violet-600 dark:text-violet-400' },
-    { label: 'Provinsi Aktif', value: Object.keys(provincePropertyCounts).length.toString(), icon: MapPin, gradient: 'from-emerald-500 to-teal-500', bg: 'bg-emerald-500/10 dark:bg-emerald-500/20', text: 'text-emerald-600 dark:text-emerald-400' },
-    { label: 'Agen Aktif', value: '12.3K', icon: TrendingUp, gradient: 'from-amber-500 to-orange-500', bg: 'bg-amber-500/10 dark:bg-amber-500/20', text: 'text-amber-600 dark:text-amber-400' },
+    { label: 'Total Provinsi', value: '38', icon: Globe2, gradient: 'from-primary to-chart-4', bg: 'bg-primary/10 dark:bg-primary/20', text: 'text-primary' },
+    { label: 'Total Properti', value: isLoading ? '...' : totalProperties.toLocaleString(), icon: Building2, gradient: 'from-accent to-chart-5', bg: 'bg-accent/10 dark:bg-accent/20', text: 'text-accent' },
+    { label: 'Provinsi Aktif', value: Object.keys(provincePropertyCounts).length.toString(), icon: MapPin, gradient: 'from-chart-1 to-chart-4', bg: 'bg-chart-1/10 dark:bg-chart-1/20', text: 'text-chart-1' },
+    { label: 'Agen Aktif', value: '12.3K', icon: TrendingUp, gradient: 'from-gold-primary to-chart-3', bg: 'bg-gold-primary/10 dark:bg-gold-primary/20', text: 'text-gold-primary' },
   ];
 
   return (
@@ -143,9 +143,9 @@ const LocationMap = () => {
       {/* Decorative background blobs */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 dark:bg-primary/15 blur-3xl" />
-        <div className="absolute top-1/3 -right-24 w-80 h-80 rounded-full bg-violet-500/10 dark:bg-violet-500/15 blur-3xl" />
-        <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full bg-emerald-500/8 dark:bg-emerald-500/12 blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/3 w-64 h-64 rounded-full bg-amber-500/8 dark:bg-amber-500/12 blur-3xl" />
+        <div className="absolute top-1/3 -right-24 w-80 h-80 rounded-full bg-accent/10 dark:bg-accent/15 blur-3xl" />
+        <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full bg-chart-1/10 dark:bg-chart-1/15 blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/3 w-64 h-64 rounded-full bg-gold-primary/10 dark:bg-gold-primary/15 blur-3xl" />
       </div>
 
       <main className="container mx-auto px-4 py-6">
@@ -168,7 +168,7 @@ const LocationMap = () => {
           </motion.div>
 
           <h1 className="text-2xl md:text-4xl font-black mb-3 leading-tight">
-            <span className="bg-gradient-to-r from-primary via-cyan-500 to-violet-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-chart-4 to-accent bg-clip-text text-transparent">
               Peta Properti
             </span>{' '}
             <span className="text-foreground">Indonesia</span>
@@ -187,7 +187,7 @@ const LocationMap = () => {
             >
               <button
                 onClick={() => handleProvinceClick(lastProvince.id, lastProvince.name)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-rose-400/40 bg-rose-500/10 dark:bg-rose-500/15 text-rose-600 dark:text-rose-400 font-semibold text-sm hover:bg-rose-500/20 transition-all duration-200 backdrop-blur-sm shadow-sm hover:shadow-md"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-destructive/40 bg-destructive/10 dark:bg-destructive/15 text-destructive font-semibold text-sm hover:bg-destructive/20 transition-all duration-200 backdrop-blur-sm shadow-sm hover:shadow-md"
               >
                 <Navigation2 className="h-4 w-4" />
                 <span className="opacity-70">Lokasi Anda:</span>
@@ -230,9 +230,9 @@ const LocationMap = () => {
           transition={{ delay: 0.15 }}
           className="mb-6 rounded-2xl overflow-hidden border border-border/60 shadow-xl bg-card/60 backdrop-blur-sm"
         >
-          <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-gradient-to-r from-primary/5 via-transparent to-violet-500/5">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-gradient-to-r from-primary/5 via-transparent to-accent/5">
             <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="h-2 w-2 rounded-full bg-chart-1 animate-pulse" />
               <span className="text-sm font-semibold text-foreground">Peta Interaktif Indonesia</span>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -255,7 +255,7 @@ const LocationMap = () => {
           className="mb-6"
         >
           <h2 className="text-base sm:text-lg font-bold text-foreground mb-3 flex items-center gap-2">
-            <Star className="h-5 w-5 text-amber-500" />
+            <Star className="h-5 w-5 text-gold-primary" />
             Provinsi Populer
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">

@@ -212,7 +212,7 @@ const Analytics = () => {
 
         {/* KPI Cards - Glassmorphic Slim */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3 mb-4">
-          <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+          <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
             <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
@@ -230,7 +230,7 @@ const Analytics = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+          <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
             <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
@@ -248,7 +248,7 @@ const Analytics = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+          <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
             <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
@@ -266,7 +266,7 @@ const Analytics = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+          <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
             <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
@@ -296,7 +296,7 @@ const Analytics = () => {
 
           <TabsContent value="overview" className="space-y-3">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+              <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
                 <CardHeader className="p-3">
                   <CardTitle className="text-xs md:text-sm">User Growth Trend</CardTitle>
                 </CardHeader>
@@ -313,7 +313,7 @@ const Analytics = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+              <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
                 <CardHeader className="p-3">
                   <CardTitle className="text-xs md:text-sm">Property Listings</CardTitle>
                 </CardHeader>
@@ -333,7 +333,7 @@ const Analytics = () => {
           </TabsContent>
 
           <TabsContent value="users" className="space-y-3">
-            <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+            <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
               <CardHeader className="p-3">
                 <CardTitle className="text-xs md:text-sm">User Registration Trend</CardTitle>
               </CardHeader>
@@ -353,7 +353,7 @@ const Analytics = () => {
 
           <TabsContent value="properties" className="space-y-3">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+              <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
                 <CardHeader className="p-3">
                   <CardTitle className="text-xs md:text-sm">Property Listings Trend</CardTitle>
                 </CardHeader>
@@ -370,7 +370,7 @@ const Analytics = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+              <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
                 <CardHeader className="p-3">
                   <CardTitle className="text-xs md:text-sm">Properties by Type</CardTitle>
                 </CardHeader>
@@ -401,7 +401,7 @@ const Analytics = () => {
 
           <TabsContent value="engagement" className="space-y-3">
             <div className="grid grid-cols-3 gap-2 md:gap-3 mb-3">
-              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+              <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
                 <CardContent className="p-2 md:p-3 text-center">
                   <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-chart-4/10 flex items-center justify-center">
                     <Globe className="h-4 w-4 text-chart-4" />
