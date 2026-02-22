@@ -186,7 +186,7 @@ const PartnerNetwork = () => {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center p-3 bg-macos-gradient rounded-2xl mb-6 shadow-macos">
-            <Users className="w-12 h-12 text-white" />
+            <Users className="w-12 h-12 text-primary-foreground" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
             {currentText.title}
@@ -213,11 +213,11 @@ const PartnerNetwork = () => {
               <div key={index} className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-neutral-200 dark:border-neutral-800">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-macos-gradient rounded-xl shadow-macos">
-                    <Icon className="w-8 h-8 text-white" />
+                    <Icon className="w-8 h-8 text-primary-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">{feature.title}</h3>
-                    <p className="text-neutral-600 dark:text-neutral-400">{feature.description}</p>
+                    <h3 className="text-xl font-bold text-foreground mb-2">{feature.title}</h3>
+                    <p className="text-muted-foreground">{feature.description}</p>
                   </div>
                 </div>
               </div>
@@ -275,9 +275,9 @@ const PartnerNetwork = () => {
                     {emailValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
                         {emailValid ? (
-                          <Check className="w-5 h-5 text-green-500" />
+                          <Check className="w-5 h-5 text-chart-1" />
                         ) : (
-                          <X className="w-5 h-5 text-red-500" />
+                          <X className="w-5 h-5 text-destructive" />
                         )}
                       </div>
                     )}
@@ -310,9 +310,9 @@ const PartnerNetwork = () => {
                     {phoneValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
                         {phoneValid ? (
-                          <Check className="w-5 h-5 text-green-500" />
+                          <Check className="w-5 h-5 text-chart-1" />
                         ) : (
-                          <X className="w-5 h-5 text-red-500" />
+                          <X className="w-5 h-5 text-destructive" />
                         )}
                       </div>
                     )}
@@ -367,7 +367,7 @@ const PartnerNetwork = () => {
                 type="submit"
                 size="lg"
                 disabled={isSubmitting}
-                className="w-full text-lg h-14 bg-macos-gradient hover:shadow-macos-hover transition-all duration-300 text-white font-semibold border-0"
+                className="w-full text-lg h-14 bg-macos-gradient hover:shadow-macos-hover transition-all duration-300 text-primary-foreground font-semibold border-0"
               >
                 {isSubmitting ? currentText.submitting : currentText.submitButton}
               </Button>

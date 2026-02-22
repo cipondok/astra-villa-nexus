@@ -131,8 +131,8 @@ const AddProperty = () => {
       <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
         <Card className="w-full max-w-md shadow-lg border-border bg-card">
           <CardHeader className="text-center p-5 pb-3">
-            <div className="mx-auto w-14 h-14 bg-amber-500/10 rounded-xl flex items-center justify-center mb-3">
-              <Building className="h-7 w-7 text-amber-500" />
+            <div className="mx-auto w-14 h-14 bg-chart-3/10 rounded-xl flex items-center justify-center mb-3">
+              <Building className="h-7 w-7 text-chart-3" />
             </div>
             <CardTitle className="text-xl text-foreground">{t.upgradeRequired}</CardTitle>
             <CardDescription className="text-sm text-muted-foreground mt-1">
@@ -147,21 +147,21 @@ const AddProperty = () => {
                 title={language === 'en' ? 'Property Owner' : 'Pemilik Properti'}
                 description={language === 'en' ? 'List your own properties' : 'Daftarkan properti Anda'}
                 onClick={() => navigate('/profile?tab=roles')}
-                color="text-blue-600 bg-blue-500/10"
+                color="text-primary bg-primary/10"
               />
               <RoleOptionButton 
                 icon={<Crown className="h-5 w-5" />}
                 title={language === 'en' ? 'Real Estate Agent' : 'Agen Properti'}
                 description={language === 'en' ? 'Become a verified agent' : 'Jadi agen terverifikasi'}
                 onClick={() => navigate('/agent-registration')}
-                color="text-purple-600 bg-purple-500/10"
+                color="text-chart-5 bg-chart-5/10"
               />
               <RoleOptionButton 
                 icon={<Building className="h-5 w-5" />}
                 title={language === 'en' ? 'Service Vendor' : 'Vendor Layanan'}
                 description={language === 'en' ? 'Offer property services' : 'Tawarkan layanan properti'}
                 onClick={() => navigate('/profile?tab=roles')}
-                color="text-emerald-600 bg-emerald-500/10"
+                color="text-chart-1 bg-chart-1/10"
               />
             </div>
 

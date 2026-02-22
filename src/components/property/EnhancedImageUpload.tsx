@@ -335,8 +335,8 @@ const EnhancedImageUpload = ({
                   key={index}
                   className={`relative group aspect-square rounded-lg overflow-hidden border-2 cursor-pointer transition-all ${
                     thumbnailIndex === index
-                      ? 'border-blue-500 ring-2 ring-blue-200'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-primary ring-2 ring-primary/20'
+                      : 'border-border hover:border-border/80'
                   }`}
                   onClick={() => setThumbnail(index)}
                 >
@@ -349,7 +349,7 @@ const EnhancedImageUpload = ({
                   {/* Thumbnail Badge */}
                   {thumbnailIndex === index && (
                     <div className="absolute top-2 left-2">
-                      <Badge className="bg-blue-600 text-white">
+                      <Badge className="bg-primary text-primary-foreground">
                         <Star className="h-3 w-3 mr-1" />
                         Thumbnail
                       </Badge>
@@ -385,9 +385,9 @@ const EnhancedImageUpload = ({
         )}
 
         {/* Enhanced Tips */}
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <h5 className="font-medium text-blue-900 mb-2">💡 Tips Foto Properti:</h5>
-          <ul className="text-sm text-blue-800 space-y-1">
+        <div className="bg-primary/10 p-4 rounded-lg">
+          <h5 className="font-medium text-primary mb-2">💡 Tips Foto Properti:</h5>
+          <ul className="text-sm text-primary/80 space-y-1">
             <li>• Upload foto eksterior, interior, dan fasilitas</li>
             <li>• Gunakan pencahayaan yang baik dan hindari bayangan</li>
             <li>• Pastikan properti menjadi fokus utama foto</li>
