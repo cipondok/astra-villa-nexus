@@ -128,19 +128,19 @@ const MediaCoveragePR = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'published': case 'aired': return 'bg-green-500/20 text-green-700';
-      case 'scheduled': case 'confirmed': return 'bg-blue-500/20 text-blue-700';
-      case 'interested': case 'responded': return 'bg-yellow-500/20 text-yellow-700';
-      case 'pitched': case 'sent': return 'bg-purple-500/20 text-purple-700';
-      case 'declined': case 'no_response': return 'bg-red-500/20 text-red-700';
-      default: return 'bg-gray-500/20 text-gray-700';
+      case 'published': case 'aired': return 'bg-chart-1/20 text-chart-1';
+      case 'scheduled': case 'confirmed': return 'bg-chart-4/20 text-chart-4';
+      case 'interested': case 'responded': return 'bg-chart-3/20 text-chart-3';
+      case 'pitched': case 'sent': return 'bg-accent/20 text-accent-foreground';
+      case 'declined': case 'no_response': return 'bg-destructive/20 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getTierBadge = (tier: string) => {
     switch (tier) {
-      case 'tier1': return <Badge className="bg-yellow-500 text-white">Tier 1</Badge>;
-      case 'tier2': return <Badge className="bg-gray-400 text-white">Tier 2</Badge>;
+      case 'tier1': return <Badge className="bg-gold-primary text-white">Tier 1</Badge>;
+      case 'tier2': return <Badge className="bg-muted-foreground text-white">Tier 2</Badge>;
       case 'tier3': return <Badge variant="outline">Tier 3</Badge>;
       default: return null;
     }
@@ -149,14 +149,14 @@ const MediaCoveragePR = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
-        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-          <Newspaper className="h-6 w-6 text-white" />
+      <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/5 rounded-lg border border-primary/20">
+        <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center">
+          <Newspaper className="h-6 w-6 text-primary-foreground" />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-bold">Media Coverage & PR</h2>
-            <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+            <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground">
               Press Room
             </Badge>
           </div>
@@ -198,11 +198,11 @@ const MediaCoveragePR = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-        <Card className="border-blue-200/50">
+        <Card className="border-chart-4/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                <Newspaper className="h-5 w-5 text-blue-600" />
+              <div className="w-10 h-10 bg-chart-4/20 rounded-lg flex items-center justify-center">
+                <Newspaper className="h-5 w-5 text-chart-4" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{totalCoverage}</p>
@@ -212,11 +212,11 @@ const MediaCoveragePR = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-green-200/50">
+        <Card className="border-chart-1/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                <Eye className="h-5 w-5 text-green-600" />
+              <div className="w-10 h-10 bg-chart-1/20 rounded-lg flex items-center justify-center">
+                <Eye className="h-5 w-5 text-chart-1" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{(totalReach / 1000000).toFixed(1)}M</p>
@@ -226,11 +226,11 @@ const MediaCoveragePR = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-purple-200/50">
+        <Card className="border-accent/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-purple-600" />
+              <div className="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-accent-foreground" />
               </div>
               <div>
                 <p className="text-2xl font-bold">${(totalMediaValue / 1000).toFixed(0)}k</p>
@@ -240,11 +240,11 @@ const MediaCoveragePR = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-orange-200/50">
+        <Card className="border-chart-3/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                <Send className="h-5 w-5 text-orange-600" />
+              <div className="w-10 h-10 bg-chart-3/20 rounded-lg flex items-center justify-center">
+                <Send className="h-5 w-5 text-chart-3" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{pendingPitches}</p>
@@ -254,11 +254,11 @@ const MediaCoveragePR = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-pink-200/50">
+        <Card className="border-chart-5/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
-                <Mic className="h-5 w-5 text-pink-600" />
+              <div className="w-10 h-10 bg-chart-5/20 rounded-lg flex items-center justify-center">
+                <Mic className="h-5 w-5 text-chart-5" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{airedPodcasts}</p>
@@ -268,11 +268,11 @@ const MediaCoveragePR = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-cyan-200/50">
+        <Card className="border-primary/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-                <Target className="h-5 w-5 text-cyan-600" />
+              <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                <Target className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{mediaTargets.length}</p>
@@ -337,7 +337,7 @@ const MediaCoveragePR = () => {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="font-semibold truncate">{coverage.article_title}</h4>
-                          {coverage.featured && <Badge className="bg-yellow-500/20 text-yellow-700">Featured</Badge>}
+                          {coverage.featured && <Badge className="bg-gold-primary/20 text-gold-primary">Featured</Badge>}
                         </div>
                         <p className="text-sm text-muted-foreground">{coverage.publication_name}</p>
                         <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
@@ -383,10 +383,10 @@ const MediaCoveragePR = () => {
                   <CardDescription>Track pitches, follow-ups, and responses</CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <Badge className="bg-blue-500/20 text-blue-700">
+                  <Badge className="bg-chart-4/20 text-chart-4">
                     {prOutreach.filter(p => p.source === 'haro').length} HARO
                   </Badge>
-                  <Badge className="bg-purple-500/20 text-purple-700">
+                  <Badge className="bg-accent/20 text-accent-foreground">
                     {prOutreach.filter(p => p.source === 'direct_pitch').length} Direct
                   </Badge>
                 </div>
@@ -404,8 +404,8 @@ const MediaCoveragePR = () => {
                   {prOutreach.slice(0, 10).map((pitch: any) => (
                     <div key={pitch.id} className="flex items-center gap-4 p-3 rounded-lg border bg-card">
                       <div className={`w-2 h-12 rounded-full ${
-                        pitch.priority === 'high' ? 'bg-red-500' : 
-                        pitch.priority === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
+                        pitch.priority === 'high' ? 'bg-destructive' : 
+                        pitch.priority === 'medium' ? 'bg-chart-3' : 'bg-chart-4'
                       }`} />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
@@ -416,7 +416,7 @@ const MediaCoveragePR = () => {
                         <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                           <span>{pitch.contact_name}</span>
                           {pitch.deadline && (
-                            <span className="text-red-600 flex items-center gap-1">
+                            <span className="text-destructive flex items-center gap-1">
                               <Clock className="h-3 w-3" />
                               Due: {format(new Date(pitch.deadline), 'MMM d')}
                             </span>
@@ -463,7 +463,7 @@ const MediaCoveragePR = () => {
                     <Card key={podcast.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
-                          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white">
+                          <div className="w-12 h-12 bg-gradient-to-br from-accent to-chart-5 rounded-lg flex items-center justify-center text-primary-foreground">
                             🎙️
                           </div>
                           <div className="flex-1">
@@ -577,7 +577,7 @@ const MediaCoveragePR = () => {
                             <h4 className="font-semibold">{agency.agency_name}</h4>
                             <p className="text-sm text-muted-foreground">{agency.agency_type}</p>
                           </div>
-                          <Badge className={agency.is_active ? 'bg-green-500/20 text-green-700' : 'bg-gray-500/20 text-gray-700'}>
+                          <Badge className={agency.is_active ? 'bg-chart-1/20 text-chart-1' : 'bg-muted text-muted-foreground'}>
                             {agency.is_active ? 'Active' : 'Inactive'}
                           </Badge>
                         </div>
