@@ -20,7 +20,7 @@ const VirtualStagingPanel = ({ styles, activeStyle, onStyleChange }: VirtualStag
     <div className="absolute top-20 right-4 z-10 bg-black/50 backdrop-blur-sm rounded-lg p-4 max-w-xs">
       <div className="text-white mb-3">
         <h3 className="font-semibold mb-1">Virtual Staging</h3>
-        <p className="text-xs text-gray-300">Choose your preferred interior style</p>
+        <p className="text-xs text-muted-foreground">Choose your preferred interior style</p>
       </div>
       
       <div className="grid grid-cols-2 gap-2 mb-4">
@@ -40,19 +40,19 @@ const VirtualStagingPanel = ({ styles, activeStyle, onStyleChange }: VirtualStag
         ))}
       </div>
       
-      <div className="space-y-2 text-xs text-gray-300">
+      <div className="space-y-2 text-xs text-muted-foreground">
         <div className="flex items-center justify-between">
           <span>Rendering Quality:</span>
-          <Badge className="bg-green-500/80 text-white text-xs">4K</Badge>
+          <Badge className="bg-chart-1/80 text-primary-foreground text-xs">4K</Badge>
         </div>
         <div className="flex items-center justify-between">
           <span>Style Accuracy:</span>
-          <Badge className="bg-blue-500/80 text-white text-xs">AI Enhanced</Badge>
+          <Badge className="bg-chart-4/80 text-primary-foreground text-xs">AI Enhanced</Badge>
         </div>
       </div>
       
       <div className="mt-3 pt-3 border-t border-white/20">
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-muted-foreground">
           Compare furnished vs empty layouts in real-time
         </p>
       </div>

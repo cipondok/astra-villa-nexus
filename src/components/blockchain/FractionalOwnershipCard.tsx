@@ -149,7 +149,7 @@ export const FractionalOwnershipCard: React.FC<FractionalOwnershipCardProps> = (
           </Badge>
         </div>
       ) : (
-        <div className="h-32 bg-gradient-to-br from-purple-500/20 to-blue-500/10 flex items-center justify-center relative">
+        <div className="h-32 bg-gradient-to-br from-accent/20 to-chart-4/10 flex items-center justify-center relative">
           <Coins className="h-12 w-12 text-primary/40" />
           <Badge 
             className="absolute top-2 right-2"
