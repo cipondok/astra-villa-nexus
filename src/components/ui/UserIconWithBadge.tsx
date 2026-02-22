@@ -142,7 +142,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                 
                 {/* Notification Badge - Bottom Right */}
                 {unreadCount > 0 && (
-                  <Badge className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4 lg:h-3.5 lg:w-3.5 flex items-center justify-center p-0 bg-red-500 text-white text-[7px] sm:text-[8px] lg:text-[7px] animate-pulse border border-white">
+                  <Badge className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4 lg:h-3.5 lg:w-3.5 flex items-center justify-center p-0 bg-destructive text-destructive-foreground text-[7px] sm:text-[8px] lg:text-[7px] animate-pulse border border-background">
                     {unreadCount > 99 ? '99+' : unreadCount}
                   </Badge>
                 )}
@@ -233,7 +233,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                   {membershipConfig.label}
                 </span>
                 {verificationStatus === 'verified' && (
-                  <CheckCircle2 className="h-3 w-3 text-green-500" />
+                  <CheckCircle2 className="h-3 w-3 text-chart-1" />
                 )}
               </div>
             </div>

@@ -105,7 +105,7 @@ const ViralCampaigns = () => {
           <div className="flex flex-wrap gap-2 mt-4">
             <Badge variant="secondary">3 Active Campaigns</Badge>
             <Badge variant="outline">IDR 155M Total Budget</Badge>
-            <Badge className="bg-green-500">30% Target Conversion</Badge>
+            <Badge className="bg-chart-1 text-chart-1-foreground">30% Target Conversion</Badge>
           </div>
         </div>
 
@@ -160,7 +160,7 @@ const ViralCampaigns = () => {
                           Target
                         </p>
                         <p className="font-medium">{campaign.targetMetric}</p>
-                        <p className="text-xs text-green-600">Current: {campaign.currentMetric}</p>
+                        <p className="text-xs text-chart-1">Current: {campaign.currentMetric}</p>
                       </div>
                     </div>
 
@@ -172,7 +172,7 @@ const ViralCampaigns = () => {
                       <ul className="space-y-1">
                         {campaign.timeline.slice(0, 3).map((item, index) => (
                           <li key={index} className="text-xs flex items-start gap-2">
-                            <CheckCircle className="w-3 h-3 text-green-500 mt-0.5 flex-shrink-0" />
+                            <CheckCircle className="w-3 h-3 text-chart-1 mt-0.5 flex-shrink-0" />
                             <span>{item}</span>
                           </li>
                         ))}
@@ -208,16 +208,16 @@ const ViralCampaigns = () => {
                     <p className="text-2xl font-bold">IDR 155M</p>
                     <p className="text-sm text-muted-foreground">Total Budget</p>
                   </div>
-                  <div className="p-4 rounded-lg bg-green-500/10 text-center">
-                    <p className="text-2xl font-bold text-green-600">IDR 40M</p>
+                  <div className="p-4 rounded-lg bg-chart-1/10 text-center">
+                    <p className="text-2xl font-bold text-chart-1">IDR 40M</p>
                     <p className="text-sm text-muted-foreground">Spent to Date</p>
                   </div>
-                  <div className="p-4 rounded-lg bg-blue-500/10 text-center">
-                    <p className="text-2xl font-bold text-blue-600">26%</p>
+                  <div className="p-4 rounded-lg bg-chart-4/10 text-center">
+                    <p className="text-2xl font-bold text-chart-4">26%</p>
                     <p className="text-sm text-muted-foreground">Budget Utilization</p>
                   </div>
-                  <div className="p-4 rounded-lg bg-purple-500/10 text-center">
-                    <p className="text-2xl font-bold text-purple-600">3.2x</p>
+                  <div className="p-4 rounded-lg bg-accent/10 text-center">
+                    <p className="text-2xl font-bold text-accent-foreground">3.2x</p>
                     <p className="text-sm text-muted-foreground">Projected ROI</p>
                   </div>
                 </div>
@@ -236,19 +236,19 @@ const ViralCampaigns = () => {
                     <p className="text-sm text-muted-foreground">Total Participants</p>
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-green-500">287</p>
+                    <p className="text-3xl font-bold text-chart-1">287</p>
                     <p className="text-sm text-muted-foreground">Referral Signups</p>
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-purple-500">142</p>
+                    <p className="text-3xl font-bold text-accent-foreground">142</p>
                     <p className="text-sm text-muted-foreground">UGC Submissions</p>
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-amber-500">18</p>
+                    <p className="text-3xl font-bold text-chart-3">18</p>
                     <p className="text-sm text-muted-foreground">Business Partners</p>
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-blue-500">28%</p>
+                    <p className="text-3xl font-bold text-chart-4">28%</p>
                     <p className="text-sm text-muted-foreground">Conversion Rate</p>
                   </div>
                 </div>

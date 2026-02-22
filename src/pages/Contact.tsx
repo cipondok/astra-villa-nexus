@@ -190,8 +190,8 @@ const Contact = () => {
                 <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
                   {isSubmitted ? (
                     <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4">
-                        <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-chart-1/10 flex items-center justify-center mb-4">
+                        <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-chart-1" />
                       </div>
                       <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">{currentText.success.title}</h3>
                       <p className="text-xs sm:text-sm text-muted-foreground">{currentText.success.description}</p>
