@@ -164,7 +164,7 @@ const ConstructionCostCalculator = () => {
           <p className="text-[10px] md:text-xs text-muted-foreground">Estimate your building construction costs in Indonesia</p>
         </div>
 
-      <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+      <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
         <CardHeader>
           <CardTitle>Calculate Building Costs</CardTitle>
           <CardDescription>Enter your project details to get an accurate estimate</CardDescription>

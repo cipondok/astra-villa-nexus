@@ -4207,8 +4207,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             {tutorialStep === 1 && (
               <div className="space-y-4 py-6">
                 <div className="flex justify-center">
-                  <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center">
-                    <Upload className="h-10 w-10 text-blue-600" />
+                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Upload className="h-10 w-10 text-primary" />
                   </div>
                 </div>
                 <div className="text-center space-y-2">
@@ -4239,8 +4239,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             {tutorialStep === 2 && (
               <div className="space-y-4 py-6">
                 <div className="flex justify-center">
-                  <div className="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center">
-                    <BarChart3 className="h-10 w-10 text-purple-600" />
+                  <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center">
+                    <BarChart3 className="h-10 w-10 text-accent" />
                   </div>
                 </div>
                 <div className="text-center space-y-2">
@@ -4292,8 +4292,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             {tutorialStep === 3 && (
               <div className="space-y-4 py-6">
                 <div className="flex justify-center">
-                  <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center animate-scale-in">
-                    <SlidersHorizontal className="h-10 w-10 text-green-600" />
+                  <div className="w-20 h-20 rounded-full bg-chart-1/10 flex items-center justify-center animate-scale-in">
+                    <SlidersHorizontal className="h-10 w-10 text-chart-1" />
                   </div>
                 </div>
                 <div className="text-center space-y-2">
@@ -4354,8 +4354,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             {tutorialStep === 4 && (
               <div className="space-y-4 py-6">
                 <div className="flex justify-center">
-                  <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center">
-                    <TrendingUp className="h-10 w-10 text-orange-600" />
+                  <div className="w-20 h-20 rounded-full bg-gold-primary/10 flex items-center justify-center">
+                    <TrendingUp className="h-10 w-10 text-gold-primary" />
                   </div>
                 </div>
                 <div className="text-center space-y-2">
@@ -4379,9 +4379,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                       <Badge variant="secondary" className="text-xs">View breakdown</Badge>
                     </div>
                   </div>
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                    <p className="text-sm font-medium text-green-900 mb-1">✓ Ready to start!</p>
-                    <p className="text-xs text-green-700">Click "Start Searching" to begin finding similar properties</p>
+                  <div className="bg-chart-1/5 border border-chart-1/20 rounded-lg p-3">
+                    <p className="text-sm font-medium text-foreground mb-1">✓ Ready to start!</p>
+                    <p className="text-xs text-muted-foreground">Click "Start Searching" to begin finding similar properties</p>
                   </div>
                 </div>
               </div>

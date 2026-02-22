@@ -112,9 +112,9 @@ const EnhancedPropertyCard = ({
 
   const getListingTypeColor = (type: string) => {
     switch (type) {
-      case 'sale': return 'bg-gradient-to-r from-chart-1 to-chart-1/80 text-white shadow-lg';
-      case 'rent': return 'bg-gradient-to-r from-chart-4 to-chart-4/80 text-white shadow-lg';
-      case 'lease': return 'bg-gradient-to-r from-chart-5 to-chart-5/80 text-white shadow-lg';
+      case 'sale': return 'bg-gradient-to-r from-chart-1 to-chart-1/80 text-primary-foreground shadow-lg';
+      case 'rent': return 'bg-gradient-to-r from-chart-4 to-chart-4/80 text-primary-foreground shadow-lg';
+      case 'lease': return 'bg-gradient-to-r from-chart-5 to-chart-5/80 text-primary-foreground shadow-lg';
       default: return 'bg-gradient-to-r from-accent to-accent/80 text-accent-foreground shadow-lg';
     }
   };
@@ -193,7 +193,7 @@ const EnhancedPropertyCard = ({
 
           {/* Property Type Badge - Secondary */}
           <div className="absolute top-3 left-3 mt-10 z-20">
-            <Badge variant="outline" className="bg-white/95 backdrop-blur-sm text-foreground border-white/50 capitalize font-semibold text-xs px-2 py-1">
+            <Badge variant="outline" className="bg-background/95 backdrop-blur-sm text-foreground border-background/50 capitalize font-semibold text-xs px-2 py-1">
               {property.property_type}
             </Badge>
           </div>
@@ -204,7 +204,7 @@ const EnhancedPropertyCard = ({
               <Button
                 size="lg"
                 variant="secondary"
-                className="bg-white/90 hover:bg-white text-primary shadow-xl rounded-full p-4 backdrop-blur-sm border-2 border-white/50 transform hover:scale-110 transition-all duration-300"
+                className="bg-background/90 hover:bg-background text-primary shadow-xl rounded-full p-4 backdrop-blur-sm border-2 border-background/50 transform hover:scale-110 transition-all duration-300"
                 onClick={handleView3D}
                 aria-label="Open 3D View"
               >
@@ -216,7 +216,7 @@ const EnhancedPropertyCard = ({
           {/* Virtual Tour Badge - Bottom Right */}
           {property.virtual_tour_url && (
             <div className="absolute bottom-3 right-3 z-20">
-              <Badge className="bg-black/70 text-white backdrop-blur-sm border-none flex items-center gap-1.5 px-3 py-1.5 font-medium">
+              <Badge className="bg-foreground/70 text-background backdrop-blur-sm border-none flex items-center gap-1.5 px-3 py-1.5 font-medium">
                 <RotateCcw className="h-3 w-3" />
                 <span className="text-xs">Virtual Tour</span>
               </Badge>
@@ -229,13 +229,13 @@ const EnhancedPropertyCard = ({
               {/* Arrow buttons */}
               <button
                 onClick={(e) => handleImageNavigation('prev', e)}
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 hover:bg-black/70 hover:scale-110"
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-foreground/50 text-background p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 hover:bg-foreground/70 hover:scale-110"
               >
                 ←
               </button>
               <button
                 onClick={(e) => handleImageNavigation('next', e)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 hover:bg-black/70 hover:scale-110"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-foreground/50 text-background p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 hover:bg-foreground/70 hover:scale-110"
               >
                 →
               </button>
@@ -246,8 +246,8 @@ const EnhancedPropertyCard = ({
                     key={index}
                     className={`w-2 h-2 rounded-full transition-all duration-300 ${
                       index === currentImageIndex 
-                        ? 'bg-white scale-125 shadow-lg' 
-                        : 'bg-white/60 hover:bg-white/80'
+                        ? 'bg-background scale-125 shadow-lg' 
+                        : 'bg-background/60 hover:bg-background/80'
                     }`}
                   />
                 ))}
@@ -261,7 +261,7 @@ const EnhancedPropertyCard = ({
             <Button
               size="sm"
               variant="ghost"
-              className={`bg-white/90 hover:bg-white shadow-lg rounded-full p-2 transition-all duration-300 ${isSaved ? "ring-2 ring-red-400" : ""} hover:scale-110`}
+              className={`bg-background/90 hover:bg-background shadow-lg rounded-full p-2 transition-all duration-300 ${isSaved ? "ring-2 ring-destructive/40" : ""} hover:scale-110`}
               onClick={handleLikeToggle}
               aria-label={isSaved ? "Remove from favorites" : "Save property"}
             >
@@ -271,7 +271,7 @@ const EnhancedPropertyCard = ({
             <Button
               size="sm"
               variant="ghost"
-              className="bg-white/90 hover:bg-white text-muted-foreground shadow-lg rounded-full p-2 transition-all duration-300 hover:scale-110"
+              className="bg-background/90 hover:bg-background text-muted-foreground shadow-lg rounded-full p-2 transition-all duration-300 hover:scale-110"
               onClick={handleShare}
               aria-label="Share property"
             >
