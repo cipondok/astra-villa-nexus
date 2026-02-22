@@ -235,12 +235,12 @@ const UserDepartmentsManagement = () => {
                         </div>
                         <div>
                           <div className="font-medium">{dept.name}</div>
-                          <div className="text-sm text-gray-500">{dept.icon}</div>
+                          <div className="text-sm text-muted-foreground">{dept.icon}</div>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell className="max-w-xs">
-                      <p className="text-sm text-gray-600 truncate">{dept.description}</p>
+                      <p className="text-sm text-muted-foreground truncate">{dept.description}</p>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">

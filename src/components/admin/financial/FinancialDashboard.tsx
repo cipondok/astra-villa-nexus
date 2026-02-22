@@ -456,7 +456,7 @@ export const FinancialDashboard: React.FC = () => {
                         <TableCell className="font-medium">{formatIDR(tx.amount)}</TableCell>
                         <TableCell className="capitalize">{tx.payment_method?.replace('_', ' ') || '-'}</TableCell>
                         <TableCell>
-                          <Badge className={`${STATUS_COLORS[tx.status]} text-white`}>
+                          <Badge className={`${STATUS_COLORS[tx.status]} text-primary-foreground`}>
                             {tx.status}
                           </Badge>
                         </TableCell>
@@ -500,7 +500,7 @@ export const FinancialDashboard: React.FC = () => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge className={`${STATUS_COLORS[payout.status]} text-white`}>
+                        <Badge className={`${STATUS_COLORS[payout.status]} text-primary-foreground`}>
                           {payout.status}
                         </Badge>
                       </TableCell>
@@ -550,7 +550,7 @@ export const FinancialDashboard: React.FC = () => {
                       <TableCell className="capitalize">{dispute.dispute_type.replace('_', ' ')}</TableCell>
                       <TableCell className="font-medium">{formatIDR(dispute.amount)}</TableCell>
                       <TableCell>
-                        <Badge className={`${STATUS_COLORS[dispute.status]} text-white`}>
+                        <Badge className={`${STATUS_COLORS[dispute.status]} text-primary-foreground`}>
                           {dispute.status.replace('_', ' ')}
                         </Badge>
                       </TableCell>
