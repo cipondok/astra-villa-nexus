@@ -20,11 +20,11 @@ interface UserStatusBadgeProps {
 // Frame styles mapped by name
 const FRAME_STYLES: Record<string, { border: string; glow: string; icon?: React.ReactNode }> = {
   default: { border: 'border-muted', glow: '' },
-  bronze: { border: 'border-amber-600 border-2', glow: 'shadow-amber-200/50' },
-  silver: { border: 'border-slate-400 border-2', glow: 'shadow-slate-200/50' },
-  gold: { border: 'border-yellow-500 border-2', glow: 'shadow-yellow-200/50 shadow-lg', icon: <Star className="h-2.5 w-2.5 text-yellow-500" /> },
-  platinum: { border: 'border-cyan-400 border-2', glow: 'shadow-cyan-200/50 shadow-lg', icon: <Shield className="h-2.5 w-2.5 text-cyan-400" /> },
-  diamond: { border: 'border-purple-500 border-2 ring-2 ring-purple-300/50', glow: 'shadow-purple-300/50 shadow-xl', icon: <Crown className="h-2.5 w-2.5 text-purple-500" /> }
+  bronze: { border: 'border-chart-3 border-2', glow: 'shadow-chart-3/50' },
+  silver: { border: 'border-muted-foreground border-2', glow: 'shadow-muted/50' },
+  gold: { border: 'border-gold-primary border-2', glow: 'shadow-gold-primary/50 shadow-lg', icon: <Star className="h-2.5 w-2.5 text-gold-primary" /> },
+  platinum: { border: 'border-chart-4 border-2', glow: 'shadow-chart-4/50 shadow-lg', icon: <Shield className="h-2.5 w-2.5 text-chart-4" /> },
+  diamond: { border: 'border-chart-5 border-2 ring-2 ring-chart-5/50', glow: 'shadow-chart-5/50 shadow-xl', icon: <Crown className="h-2.5 w-2.5 text-chart-5" /> }
 };
 
 const SIZE_STYLES = {
