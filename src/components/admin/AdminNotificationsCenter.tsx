@@ -119,29 +119,37 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
     },
   });
 
+  // Helper: batch delete by IDs with progress
+  const batchDeleteIds = async (ids: string[]) => {
+    const chunkSize = 20;
+    let deleted = 0;
+    setDeleteProgress({ current: 0, total: ids.length, active: true });
+    for (let i = 0; i < ids.length; i += chunkSize) {
+      const chunk = ids.slice(i, i + chunkSize);
+      const { error } = await supabase
+        .from('admin_alerts')
+        .delete()
+        .in('id', chunk);
+      if (error) {
+        console.error('Batch delete chunk error:', error);
+        // Continue with remaining chunks instead of failing entirely
+      }
+      deleted += chunk.length;
+      setDeleteProgress({ current: deleted, total: ids.length, active: true });
+    }
+  };
+
   // Bulk delete mutation with progress
   const bulkDeleteMutation = useMutation({
     mutationFn: async (ids: string[]) => {
-      setDeleteProgress({ current: 0, total: ids.length, active: true });
-      const chunkSize = 50;
-      let deleted = 0;
-      for (let i = 0; i < ids.length; i += chunkSize) {
-        const chunk = ids.slice(i, i + chunkSize);
-        const { error } = await supabase
-          .from('admin_alerts')
-          .delete()
-          .in('id', chunk);
-        if (error) throw error;
-        deleted += chunk.length;
-        setDeleteProgress({ current: deleted, total: ids.length, active: true });
-      }
+      await batchDeleteIds(ids);
     },
     onSuccess: () => {
       setSelectedIds(new Set());
       setDeleteProgress(prev => ({ ...prev, active: false }));
       queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
-      toast.success(`${selectedIds.size} notifications deleted`);
+      toast.success(`Notifications deleted successfully`);
     },
     onError: (error) => {
       setDeleteProgress(prev => ({ ...prev, active: false }));
@@ -150,23 +158,42 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
     },
   });
 
-  // Clear all (delete all) mutation with progress
+  // Clear all: fetch ALL ids from DB (not just displayed), then batch delete
   const clearAllMutation = useMutation({
     mutationFn: async () => {
-      const ids = notifications.map(n => n.id);
-      if (ids.length === 0) return;
-      setDeleteProgress({ current: 0, total: ids.length, active: true });
-      const chunkSize = 50;
+      // First get total count
+      const { count, error: countErr } = await supabase
+        .from('admin_alerts')
+        .select('*', { count: 'exact', head: true });
+      if (countErr) throw countErr;
+      const total = count || 0;
+      if (total === 0) return;
+
+      setDeleteProgress({ current: 0, total, active: true });
       let deleted = 0;
-      for (let i = 0; i < ids.length; i += chunkSize) {
-        const chunk = ids.slice(i, i + chunkSize);
-        const { error } = await supabase
+      const batchSize = 500;
+
+      // Loop: fetch a batch of IDs, delete them, repeat until none left
+      while (true) {
+        const { data: batch, error: fetchErr } = await supabase
           .from('admin_alerts')
-          .delete()
-          .in('id', chunk);
-        if (error) throw error;
-        deleted += chunk.length;
-        setDeleteProgress({ current: deleted, total: ids.length, active: true });
+          .select('id')
+          .limit(batchSize);
+        if (fetchErr) throw fetchErr;
+        if (!batch || batch.length === 0) break;
+
+        const ids = batch.map(r => r.id);
+        const chunkSize = 20;
+        for (let i = 0; i < ids.length; i += chunkSize) {
+          const chunk = ids.slice(i, i + chunkSize);
+          const { error: delErr } = await supabase
+            .from('admin_alerts')
+            .delete()
+            .in('id', chunk);
+          if (delErr) console.error('Clear chunk error:', delErr);
+          deleted += chunk.length;
+          setDeleteProgress({ current: deleted, total, active: true });
+        }
       }
     },
     onSuccess: () => {
