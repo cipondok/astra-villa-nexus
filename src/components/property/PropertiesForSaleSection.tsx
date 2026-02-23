@@ -127,7 +127,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
             <div
               key={property.id}
               onClick={() => onPropertyClick(property)}
-              className="group cursor-pointer rounded-xl border border-border/30 dark:border-border/15 bg-card/60 dark:bg-card/5 backdrop-blur-xl shadow-lg shadow-chart-1/5 hover:shadow-2xl hover:shadow-chart-1/15 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-chart-1/5 before:via-transparent before:to-primary/5 before:pointer-events-none before:rounded-xl"
+              className="group cursor-pointer rounded-xl border border-border bg-card backdrop-blur-xl shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -143,20 +143,20 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
 
                 {/* Top Badges */}
                 <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between">
-                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gradient-to-r from-chart-1 to-primary text-primary-foreground shadow-lg shadow-chart-1/40 ring-1 ring-background/30">
-                    <Tag className="h-2 w-2" />
-                    JUAL
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md backdrop-blur-sm">
+                    <Tag className="h-2.5 w-2.5" />
+                    Dijual
                   </span>
-                  <span className="flex items-center gap-0.5 bg-background/20 backdrop-blur-lg text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full border border-background/30 shadow-sm">
-                    <Building className="h-2 w-2" />
+                  <span className="flex items-center gap-0.5 bg-black/40 backdrop-blur-md text-white text-[9px] px-1.5 py-0.5 rounded-full">
+                    <Building className="h-2.5 w-2.5" />
                     {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
                   </span>
                 </div>
 
                 {/* Image count badge */}
                 {imageCount > 1 && (
-                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 bg-background/15 backdrop-blur-lg text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full border border-background/25 shadow-sm">
-                    <Camera className="h-2 w-2" />
+                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 bg-black/40 backdrop-blur-md text-white text-[9px] px-1.5 py-0.5 rounded-full">
+                    <Camera className="h-2.5 w-2.5" />
                     {imageCount}
                   </div>
                 )}
@@ -170,8 +170,8 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
 
                 {/* Hover eye */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="h-10 w-10 rounded-full bg-background/80 backdrop-blur-xl flex items-center justify-center shadow-xl ring-2 ring-chart-1/50 ring-offset-2 ring-offset-transparent">
-                    <Eye className="h-4 w-4 text-chart-1" />
+                  <div className="h-10 w-10 rounded-full bg-primary/90 backdrop-blur-sm flex items-center justify-center shadow-lg shadow-primary/30 scale-75 group-hover:scale-100 transition-transform duration-300">
+                    <Eye className="h-4 w-4 text-white" />
                   </div>
                 </div>
               </div>
@@ -179,45 +179,45 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
               {/* Content */}
               <div className="p-2.5 space-y-1.5 relative">
                 {/* Price */}
-                <div className="flex items-baseline gap-1 bg-gradient-to-r from-chart-1/15 via-primary/10 to-chart-4/15 border border-chart-1/25 dark:border-chart-1/20 rounded-lg px-2 py-1.5 flex-wrap backdrop-blur-sm">
-                  <span className="text-base font-black bg-gradient-to-r from-chart-1 via-primary to-chart-4 bg-clip-text text-transparent leading-none tracking-tight">{priceInfo.main}</span>
+                <div className="flex items-baseline gap-1 bg-primary/5 border border-primary/15 rounded-lg px-2.5 py-2 flex-wrap">
+                  <span className="text-sm sm:text-base font-black text-primary leading-none tracking-tight">{priceInfo.main}</span>
                   {priceInfo.suffix && (
-                    <span className="text-[11px] font-extrabold text-chart-1/70">{priceInfo.suffix}</span>
+                    <span className="text-[11px] font-extrabold text-primary/60">{priceInfo.suffix}</span>
                   )}
-                  <span className="text-[9px] text-muted-foreground/60 font-medium bg-background/40 dark:bg-background/10 backdrop-blur-sm rounded-full px-1.5 ml-auto border border-border/30 dark:border-border/10">≈ {formatMonthly(property.price)}</span>
+                  <span className="text-[9px] text-muted-foreground/50 font-medium bg-muted/50 rounded-full px-1.5 ml-auto">≈ {formatMonthly(property.price)}</span>
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[11px] font-semibold text-foreground truncate leading-snug group-hover:text-chart-1 transition-colors group-hover:whitespace-normal group-hover:overflow-visible" title={property.title}>
+                <h3 className="text-xs font-semibold text-foreground truncate leading-snug group-hover:text-primary transition-colors group-hover:whitespace-normal group-hover:overflow-visible" title={property.title}>
                   {property.title}
                 </h3>
 
                 {/* Location */}
-                <div className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-primary/10 via-chart-4/8 to-chart-1/10 border border-primary/25 px-1.5 py-0.5 backdrop-blur-sm" title={getLocation(property)}>
-                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-primary" />
-                  <span className="text-[10px] text-foreground/70 font-medium truncate">{getLocation(property)}</span>
+                <div className="flex items-center gap-1" title={getLocation(property)}>
+                  <MapPin className="h-3 w-3 flex-shrink-0 text-muted-foreground" />
+                  <span className="text-[11px] text-muted-foreground font-medium truncate">{getLocation(property)}</span>
                 </div>
 
                 {/* Specs */}
-                <div className="flex items-center gap-1 pt-1.5 border-t border-border/30">
+                <div className="flex items-center flex-wrap gap-1.5 pt-1.5 border-t border-border/30">
                   {Number(property.bedrooms) > 0 && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-chart-5/15 to-chart-5/10 border border-chart-5/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-chart-5/10">
-                      <Bed className="h-2.5 w-2.5 text-chart-5" />
-                      <span className="text-[10px] font-bold text-foreground/80">{property.bedrooms}</span>
-                      <span className="text-[8px] text-chart-5/70 font-bold">KT</span>
+                    <div className="flex items-center gap-0.5 text-muted-foreground">
+                      <Bed className="h-3 w-3" />
+                      <span className="text-[11px] font-semibold text-foreground/80">{property.bedrooms}</span>
+                      <span className="text-[8px] font-medium">KT</span>
                     </div>
                   )}
                   {Number(property.bathrooms) > 0 && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-chart-4/15 to-chart-4/10 border border-chart-4/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-chart-4/10">
-                      <Bath className="h-2.5 w-2.5 text-chart-4" />
-                      <span className="text-[10px] font-bold text-foreground/80">{property.bathrooms}</span>
-                      <span className="text-[8px] text-chart-4/70 font-bold">KM</span>
+                    <div className="flex items-center gap-0.5 text-muted-foreground">
+                      <Bath className="h-3 w-3" />
+                      <span className="text-[11px] font-semibold text-foreground/80">{property.bathrooms}</span>
+                      <span className="text-[8px] font-medium">KM</span>
                     </div>
                   )}
                   {Number(property.area_sqm) > 0 && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-gold-primary/15 to-chart-3/15 border border-gold-primary/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-gold-primary/10">
-                      <Maximize className="h-2.5 w-2.5 text-gold-primary" />
-                      <span className="text-[10px] font-bold text-foreground/80">{property.area_sqm}m²</span>
+                    <div className="flex items-center gap-0.5 text-muted-foreground">
+                      <Maximize className="h-3 w-3" />
+                      <span className="text-[11px] font-semibold text-foreground/80">{property.area_sqm}m²</span>
                     </div>
                   )}
                 </div>
