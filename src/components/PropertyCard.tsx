@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import PropertyDetailModal from "./property/PropertyDetailModal";
+import PropertyImageCarousel from "./property/PropertyImageCarousel";
 import Property3DViewModal from "./property/Property3DViewModal";
 import { BaseProperty } from "@/types/property";
 
@@ -128,20 +129,19 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   return (
     <>
       <Card className="group cursor-pointer transition-all duration-300 hover:scale-[1.02] border bg-card/50 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/10 hover:border-primary/30" onClick={handleViewDetails}>
-        <div className="relative overflow-hidden rounded-t-lg bg-muted">
+        <PropertyImageCarousel
+          images={[property.image]}
+          alt={property.title}
+          className="rounded-t-lg bg-muted"
+          imageClassName={`h-28 md:h-32 group-hover:scale-105 transition-all duration-500 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          onImageLoad={() => setIsImageLoaded(true)}
+        >
           {!isImageLoaded && (
             <div className="absolute inset-0 bg-muted animate-pulse" />
           )}
-          <img
-            src={property.image}
-            alt={property.title}
-            loading="lazy"
-            onLoad={() => setIsImageLoaded(true)}
-            className={`w-full h-28 md:h-32 object-cover group-hover:scale-105 transition-all duration-500 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
-          />
           
           {/* Status Badge */}
-          <div className="absolute top-1.5 left-1.5 flex gap-1 flex-wrap">
+          <div className="absolute top-1.5 left-1.5 flex gap-1 flex-wrap z-10">
             <Badge className="bg-primary text-primary-foreground px-1.5 py-0.5 text-[9px] font-medium">
               {getTypeLabel(property.type)}
             </Badge>
@@ -155,7 +155,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
 
           {/* Featured Badge */}
           {property.featured && (
-            <div className="absolute top-1.5 right-8">
+            <div className="absolute top-1.5 right-8 z-10">
               <Badge className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-primary-foreground text-[8px] font-bold shadow px-1 py-0.5">
                 ⭐ Featured
               </Badge>
@@ -166,7 +166,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           <Button
             variant="ghost"
             size="sm"
-            className={`absolute bottom-1.5 right-1.5 h-8 w-8 sm:h-7 sm:w-7 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 transition-all duration-300 ${
+            className={`absolute bottom-1.5 right-1.5 h-8 w-8 sm:h-7 sm:w-7 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 transition-all duration-300 z-10 ${
               isLiked ? 'text-binance-red' : 'text-primary-foreground'
             }`}
             onClick={(e) => {
@@ -176,7 +176,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           >
             <Heart className={`h-4 w-4 sm:h-3.5 sm:w-3.5 ${isLiked ? 'fill-current animate-pulse' : ''}`} />
           </Button>
-        </div>
+        </PropertyImageCarousel>
 
         <CardContent className="p-2 md:p-3 bg-card/50">
           {!isImageLoaded ? (

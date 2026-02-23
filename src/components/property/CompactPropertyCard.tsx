@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, Clock, Calendar, TrendingUp, MessageSquare, ScanEye, Tag, Percent } from 'lucide-react';
 import PropertyDetailModal from './PropertyDetailModal';
+import PropertyImageCarousel from './PropertyImageCarousel';
 import Property3DViewModal from './Property3DViewModal';
 import PropertyRatingDisplay from './PropertyRatingDisplay';
 import PropertyRatingModal from './PropertyRatingModal';
@@ -198,14 +199,13 @@ const CompactPropertyCard = ({
     <>
       <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col border border-border bg-card backdrop-blur-xl shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-400 rounded-xl relative">
         {/* Image Section with Overlay Info */}
-        <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
-          <img
-            src={getImageUrl()}
-            alt={property.title}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-            loading="lazy"
-            onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }}
-          />
+        <PropertyImageCarousel
+          images={property.images?.length ? property.images : [getImageUrl()]}
+          alt={property.title}
+          className="aspect-[4/3] flex-shrink-0"
+          imageClassName="group-hover:scale-110 transition-transform duration-700"
+          fallbackSrc="/placeholder.svg"
+        >
 
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
@@ -351,7 +351,7 @@ const CompactPropertyCard = ({
               )}
             </div>
           </div>
-        </div>
+        </PropertyImageCarousel>
 
         {/* Compact Bottom Section */}
         <CardContent className="p-1.5 sm:p-2 md:p-3 space-y-1 sm:space-y-1.5 flex-1 flex flex-col">
