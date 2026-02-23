@@ -174,10 +174,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           
           {/* Save Button */}
           <button 
-            className="absolute top-2 right-2 h-8 w-8 bg-background/90 hover:bg-background rounded-full shadow-md flex items-center justify-center"
+            className="absolute top-2 right-2 h-8 w-8 bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 rounded-full shadow-md flex items-center justify-center transition-all duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <Heart className="h-4 w-4 text-muted-foreground" />
+            <Heart className="h-4 w-4 text-white/90" />
           </button>
           
           {/* Badges */}
@@ -202,7 +202,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               </Badge>
             )}
             {(three_d_model_url || virtual_tour_url) && (
-              <Badge className="bg-chart-4 text-primary-foreground text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1">
+              <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1">
                 <Box className="h-3 w-3" />
                 3D
               </Badge>
