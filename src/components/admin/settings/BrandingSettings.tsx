@@ -623,13 +623,13 @@ const VerifiedBadgeSettingsTab = ({
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <Label className="text-xs">Shield Style</Label>
+              <Label className="text-xs">Badge Shape</Label>
               <Select value={draft.shieldStyle} onValueChange={(v: any) => setDraft((p) => ({ ...p, shieldStyle: v }))}>
                 <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="diamond">Diamond (Faceted)</SelectItem>
-                  <SelectItem value="classic">Classic (Smooth)</SelectItem>
-                  <SelectItem value="minimal">Minimal (Flat)</SelectItem>
+                  <SelectItem value="diamond">Starburst Seal</SelectItem>
+                  <SelectItem value="classic">Scalloped Seal</SelectItem>
+                  <SelectItem value="minimal">Clean Circle</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -853,39 +853,61 @@ const BadgePreviewInline = ({ draft, level, size }: { draft: BadgeSettings; leve
   const s = SM[size];
   const uid = `bpi-${level}-${size}`;
   return (
+    <BadgePreviewSeal draft={draft} config={config} level={level} size={size} uid={uid} s={s} />
+  );
+};
+
+/** Seal-style inline preview for the branding settings */
+const BadgePreviewSeal = ({ draft, config, level, size, uid, s }: {
+  draft: BadgeSettings; config: { shieldColor: string; shieldLight: string; shieldDark: string; label: string };
+  level: string; size: string; uid: string; s: { w: number; h: number };
+}) => {
+  const vb = 40;
+  const cx = vb / 2;
+  const cy = vb / 2;
+
+  const generatePath = () => {
+    if (draft.shieldStyle === "minimal") {
+      return `M${cx},${cx - 16}A16,16,0,1,1,${cx},${cx + 16}A16,16,0,1,1,${cx},${cx - 16}Z`;
+    }
+    const points = 14;
+    const outerR = 17;
+    const innerR = draft.shieldStyle === "diamond" ? 13.5 : 14.8;
+    const smooth = draft.shieldStyle === "classic";
+    const totalPoints = points * 2;
+    const pts: [number, number][] = [];
+    for (let i = 0; i < totalPoints; i++) {
+      const angle = (i * Math.PI) / points - Math.PI / 2;
+      const r = i % 2 === 0 ? outerR : innerR;
+      pts.push([cx + r * Math.cos(angle), cy + r * Math.sin(angle)]);
+    }
+    if (!smooth) {
+      return pts.map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ") + "Z";
+    }
+    let d = `M${pts[0][0].toFixed(2)},${pts[0][1].toFixed(2)}`;
+    for (let i = 0; i < pts.length; i++) {
+      const next = pts[(i + 1) % pts.length];
+      const mid = [(pts[i][0] + next[0]) / 2, (pts[i][1] + next[1]) / 2];
+      d += `Q${pts[i][0].toFixed(2)},${pts[i][1].toFixed(2)} ${mid[0].toFixed(2)},${mid[1].toFixed(2)}`;
+    }
+    return d + "Z";
+  };
+
+  return (
     <div className="inline-flex items-center gap-1">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 38" width={s.w} height={s.h} style={{ display: "block", filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.35))" }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 ${vb} ${vb}`} width={s.w} height={s.w} style={{ display: "block", filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.25))" }}>
         <defs>
           <linearGradient id={`sg-${uid}`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={config.shieldLight} /><stop offset="50%" stopColor={config.shieldColor} /><stop offset="100%" stopColor={config.shieldDark} />
-          </linearGradient>
-          <linearGradient id={`gl-${uid}`} x1="0.5" y1="0" x2="0.5" y2="0.6">
-            <stop offset="0%" stopColor="white" stopOpacity="0.55" /><stop offset="100%" stopColor="white" stopOpacity="0" />
-          </linearGradient>
-          <linearGradient id={`fl-${uid}`} x1="0" y1="0" x2="1" y2="0.5">
-            <stop offset="0%" stopColor="white" stopOpacity="0.3" /><stop offset="100%" stopColor="white" stopOpacity="0.05" />
-          </linearGradient>
-          <linearGradient id={`fr-${uid}`} x1="1" y1="0" x2="0" y2="0.5">
-            <stop offset="0%" stopColor="black" stopOpacity="0.15" /><stop offset="100%" stopColor="black" stopOpacity="0" />
-          </linearGradient>
-          <linearGradient id={`ft-${uid}`} x1="0.5" y1="0" x2="0.5" y2="1">
-            <stop offset="0%" stopColor="white" stopOpacity="0.6" /><stop offset="100%" stopColor="white" stopOpacity="0" />
+            <stop offset="0%" stopColor={config.shieldLight} />
+            <stop offset="50%" stopColor={config.shieldColor} />
+            <stop offset="100%" stopColor={config.shieldDark} />
           </linearGradient>
         </defs>
-        <path d="M16 1L2 7v11c0 9.5 6.2 17.4 14 19.5 7.8-2.1 14-10 14-19.5V7L16 1z" fill={`url(#sg-${uid})`} stroke={config.shieldDark} strokeWidth="0.8" />
-        {draft.shieldStyle === "diamond" && (<>
-          <path d="M16 1L2 7 16 13 30 7z" fill={`url(#ft-${uid})`} />
-          <path d="M2 7v11c0 4 1.5 8 4 11.5L16 13z" fill={`url(#fl-${uid})`} />
-          <path d="M30 7v11c0 4-1.5 8-4 11.5L16 13z" fill={`url(#fr-${uid})`} />
-          <circle cx="10" cy="10" r="0.6" fill="white" opacity="0.7" />
-          <circle cx="22" cy="10" r="0.4" fill="white" opacity="0.5" />
-        </>)}
-        {draft.shieldStyle === "classic" && (
-          <path d="M16 1L2 7v11c0 9.5 6.2 17.4 14 19.5 7.8-2.1 14-10 14-19.5V7L16 1z" fill={`url(#gl-${uid})`} />
-        )}
-        <circle cx="25" cy="30" r="5" fill="white" />
-        <circle cx="25" cy="30" r="4" fill={config.shieldColor} />
-        <path d="M23 30l1.5 1.5 3-3" stroke="white" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={generatePath()} fill={`url(#sg-${uid})`} />
+        <circle cx={cx} cy={cy - 1} r="11" fill="white" opacity="0.08" />
+        <circle cx="30" cy="30" r="6" fill="white" />
+        <circle cx="30" cy="30" r="5" fill={config.shieldColor} />
+        <path d="M27.8 30l1.5 1.5 3-3" stroke="white" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       {size !== "xs" && draft.showBadgeText && (
         <span className={`text-[9px] font-bold leading-none whitespace-nowrap ${draft.badgeTextStyle === "pill" ? "px-1.5 py-0.5 rounded-full text-primary-foreground" : "text-foreground/80"}`} style={draft.badgeTextStyle === "pill" ? { backgroundColor: config.shieldColor } : undefined}>
