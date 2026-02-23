@@ -81,7 +81,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
   const paths: Path[] = [
     {
       id: 'wni',
-      path: '/investor/wni',
+      path: '/foreign-investment?section=wni',
       icon: Home,
       title: t.wniTitle,
       description: t.wniDesc,
@@ -95,7 +95,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
     },
     {
       id: 'wna',
-      path: '/investor/wna',
+      path: '/foreign-investment?section=wna',
       icon: Globe,
       title: t.wnaTitle,
       description: t.wnaDesc,

@@ -310,28 +310,15 @@ const Navigation = () => {
                 <span className="hidden xl:inline text-foreground/80">Add Property</span>
               </Button>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    className={`h-8 px-3 text-xs font-medium rounded-xl border ${navIconStyle}`}
-                  >
-                    <TrendingUp className={`h-4 w-4 xl:mr-1.5 ${navIconColor}`} />
-                    <span className="hidden xl:inline text-foreground/80">Investment</span>
-                    <ChevronDown className="h-3 w-3 ml-1 hidden xl:inline text-muted-foreground" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-52 bg-popover/95 backdrop-blur-xl border-gold-primary/15 shadow-xl z-[10001]">
-                  <DropdownMenuItem 
-                    onClick={() => navigate('/foreign-investment')}
-                    className="cursor-pointer text-foreground/80 hover:text-primary rounded-lg"
-                  >
-                    <Building className="h-4 w-4 mr-2" />
-                    Foreign Investment
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className={`h-8 px-3 text-xs font-medium rounded-xl border ${navIconStyle}`}
+                onClick={() => navigate('/foreign-investment')}
+              >
+                <TrendingUp className={`h-4 w-4 xl:mr-1.5 ${navIconColor}`} />
+                <span className="hidden xl:inline text-foreground/80">Investment</span>
+              </Button>
 
                {/* Dashboard link */}
                {user && !isAdmin && !isAgent && (
