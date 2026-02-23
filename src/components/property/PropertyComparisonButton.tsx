@@ -17,19 +17,13 @@ const PropertyComparisonButton = ({
   variant = 'outline', 
   size = 'sm' 
 }: PropertyComparisonButtonProps) => {
-  const comparison = usePropertyComparison();
-  
-  if (!comparison) {
-    return null; // Return null if context is not available
-  }
-
   const { 
     addToComparison, 
     removeFromComparison, 
     isInComparison, 
     canAddMore,
     maxCompareLimit 
-  } = comparison;
+  } = usePropertyComparison();
   const { toast } = useToast();
 
   const inComparison = isInComparison(property.id);
@@ -63,10 +57,10 @@ const PropertyComparisonButton = ({
 
   return (
     <Button
-      variant={inComparison ? 'default' : variant}
-      size={size}
+      variant="ghost"
+      size="sm"
       onClick={handleClick}
-      className={`relative h-7 w-7 p-0 glass-ios rounded-full ${inComparison ? 'bg-primary text-primary-foreground' : ''}`}
+      className={`relative h-6 w-6 sm:h-7 sm:w-7 p-0 rounded-full border border-white/20 ${inComparison ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-black/30 backdrop-blur-md hover:bg-black/50 text-white'}`}
     >
       {inComparison ? (
         <Check className="h-3 w-3" />
