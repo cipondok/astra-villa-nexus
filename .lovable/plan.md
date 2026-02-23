@@ -1,64 +1,52 @@
 
-
-# Add Map View Toggle to Property Listing Pages
+# Add Sort Dropdown to Property Listing Pages
 
 ## Overview
 
-Add a grid/map view toggle to both `/dijual` and `/disewa` pages. Users can switch between the current grid view and a Mapbox map showing property locations with clickable markers and popup cards.
-
-## Approach
-
-Reuse the existing `PropertyViewModeToggle` component (grid + map options) and create a new `PropertyListingMapView` component that renders a Mapbox map from an array of already-filtered properties (unlike `FilterMapView` which fetches its own data from Supabase).
+Add a sort dropdown next to the view mode toggle on both `/dijual` and `/disewa` pages. Dijual already has sorting logic in its `useMemo` -- it just needs a visible UI control. Disewa needs both the UI and the sorting logic.
 
 ## Changes
 
-### 1. New file: `src/components/property/PropertyListingMapView.tsx`
+### 1. Edit `src/pages/Dijual.tsx`
 
-A Mapbox map component that:
-- Accepts `properties[]` and `formatPrice` function as props
-- Places markers at city coordinates (same city-coordinate lookup as `FilterMapView`)
-- Shows clickable popups with property title, price, image thumbnail, and a "View" button that navigates to `/properties/:id`
-- Uses the existing Mapbox token and `useLocationSettings` for default center
-- Full-height container with loading spinner
+- Add a `Select` dropdown between the property count text and the `PropertyViewModeToggle`
+- Options: Terbaru (newest, default), Terlama (oldest), Harga Terendah (price low), Harga Tertinggi (price high), Terpopuler (popular)
+- Bind it to `filters.sortBy` via `updateFilter('sortBy', value)`
+- Add "popular" case to the existing sort switch (sort by `views` or `click_count` if available, otherwise keep original order)
 
-### 2. Edit: `src/pages/Dijual.tsx`
+### 2. Edit `src/pages/Disewa.tsx`
 
-- Add `viewMode` state (`'grid' | 'map'`, default `'grid'`)
-- Import `PropertyViewModeToggle` and `PropertyListingMapView`
-- Place the toggle in the header area (next to property count)
-- When `viewMode === 'map'`, render `PropertyListingMapView` with `filteredProperties` instead of the grid
-- Hide infinite scroll sentinel when in map mode
+- Add `sortBy: string` to the `RentalFilters` interface (default `'newest'`)
+- Add sorting logic to the `filteredProperties` useMemo (same switch as Dijual)
+- Add a `Select` dropdown in the header, same placement as Dijual
 
-### 3. Edit: `src/pages/Disewa.tsx`
+### Layout
 
-- Same pattern: add `viewMode` state, toggle in header, conditional rendering between grid and map view
+The sort dropdown sits between the title/count and the view toggle:
+
+```text
+[Title + count]  [Sort: Terbaru v]  [Grid | Map]
+```
+
+On mobile, the sort dropdown collapses to a smaller width.
 
 ## Technical Details
 
-The `PropertyListingMapView` component will:
-- Group properties by city and place cluster markers
-- On marker click, show a popup with a scrollable list of properties in that city (max 3 shown, with "+N more" link)
-- Each popup item shows: thumbnail, title, price, and links to detail page
-- Map height: `min-h-[500px] h-[calc(100vh-250px)]` for good mobile/desktop coverage
+Sort options (shared between both pages):
 
-```text
-Header: [Properti Dijual - 24 tersedia]  [Grid | Map]
-        [Search bar + filters]
-        [InlineFilterPanel]
+| Value | Label | Sort Logic |
+|-------|-------|------------|
+| `newest` | Terbaru | `created_at` descending |
+| `oldest` | Terlama | `created_at` ascending |
+| `price_low` | Harga Terendah | `price` ascending |
+| `price_high` | Harga Tertinggi | `price` descending |
+| `popular` | Terpopuler | `views` descending (fallback to original order) |
 
-Grid mode:                    Map mode:
-[Card][Card][Card][Card]      [=========Mapbox Map=========]
-[Card][Card][Card][Card]      [  (3) Jakarta   (2) Bandung ]
-[sentinel + loading]          [      (1) Surabaya          ]
-                              [============================]
-```
+No new components or dependencies needed -- uses the existing `Select` component already imported in both pages.
 
-## Files Summary
+## Files
 
 | File | Action |
 |------|--------|
-| `src/components/property/PropertyListingMapView.tsx` | Create -- Mapbox map accepting properties array with popups |
-| `src/pages/Dijual.tsx` | Edit -- add viewMode state + toggle + conditional map/grid |
-| `src/pages/Disewa.tsx` | Edit -- add viewMode state + toggle + conditional map/grid |
-
-No new dependencies needed. Uses existing mapbox-gl, PropertyViewModeToggle, and useLocationSettings.
+| `src/pages/Dijual.tsx` | Edit -- add sort dropdown in header, add "popular" and "oldest" sort cases |
+| `src/pages/Disewa.tsx` | Edit -- add `sortBy` to filters, add sort dropdown in header, add sorting logic to useMemo |
