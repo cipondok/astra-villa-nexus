@@ -1,30 +1,97 @@
 
-I will rename the `/foreign-investment` page to `/investment`. This involves updating the route in the application configuration, renaming the source file and component for better code organization, and updating all internal links, navigation menu items, and redirects to ensure a seamless transition without broken links.
 
-### Proposed Changes
+# Add Verified Badge Settings to Branding Manager
 
-#### 1. Page & Route Updates
-- Rename `src/pages/ForeignInvestment.tsx` to `src/pages/Investment.tsx`.
-- Update `src/App.tsx` to point the `/investment` path to the renamed component.
-- Add a redirect from `/foreign-investment` to `/investment` to prevent broken links for users who have the old URL bookmarked.
-- Update existing redirects (like `/investor/wna` and `/investor/wni`) to point to the new `/investment` URL.
+## Overview
 
-#### 2. Component Refactoring
-- Rename the component from `ForeignInvestment` to `Investment` inside the file.
-- Update the page title and internal labels from "Foreign Investment Guide" to "Investment Guide" and similar simplifications where appropriate.
-- Update SEO metadata (title, description) to reflect the new page name.
+Currently, the verified badge settings live in a separate page (Design System Settings > Badge tab). The user wants all badge/icon configuration consolidated into the **Branding Manager** with enhanced controls for display on property posts.
 
-#### 3. Navigation & Links
-- Update `src/components/Navigation.tsx` to use the new `/investment` path for the "Investment" menu items.
-- Update `src/components/home/InvestorPathSelector.tsx` to point the WNA/WNI path cards to `/investment?section=wna` and `/investment?section=wni`.
-- Update any `navigate()` calls or `Link` components throughout the app that previously pointed to `/foreign-investment`.
+## Changes
 
-#### 4. Communication & Templates
-- Update the default email templates in `src/components/admin/settings/EmailManagementSettings.tsx` to use the new `/investment` URL.
-- Update the `send-email` edge function metadata to reflect the new URL and naming.
+### 1. Add "Verified Badge" tab to Branding Manager
 
-### Technical Details
-- **Route persistence**: I'll ensure that query parameters (like `?section=wna`) are preserved during navigation and in the new structure.
-- **Redirects**: I will use React Router's `Navigate` component to handle the legacy `/foreign-investment` path.
-- **Consistency**: I'll perform a global search to ensure no hidden references to the old URL remain in the user-facing interface.
+**File:** `src/components/admin/settings/BrandingSettings.tsx`
+
+Add a 4th tab called **"Verified Badge"** alongside Assets, Live Preview, and AI Generator. This tab will contain an enhanced version of the current `BadgeSettingsPanel` functionality, plus new controls:
+
+**General Settings Section:**
+- Shield Style selector (Diamond / Classic / Minimal) -- existing
+- Badge Text input -- existing
+- Show Badge Text toggle -- existing  
+- Text Style (Pill / Plain) -- existing
+- Custom Logo URL or upload -- enhanced with file upload button (reusing existing `handleFileUpload` logic)
+
+**Display Settings Section (NEW):**
+- **Icon Size on Property Cards**: Slider or select for xs / sm / md / lg sizes
+- **Show on Property Posts**: Toggle to enable/disable badge display on property listing cards
+- **Badge Position**: Select (bottom-left, bottom-right, top-left, top-right) for where badge appears on property images
+- **Animation Effect**: Select (none, pulse, bounce, glow, shimmer) for the badge animation
+- **Shadow/Glow Intensity**: Slider (0-100%)
+
+**Per-Level Color Settings Section:**
+- All 6 levels (Diamond, Platinum, Gold, VIP, Silver, Premium) with color pickers -- existing
+- Each level shows inline preview -- existing
+
+**Live Preview Section:**
+- Preview all sizes (XS, SM, MD) -- existing
+- Preview all levels side by side -- existing  
+- NEW: Mock property card preview showing the badge positioned as configured
+
+**Save/Reset Actions:**
+- Save Badge Settings button
+- Reset to Defaults button
+
+### 2. Update `BadgeSettings` type
+
+**File:** `src/hooks/useBadgeSettings.ts`
+
+Add new fields to the `BadgeSettings` interface:
+
+```
+displaySize: "xs" | "sm" | "md" | "lg"
+showOnPropertyCards: boolean
+badgePosition: "bottom-left" | "bottom-right" | "top-left" | "top-right"
+animationEffect: "none" | "pulse" | "bounce" | "glow" | "shimmer"
+glowIntensity: number  // 0-100
+```
+
+Update `DEFAULT_BADGE_SETTINGS` with sensible defaults (size: "sm", showOnPropertyCards: true, position: "bottom-left", animation: "none", glowIntensity: 50).
+
+### 3. Update `BrandedStatusBadge` component
+
+**File:** `src/components/ui/BrandedStatusBadge.tsx`
+
+- Read `displaySize`, `animationEffect`, `glowIntensity` from badge settings
+- Add a `"lg"` entry to `SIZE_MAP` (width: 42, height: 48, logoSize: 30, logoY: 8)
+- Apply CSS animation classes based on the `animationEffect` setting (pulse uses `animate-pulse`, bounce uses `animate-bounce`, glow/shimmer use custom keyframes via inline styles)
+- Allow the `size` prop to default to the `displaySize` from settings when not explicitly provided
+
+### 4. Update property card badge rendering
+
+**Files:**
+- `src/components/property/PropertiesForSaleSection.tsx`
+- `src/components/property/PropertiesForRentSection.tsx`
+- `src/components/property/AIRecommendedProperties.tsx`
+
+- Read `showOnPropertyCards` and `badgePosition` from `useBadgeSettings()`
+- Conditionally render the badge based on `showOnPropertyCards`
+- Position the badge using the configured `badgePosition` value (translate position classes accordingly)
+
+### 5. Remove badge tab from Design System Settings
+
+**File:** `src/pages/admin/DesignSystemSettings.tsx`
+
+Remove the "Badge" tab and its `BadgeSettingsPanel` import since it's now in the Branding Manager.
+
+## Files to Modify
+
+| File | Change |
+|------|--------|
+| `src/hooks/useBadgeSettings.ts` | Add new display/animation fields to interface and defaults |
+| `src/components/admin/settings/BrandingSettings.tsx` | Add "Verified Badge" tab with full settings UI |
+| `src/components/ui/BrandedStatusBadge.tsx` | Add lg size, animation support, read display settings |
+| `src/components/property/PropertiesForSaleSection.tsx` | Use badge settings for visibility and position |
+| `src/components/property/PropertiesForRentSection.tsx` | Use badge settings for visibility and position |
+| `src/components/property/AIRecommendedProperties.tsx` | Use badge settings for visibility and position |
+| `src/pages/admin/DesignSystemSettings.tsx` | Remove Badge tab |
 
