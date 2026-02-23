@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +7,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { usePropertyComparison } from '@/contexts/PropertyComparisonContext';
 import { ArrowLeft, X, Eye, Trash2, Check, Minus } from 'lucide-react';
 import { formatIDR } from '@/utils/formatters';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+} from 'recharts';
 
 const PropertyComparison = () => {
   const navigate = useNavigate();
@@ -321,6 +325,9 @@ const PropertyComparison = () => {
           </CardContent>
         </Card>
 
+        {/* Visual Charts */}
+        {selectedProperties.length > 1 && <ComparisonCharts selectedProperties={selectedProperties} />}
+
         {/* Summary */}
         {selectedProperties.length > 1 && (
           <Card className="mt-8">
@@ -358,6 +365,150 @@ const PropertyComparison = () => {
         )}
       </div>
     </div>
+  );
+};
+
+const CHART_COLORS = [
+  'hsl(210, 100%, 56%)',
+  'hsl(340, 82%, 52%)',
+  'hsl(142, 71%, 45%)',
+  'hsl(38, 92%, 50%)',
+];
+
+interface ComparisonChartsProps {
+  selectedProperties: ReturnType<typeof usePropertyComparison>['selectedProperties'];
+}
+
+const ComparisonCharts = ({ selectedProperties }: ComparisonChartsProps) => {
+  const [chartType, setChartType] = React.useState<'bar' | 'radar'>('bar');
+
+  const truncate = (s: string, n = 18) => s.length > n ? s.slice(0, n) + '…' : s;
+
+  // Bar chart data — numeric specs grouped by metric
+  const barData = useMemo(() => {
+    const metrics = [
+      { key: 'price_m', label: 'Price (M)', getValue: (p: any) => p.price ? +(p.price / 1_000_000).toFixed(1) : 0 },
+      { key: 'area', label: 'Area (m²)', getValue: (p: any) => p.area_sqm || 0 },
+      { key: 'bedrooms', label: 'Bedrooms', getValue: (p: any) => p.bedrooms || 0 },
+      { key: 'bathrooms', label: 'Bathrooms', getValue: (p: any) => p.bathrooms || 0 },
+    ];
+
+    return metrics.map(m => {
+      const row: Record<string, any> = { metric: m.label };
+      selectedProperties.forEach((p, i) => {
+        row[`prop_${i}`] = m.getValue(p);
+      });
+      return row;
+    });
+  }, [selectedProperties]);
+
+  // Radar chart data — normalised 0-100 for each metric
+  const radarData = useMemo(() => {
+    const metrics = [
+      { label: 'Price', getValue: (p: any) => p.price || 0, invert: true },
+      { label: 'Area', getValue: (p: any) => p.area_sqm || 0 },
+      { label: 'Bedrooms', getValue: (p: any) => p.bedrooms || 0 },
+      { label: 'Bathrooms', getValue: (p: any) => p.bathrooms || 0 },
+    ];
+
+    return metrics.map(m => {
+      const values = selectedProperties.map(p => m.getValue(p));
+      const max = Math.max(...values, 1);
+      const row: Record<string, any> = { metric: m.label };
+      selectedProperties.forEach((p, i) => {
+        const raw = m.getValue(p);
+        // For price, lower is better → invert
+        row[`prop_${i}`] = m.invert
+          ? max > 0 ? Math.round(((max - raw) / max) * 100 + 10) : 0
+          : max > 0 ? Math.round((raw / max) * 100) : 0;
+      });
+      return row;
+    });
+  }, [selectedProperties]);
+
+  return (
+    <Card className="mt-8">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-lg">Visual Comparison</CardTitle>
+        <div className="flex gap-1">
+          <Button
+            variant={chartType === 'bar' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setChartType('bar')}
+          >
+            Bar
+          </Button>
+          <Button
+            variant={chartType === 'radar' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setChartType('radar')}
+          >
+            Radar
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {/* Legend */}
+        <div className="flex flex-wrap gap-4 mb-4">
+          {selectedProperties.map((p, i) => (
+            <div key={p.id} className="flex items-center gap-2 text-sm">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
+              <span className="font-medium">{truncate(p.title)}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="h-[350px] w-full">
+          {chartType === 'bar' ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={barData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                <XAxis dataKey="metric" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: '8px',
+                    border: '1px solid hsl(var(--border))',
+                    backgroundColor: 'hsl(var(--background))',
+                    color: 'hsl(var(--foreground))',
+                  }}
+                  formatter={(value: number, name: string) => {
+                    const idx = parseInt(name.replace('prop_', ''));
+                    return [value, truncate(selectedProperties[idx]?.title || '')];
+                  }}
+                />
+                {selectedProperties.map((_, i) => (
+                  <Bar
+                    key={i}
+                    dataKey={`prop_${i}`}
+                    fill={CHART_COLORS[i % CHART_COLORS.length]}
+                    radius={[4, 4, 0, 0]}
+                  />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="75%">
+                <PolarGrid className="opacity-30" />
+                <PolarAngleAxis dataKey="metric" tick={{ fontSize: 12 }} />
+                <PolarRadiusAxis tick={false} axisLine={false} domain={[0, 110]} />
+                {selectedProperties.map((_, i) => (
+                  <Radar
+                    key={i}
+                    dataKey={`prop_${i}`}
+                    stroke={CHART_COLORS[i % CHART_COLORS.length]}
+                    fill={CHART_COLORS[i % CHART_COLORS.length]}
+                    fillOpacity={0.15}
+                    strokeWidth={2}
+                  />
+                ))}
+              </RadarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
