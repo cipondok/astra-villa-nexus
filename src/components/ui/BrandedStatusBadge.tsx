@@ -24,10 +24,10 @@ const STATUS_RING: Record<string, { label: string }> = {
 };
 
 const SIZE_MAP = {
-  xs: { width: 22, height: 22, logoSize: 10, fontSize: "text-[8px]", gap: "gap-0.5" },
-  sm: { width: 28, height: 28, logoSize: 12, fontSize: "text-[9px]", gap: "gap-1" },
-  md: { width: 34, height: 34, logoSize: 15, fontSize: "text-[10px]", gap: "gap-1" },
-  lg: { width: 42, height: 42, logoSize: 18, fontSize: "text-[11px]", gap: "gap-1.5" },
+  xs: { width: 22, height: 22, logoSize: 14, fontSize: "text-[8px]", gap: "gap-0.5" },
+  sm: { width: 28, height: 28, logoSize: 18, fontSize: "text-[9px]", gap: "gap-1" },
+  md: { width: 34, height: 34, logoSize: 22, fontSize: "text-[10px]", gap: "gap-1" },
+  lg: { width: 42, height: 42, logoSize: 28, fontSize: "text-[11px]", gap: "gap-1.5" },
 };
 
 const ANIMATION_CLASSES: Record<string, string> = {
@@ -93,8 +93,14 @@ const Shield3DBadgeIcon = ({
           <stop offset="0%" stopColor={darkColor} stopOpacity={0.15} />
           <stop offset="100%" stopColor={darkColor} stopOpacity={0.45} />
         </radialGradient>
-        <filter id={filterId}>
-          <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0" />
+        <filter id={filterId} x="-20%" y="-20%" width="140%" height="140%">
+          <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0" result="white" />
+          <feGaussianBlur in="white" stdDeviation="0.4" result="blurred" />
+          <feSpecularLighting in="blurred" surfaceScale="4" specularConstant="0.9" specularExponent="25" lightingColor="white" result="spec">
+            <fePointLight x="12" y="8" z="18" />
+          </feSpecularLighting>
+          <feComposite in="spec" in2="SourceAlpha" operator="in" result="specOut" />
+          <feComposite in="white" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="0.7" k4="0" />
         </filter>
         <filter id={shadowId} x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow dx="0" dy="1.5" stdDeviation="1.8" floodColor={darkColor} floodOpacity="0.45" />
@@ -131,15 +137,28 @@ const Shield3DBadgeIcon = ({
         fill="white" opacity="0.22"
       />
 
-      {/* Logo centered, rendered white */}
+      {/* Logo centered, embossed white */}
       <image
         href={logoUrl}
         x={20 - logoSize / 2}
-        y={18 - logoSize / 2}
+        y={17 - logoSize / 2}
         width={logoSize}
         height={logoSize}
         preserveAspectRatio="xMidYMid meet"
         filter={`url(#${filterId})`}
+      />
+
+      {/* Embossed outline glow on logo */}
+      <image
+        href={logoUrl}
+        x={20 - logoSize / 2}
+        y={17 - logoSize / 2}
+        width={logoSize}
+        height={logoSize}
+        preserveAspectRatio="xMidYMid meet"
+        filter={`url(#${filterId})`}
+        opacity="0.3"
+        style={{ mixBlendMode: "overlay" }}
       />
 
       {/* Checkmark circle */}
@@ -206,12 +225,27 @@ const BrandedStatusBadge = ({
         <span
           className={cn(
             sizeConfig.fontSize,
-            "font-bold tracking-tight leading-none whitespace-nowrap",
+            "font-extrabold tracking-tight leading-none whitespace-nowrap",
             settings.badgeTextStyle === "pill"
-              ? "px-1.5 py-0.5 rounded-full text-primary-foreground"
-              : "text-foreground/80"
+              ? "px-1.5 py-0.5 rounded-full"
+              : ""
           )}
-          style={settings.badgeTextStyle === "pill" ? { backgroundColor: shieldColor } : undefined}
+          style={
+            settings.badgeTextStyle === "pill"
+              ? {
+                  background: `linear-gradient(135deg, ${shieldLight}, ${shieldColor}, ${shieldDark})`,
+                  color: "white",
+                  textShadow: `0 1px 2px rgba(0,0,0,0.4), 0 0 4px ${shieldColor}40`,
+                }
+              : {
+                  background: `linear-gradient(135deg, ${shieldLight}, ${shieldColor}, ${shieldDark})`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  textShadow: `0 1px 1px rgba(0,0,0,0.15)`,
+                  filter: `drop-shadow(0 1px 1px ${shieldDark}50)`,
+                }
+          }
         >
           {settings.badgeText}
         </span>

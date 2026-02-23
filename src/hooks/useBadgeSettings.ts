@@ -34,7 +34,7 @@ const DEFAULT_BADGE_SETTINGS: BadgeSettings = {
   animationEffect: "none",
   glowIntensity: 50,
   levels: {
-    diamond: { label: "Diamond", shieldColor: "#38bdf8", shieldLight: "#7dd3fc", shieldDark: "#0284c7" },
+    diamond: { label: "Diamond", shieldColor: "#4fc3f7", shieldLight: "#b3e5fc", shieldDark: "#01579b" },
     platinum: { label: "Platinum", shieldColor: "#22d3ee", shieldLight: "#67e8f9", shieldDark: "#0891b2" },
     gold: { label: "Gold", shieldColor: "#d4a017", shieldLight: "#facc15", shieldDark: "#a16207" },
     vip: { label: "VIP", shieldColor: "#a855f7", shieldLight: "#c084fc", shieldDark: "#7c3aed" },
