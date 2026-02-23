@@ -27,7 +27,7 @@ interface ChatButtonProps {
   showScrollArrow?: boolean;
 }
 
-const ChatButton = ({ 
+const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({ 
   onClick, 
   unreadCount = 0, 
   variant = "pulse",
@@ -37,7 +37,7 @@ const ChatButton = ({
   pinnedActions = new Set(),
   onTogglePin,
   showScrollArrow = false
-}: ChatButtonProps) => {
+}, ref) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isLongPress, setIsLongPress] = useState(false);
@@ -306,6 +306,7 @@ const ChatButton = ({
   );
 
   return (
+    <div ref={ref}>
     <ContextMenu>
       <ContextMenuTrigger>
         {buttonContent}
@@ -353,7 +354,10 @@ const ChatButton = ({
         )}
       </ContextMenuContent>
     </ContextMenu>
+    </div>
   );
-};
+});
+
+ChatButton.displayName = "ChatButton";
 
 export default ChatButton;
