@@ -1,38 +1,62 @@
 
 
-# Fix: Page Dancing When Opening Popovers & Header Dropdown
+# Fix: User Icon -- Single Function Popup + Hover Smart Info
 
 ## Problem
-
-Two things cause the page to "dance" (shift horizontally):
-
-1. **Popover filters (Property Type, Location, Color, etc.)** -- When a Radix Popover opens, Radix's internal scroll-lock (`react-remove-scroll`) hides the scrollbar and adds `padding-right` to the body to compensate. However, a CSS rule on line 110 of `index.css` forces `padding-right: 0 !important` on `body[data-scroll-locked]`, which nullifies the compensation and causes the content to shift.
-
-2. **Header user icon dropdown** -- Same mechanism. The Radix DropdownMenu triggers the same scroll-lock behavior and hits the same CSS override.
-
-The comment in the CSS says *"We already reserve gutter via scrollbar-gutter"* -- but `scrollbar-gutter: stable` was removed in the previous fix. So the compensation is broken.
+The user icon dropdown uses Radix's `DropdownMenu` which defaults to `modal={true}`. This triggers Radix's internal scroll-locking (`react-remove-scroll`), which adds/removes `data-scroll-locked` and `padding-right` on the body -- causing the visible "page dancing" layout shift on desktop.
 
 ## Solution
 
-### 1. Re-add `scrollbar-gutter: stable` to `html` in `src/index.css`
+### 1. Set `modal={false}` on user DropdownMenu components
 
-This reserves space for the scrollbar at all times, so when Radix hides the scrollbar, there is no layout shift. The `padding-right: 0 !important` rule then correctly prevents double-compensation.
+When `modal={false}`, Radix does NOT activate its scroll-lock mechanism, so no `data-scroll-locked`, no `padding-right` injection, and no page shift. The dropdown is small and doesn't need scroll prevention.
 
-This was removed previously because it was thought to conflict with the `useScrollLock` hook, but it only conflicts when the hook also adds `paddingRight` -- which it already does. The solution is to NOT add `paddingRight` in the hook when `scrollbar-gutter: stable` is present.
+**Files affected:**
+- `src/components/navigation/AuthenticatedNavigation.tsx` (line 263)
+- `src/components/RoleBasedNavigation.tsx` (line 194)
+- `src/components/admin/AdminHeader.tsx` (line 196)
 
-### 2. Remove `paddingRight` compensation from `useScrollLock.ts`
+Change: `<DropdownMenu>` becomes `<DropdownMenu modal={false}>`
 
-Since `scrollbar-gutter: stable` handles the scrollbar space, the hook should not add its own `paddingRight`. This eliminates the double-compensation that caused the original issue.
+### 2. Add HoverCard for "smart user info" on mouseover
 
-### 3. Remove the `requestAnimationFrame` scroll hacks in `AstraSearchPanel.tsx`
+Wrap the user Avatar button with a Radix `HoverCard` that shows user details (name, role, email, membership status) on hover -- without requiring a click.
 
-The Popover trigger buttons have `requestAnimationFrame(() => window.scrollTo(0, currentScroll))` hacks to fight the jumping. With the root cause fixed, these are no longer needed and can cause their own subtle jumps.
+**Files affected:**
+- `src/components/navigation/AuthenticatedNavigation.tsx` -- wrap the avatar trigger with `HoverCard` + `HoverCardContent`
+- `src/components/RoleBasedNavigation.tsx` -- same treatment
 
-## Files to Change
+The HoverCard will display:
+- User name and avatar initial
+- Email address
+- Role badge
+- A "View Profile" shortcut link
+
+### 3. Also set `modal={false}` on filter Popovers in AstraSearchPanel
+
+The same `modal` scroll-lock issue likely affects the color filter and other popovers. Adding `modal={false}` to those Popover components will prevent the dancing there too.
+
+## Technical Details
+
+### Changes per file
 
 | File | Change |
 |------|--------|
-| `src/index.css` | Re-add `scrollbar-gutter: stable` on `html` (before body rule, around line 76) |
-| `src/hooks/useScrollLock.ts` | Remove `paddingRight` lines (lines 9, 15, 22, 32) since scrollbar-gutter handles it |
-| `src/components/AstraSearchPanel.tsx` | Remove `requestAnimationFrame(() => window.scrollTo(...))` hacks from Popover trigger onClick handlers (~lines 2860, 2943) |
+| `src/components/navigation/AuthenticatedNavigation.tsx` | Add `modal={false}` to user DropdownMenu; wrap avatar with HoverCard showing user info |
+| `src/components/RoleBasedNavigation.tsx` | Add `modal={false}` to user DropdownMenu; wrap avatar with HoverCard |
+| `src/components/admin/AdminHeader.tsx` | Add `modal={false}` to profile DropdownMenu |
+| `src/components/ui/dropdown-menu.tsx` | No changes needed -- `modal` is already a supported prop on `DropdownMenu` (it's `DropdownMenuPrimitive.Root`) |
 
+### HoverCard content structure
+
+```text
++---------------------------+
+|  [A]  Full Name           |
+|        user@email.com     |
+|        [Role Badge]       |
+|                           |
+|  View Profile ->          |
++---------------------------+
+```
+
+The HoverCard uses the existing `@radix-ui/react-hover-card` already installed and the existing `HoverCard`, `HoverCardTrigger`, `HoverCardContent` components from `src/components/ui/hover-card.tsx`.
