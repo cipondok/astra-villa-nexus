@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import astraLogoFallback from "@/assets/astra-logo.svg";
+import { LOGO_PLACEHOLDER } from "@/hooks/useBrandingLogo";
 
 export const useChatbotLogo = () => {
   const { data: chatbotLogoUrl, isLoading } = useQuery({
@@ -37,7 +37,7 @@ export const useChatbotLogo = () => {
   });
 
   return {
-    logoUrl: chatbotLogoUrl || astraLogoFallback,
+    logoUrl: chatbotLogoUrl || LOGO_PLACEHOLDER,
     isLoading,
     isCustomLogo: !!chatbotLogoUrl,
   };

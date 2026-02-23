@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogIn, User, Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
-import astraLogoFallback from '@/assets/astra-logo.svg';
+import { LOGO_PLACEHOLDER } from '@/hooks/useBrandingLogo';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -64,13 +64,13 @@ const InitialLoadingScreen = () => {
         }
       } catch (error) {
         console.error('Error fetching logo:', error);
-        setLogoUrl(astraLogoFallback);
+        setLogoUrl(LOGO_PLACEHOLDER);
       }
     };
 
     // Small delay to allow DB fetch before falling back
     const timeout = setTimeout(() => {
-      setLogoUrl((prev) => prev ?? astraLogoFallback);
+      setLogoUrl((prev) => prev ?? LOGO_PLACEHOLDER);
     }, 1500);
 
     fetchLogo();
@@ -332,7 +332,7 @@ const InitialLoadingScreen = () => {
                   alt="ASTRA Villa Logo" 
                   className="w-16 h-16 object-contain"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = astraLogoFallback;
+                    (e.target as HTMLImageElement).src = LOGO_PLACEHOLDER;
                   }}
                 />
               )}

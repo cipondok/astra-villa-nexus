@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 const WelcomeScreenSettings = () => {
   const [settings, setSettings] = useState({
     enabled: true,
-    logoUrl: '/src/assets/astra-logo.png',
+    logoUrl: '',
     brandName: 'ASTRA',
     tagline: 'Premium Real Estate',
     showProgress: true,
@@ -32,7 +32,7 @@ const WelcomeScreenSettings = () => {
   const handleReset = () => {
     setSettings({
       enabled: true,
-      logoUrl: '/src/assets/astra-logo.png',
+      logoUrl: '',
       brandName: 'ASTRA',
       tagline: 'Premium Real Estate',
       showProgress: true,
