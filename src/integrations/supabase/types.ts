@@ -25349,6 +25349,10 @@ export type Database = {
         Args: { data_type: string; encrypted_data: string }
         Returns: string
       }
+      delete_admin_alerts_by_types: {
+        Args: { type_patterns: string[] }
+        Returns: number
+      }
       delete_property_admin_property: {
         Args: { p_property_id: string }
         Returns: undefined
@@ -25372,6 +25376,10 @@ export type Database = {
       }
       generate_otp: { Args: never; Returns: string }
       generate_transaction_number: { Args: never; Returns: string }
+      get_admin_alerts_count_by_types: {
+        Args: { type_patterns: string[] }
+        Returns: number
+      }
       get_admin_alerts_counts: { Args: never; Returns: Json }
       get_admin_profile_stats: {
         Args: never

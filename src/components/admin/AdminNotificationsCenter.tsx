@@ -23,6 +23,26 @@ const categorize = (type: string): CategoryFilter => {
   return 'other';
 };
 
+const getCategoryTypes = (category: CategoryFilter): string[] => {
+  switch (category) {
+    case 'system': return ['critical', 'security', 'warning', 'info'];
+    case 'property': return ['property', 'listing', 'property_status'];
+    case 'application': return ['property_owner_application', 'vendor_application', 'agent_application'];
+    case 'other': return ['user', 'vendor', 'daily_summary'];
+    default: return [];
+  }
+};
+
+const getCategoryLabel = (category: CategoryFilter): string => {
+  switch (category) {
+    case 'system': return 'System';
+    case 'property': return 'Property';
+    case 'application': return 'Application';
+    case 'other': return 'Other';
+    default: return '';
+  }
+};
+
 export function AdminNotificationsCenter({ onSectionChange }: AdminNotificationsCenterProps) {
   const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all');
   const [categoryTab, setCategoryTab] = useState<CategoryFilter>('all');
@@ -230,6 +250,65 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
     },
   });
 
+  // Clear category: delete all notifications of a specific category type
+  const clearCategoryMutation = useMutation({
+    mutationFn: async (category: CategoryFilter) => {
+      const types = getCategoryTypes(category);
+      if (types.length === 0) return;
+
+      // Get accurate count first
+      const { data: countData, error: countErr } = await supabase.rpc('get_admin_alerts_count_by_types', { type_patterns: types });
+      if (countErr) throw countErr;
+      const total = (countData as number) || 0;
+      if (total === 0) return;
+
+      setDeleteProgress({ current: 0, total, active: true });
+
+      // Use the server-side batch delete RPC
+      // But we want progress, so do client-side batching
+      let deleted = 0;
+      const batchSize = 500;
+
+      while (true) {
+        // Build or-filter for types (exact match + pattern match for property/listing)
+        const orFilter = types.map(t => `type.eq.${t},type.ilike.%${t}%`).join(',');
+        const { data: batch, error: fetchErr } = await supabase
+          .from('admin_alerts')
+          .select('id')
+          .or(orFilter)
+          .limit(batchSize);
+        if (fetchErr) throw fetchErr;
+        if (!batch || batch.length === 0) break;
+
+        const ids = batch.map(r => r.id);
+        const chunkSize = 20;
+        for (let i = 0; i < ids.length; i += chunkSize) {
+          const chunk = ids.slice(i, i + chunkSize);
+          const { error: delErr } = await supabase
+            .from('admin_alerts')
+            .delete()
+            .in('id', chunk);
+          if (delErr) console.error('Category delete chunk error:', delErr);
+          deleted += chunk.length;
+          setDeleteProgress({ current: deleted, total, active: true });
+        }
+      }
+    },
+    onSuccess: () => {
+      setSelectedIds(new Set());
+      setDeleteProgress(prev => ({ ...prev, active: false }));
+      queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications-counts'] });
+      toast.success(`All ${getCategoryLabel(categoryTab)} notifications deleted`);
+    },
+    onError: (error) => {
+      setDeleteProgress(prev => ({ ...prev, active: false }));
+      console.error('Clear category error:', error);
+      toast.error('Failed to delete category notifications');
+    },
+  });
+
   const toggleSelect = (id: string) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
@@ -417,14 +496,27 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
               </div>
             )}
 
-            {/* Select all row when nothing selected */}
+            {/* Select all row + Delete All Category button when nothing selected */}
             {selectedIds.size === 0 && filteredNotifications.length > 0 && (
-              <div className="flex items-center gap-2 mb-4 px-1">
-                <Checkbox
-                  checked={false}
-                  onCheckedChange={toggleSelectAll}
-                />
-                <span className="text-sm text-muted-foreground">Select all</span>
+              <div className="flex items-center justify-between mb-4 px-1">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    checked={false}
+                    onCheckedChange={toggleSelectAll}
+                  />
+                  <span className="text-sm text-muted-foreground">Select all</span>
+                </div>
+                {categoryTab !== 'all' && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => clearCategoryMutation.mutate(categoryTab)}
+                    disabled={clearCategoryMutation.isPending || deleteProgress.active}
+                  >
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    {clearCategoryMutation.isPending ? 'Deleting...' : `Delete All ${getCategoryLabel(categoryTab)}`}
+                  </Button>
+                )}
               </div>
             )}
 
