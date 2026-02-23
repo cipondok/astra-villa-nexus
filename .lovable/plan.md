@@ -1,64 +1,66 @@
 
-# Add Blur-Up Lazy Loading for Property Card Images
+
+# Add Skeleton Loading States for Property Card Text Content
 
 ## Overview
 
-Add a blur-up placeholder effect to property card images across both `PropertyCard.tsx` and `ASTRAVillaPropertyCard.tsx`. When images load on slow connections, users will see a pulsing blurred placeholder that transitions smoothly to the full image once loaded.
+Extend the existing blur-up image loading to include text content (title, price, location, specs). While the image is loading (`isImageLoaded === false`), show skeleton shimmer placeholders for all text areas too, then reveal everything together for a cohesive loading experience.
 
 ## Approach
 
-Rather than introducing a new component (the project already has `LazyImage` and `OptimizedImage`), we will add inline blur-up state directly to the two property card components. This keeps changes minimal and avoids refactoring the existing image rendering logic.
+Reuse the existing `isImageLoaded` state as the trigger. When `false`, render skeleton placeholders instead of actual text content. When the image finishes loading, both image and text appear simultaneously.
 
 ## Changes
 
-### 1. `src/components/PropertyCard.tsx`
+### 1. `src/components/property/ASTRAVillaPropertyCard.tsx`
 
-- Add `isImageLoaded` state (boolean, default `false`)
-- Wrap the existing `<img>` in a container with a blurred placeholder background
-- Add `onLoad` handler to transition from blur to sharp
-- The placeholder will be a `bg-muted animate-pulse` div with a CSS blur filter
-- On load, the image fades in with `opacity-0 -> opacity-100` transition
+In the content section (lines 193-257), conditionally render skeletons when `!isImageLoaded`:
 
-### 2. `src/components/property/ASTRAVillaPropertyCard.tsx`
+- **Price box** (line 195-215): Replace with a shimmer block (`h-8 w-full rounded-lg bg-muted animate-pulse`)
+- **Title** (line 218-220): Replace with a shimmer line (`h-3 w-3/4 rounded bg-muted animate-pulse`)
+- **Location** (line 223-226): Replace with a shimmer line (`h-3 w-1/2 rounded bg-muted animate-pulse`)
+- **Specs row** (line 229-256): Replace with small shimmer blocks
 
-- Same pattern: add `isImageLoaded` state
-- The image container already has `bg-muted` and `aspect-[4/3]` -- add the blur placeholder overlay and fade-in transition on the `<img>` element
-- Add `onLoad` handler alongside the existing `onError` handler
+When `isImageLoaded` is true, render the normal content as-is (no changes to existing markup).
 
-## Technical Details
+### 2. `src/components/PropertyCard.tsx`
 
-Both components will use the same pattern:
+In the CardContent section (lines 181-265), conditionally render skeletons when `!isImageLoaded`:
+
+- **Title** (line 182-184): Shimmer line
+- **Location** (line 216-219): Shimmer line
+- **Price** (line 221-228): Shimmer block
+- **Specs** (line 230-243): Small shimmer blocks
+- **Buttons** (line 245-264): Shimmer button placeholders
+
+### Implementation Pattern
 
 ```tsx
-// New state
-const [isImageLoaded, setIsImageLoaded] = useState(false);
-
-// In the image container:
-{/* Blur placeholder */}
-{!isImageLoaded && (
-  <div className="absolute inset-0 bg-muted animate-pulse" />
-)}
-
-{/* Image with fade-in */}
-<img
-  src={...}
-  alt={...}
-  loading="lazy"
-  onLoad={() => setIsImageLoaded(true)}
-  onError={...}
-  className={cn(
-    "w-full h-full object-cover transition-opacity duration-500",
-    isImageLoaded ? "opacity-100" : "opacity-0",
-    // existing hover classes
+{/* Content Section */}
+<div className="p-2 sm:p-3 space-y-2">
+  {!isImageLoaded ? (
+    <>
+      <div className="h-8 w-full rounded-lg bg-muted animate-pulse" />
+      <div className="h-3 w-3/4 rounded bg-muted animate-pulse" />
+      <div className="h-3 w-1/2 rounded bg-muted animate-pulse" />
+      <div className="flex gap-1.5 pt-2 border-t border-border/30">
+        <div className="h-3.5 w-10 rounded bg-muted animate-pulse" />
+        <div className="h-3.5 w-10 rounded bg-muted animate-pulse" />
+        <div className="h-3.5 w-14 rounded bg-muted animate-pulse" />
+      </div>
+    </>
+  ) : (
+    // existing content JSX unchanged
   )}
-/>
+</div>
 ```
 
 ### Files Modified
 
 | File | Change |
 |------|--------|
-| `src/components/PropertyCard.tsx` | Add `isImageLoaded` state, blur placeholder div, fade-in transition on img |
-| `src/components/property/ASTRAVillaPropertyCard.tsx` | Add `isImageLoaded` state, blur placeholder div, fade-in transition on img |
+| `src/components/property/ASTRAVillaPropertyCard.tsx` | Wrap content section in `isImageLoaded` conditional with skeleton fallback |
+| `src/components/PropertyCard.tsx` | Wrap CardContent children in `isImageLoaded` conditional with skeleton fallback |
 
 No new files or dependencies needed.
+
