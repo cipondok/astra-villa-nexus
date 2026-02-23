@@ -133,10 +133,10 @@ const ASTRAVillaPropertyCard = ({
         {/* Top Row */}
         <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
           <span className={cn(
-            "flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold shadow-sm",
+            "flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-md",
             isRent
-              ? "bg-gold-primary/90 text-background backdrop-blur-sm"
-              : "bg-gold-primary backdrop-blur-sm text-background"
+              ? "bg-gradient-to-r from-sky-500 to-blue-600 text-white backdrop-blur-sm"
+              : "bg-gradient-to-r from-emerald-500 to-green-600 text-white backdrop-blur-sm"
           )}>
             <ListingIcon className="h-2.5 w-2.5" />
             {getListingLabel(property.listing_type)}

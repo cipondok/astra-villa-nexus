@@ -53,9 +53,9 @@ const PropertyPreview = ({ isOpen, onClose, onConfirm, propertyData, isSubmittin
             <CardHeader className="bg-gradient-to-r from-primary/10 to-accent/10">
               <CardTitle className="flex items-center justify-between text-foreground">
                 <span className="text-xl font-bold">{propertyData.title}</span>
-                <Badge variant="outline" className={`flex items-center gap-0.5 text-[10px] ${propertyData.listing_type === 'sale' ? 'bg-chart-1 text-primary-foreground border-chart-1/60' : 'bg-chart-4 text-primary-foreground border-chart-4/60'}`}>
+                <Badge className={`flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md shadow-md border-0 ${propertyData.listing_type === 'sale' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white'}`}>
                   {propertyData.listing_type === 'sale' ? <Tag className="h-3 w-3" /> : <Key className="h-3 w-3" />}
-                  {propertyData.listing_type === 'sale' ? 'Jual' : 'Sewa'}
+                  {propertyData.listing_type === 'sale' ? 'Dijual' : 'Disewa'}
                 </Badge>
               </CardTitle>
             </CardHeader>
