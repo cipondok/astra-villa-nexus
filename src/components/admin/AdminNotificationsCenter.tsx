@@ -510,15 +510,38 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
                   onCheckedChange={toggleSelectAll}
                 />
                 <span className="text-sm font-medium">{selectedIds.size} selected</span>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => bulkDeleteMutation.mutate(Array.from(selectedIds))}
-                  disabled={bulkDeleteMutation.isPending || deleteProgress.active}
-                >
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  {bulkDeleteMutation.isPending ? 'Deleting...' : `Delete Selected (${selectedIds.size})`}
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      disabled={bulkDeleteMutation.isPending || deleteProgress.active}
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      {bulkDeleteMutation.isPending ? 'Deleting...' : `Delete Selected (${selectedIds.size})`}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="flex items-center gap-2">
+                        <AlertCircle className="h-5 w-5 text-destructive" />
+                        Delete {selectedIds.size} Selected Notifications
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        You are about to permanently delete <strong>{selectedIds.size} selected</strong> notifications. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => bulkDeleteMutation.mutate(Array.from(selectedIds))}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Yes, Delete Selected
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
                 <Button
                   variant="ghost"
                   size="sm"
