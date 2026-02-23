@@ -363,6 +363,15 @@ const config: Config = {
           "0%": { transform: "translateX(0%)" },
           "100%": { transform: "translateX(-50%)" }
         },
+        "ken-burns": {
+          "0%": { transform: "scale(1) translate(0, 0)" },
+          "50%": { transform: "scale(1.08) translate(-1%, -1%)" },
+          "100%": { transform: "scale(1.04) translate(0.5%, 0)" },
+        },
+        "shimmer-slide": {
+          "0%": { transform: "translateX(-100%) skewX(-12deg)" },
+          "100%": { transform: "translateX(200%) skewX(-12deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -393,6 +402,8 @@ const config: Config = {
         "logo-3d-float": "logo-3d-float 4s ease-in-out infinite",
         "logo-shadow": "logo-shadow 4s ease-in-out infinite",
         "marquee": "marquee 30s linear infinite",
+        "ken-burns": "ken-burns 8s ease-in-out infinite alternate",
+        "shimmer-slide": "shimmer-slide 6s ease-in-out infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',
