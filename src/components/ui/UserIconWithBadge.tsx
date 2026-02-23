@@ -108,7 +108,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
   const hasAvatar = profile?.avatar_url;
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
+    <DropdownMenu modal={false} open={isOpen} onOpenChange={handleOpenChange}>
       <TooltipProvider delayDuration={200}>
         <Tooltip>
           <TooltipTrigger asChild>
