@@ -9,6 +9,7 @@ import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { Badge } from "@/components/ui/badge";
 import BrandedStatusBadge from "@/components/ui/BrandedStatusBadge";
 import { useBadgeSettings } from "@/hooks/useBadgeSettings";
+import PropertyCardSkeleton from "./PropertyCardSkeleton";
 
 interface PropertiesForRentSectionProps {
   language: "en" | "id";
@@ -91,11 +92,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
           <Key className="h-4 w-4 text-primary" />
           <h2 className="text-sm font-semibold text-foreground">Properti Disewa</h2>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3">
-          {[...Array(12)].map((_, i) => (
-            <div key={i} className="animate-pulse rounded-lg overflow-hidden bg-muted h-52 sm:h-60"></div>
-          ))}
-        </div>
+        <PropertyCardSkeleton count={12} />
       </section>
     );
   }

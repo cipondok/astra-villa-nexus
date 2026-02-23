@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import BrandedStatusBadge from "@/components/ui/BrandedStatusBadge";
 import { useBadgeSettings } from "@/hooks/useBadgeSettings";
+import PropertyCardSkeleton from "./PropertyCardSkeleton";
 
 interface PropertiesForSaleSectionProps {
   language: "en" | "id";
@@ -100,11 +101,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
           <Home className="h-4 w-4 text-accent" />
           <h2 className="text-sm font-semibold text-foreground">Properti Dijual</h2>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3">
-          {[...Array(12)].map((_, i) => (
-            <div key={i} className="animate-pulse rounded-lg overflow-hidden bg-muted h-52 sm:h-60"></div>
-          ))}
-        </div>
+        <PropertyCardSkeleton count={12} />
       </section>
     );
   }
