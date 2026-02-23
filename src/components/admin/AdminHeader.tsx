@@ -102,7 +102,7 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
           <AdminCommandPalette onSectionChange={onSectionChange} />
 
           {/* Notifications */}
-          <DropdownMenu open={notificationsOpen} onOpenChange={setNotificationsOpen}>
+          <DropdownMenu modal={false} open={notificationsOpen} onOpenChange={setNotificationsOpen}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
