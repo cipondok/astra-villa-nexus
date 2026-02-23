@@ -30,14 +30,31 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
   const [deleteProgress, setDeleteProgress] = useState<{ current: number; total: number; active: boolean }>({ current: 0, total: 0, active: false });
   const queryClient = useQueryClient();
 
-  // Fetch all notifications
+  // Fetch actual total and unread counts from DB
+  const { data: actualCounts = { total: 0, unread: 0 } } = useQuery({
+    queryKey: ['admin-notifications-counts'],
+    queryFn: async () => {
+      const [totalRes, unreadRes] = await Promise.all([
+        supabase.from('admin_alerts').select('*', { count: 'exact', head: true }),
+        supabase.from('admin_alerts').select('*', { count: 'exact', head: true }).eq('is_read', false),
+      ]);
+      return {
+        total: totalRes.count || 0,
+        unread: unreadRes.count || 0,
+      };
+    },
+    refetchInterval: 30000,
+  });
+
+  // Fetch displayed notifications (limited to 1000 for UI)
   const { data: notifications = [], isLoading, error } = useQuery({
     queryKey: ['admin-all-notifications', filter],
     queryFn: async () => {
       let query = supabase
         .from('admin_alerts')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(1000);
 
       if (filter === 'unread') {
         query = query.eq('is_read', false);
@@ -79,6 +96,7 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications-counts'] });
       toast.success('Notification marked as read');
     },
   });
@@ -95,6 +113,7 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications-counts'] });
       toast.success('All notifications marked as read');
     },
   });
@@ -111,6 +130,7 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications-counts'] });
       toast.success('Notification deleted');
     },
     onError: (error) => {
@@ -149,6 +169,7 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
       setDeleteProgress(prev => ({ ...prev, active: false }));
       queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications-counts'] });
       toast.success(`Notifications deleted successfully`);
     },
     onError: (error) => {
@@ -201,6 +222,7 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
       setDeleteProgress(prev => ({ ...prev, active: false }));
       queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications-counts'] });
       toast.success('All notifications cleared');
     },
     onError: (error) => {
@@ -276,7 +298,8 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
     }
   };
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const unreadCount = actualCounts.unread;
+  const totalCount = actualCounts.total;
 
   const handleCategoryChange = (tab: string) => {
     setCategoryTab(tab as CategoryFilter);
@@ -302,7 +325,7 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
                 {unreadCount} Unread
               </Badge>
               <Badge variant="outline" className="text-sm">
-                {notifications.length} Total
+                {totalCount.toLocaleString()} Total
               </Badge>
               {unreadCount > 0 && (
                 <Button
@@ -352,9 +375,9 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
           {/* Read status filter */}
           <Tabs defaultValue="all" onValueChange={(v) => setFilter(v as any)}>
             <TabsList className="grid w-full grid-cols-3 mb-4">
-              <TabsTrigger value="all">All ({notifications.length})</TabsTrigger>
-              <TabsTrigger value="unread">Unread ({unreadCount})</TabsTrigger>
-              <TabsTrigger value="read">Read ({notifications.length - unreadCount})</TabsTrigger>
+              <TabsTrigger value="all">All ({totalCount.toLocaleString()})</TabsTrigger>
+              <TabsTrigger value="unread">Unread ({unreadCount.toLocaleString()})</TabsTrigger>
+              <TabsTrigger value="read">Read ({(totalCount - unreadCount).toLocaleString()})</TabsTrigger>
             </TabsList>
           </Tabs>
 
