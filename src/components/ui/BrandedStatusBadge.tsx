@@ -11,8 +11,9 @@ import { useBadgeSettings } from "@/hooks/useBadgeSettings";
 interface BrandedStatusBadgeProps {
   verificationStatus?: string;
   userLevel?: string;
-  size?: "xs" | "sm" | "md";
+  size?: "xs" | "sm" | "md" | "lg";
   className?: string;
+  overrideAnimation?: string;
 }
 
 const STATUS_RING: Record<string, { label: string }> = {
@@ -26,6 +27,28 @@ const SIZE_MAP = {
   xs: { width: 22, height: 26, logoSize: 16, logoY: 5, fontSize: "text-[8px]", gap: "gap-0.5" },
   sm: { width: 28, height: 32, logoSize: 20, logoY: 6, fontSize: "text-[9px]", gap: "gap-1" },
   md: { width: 34, height: 40, logoSize: 24, logoY: 7, fontSize: "text-[10px]", gap: "gap-1" },
+  lg: { width: 42, height: 48, logoSize: 30, logoY: 8, fontSize: "text-[11px]", gap: "gap-1.5" },
+};
+
+const ANIMATION_CLASSES: Record<string, string> = {
+  none: "",
+  pulse: "animate-pulse",
+  bounce: "animate-bounce",
+  glow: "",
+  shimmer: "",
+};
+
+const getAnimationStyle = (effect: string, glowIntensity: number, color: string): React.CSSProperties => {
+  if (effect === "glow") {
+    const opacity = glowIntensity / 100;
+    return { filter: `drop-shadow(0 0 ${4 + glowIntensity * 0.08}px ${color})`, opacity: 1 };
+  }
+  if (effect === "shimmer") {
+    return {
+      animation: "shimmer-badge 2s ease-in-out infinite",
+    };
+  }
+  return {};
 };
 
 // Diamond-faceted 3D Shield
@@ -127,13 +150,15 @@ const Shield3DIcon = ({
 const BrandedStatusBadge = ({
   verificationStatus,
   userLevel,
-  size = "xs",
+  size,
   className,
+  overrideAnimation,
 }: BrandedStatusBadgeProps) => {
   const { logoUrl: brandLogo } = useHeaderLogo();
   const { settings } = useBadgeSettings();
+  const resolvedSize = size || settings.displaySize || "xs";
   const statusConfig = STATUS_RING[verificationStatus?.toLowerCase() || ""] || STATUS_RING.unverified;
-  const sizeConfig = SIZE_MAP[size];
+  const sizeConfig = SIZE_MAP[resolvedSize];
 
   // Find level config from settings
   const lower = userLevel?.toLowerCase() || "";
@@ -152,13 +177,19 @@ const BrandedStatusBadge = ({
   const logoUrl = settings.logoUrl || brandLogo;
   const tooltipLabel = levelConfig ? `Verified · ${levelConfig.label}` : statusConfig.label;
 
+  const animEffect = overrideAnimation ?? settings.animationEffect ?? "none";
+  const animClass = ANIMATION_CLASSES[animEffect] || "";
+  const animStyle = getAnimationStyle(animEffect, settings.glowIntensity ?? 50, shieldColor);
+
   const badge = (
     <div
       className={cn(
         "relative inline-flex items-center justify-center",
         sizeConfig.gap,
+        animClass,
         className
       )}
+      style={animStyle}
     >
       <Shield3DIcon
         color={shieldColor}
@@ -172,7 +203,7 @@ const BrandedStatusBadge = ({
         checkColor={checkColor}
         shieldStyle={settings.shieldStyle}
       />
-      {size !== "xs" && settings.showBadgeText && (
+      {resolvedSize !== "xs" && settings.showBadgeText && (
         <span
           className={cn(
             sizeConfig.fontSize,

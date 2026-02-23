@@ -15,6 +15,11 @@ export interface BadgeSettings {
   badgeTextStyle: "pill" | "plain";
   levels: Record<string, BadgeLevelConfig>;
   logoUrl: string; // override logo, empty = use header logo
+  displaySize: "xs" | "sm" | "md" | "lg";
+  showOnPropertyCards: boolean;
+  badgePosition: "bottom-left" | "bottom-right" | "top-left" | "top-right";
+  animationEffect: "none" | "pulse" | "bounce" | "glow" | "shimmer";
+  glowIntensity: number; // 0-100
 }
 
 const DEFAULT_BADGE_SETTINGS: BadgeSettings = {
@@ -23,6 +28,11 @@ const DEFAULT_BADGE_SETTINGS: BadgeSettings = {
   showBadgeText: true,
   badgeTextStyle: "pill",
   logoUrl: "",
+  displaySize: "sm",
+  showOnPropertyCards: true,
+  badgePosition: "bottom-left",
+  animationEffect: "none",
+  glowIntensity: 50,
   levels: {
     diamond: { label: "Diamond", shieldColor: "#38bdf8", shieldLight: "#7dd3fc", shieldDark: "#0284c7" },
     platinum: { label: "Platinum", shieldColor: "#22d3ee", shieldLight: "#67e8f9", shieldDark: "#0891b2" },

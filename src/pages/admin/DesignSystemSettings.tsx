@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,9 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDesignSystem } from "@/stores/designSystemStore";
 import { toast } from "@/hooks/use-toast";
-import { Palette, Type, Layout, Bell, Square, Zap, RotateCcw, Shield } from "lucide-react";
-
-const BadgeSettingsPanel = lazy(() => import("@/components/admin/BadgeSettingsPanel"));
+import { Palette, Type, Layout, Bell, Square, Zap, RotateCcw } from "lucide-react";
 
 const DesignSystemSettings = () => {
   const { config, updateConfig, resetConfig } = useDesignSystem();
@@ -52,7 +50,7 @@ const DesignSystemSettings = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="typography">
             <Type className="h-4 w-4 mr-2" />
             Typography
@@ -76,10 +74,6 @@ const DesignSystemSettings = () => {
           <TabsTrigger value="animations">
             <Zap className="h-4 w-4 mr-2" />
             Animations
-          </TabsTrigger>
-          <TabsTrigger value="badge">
-            <Shield className="h-4 w-4 mr-2" />
-            Badge
           </TabsTrigger>
         </TabsList>
 
@@ -484,12 +478,6 @@ const DesignSystemSettings = () => {
           </Card>
         </TabsContent>
 
-        {/* Badge Settings */}
-        <TabsContent value="badge">
-          <Suspense fallback={<div className="animate-pulse h-64 bg-muted rounded-xl" />}>
-            <BadgeSettingsPanel />
-          </Suspense>
-        </TabsContent>
       </Tabs>
     </div>
   );
