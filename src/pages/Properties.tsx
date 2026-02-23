@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { SEOHead } from "@/components/SEOHead";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +12,7 @@ import { Search, MapPin, Building2, Bed, Bath, Maximize, Heart, Filter, Grid3X3,
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 interface Property {
   id: string;
   title: string;
@@ -132,6 +135,19 @@ const Properties = () => {
     setSearchParams({});
     setSearchQuery('');
   };
+
+  // Pull-to-refresh
+  const {
+    isPulling, pullDistance, isRefreshing,
+    indicatorOpacity, indicatorRotation, threshold,
+    handlers: pullHandlers,
+  } = usePullToRefresh({
+    onRefresh: async () => {
+      await refetch();
+      toast.success('Properties refreshed!');
+    },
+  });
+
   const getImageUrl = (property: Property) => {
     if (property.image_urls && property.image_urls.length > 0) {
       return property.image_urls[0];
@@ -223,11 +239,19 @@ const Properties = () => {
         </div>
       </div>;
   }
-  return <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+  return <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5" {...pullHandlers}>
       <SEOHead
         title="Semua Properti di Indonesia"
         description="Jelajahi ribuan properti dijual dan disewa di seluruh Indonesia. Filter berdasarkan lokasi, tipe, dan harga untuk menemukan properti ideal Anda."
         keywords="properti indonesia, semua properti, jual beli properti, sewa properti indonesia"
+      />
+      <PullToRefreshIndicator
+        isPulling={isPulling}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        indicatorOpacity={indicatorOpacity}
+        indicatorRotation={indicatorRotation}
+        threshold={threshold}
       />
       {/* Sub-header with location info - fixed (reliable across scroll containers) */}
       {locationFilter && <>
