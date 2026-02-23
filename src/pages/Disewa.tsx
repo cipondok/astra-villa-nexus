@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useInfiniteProperties } from "@/hooks/useInfiniteProperties";
 import AdvancedRentalSearch from "@/components/rental/AdvancedRentalSearch";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
-import { MapPin, Home, Building, Bed, Bath, Square, Heart, Share2, Eye, Calendar, Clock, Zap, User, CheckCircle } from "lucide-react";
+import { MapPin, Home, Building, Bed, Bath, Square, Heart, Share2, Eye, Calendar, Clock, Zap, User, CheckCircle, Loader2 } from "lucide-react";
 
 interface Property {
   id: string;
@@ -58,9 +59,18 @@ interface RentalFilters {
 const Disewa = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
+
+  const {
+    properties,
+    isLoading: loading,
+    isFetchingMore,
+    hasMore,
+    sentinelRef,
+  } = useInfiniteProperties({
+    listingType: 'rent',
+    pageSize: 12,
+  });
   const [filters, setFilters] = useState<RentalFilters>({
     searchTerm: "",
     propertyType: "all",
@@ -76,34 +86,8 @@ const Disewa = () => {
     userLocation: null
   });
 
-  useEffect(() => {
-    fetchProperties();
-  }, []);
-
-  const fetchProperties = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('listing_type', 'rent')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      setProperties(data || []);
-    } catch (error) {
-      console.error('Error fetching properties:', error);
-      toast({
-        title: "Error",
-        description: "Gagal memuat properti. Silakan coba lagi.",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filteredProperties = properties.filter(property => {
+  const filteredProperties = useMemo(() => {
+    return properties.filter(property => {
     const matchesSearch = !filters.searchTerm || 
       property.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) || 
       property.location.toLowerCase().includes(filters.searchTerm.toLowerCase()) || 
@@ -145,7 +129,8 @@ const Disewa = () => {
     return matchesSearch && matchesType && matchesProvince && matchesCity && 
            matchesPriceRange && matchesRentalPeriod && matchesOnlineBooking && 
            matchesMinimumDays && matchesDateAvailability;
-  });
+    });
+  }, [properties, filters]);
 
   const formatPrice = (price: number) => {
     if (price >= 1000000) {
@@ -235,7 +220,7 @@ const Disewa = () => {
           <AdvancedRentalSearch
             filters={filters} 
             onFiltersChange={setFilters} 
-            onSearch={fetchProperties} 
+            onSearch={() => {}} 
             propertyTypes={propertyTypes} 
             cities={cities} 
             loading={loading} 
@@ -375,6 +360,19 @@ const Disewa = () => {
               );
             })}
           </div>
+        )}
+
+        {/* Infinite scroll sentinel */}
+        <div ref={sentinelRef} className="h-4" />
+        {isFetchingMore && (
+          <div className="flex justify-center py-6">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        )}
+        {!hasMore && properties.length > 0 && !loading && (
+          <p className="text-center text-sm text-muted-foreground py-6">
+            Semua properti telah ditampilkan
+          </p>
         )}
 
         {/* Rental Tips */}
