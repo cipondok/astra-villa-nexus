@@ -1,74 +1,64 @@
 
-# Add Pull-to-Refresh on Property Listing Pages
+# Add Blur-Up Lazy Loading for Property Card Images
 
 ## Overview
 
-Extract the existing pull-to-refresh logic from `Search.tsx` into a reusable hook, then apply it to the **Homepage** (Index.tsx) and **Properties page** (Properties.tsx) for mobile users.
+Add a blur-up placeholder effect to property card images across both `PropertyCard.tsx` and `ASTRAVillaPropertyCard.tsx`. When images load on slow connections, users will see a pulsing blurred placeholder that transitions smoothly to the full image once loaded.
+
+## Approach
+
+Rather than introducing a new component (the project already has `LazyImage` and `OptimizedImage`), we will add inline blur-up state directly to the two property card components. This keeps changes minimal and avoids refactoring the existing image rendering logic.
 
 ## Changes
 
-### 1. Create Reusable Hook: `usePullToRefresh`
+### 1. `src/components/PropertyCard.tsx`
 
-**New file: `src/hooks/usePullToRefresh.ts`**
+- Add `isImageLoaded` state (boolean, default `false`)
+- Wrap the existing `<img>` in a container with a blurred placeholder background
+- Add `onLoad` handler to transition from blur to sharp
+- The placeholder will be a `bg-muted animate-pulse` div with a CSS blur filter
+- On load, the image fades in with `opacity-0 -> opacity-100` transition
 
-Extract the pull-to-refresh touch logic from `Search.tsx` into a standalone hook that returns:
-- State: `isPulling`, `pullDistance`, `isRefreshing`
-- Computed: `indicatorOpacity`, `indicatorRotation`
-- Touch handlers: `onTouchStart`, `onTouchMove`, `onTouchEnd`
-- Config: accepts `onRefresh` callback, optional `threshold` (default 80px)
+### 2. `src/components/property/ASTRAVillaPropertyCard.tsx`
 
-Includes haptic feedback (`navigator.vibrate`) and resistance curve on pull distance.
-
-### 2. Create Reusable Component: `PullToRefreshIndicator`
-
-**New file: `src/components/ui/PullToRefreshIndicator.tsx`**
-
-Extract the animated indicator UI (the floating pill with spinning RefreshCw icon and status text) from `Search.tsx` into a reusable component. Uses framer-motion for enter/exit animations.
-
-Props: `isPulling`, `isRefreshing`, `pullDistance`, `indicatorOpacity`, `indicatorRotation`, `threshold`.
-
-### 3. Apply to Homepage (Index.tsx)
-
-- Import the hook and indicator component
-- Wrap the main content div with touch handlers from `usePullToRefresh`
-- The `onRefresh` callback will invalidate React Query cache for `sale-properties` and `rent-properties` query keys, triggering a refetch of both property sections
-- Show the `PullToRefreshIndicator` at the top
-- Display a toast on completion
-
-### 4. Apply to Properties Page (Properties.tsx)
-
-- Same pattern: hook + indicator + toast
-- The `onRefresh` callback will call the existing query's `refetch()`
-
-### 5. Refactor Search.tsx
-
-- Replace the inline pull-to-refresh logic with the new `usePullToRefresh` hook and `PullToRefreshIndicator` component
-- Keeps the same behavior (new property highlighting, count diff toasts) but with cleaner code
+- Same pattern: add `isImageLoaded` state
+- The image container already has `bg-muted` and `aspect-[4/3]` -- add the blur placeholder overlay and fade-in transition on the `<img>` element
+- Add `onLoad` handler alongside the existing `onError` handler
 
 ## Technical Details
 
-### Hook API
+Both components will use the same pattern:
 
-```typescript
-const {
-  isPulling, pullDistance, isRefreshing,
-  indicatorOpacity, indicatorRotation,
-  handlers // { onTouchStart, onTouchMove, onTouchEnd }
-} = usePullToRefresh({
-  onRefresh: async () => { /* refetch data */ },
-  threshold: 80
-});
+```tsx
+// New state
+const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+// In the image container:
+{/* Blur placeholder */}
+{!isImageLoaded && (
+  <div className="absolute inset-0 bg-muted animate-pulse" />
+)}
+
+{/* Image with fade-in */}
+<img
+  src={...}
+  alt={...}
+  loading="lazy"
+  onLoad={() => setIsImageLoaded(true)}
+  onError={...}
+  className={cn(
+    "w-full h-full object-cover transition-opacity duration-500",
+    isImageLoaded ? "opacity-100" : "opacity-0",
+    // existing hover classes
+  )}
+/>
 ```
 
-### Files to Create
-| File | Purpose |
-|------|---------|
-| `src/hooks/usePullToRefresh.ts` | Reusable pull-to-refresh touch logic |
-| `src/components/ui/PullToRefreshIndicator.tsx` | Animated refresh indicator UI |
+### Files Modified
 
-### Files to Modify
-| File | Changes |
-|------|---------|
-| `src/pages/Index.tsx` | Add hook + indicator + touch handlers on main container |
-| `src/pages/Properties.tsx` | Add hook + indicator + touch handlers on main container |
-| `src/pages/Search.tsx` | Refactor to use shared hook + indicator (reduces ~80 lines) |
+| File | Change |
+|------|--------|
+| `src/components/PropertyCard.tsx` | Add `isImageLoaded` state, blur placeholder div, fade-in transition on img |
+| `src/components/property/ASTRAVillaPropertyCard.tsx` | Add `isImageLoaded` state, blur placeholder div, fade-in transition on img |
+
+No new files or dependencies needed.
