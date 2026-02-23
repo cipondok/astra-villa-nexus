@@ -78,6 +78,7 @@ const Dijual = () => {
 
   const {
     properties: fetchedProperties,
+    totalCount,
     isLoading: loading,
     isFetchingMore,
     hasMore,
@@ -346,7 +347,7 @@ const Dijual = () => {
               <div>
                 <h1 className="text-base sm:text-lg md:text-xl font-bold text-foreground">Properti Dijual</h1>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  {filteredProperties.length} properti tersedia
+                  Menampilkan {filteredProperties.length}{totalCount !== null && totalCount > filteredProperties.length ? ` dari ${totalCount}+` : ''} properti
                 </p>
               </div>
             </div>
