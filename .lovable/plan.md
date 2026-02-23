@@ -1,69 +1,59 @@
 
 
-# Enhance 3D Shield Badge: Bigger Embossed Logo + 3D Multi-Color Text
+# Update "Dijual / Disewa" Price Labels Style on Property Cards
 
-## What Changes
+## Overview
 
-### 1. Make the logo much bigger and embossed on the shield
+Update the sale/rent listing type labels across all property display components with a more polished, modern style -- using gradient backgrounds, icons, and consistent design language.
 
-**File:** `src/components/ui/BrandedStatusBadge.tsx`
+## Current State
 
-- Increase `logoSize` in SIZE_MAP significantly (roughly 60-70% of shield width instead of current ~45%)
-  - xs: 10 -> 14, sm: 12 -> 18, md: 15 -> 22, lg: 18 -> 28
-- Replace the flat white filter with an **embossed effect** using SVG filters:
-  - `feMorphology` to create a slight outline/edge
-  - `feSpecularLighting` + `fePointLight` for a raised/embossed 3D look on the logo
-  - `feComposite` to blend the embossed highlight with the white logo
-- This makes the logo look stamped/pressed into the shield metal surface
-- Center the logo slightly higher (y offset adjusted) so it sits in the shield's visual center
+The "Dijual" (For Sale) and "Disewa" (For Rent) badges are styled inconsistently across components:
+- **PropertyCard**: flat `bg-chart-1` / `bg-primary` badges
+- **ASTRAVillaPropertyCard**: `bg-gold-primary` rounded-full pills
+- **DemoPropertyList**: outline badges with emoji prefixes
+- **PropertyImporter / PropertyPreview**: similar flat badges
 
-### 2. Diamond/Titanium default color scheme
+## New Label Style
 
-**File:** `src/hooks/useBadgeSettings.ts`
+A unified, premium label design:
+- **Sale ("Dijual")**: Green gradient background (`emerald-500` to `green-600`), white text, Tag icon, slight shadow, rounded-md
+- **Rent ("Disewa")**: Blue gradient background (`sky-500` to `blue-600`), white text, Key icon, slight shadow, rounded-md
+- Slightly larger padding, bold text, subtle `backdrop-blur` and `shadow-md` for depth
+- Consistent across all property card types
 
-- Update the `diamond` level default colors to a richer titanium-diamond palette:
-  - shieldColor: `#4fc3f7` (bright diamond blue)
-  - shieldLight: `#b3e5fc` (icy highlight)  
-  - shieldDark: `#01579b` (deep titanium)
-
-### 3. 3D multi-color badge text
-
-**File:** `src/components/ui/BrandedStatusBadge.tsx`
-
-- When badge text is shown, render it with a **3D multi-color gradient effect**:
-  - Use CSS `background: linear-gradient(...)` with multiple color stops matching the shield colors (light -> main -> dark)
-  - Apply `background-clip: text` + `color: transparent` for gradient text
-  - Add `text-shadow` with offset for 3D depth effect
-  - Add a subtle `drop-shadow` filter for the raised look
-- For "pill" style: keep the gradient background but make it a metallic gradient instead of flat color
-
-## Technical Details
-
-### Embossed logo SVG filter
-```xml
-<filter id="emboss">
-  <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0"/>
-  <feGaussianBlur stdDeviation="0.5" result="blur"/>
-  <feSpecularLighting surfaceScale="3" specularConstant="0.8" specularExponent="20" result="spec">
-    <fePointLight x="10" y="8" z="15"/>
-  </feSpecularLighting>
-  <feComposite in="spec" in2="SourceAlpha" operator="in" result="specOut"/>
-  <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="0.6" k4="0"/>
-</filter>
-```
-
-### 3D gradient text CSS
-```css
-background: linear-gradient(135deg, lightColor, color, darkColor);
--webkit-background-clip: text;
-color: transparent;
-text-shadow: 0px 1px 1px rgba(0,0,0,0.3);
-```
-
-### Files to modify
+## Files to Modify
 
 | File | Change |
 |------|--------|
-| `src/components/ui/BrandedStatusBadge.tsx` | Bigger logo sizes, embossed SVG filter, 3D gradient text |
-| `src/hooks/useBadgeSettings.ts` | Updated diamond/titanium default colors |
+| `src/components/property/PropertyCard.tsx` | Update sale/rent badge at lines 184-192 with gradient style + icon |
+| `src/components/property/ASTRAVillaPropertyCard.tsx` | Update listing label at lines 134-143 with matching gradient style |
+| `src/components/propertyowner/DemoPropertyList.tsx` | Update `getListingTypeText` function and badge styling to use gradient + icon instead of emoji |
+| `src/components/property/PropertyImporter.tsx` | Update badge at line 213-215 with new gradient style |
+| `src/components/property/PropertyPreview.tsx` | Update badge at line 56-57 with new gradient style |
+| `src/components/property/PropertyDetailModal.tsx` | Update forSale/forRent label rendering with matching style |
+
+## Technical Details
+
+### Shared style pattern applied to each component
+
+```tsx
+// Sale label
+<Badge className="bg-gradient-to-r from-emerald-500 to-green-600 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-md border-0 flex items-center gap-1">
+  <Tag className="h-3 w-3" />
+  Dijual
+</Badge>
+
+// Rent label
+<Badge className="bg-gradient-to-r from-sky-500 to-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-md border-0 flex items-center gap-1">
+  <Key className="h-3 w-3" />
+  Disewa
+</Badge>
+```
+
+### Per-file adjustments
+
+- **ASTRAVillaPropertyCard**: Uses `<span>` instead of `<Badge>`, will keep `<span>` but apply the same gradient classes. Size stays compact (`text-[9px]`) to fit the card overlay.
+- **DemoPropertyList**: Remove emoji from `getListingTypeText`, use icon-based gradient badges inline.
+- **PropertyPreview**: Keep `variant="outline"` removed, apply gradient directly.
 
