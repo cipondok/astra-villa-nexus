@@ -11,6 +11,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useInfiniteProperties } from "@/hooks/useInfiniteProperties";
 import AdvancedRentalSearch from "@/components/rental/AdvancedRentalSearch";
 import InlineFilterPanel from "@/components/property/InlineFilterPanel";
+import PropertyListingMapView from "@/components/property/PropertyListingMapView";
+import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { MapPin, Home, Building, Bed, Bath, Square, Heart, Share2, Eye, Calendar, Clock, Zap, User, CheckCircle, Loader2 } from "lucide-react";
 
@@ -88,6 +90,7 @@ const Disewa = () => {
     onRefresh: async () => { reset(); },
   });
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'grid' | 'map'>('grid');
   const [filters, setFilters] = useState<RentalFilters>({
     searchTerm: "",
     propertyType: "all",
@@ -250,6 +253,7 @@ const Disewa = () => {
                 </p>
               </div>
             </div>
+            <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
           </div>
         </div>
       </div>
@@ -284,8 +288,10 @@ const Disewa = () => {
       </div>
 
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
-        {/* Properties Grid */}
-        {loading ? (
+        {/* Properties Content */}
+        {viewMode === 'map' ? (
+          <PropertyListingMapView properties={filteredProperties} formatPrice={formatPrice} />
+        ) : loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="animate-pulse rounded-md overflow-hidden bg-muted h-64 sm:h-72"></div>
@@ -323,92 +329,46 @@ const Disewa = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {filteredProperties.map((property) => {
               const imageUrl = property.image_urls?.[0] || property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800';
-
               return (
                 <Card
                   key={property.id}
                   onClick={() => navigate(`/properties/${property.id}`)}
                   className="group cursor-pointer overflow-hidden border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300"
                 >
-                  {/* Image Container */}
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    <img
-                      src={imageUrl}
-                      alt={property.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    
-                    {/* Save Button */}
+                    <img src={imageUrl} alt={property.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <Button
-                      size="sm"
-                      variant="ghost"
+                      size="sm" variant="ghost"
                       className="absolute top-2 right-2 h-8 w-8 p-0 bg-background/90 hover:bg-background rounded-full shadow-md"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSaveProperty(property.id);
-                      }}
+                      onClick={(e) => { e.stopPropagation(); handleSaveProperty(property.id); }}
                     >
-                      <Heart 
-                        className={`h-4 w-4 ${savedProperties.has(property.id) ? 'fill-accent text-accent' : 'text-muted-foreground'}`}
-                      />
+                      <Heart className={`h-4 w-4 ${savedProperties.has(property.id) ? 'fill-accent text-accent' : 'text-muted-foreground'}`} />
                     </Button>
-                    
-                    {/* Badges */}
                     <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
-                      <Badge className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded">
-                        Disewa
-                      </Badge>
+                      <Badge className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded">Disewa</Badge>
                       {property.online_booking_enabled && property.booking_type !== 'owner_only' && (
                         <Badge className="bg-chart-1 text-primary-foreground text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1">
-                          <Zap className="h-3 w-3" />
-                          Online
+                          <Zap className="h-3 w-3" />Online
                         </Badge>
                       )}
                     </div>
                   </div>
-                  
-                  {/* Content */}
                   <CardContent className="p-3 sm:p-4">
-                    {/* Price */}
                     <p className="text-base sm:text-lg font-bold text-primary mb-1">
                       {formatPrice(property.price)}
                       <span className="text-xs font-normal text-muted-foreground ml-1">
                         /{getRentalPeriodLabel(property.rental_periods || ['monthly']).split(',')[0].toLowerCase()}
                       </span>
                     </p>
-                    
-                    {/* Title */}
-                    <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 mb-1">
-                      {property.title}
-                    </h3>
-                    
-                    {/* Location */}
+                    <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 mb-1">{property.title}</h3>
                     <div className="flex items-center gap-1 text-muted-foreground mb-3">
                       <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
                       <span className="text-xs sm:text-sm truncate">{property.city || property.location}</span>
                     </div>
-                    
-                    {/* Property Details */}
                     <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground border-t border-border pt-3">
-                      {property.bedrooms > 0 && (
-                        <div className="flex items-center gap-1">
-                          <Bed className="h-3.5 w-3.5" />
-                          <span>{property.bedrooms}</span>
-                        </div>
-                      )}
-                      {property.bathrooms > 0 && (
-                        <div className="flex items-center gap-1">
-                          <Bath className="h-3.5 w-3.5" />
-                          <span>{property.bathrooms}</span>
-                        </div>
-                      )}
-                      {property.area_sqm > 0 && (
-                        <div className="flex items-center gap-1">
-                          <Square className="h-3.5 w-3.5" />
-                          <span>{property.area_sqm}m²</span>
-                        </div>
-                      )}
+                      {property.bedrooms > 0 && (<div className="flex items-center gap-1"><Bed className="h-3.5 w-3.5" /><span>{property.bedrooms}</span></div>)}
+                      {property.bathrooms > 0 && (<div className="flex items-center gap-1"><Bath className="h-3.5 w-3.5" /><span>{property.bathrooms}</span></div>)}
+                      {property.area_sqm > 0 && (<div className="flex items-center gap-1"><Square className="h-3.5 w-3.5" /><span>{property.area_sqm}m²</span></div>)}
                     </div>
                   </CardContent>
                 </Card>
@@ -417,8 +377,8 @@ const Disewa = () => {
           </div>
         )}
 
-        {/* Infinite scroll sentinel */}
-        <div ref={sentinelRef} className="h-4" />
+        {/* Infinite scroll sentinel - hidden in map mode */}
+        {viewMode !== 'map' && <div ref={sentinelRef} className="h-4" />}
         {isFetchingMore && (
           <div className="flex justify-center py-6">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
