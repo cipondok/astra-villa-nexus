@@ -80,7 +80,7 @@ body {
   min-height: 100vh !important;
   min-height: -webkit-fill-available;
   overflow-x: hidden;
-  overflow-y: auto !important;
+  overflow-y: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -102,37 +102,8 @@ footer {
     overflow-x: hidden;
     position: relative;
   }
-  
-  body.scroll-locked {
-    /*
-      IMPORTANT:
-      Do NOT force `position: fixed` here.
-      On iOS, fixing the body at top:0 resets the scroll position visually,
-      which causes the map/page to “jump” when opening/closing dialogs.
-
-      We rely on the hook (and the generic modal rules below) to disable scroll
-      without changing layout/scroll position.
-    */
-    overflow: hidden !important;
-    -webkit-overflow-scrolling: auto !important;
-  }
-  
-  /* Prevent rubber-band scrolling on iOS */
-  body.scroll-locked * {
-    -webkit-overflow-scrolling: auto !important;
-  }
 }
 
-/* Lock scroll when modal is open - prevent layout shift */
-html.modal-open,
-body.modal-open,
-body.scroll-locked {
-  overflow: hidden;
-  touch-action: none;
-  overscroll-behavior: contain;
-  /* Keep scrollbar space to prevent layout shift */
-  scrollbar-gutter: stable;
-}
 
 /* Radix (react-remove-scroll) adds padding-right on body to compensate for scrollbar.
    We already reserve gutter via `scrollbar-gutter`, so that padding causes a horizontal “jump”. */
@@ -155,13 +126,6 @@ html {
   touch-action: pan-y;
 }
 
-/* Prevent body scroll when interacting with fixed popups */
-.popup-interaction-active {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
 
 #root {
   min-height: 100vh;
