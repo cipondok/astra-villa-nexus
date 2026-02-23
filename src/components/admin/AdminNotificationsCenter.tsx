@@ -1,12 +1,16 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { format, startOfDay, endOfDay, subDays, subWeeks, subMonths } from 'date-fns';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,7 +22,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Bell, CheckCheck, Trash2, Eye, AlertTriangle, Info, XCircle, Home, Building2, UserPlus, ExternalLink, ClipboardCopy, X, AlertCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Bell, CheckCheck, Trash2, Eye, AlertTriangle, Info, XCircle, Home, Building2, UserPlus, ExternalLink, ClipboardCopy, X, AlertCircle, CalendarIcon, Filter, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface AdminNotificationsCenterProps {
@@ -58,8 +63,42 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
   const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all');
   const [categoryTab, setCategoryTab] = useState<CategoryFilter>('all');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [priorityFilter, setPriorityFilter] = useState<string>('all');
+  const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
+  const [dateTo, setDateTo] = useState<Date | undefined>(undefined);
   const [deleteProgress, setDeleteProgress] = useState<{ current: number; total: number; active: boolean }>({ current: 0, total: 0, active: false });
   const queryClient = useQueryClient();
+
+  const hasActiveFilters = priorityFilter !== 'all' || dateFrom !== undefined || dateTo !== undefined;
+
+  const clearFilters = () => {
+    setPriorityFilter('all');
+    setDateFrom(undefined);
+    setDateTo(undefined);
+  };
+
+  const applyDatePreset = (preset: string) => {
+    const now = new Date();
+    switch (preset) {
+      case 'today':
+        setDateFrom(startOfDay(now));
+        setDateTo(undefined);
+        break;
+      case '7days':
+        setDateFrom(subDays(now, 7));
+        setDateTo(undefined);
+        break;
+      case '30days':
+        setDateFrom(subMonths(now, 1));
+        setDateTo(undefined);
+        break;
+      case 'custom':
+        break;
+      default:
+        setDateFrom(undefined);
+        setDateTo(undefined);
+    }
+  };
 
   // Fetch actual total and unread counts from DB using RPC (bypasses row limits)
   const { data: actualCounts = { total: 0, unread: 0 } } = useQuery({
@@ -98,7 +137,7 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
     refetchInterval: 30000,
   });
 
-  // Category counts & filtered list
+  // Category counts & filtered list (with priority + date filters applied)
   const categoryCounts = useMemo(() => {
     const counts = { all: 0, system: 0, property: 0, application: 0, other: 0 };
     notifications.forEach(n => {
@@ -109,9 +148,30 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
   }, [notifications]);
 
   const filteredNotifications = useMemo(() => {
-    if (categoryTab === 'all') return notifications;
-    return notifications.filter(n => categorize(n.type) === categoryTab);
-  }, [notifications, categoryTab]);
+    let result = notifications;
+
+    // Category filter
+    if (categoryTab !== 'all') {
+      result = result.filter(n => categorize(n.type) === categoryTab);
+    }
+
+    // Priority filter
+    if (priorityFilter !== 'all') {
+      result = result.filter(n => n.priority === priorityFilter);
+    }
+
+    // Date range filter
+    if (dateFrom) {
+      const fromTime = startOfDay(dateFrom).getTime();
+      result = result.filter(n => new Date(n.created_at).getTime() >= fromTime);
+    }
+    if (dateTo) {
+      const toTime = endOfDay(dateTo).getTime();
+      result = result.filter(n => new Date(n.created_at).getTime() <= toTime);
+    }
+
+    return result;
+  }, [notifications, categoryTab, priorityFilter, dateFrom, dateTo]);
 
   // Mark as read mutation
   const markAsReadMutation = useMutation({
@@ -492,7 +552,97 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
             </TabsList>
           </Tabs>
 
-          {/* Category tabs */}
+          {/* Date range & priority filters */}
+          <div className="flex flex-wrap items-center gap-3 mb-4 p-3 rounded-lg bg-muted/30 border border-border/30">
+            <div className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
+              <Filter className="h-4 w-4" />
+              Filters
+            </div>
+
+            {/* Priority filter */}
+            <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+              <SelectTrigger className="w-[140px] h-8 text-xs">
+                <SelectValue placeholder="Priority" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Priorities</SelectItem>
+                <SelectItem value="critical">Critical</SelectItem>
+                <SelectItem value="high">High</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="low">Low</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Date presets */}
+            <Select onValueChange={applyDatePreset} value={dateFrom ? 'custom' : 'any'}>
+              <SelectTrigger className="w-[130px] h-8 text-xs">
+                <SelectValue placeholder="Date range" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="any">Any Time</SelectItem>
+                <SelectItem value="today">Today</SelectItem>
+                <SelectItem value="7days">Last 7 Days</SelectItem>
+                <SelectItem value="30days">Last 30 Days</SelectItem>
+                <SelectItem value="custom">Custom Range</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Custom date from */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className={cn("h-8 text-xs gap-1.5", !dateFrom && "text-muted-foreground")}>
+                  <CalendarIcon className="h-3.5 w-3.5" />
+                  {dateFrom ? format(dateFrom, 'MMM d, yyyy') : 'From'}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={dateFrom}
+                  onSelect={setDateFrom}
+                  disabled={(date) => date > new Date()}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+
+            {/* Custom date to */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className={cn("h-8 text-xs gap-1.5", !dateTo && "text-muted-foreground")}>
+                  <CalendarIcon className="h-3.5 w-3.5" />
+                  {dateTo ? format(dateTo, 'MMM d, yyyy') : 'To'}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={dateTo}
+                  onSelect={setDateTo}
+                  disabled={(date) => date > new Date() || (dateFrom ? date < dateFrom : false)}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+
+            {/* Clear filters */}
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8 text-xs gap-1.5">
+                <RotateCcw className="h-3.5 w-3.5" />
+                Clear
+              </Button>
+            )}
+
+            {/* Filtered count indicator */}
+            {hasActiveFilters && (
+              <Badge variant="secondary" className="text-xs ml-auto">
+                {filteredNotifications.length} matching
+              </Badge>
+            )}
+          </div>
+
           <Tabs value={categoryTab} onValueChange={handleCategoryChange}>
             <TabsList className="mb-4">
               {(['all', 'system', 'property', 'application', 'other'] as CategoryFilter[]).map(cat => (
