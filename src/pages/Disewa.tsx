@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useInfiniteProperties } from "@/hooks/useInfiniteProperties";
 import AdvancedRentalSearch from "@/components/rental/AdvancedRentalSearch";
+import InlineFilterPanel from "@/components/property/InlineFilterPanel";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { MapPin, Home, Building, Bed, Bath, Square, Heart, Share2, Eye, Calendar, Clock, Zap, User, CheckCircle, Loader2 } from "lucide-react";
 
@@ -56,6 +57,10 @@ interface RentalFilters {
     lat: number;
     lng: number;
   } | null;
+  bedrooms: string;
+  bathrooms: string;
+  minPrice: number;
+  maxPrice: number;
 }
 
 const Disewa = () => {
@@ -82,6 +87,7 @@ const Disewa = () => {
   } = usePullToRefresh({
     onRefresh: async () => { reset(); },
   });
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<RentalFilters>({
     searchTerm: "",
     propertyType: "all",
@@ -94,7 +100,11 @@ const Disewa = () => {
     onlineBookingOnly: false,
     minimumDays: 0,
     nearMe: false,
-    userLocation: null
+    userLocation: null,
+    bedrooms: "all",
+    bathrooms: "all",
+    minPrice: 0,
+    maxPrice: 100_000_000,
   });
 
   const filteredProperties = useMemo(() => {
@@ -129,6 +139,16 @@ const Disewa = () => {
       }
     }
 
+    // Slider-based price filter
+    const price = property.price || 0;
+    const matchesSliderPrice = price >= filters.minPrice && price <= filters.maxPrice;
+
+    const matchesBedrooms = !filters.bedrooms || filters.bedrooms === "all" ||
+      (filters.bedrooms === "5+" ? property.bedrooms >= 5 : property.bedrooms === parseInt(filters.bedrooms));
+
+    const matchesBathrooms = !filters.bathrooms || filters.bathrooms === "all" ||
+      (filters.bathrooms === "4+" ? property.bathrooms >= 4 : property.bathrooms === parseInt(filters.bathrooms));
+
     const matchesRentalPeriod = filters.rentalPeriod.length === 0 || 
       (property.rental_periods && property.rental_periods.some(period => filters.rentalPeriod.includes(period)));
     const matchesOnlineBooking = !filters.onlineBookingOnly || 
@@ -138,7 +158,8 @@ const Disewa = () => {
     const matchesDateAvailability = !filters.checkInDate || !filters.checkOutDate || true;
 
     return matchesSearch && matchesType && matchesProvince && matchesCity && 
-           matchesPriceRange && matchesRentalPeriod && matchesOnlineBooking && 
+           matchesPriceRange && matchesSliderPrice && matchesBedrooms && matchesBathrooms &&
+           matchesRentalPeriod && matchesOnlineBooking && 
            matchesMinimumDays && matchesDateAvailability;
     });
   }, [properties, filters]);
@@ -235,14 +256,29 @@ const Disewa = () => {
 
       {/* Search Panel */}
       <div className="bg-secondary/50 border-b border-border">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 space-y-3">
           <AdvancedRentalSearch
             filters={filters} 
-            onFiltersChange={setFilters} 
+            onFiltersChange={(f: any) => setFilters(prev => ({ ...prev, ...f }))} 
             onSearch={() => {}} 
             propertyTypes={propertyTypes} 
             cities={cities} 
             loading={loading} 
+          />
+          <InlineFilterPanel
+            filters={{
+              propertyType: filters.propertyType,
+              minPrice: filters.minPrice,
+              maxPrice: filters.maxPrice,
+              bedrooms: filters.bedrooms,
+              bathrooms: filters.bathrooms,
+            }}
+            onFiltersChange={(updates) => setFilters(prev => ({ ...prev, ...updates }))}
+            propertyTypes={propertyTypes}
+            maxPriceLimit={100_000_000}
+            priceStep={500_000}
+            isOpen={isFilterOpen}
+            onToggle={() => setIsFilterOpen(!isFilterOpen)}
           />
         </div>
       </div>

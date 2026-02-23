@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import PropertySidebarFilters from "@/components/property/PropertySidebarFilters";
+import InlineFilterPanel from "@/components/property/InlineFilterPanel";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { 
   MapPin, 
@@ -347,15 +347,7 @@ const Dijual = () => {
                 </p>
               </div>
             </div>
-            <Button 
-              size="sm"
-              variant={isFilterOpen ? "default" : "outline"}
-              className="h-9 px-4 text-sm font-medium rounded-md"
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-            >
-              <SlidersHorizontal className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
+            {/* Filter button moved to InlineFilterPanel */}
           </div>
         </div>
       </div>
@@ -397,17 +389,24 @@ const Dijual = () => {
         </div>
       </div>
 
-      {/* Advanced Filters Sidebar */}
-      <PropertySidebarFilters
-        filters={filters}
-        onFiltersChange={setFilters}
-        onSearch={() => {}}
-        propertyTypes={propertyTypes}
-        cities={cities}
-        areas={areas}
-        isOpen={isFilterOpen}
-        onToggle={() => setIsFilterOpen(!isFilterOpen)}
-      />
+      {/* Inline Filter Panel */}
+      <div className="px-3 sm:px-4 py-2">
+        <InlineFilterPanel
+          filters={{
+            propertyType: filters.propertyType,
+            minPrice: filters.minPrice,
+            maxPrice: filters.maxPrice,
+            bedrooms: filters.bedrooms,
+            bathrooms: filters.bathrooms,
+          }}
+          onFiltersChange={(updates) => setFilters(prev => ({ ...prev, ...updates }))}
+          propertyTypes={propertyTypes}
+          maxPriceLimit={10_000_000_000}
+          priceStep={100_000_000}
+          isOpen={isFilterOpen}
+          onToggle={() => setIsFilterOpen(!isFilterOpen)}
+        />
+      </div>
 
       {/* Properties Grid */}
       <div className="p-3 sm:p-4 md:p-6">
