@@ -1,52 +1,47 @@
 
-# Add Sort Dropdown to Property Listing Pages
+
+# Add Saved/Favorite Properties Page
 
 ## Overview
 
-Add a sort dropdown next to the view mode toggle on both `/dijual` and `/disewa` pages. Dijual already has sorting logic in its `useMemo` -- it just needs a visible UI control. Disewa needs both the UI and the sorting logic.
+The backend infrastructure is already in place: a `favorites` table in Supabase, and a `useFavorites` hook that handles toggling. The `/saved` page currently only shows an empty state. This plan upgrades it to fetch and display the user's saved properties using the existing `CompactPropertyCard` component.
 
 ## Changes
 
-### 1. Edit `src/pages/Dijual.tsx`
+### 1. Edit `src/pages/Saved.tsx`
 
-- Add a `Select` dropdown between the property count text and the `PropertyViewModeToggle`
-- Options: Terbaru (newest, default), Terlama (oldest), Harga Terendah (price low), Harga Tertinggi (price high), Terpopuler (popular)
-- Bind it to `filters.sortBy` via `updateFilter('sortBy', value)`
-- Add "popular" case to the existing sort switch (sort by `views` or `click_count` if available, otherwise keep original order)
+Replace the static empty-state-only page with a fully functional saved properties page:
 
-### 2. Edit `src/pages/Disewa.tsx`
+- **Fetch saved properties**: Query `favorites` table joined with `properties` table using Supabase, ordered by `created_at` descending (most recently saved first)
+- **Loading state**: Show skeleton cards while data loads
+- **Display properties**: Render saved properties using `CompactPropertyCard` in a responsive grid (same layout as `/dijual`)
+- **Unsave action**: Wire the heart button on each card to `useFavorites.toggleFavorite()` so users can remove properties directly from this page; on successful removal, remove the card from the list with an optimistic update
+- **Empty state**: Keep the existing empty state UI for when the user has no saved properties
+- **Count indicator**: Show "N properti tersimpan" header text
 
-- Add `sortBy: string` to the `RentalFilters` interface (default `'newest'`)
-- Add sorting logic to the `filteredProperties` useMemo (same switch as Dijual)
-- Add a `Select` dropdown in the header, same placement as Dijual
+### 2. No database changes needed
 
-### Layout
-
-The sort dropdown sits between the title/count and the view toggle:
-
-```text
-[Title + count]  [Sort: Terbaru v]  [Grid | Map]
-```
-
-On mobile, the sort dropdown collapses to a smaller width.
+The `favorites` table already has a foreign key to `properties` and supports the required join query. RLS policies are already in place (user can only read/write their own favorites).
 
 ## Technical Details
 
-Sort options (shared between both pages):
+Query approach:
+```sql
+-- Supabase JS equivalent
+supabase
+  .from('favorites')
+  .select('id, property_id, created_at, properties(*)')
+  .eq('user_id', user.id)
+  .order('created_at', { ascending: false })
+```
 
-| Value | Label | Sort Logic |
-|-------|-------|------------|
-| `newest` | Terbaru | `created_at` descending |
-| `oldest` | Terlama | `created_at` ascending |
-| `price_low` | Harga Terendah | `price` ascending |
-| `price_high` | Harga Tertinggi | `price` descending |
-| `popular` | Terpopuler | `views` descending (fallback to original order) |
+This returns the full property data for each favorited item in a single query. The property data maps directly to the `CompactProperty` interface used by `CompactPropertyCard`.
 
-No new components or dependencies needed -- uses the existing `Select` component already imported in both pages.
+The page will use `useQuery` from TanStack React Query (matching the pattern in `useUserDashboardData`) with a `queryKey` of `['saved-properties', user.id]` and invalidate on toggle.
 
 ## Files
 
 | File | Action |
 |------|--------|
-| `src/pages/Dijual.tsx` | Edit -- add sort dropdown in header, add "popular" and "oldest" sort cases |
-| `src/pages/Disewa.tsx` | Edit -- add `sortBy` to filters, add sort dropdown in header, add sorting logic to useMemo |
+| `src/pages/Saved.tsx` | Edit -- add data fetching, property grid, unsave functionality |
+
