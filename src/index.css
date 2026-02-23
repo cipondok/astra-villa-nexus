@@ -145,12 +145,7 @@ html {
   scrollbar-gutter: stable;
 }
 
-/* Prevent layout shifts during filter interactions */
-.filter-popup-open {
-  overflow: hidden !important;
-  overscroll-behavior: none !important;
-  touch-action: none !important;
-}
+
 
 /* Scroll containment for popups and modals */
 [data-scroll-container="true"],

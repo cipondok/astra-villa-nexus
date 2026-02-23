@@ -169,18 +169,6 @@ const AstraSearchPanel = ({
   // Lock scroll when advanced filters popup is open to prevent page jumping
   useScrollLock(showAdvancedFilters);
   
-  // Add/remove body class for popup interaction - prevents scroll chaining
-  useEffect(() => {
-    if (showAdvancedFilters) {
-      document.body.classList.add('filter-popup-open');
-      document.documentElement.style.setProperty('--scroll-position', `-${window.scrollY}px`);
-    } else {
-      document.body.classList.remove('filter-popup-open');
-    }
-    return () => {
-      document.body.classList.remove('filter-popup-open');
-    };
-  }, [showAdvancedFilters]);
 
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -3535,7 +3523,7 @@ const AstraSearchPanel = ({
             className={cn(
               "fixed z-[99999] rounded-2xl shadow-2xl flex flex-col",
               "bg-popover/95 backdrop-blur-2xl border border-border/40",
-              "touch-none select-none",
+              "touch-auto select-none",
               // Mobile: full-width with margins
               "inset-x-2 top-14 bottom-3",
               // Tablet (sm): slightly more padding
