@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, Clock, Calendar, TrendingUp, MessageSquare, ScanEye, Tag, Percent } from 'lucide-react';
 import PropertyDetailModal from './PropertyDetailModal';
+import PropertyComparisonButton from './PropertyComparisonButton';
 import PropertyImageCarousel from './PropertyImageCarousel';
 import Property3DViewModal from './Property3DViewModal';
 import PropertyRatingDisplay from './PropertyRatingDisplay';
@@ -269,6 +270,7 @@ const CompactPropertyCard = ({
             >
               <Share2 className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
             </Button>
+            <PropertyComparisonButton property={convertedProperty} />
           </div>
 
           {/* Bottom Overlay - Property Info on Image */}

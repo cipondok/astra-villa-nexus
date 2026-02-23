@@ -118,6 +118,7 @@ const BlockchainVerification = lazy(() => import('@/pages/BlockchainVerification
 const MediaHub = lazy(() => import('@/pages/MediaHub'));
 const AgentDirectory = lazy(() => import('@/pages/AgentDirectory'));
 const AgentRegistration = lazy(() => import('@/pages/AgentRegistration'));
+const PropertyComparison = lazy(() => import('@/pages/PropertyComparison'));
 
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
@@ -278,6 +279,7 @@ const AppContent = () => {
             <Route path="/cari-agen" element={<AgentDirectory />} />
             <Route path="/agent-registration" element={<AgentRegistration />} />
             <Route path="/daftar-agen" element={<AgentRegistration />} />
+            <Route path="/property-comparison" element={<PropertyComparison />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Suspense>
@@ -409,6 +411,9 @@ function App() {
                         <NotificationProvider>
                           <PropertyComparisonProvider>
                             <AppContent />
+                            <Suspense fallback={null}>
+                              {React.createElement(lazy(() => import('@/components/property/PropertyComparisonPanel')))}
+                            </Suspense>
                             <Toaster />
                             <Sonner />
                             <CookieSystem />
