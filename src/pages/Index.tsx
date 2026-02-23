@@ -526,19 +526,31 @@ const Index = () => {
               height: `clamp(${heroConfig?.sliderMinHeight || 400}px, 60vw, ${heroConfig?.sliderMaxHeight || 650}px)` 
             }}
           >
-            {bannerImages.map((banner, index) => (
-              <img 
+          {bannerImages.map((banner, index) => (
+              <div
                 key={index}
-                src={banner} 
-                alt={`Astra Villa - Indonesia's Smart Property Platform ${index + 1}`} 
                 className={cn(
-                  "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out",
+                  "absolute inset-0 transition-opacity duration-[1500ms] ease-in-out",
                   currentSlide === index ? "opacity-100 z-10" : "opacity-0 z-0"
                 )}
-              />
+              >
+                <img 
+                  src={banner} 
+                  alt={`Astra Villa - Indonesia's Smart Property Platform ${index + 1}`} 
+                  className={cn(
+                    "w-full h-full object-cover",
+                    currentSlide === index ? "animate-ken-burns" : ""
+                  )}
+                />
+              </div>
             ))}
-            {/* Dark overlay for readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/60 z-20 pointer-events-none" />
+            {/* Cinematic overlay for depth */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70 z-20 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/10 z-20 pointer-events-none" />
+            {/* Shimmer light effect */}
+            <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+              <div className="absolute -inset-full animate-shimmer-slide bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12" />
+            </div>
             
             {/* Slide indicators */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
