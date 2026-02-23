@@ -1,95 +1,74 @@
 
-
-# Improve Mobile Responsive Layout for Property Cards
+# Add Pull-to-Refresh on Property Listing Pages
 
 ## Overview
 
-Optimize grid spacing, card sizes, and touch targets across all property card components for better mobile usability.
+Extract the existing pull-to-refresh logic from `Search.tsx` into a reusable hook, then apply it to the **Homepage** (Index.tsx) and **Properties page** (Properties.tsx) for mobile users.
 
 ## Changes
 
-### 1. Grid Spacing and Section Padding
+### 1. Create Reusable Hook: `usePullToRefresh`
 
-**Files: `PropertiesForSaleSection.tsx`, `PropertiesForRentSection.tsx`**
+**New file: `src/hooks/usePullToRefresh.ts`**
 
-- Section padding: Change `p-3` to `px-2 py-3 sm:p-3` -- tighter horizontal padding on mobile to maximize card width
-- Grid gap: Change `gap-2 sm:gap-3` to `gap-1.5 sm:gap-3` -- slightly tighter gap on mobile so cards get more room
-- Grid columns stay at `grid-cols-2` on mobile (good use of space)
+Extract the pull-to-refresh touch logic from `Search.tsx` into a standalone hook that returns:
+- State: `isPulling`, `pullDistance`, `isRefreshing`
+- Computed: `indicatorOpacity`, `indicatorRotation`
+- Touch handlers: `onTouchStart`, `onTouchMove`, `onTouchEnd`
+- Config: accepts `onRefresh` callback, optional `threshold` (default 80px)
 
-**File: `PropertyCardSkeleton.tsx`**
+Includes haptic feedback (`navigator.vibrate`) and resistance curve on pull distance.
 
-- Match the same grid gap: `gap-1.5 sm:gap-3`
+### 2. Create Reusable Component: `PullToRefreshIndicator`
 
-### 2. Touch Target Improvements
+**New file: `src/components/ui/PullToRefreshIndicator.tsx`**
 
-**Files: `ASTRAVillaPropertyCard.tsx`, `PropertiesForSaleSection.tsx`, `PropertiesForRentSection.tsx`**
+Extract the animated indicator UI (the floating pill with spinning RefreshCw icon and status text) from `Search.tsx` into a reusable component. Uses framer-motion for enter/exit animations.
 
-All interactive elements on cards need minimum 44px touch targets on mobile:
+Props: `isPulling`, `isRefreshing`, `pullDistance`, `indicatorOpacity`, `indicatorRotation`, `threshold`.
 
-- Heart button in ASTRAVillaPropertyCard: Change `h-7 w-7` (28px) to `h-8 w-8 sm:h-7 sm:w-7` -- larger on mobile, compact on desktop
-- Heart icon: Change `h-3.5 w-3.5` to `h-4 w-4 sm:h-3.5 sm:w-3.5`
-- Entire card already has `cursor-pointer` and acts as a touch target (good)
+### 3. Apply to Homepage (Index.tsx)
 
-### 3. Card Content Mobile Optimization
+- Import the hook and indicator component
+- Wrap the main content div with touch handlers from `usePullToRefresh`
+- The `onRefresh` callback will invalidate React Query cache for `sale-properties` and `rent-properties` query keys, triggering a refetch of both property sections
+- Show the `PullToRefreshIndicator` at the top
+- Display a toast on completion
 
-**Files: `PropertiesForSaleSection.tsx`, `PropertiesForRentSection.tsx`**
+### 4. Apply to Properties Page (Properties.tsx)
 
-- Content padding: Change `p-2.5` to `p-2 sm:p-2.5` -- slightly tighter on mobile
-- Price container padding: Change `px-2.5 py-2` to `px-2 py-1.5 sm:px-2.5 sm:py-2`
-- Monthly estimate badge: Hide on mobile to reduce clutter -- add `hidden sm:inline` to the monthly payment span
-- Spec labels (KT, KM): Keep visible but ensure they wrap cleanly with `flex-wrap` (already present)
+- Same pattern: hook + indicator + toast
+- The `onRefresh` callback will call the existing query's `refetch()`
 
-**File: `ASTRAVillaPropertyCard.tsx`**
+### 5. Refactor Search.tsx
 
-- Content padding: Change `p-3` to `p-2 sm:p-3`
-- Price container: Change `px-2.5 py-2` to `px-2 py-1.5 sm:px-2.5 sm:py-2`
-- Monthly estimate: Add `hidden sm:inline` to hide on small screens
+- Replace the inline pull-to-refresh logic with the new `usePullToRefresh` hook and `PullToRefreshIndicator` component
+- Keeps the same behavior (new property highlighting, count diff toasts) but with cleaner code
 
-### 4. PropertySlideSection Mobile Grid Fix
+## Technical Details
 
-**File: `PropertySlideSection.tsx`**
+### Hook API
 
-The `card-grid` class forces 1 column on mobile via CSS override, wasting space. Fix the slide layout for mobile:
+```typescript
+const {
+  isPulling, pullDistance, isRefreshing,
+  indicatorOpacity, indicatorRotation,
+  handlers // { onTouchStart, onTouchMove, onTouchEnd }
+} = usePullToRefresh({
+  onRefresh: async () => { /* refetch data */ },
+  threshold: 80
+});
+```
 
-- Loading skeleton: Change from `card-grid gap-4` to `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4`
-- Slide grid: Change from `card-grid gap-4` to `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4`
-- This bypasses the CSS override that forces 1 column and gives a cleaner responsive layout
-
-### 5. SimilarProperties Mobile Grid
-
-**File: `SimilarProperties.tsx`**
-
-- Grid: `grid-cols-2 lg:grid-cols-3` is already good
-- Gap: Change `gap-2 sm:gap-3` -- already good, no changes needed
-
-### 6. Mobile CSS Override Cleanup
-
-**File: `src/styles/mobile-optimizations.css`**
-
-- The `.mobile-app-layout .card-grid` override forces `grid-template-columns: 1fr !important` which breaks multi-column layouts. Since PropertySlideSection will use explicit grid classes instead, this override should be updated to `repeat(2, 1fr)` to allow 2 columns on mobile for card grids.
-
----
-
-## Technical Summary
-
-| Area | Current | Updated |
-|------|---------|---------|
-| Section padding | `p-3` | `px-2 py-3 sm:p-3` |
-| Grid gap (Sale/Rent) | `gap-2 sm:gap-3` | `gap-1.5 sm:gap-3` |
-| Heart button size | `h-7 w-7` (28px) | `h-8 w-8 sm:h-7 sm:w-7` |
-| Card content padding | `p-2.5` / `p-3` | `p-2 sm:p-2.5` / `p-2 sm:p-3` |
-| Price padding | `px-2.5 py-2` | `px-2 py-1.5 sm:px-2.5 sm:py-2` |
-| Monthly estimate | Always visible | `hidden sm:inline` on mobile |
-| Slide section grid | `card-grid` (1col mobile) | Explicit `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` |
-| Mobile CSS card-grid | `1fr !important` | `repeat(2, 1fr) !important` |
+### Files to Create
+| File | Purpose |
+|------|---------|
+| `src/hooks/usePullToRefresh.ts` | Reusable pull-to-refresh touch logic |
+| `src/components/ui/PullToRefreshIndicator.tsx` | Animated refresh indicator UI |
 
 ### Files to Modify
-
 | File | Changes |
 |------|---------|
-| `src/components/property/PropertiesForSaleSection.tsx` | Padding, gap, touch targets, content density |
-| `src/components/property/PropertiesForRentSection.tsx` | Padding, gap, touch targets, content density |
-| `src/components/property/ASTRAVillaPropertyCard.tsx` | Touch targets, content padding, hide monthly on mobile |
-| `src/components/property/PropertySlideSection.tsx` | Replace card-grid with explicit responsive grid |
-| `src/components/property/PropertyCardSkeleton.tsx` | Match updated grid gap |
-| `src/styles/mobile-optimizations.css` | Update card-grid mobile override to 2 columns |
+| `src/pages/Index.tsx` | Add hook + indicator + touch handlers on main container |
+| `src/pages/Properties.tsx` | Add hook + indicator + touch handlers on main container |
+| `src/pages/Search.tsx` | Refactor to use shared hook + indicator (reduces ~80 lines) |
