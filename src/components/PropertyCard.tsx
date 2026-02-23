@@ -47,6 +47,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const getTypeColor = (type: string) => {
      switch (type) {
@@ -127,11 +128,16 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   return (
     <>
       <Card className="group cursor-pointer transition-all duration-300 hover:scale-[1.02] border bg-card/50 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/10 hover:border-primary/30" onClick={handleViewDetails}>
-        <div className="relative overflow-hidden rounded-t-lg">
+        <div className="relative overflow-hidden rounded-t-lg bg-muted">
+          {!isImageLoaded && (
+            <div className="absolute inset-0 bg-muted animate-pulse" />
+          )}
           <img
             src={property.image}
             alt={property.title}
-            className="w-full h-28 md:h-32 object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+            onLoad={() => setIsImageLoaded(true)}
+            className={`w-full h-28 md:h-32 object-cover group-hover:scale-105 transition-all duration-500 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           />
           
           {/* Status Badge */}

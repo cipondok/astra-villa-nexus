@@ -42,6 +42,7 @@ const ASTRAVillaPropertyCard = ({
 }: ASTRAVillaPropertyCardProps) => {
   const [isLiked, setIsLiked] = useState(isSaved);
   const [imageError, setImageError] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const navigate = useNavigate();
   const { getPropertyImage } = useDefaultPropertyImage();
 
@@ -119,11 +120,18 @@ const ASTRAVillaPropertyCard = ({
     >
       {/* Image Container */}
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+        {!isImageLoaded && (
+          <div className="absolute inset-0 bg-muted animate-pulse" />
+        )}
         <img
           src={getImageUrl()}
           alt={property.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+          className={cn(
+            "w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out",
+            isImageLoaded ? "opacity-100" : "opacity-0"
+          )}
           loading="lazy"
+          onLoad={() => setIsImageLoaded(true)}
           onError={() => setImageError(true)}
         />
 
