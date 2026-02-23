@@ -109,9 +109,9 @@ const ASTRAVillaPropertyCard = ({
     <Card
       className={cn(
         "group relative overflow-hidden rounded-xl",
-        "bg-card/60 backdrop-blur-xl",
-        "border border-gold-primary/15 hover:border-gold-primary/40",
-        "shadow-sm hover:shadow-xl hover:shadow-gold-primary/10",
+        "bg-card backdrop-blur-xl",
+        "border border-border hover:border-primary/40",
+        "shadow-sm hover:shadow-xl hover:shadow-primary/10",
         "hover:-translate-y-1 transition-all duration-500 ease-out cursor-pointer",
         className
       )}
@@ -127,7 +127,7 @@ const ASTRAVillaPropertyCard = ({
           onError={() => setImageError(true)}
         />
 
-        {/* Gradient overlay */}
+      {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
 
         {/* Top Row */}
@@ -141,7 +141,7 @@ const ASTRAVillaPropertyCard = ({
             <ListingIcon className="h-2.5 w-2.5" />
             {getListingLabel(property.listing_type)}
           </span>
-          <span className="flex items-center gap-0.5 bg-background/30 backdrop-blur-md text-foreground/90 text-[9px] px-1.5 py-0.5 rounded-full">
+          <span className="flex items-center gap-0.5 bg-black/40 backdrop-blur-md text-white text-[9px] px-1.5 py-0.5 rounded-full">
             <Building className="h-2.5 w-2.5" />
             {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : "Property"}
           </span>
@@ -153,18 +153,18 @@ const ASTRAVillaPropertyCard = ({
           size="icon"
           className={cn(
             "absolute top-9 right-2 h-7 w-7 rounded-full",
-            "bg-background/20 backdrop-blur-md hover:bg-background/40 border border-primary-foreground/10",
+            "bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20",
             "transition-all duration-200",
-            isLiked && "bg-destructive/30 border-destructive/30"
+            isLiked && "bg-destructive/40 border-destructive/40"
           )}
           onClick={handleLike}
         >
-          <Heart className={cn("h-3.5 w-3.5 transition-colors", isLiked ? "fill-destructive text-destructive" : "text-primary-foreground/80")} />
+          <Heart className={cn("h-3.5 w-3.5 transition-colors", isLiked ? "fill-destructive text-destructive" : "text-white/90")} />
         </Button>
 
         {/* Image Count Badge */}
         {imageCount > 1 && (
-          <div className="absolute bottom-2 right-2 flex items-center gap-0.5 bg-background/30 backdrop-blur-md text-foreground text-[9px] px-1.5 py-0.5 rounded-full">
+          <div className="absolute bottom-2 right-2 flex items-center gap-0.5 bg-black/40 backdrop-blur-md text-white text-[9px] px-1.5 py-0.5 rounded-full">
             <Camera className="h-2.5 w-2.5" />
             <span>{imageCount}</span>
           </div>
@@ -173,10 +173,10 @@ const ASTRAVillaPropertyCard = ({
         {/* View Icon on Hover */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
           <div className={cn(
-            "h-10 w-10 rounded-full bg-gold-primary/90 backdrop-blur-sm flex items-center justify-center",
-            "shadow-lg shadow-gold-primary/30 scale-75 group-hover:scale-100 transition-transform duration-300"
+            "h-10 w-10 rounded-full bg-primary/90 backdrop-blur-sm flex items-center justify-center",
+            "shadow-lg shadow-primary/30 scale-75 group-hover:scale-100 transition-transform duration-300"
           )}>
-            <Eye className="h-4.5 w-4.5 text-background" />
+            <Eye className="h-4.5 w-4.5 text-white" />
           </div>
         </div>
       </div>
