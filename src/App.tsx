@@ -261,8 +261,8 @@ const AppContent = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/help" element={<Help />} />
             <Route path="/support" element={<Contact />} />
-            <Route path="/investor/wni" element={<WNIPage />} />
-            <Route path="/investor/wna" element={<WNAPage />} />
+            <Route path="/investor/wni" element={<Navigate to="/foreign-investment?section=wni" replace />} />
+            <Route path="/investor/wna" element={<Navigate to="/foreign-investment?section=wna" replace />} />
             <Route path="/verification" element={<VerificationCenter />} />
             <Route path="/verification-center" element={<VerificationCenter />} />
             <Route path="/ai-content-generator" element={<AIContentGenerator />} />
