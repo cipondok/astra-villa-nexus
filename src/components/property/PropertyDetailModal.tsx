@@ -121,11 +121,11 @@ const PropertyDetailModal = ({
       />
       
       {/* Modal Content */}
-      <div className="relative w-[95%] max-w-7xl h-[95vh] bg-card/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-gold-primary/10 border border-gold-primary/15 overflow-hidden animate-in fade-in-0 scale-in-95 duration-300 z-[10002]"
+      <div className="relative w-[95%] max-w-7xl h-[95vh] bg-card/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-lg border border-border overflow-hidden animate-in fade-in-0 scale-in-95 duration-300 z-[10002]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gold-primary/15">
+        <div className="flex items-center justify-between p-6 border-b border-border">
           <Button
             onClick={handleBackToHome}
             variant="outline"
@@ -178,19 +178,19 @@ const PropertyDetailModal = ({
                     <>
                       <button
                         onClick={() => handleImageNavigation('prev')}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/60 backdrop-blur-sm text-foreground p-3 rounded-full hover:bg-background/80 transition-all"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 backdrop-blur-md text-white p-3 rounded-full hover:bg-black/60 transition-all"
                       >
                         ←
                       </button>
                       <button
                         onClick={() => handleImageNavigation('next')}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/60 backdrop-blur-sm text-foreground p-3 rounded-full hover:bg-background/80 transition-all"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 backdrop-blur-md text-white p-3 rounded-full hover:bg-black/60 transition-all"
                       >
                         →
                       </button>
                       
                       {/* Image Counter */}
-                      <div className="absolute bottom-4 right-4 bg-background/60 backdrop-blur-sm text-foreground px-3 py-1 rounded-full text-sm">
+                      <div className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-md text-white px-3 py-1 rounded-full text-sm">
                         {currentImageIndex + 1} / {imageUrls.length}
                       </div>
                     </>
@@ -213,7 +213,7 @@ const PropertyDetailModal = ({
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
                         className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                          index === currentImageIndex ? 'border-gold-primary' : 'border-transparent'
+                          index === currentImageIndex ? 'border-primary' : 'border-transparent'
                         }`}
                       >
                         <img src={url} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
@@ -227,7 +227,7 @@ const PropertyDetailModal = ({
               <div>
                 <h1 className="text-3xl lg:text-4xl font-bold mb-3">{property.title}</h1>
                 <div className="flex items-center justify-between mb-4">
-                  <div className="text-4xl font-bold text-gold-primary">
+                  <div className="text-4xl font-bold text-primary">
                     {formatPrice(property.price)}
                     {property.listing_type === 'rent' && (
                       <span className="text-xl font-normal text-muted-foreground">/month</span>
@@ -243,29 +243,29 @@ const PropertyDetailModal = ({
               {/* Property Stats Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {property.bedrooms && (
-                  <div className="text-center p-4 bg-gold-primary/5 border border-gold-primary/10 rounded-xl">
-                    <Bed className="h-8 w-8 text-gold-primary mx-auto mb-2" />
+                  <div className="text-center p-4 bg-primary/5 border border-primary/10 rounded-xl">
+                    <Bed className="h-8 w-8 text-primary mx-auto mb-2" />
                     <div className="text-2xl font-bold">{property.bedrooms}</div>
                     <div className="text-sm text-muted-foreground">{currentText.bedrooms}</div>
                   </div>
                 )}
                 {property.bathrooms && (
-                  <div className="text-center p-4 bg-gold-primary/5 border border-gold-primary/10 rounded-xl">
-                    <Bath className="h-8 w-8 text-gold-primary mx-auto mb-2" />
+                  <div className="text-center p-4 bg-primary/5 border border-primary/10 rounded-xl">
+                    <Bath className="h-8 w-8 text-primary mx-auto mb-2" />
                     <div className="text-2xl font-bold">{property.bathrooms}</div>
                     <div className="text-sm text-muted-foreground">{currentText.bathrooms}</div>
                   </div>
                 )}
                 {property.area_sqm && (
-                  <div className="text-center p-4 bg-gold-primary/5 border border-gold-primary/10 rounded-xl">
-                    <Square className="h-8 w-8 text-gold-primary mx-auto mb-2" />
+                  <div className="text-center p-4 bg-primary/5 border border-primary/10 rounded-xl">
+                    <Square className="h-8 w-8 text-primary mx-auto mb-2" />
                     <div className="text-2xl font-bold">{property.area_sqm}</div>
                     <div className="text-sm text-muted-foreground">{currentText.area}</div>
                   </div>
                 )}
                 {property.property_features?.parking && (
-                  <div className="text-center p-4 bg-gold-primary/5 border border-gold-primary/10 rounded-xl">
-                    <Car className="h-8 w-8 text-gold-primary mx-auto mb-2" />
+                  <div className="text-center p-4 bg-primary/5 border border-primary/10 rounded-xl">
+                    <Car className="h-8 w-8 text-primary mx-auto mb-2" />
                     <div className="text-2xl font-bold">{property.property_features.parking}</div>
                     <div className="text-sm text-muted-foreground">{currentText.parking}</div>
                   </div>
@@ -274,7 +274,7 @@ const PropertyDetailModal = ({
 
               {/* Full Description */}
               {property.description && (
-                <div className="bg-gold-primary/5 border border-gold-primary/10 rounded-xl p-6">
+                <div className="bg-muted/30 border border-border rounded-xl p-6">
                   <h2 className="font-bold text-xl mb-4">{currentText.description}</h2>
                   <div className="prose max-w-none dark:prose-invert">
                     <p className="text-muted-foreground leading-relaxed text-lg">{property.description}</p>
@@ -284,13 +284,13 @@ const PropertyDetailModal = ({
 
               {/* All Features */}
               {property.property_features && (
-                <div className="bg-gold-primary/5 border border-gold-primary/10 rounded-xl p-6">
+                <div className="bg-muted/30 border border-border rounded-xl p-6">
                   <h2 className="font-bold text-xl mb-4">{currentText.features}</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {Object.entries(property.property_features)
                       .filter(([key, value]) => value)
                       .map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between p-3 bg-card/50 border border-border/30 rounded-lg">
+                        <div key={key} className="flex items-center justify-between p-3 bg-muted/30 border border-border/50 rounded-lg">
                           <span className="font-medium capitalize">{key.replace('_', ' ')}</span>
                           <span className="text-muted-foreground">{String(value)}</span>
                         </div>
@@ -303,10 +303,10 @@ const PropertyDetailModal = ({
             {/* Sidebar - Right column */}
             <div className="lg:col-span-1 space-y-6">
               {/* Contact Actions */}
-              <div className="sticky top-6 bg-card/80 backdrop-blur-xl rounded-xl p-6 space-y-4 border border-gold-primary/15">
+              <div className="sticky top-6 bg-card/80 backdrop-blur-xl rounded-xl p-6 space-y-4 border border-border">
                 <h3 className="font-bold text-lg">Contact Agent</h3>
                 <div className="space-y-3">
-                  <Button className="w-full bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-md shadow-gold-primary/20 hover:shadow-lg" size="lg">
+                  <Button className="w-full bg-primary text-primary-foreground shadow-md shadow-primary/20 hover:shadow-lg" size="lg">
                     <Phone className="h-5 w-5 mr-2" />
                     Call Now
                   </Button>
@@ -335,11 +335,11 @@ const PropertyDetailModal = ({
               </div>
 
               {/* Property Owner/Agent Info */}
-              <div className="bg-card/80 backdrop-blur-xl rounded-xl p-6 border border-gold-primary/15">
+              <div className="bg-card/80 backdrop-blur-xl rounded-xl p-6 border border-border">
                 <h3 className="font-bold text-lg mb-4">Listed By</h3>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-gold-primary/10 rounded-full flex items-center justify-center">
-                    <User className="h-6 w-6 text-gold-primary" />
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <User className="h-6 w-6 text-primary" />
                   </div>
                   <div>
                     <div className="font-semibold">Real Estate Agent</div>
@@ -354,12 +354,12 @@ const PropertyDetailModal = ({
           </div>
 
           {/* Related Properties Section */}
-          <div className="border-t border-gold-primary/15 bg-card/30">
+          <div className="border-t border-border bg-card/30">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6">Related Properties</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-card/50 border border-border/30 rounded-xl p-4 space-y-3">
+                  <div key={i} className="bg-muted/30 border border-border/50 rounded-xl p-4 space-y-3">
                     <div className="aspect-[4/3] bg-muted rounded-lg"></div>
                     <div className="space-y-2">
                       <div className="h-4 bg-muted rounded w-3/4"></div>
@@ -372,12 +372,12 @@ const PropertyDetailModal = ({
           </div>
 
           {/* Same Owner Properties Section */}
-          <div className="border-t border-gold-primary/15 bg-card/20">
+          <div className="border-t border-border bg-card/20">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6">More from this Agent</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-card/50 border border-border/30 rounded-xl p-4 space-y-3">
+                  <div key={i} className="bg-muted/30 border border-border/50 rounded-xl p-4 space-y-3">
                     <div className="aspect-[4/3] bg-muted rounded-lg"></div>
                     <div className="space-y-2">
                       <div className="h-4 bg-muted rounded w-3/4"></div>

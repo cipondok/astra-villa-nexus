@@ -379,8 +379,8 @@ const PropertyDetail: React.FC = () => {
         {/* Loading content */}
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="text-center">
-            <div className="h-16 w-16 rounded-full bg-gold-primary/10 flex items-center justify-center mx-auto mb-4 animate-pulse">
-              <Building2 className="h-8 w-8 text-gold-primary" />
+            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <Building2 className="h-8 w-8 text-primary" />
             </div>
             <h3 className="text-sm font-semibold mb-1">Memuat Detail Properti...</h3>
             <p className="text-xs text-muted-foreground">Mohon tunggu sebentar</p>
@@ -482,13 +482,13 @@ const PropertyDetail: React.FC = () => {
       )}
       {/* Agent/Developer Header - Glassy Style with Membership Badge */}
       {property?.posted_by && (
-        <div className="relative bg-primary-foreground/5 backdrop-blur-2xl border-b border-gold-primary/15">
+        <div className="relative bg-muted/30 backdrop-blur-2xl border-b border-border">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-2.5 sm:py-3">
             <div className="flex items-center justify-between gap-3">
               {/* Agent Profile - Enhanced */}
               <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
                 <div className="relative flex-shrink-0">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-gold-primary/20 to-accent/20 p-0.5 shadow-lg">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 p-0.5 shadow-lg">
                     <img
                       src={property.posted_by.avatar_url || "/placeholder.svg"}
                       alt={property.posted_by.name}
@@ -514,11 +514,11 @@ const PropertyDetail: React.FC = () => {
                     />
                   </div>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="bg-gradient-to-r from-gold-primary/15 to-accent/15 text-gold-primary px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-medium backdrop-blur-sm">
+                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-medium backdrop-blur-sm">
                       {property.posted_by.position || 'Developer'}
                     </span>
                     <div className="flex items-center gap-1">
-                      <Star className="h-3 w-3 fill-gold-primary text-gold-primary" />
+                      <Star className="h-3 w-3 fill-chart-3 text-chart-3" />
                       <span className="text-xs font-semibold">{property.posted_by.customer_feedback_rating}</span>
                     </div>
                     <span className="text-xs text-muted-foreground hidden sm:inline">• {property.posted_by.experience_years}y exp</span>
@@ -528,7 +528,7 @@ const PropertyDetail: React.FC = () => {
                 
               <Button 
                 size="sm"
-                className="flex-shrink-0 bg-chart-1 hover:bg-chart-1/90 text-background border-0 h-9 px-4 text-xs font-semibold shadow-sm"
+                className="flex-shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground border-0 h-9 px-4 text-xs font-semibold shadow-sm"
                 onClick={() => {
                   if (user && property.posted_by?.whatsapp_number) {
                     window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
@@ -549,7 +549,7 @@ const PropertyDetail: React.FC = () => {
       )}
 
       {/* Slim Sticky Header */}
-      <div className="sticky top-0 z-50 bg-primary-foreground/5 backdrop-blur-2xl border-b border-gold-primary/15 shadow-sm">
+      <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-2xl border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-2 sm:px-4">
           <div className="flex items-center justify-between h-10">
             <div className="flex items-center gap-1">
@@ -815,7 +815,7 @@ const PropertyDetail: React.FC = () => {
           <div className="lg:col-span-2 space-y-2 sm:space-y-3">
             
             {/* Property Header - Slim Glassmorphic */}
-            <Card className="border border-gold-primary/15 bg-primary-foreground/5 backdrop-blur-xl rounded-xl overflow-hidden">
+            <Card className="border border-border bg-card backdrop-blur-xl rounded-xl overflow-hidden">
               <CardContent className="p-2 sm:p-4">
                 <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-4">
                   <div className="flex-1 w-full">
@@ -823,9 +823,9 @@ const PropertyDetail: React.FC = () => {
                       {property.title}
                     </h1>
                     {/* Location Display - Slim */}
-                    <div className="flex items-start gap-1.5 mb-1.5 p-1.5 sm:p-2 bg-primary-foreground/5 rounded-lg border border-gold-primary/10">
-                      <div className="w-6 h-6 rounded-md bg-gold-primary/10 flex items-center justify-center flex-shrink-0">
-                        <MapPin className="h-3 w-3 text-gold-primary" />
+                    <div className="flex items-start gap-1.5 mb-1.5 p-1.5 sm:p-2 bg-muted/30 rounded-lg border border-border/50">
+                      <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <MapPin className="h-3 w-3 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-[10px] sm:text-xs font-medium text-foreground">{property.location}</div>
@@ -851,7 +851,7 @@ const PropertyDetail: React.FC = () => {
                         </div>
                       </div>
                       <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0 active:scale-95" title="Maps">
-                        <Navigation className="h-3 w-3 text-gold-primary" />
+                        <Navigation className="h-3 w-3 text-primary" />
                       </Button>
                     </div>
                     
@@ -862,7 +862,7 @@ const PropertyDetail: React.FC = () => {
                     </div>
                     
                     <div className="flex flex-wrap gap-1">
-                      <Badge className="bg-gold-primary text-background px-1.5 py-0 h-5 text-[9px] rounded-md shadow-sm">
+                      <Badge className={`px-1.5 py-0 h-5 text-[9px] rounded-md shadow-sm border-0 ${property.listing_type === 'sale' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white'}`}>
                         {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
                       </Badge>
                       <Badge variant="outline" className="border-border/50 px-1.5 py-0 h-5 text-[9px] rounded-md bg-muted/50 text-foreground capitalize">
@@ -878,9 +878,9 @@ const PropertyDetail: React.FC = () => {
                   
                   {/* Price Display - Slim */}
                   <div className="w-full sm:w-auto">
-                    <div className="bg-gold-primary/5 rounded-lg p-2 sm:p-3 border border-gold-primary/15">
+                    <div className="bg-primary/5 rounded-lg p-2 sm:p-3 border border-primary/15">
                       <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5">Price</p>
-                      <div className="text-base sm:text-2xl font-bold text-gold-primary">
+                      <div className="text-base sm:text-2xl font-bold text-primary">
                         {formatPrice(property.price)}
                       </div>
                       {property.listing_type === 'rent' && (
@@ -893,18 +893,18 @@ const PropertyDetail: React.FC = () => {
                 {/* Property Stats - Slim Grid */}
                 <div className="grid grid-cols-4 gap-1 sm:gap-2 mt-2">
                   {property.bedrooms && (
-                    <div className="text-center p-1.5 bg-gold-primary/5 rounded-lg border border-gold-primary/10">
-                      <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-gold-primary/10 flex items-center justify-center mx-auto mb-0.5">
-                        <Bed className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-gold-primary" />
+                    <div className="text-center p-1.5 bg-primary/5 rounded-lg border border-primary/10">
+                      <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-0.5">
+                        <Bed className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-primary" />
                       </div>
                       <div className="font-bold text-xs sm:text-sm text-foreground">{property.bedrooms}</div>
                       <div className="text-[7px] sm:text-[9px] text-muted-foreground">Beds</div>
                     </div>
                   )}
                   {property.bathrooms && (
-                    <div className="text-center p-1.5 bg-accent/5 rounded-lg border border-accent/10">
-                      <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-0.5">
-                        <Bath className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-accent" />
+                    <div className="text-center p-1.5 bg-primary/5 rounded-lg border border-primary/10">
+                      <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-0.5">
+                        <Bath className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-primary" />
                       </div>
                       <div className="font-bold text-xs sm:text-sm text-foreground">{property.bathrooms}</div>
                       <div className="text-[7px] sm:text-[9px] text-muted-foreground">Baths</div>
@@ -931,7 +931,7 @@ const PropertyDetail: React.FC = () => {
                 </div>
 
                 {/* Quick Action Buttons - Book Survey prominently displayed */}
-                <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-gold-primary/10">
+                <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-border">
                   <BookingDialog 
                     propertyId={property.id} 
                     propertyTitle={property.title}
@@ -963,13 +963,13 @@ const PropertyDetail: React.FC = () => {
             </Card>
 
             {/* Property Details Tabs - Slim */}
-            <Card className="border border-gold-primary/15 bg-primary-foreground/5 backdrop-blur-xl rounded-xl overflow-hidden">
+            <Card className="border border-border bg-card backdrop-blur-xl rounded-xl overflow-hidden">
               <CardContent className="p-2 sm:p-4">
                 <Tabs defaultValue="description" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 bg-primary-foreground/5 rounded-lg h-8 p-0.5 border border-gold-primary/10">
-                    <TabsTrigger value="description" className="data-[state=active]:bg-gold-primary data-[state=active]:text-background rounded-md text-[10px] sm:text-xs font-medium h-7">Description</TabsTrigger>
-                    <TabsTrigger value="features" className="data-[state=active]:bg-gold-primary data-[state=active]:text-background rounded-md text-[10px] sm:text-xs font-medium h-7">Features</TabsTrigger>
-                    <TabsTrigger value="details" className="data-[state=active]:bg-gold-primary data-[state=active]:text-background rounded-md text-[10px] sm:text-xs font-medium h-7">Details</TabsTrigger>
+                  <TabsList className="grid w-full grid-cols-3 bg-muted/30 rounded-lg h-8 p-0.5 border border-border">
+                    <TabsTrigger value="description" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">Description</TabsTrigger>
+                    <TabsTrigger value="features" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">Features</TabsTrigger>
+                    <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">Details</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="description" className="mt-2 sm:mt-3">
@@ -1034,11 +1034,11 @@ const PropertyDetail: React.FC = () => {
 
             {/* Virtual Tour & 3D Model - Slim */}
             {(property.virtual_tour_url || property.three_d_model_url) && (
-              <Card className="border border-gold-primary/15 bg-primary-foreground/5 backdrop-blur-xl rounded-xl overflow-hidden">
-                <CardHeader className="p-2 sm:p-3 pb-1 bg-gold-primary/5">
+              <Card className="border border-border bg-card backdrop-blur-xl rounded-xl overflow-hidden">
+                <CardHeader className="p-2 sm:p-3 pb-1 bg-muted/30">
                   <CardTitle className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground">
-                    <div className="w-5 h-5 rounded-md bg-gold-primary/10 flex items-center justify-center">
-                      <Camera className="h-2.5 w-2.5 text-gold-primary" />
+                    <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center">
+                      <Camera className="h-2.5 w-2.5 text-primary" />
                     </div>
                     Virtual Experience
                   </CardTitle>
@@ -1070,11 +1070,11 @@ const PropertyDetail: React.FC = () => {
             )}
             
             {/* Contact Information - Slim Agent Card */}
-            <Card className="border border-gold-primary/15 bg-primary-foreground/5 backdrop-blur-xl rounded-xl overflow-hidden">
-              <CardHeader className="p-2 sm:p-3 pb-1 bg-gold-primary/5">
+            <Card className="border border-border bg-card backdrop-blur-xl rounded-xl overflow-hidden">
+              <CardHeader className="p-2 sm:p-3 pb-1 bg-muted/30">
                 <CardTitle className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground">
-                  <div className="w-5 h-5 rounded-md bg-gold-primary/10 flex items-center justify-center">
-                    <User className="h-2.5 w-2.5 text-gold-primary" />
+                  <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center">
+                    <User className="h-2.5 w-2.5 text-primary" />
                   </div>
                   Agent Info
                 </CardTitle>
@@ -1084,7 +1084,7 @@ const PropertyDetail: React.FC = () => {
                   <div>
                     {/* Agent Profile - Slim */}
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-gold-primary/15 to-accent/15 p-0.5">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-primary/15 to-accent/15 p-0.5">
                         <img
                           src={property.posted_by.avatar_url || "/placeholder.svg"}
                           alt={property.posted_by.name}
@@ -1093,9 +1093,9 @@ const PropertyDetail: React.FC = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-xs sm:text-sm text-foreground truncate">{property.posted_by.name}</h4>
-                        <p className="text-[9px] sm:text-[10px] text-gold-primary font-medium">{property.posted_by.position}</p>
+                        <p className="text-[9px] sm:text-[10px] text-primary font-medium">{property.posted_by.position}</p>
                         <div className="flex items-center gap-1 mt-0.5">
-                          <Star className="h-2.5 w-2.5 fill-gold-primary text-gold-primary" />
+                          <Star className="h-2.5 w-2.5 fill-chart-3 text-chart-3" />
                           <span className="text-[9px] sm:text-[10px] font-semibold text-foreground">{property.posted_by.customer_feedback_rating}</span>
                           <span className="text-[8px] sm:text-[9px] text-muted-foreground">({property.posted_by.customer_feedback_count})</span>
                         </div>
@@ -1103,9 +1103,9 @@ const PropertyDetail: React.FC = () => {
                     </div>
 
                     {/* Company - Slim */}
-                    <div className="bg-primary-foreground/5 border border-gold-primary/10 rounded-lg p-2 mb-2">
+                    <div className="bg-muted/30 border border-border/50 rounded-lg p-2 mb-2">
                       <div className="flex items-center gap-1.5 font-medium mb-0.5">
-                        <div className="w-5 h-5 bg-gold-primary/10 rounded text-gold-primary text-[9px] flex items-center justify-center font-bold">
+                        <div className="w-5 h-5 bg-primary/10 rounded text-primary text-[9px] flex items-center justify-center font-bold">
                           {property.posted_by.company_name?.charAt(0)}
                         </div>
                         <span className="truncate text-[10px] sm:text-xs text-foreground">{property.posted_by.company_name}</span>
@@ -1116,7 +1116,7 @@ const PropertyDetail: React.FC = () => {
                     {/* Contact Buttons - Slim */}
                     <div className="space-y-1.5">
                       <Button 
-                        className="w-full bg-chart-1 hover:bg-chart-1/90 text-background h-8 text-[10px] sm:text-xs font-medium rounded-lg active:scale-95 transition-transform"
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-8 text-[10px] sm:text-xs font-medium rounded-lg active:scale-95 transition-transform"
                         onClick={() => {
                           if (user && property.posted_by?.whatsapp_number) {
                             window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, interested in ${property.title}`, '_blank');
@@ -1192,13 +1192,13 @@ const PropertyDetail: React.FC = () => {
                     </div>
 
                     {/* Agent Stats - Slim */}
-                    <div className="grid grid-cols-2 gap-1 pt-2 mt-2 border-t border-gold-primary/10">
-                      <div className="text-center p-1.5 bg-gold-primary/5 rounded-lg">
-                        <div className="font-bold text-xs sm:text-sm text-gold-primary">{property.posted_by.total_properties}+</div>
+                    <div className="grid grid-cols-2 gap-1 pt-2 mt-2 border-t border-border">
+                      <div className="text-center p-1.5 bg-primary/5 rounded-lg">
+                        <div className="font-bold text-xs sm:text-sm text-primary">{property.posted_by.total_properties}+</div>
                         <div className="text-[7px] sm:text-[8px] text-muted-foreground">Properties</div>
                       </div>
-                      <div className="text-center p-1.5 bg-accent/5 rounded-lg">
-                        <div className="font-bold text-xs sm:text-sm text-accent">{property.posted_by.experience_years}y</div>
+                      <div className="text-center p-1.5 bg-primary/5 rounded-lg">
+                        <div className="font-bold text-xs sm:text-sm text-primary">{property.posted_by.experience_years}y</div>
                         <div className="text-[7px] sm:text-[8px] text-muted-foreground">Experience</div>
                       </div>
                     </div>
