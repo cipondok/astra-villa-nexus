@@ -1,9 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 
+export type NotificationCategory = 'system' | 'property' | 'user' | 'general';
+
 export interface NotificationItem {
   id: string;
   type: 'favorite' | 'info' | 'warning' | 'success';
+  category?: NotificationCategory;
   title: string;
   message: string;
   propertyId?: string;
@@ -64,9 +67,17 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       id: Date.now().toString(),
       timestamp: new Date(),
       read: false,
+      category: notification.category || inferCategory(notification),
     };
     
-    setNotifications(prev => [newNotification, ...prev.slice(0, 49)]); // Keep max 50 notifications
+    setNotifications(prev => [newNotification, ...prev.slice(0, 49)]);
+  };
+
+  const inferCategory = (notification: Partial<NotificationItem>): NotificationCategory => {
+    if (notification.propertyId) return 'property';
+    if (notification.type === 'favorite') return 'property';
+    if (notification.type === 'warning' || notification.type === 'info') return 'system';
+    return 'general';
   };
 
   const markAsRead = (notificationId: string) => {
