@@ -54,7 +54,7 @@ const PropertyCardSkeletonItem = () => (
 
 const PropertyCardSkeleton = ({ count = 12, className }: PropertyCardSkeletonProps) => (
   <div className={cn(
-    "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3",
+    "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-1.5 sm:gap-3",
     className
   )}>
     {[...Array(count)].map((_, i) => (

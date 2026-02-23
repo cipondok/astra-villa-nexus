@@ -96,7 +96,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
 
   if (isLoading) {
     return (
-      <section className="rounded-xl p-3">
+      <section className="rounded-xl px-2 py-3 sm:p-3">
         <div className="mb-3 flex items-center justify-center gap-2">
           <Home className="h-4 w-4 text-accent" />
           <h2 className="text-sm font-semibold text-foreground">Properti Dijual</h2>
@@ -107,7 +107,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
   }
 
   return (
-    <section className="w-full p-3">
+    <section className="w-full px-2 py-3 sm:p-3">
       <div className="mb-3 flex items-center justify-center gap-2">
         <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-chart-1 to-primary flex items-center justify-center shadow-md shadow-chart-1/30">
           <Home className="h-3.5 w-3.5 text-white" />
@@ -115,7 +115,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
         <h2 className="text-sm font-bold text-foreground">Properti Dijual</h2>
       </div>
       
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-1.5 sm:gap-3">
         {saleProperties.slice(0, maxItems).map((property) => {
           const priceInfo = formatPrice(property.price);
           const imageCount = property.images?.length || 1;
@@ -174,14 +174,14 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
               </div>
 
               {/* Content */}
-              <div className="p-2.5 space-y-1.5 relative">
+              <div className="p-2 sm:p-2.5 space-y-1.5 relative">
                 {/* Price */}
-                <div className="flex items-baseline gap-1 bg-primary/5 border border-primary/15 rounded-lg px-2.5 py-2 flex-wrap">
+                <div className="flex items-baseline gap-1 bg-primary/5 border border-primary/15 rounded-lg px-2 py-1.5 sm:px-2.5 sm:py-2 flex-wrap">
                   <span className="text-sm sm:text-base font-black text-primary leading-none tracking-tight">{priceInfo.main}</span>
                   {priceInfo.suffix && (
                     <span className="text-[11px] font-extrabold text-primary/60">{priceInfo.suffix}</span>
                   )}
-                  <span className="text-[9px] text-muted-foreground/50 font-medium bg-muted/50 rounded-full px-1.5 ml-auto">≈ {formatMonthly(property.price)}</span>
+                  <span className="hidden sm:inline text-[9px] text-muted-foreground/50 font-medium bg-muted/50 rounded-full px-1.5 ml-auto">≈ {formatMonthly(property.price)}</span>
                 </div>
 
                 {/* Title */}

@@ -152,14 +152,14 @@ const ASTRAVillaPropertyCard = ({
           variant="ghost"
           size="icon"
           className={cn(
-            "absolute top-9 right-2 h-7 w-7 rounded-full",
+            "absolute top-9 right-2 h-8 w-8 sm:h-7 sm:w-7 rounded-full",
             "bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20",
             "transition-all duration-200",
             isLiked && "bg-destructive/40 border-destructive/40"
           )}
           onClick={handleLike}
         >
-          <Heart className={cn("h-3.5 w-3.5 transition-colors", isLiked ? "fill-destructive text-destructive" : "text-white/90")} />
+          <Heart className={cn("h-4 w-4 sm:h-3.5 sm:w-3.5 transition-colors", isLiked ? "fill-destructive text-destructive" : "text-white/90")} />
         </Button>
 
         {/* Image Count Badge */}
@@ -182,10 +182,10 @@ const ASTRAVillaPropertyCard = ({
       </div>
 
       {/* Content Section */}
-      <div className="p-3 space-y-2">
+      <div className="p-2 sm:p-3 space-y-2">
         {/* Price Section */}
         <div className={cn(
-          "flex items-baseline gap-1 rounded-lg px-2.5 py-2 border flex-wrap",
+          "flex items-baseline gap-1 rounded-lg px-2 py-1.5 sm:px-2.5 sm:py-2 border flex-wrap",
           "bg-primary/5 border-primary/15"
         )}>
           <span className="text-sm sm:text-base font-black leading-none tracking-tight text-primary">
@@ -200,7 +200,7 @@ const ASTRAVillaPropertyCard = ({
             <span className="text-[10px] text-muted-foreground font-bold ml-auto">/{language === "id" ? "bln" : "mo"}</span>
           )}
           {!isRent && (
-            <span className="text-[10px] text-muted-foreground/50 font-medium bg-muted/50 rounded-full px-1.5 ml-auto">
+            <span className="hidden sm:inline text-[10px] text-muted-foreground/50 font-medium bg-muted/50 rounded-full px-1.5 ml-auto">
               ≈ {formatMonthlyPayment(property.price)}
             </span>
           )}

@@ -163,7 +163,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
             {subtitle && <p className="text-muted-foreground">{subtitle}</p>}
           </div>
         </div>
-        <div className="card-grid gap-4">{/* Responsive card grid using utility classes */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">{/* Responsive card grid */}
           {[...Array(4)].map((_, i) => (
             <Card key={i} className="animate-pulse">
               <div className="h-48 bg-muted rounded-t-lg"></div>
@@ -237,7 +237,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
         >
           {Array.from({ length: maxSlides }).map((_, slideIndex) => (
             <div key={slideIndex} className="w-full flex-shrink-0">
-              <div className="card-grid gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {properties
                   .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
                   .map((property) => (
