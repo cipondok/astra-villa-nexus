@@ -47,7 +47,7 @@ const PropertyRatingDisplay: React.FC<PropertyRatingDisplayProps> = ({
         stars.push(
           <Star 
             key={i} 
-            className={cn(config.star, 'fill-gold-primary text-gold-primary')} 
+            className={cn(config.star, 'fill-chart-3 text-chart-3')} 
           />
         );
       } else if (i === fullStars && hasHalfStar) {
@@ -55,7 +55,7 @@ const PropertyRatingDisplay: React.FC<PropertyRatingDisplayProps> = ({
           <div key={i} className="relative">
             <Star className={cn(config.star, 'text-muted-foreground/30')} />
             <div className="absolute inset-0 overflow-hidden w-1/2">
-              <Star className={cn(config.star, 'fill-gold-primary text-gold-primary')} />
+              <Star className={cn(config.star, 'fill-chart-3 text-chart-3')} />
             </div>
           </div>
         );
