@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Monitor, Smartphone, Bot, Loader2, Download, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import astraLogoFallback from '@/assets/astra-logo.svg';
+import { LOGO_PLACEHOLDER } from '@/hooks/useBrandingLogo';
 
 interface WelcomeScreenPreviewProps {
   settings: Record<string, any>;
@@ -12,16 +12,16 @@ interface WelcomeScreenPreviewProps {
 
 const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings }) => {
   // Welcome Screen: welcomeScreenLogo → headerLogo → fallback (shown when site first opens)
-  const welcomeScreenLogo = settings.welcomeScreenLogo || settings.headerLogo || astraLogoFallback;
+  const welcomeScreenLogo = settings.welcomeScreenLogo || settings.headerLogo || LOGO_PLACEHOLDER;
   
   // Loading Popup: loadingPageLogo → welcomeScreenLogo → headerLogo → fallback (shown during data loading)
-  const loadingPopupLogo = settings.loadingPageLogo || settings.welcomeScreenLogo || settings.headerLogo || astraLogoFallback;
+  const loadingPopupLogo = settings.loadingPageLogo || settings.welcomeScreenLogo || settings.headerLogo || LOGO_PLACEHOLDER;
   
   // PWA Install: pwaLogo → headerLogo → fallback (shown in PWA install prompt)
-  const pwaLogo = settings.pwaLogo || settings.headerLogo || astraLogoFallback;
+  const pwaLogo = settings.pwaLogo || settings.headerLogo || LOGO_PLACEHOLDER;
   
   // Chatbot
-  const chatbotLogo = settings.chatbotLogo || astraLogoFallback;
+  const chatbotLogo = settings.chatbotLogo || LOGO_PLACEHOLDER;
   
   // Determine which logo key is being used for welcome screen
   const getWelcomeLogoKey = () => {
@@ -99,7 +99,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
                   alt="Welcome Logo"
                   className="w-14 h-14 object-contain rounded-xl"
                   style={{ background: 'transparent' }}
-                  onError={(e) => { (e.target as HTMLImageElement).src = astraLogoFallback; }}
+                  onError={(e) => { (e.target as HTMLImageElement).src = LOGO_PLACEHOLDER; }}
                 />
                 {/* Spinning ring */}
                 <motion.div
@@ -187,7 +187,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
                 alt="Loading Logo"
                 className="w-6 h-6 object-contain rounded"
                 style={{ background: 'transparent' }}
-                onError={(e) => { (e.target as HTMLImageElement).src = astraLogoFallback; }}
+                onError={(e) => { (e.target as HTMLImageElement).src = LOGO_PLACEHOLDER; }}
               />
               <div className="flex flex-col gap-1">
                 <div className="w-16 h-1.5 bg-muted rounded overflow-hidden">
@@ -233,7 +233,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
                     alt="PWA Logo"
                     className="w-6 h-6 object-contain"
                     style={{ imageRendering: 'crisp-edges' }}
-                    onError={(e) => { (e.target as HTMLImageElement).src = astraLogoFallback; }}
+                    onError={(e) => { (e.target as HTMLImageElement).src = LOGO_PLACEHOLDER; }}
                   />
                 </div>
                 <div className="flex-1">
@@ -301,7 +301,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
                 alt="Chatbot"
                 className="w-7 h-7 object-contain rounded-md"
                 style={{ background: 'transparent' }}
-                onError={(e) => { (e.target as HTMLImageElement).src = astraLogoFallback; }}
+                onError={(e) => { (e.target as HTMLImageElement).src = LOGO_PLACEHOLDER; }}
               />
             </motion.div>
 
@@ -323,11 +323,11 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
           <div className="flex items-center gap-3 p-2 bg-muted/20 rounded-lg border border-border/30">
             <div className="w-12 h-12 rounded-xl bg-background border border-border/50 flex items-center justify-center overflow-hidden shadow-sm">
               <img 
-                src={settings.mobileAppIcon || settings.faviconUrl || astraLogoFallback}
+                src={settings.mobileAppIcon || settings.faviconUrl || LOGO_PLACEHOLDER}
                 alt="App Icon"
                 className="w-10 h-10 object-contain"
                 style={{ background: 'transparent' }}
-                onError={(e) => { (e.target as HTMLImageElement).src = astraLogoFallback; }}
+                onError={(e) => { (e.target as HTMLImageElement).src = LOGO_PLACEHOLDER; }}
               />
             </div>
             <div className="flex-1">
@@ -338,10 +338,10 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
             </div>
             <div className="w-4 h-4 rounded bg-background border border-border/50 flex items-center justify-center overflow-hidden">
               <img 
-                src={settings.faviconUrl || astraLogoFallback}
+                src={settings.faviconUrl || LOGO_PLACEHOLDER}
                 alt="Favicon"
                 className="w-3 h-3 object-contain"
-                onError={(e) => { (e.target as HTMLImageElement).src = astraLogoFallback; }}
+                onError={(e) => { (e.target as HTMLImageElement).src = LOGO_PLACEHOLDER; }}
               />
             </div>
           </div>

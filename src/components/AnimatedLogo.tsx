@@ -1,15 +1,5 @@
 import React from "react";
-import fallbackLogo from "@/assets/astra-logo.svg";
-
-// Preconnect hint for logo loading - emitted once globally
-if (typeof document !== 'undefined' && !document.querySelector('link[rel="preload"][as="image"][data-logo]')) {
-  const preload = document.createElement('link');
-  preload.rel = 'preload';
-  preload.as = 'image';
-  preload.href = fallbackLogo;
-  preload.setAttribute('data-logo', '1');
-  document.head.appendChild(preload);
-}
+import { LOGO_PLACEHOLDER } from "@/hooks/useBrandingLogo";
 
 interface AnimatedLogoProps {
   className?: string;
@@ -34,7 +24,7 @@ const AnimatedLogo = ({
   return (
     <div className={`flex items-center ${className}`.trim()}>
       <img
-        src={src || fallbackLogo}
+        src={src || LOGO_PLACEHOLDER}
         alt={alt}
         loading="eager"
         fetchPriority="high"
@@ -43,8 +33,7 @@ const AnimatedLogo = ({
         height={48}
         className={`${sizeClasses[size]} w-auto object-contain`}
         onError={(e) => {
-          // Fallback if the configured URL is invalid / blocked / not public
-          e.currentTarget.src = fallbackLogo;
+          e.currentTarget.src = LOGO_PLACEHOLDER;
         }}
       />
     </div>

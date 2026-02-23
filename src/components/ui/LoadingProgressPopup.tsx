@@ -4,7 +4,7 @@ import { useGlobalLoading } from '@/hooks/useGlobalLoading';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import astraLogoFallback from '@/assets/astra-logo.svg';
+import { LOGO_PLACEHOLDER } from '@/hooks/useBrandingLogo';
 
 interface LoadingProgressPopupProps {
   className?: string;
@@ -40,7 +40,7 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
     refetchOnWindowFocus: false,
   });
 
-  const logoUrl = loadingLogoUrl || astraLogoFallback;
+  const logoUrl = loadingLogoUrl || LOGO_PLACEHOLDER;
 
   return (
     <AnimatePresence>

@@ -31,7 +31,7 @@ const BackgroundRemovalTool = () => {
       // Create download link
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'astra-logo-no-bg.png';
+      a.download = 'logo-no-bg.png';
       a.click();
       
       toast.success("Background removed successfully! Image downloaded.");
