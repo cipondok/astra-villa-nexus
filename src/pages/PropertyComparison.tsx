@@ -1,17 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { usePropertyComparison } from '@/contexts/PropertyComparisonContext';
-import { ArrowLeft, MapPin, Bed, Bath, Square, Eye, X } from 'lucide-react';
+import { ArrowLeft, X, Eye, Trash2 } from 'lucide-react';
+import { formatIDR } from '@/utils/formatters';
 
 const PropertyComparison = () => {
   const navigate = useNavigate();
-  const { selectedProperties, removeFromComparison, clearComparison } = usePropertyComparison();
+  const comparison = usePropertyComparison();
 
-  if (selectedProperties.length === 0) {
+  if (!comparison || comparison.selectedProperties.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -20,64 +21,127 @@ const PropertyComparison = () => {
             <p className="text-muted-foreground mb-8">
               Add properties to your comparison list to see detailed side-by-side analysis
             </p>
-            <Button onClick={() => navigate('/dijual')}>
-              Browse Properties
-            </Button>
+            <Button onClick={() => navigate('/dijual')}>Browse Properties</Button>
           </div>
         </div>
       </div>
     );
   }
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) {
-      return `IDR ${(price / 1000000000).toFixed(1)}B`;
-    }
-    if (price >= 1000000) {
-      return `IDR ${(price / 1000000).toFixed(1)}M`;
-    }
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  const { selectedProperties, removeFromComparison, clearComparison } = comparison;
 
   const getImageUrl = (property: any) => {
-    if (property.images && property.images.length > 0) {
-      return property.images[0];
-    }
-    if (property.image_urls && property.image_urls.length > 0) {
-      return property.image_urls[0];
-    }
-    return "/placeholder.svg";
+    if (property.images?.length) return property.images[0];
+    if (property.image_urls?.length) return property.image_urls[0];
+    return '/placeholder.svg';
   };
 
-  const handlePropertyClick = (propertyId: string) => {
-    navigate(`/properties/${propertyId}`);
-  };
-
-  // Find min/max values for highlighting
   const prices = selectedProperties.map(p => p.price);
-  const areas = selectedProperties.map(p => p.area_sqm || 0);
+  const areas = selectedProperties.map(p => p.area_sqm || 0).filter(a => a > 0);
   const minPrice = Math.min(...prices);
-  const maxPrice = Math.max(...prices);
-  const minArea = Math.min(...areas.filter(a => a > 0));
-  const maxArea = Math.max(...areas);
+  const maxArea = areas.length ? Math.max(...areas) : 0;
+
+  const pricePerSqm = (p: typeof selectedProperties[0]) =>
+    p.area_sqm && p.area_sqm > 0 ? p.price / p.area_sqm : null;
+
+  const allPricePerSqm = selectedProperties
+    .map(pricePerSqm)
+    .filter((v): v is number => v !== null);
+  const minPricePerSqm = allPricePerSqm.length ? Math.min(...allPricePerSqm) : null;
+
+  const has3DTour = (p: typeof selectedProperties[0]) =>
+    !!(p.three_d_model_url || p.virtual_tour_url);
+
+  type SpecRow = {
+    label: string;
+    render: (p: typeof selectedProperties[0]) => React.ReactNode;
+  };
+
+  const specs: SpecRow[] = [
+    {
+      label: 'Price',
+      render: (p) => {
+        const isLowest = p.price === minPrice && prices.length > 1;
+        return (
+          <div className="space-y-1">
+            <span className={`font-bold ${isLowest ? 'text-primary' : ''}`}>
+              {formatIDR(p.price)}
+            </span>
+            {p.listing_type === 'rent' && <span className="text-xs text-muted-foreground">/month</span>}
+            {isLowest && <Badge variant="outline" className="ml-1 text-xs text-primary border-primary">Lowest</Badge>}
+          </div>
+        );
+      },
+    },
+    {
+      label: 'Location',
+      render: (p) => <span>{p.city || p.state || p.location}</span>,
+    },
+    {
+      label: 'Property Type',
+      render: (p) => <span className="capitalize">{p.property_type || '—'}</span>,
+    },
+    {
+      label: 'Listing Type',
+      render: (p) => (
+        <Badge variant={p.listing_type === 'sale' ? 'default' : 'secondary'}>
+          {p.listing_type === 'sale' ? 'For Sale' : p.listing_type === 'rent' ? 'For Rent' : 'Lease'}
+        </Badge>
+      ),
+    },
+    {
+      label: 'Bedrooms',
+      render: (p) => <span>{p.bedrooms ?? '—'}</span>,
+    },
+    {
+      label: 'Bathrooms',
+      render: (p) => <span>{p.bathrooms ?? '—'}</span>,
+    },
+    {
+      label: 'Area',
+      render: (p) => {
+        if (!p.area_sqm) return <span>—</span>;
+        const isLargest = p.area_sqm === maxArea && areas.length > 1;
+        return (
+          <div className="space-y-1">
+            <span className={isLargest ? 'font-bold text-primary' : ''}>{p.area_sqm} m²</span>
+            {isLargest && <Badge variant="outline" className="ml-1 text-xs text-primary border-primary">Largest</Badge>}
+          </div>
+        );
+      },
+    },
+    {
+      label: 'Price / m²',
+      render: (p) => {
+        const v = pricePerSqm(p);
+        if (v === null) return <span>—</span>;
+        const isBest = v === minPricePerSqm && allPricePerSqm.length > 1;
+        return (
+          <div className="space-y-1">
+            <span className={isBest ? 'font-bold text-primary' : ''}>{formatIDR(Math.round(v))}</span>
+            {isBest && <Badge variant="outline" className="ml-1 text-xs text-primary border-primary">Best</Badge>}
+          </div>
+        );
+      },
+    },
+    {
+      label: '3D Tour',
+      render: (p) =>
+        has3DTour(p) ? (
+          <Badge className="bg-primary/10 text-primary border-primary/20">Available</Badge>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        ),
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate(-1)}
-            >
+            <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
@@ -88,150 +152,71 @@ const PropertyComparison = () => {
               </p>
             </div>
           </div>
-          
-          <Button 
-            variant="destructive" 
-            onClick={clearComparison}
-          >
+          <Button variant="destructive" size="sm" onClick={clearComparison}>
+            <Trash2 className="h-4 w-4 mr-2" />
             Clear All
           </Button>
         </div>
 
-        {/* Comparison Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-          {selectedProperties.map((property) => (
-            <Card key={property.id} className="relative">
-              {/* Remove Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute top-2 right-2 z-10 h-8 w-8 p-0 bg-background/80 hover:bg-background"
-                onClick={() => removeFromComparison(property.id)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
+        {/* Comparison Table */}
+        <Card>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[140px] sticky left-0 bg-background z-10">Spec</TableHead>
+                    {selectedProperties.map((p) => (
+                      <TableHead key={p.id} className="min-w-[200px]">
+                        <div className="space-y-2">
+                          <div className="relative">
+                            <img
+                              src={getImageUrl(p)}
+                              alt={p.title}
+                              className="w-full h-28 object-cover rounded-lg"
+                            />
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="absolute top-1 right-1 h-6 w-6 p-0 bg-background/80 hover:bg-background rounded-full"
+                              onClick={() => removeFromComparison(p.id)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          <h3 className="font-semibold text-sm line-clamp-2">{p.title}</h3>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full text-xs"
+                            onClick={() => navigate(`/properties/${p.id}`)}
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
+                            View Details
+                          </Button>
+                        </div>
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {specs.map((spec) => (
+                    <TableRow key={spec.label}>
+                      <TableCell className="font-medium text-muted-foreground sticky left-0 bg-background z-10">
+                        {spec.label}
+                      </TableCell>
+                      {selectedProperties.map((p) => (
+                        <TableCell key={p.id}>{spec.render(p)}</TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
 
-              {/* Property Image */}
-              <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg">
-                <img
-                  src={getImageUrl(property)}
-                  alt={property.title}
-                  className="w-full h-full object-cover"
-                />
-                
-                {/* Listing Type Badge */}
-                <div className="absolute top-3 left-3">
-                  <Badge 
-                    variant={property.listing_type === 'sale' ? 'default' : 'secondary'}
-                    className="bg-background/90 backdrop-blur-sm"
-                  >
-                    {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
-                  </Badge>
-                </div>
-              </div>
-
-              <CardContent className="p-4 space-y-4">
-                {/* Title & Location */}
-                <div>
-                  <h3 className="font-semibold text-lg line-clamp-2 mb-2">
-                    {property.title}
-                  </h3>
-                  <div className="flex items-center gap-1 text-muted-foreground text-sm">
-                    <MapPin className="h-4 w-4" />
-                    {property.location}
-                  </div>
-                </div>
-
-                {/* Price */}
-                <div 
-                  className={`text-xl font-bold ${
-                    property.price === minPrice ? 'text-chart-1' : 
-                    property.price === maxPrice ? 'text-chart-3' : 
-                    'text-foreground'
-                  }`}
-                >
-                  {formatPrice(property.price)}
-                  {property.listing_type === 'rent' && (
-                    <span className="text-sm font-normal text-muted-foreground">/month</span>
-                  )}
-                  {property.price === minPrice && <Badge variant="outline" className="ml-2 text-chart-1">Lowest</Badge>}
-                  {property.price === maxPrice && <Badge variant="outline" className="ml-2 text-chart-3">Highest</Badge>}
-                </div>
-
-                <Separator />
-
-                {/* Property Details */}
-                <div className="space-y-3">
-                  {/* Bedrooms & Bathrooms */}
-                  <div className="grid grid-cols-2 gap-4">
-                    {property.bedrooms && (
-                      <div className="flex items-center gap-2">
-                        <Bed className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">
-                          {property.bedrooms} bed{property.bedrooms !== 1 ? 's' : ''}
-                        </span>
-                      </div>
-                    )}
-                    {property.bathrooms && (
-                      <div className="flex items-center gap-2">
-                        <Bath className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">
-                          {property.bathrooms} bath{property.bathrooms !== 1 ? 's' : ''}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Area */}
-                  {property.area_sqm && (
-                    <div 
-                      className={`flex items-center gap-2 ${
-                        property.area_sqm === minArea ? 'text-chart-3' : 
-                        property.area_sqm === maxArea ? 'text-chart-1' : 
-                        'text-foreground'
-                      }`}
-                    >
-                      <Square className="h-4 w-4" />
-                      <span className="text-sm font-medium">
-                        {property.area_sqm} m²
-                        {property.area_sqm === minArea && <Badge variant="outline" className="ml-2 text-chart-3">Smallest</Badge>}
-                        {property.area_sqm === maxArea && <Badge variant="outline" className="ml-2 text-chart-1">Largest</Badge>}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Property Type */}
-                  {property.property_type && (
-                    <div className="text-sm text-muted-foreground capitalize">
-                      Type: {property.property_type}
-                    </div>
-                  )}
-                </div>
-
-                <Separator />
-
-                {/* Actions */}
-                <div className="space-y-2">
-                  <Button 
-                    className="w-full"
-                    onClick={() => handlePropertyClick(property.id)}
-                  >
-                    <Eye className="h-4 w-4 mr-2" />
-                    View Full Details
-                  </Button>
-                  
-                  {(property.three_d_model_url || property.virtual_tour_url) && (
-                    <Badge className="w-full justify-center bg-primary/10 text-primary hover:bg-primary/20">
-                      3D Tour Available
-                    </Badge>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Comparison Summary */}
+        {/* Summary */}
         {selectedProperties.length > 1 && (
           <Card className="mt-8">
             <CardHeader>
@@ -242,48 +227,26 @@ const PropertyComparison = () => {
                 <div>
                   <h4 className="font-semibold mb-2">Price Range</h4>
                   <p className="text-sm text-muted-foreground">
-                    {formatPrice(minPrice)} - {formatPrice(maxPrice)}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Difference: {formatPrice(maxPrice - minPrice)}
+                    {formatIDR(Math.min(...prices))} — {formatIDR(Math.max(...prices))}
                   </p>
                 </div>
-                
-                <div>
-                  <h4 className="font-semibold mb-2">Area Range</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {minArea}m² - {maxArea}m²
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Difference: {maxArea - minArea}m²
-                  </p>
-                </div>
-                
-                <div>
-                  <h4 className="font-semibold mb-2">Best Value</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Based on price per m²
-                  </p>
-                  {(() => {
-                    const pricePerSqm = selectedProperties
-                      .filter(p => p.area_sqm && p.area_sqm > 0)
-                      .map(p => ({
-                        title: p.title,
-                        pricePerSqm: p.price / (p.area_sqm || 1)
-                      }))
-                      .sort((a, b) => a.pricePerSqm - b.pricePerSqm);
-                    
-                    return pricePerSqm.length > 0 ? (
-                      <p className="text-xs text-chart-1 font-medium mt-1">
-                        {pricePerSqm[0].title.split(' ').slice(0, 3).join(' ')}...
-                      </p>
-                    ) : (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Insufficient data
-                      </p>
-                    );
-                  })()}
-                </div>
+                {areas.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold mb-2">Area Range</h4>
+                    <p className="text-sm text-muted-foreground">
+                      {Math.min(...areas)} m² — {Math.max(...areas)} m²
+                    </p>
+                  </div>
+                )}
+                {allPricePerSqm.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold mb-2">Best Value (Price/m²)</h4>
+                    <p className="text-sm text-primary font-medium">
+                      {selectedProperties.find(p => pricePerSqm(p) === minPricePerSqm)?.title?.slice(0, 30)}…
+                    </p>
+                    <p className="text-xs text-muted-foreground">{formatIDR(Math.round(minPricePerSqm!))}/m²</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
