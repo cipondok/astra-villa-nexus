@@ -1,66 +1,94 @@
 
 
-# Add Skeleton Loading States for Property Card Text Content
+# Infinite Scroll Pagination for Property Listing Pages
 
 ## Overview
 
-Extend the existing blur-up image loading to include text content (title, price, location, specs). While the image is loading (`isImageLoaded === false`), show skeleton shimmer placeholders for all text areas too, then reveal everything together for a cohesive loading experience.
+Add infinite scroll to property listing pages so properties load in batches (e.g., 12 at a time) as users scroll down, instead of loading all at once. This improves initial load performance and provides a smoother browsing experience.
 
 ## Approach
 
-Reuse the existing `isImageLoaded` state as the trigger. When `false`, render skeleton placeholders instead of actual text content. When the image finishes loading, both image and text appear simultaneously.
+Reuse the existing `useIntersectionObserver` hook to detect when the user scrolls near the bottom of the list, then fetch the next batch from Supabase using `offset` and `limit` pagination.
 
 ## Changes
 
-### 1. `src/components/property/ASTRAVillaPropertyCard.tsx`
+### 1. Create `useInfiniteProperties` hook
 
-In the content section (lines 193-257), conditionally render skeletons when `!isImageLoaded`:
+**New file**: `src/hooks/useInfiniteProperties.ts`
 
-- **Price box** (line 195-215): Replace with a shimmer block (`h-8 w-full rounded-lg bg-muted animate-pulse`)
-- **Title** (line 218-220): Replace with a shimmer line (`h-3 w-3/4 rounded bg-muted animate-pulse`)
-- **Location** (line 223-226): Replace with a shimmer line (`h-3 w-1/2 rounded bg-muted animate-pulse`)
-- **Specs row** (line 229-256): Replace with small shimmer blocks
+A reusable hook that manages:
+- `properties` array (accumulates batches)
+- `isLoading` (initial load) and `isFetchingMore` (subsequent loads)
+- `hasMore` flag to stop fetching when no more results
+- `loadMore()` function triggered by the intersection observer
+- Accepts query config (listing_type, development_status, filters) as parameters
+- Uses Supabase `.range(offset, offset + limit - 1)` for pagination
+- Resets state when filters change
 
-When `isImageLoaded` is true, render the normal content as-is (no changes to existing markup).
+### 2. Update `PropertyListingPage.tsx`
 
-### 2. `src/components/PropertyCard.tsx`
+- Replace the current `fetchProperties` + `useState` with `useInfiniteProperties`
+- Change `limit(50)` to paginated fetches of 12 per batch
+- Add a sentinel `<div ref={sentinelRef} />` after the property grid
+- Show a small spinner when `isFetchingMore` is true
+- Show "No more properties" text when `hasMore` is false
+- Search results also use infinite scroll
 
-In the CardContent section (lines 181-265), conditionally render skeletons when `!isImageLoaded`:
+### 3. Update `Dijual.tsx`
 
-- **Title** (line 182-184): Shimmer line
-- **Location** (line 216-219): Shimmer line
-- **Price** (line 221-228): Shimmer block
-- **Specs** (line 230-243): Small shimmer blocks
-- **Buttons** (line 245-264): Shimmer button placeholders
+- Replace `fetchProperties` with `useInfiniteProperties` configured for `listing_type: 'sale'`
+- Client-side filtering still applies on the accumulated properties array
+- Add sentinel div and loading indicator after the grid
+- Keep demo data fallback when no real data exists
 
-### Implementation Pattern
+### 4. Update `Disewa.tsx`
 
-```tsx
-{/* Content Section */}
-<div className="p-2 sm:p-3 space-y-2">
-  {!isImageLoaded ? (
-    <>
-      <div className="h-8 w-full rounded-lg bg-muted animate-pulse" />
-      <div className="h-3 w-3/4 rounded bg-muted animate-pulse" />
-      <div className="h-3 w-1/2 rounded bg-muted animate-pulse" />
-      <div className="flex gap-1.5 pt-2 border-t border-border/30">
-        <div className="h-3.5 w-10 rounded bg-muted animate-pulse" />
-        <div className="h-3.5 w-10 rounded bg-muted animate-pulse" />
-        <div className="h-3.5 w-14 rounded bg-muted animate-pulse" />
-      </div>
-    </>
-  ) : (
-    // existing content JSX unchanged
-  )}
-</div>
+- Same pattern as Dijual.tsx but for `listing_type: 'rent'`
+
+## Technical Details
+
+```text
+Hook API:
+
+useInfiniteProperties({
+  listingType?: string,
+  developmentStatus?: string[],
+  pageSize?: number,       // default 12
+  initialEnabled?: boolean
+})
+
+Returns:
+  properties: any[]
+  isLoading: boolean
+  isFetchingMore: boolean
+  hasMore: boolean
+  loadMore: () => void
+  reset: () => void
 ```
 
-### Files Modified
+**Sentinel pattern** using the existing `useIntersectionObserver`:
 
-| File | Change |
+```text
+[Property Grid]
+  - Card 1
+  - Card 2
+  - ...
+  - Card 12
+[Sentinel div] <-- ref from useIntersectionObserver
+  When visible --> calls loadMore()
+[Loading spinner or "End of results"]
+```
+
+**Filter change handling**: When filters change, call `reset()` which clears accumulated properties and re-fetches from offset 0.
+
+## Files Summary
+
+| File | Action |
 |------|--------|
-| `src/components/property/ASTRAVillaPropertyCard.tsx` | Wrap content section in `isImageLoaded` conditional with skeleton fallback |
-| `src/components/PropertyCard.tsx` | Wrap CardContent children in `isImageLoaded` conditional with skeleton fallback |
+| `src/hooks/useInfiniteProperties.ts` | Create -- reusable infinite scroll hook |
+| `src/pages/PropertyListingPage.tsx` | Edit -- integrate infinite scroll |
+| `src/pages/Dijual.tsx` | Edit -- integrate infinite scroll |
+| `src/pages/Disewa.tsx` | Edit -- integrate infinite scroll |
 
-No new files or dependencies needed.
+No new dependencies needed.
 
