@@ -2063,8 +2063,6 @@ const AstraSearchPanel = ({
     
     onSearch(searchData);
 
-    // 🔒 CRITICAL: Restore scroll position after React updates
-    requestAnimationFrame(() => window.scrollTo(0, currentScroll));
   };
 
   // Mobile view - inline search panel (not fixed)
@@ -2155,13 +2153,11 @@ const AstraSearchPanel = ({
               onChange={(e) => handleSearchChange(e.target.value)}
               onFocus={(e) => {
                 e.preventDefault();
-                const currentScroll = window.scrollY;
                 setShowSuggestions(true);
                 if (anchorRef.current) {
                   const rect = anchorRef.current.getBoundingClientRect();
                   setSuggestionsTop(rect.bottom + 4);
                 }
-                requestAnimationFrame(() => window.scrollTo(0, currentScroll));
               }}
               onTouchStart={(e) => e.stopPropagation()}
               className="pl-10 pr-12 h-12 text-sm bg-primary-foreground/20 dark:bg-primary-foreground/10 backdrop-blur-md border border-primary-foreground/30 focus:ring-2 focus:ring-primary/50 rounded-xl text-primary-foreground placeholder:text-primary-foreground/60 shadow-lg"
@@ -2237,10 +2233,8 @@ const AstraSearchPanel = ({
                         onClick={e => {
                           e.preventDefault();
                           e.stopPropagation();
-                          const currentScroll = window.scrollY;
                           setRecentSearchTerms([]);
                           localStorage.removeItem('recentSearchTerms');
-                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                         }}
                         onTouchStart={(e) => e.stopPropagation()}
                         className="text-[9px] text-muted-foreground hover:text-destructive"
@@ -2256,12 +2250,10 @@ const AstraSearchPanel = ({
                           onClick={e => {
                             e.preventDefault();
                             e.stopPropagation();
-                            const currentScroll = window.scrollY;
                             trackSuggestionClick(term);
                             setSearchQuery(term);
                             setShowSuggestions(false);
                             handleSearch();
-                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
                           className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-all duration-500 flex items-center gap-2 hover:scale-105"
@@ -2294,12 +2286,10 @@ const AstraSearchPanel = ({
                           onClick={e => {
                             e.preventDefault();
                             e.stopPropagation();
-                            const currentScroll = window.scrollY;
                             trackSuggestionClick(location);
                             setSearchQuery(location);
                             setShowSuggestions(false);
                             handleSearch();
-                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
                           className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-accent/10 rounded-lg transition-colors flex items-center gap-2"
@@ -2332,12 +2322,10 @@ const AstraSearchPanel = ({
                           onClick={e => {
                             e.preventDefault();
                             e.stopPropagation();
-                            const currentScroll = window.scrollY;
                             trackSuggestionClick(trend);
                             setSearchQuery(trend);
                             setShowSuggestions(false);
                             handleSearch();
-                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
                           className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-all duration-500 flex items-center justify-between hover:scale-105"
@@ -2855,9 +2843,7 @@ const AstraSearchPanel = ({
                 <button 
                   onClick={(e) => {
                     e.preventDefault();
-                    const currentScroll = window.scrollY;
                     setIsPropertyTypeOpen(!isPropertyTypeOpen);
-                    requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                   }}
                   className="p-1 flex items-center justify-center transition-colors relative group"
                   title="Property Type"
@@ -2938,9 +2924,7 @@ const AstraSearchPanel = ({
                   <button 
                     onClick={(e) => {
                       e.preventDefault();
-                      const currentScroll = window.scrollY;
                       setIsLocationOpen(!isLocationOpen);
-                      requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                     }}
                     onTouchStart={(e) => e.stopPropagation()}
                     className="p-1 flex items-center justify-center transition-colors relative group"
@@ -2981,8 +2965,6 @@ const AstraSearchPanel = ({
                         className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          const currentScroll = window.scrollY;
-                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                         }}
                         onTouchStart={(e) => e.stopPropagation()}
                       >
@@ -2994,8 +2976,6 @@ const AstraSearchPanel = ({
                         className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm disabled:opacity-40"
                         onClick={(e) => {
                           e.stopPropagation();
-                          const currentScroll = window.scrollY;
-                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                         }}
                         onTouchStart={(e) => e.stopPropagation()}
                       >
@@ -3007,8 +2987,6 @@ const AstraSearchPanel = ({
                         className="text-xs text-muted-foreground hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm disabled:opacity-40"
                         onClick={(e) => {
                           e.stopPropagation();
-                          const currentScroll = window.scrollY;
-                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                         }}
                         onTouchStart={(e) => e.stopPropagation()}
                       >
@@ -3024,10 +3002,7 @@ const AstraSearchPanel = ({
                           placeholder="Type to search province..."
                           className="h-9 text-xs flex-1"
                           onFocus={(e) => {
-                            e.preventDefault();
                             e.stopPropagation();
-                            const currentScroll = window.scrollY;
-                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
                         />
@@ -3060,9 +3035,7 @@ const AstraSearchPanel = ({
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              const currentScroll = window.scrollY;
                               handleFilterChange('state', 'all');
-                              requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                             }}
                             onTouchStart={(e) => e.stopPropagation()}
                           >
@@ -3076,11 +3049,9 @@ const AstraSearchPanel = ({
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                const currentScroll = window.scrollY;
                                 handleFilterChange('state', province.code);
                                 // Auto-switch to city tab after province selection
                                 setTimeout(() => setLocationActiveTab('city'), 150);
-                                requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                               }}
                               onTouchStart={(e) => e.stopPropagation()}
                             >
@@ -3103,10 +3074,7 @@ const AstraSearchPanel = ({
                           placeholder="Type to search city..."
                           className="h-9 text-xs flex-1"
                           onFocus={(e) => {
-                            e.preventDefault();
                             e.stopPropagation();
-                            const currentScroll = window.scrollY;
-                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
                         />

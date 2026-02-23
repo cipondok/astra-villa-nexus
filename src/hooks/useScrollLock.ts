@@ -6,20 +6,17 @@ export const useScrollLock = (lock: boolean) => {
   useEffect(() => {
     if (lock) {
       scrollYRef.current = window.scrollY;
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollYRef.current}px`;
       document.body.style.left = '0';
       document.body.style.right = '0';
       document.body.style.overflow = 'hidden';
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
     } else {
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.left = '';
       document.body.style.right = '';
       document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
       window.scrollTo(0, scrollYRef.current);
     }
 
@@ -29,7 +26,6 @@ export const useScrollLock = (lock: boolean) => {
       document.body.style.left = '';
       document.body.style.right = '';
       document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
     };
   }, [lock]);
 };
