@@ -111,6 +111,10 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
       toast.success('Notification deleted');
     },
+    onError: (error) => {
+      console.error('Delete error:', error);
+      toast.error('Failed to delete notification');
+    },
   });
 
   // Bulk delete mutation
@@ -128,24 +132,38 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
       toast.success(`${selectedIds.size} notifications deleted`);
     },
+    onError: (error) => {
+      console.error('Bulk delete error:', error);
+      toast.error('Failed to delete selected notifications');
+    },
   });
 
-  // Clear all (delete all) mutation
+  // Clear all (delete all) mutation - batch delete to handle large datasets
   const clearAllMutation = useMutation({
     mutationFn: async () => {
+      // Delete in batches using the currently loaded notification IDs
       const ids = notifications.map(n => n.id);
       if (ids.length === 0) return;
-      const { error } = await supabase
-        .from('admin_alerts')
-        .delete()
-        .in('id', ids);
-      if (error) throw error;
+      
+      // Process in chunks of 100
+      for (let i = 0; i < ids.length; i += 100) {
+        const chunk = ids.slice(i, i + 100);
+        const { error } = await supabase
+          .from('admin_alerts')
+          .delete()
+          .in('id', chunk);
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
       setSelectedIds(new Set());
       queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
       toast.success('All notifications cleared');
+    },
+    onError: (error) => {
+      console.error('Clear all error:', error);
+      toast.error('Failed to clear notifications');
     },
   });
 
