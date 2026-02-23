@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -63,6 +64,7 @@ interface RentalFilters {
   bathrooms: string;
   minPrice: number;
   maxPrice: number;
+  sortBy: string;
 }
 
 const Disewa = () => {
@@ -109,10 +111,11 @@ const Disewa = () => {
     bathrooms: "all",
     minPrice: 0,
     maxPrice: 100_000_000,
+    sortBy: 'newest',
   });
 
   const filteredProperties = useMemo(() => {
-    return properties.filter(property => {
+    let filtered = properties.filter(property => {
     const matchesSearch = !filters.searchTerm || 
       property.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) || 
       property.location.toLowerCase().includes(filters.searchTerm.toLowerCase()) || 
@@ -166,6 +169,27 @@ const Disewa = () => {
            matchesRentalPeriod && matchesOnlineBooking && 
            matchesMinimumDays && matchesDateAvailability;
     });
+
+    switch (filters.sortBy) {
+      case 'price_low':
+        filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+        break;
+      case 'price_high':
+        filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+        break;
+      case 'oldest':
+        filtered.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+        break;
+      case 'popular':
+        filtered.sort((a, b) => ((b as any).views || 0) - ((a as any).views || 0));
+        break;
+      case 'newest':
+      default:
+        filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        break;
+    }
+
+    return filtered;
   }, [properties, filters]);
 
   const formatPrice = (price: number) => {
@@ -254,7 +278,21 @@ const Disewa = () => {
                 </p>
               </div>
             </div>
-            <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+            <div className="flex items-center gap-2">
+              <Select value={filters.sortBy} onValueChange={(value) => setFilters(prev => ({ ...prev, sortBy: value }))}>
+                <SelectTrigger className="h-8 sm:h-9 w-[130px] sm:w-[160px] text-xs sm:text-sm bg-background border-border rounded-md">
+                  <SelectValue placeholder="Urutkan" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Terbaru</SelectItem>
+                  <SelectItem value="oldest">Terlama</SelectItem>
+                  <SelectItem value="price_low">Harga Terendah</SelectItem>
+                  <SelectItem value="price_high">Harga Tertinggi</SelectItem>
+                  <SelectItem value="popular">Terpopuler</SelectItem>
+                </SelectContent>
+              </Select>
+              <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+            </div>
           </div>
         </div>
       </div>
