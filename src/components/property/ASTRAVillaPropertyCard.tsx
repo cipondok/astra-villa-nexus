@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Maximize, Key, Tag, Building, Eye, Camera } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Maximize, Key, Tag, Building, Eye } from "lucide-react";
+import PropertyImageCarousel from "./PropertyImageCarousel";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
@@ -103,7 +104,7 @@ const ASTRAVillaPropertyCard = ({
 
   const priceInfo = formatPrice(property.price);
   const ListingIcon = getListingIcon(property.listing_type);
-  const imageCount = property.images?.length || 1;
+  const allImages = property.images?.length ? property.images : [getImageUrl()];
   const isRent = property.listing_type === "rent";
 
   return (
@@ -119,27 +120,26 @@ const ASTRAVillaPropertyCard = ({
       onClick={handleClick}
     >
       {/* Image Container */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+      <PropertyImageCarousel
+        images={allImages}
+        alt={property.title}
+        className="aspect-[4/3] bg-muted"
+        imageClassName={cn(
+          "group-hover:scale-105 transition-all duration-700 ease-out",
+          isImageLoaded ? "opacity-100" : "opacity-0"
+        )}
+        onImageLoad={() => setIsImageLoaded(true)}
+        onImageError={() => setImageError(true)}
+      >
         {!isImageLoaded && (
           <div className="absolute inset-0 bg-muted animate-pulse" />
         )}
-        <img
-          src={getImageUrl()}
-          alt={property.title}
-          className={cn(
-            "w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out",
-            isImageLoaded ? "opacity-100" : "opacity-0"
-          )}
-          loading="lazy"
-          onLoad={() => setIsImageLoaded(true)}
-          onError={() => setImageError(true)}
-        />
 
-      {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 pointer-events-none" />
 
         {/* Top Row */}
-        <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
+        <div className="absolute top-2 left-2 right-2 flex items-center justify-between z-10">
           <span className={cn(
             "flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold shadow-md",
             isRent
@@ -160,7 +160,7 @@ const ASTRAVillaPropertyCard = ({
           variant="ghost"
           size="icon"
           className={cn(
-            "absolute top-9 right-2 h-8 w-8 sm:h-7 sm:w-7 rounded-full",
+            "absolute top-9 right-2 h-8 w-8 sm:h-7 sm:w-7 rounded-full z-10",
             "bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20",
             "transition-all duration-200",
             isLiked && "bg-destructive/40 border-destructive/40"
@@ -170,16 +170,8 @@ const ASTRAVillaPropertyCard = ({
           <Heart className={cn("h-4 w-4 sm:h-3.5 sm:w-3.5 transition-colors", isLiked ? "fill-destructive text-destructive" : "text-white/90")} />
         </Button>
 
-        {/* Image Count Badge */}
-        {imageCount > 1 && (
-          <div className="absolute bottom-2 right-2 flex items-center gap-0.5 bg-black/40 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded-full">
-            <Camera className="h-2.5 w-2.5" />
-            <span>{imageCount}</span>
-          </div>
-        )}
-
         {/* View Icon on Hover */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
           <div className={cn(
             "h-10 w-10 rounded-full bg-primary/90 backdrop-blur-sm flex items-center justify-center",
             "shadow-lg shadow-primary/30 scale-75 group-hover:scale-100 transition-transform duration-300"
@@ -187,7 +179,7 @@ const ASTRAVillaPropertyCard = ({
             <Eye className="h-4.5 w-4.5 text-white" />
           </div>
         </div>
-      </div>
+      </PropertyImageCarousel>
 
       {/* Content Section */}
       <div className="p-2 sm:p-3 space-y-2">
