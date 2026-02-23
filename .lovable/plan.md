@@ -1,122 +1,95 @@
 
 
-# Update PropertyDetailModal and PropertyDetail Page -- Consistent Color Tokens
+# Improve Mobile Responsive Layout for Property Cards
 
 ## Overview
 
-Replace all `gold-primary` references and fix light-mode-broken color combinations in both the PropertyDetailModal and the PropertyDetail page to match the updated card design system.
+Optimize grid spacing, card sizes, and touch targets across all property card components for better mobile usability.
 
-## Key Problems
+## Changes
 
-1. **`gold-primary` token used extensively** -- borders, backgrounds, icons, text, and buttons all use `gold-primary` which should be replaced with semantic `primary` tokens
-2. **`primary-foreground/5` backgrounds** -- used for sticky headers and card backgrounds, invisible in light mode (white on white)
-3. **`text-background` on buttons** -- breaks in light mode; should use `text-primary-foreground`
-4. **Star ratings** use `fill-gold-primary text-gold-primary` -- should be `fill-chart-3 text-chart-3`
-5. **Image navigation buttons** use `bg-background/60` -- should use `bg-black/40 backdrop-blur-md text-white` for overlay consistency
+### 1. Grid Spacing and Section Padding
 
----
+**Files: `PropertiesForSaleSection.tsx`, `PropertiesForRentSection.tsx`**
 
-## File 1: `src/components/property/PropertyDetailModal.tsx`
+- Section padding: Change `p-3` to `px-2 py-3 sm:p-3` -- tighter horizontal padding on mobile to maximize card width
+- Grid gap: Change `gap-2 sm:gap-3` to `gap-1.5 sm:gap-3` -- slightly tighter gap on mobile so cards get more room
+- Grid columns stay at `grid-cols-2` on mobile (good use of space)
 
-### Changes:
+**File: `PropertyCardSkeleton.tsx`**
 
-- **Line 124**: Modal container -- replace `shadow-gold-primary/10 border-gold-primary/15` with `shadow-lg border-border`
-- **Line 128**: Header border -- replace `border-gold-primary/15` with `border-border`
-- **Lines 181, 187**: Image nav buttons -- replace `bg-background/60 text-foreground` with `bg-black/40 backdrop-blur-md text-white`
-- **Line 193**: Image counter -- replace `bg-background/60 text-foreground` with `bg-black/40 backdrop-blur-md text-white`
-- **Line 216**: Thumbnail active border -- replace `border-gold-primary` with `border-primary`
-- **Line 230**: Price text -- replace `text-gold-primary` with `text-primary`
-- **Lines 246, 253, 260, 267**: Stats containers -- replace `bg-gold-primary/5 border-gold-primary/10` with `bg-primary/5 border-primary/10` and icon color `text-gold-primary` to `text-primary`
-- **Lines 277, 287**: Description/Features containers -- replace `bg-gold-primary/5 border-gold-primary/10` with `bg-muted/30 border-border`
-- **Line 293**: Feature items -- replace `bg-card/50 border-border/30` with `bg-muted/30 border-border/50`
-- **Line 306**: Contact sidebar -- replace `border-gold-primary/15` with `border-border`
-- **Line 309**: Contact button -- replace `bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-gold-primary/20` with `bg-primary text-primary-foreground shadow-primary/20`
-- **Line 338**: Agent card -- replace `border-gold-primary/15` with `border-border`
-- **Line 341**: Agent avatar bg -- replace `bg-gold-primary/10` with `bg-primary/10`, icon `text-gold-primary` to `text-primary`
-- **Lines 357, 375**: Section borders -- replace `border-gold-primary/15` with `border-border`
-- **Line 362, 380**: Placeholder cards -- replace `bg-card/50 border-border/30` with `bg-muted/30 border-border/50`
+- Match the same grid gap: `gap-1.5 sm:gap-3`
 
----
+### 2. Touch Target Improvements
 
-## File 2: `src/pages/PropertyDetail.tsx`
+**Files: `ASTRAVillaPropertyCard.tsx`, `PropertiesForSaleSection.tsx`, `PropertiesForRentSection.tsx`**
 
-### Changes (grouped by area):
+All interactive elements on cards need minimum 44px touch targets on mobile:
 
-**Loading state (line 382):**
-- Replace `bg-gold-primary/10` and `text-gold-primary` with `bg-primary/10` and `text-primary`
+- Heart button in ASTRAVillaPropertyCard: Change `h-7 w-7` (28px) to `h-8 w-8 sm:h-7 sm:w-7` -- larger on mobile, compact on desktop
+- Heart icon: Change `h-3.5 w-3.5` to `h-4 w-4 sm:h-3.5 sm:w-3.5`
+- Entire card already has `cursor-pointer` and acts as a touch target (good)
 
-**Agent header (lines 485-548):**
-- Line 485: Replace `bg-primary-foreground/5` with `bg-muted/30`; replace `border-gold-primary/15` with `border-border`
-- Line 491: Avatar container -- replace `from-gold-primary/20` with `from-primary/20`
-- Line 517: Position badge -- replace `from-gold-primary/15 to-accent/15 text-gold-primary` with `bg-primary/10 text-primary`
-- Line 521: Star -- replace `fill-gold-primary text-gold-primary` with `fill-chart-3 text-chart-3`
-- Line 531: Chat button -- replace `bg-chart-1 text-background` with `bg-primary text-primary-foreground`
+### 3. Card Content Mobile Optimization
 
-**Sticky header (line 552):**
-- Replace `bg-primary-foreground/5` with `bg-background/90`; replace `border-gold-primary/15` with `border-border`
+**Files: `PropertiesForSaleSection.tsx`, `PropertiesForRentSection.tsx`**
 
-**Property header card (line 818):**
-- Replace `border-gold-primary/15 bg-primary-foreground/5` with `border-border bg-card`
+- Content padding: Change `p-2.5` to `p-2 sm:p-2.5` -- slightly tighter on mobile
+- Price container padding: Change `px-2.5 py-2` to `px-2 py-1.5 sm:px-2.5 sm:py-2`
+- Monthly estimate badge: Hide on mobile to reduce clutter -- add `hidden sm:inline` to the monthly payment span
+- Spec labels (KT, KM): Keep visible but ensure they wrap cleanly with `flex-wrap` (already present)
 
-**Location box (line 826):**
-- Replace `bg-primary-foreground/5 border-gold-primary/10` with `bg-muted/30 border-border/50`
-- Line 827-828: MapPin icon container -- replace `bg-gold-primary/10 text-gold-primary` with `bg-primary/10 text-primary`
-- Line 854: Navigation icon -- replace `text-gold-primary` with `text-primary`
+**File: `ASTRAVillaPropertyCard.tsx`**
 
-**Listing badge (line 865):**
-- Replace `bg-gold-primary text-background` with proper gradient: sale = `bg-gradient-to-r from-emerald-500 to-green-600 text-white`, rent = `bg-gradient-to-r from-sky-500 to-blue-600 text-white`
+- Content padding: Change `p-3` to `p-2 sm:p-3`
+- Price container: Change `px-2.5 py-2` to `px-2 py-1.5 sm:px-2.5 sm:py-2`
+- Monthly estimate: Add `hidden sm:inline` to hide on small screens
 
-**Price display (lines 881-889):**
-- Replace `bg-gold-primary/5 border-gold-primary/15` with `bg-primary/5 border-primary/15`
-- Replace `text-gold-primary` with `text-primary`
+### 4. PropertySlideSection Mobile Grid Fix
 
-**Stats grid (lines 894-931):**
-- Replace all `bg-gold-primary/5 border-gold-primary/10` and `text-gold-primary` with `bg-primary/5 border-primary/10` and `text-primary`
-- Replace `bg-accent/5 border-accent/10 text-accent` with `bg-primary/5 border-primary/10 text-primary` for consistency
+**File: `PropertySlideSection.tsx`**
 
-**Quick actions border (line 934):**
-- Replace `border-gold-primary/10` with `border-border`
+The `card-grid` class forces 1 column on mobile via CSS override, wasting space. Fix the slide layout for mobile:
 
-**Tabs card (line 966):**
-- Replace `border-gold-primary/15 bg-primary-foreground/5` with `border-border bg-card`
-- Line 969: TabsList -- replace `bg-primary-foreground/5 border-gold-primary/10` with `bg-muted/30 border-border`
-- Lines 970-972: Tab triggers -- replace `data-[state=active]:bg-gold-primary data-[state=active]:text-background` with `data-[state=active]:bg-primary data-[state=active]:text-primary-foreground`
+- Loading skeleton: Change from `card-grid gap-4` to `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4`
+- Slide grid: Change from `card-grid gap-4` to `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4`
+- This bypasses the CSS override that forces 1 column and gives a cleaner responsive layout
 
-**Virtual tour card (line 1037):**
-- Replace `border-gold-primary/15 bg-primary-foreground/5` with `border-border bg-card`
-- Line 1038: Header bg -- replace `bg-gold-primary/5` with `bg-muted/30`
-- Line 1040-1041: Icon -- replace `bg-gold-primary/10 text-gold-primary` with `bg-primary/10 text-primary`
+### 5. SimilarProperties Mobile Grid
 
-**Contact sidebar card (line 1073):**
-- Replace `border-gold-primary/15 bg-primary-foreground/5` with `border-border bg-card`
-- Line 1074: Header bg -- replace `bg-gold-primary/5` with `bg-muted/30`
-- Line 1076-1077: Icon -- replace `bg-gold-primary/10 text-gold-primary` with `bg-primary/10 text-primary`
-- Line 1087: Avatar gradient -- replace `from-gold-primary/15` with `from-primary/15`
-- Line 1096: Position text -- replace `text-gold-primary` with `text-primary`
-- Line 1098: Star -- replace `fill-gold-primary text-gold-primary` with `fill-chart-3 text-chart-3`
-- Line 1106: Company box -- replace `bg-primary-foreground/5 border-gold-primary/10` with `bg-muted/30 border-border/50`
-- Line 1108: Company initial -- replace `bg-gold-primary/10 text-gold-primary` with `bg-primary/10 text-primary`
-- Line 1119: WhatsApp button -- replace `bg-chart-1 text-background` with `bg-primary text-primary-foreground`
-- Lines 1195-1203: Agent stats -- replace `bg-gold-primary/5 text-gold-primary` with `bg-primary/5 text-primary`; replace `bg-accent/5 text-accent` with `bg-primary/5 text-primary`
+**File: `SimilarProperties.tsx`**
+
+- Grid: `grid-cols-2 lg:grid-cols-3` is already good
+- Gap: Change `gap-2 sm:gap-3` -- already good, no changes needed
+
+### 6. Mobile CSS Override Cleanup
+
+**File: `src/styles/mobile-optimizations.css`**
+
+- The `.mobile-app-layout .card-grid` override forces `grid-template-columns: 1fr !important` which breaks multi-column layouts. Since PropertySlideSection will use explicit grid classes instead, this override should be updated to `repeat(2, 1fr)` to allow 2 columns on mobile for card grids.
 
 ---
 
-## Summary of Token Replacements
+## Technical Summary
 
-| Old Token | New Token |
-|-----------|-----------|
-| `gold-primary` (borders, bg, text) | `primary` |
-| `bg-primary-foreground/5` (backgrounds) | `bg-muted/30` or `bg-card` or `bg-background/90` |
-| `text-background` (on buttons) | `text-primary-foreground` |
-| `fill-gold-primary text-gold-primary` (stars) | `fill-chart-3 text-chart-3` |
-| `bg-background/60` (image overlays) | `bg-black/40 backdrop-blur-md text-white` |
-| `bg-gold-primary text-background` (listing badge) | Emerald/Blue gradient + `text-white` |
-| `data-[state=active]:bg-gold-primary` | `data-[state=active]:bg-primary` |
+| Area | Current | Updated |
+|------|---------|---------|
+| Section padding | `p-3` | `px-2 py-3 sm:p-3` |
+| Grid gap (Sale/Rent) | `gap-2 sm:gap-3` | `gap-1.5 sm:gap-3` |
+| Heart button size | `h-7 w-7` (28px) | `h-8 w-8 sm:h-7 sm:w-7` |
+| Card content padding | `p-2.5` / `p-3` | `p-2 sm:p-2.5` / `p-2 sm:p-3` |
+| Price padding | `px-2.5 py-2` | `px-2 py-1.5 sm:px-2.5 sm:py-2` |
+| Monthly estimate | Always visible | `hidden sm:inline` on mobile |
+| Slide section grid | `card-grid` (1col mobile) | Explicit `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` |
+| Mobile CSS card-grid | `1fr !important` | `repeat(2, 1fr) !important` |
 
 ### Files to Modify
 
-| File | Scope |
-|------|-------|
-| `src/components/property/PropertyDetailModal.tsx` | Replace gold-primary tokens, fix overlay colors |
-| `src/pages/PropertyDetail.tsx` | Replace gold-primary tokens, fix primary-foreground backgrounds, standardize listing badges |
-
+| File | Changes |
+|------|---------|
+| `src/components/property/PropertiesForSaleSection.tsx` | Padding, gap, touch targets, content density |
+| `src/components/property/PropertiesForRentSection.tsx` | Padding, gap, touch targets, content density |
+| `src/components/property/ASTRAVillaPropertyCard.tsx` | Touch targets, content padding, hide monthly on mobile |
+| `src/components/property/PropertySlideSection.tsx` | Replace card-grid with explicit responsive grid |
+| `src/components/property/PropertyCardSkeleton.tsx` | Match updated grid gap |
+| `src/styles/mobile-optimizations.css` | Update card-grid mobile override to 2 columns |
