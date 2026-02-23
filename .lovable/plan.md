@@ -1,36 +1,77 @@
 
-# Fix: Filter Popup Disturbing Page Style, Scrolling & Resizing
 
-## Problem
-When the Advanced Filters popup opens, the page experiences layout shifts and style disturbances. This is caused by **duplicate scroll-locking mechanisms** fighting each other:
+# Fix: Page Still Jumps When Opening Filter Popup
 
-1. **`useScrollLock` hook** -- sets `overflow: hidden` + `paddingRight` on both `<html>` and `<body>`
-2. **`filter-popup-open` CSS class** -- also sets `overflow: hidden !important` + `touch-action: none !important` on `<body>`
-3. **`--scroll-position` CSS variable** -- set but never consumed, adding unnecessary overhead
+## Root Cause
 
-The `touch-action: none !important` on the body is especially problematic -- it disables all touch interactions site-wide, and the `paddingRight` scrollbar compensation can cause visible layout shifts.
+The `useScrollLock` hook sets `overflow: hidden` on `document.documentElement` (the `<html>` element), but the **body** element has `overflow-y: auto !important;` in `src/index.css` (line 83). Because of the `!important` flag, the body continues to scroll regardless of what the hook does -- causing the visible page jump.
+
+Additionally, the hook only targets `<html>`, not `<body>`, and does not prevent the scroll position from visually resetting.
 
 ## Solution
 
-### 1. Remove duplicate scroll-lock effect in `AstraSearchPanel.tsx` (lines 172-183)
-- Delete the `useEffect` that adds `filter-popup-open` class and sets `--scroll-position`
-- The `useScrollLock(showAdvancedFilters)` hook on line 170 already handles scroll prevention correctly
+### 1. Fix `useScrollLock.ts` -- use position-fixed technique
 
-### 2. Simplify `useScrollLock` hook in `src/hooks/useScrollLock.ts`
-- Remove `paddingRight` compensation (this causes the layout shift/resize)
-- Keep only `overflow: hidden` on `document.documentElement` (not both html and body)
-- Remove the `scroll-locked` body class (unused)
+Instead of just setting `overflow: hidden` (which gets overridden), the hook will:
+- Save the current scroll position
+- Set `body` to `position: fixed; top: -scrollY; left: 0; right: 0` -- this freezes the page visually in place
+- On unlock, remove those styles and restore `window.scrollTo()` to the saved position
 
-### 3. Clean up CSS in `src/index.css` (lines 148-153)
-- Remove or simplify the `.filter-popup-open` rule since it will no longer be applied
+This is the industry-standard approach (used by libraries like `body-scroll-lock`) and is immune to `!important` overflow rules.
 
-### 4. Remove `touch-none` class from the filter panel div in `AstraSearchPanel.tsx` (line 3538)
-- Replace with `touch-auto` so the panel's internal content remains scrollable/interactive
+### 2. Remove conflicting CSS in `src/index.css`
+
+- **Line 83**: Change `overflow-y: auto !important` to `overflow-y: auto` (remove `!important`) so scroll locking can work
+- **Lines 106-123**: Remove `body.scroll-locked` iOS rules (no longer needed with position-fixed approach)
+- **Lines 126-135**: Remove `html.modal-open, body.modal-open, body.scroll-locked` rules (redundant, and `touch-action: none` causes interaction issues)
+- **Lines 158-164**: Remove `.popup-interaction-active` rule (unused)
+
+### 3. No changes needed to `AstraSearchPanel.tsx`
+
+The existing `useScrollLock(showAdvancedFilters)` call on line 170 is correct. The fix is entirely in the hook and CSS.
 
 ## Files to Change
 
 | File | Change |
 |------|--------|
-| `src/components/AstraSearchPanel.tsx` | Remove duplicate scroll-lock useEffect (lines 172-183); change `touch-none` to `touch-auto` on filter panel |
-| `src/hooks/useScrollLock.ts` | Remove `paddingRight` compensation and simplify to just `overflow: hidden` on `documentElement` |
-| `src/index.css` | Remove `.filter-popup-open` CSS rule (no longer used) |
+| `src/hooks/useScrollLock.ts` | Rewrite to use position-fixed body technique for bulletproof scroll prevention |
+| `src/index.css` | Remove `!important` from `overflow-y: auto`, remove obsolete scroll-lock CSS rules |
+
+## Updated `useScrollLock` implementation
+
+```ts
+import { useEffect, useRef } from 'react';
+
+export const useScrollLock = (lock: boolean) => {
+  const scrollYRef = useRef(0);
+
+  useEffect(() => {
+    if (lock) {
+      scrollYRef.current = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollYRef.current}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflow = '';
+      window.scrollTo(0, scrollYRef.current);
+    }
+
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflow = '';
+    };
+  }, [lock]);
+};
+```
+
+This approach physically pins the body in place so no scroll jump is possible, regardless of any CSS `!important` rules.
+
