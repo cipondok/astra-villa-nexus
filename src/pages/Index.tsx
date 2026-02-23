@@ -17,6 +17,7 @@ import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, Star } from "lucide-react";
+import astraBannerMain from "@/assets/astra-banner-main.jpg";
 import astraBanner1 from "@/assets/astra-banner-1.jpg";
 import astraBanner2 from "@/assets/astra-banner-2.jpg";
 import astraBanner3 from "@/assets/astra-banner-3.jpg";
@@ -288,7 +289,7 @@ const Index = () => {
   // Compute banner images - use admin config or fallback to defaults
   const bannerImages = heroConfig?.bannerImages && heroConfig.bannerImages.length > 0
     ? heroConfig.bannerImages
-    : [astraBanner1, astraBanner2, astraBanner3, villaCommunityDaylight];
+    : [astraBannerMain, astraBanner1, astraBanner2, astraBanner3, villaCommunityDaylight];
   
   const slideInterval = (heroConfig?.autoSlideInterval || 5) * 1000;
 
