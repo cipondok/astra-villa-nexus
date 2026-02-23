@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import InlineFilterPanel from "@/components/property/InlineFilterPanel";
+import PropertyListingMapView from "@/components/property/PropertyListingMapView";
+import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { 
   MapPin, 
@@ -72,6 +74,7 @@ const Dijual = () => {
   const cameFromHome = searchParams.get('from') === 'home';
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'grid' | 'map'>('grid');
 
   const {
     properties: fetchedProperties,
@@ -347,7 +350,7 @@ const Dijual = () => {
                 </p>
               </div>
             </div>
-            {/* Filter button moved to InlineFilterPanel */}
+            <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
           </div>
         </div>
       </div>
@@ -408,9 +411,11 @@ const Dijual = () => {
         />
       </div>
 
-      {/* Properties Grid */}
+      {/* Properties Content */}
       <div className="p-3 sm:p-4 md:p-6">
-        {loading ? (
+        {viewMode === 'map' ? (
+          <PropertyListingMapView properties={filteredProperties} formatPrice={formatPrice} />
+        ) : loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="animate-pulse rounded-md overflow-hidden bg-muted h-64 sm:h-72"></div>
@@ -490,23 +495,16 @@ const Dijual = () => {
                 
                 {/* Content */}
                 <CardContent className="p-3 sm:p-4">
-                  {/* Price */}
                   <p className="text-base sm:text-lg font-bold text-primary mb-1">
                     {formatPrice(property.price || 0)}
                   </p>
-                  
-                  {/* Title */}
                   <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 mb-1">
                     {property.title}
                   </h3>
-                  
-                  {/* Location */}
                   <div className="flex items-center gap-1 text-muted-foreground mb-3">
                     <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
                     <span className="text-xs sm:text-sm truncate">{property.city || property.location}</span>
                   </div>
-                  
-                  {/* Property Details */}
                   <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground border-t border-border pt-3">
                     {property.bedrooms > 0 && (
                       <div className="flex items-center gap-1">
@@ -533,8 +531,8 @@ const Dijual = () => {
           </div>
         )}
 
-        {/* Infinite scroll sentinel */}
-        <div ref={sentinelRef} className="h-4" />
+        {/* Infinite scroll sentinel - hidden in map mode */}
+        {viewMode !== 'map' && <div ref={sentinelRef} className="h-4" />}
         {isFetchingMore && (
           <div className="flex justify-center py-6">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
