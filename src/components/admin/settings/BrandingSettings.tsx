@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
 import {
   Image as ImageIcon,
   Upload,
@@ -24,6 +26,8 @@ import {
   CheckCircle2,
   XCircle,
   Settings2,
+  Shield,
+  RotateCcw,
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -32,6 +36,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { LOGO_PLACEHOLDER } from '@/hooks/useBrandingLogo';
+import { useBadgeSettings, BadgeSettings, DEFAULT_BADGE_SETTINGS } from '@/hooks/useBadgeSettings';
 import WelcomeScreenPreview from './WelcomeScreenPreview';
 
 interface BrandingSettingsProps {
@@ -284,6 +289,10 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
           <TabsTrigger value="generator" className="text-xs gap-1.5">
             <Sparkles className="h-3.5 w-3.5" />
             AI Generator
+          </TabsTrigger>
+          <TabsTrigger value="badge" className="text-xs gap-1.5">
+            <Shield className="h-3.5 w-3.5" />
+            Verified Badge
           </TabsTrigger>
         </TabsList>
 
@@ -557,7 +566,332 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* ─── Verified Badge Tab ─── */}
+        <TabsContent value="badge" className="mt-0">
+          <VerifiedBadgeSettingsTab handleFileUpload={handleFileUpload} uploading={uploading} />
+        </TabsContent>
       </Tabs>
+    </div>
+  );
+};
+
+/* ════════════════════════════════════════════
+   Verified Badge Settings Tab
+   ════════════════════════════════════════════ */
+const LEVEL_KEYS = ["diamond", "platinum", "gold", "vip", "silver", "premium"] as const;
+
+const VerifiedBadgeSettingsTab = ({
+  handleFileUpload,
+  uploading,
+}: {
+  handleFileUpload: (key: string, file: File) => Promise<boolean>;
+  uploading: string | null;
+}) => {
+  const { settings, isLoading, saveSettings, isSaving } = useBadgeSettings();
+  const [draft, setDraft] = useState<BadgeSettings>(DEFAULT_BADGE_SETTINGS);
+  const [previewLevel, setPreviewLevel] = useState("diamond");
+
+  useEffect(() => {
+    if (settings) setDraft(settings);
+  }, [settings]);
+
+  const updateLevel = (key: string, field: string, value: string) => {
+    setDraft((prev) => ({
+      ...prev,
+      levels: { ...prev.levels, [key]: { ...prev.levels[key], [field]: value } },
+    }));
+  };
+
+  const handleSave = async () => {
+    try { await saveSettings(draft); } catch {}
+  };
+
+  const handleReset = () => setDraft(DEFAULT_BADGE_SETTINGS);
+
+  if (isLoading) return <div className="animate-pulse h-64 bg-muted rounded-xl" />;
+
+  return (
+    <div className="space-y-4">
+      {/* General Settings */}
+      <Card className="border-border/50">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Shield className="h-4 w-4 text-primary" /> General Settings
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-xs">Shield Style</Label>
+              <Select value={draft.shieldStyle} onValueChange={(v: any) => setDraft((p) => ({ ...p, shieldStyle: v }))}>
+                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="diamond">Diamond (Faceted)</SelectItem>
+                  <SelectItem value="classic">Classic (Smooth)</SelectItem>
+                  <SelectItem value="minimal">Minimal (Flat)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs">Badge Text</Label>
+              <Input value={draft.badgeText} onChange={(e) => setDraft((p) => ({ ...p, badgeText: e.target.value }))} placeholder="Verified Partner" className="h-8 text-xs" />
+            </div>
+            <div>
+              <Label className="text-xs">Text Style</Label>
+              <Select value={draft.badgeTextStyle} onValueChange={(v: any) => setDraft((p) => ({ ...p, badgeTextStyle: v }))}>
+                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pill">Pill (Colored)</SelectItem>
+                  <SelectItem value="plain">Plain Text</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center gap-3">
+              <Switch checked={draft.showBadgeText} onCheckedChange={(c) => setDraft((p) => ({ ...p, showBadgeText: c }))} />
+              <Label className="text-xs">Show Badge Text</Label>
+            </div>
+          </div>
+          <div>
+            <Label className="text-xs">Custom Logo URL or Upload</Label>
+            <div className="flex gap-2">
+              <Input value={draft.logoUrl} onChange={(e) => setDraft((p) => ({ ...p, logoUrl: e.target.value }))} placeholder="Leave empty for header logo" className="h-8 text-xs flex-1" />
+              <input id="badge-logo-upload" type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (file) { await handleFileUpload('badgeLogo', file); }
+                e.target.value = '';
+              }} />
+              <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => document.getElementById('badge-logo-upload')?.click()} disabled={uploading === 'badgeLogo'}>
+                <Upload className="h-3 w-3 mr-1" /> Upload
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Display Settings */}
+      <Card className="border-border/50">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Settings2 className="h-4 w-4 text-primary" /> Display Settings
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-xs">Icon Size on Property Cards</Label>
+              <Select value={draft.displaySize} onValueChange={(v: any) => setDraft((p) => ({ ...p, displaySize: v }))}>
+                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="xs">Extra Small</SelectItem>
+                  <SelectItem value="sm">Small</SelectItem>
+                  <SelectItem value="md">Medium</SelectItem>
+                  <SelectItem value="lg">Large</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs">Badge Position</Label>
+              <Select value={draft.badgePosition} onValueChange={(v: any) => setDraft((p) => ({ ...p, badgePosition: v }))}>
+                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bottom-left">Bottom Left</SelectItem>
+                  <SelectItem value="bottom-right">Bottom Right</SelectItem>
+                  <SelectItem value="top-left">Top Left</SelectItem>
+                  <SelectItem value="top-right">Top Right</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs">Animation Effect</Label>
+              <Select value={draft.animationEffect} onValueChange={(v: any) => setDraft((p) => ({ ...p, animationEffect: v }))}>
+                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  <SelectItem value="pulse">Pulse</SelectItem>
+                  <SelectItem value="bounce">Bounce</SelectItem>
+                  <SelectItem value="glow">Glow</SelectItem>
+                  <SelectItem value="shimmer">Shimmer</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center gap-3">
+              <Switch checked={draft.showOnPropertyCards} onCheckedChange={(c) => setDraft((p) => ({ ...p, showOnPropertyCards: c }))} />
+              <Label className="text-xs">Show on Property Posts</Label>
+            </div>
+          </div>
+          <div>
+            <Label className="text-xs">Glow Intensity ({draft.glowIntensity}%)</Label>
+            <Slider value={[draft.glowIntensity]} onValueChange={([v]) => setDraft((p) => ({ ...p, glowIntensity: v }))} min={0} max={100} step={5} className="mt-2" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Level Colors */}
+      <Card className="border-border/50">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Palette className="h-4 w-4 text-primary" /> Level Colors
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {LEVEL_KEYS.map((key) => {
+              const level = draft.levels[key];
+              return (
+                <div key={key} className="grid grid-cols-5 gap-2 items-end border-b border-border/30 pb-3 last:border-0">
+                  <div>
+                    <Label className="text-[10px]">Label</Label>
+                    <Input value={level?.label || key} onChange={(e) => updateLevel(key, "label", e.target.value)} className="h-7 text-[11px]" />
+                  </div>
+                  <div>
+                    <Label className="text-[10px]">Main</Label>
+                    <div className="flex items-center gap-1">
+                      <input type="color" value={level?.shieldColor || "#000"} onChange={(e) => updateLevel(key, "shieldColor", e.target.value)} className="w-6 h-6 rounded cursor-pointer border" />
+                      <Input value={level?.shieldColor || ""} onChange={(e) => updateLevel(key, "shieldColor", e.target.value)} className="h-7 text-[10px]" />
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-[10px]">Light</Label>
+                    <div className="flex items-center gap-1">
+                      <input type="color" value={level?.shieldLight || "#000"} onChange={(e) => updateLevel(key, "shieldLight", e.target.value)} className="w-6 h-6 rounded cursor-pointer border" />
+                      <Input value={level?.shieldLight || ""} onChange={(e) => updateLevel(key, "shieldLight", e.target.value)} className="h-7 text-[10px]" />
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-[10px]">Dark</Label>
+                    <div className="flex items-center gap-1">
+                      <input type="color" value={level?.shieldDark || "#000"} onChange={(e) => updateLevel(key, "shieldDark", e.target.value)} className="w-6 h-6 rounded cursor-pointer border" />
+                      <Input value={level?.shieldDark || ""} onChange={(e) => updateLevel(key, "shieldDark", e.target.value)} className="h-7 text-[10px]" />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <BadgePreviewInline draft={draft} level={key} size="sm" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Live Preview */}
+      <Card className="border-border/50">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Eye className="h-4 w-4 text-primary" /> Live Preview
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Label className="text-xs">Preview Level:</Label>
+            <Select value={previewLevel} onValueChange={setPreviewLevel}>
+              <SelectTrigger className="w-32 h-8 text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {LEVEL_KEYS.map((k) => <SelectItem key={k} value={k}>{draft.levels[k]?.label || k}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-wrap items-center gap-6 p-4 bg-muted/50 rounded-xl border">
+            {(["xs", "sm", "md", "lg"] as const).map((s) => (
+              <div key={s} className="text-center space-y-1">
+                <p className="text-[10px] text-muted-foreground uppercase">{s}</p>
+                <BadgePreviewInline draft={draft} level={previewLevel} size={s} />
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center gap-4 p-4 bg-background rounded-xl border">
+            {LEVEL_KEYS.map((k) => (
+              <div key={k} className="text-center space-y-1">
+                <BadgePreviewInline draft={draft} level={k} size="sm" />
+                <p className="text-[9px] text-muted-foreground">{draft.levels[k]?.label}</p>
+              </div>
+            ))}
+          </div>
+          {/* Mock property card */}
+          <div>
+            <p className="text-xs font-medium mb-2 text-muted-foreground">Property Card Preview</p>
+            <div className="relative w-64 h-44 rounded-xl overflow-hidden border bg-muted">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+              <div className="absolute top-2 left-2">
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-primary text-primary-foreground">JUAL</span>
+              </div>
+              <div className={`absolute z-10 ${
+                draft.badgePosition === 'bottom-left' ? 'bottom-2 left-2' :
+                draft.badgePosition === 'bottom-right' ? 'bottom-2 right-2' :
+                draft.badgePosition === 'top-left' ? 'top-2 left-2' : 'top-2 right-2'
+              }`}>
+                <BadgePreviewInline draft={draft} level={previewLevel} size={draft.displaySize} />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-2 text-primary-foreground">
+                <p className="text-[11px] font-semibold">Sample Property</p>
+                <p className="text-[9px] opacity-80">Jakarta, Indonesia</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Actions */}
+      <div className="flex gap-3 justify-end">
+        <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs">
+          <RotateCcw className="h-3.5 w-3.5 mr-1.5" /> Reset
+        </Button>
+        <Button size="sm" onClick={handleSave} disabled={isSaving} className="h-8 text-xs">
+          <Save className="h-3.5 w-3.5 mr-1.5" /> {isSaving ? "Saving..." : "Save Badge Settings"}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+/* Inline preview for draft badge settings */
+const BadgePreviewInline = ({ draft, level, size }: { draft: BadgeSettings; level: string; size: "xs" | "sm" | "md" | "lg" }) => {
+  const config = draft.levels[level];
+  if (!config) return null;
+  const SM = { xs: { w: 22, h: 26 }, sm: { w: 28, h: 32 }, md: { w: 34, h: 40 }, lg: { w: 42, h: 48 } };
+  const s = SM[size];
+  const uid = `bpi-${level}-${size}`;
+  return (
+    <div className="inline-flex items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 38" width={s.w} height={s.h} style={{ display: "block", filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.35))" }}>
+        <defs>
+          <linearGradient id={`sg-${uid}`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor={config.shieldLight} /><stop offset="50%" stopColor={config.shieldColor} /><stop offset="100%" stopColor={config.shieldDark} />
+          </linearGradient>
+          <linearGradient id={`gl-${uid}`} x1="0.5" y1="0" x2="0.5" y2="0.6">
+            <stop offset="0%" stopColor="white" stopOpacity="0.55" /><stop offset="100%" stopColor="white" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id={`fl-${uid}`} x1="0" y1="0" x2="1" y2="0.5">
+            <stop offset="0%" stopColor="white" stopOpacity="0.3" /><stop offset="100%" stopColor="white" stopOpacity="0.05" />
+          </linearGradient>
+          <linearGradient id={`fr-${uid}`} x1="1" y1="0" x2="0" y2="0.5">
+            <stop offset="0%" stopColor="black" stopOpacity="0.15" /><stop offset="100%" stopColor="black" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id={`ft-${uid}`} x1="0.5" y1="0" x2="0.5" y2="1">
+            <stop offset="0%" stopColor="white" stopOpacity="0.6" /><stop offset="100%" stopColor="white" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d="M16 1L2 7v11c0 9.5 6.2 17.4 14 19.5 7.8-2.1 14-10 14-19.5V7L16 1z" fill={`url(#sg-${uid})`} stroke={config.shieldDark} strokeWidth="0.8" />
+        {draft.shieldStyle === "diamond" && (<>
+          <path d="M16 1L2 7 16 13 30 7z" fill={`url(#ft-${uid})`} />
+          <path d="M2 7v11c0 4 1.5 8 4 11.5L16 13z" fill={`url(#fl-${uid})`} />
+          <path d="M30 7v11c0 4-1.5 8-4 11.5L16 13z" fill={`url(#fr-${uid})`} />
+          <circle cx="10" cy="10" r="0.6" fill="white" opacity="0.7" />
+          <circle cx="22" cy="10" r="0.4" fill="white" opacity="0.5" />
+        </>)}
+        {draft.shieldStyle === "classic" && (
+          <path d="M16 1L2 7v11c0 9.5 6.2 17.4 14 19.5 7.8-2.1 14-10 14-19.5V7L16 1z" fill={`url(#gl-${uid})`} />
+        )}
+        <circle cx="25" cy="30" r="5" fill="white" />
+        <circle cx="25" cy="30" r="4" fill={config.shieldColor} />
+        <path d="M23 30l1.5 1.5 3-3" stroke="white" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      {size !== "xs" && draft.showBadgeText && (
+        <span className={`text-[9px] font-bold leading-none whitespace-nowrap ${draft.badgeTextStyle === "pill" ? "px-1.5 py-0.5 rounded-full text-primary-foreground" : "text-foreground/80"}`} style={draft.badgeTextStyle === "pill" ? { backgroundColor: config.shieldColor } : undefined}>
+          {draft.badgeText}
+        </span>
+      )}
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { Badge } from "@/components/ui/badge";
 import BrandedStatusBadge from "@/components/ui/BrandedStatusBadge";
+import { useBadgeSettings } from "@/hooks/useBadgeSettings";
 
 interface PropertiesForRentSectionProps {
   language: "en" | "id";
@@ -19,6 +20,11 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
   const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
   const { getPropertyImage } = useDefaultPropertyImage();
+  const { settings: badgeSettings } = useBadgeSettings();
+
+  const badgePosClass = badgeSettings.badgePosition === 'bottom-left' ? 'bottom-1.5 left-1.5' :
+    badgeSettings.badgePosition === 'bottom-right' ? 'bottom-1.5 right-1.5' :
+    badgeSettings.badgePosition === 'top-left' ? 'top-8 left-1.5' : 'top-8 right-1.5';
 
   const { data: rentProperties = [], isLoading } = useQuery({
     queryKey: ['properties-for-rent'],
@@ -147,9 +153,9 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
                 )}
 
                 {/* Branded Status Badge on image */}
-                {property.posted_by && (
-                  <div className="absolute bottom-1.5 left-1.5 z-10">
-                    <BrandedStatusBadge verificationStatus={property.posted_by.verification_status} userLevel={property.posted_by.user_level} size="sm" />
+                {badgeSettings.showOnPropertyCards && property.posted_by && (
+                  <div className={`absolute ${badgePosClass} z-10`}>
+                    <BrandedStatusBadge verificationStatus={property.posted_by.verification_status} userLevel={property.posted_by.user_level} />
                   </div>
                 )}
 

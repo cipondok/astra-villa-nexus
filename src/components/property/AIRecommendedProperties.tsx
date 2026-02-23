@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight, Key, Tag, Building, Clock, Maximize } from 'lucide-react';
 import BrandedStatusBadge from "@/components/ui/BrandedStatusBadge";
+import { useBadgeSettings } from "@/hooks/useBadgeSettings";
 import { formatDistanceToNow } from 'date-fns';
 
 // Helper to capitalize first letter
@@ -53,6 +54,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const [showProgressPopup, setShowProgressPopup] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { getPropertyImage } = useDefaultPropertyImage();
+  const { settings: badgeSettings } = useBadgeSettings();
 
   // Fetch user preferences and property data
   const { data: userPreferences } = useQuery({
@@ -250,9 +252,13 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
           </div>
 
           {/* Branded Status Badge on image */}
-          {property.posted_by && (
-            <div className="absolute bottom-1.5 left-1.5 z-10">
-              <BrandedStatusBadge verificationStatus={property.posted_by.verification_status} userLevel={property.posted_by.user_level} size="sm" />
+          {badgeSettings.showOnPropertyCards && property.posted_by && (
+            <div className={`absolute z-10 ${
+              badgeSettings.badgePosition === 'bottom-left' ? 'bottom-1.5 left-1.5' :
+              badgeSettings.badgePosition === 'bottom-right' ? 'bottom-1.5 right-1.5' :
+              badgeSettings.badgePosition === 'top-left' ? 'top-8 left-1.5' : 'top-8 right-1.5'
+            }`}>
+              <BrandedStatusBadge verificationStatus={property.posted_by.verification_status} userLevel={property.posted_by.user_level} />
             </div>
           )}
 
