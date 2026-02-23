@@ -46,7 +46,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
   };
 
   return (
-    <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary">
+    <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary w-full overflow-hidden">
       <CardHeader className="py-2 px-3">
         <CardTitle className="text-xs text-foreground flex items-center gap-2">
           <Monitor className="h-3.5 w-3.5" />
@@ -56,7 +56,9 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="px-3 pb-3 space-y-3">
+      <CardContent className="px-3 pb-3 overflow-hidden">
+        {/* Welcome Screen - full width */}
+        <div className="space-y-1.5 mb-3">
         {/* Welcome Screen Preview - First screen when site opens */}
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
@@ -64,7 +66,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
             <span className="text-[10px] font-medium text-foreground">Welcome Screen</span>
             <span className="text-[8px] text-muted-foreground">(when site opens)</span>
           </div>
-          <div className="relative overflow-hidden rounded-lg border border-border/50 bg-background h-48">
+          <div className="relative overflow-hidden rounded-lg border border-border/50 bg-background h-40 sm:h-48">
             {/* Background gradient animation */}
             <div className="absolute inset-0 overflow-hidden">
               <motion.div
@@ -166,7 +168,11 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
           </div>
         </div>
 
-        {/* Loading Popup Preview - separate from welcome screen */}
+        </div>
+
+        {/* Grid layout for smaller previews */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Loading Popup Preview */}
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
             <Loader2 className="h-3 w-3 text-chart-5" />
@@ -340,6 +346,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
             </div>
           </div>
         </div>
+        </div> {/* end grid */}
       </CardContent>
     </Card>
   );

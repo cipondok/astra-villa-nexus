@@ -72,8 +72,8 @@ const SystemSettings = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+    <div className="space-y-4 w-full overflow-x-hidden">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 w-full">
         <div className="overflow-x-auto pb-1">
           <TabsList className="inline-flex h-8 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
             <TabsTrigger value="general" className="text-xs h-6 px-3">General & SEO</TabsTrigger>
