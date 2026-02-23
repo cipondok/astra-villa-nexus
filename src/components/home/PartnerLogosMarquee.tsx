@@ -17,7 +17,7 @@ const typeIcon = {
 
 const typeBadgeStyle: Record<Partner["type"], string> = {
   bank: "bg-chart-4/10 border-chart-4/30 text-chart-4",
-  corporate: "bg-accent/10 border-accent/30 text-accent-foreground",
+  corporate: "bg-chart-5/10 border-chart-5/30 text-chart-5",
   university: "bg-chart-1/10 border-chart-1/30 text-chart-1",
 };
 
