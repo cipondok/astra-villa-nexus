@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -67,9 +69,18 @@ const Disewa = () => {
     isFetchingMore,
     hasMore,
     sentinelRef,
+    reset,
   } = useInfiniteProperties({
     listingType: 'rent',
     pageSize: 12,
+  });
+
+  const {
+    isPulling, pullDistance, isRefreshing,
+    indicatorOpacity, indicatorRotation, threshold,
+    handlers,
+  } = usePullToRefresh({
+    onRefresh: async () => { reset(); },
   });
   const [filters, setFilters] = useState<RentalFilters>({
     searchTerm: "",
@@ -190,7 +201,15 @@ const Disewa = () => {
   const cities = [...new Set(properties.map(p => p.city).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div {...handlers} className="min-h-screen bg-background text-foreground">
+      <PullToRefreshIndicator
+        isPulling={isPulling}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        indicatorOpacity={indicatorOpacity}
+        indicatorRotation={indicatorRotation}
+        threshold={threshold}
+      />
       <SEOHead
         title="Properti Disewa di Indonesia"
         description="Sewa villa, apartemen, rumah, dan kos-kosan di seluruh Indonesia. Booking online mudah & cepat di ASTRA Villa Realty."

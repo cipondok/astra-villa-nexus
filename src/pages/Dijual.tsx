@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useInfiniteProperties } from "@/hooks/useInfiniteProperties";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -77,9 +79,18 @@ const Dijual = () => {
     isFetchingMore,
     hasMore,
     sentinelRef,
+    reset,
   } = useInfiniteProperties({
     listingType: 'sale',
     pageSize: 12,
+  });
+
+  const {
+    isPulling, pullDistance, isRefreshing,
+    indicatorOpacity, indicatorRotation, threshold,
+    handlers,
+  } = usePullToRefresh({
+    onRefresh: async () => { reset(); },
   });
 
   // Demo properties for display
@@ -297,7 +308,15 @@ const Dijual = () => {
   const areas = [...new Set(properties.map(p => p.area).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div {...handlers} className="min-h-screen bg-background text-foreground">
+      <PullToRefreshIndicator
+        isPulling={isPulling}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        indicatorOpacity={indicatorOpacity}
+        indicatorRotation={indicatorRotation}
+        threshold={threshold}
+      />
       <SEOHead
         title="Properti Dijual di Indonesia"
         description="Temukan rumah, villa, apartemen, dan properti dijual di seluruh Indonesia. Harga terbaik, pilihan terlengkap di ASTRA Villa Realty."
