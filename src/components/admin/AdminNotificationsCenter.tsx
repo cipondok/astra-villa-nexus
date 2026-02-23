@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Bell, CheckCheck, Trash2, Eye, AlertTriangle, Info, XCircle, Home, Building2, UserPlus, ExternalLink, ClipboardCopy, X } from 'lucide-react';
+import { Bell, CheckCheck, Trash2, Eye, AlertTriangle, Info, XCircle, Home, Building2, UserPlus, ExternalLink, ClipboardCopy, X, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface AdminNotificationsCenterProps {
@@ -130,6 +130,25 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
     },
   });
 
+  // Clear all (delete all) mutation
+  const clearAllMutation = useMutation({
+    mutationFn: async () => {
+      const ids = notifications.map(n => n.id);
+      if (ids.length === 0) return;
+      const { error } = await supabase
+        .from('admin_alerts')
+        .delete()
+        .in('id', ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setSelectedIds(new Set());
+      queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      toast.success('All notifications cleared');
+    },
+  });
+
   const toggleSelect = (id: string) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
@@ -233,6 +252,17 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
                 >
                   <CheckCheck className="h-4 w-4 mr-2" />
                   Mark All Read
+                </Button>
+              )}
+              {notifications.length > 0 && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => clearAllMutation.mutate()}
+                  disabled={clearAllMutation.isPending}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Clear All
                 </Button>
               )}
             </div>
