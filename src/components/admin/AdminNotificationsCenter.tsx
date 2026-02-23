@@ -1,19 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Bell, CheckCheck, Trash2, Eye, AlertTriangle, Info, XCircle, Home, Building2, UserPlus, ExternalLink } from 'lucide-react';
+import { Bell, CheckCheck, Trash2, Eye, AlertTriangle, Info, XCircle, Home, Building2, UserPlus, ExternalLink, ClipboardCopy, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface AdminNotificationsCenterProps {
   onSectionChange?: (section: string) => void;
 }
 
+type CategoryFilter = 'all' | 'system' | 'property' | 'application' | 'other';
+
+const categorize = (type: string): CategoryFilter => {
+  if (['critical', 'security', 'warning', 'info'].includes(type)) return 'system';
+  if (['property_owner_application', 'vendor_application', 'agent_application'].includes(type)) return 'application';
+  if (type.includes('property') || type.includes('listing')) return 'property';
+  return 'other';
+};
+
 export function AdminNotificationsCenter({ onSectionChange }: AdminNotificationsCenterProps) {
   const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all');
+  const [categoryTab, setCategoryTab] = useState<CategoryFilter>('all');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const queryClient = useQueryClient();
 
   // Fetch all notifications
@@ -32,16 +44,26 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
       }
 
       const { data, error } = await query;
-      
-      if (error) {
-        console.error('Error fetching notifications:', error);
-        throw error;
-      }
-      
+      if (error) throw error;
       return data || [];
     },
     refetchInterval: 30000,
   });
+
+  // Category counts & filtered list
+  const categoryCounts = useMemo(() => {
+    const counts = { all: 0, system: 0, property: 0, application: 0, other: 0 };
+    notifications.forEach(n => {
+      counts.all++;
+      counts[categorize(n.type)]++;
+    });
+    return counts;
+  }, [notifications]);
+
+  const filteredNotifications = useMemo(() => {
+    if (categoryTab === 'all') return notifications;
+    return notifications.filter(n => categorize(n.type) === categoryTab);
+  }, [notifications, categoryTab]);
 
   // Mark as read mutation
   const markAsReadMutation = useMutation({
@@ -50,7 +72,6 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
         .from('admin_alerts')
         .update({ is_read: true, updated_at: new Date().toISOString() })
         .eq('id', id);
-      
       if (error) throw error;
     },
     onSuccess: () => {
@@ -67,7 +88,6 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
         .from('admin_alerts')
         .update({ is_read: true, updated_at: new Date().toISOString() })
         .eq('is_read', false);
-      
       if (error) throw error;
     },
     onSuccess: () => {
@@ -84,7 +104,6 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
         .from('admin_alerts')
         .delete()
         .eq('id', id);
-      
       if (error) throw error;
     },
     onSuccess: () => {
@@ -93,6 +112,47 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
       toast.success('Notification deleted');
     },
   });
+
+  // Bulk delete mutation
+  const bulkDeleteMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase
+        .from('admin_alerts')
+        .delete()
+        .in('id', ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setSelectedIds(new Set());
+      queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      toast.success(`${selectedIds.size} notifications deleted`);
+    },
+  });
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredNotifications.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredNotifications.map(n => n.id)));
+    }
+  };
+
+  const handleCopyToClipboard = (notification: any) => {
+    const text = `[${notification.title}]: ${notification.message}`;
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success('Copied to clipboard — paste in chat to fix');
+    });
+  };
 
   const getAlertIcon = (type: string) => {
     switch (type) {
@@ -117,9 +177,7 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
   };
 
   const handleViewApplication = (notification: any) => {
-    // Mark as read first
     markAsReadMutation.mutate(notification.id);
-    // Navigate to upgrade applications
     if (onSectionChange) {
       onSectionChange('upgrade-applications');
     }
@@ -140,6 +198,11 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
+  const handleCategoryChange = (tab: string) => {
+    setCategoryTab(tab as CategoryFilter);
+    setSelectedIds(new Set());
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -158,6 +221,9 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
               <Badge variant="secondary" className="text-sm">
                 {unreadCount} Unread
               </Badge>
+              <Badge variant="outline" className="text-sm">
+                {notifications.length} Total
+              </Badge>
               {unreadCount > 0 && (
                 <Button
                   variant="outline"
@@ -173,14 +239,65 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
           </div>
         </CardHeader>
         <CardContent>
+          {/* Read status filter */}
           <Tabs defaultValue="all" onValueChange={(v) => setFilter(v as any)}>
-            <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsList className="grid w-full grid-cols-3 mb-4">
               <TabsTrigger value="all">All ({notifications.length})</TabsTrigger>
               <TabsTrigger value="unread">Unread ({unreadCount})</TabsTrigger>
               <TabsTrigger value="read">Read ({notifications.length - unreadCount})</TabsTrigger>
             </TabsList>
+          </Tabs>
 
-            <TabsContent value={filter} className="space-y-4">
+          {/* Category tabs */}
+          <Tabs value={categoryTab} onValueChange={handleCategoryChange}>
+            <TabsList className="mb-4">
+              {(['all', 'system', 'property', 'application', 'other'] as CategoryFilter[]).map(cat => (
+                <TabsTrigger key={cat} value={cat} className="capitalize text-xs">
+                  {cat} ({categoryCounts[cat]})
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            {/* Bulk action bar */}
+            {selectedIds.size > 0 && (
+              <div className="flex items-center gap-3 p-3 mb-4 rounded-lg bg-muted/60 border border-border/40">
+                <Checkbox
+                  checked={selectedIds.size === filteredNotifications.length}
+                  onCheckedChange={toggleSelectAll}
+                />
+                <span className="text-sm font-medium">{selectedIds.size} selected</span>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => bulkDeleteMutation.mutate(Array.from(selectedIds))}
+                  disabled={bulkDeleteMutation.isPending}
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  Delete Selected
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedIds(new Set())}
+                >
+                  <X className="h-4 w-4 mr-1" />
+                  Cancel
+                </Button>
+              </div>
+            )}
+
+            {/* Select all row when nothing selected */}
+            {selectedIds.size === 0 && filteredNotifications.length > 0 && (
+              <div className="flex items-center gap-2 mb-4 px-1">
+                <Checkbox
+                  checked={false}
+                  onCheckedChange={toggleSelectAll}
+                />
+                <span className="text-sm text-muted-foreground">Select all</span>
+              </div>
+            )}
+
+            <TabsContent value={categoryTab} className="space-y-4 mt-0">
               {isLoading ? (
                 <div className="text-center py-12 text-muted-foreground">
                   Loading notifications...
@@ -189,26 +306,33 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
                 <div className="text-center py-12">
                   <div className="text-destructive mb-2">Error loading notifications</div>
                   <div className="text-sm text-muted-foreground">
-                    {error.message || 'Please check your permissions'}
+                    {(error as Error).message || 'Please check your permissions'}
                   </div>
                 </div>
-              ) : notifications.length === 0 ? (
+              ) : filteredNotifications.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <Bell className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No {filter !== 'all' ? filter : ''} notifications found</p>
+                  <p>No notifications found in this category</p>
                 </div>
               ) : (
-                notifications.map((notification) => (
-                  <Card 
+                filteredNotifications.map((notification) => (
+                  <Card
                     key={notification.id}
                     className={`transition-all ${
-                      !notification.is_read 
-                        ? 'border-l-4 border-l-primary bg-accent/5' 
+                      !notification.is_read
+                        ? 'border-l-4 border-l-primary bg-accent/5'
                         : 'opacity-75'
-                    }`}
+                    } ${selectedIds.has(notification.id) ? 'ring-2 ring-primary/30' : ''}`}
                   >
                     <CardContent className="p-4">
-                      <div className="flex items-start gap-4">
+                      <div className="flex items-start gap-3">
+                        {/* Checkbox */}
+                        <div className="mt-1">
+                          <Checkbox
+                            checked={selectedIds.has(notification.id)}
+                            onCheckedChange={() => toggleSelect(notification.id)}
+                          />
+                        </div>
                         <div className="mt-1">
                           {getAlertIcon(notification.type)}
                         </div>
@@ -252,6 +376,16 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
                               )}
                             </div>
                             <div className="flex items-center gap-2">
+                              {/* Copy to clipboard */}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleCopyToClipboard(notification)}
+                                title="Copy to clipboard for chat"
+                              >
+                                <ClipboardCopy className="h-4 w-4 mr-1" />
+                                Copy
+                              </Button>
                               {isApplicationNotification(notification.type) && (
                                 <Button
                                   variant="default"
