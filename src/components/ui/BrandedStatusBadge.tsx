@@ -48,103 +48,104 @@ const getAnimationStyle = (effect: string, glowIntensity: number, color: string)
   return {};
 };
 
-/** Generate a seal/starburst SVG path */
-const generateSealPath = (
-  cx: number, cy: number, outerR: number, innerR: number,
-  points: number, smooth: boolean
-): string => {
-  const totalPoints = points * 2;
-  const pts: [number, number][] = [];
-  for (let i = 0; i < totalPoints; i++) {
-    const angle = (i * Math.PI) / points - Math.PI / 2;
-    const r = i % 2 === 0 ? outerR : innerR;
-    pts.push([cx + r * Math.cos(angle), cy + r * Math.sin(angle)]);
-  }
-
-  if (!smooth) {
-    // Sharp starburst
-    return pts.map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ") + "Z";
-  }
-
-  // Smooth scalloped edges using quadratic curves
-  let d = `M${pts[0][0].toFixed(2)},${pts[0][1].toFixed(2)}`;
-  for (let i = 0; i < pts.length; i++) {
-    const next = pts[(i + 1) % pts.length];
-    const mid = [(pts[i][0] + next[0]) / 2, (pts[i][1] + next[1]) / 2];
-    d += `Q${pts[i][0].toFixed(2)},${pts[i][1].toFixed(2)} ${mid[0].toFixed(2)},${mid[1].toFixed(2)}`;
-  }
-  return d + "Z";
-};
-
-// Circular Seal Badge Icon
-const SealBadgeIcon = ({
-  color, lightColor, darkColor, width, height, logoUrl, logoSize, shieldStyle,
+// 3D Shield Badge Icon with embedded logo
+const Shield3DBadgeIcon = ({
+  color, lightColor, darkColor, width, height, logoUrl, logoSize,
 }: {
   color: string; lightColor: string; darkColor: string;
   width: number; height: number; logoUrl: string; logoSize: number;
-  shieldStyle: string;
 }) => {
   const uid = color.replace(/[^a-zA-Z0-9]/g, "") + width;
-  const gradId = `sg-${uid}`;
+  const gradMain = `sh-main-${uid}`;
+  const gradShine = `sh-shine-${uid}`;
+  const gradDark = `sh-dark-${uid}`;
+  const gradInner = `sh-inner-${uid}`;
   const filterId = `wf-${uid}`;
+  const shadowId = `sh-shadow-${uid}`;
 
-  const vb = 40;
-  const cx = vb / 2;
-  const cy = vb / 2;
-
-  let sealPath: string;
-  if (shieldStyle === "minimal" || shieldStyle === "circle") {
-    // Simple circle
-    sealPath = `M${cx},${cx - 16}A16,16,0,1,1,${cx},${cx + 16}A16,16,0,1,1,${cx},${cx - 16}Z`;
-  } else {
-    const points = 14;
-    const outerR = 17;
-    const innerR = shieldStyle === "diamond" || shieldStyle === "seal" ? 13.5 : 14.8;
-    const smooth = shieldStyle === "classic" || shieldStyle === "scallop";
-    sealPath = generateSealPath(cx, cy, outerR, innerR, points, smooth);
-  }
+  const shieldOuter = "M20,2 C20,2 6,6 6,6 C6,6 4,8 4,10 L4,18 C4,26 10,33 20,38 C30,33 36,26 36,18 L36,10 C36,8 34,6 34,6 Z";
+  const shieldInner = "M20,5 C20,5 8,8.5 8,8.5 C8,8.5 7,10 7,11.5 L7,18.5 C7,25 12,31 20,35.5 C28,31 33,25 33,18.5 L33,11.5 C33,10 32,8.5 32,8.5 Z";
 
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox={`0 0 ${vb} ${vb}`}
+      viewBox="0 0 40 40"
       width={width}
       height={height}
-      style={{ display: "block", filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.25))" }}
+      style={{ display: "block" }}
     >
       <defs>
-        <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={gradMain} x1="0" y1="0" x2="0.8" y2="1">
           <stop offset="0%" stopColor={lightColor} />
-          <stop offset="50%" stopColor={color} />
+          <stop offset="45%" stopColor={color} />
           <stop offset="100%" stopColor={darkColor} />
         </linearGradient>
-        {/* White colorization filter for the logo */}
+        <linearGradient id={gradShine} x1="0.5" y1="0" x2="0.5" y2="1">
+          <stop offset="0%" stopColor="white" stopOpacity={0.45} />
+          <stop offset="40%" stopColor="white" stopOpacity={0.08} />
+          <stop offset="100%" stopColor="white" stopOpacity={0} />
+        </linearGradient>
+        <linearGradient id={gradDark} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={darkColor} stopOpacity={0.6} />
+          <stop offset="100%" stopColor={darkColor} stopOpacity={0.9} />
+        </linearGradient>
+        <radialGradient id={gradInner} cx="0.5" cy="0.4" r="0.6">
+          <stop offset="0%" stopColor={darkColor} stopOpacity={0.15} />
+          <stop offset="100%" stopColor={darkColor} stopOpacity={0.45} />
+        </radialGradient>
         <filter id={filterId}>
           <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0" />
         </filter>
+        <filter id={shadowId} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="1.5" stdDeviation="1.8" floodColor={darkColor} floodOpacity="0.45" />
+        </filter>
       </defs>
 
-      {/* Seal shape */}
-      <path d={sealPath} fill={`url(#${gradId})`} />
+      {/* Shadow layer */}
+      <path d={shieldOuter} fill="rgba(0,0,0,0.18)" transform="translate(0,1.2)" />
 
-      {/* Subtle inner highlight */}
-      <circle cx={cx} cy={cy - 1} r="11" fill="white" opacity="0.08" />
+      {/* Outer shield body */}
+      <path d={shieldOuter} fill={`url(#${gradMain})`} filter={`url(#${shadowId})`} />
+
+      {/* Left-edge dark bevel */}
+      <path
+        d="M20,2 C20,2 6,6 6,6 C6,6 4,8 4,10 L4,18 C4,26 10,33 20,38 L20,5 C20,5 8,8.5 8,8.5 C8,8.5 7,10 7,11.5 L7,18.5 C7,25 12,31 20,35.5 Z"
+        fill={darkColor} opacity="0.18"
+      />
+
+      {/* Right-edge lighter side */}
+      <path
+        d="M20,2 C20,2 34,6 34,6 C34,6 36,8 36,10 L36,18 C36,26 30,33 20,38 L20,5 C20,5 32,8.5 32,8.5 C32,8.5 33,10 33,11.5 L33,18.5 C33,25 28,31 20,35.5 Z"
+        fill={lightColor} opacity="0.12"
+      />
+
+      {/* Inner recessed area */}
+      <path d={shieldInner} fill={`url(#${gradInner})`} />
+
+      {/* Glossy top highlight */}
+      <path d={shieldOuter} fill={`url(#${gradShine})`} />
+
+      {/* Rim highlight */}
+      <path
+        d="M20,3 C20,3 7,6.8 7,6.8 Q5.5,8 5.5,10 L5.5,11 Q14,8 20,6.5 Q26,8 34.5,11 L34.5,10 Q34.5,8 33,6.8 Z"
+        fill="white" opacity="0.22"
+      />
 
       {/* Logo centered, rendered white */}
       <image
         href={logoUrl}
-        x={cx - logoSize / 2}
-        y={cy - logoSize / 2 - 1}
+        x={20 - logoSize / 2}
+        y={18 - logoSize / 2}
         width={logoSize}
         height={logoSize}
         preserveAspectRatio="xMidYMid meet"
         filter={`url(#${filterId})`}
       />
 
-      {/* Checkmark circle at bottom-right */}
-      <circle cx="30" cy="30" r="6" fill="white" />
-      <circle cx="30" cy="30" r="5" fill={color} />
-      <path d="M27.8 30l1.5 1.5 3-3" stroke="white" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Checkmark circle */}
+      <circle cx="30" cy="31" r="6.5" fill="white" />
+      <circle cx="30" cy="31" r="5.5" fill={color} />
+      <path d="M27.5 31l1.8 1.8 3.2-3.2" stroke="white" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 };
@@ -192,7 +193,7 @@ const BrandedStatusBadge = ({
       )}
       style={animStyle}
     >
-      <SealBadgeIcon
+      <Shield3DBadgeIcon
         color={shieldColor}
         lightColor={shieldLight}
         darkColor={shieldDark}
@@ -200,7 +201,6 @@ const BrandedStatusBadge = ({
         height={sizeConfig.height}
         logoUrl={logoUrl}
         logoSize={sizeConfig.logoSize}
-        shieldStyle={settings.shieldStyle}
       />
       {resolvedSize !== "xs" && settings.showBadgeText && (
         <span
