@@ -12,6 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
+import { Badge } from "@/components/ui/badge";
 
 interface RoleBasedNavigationProps {
   onLoginClick: () => void;
@@ -191,20 +193,40 @@ const RoleBasedNavigation = ({
               <>
                 {/* Desktop User Menu */}
                 <div className="flex items-center space-x-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="header-button-ios flex items-center space-x-2 px-2 py-1 h-8">
-                        <Avatar className="h-7 w-7">
-                          <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
-                          <AvatarFallback className="text-xs bg-primary-foreground/20 text-primary-foreground border border-primary-foreground/20">
-                            {getUserInitials()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="hidden md:block text-xs font-medium text-primary-foreground">
-                          {profile.full_name || profile.email}
-                        </span>
-                      </Button>
-                    </DropdownMenuTrigger>
+                  <HoverCard openDelay={300} closeDelay={200}>
+                    <DropdownMenu modal={false}>
+                      <HoverCardTrigger asChild>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="header-button-ios flex items-center space-x-2 px-2 py-1 h-8">
+                            <Avatar className="h-7 w-7">
+                              <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
+                              <AvatarFallback className="text-xs bg-primary-foreground/20 text-primary-foreground border border-primary-foreground/20">
+                                {getUserInitials()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="hidden md:block text-xs font-medium text-primary-foreground">
+                              {profile.full_name || profile.email}
+                            </span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                      </HoverCardTrigger>
+                      <HoverCardContent side="bottom" align="end" className="w-64 p-4 backdrop-blur-xl bg-popover border-border/30 shadow-xl">
+                        <div className="flex items-start gap-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
+                            <AvatarFallback className="text-xs bg-primary-foreground/20 text-primary-foreground">
+                              {getUserInitials()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col gap-1">
+                            <p className="text-sm font-semibold text-foreground">{profile.full_name || 'User'}</p>
+                            <p className="text-xs text-muted-foreground">{profile.email}</p>
+                            <Badge variant="secondary" className="text-[10px] w-fit mt-0.5 capitalize">
+                              {profile.role.replace('_', ' ')}
+                            </Badge>
+                          </div>
+                        </div>
+                      </HoverCardContent>
                     <DropdownMenuContent align="end" className="w-56 bg-card/95 backdrop-blur-xl border border-border/20 shadow-xl rounded-2xl">
                       <DropdownMenuLabel>
                         <div className="flex flex-col space-y-1">
@@ -239,7 +261,8 @@ const RoleBasedNavigation = ({
                         {currentText.logout}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
-                  </DropdownMenu>
+                    </DropdownMenu>
+                  </HoverCard>
                 </div>
               </>
             ) : (
