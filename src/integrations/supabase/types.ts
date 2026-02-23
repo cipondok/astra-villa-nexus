@@ -25372,6 +25372,7 @@ export type Database = {
       }
       generate_otp: { Args: never; Returns: string }
       generate_transaction_number: { Args: never; Returns: string }
+      get_admin_alerts_counts: { Args: never; Returns: Json }
       get_admin_profile_stats: {
         Args: never
         Returns: {
