@@ -7,6 +7,17 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Bell, CheckCheck, Trash2, Eye, AlertTriangle, Info, XCircle, Home, Building2, UserPlus, ExternalLink, ClipboardCopy, X, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -416,15 +427,38 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
                 </Button>
               )}
               {notifications.length > 0 && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => clearAllMutation.mutate()}
-                  disabled={clearAllMutation.isPending || deleteProgress.active}
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  {clearAllMutation.isPending ? `Clearing...` : 'Clear All'}
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      disabled={clearAllMutation.isPending || deleteProgress.active}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      {clearAllMutation.isPending ? `Clearing...` : 'Clear All'}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="flex items-center gap-2">
+                        <AlertCircle className="h-5 w-5 text-destructive" />
+                        Clear All Notifications
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently delete <strong>all {totalCount.toLocaleString()} notifications</strong> across every category. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => clearAllMutation.mutate()}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Yes, Delete All
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
             </div>
           </div>
@@ -507,15 +541,38 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
                   <span className="text-sm text-muted-foreground">Select all</span>
                 </div>
                 {categoryTab !== 'all' && (
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => clearCategoryMutation.mutate(categoryTab)}
-                    disabled={clearCategoryMutation.isPending || deleteProgress.active}
-                  >
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    {clearCategoryMutation.isPending ? 'Deleting...' : `Delete All ${getCategoryLabel(categoryTab)}`}
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        disabled={clearCategoryMutation.isPending || deleteProgress.active}
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        {clearCategoryMutation.isPending ? 'Deleting...' : `Delete All ${getCategoryLabel(categoryTab)}`}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-2">
+                          <AlertCircle className="h-5 w-5 text-destructive" />
+                          Delete All {getCategoryLabel(categoryTab)} Notifications
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will permanently delete <strong>all {getCategoryLabel(categoryTab)}</strong> notifications ({categoryCounts[categoryTab]} shown). This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => clearCategoryMutation.mutate(categoryTab)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Yes, Delete All {getCategoryLabel(categoryTab)}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 )}
               </div>
             )}
