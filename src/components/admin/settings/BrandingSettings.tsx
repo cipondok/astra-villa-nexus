@@ -260,17 +260,17 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
   const emptyLogos = ALL_LOGO_KEYS.filter(item => !settings[item.key]);
 
   return (
-    <div className="space-y-3 max-w-5xl mx-auto">
+    <div className="space-y-3 max-w-5xl mx-auto px-1 sm:px-0">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
           <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
-            <ImageIcon className="h-4 w-4 text-primary" />
+            <ImageIcon className="h-4 w-4 text-primary shrink-0" />
             Branding Settings
           </h2>
           <p className="text-[10px] text-muted-foreground">Manage logos and branding assets</p>
         </div>
-        <Button size="sm" onClick={onSave} disabled={loading} className="h-7 text-xs px-3">
+        <Button size="sm" onClick={onSave} disabled={loading} className="h-7 text-xs px-3 shrink-0">
           <Save className="h-3 w-3 mr-1" />
           {loading ? 'Saving...' : 'Save'}
         </Button>
@@ -294,26 +294,26 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
               <AlertDescription className="text-[10px]">No logos configured yet. Use AI Generator or upload.</AlertDescription>
             </Alert>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
               {currentLogos.map((item) => (
-                <div key={item.key} className="p-2 bg-background/30 rounded-md border border-border/50 space-y-2">
-                  <div>
-                    <p className="text-[10px] font-medium text-foreground">{item.label}</p>
-                    <p className="text-[8px] text-muted-foreground">{item.size}</p>
+                <div key={item.key} className="p-2 bg-background/30 rounded-md border border-border/50 space-y-1.5 overflow-hidden">
+                  <div className="truncate">
+                    <p className="text-[10px] font-medium text-foreground truncate">{item.label}</p>
+                    <p className="text-[8px] text-muted-foreground">{item.description} · {item.size}</p>
                   </div>
-                  <div className="flex items-center justify-center p-2 bg-background rounded border border-border/30 h-12">
-                    <img src={settings[item.key]} alt={item.label} className="max-h-8 max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                  <div className="flex items-center justify-center p-1.5 bg-background rounded border border-border/30 h-14 sm:h-16">
+                    <img src={settings[item.key]} alt={item.label} className="max-h-10 sm:max-h-12 max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                   </div>
                   <div className="flex gap-1">
                     <input id={`replace-${item.key}`} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(item.key, file); e.target.value = ''; }} />
-                    <Button size="sm" variant="outline" className="flex-1 h-5 text-[8px] px-1" disabled={uploading === item.key} onClick={() => document.getElementById(`replace-${item.key}`)?.click()}>
-                      {uploading === item.key ? <RefreshCw className="h-2 w-2 animate-spin" /> : <Upload className="h-2 w-2" />}
+                    <Button size="sm" variant="outline" className="flex-1 h-6 text-[9px] px-1.5" disabled={uploading === item.key} onClick={() => document.getElementById(`replace-${item.key}`)?.click()}>
+                      {uploading === item.key ? <RefreshCw className="h-2.5 w-2.5 animate-spin" /> : <><Upload className="h-2.5 w-2.5 mr-0.5" />Replace</>}
                     </Button>
-                    <Button size="sm" variant="outline" className="h-5 w-5 p-0" onClick={() => copyLogoUrl(item.key, settings[item.key])}>
-                      {copiedKey === item.key ? <Check className="h-2 w-2 text-primary" /> : <Copy className="h-2 w-2" />}
+                    <Button size="sm" variant="outline" className="h-6 w-6 p-0 shrink-0" onClick={() => copyLogoUrl(item.key, settings[item.key])}>
+                      {copiedKey === item.key ? <Check className="h-2.5 w-2.5 text-primary" /> : <Copy className="h-2.5 w-2.5" />}
                     </Button>
-                    <Button size="sm" variant="outline" className="h-5 w-5 p-0" disabled={deleting === item.key} onClick={() => handleDeleteLogo(item.key)}>
-                      {deleting === item.key ? <RefreshCw className="h-2 w-2 animate-spin" /> : <Trash2 className="h-2 w-2 text-destructive" />}
+                    <Button size="sm" variant="outline" className="h-6 w-6 p-0 shrink-0" disabled={deleting === item.key} onClick={() => handleDeleteLogo(item.key)}>
+                      {deleting === item.key ? <RefreshCw className="h-2.5 w-2.5 animate-spin" /> : <Trash2 className="h-2.5 w-2.5 text-destructive" />}
                     </Button>
                   </div>
                 </div>
@@ -333,19 +333,19 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
             </CardTitle>
           </CardHeader>
           <CardContent className="px-3 pb-3">
-            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
               {emptyLogos.map((item) => (
-                <div key={item.key} className="p-2 bg-muted/20 rounded-md border border-dashed border-border/50 space-y-2">
-                  <div>
-                    <p className="text-[10px] font-medium text-foreground">{item.label}</p>
-                    <p className="text-[8px] text-muted-foreground">{item.size}</p>
+                <div key={item.key} className="p-2 bg-muted/20 rounded-md border border-dashed border-border/50 space-y-1.5">
+                  <div className="truncate">
+                    <p className="text-[10px] font-medium text-foreground truncate">{item.label}</p>
+                    <p className="text-[8px] text-muted-foreground">{item.description} · {item.size}</p>
                   </div>
-                  <div className="flex items-center justify-center p-2 bg-muted/30 rounded border border-dashed h-10">
-                    <ImageIcon className="h-4 w-4 text-muted-foreground/50" />
+                  <div className="flex items-center justify-center p-1.5 bg-muted/30 rounded border border-dashed h-14 sm:h-16">
+                    <ImageIcon className="h-5 w-5 text-muted-foreground/40" />
                   </div>
                   <input id={`upload-${item.key}`} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(item.key, file); e.target.value = ''; }} />
-                  <Button size="sm" variant="outline" className="w-full h-5 text-[8px]" disabled={uploading === item.key} onClick={() => document.getElementById(`upload-${item.key}`)?.click()}>
-                    {uploading === item.key ? <RefreshCw className="h-2 w-2 animate-spin" /> : <Upload className="h-2 w-2 mr-1" />}
+                  <Button size="sm" variant="outline" className="w-full h-6 text-[9px]" disabled={uploading === item.key} onClick={() => document.getElementById(`upload-${item.key}`)?.click()}>
+                    {uploading === item.key ? <RefreshCw className="h-2.5 w-2.5 animate-spin" /> : <Upload className="h-2.5 w-2.5 mr-1" />}
                     Upload
                   </Button>
                 </div>
@@ -373,9 +373,9 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
             </div>
             <div className="space-y-2 pl-5">
               <Textarea value={logoPrompt} onChange={(e) => setLogoPrompt(e.target.value)} placeholder="Describe your logo..." rows={2} className="text-xs bg-background/50 resize-none" />
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Select value={logoStyle} onValueChange={setLogoStyle}>
-                  <SelectTrigger className="h-7 text-xs flex-1 bg-background/50">
+                  <SelectTrigger className="h-7 text-xs w-full sm:w-auto sm:min-w-[120px] bg-background/50">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -425,16 +425,16 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
               </Button>
               {!masterLogo && <p className="text-[9px] text-muted-foreground mt-1 text-center">Create master logo first</p>}
               {generatedLogos.length > 0 && (
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mt-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mt-2">
                   {generatedLogos.map((logo) => (
                     <div key={logo.key} className="p-2 bg-muted/30 rounded-md space-y-1">
-                      <p className="text-[9px] font-medium text-foreground">{logo.size}</p>
+                      <p className="text-[9px] font-medium text-foreground truncate">{logo.size}</p>
                       <p className="text-[7px] text-muted-foreground">{logo.width}x{logo.height}</p>
-                      <div className="flex items-center justify-center p-1 bg-background rounded border h-10">
-                        <img src={logo.dataUrl} alt={logo.size} style={{ maxWidth: Math.min(logo.width, 50), maxHeight: 32 }} className="object-contain" />
+                      <div className="flex items-center justify-center p-1.5 bg-background rounded border h-12 sm:h-14">
+                        <img src={logo.dataUrl} alt={logo.size} style={{ maxWidth: Math.min(logo.width, 60), maxHeight: 40 }} className="object-contain" />
                       </div>
-                      <Button size="sm" variant="outline" className="w-full h-5 text-[8px]" disabled={uploading === logo.key} onClick={() => applyLogo(logo)}>
-                        {uploading === logo.key ? <RefreshCw className="h-2 w-2 animate-spin" /> : <Download className="h-2 w-2 mr-0.5" />}
+                      <Button size="sm" variant="outline" className="w-full h-6 text-[9px]" disabled={uploading === logo.key} onClick={() => applyLogo(logo)}>
+                        {uploading === logo.key ? <RefreshCw className="h-2.5 w-2.5 animate-spin" /> : <Download className="h-2.5 w-2.5 mr-0.5" />}
                         Apply
                       </Button>
                     </div>
