@@ -245,6 +245,27 @@ export const useInAppNotifications = () => {
     }
   };
 
+  // Bulk delete notifications
+  const bulkDelete = async (ids: string[]) => {
+    if (!user || ids.length === 0) return;
+
+    try {
+      const { error } = await supabase
+        .from('in_app_notifications')
+        .delete()
+        .in('id', ids)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      const deletedUnread = notifications.filter(n => ids.includes(n.id) && !n.is_read).length;
+      setNotifications(prev => prev.filter(n => !ids.includes(n.id)));
+      setUnreadCount(prev => Math.max(0, prev - deletedUnread));
+    } catch (error) {
+      console.error('Error bulk deleting notifications:', error);
+    }
+  };
+
   // Clear all notifications
   const clearAllNotifications = async () => {
     if (!user) return;
@@ -350,6 +371,7 @@ export const useInAppNotifications = () => {
     markAsRead,
     markAllAsRead,
     deleteNotification,
+    bulkDelete,
     clearAllNotifications,
     updatePreferences,
     refetch: fetchNotifications,
