@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +27,7 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
   const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all');
   const [categoryTab, setCategoryTab] = useState<CategoryFilter>('all');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleteProgress, setDeleteProgress] = useState<{ current: number; total: number; active: boolean }>({ current: 0, total: 0, active: false });
   const queryClient = useQueryClient();
 
   // Fetch all notifications
@@ -117,51 +119,65 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
     },
   });
 
-  // Bulk delete mutation
+  // Bulk delete mutation with progress
   const bulkDeleteMutation = useMutation({
     mutationFn: async (ids: string[]) => {
-      const { error } = await supabase
-        .from('admin_alerts')
-        .delete()
-        .in('id', ids);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      setSelectedIds(new Set());
-      queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
-      toast.success(`${selectedIds.size} notifications deleted`);
-    },
-    onError: (error) => {
-      console.error('Bulk delete error:', error);
-      toast.error('Failed to delete selected notifications');
-    },
-  });
-
-  // Clear all (delete all) mutation - batch delete to handle large datasets
-  const clearAllMutation = useMutation({
-    mutationFn: async () => {
-      // Delete in batches using the currently loaded notification IDs
-      const ids = notifications.map(n => n.id);
-      if (ids.length === 0) return;
-      
-      // Process in chunks of 100
-      for (let i = 0; i < ids.length; i += 100) {
-        const chunk = ids.slice(i, i + 100);
+      setDeleteProgress({ current: 0, total: ids.length, active: true });
+      const chunkSize = 50;
+      let deleted = 0;
+      for (let i = 0; i < ids.length; i += chunkSize) {
+        const chunk = ids.slice(i, i + chunkSize);
         const { error } = await supabase
           .from('admin_alerts')
           .delete()
           .in('id', chunk);
         if (error) throw error;
+        deleted += chunk.length;
+        setDeleteProgress({ current: deleted, total: ids.length, active: true });
       }
     },
     onSuccess: () => {
       setSelectedIds(new Set());
+      setDeleteProgress(prev => ({ ...prev, active: false }));
+      queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      toast.success(`${selectedIds.size} notifications deleted`);
+    },
+    onError: (error) => {
+      setDeleteProgress(prev => ({ ...prev, active: false }));
+      console.error('Bulk delete error:', error);
+      toast.error('Failed to delete selected notifications');
+    },
+  });
+
+  // Clear all (delete all) mutation with progress
+  const clearAllMutation = useMutation({
+    mutationFn: async () => {
+      const ids = notifications.map(n => n.id);
+      if (ids.length === 0) return;
+      setDeleteProgress({ current: 0, total: ids.length, active: true });
+      const chunkSize = 50;
+      let deleted = 0;
+      for (let i = 0; i < ids.length; i += chunkSize) {
+        const chunk = ids.slice(i, i + chunkSize);
+        const { error } = await supabase
+          .from('admin_alerts')
+          .delete()
+          .in('id', chunk);
+        if (error) throw error;
+        deleted += chunk.length;
+        setDeleteProgress({ current: deleted, total: ids.length, active: true });
+      }
+    },
+    onSuccess: () => {
+      setSelectedIds(new Set());
+      setDeleteProgress(prev => ({ ...prev, active: false }));
       queryClient.invalidateQueries({ queryKey: ['admin-all-notifications'] });
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
       toast.success('All notifications cleared');
     },
     onError: (error) => {
+      setDeleteProgress(prev => ({ ...prev, active: false }));
       console.error('Clear all error:', error);
       toast.error('Failed to clear notifications');
     },
@@ -277,16 +293,35 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
                   variant="destructive"
                   size="sm"
                   onClick={() => clearAllMutation.mutate()}
-                  disabled={clearAllMutation.isPending}
+                  disabled={clearAllMutation.isPending || deleteProgress.active}
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Clear All
+                  {clearAllMutation.isPending ? `Clearing...` : 'Clear All'}
                 </Button>
               )}
             </div>
           </div>
         </CardHeader>
         <CardContent>
+          {/* Progress bar for delete/clear operations */}
+          {deleteProgress.active && (
+            <div className="mb-4 p-4 rounded-lg bg-muted/60 border border-border/40 space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-medium flex items-center gap-2">
+                  <Trash2 className="h-4 w-4 animate-pulse text-destructive" />
+                  Deleting notifications...
+                </span>
+                <span className="text-muted-foreground font-mono">
+                  {deleteProgress.current.toLocaleString()} / {deleteProgress.total.toLocaleString()}
+                </span>
+              </div>
+              <Progress value={(deleteProgress.current / deleteProgress.total) * 100} className="h-2" />
+              <p className="text-xs text-muted-foreground">
+                {Math.round((deleteProgress.current / deleteProgress.total) * 100)}% complete — {(deleteProgress.total - deleteProgress.current).toLocaleString()} remaining
+              </p>
+            </div>
+          )}
+
           {/* Read status filter */}
           <Tabs defaultValue="all" onValueChange={(v) => setFilter(v as any)}>
             <TabsList className="grid w-full grid-cols-3 mb-4">
@@ -318,10 +353,10 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
                   variant="destructive"
                   size="sm"
                   onClick={() => bulkDeleteMutation.mutate(Array.from(selectedIds))}
-                  disabled={bulkDeleteMutation.isPending}
+                  disabled={bulkDeleteMutation.isPending || deleteProgress.active}
                 >
                   <Trash2 className="h-4 w-4 mr-1" />
-                  Delete Selected
+                  {bulkDeleteMutation.isPending ? 'Deleting...' : `Delete Selected (${selectedIds.size})`}
                 </Button>
                 <Button
                   variant="ghost"
