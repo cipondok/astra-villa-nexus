@@ -3536,9 +3536,14 @@ const AstraSearchPanel = ({
               "fixed z-[99999] rounded-2xl shadow-2xl flex flex-col",
               "bg-popover/95 backdrop-blur-2xl border border-border/40",
               "touch-none select-none",
-              isMobile 
-                ? "inset-x-2 top-16 bottom-4" 
-                : "top-16 right-4 w-[420px] max-h-[calc(100vh-5rem)]"
+              // Mobile: full-width with margins
+              "inset-x-2 top-14 bottom-3",
+              // Tablet (sm): slightly more padding
+              "sm:inset-x-4 sm:top-16 sm:bottom-4",
+              // Medium screens: fixed width, right-aligned
+              "md:inset-x-auto md:top-16 md:right-4 md:bottom-auto md:w-[420px] md:max-h-[calc(100vh-5rem)]",
+              // Large screens: wider panel
+              "lg:w-[460px]"
             )}
             style={{ 
               animation: 'scaleIn 0.15s cubic-bezier(0.2, 0, 0, 1)',
@@ -3615,7 +3620,7 @@ const AstraSearchPanel = ({
                 {/* Listing Type - Google-style segmented control */}
                 <div className="pb-3 border-b border-border">
                   <h4 className="text-xs font-medium text-muted-foreground mb-2">Listing Type</h4>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                     {[
                       { value: '', label: 'All', icon: Layers },
                       { value: 'sale', label: 'Buy', icon: DollarSign },
@@ -3666,7 +3671,7 @@ const AstraSearchPanel = ({
                   </CollapsibleTrigger>
                   <CollapsibleContent className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                     <div className="pb-3 border-b border-border">
-                      <div className="grid grid-cols-3 gap-2 px-1">
+                      <div className="grid grid-cols-2 gap-1.5 px-1 sm:grid-cols-3 sm:gap-2">
                         {[
                           { type: 'House', icon: Home },
                           { type: 'Apartment', icon: Building },
@@ -4183,7 +4188,7 @@ const AstraSearchPanel = ({
             </div>
 
             {/* Footer */}
-            <div className="border-t border-border/40 px-4 py-3 shrink-0 flex items-center gap-3">
+            <div className="border-t border-border/40 px-3 py-2.5 sm:px-4 sm:py-3 shrink-0 flex items-center gap-2 sm:gap-3">
               <button 
                 onClick={clearAllFilters} 
                 className="flex-1 h-10 text-sm font-medium text-foreground border border-border rounded-lg hover:bg-muted transition-colors active:scale-[0.98]"
