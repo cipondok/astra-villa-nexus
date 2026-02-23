@@ -30,18 +30,16 @@ export function AdminNotificationsCenter({ onSectionChange }: AdminNotifications
   const [deleteProgress, setDeleteProgress] = useState<{ current: number; total: number; active: boolean }>({ current: 0, total: 0, active: false });
   const queryClient = useQueryClient();
 
-  // Fetch actual total and unread counts from DB
+  // Fetch actual total and unread counts from DB using RPC (bypasses row limits)
   const { data: actualCounts = { total: 0, unread: 0 } } = useQuery({
     queryKey: ['admin-notifications-counts'],
     queryFn: async () => {
-      const [totalRes, unreadRes] = await Promise.all([
-        supabase.from('admin_alerts').select('*', { count: 'exact', head: true }),
-        supabase.from('admin_alerts').select('*', { count: 'exact', head: true }).eq('is_read', false),
-      ]);
-      return {
-        total: totalRes.count || 0,
-        unread: unreadRes.count || 0,
-      };
+      const { data, error } = await supabase.rpc('get_admin_alerts_counts');
+      if (error) {
+        console.error('Count query error:', error);
+        return { total: 0, unread: 0 };
+      }
+      return data as { total: number; unread: number };
     },
     refetchInterval: 30000,
   });
