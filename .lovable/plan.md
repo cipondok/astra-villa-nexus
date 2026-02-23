@@ -1,110 +1,36 @@
 
+# Fix: Filter Popup Disturbing Page Style, Scrolling & Resizing
 
-# Email/Push Notifications for Critical Alerts + Confirmation Dialog
+## Problem
+When the Advanced Filters popup opens, the page experiences layout shifts and style disturbances. This is caused by **duplicate scroll-locking mechanisms** fighting each other:
 
-## Feature 1: Confirmation Dialog Before Category Delete
+1. **`useScrollLock` hook** -- sets `overflow: hidden` + `paddingRight` on both `<html>` and `<body>`
+2. **`filter-popup-open` CSS class** -- also sets `overflow: hidden !important` + `touch-action: none !important` on `<body>`
+3. **`--scroll-position` CSS variable** -- set but never consumed, adding unnecessary overhead
 
-Add an AlertDialog confirmation step before executing "Delete All [Category]" and "Clear All" actions.
+The `touch-action: none !important` on the body is especially problematic -- it disables all touch interactions site-wide, and the `paddingRight` scrollbar compensation can cause visible layout shifts.
 
-### Changes to `src/components/admin/AdminNotificationsCenter.tsx`
-- Import `AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger` from `@/components/ui/alert-dialog`
-- Add state: `pendingDeleteCategory` to track which category delete was requested
-- Wrap the "Delete All [Category]" button and "Clear All" button with `AlertDialog` components
-- The dialog shows the category name and warns about irreversible deletion
-- On confirm, triggers the existing `clearCategoryMutation` or `clearAllMutation`
+## Solution
 
----
+### 1. Remove duplicate scroll-lock effect in `AstraSearchPanel.tsx` (lines 172-183)
+- Delete the `useEffect` that adds `filter-popup-open` class and sets `--scroll-position`
+- The `useScrollLock(showAdvancedFilters)` hook on line 170 already handles scroll prevention correctly
 
-## Feature 2: Email Notifications for Critical Admin Alerts
+### 2. Simplify `useScrollLock` hook in `src/hooks/useScrollLock.ts`
+- Remove `paddingRight` compensation (this causes the layout shift/resize)
+- Keep only `overflow: hidden` on `document.documentElement` (not both html and body)
+- Remove the `scroll-locked` body class (unused)
 
-When a critical/high-priority alert is created, automatically send an email to admin users.
+### 3. Clean up CSS in `src/index.css` (lines 148-153)
+- Remove or simplify the `.filter-popup-open` rule since it will no longer be applied
 
-### Changes
+### 4. Remove `touch-none` class from the filter panel div in `AstraSearchPanel.tsx` (line 3538)
+- Replace with `touch-auto` so the panel's internal content remains scrollable/interactive
 
-**New database trigger + function (migration file)**
-- Create a Postgres trigger `on_critical_admin_alert` on `admin_alerts` table
-- When a new row is inserted with `priority = 'critical'` or `priority = 'high'`, call an edge function to notify admins via email
-- Alternatively, use `pg_net` to invoke the `send-email` edge function directly from the trigger
-
-**SQL Migration:**
-```sql
-CREATE OR REPLACE FUNCTION public.notify_admins_critical_alert()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
-DECLARE
-  admin_emails text[];
-BEGIN
-  -- Only for critical/high priority
-  IF NEW.priority NOT IN ('critical', 'high') THEN
-    RETURN NEW;
-  END IF;
-
-  -- Get admin emails
-  SELECT array_agg(au.email)
-  INTO admin_emails
-  FROM auth.users au
-  JOIN profiles p ON p.id = au.id
-  WHERE p.role = 'admin' AND au.email IS NOT NULL;
-
-  IF admin_emails IS NULL OR array_length(admin_emails, 1) IS NULL THEN
-    RETURN NEW;
-  END IF;
-
-  -- Use pg_net to call send-email edge function
-  PERFORM net.http_post(
-    url := (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'SUPABASE_URL') || '/functions/v1/send-email',
-    headers := jsonb_build_object(
-      'Content-Type', 'application/json',
-      'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'SUPABASE_SERVICE_ROLE_KEY')
-    ),
-    body := jsonb_build_object(
-      'to', admin_emails,
-      'template', 'general',
-      'variables', jsonb_build_object('message',
-        'CRITICAL ALERT: ' || NEW.title || E'\n\n' || NEW.message || E'\n\nPriority: ' || NEW.priority || E'\nCategory: ' || COALESCE(NEW.alert_category, 'unknown')
-      ),
-      'subject', '[URGENT] ' || NEW.title,
-      'skipAuth', true
-    )
-  );
-
-  RETURN NEW;
-END;
-$$;
-
-CREATE TRIGGER trigger_notify_admins_critical_alert
-  AFTER INSERT ON admin_alerts
-  FOR EACH ROW
-  EXECUTE FUNCTION notify_admins_critical_alert();
-```
-
-This approach leverages the existing `send-email` edge function and SMTP configuration already set up, requiring no new edge functions.
-
-### Changes to `src/utils/adminNotifications.ts`
-- No changes needed -- the trigger fires automatically on insert
-
----
-
-## Feature 3: Push Notification for Critical Alerts
-
-Use the existing `push-notifications` edge function to send push notifications to admin users when critical alerts arrive.
-
-### Additional logic in the same DB trigger
-- After sending email, also call the `push-notifications` edge function with `action: 'send_bulk'` targeting admin user IDs
-- This uses the existing push subscription infrastructure
-
-### Alternative: Client-side approach in `AlertMonitoringProvider.tsx`
-- When a real-time critical alert is received, call the push-notifications edge function from the client
-- Simpler and avoids complex DB trigger setup for push
-
-**Recommended approach:** Use the DB trigger for email (reliable, server-side) and enhance `AlertMonitoringProvider.tsx` to show browser Notification API alerts for critical items received in real-time (no edge function needed for the logged-in admin).
-
----
-
-## Summary of Files to Change
+## Files to Change
 
 | File | Change |
 |------|--------|
-| `src/components/admin/AdminNotificationsCenter.tsx` | Add AlertDialog confirmation for Delete All actions |
-| New migration SQL | Add trigger for emailing admins on critical alerts |
-| `src/components/admin/AlertMonitoringProvider.tsx` | Add browser Notification API for critical real-time alerts |
-
+| `src/components/AstraSearchPanel.tsx` | Remove duplicate scroll-lock useEffect (lines 172-183); change `touch-none` to `touch-auto` on filter panel |
+| `src/hooks/useScrollLock.ts` | Remove `paddingRight` compensation and simplify to just `overflow: hidden` on `documentElement` |
+| `src/index.css` | Remove `.filter-popup-open` CSS rule (no longer used) |
