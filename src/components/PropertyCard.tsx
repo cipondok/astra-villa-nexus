@@ -179,90 +179,110 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
         </div>
 
         <CardContent className="p-2 md:p-3 bg-card/50">
-          <h3 className="font-semibold text-xs md:text-sm line-clamp-1 text-foreground mb-1.5">
-            {property.title}
-          </h3>
-
-          {/* Compact User Info */}
-          {property.posted_by && (
-            <div className="flex items-center gap-1.5 p-1.5 bg-muted/50 rounded-md mb-1.5">
+          {!isImageLoaded ? (
+            <div className="space-y-1.5">
+              <div className="h-4 w-3/4 rounded bg-muted animate-pulse" />
+              <div className="h-8 w-full rounded-md bg-muted animate-pulse" />
+              <div className="h-3 w-1/2 rounded bg-muted animate-pulse" />
+              <div className="h-5 w-2/3 rounded bg-muted animate-pulse" />
+              <div className="h-3 w-1/3 rounded bg-muted animate-pulse" />
               <div className="flex items-center gap-1.5">
-                {property.posted_by.avatar_url ? (
-                  <img 
-                    src={property.posted_by.avatar_url} 
-                    alt={property.posted_by.name}
-                    className="w-5 h-5 rounded-full object-cover border border-primary/30"
-                  />
-                ) : (
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-[9px] font-bold">
-                    {property.posted_by.name.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <span className="text-[10px] font-medium text-foreground/80 truncate max-w-16">
-                  {property.posted_by.name}
-                </span>
+                <div className="h-5 w-12 rounded bg-muted animate-pulse" />
+                <div className="h-5 w-12 rounded bg-muted animate-pulse" />
+                <div className="h-5 w-14 rounded bg-muted animate-pulse" />
               </div>
-              {property.posted_by.rating && (
-                <div className="flex items-center gap-0.5 ml-auto">
-                  <Star className="h-2.5 w-2.5 fill-gold-primary text-gold-primary" />
-                  <span className="text-[9px] font-bold text-gold-primary">
-                    {property.posted_by.rating.toFixed(1)}
-                  </span>
+              <div className="flex gap-1 pt-1">
+                <div className="h-6 flex-1 rounded bg-muted animate-pulse" />
+              </div>
+            </div>
+          ) : (
+            <>
+              <h3 className="font-semibold text-xs md:text-sm line-clamp-1 text-foreground mb-1.5">
+                {property.title}
+              </h3>
+
+              {/* Compact User Info */}
+              {property.posted_by && (
+                <div className="flex items-center gap-1.5 p-1.5 bg-muted/50 rounded-md mb-1.5">
+                  <div className="flex items-center gap-1.5">
+                    {property.posted_by.avatar_url ? (
+                      <img 
+                        src={property.posted_by.avatar_url} 
+                        alt={property.posted_by.name}
+                        className="w-5 h-5 rounded-full object-cover border border-primary/30"
+                      />
+                    ) : (
+                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-[9px] font-bold">
+                        {property.posted_by.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <span className="text-[10px] font-medium text-foreground/80 truncate max-w-16">
+                      {property.posted_by.name}
+                    </span>
+                  </div>
+                  {property.posted_by.rating && (
+                    <div className="flex items-center gap-0.5 ml-auto">
+                      <Star className="h-2.5 w-2.5 fill-gold-primary text-gold-primary" />
+                      <span className="text-[9px] font-bold text-gold-primary">
+                        {property.posted_by.rating.toFixed(1)}
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
-            </div>
+              
+              <div className="flex items-center text-muted-foreground mb-1.5">
+                <MapPin className="h-2.5 w-2.5 mr-0.5 flex-shrink-0" />
+                <span className="text-[10px] line-clamp-1">{property.location}</span>
+              </div>
+
+              <div className="mb-1.5">
+                <div className="text-sm md:text-base font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-none">
+                  {property.price}
+                </div>
+                <div className="text-[9px] text-muted-foreground">
+                  {property.type === 'rent' ? 'Per Month' : 'Total Price'}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 text-[9px] text-muted-foreground mb-2">
+                <div className="flex items-center gap-0.5 bg-muted px-1.5 py-0.5 rounded">
+                  <Bed className="h-2.5 w-2.5 text-primary" />
+                  <span>{property.bedrooms}</span>
+                </div>
+                <div className="flex items-center gap-0.5 bg-muted px-1.5 py-0.5 rounded">
+                  <Bath className="h-2.5 w-2.5 text-primary" />
+                  <span>{property.bathrooms}</span>
+                </div>
+                <div className="flex items-center gap-0.5 bg-muted px-1.5 py-0.5 rounded">
+                  <Square className="h-2.5 w-2.5 text-primary" />
+                  <span>{property.area}m²</span>
+                </div>
+              </div>
+
+              <div className="flex gap-1">
+                <Button 
+                  size="sm"
+                  className="flex-1 font-medium transition-all duration-300 text-[9px] h-6 px-2" 
+                  onClick={handleViewDetails}
+                >
+                  <Eye className="h-2.5 w-2.5 mr-0.5" />
+                  Details
+                </Button>
+                {(property.three_d_model_url || property.virtual_tour_url) && (
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="font-medium transition-all duration-300 text-[9px] h-6 px-2" 
+                    onClick={handleView3D}
+                  >
+                    <Box className="h-2.5 w-2.5 mr-0.5" />
+                    3D
+                  </Button>
+                )}
+              </div>
+            </>
           )}
-          
-          <div className="flex items-center text-muted-foreground mb-1.5">
-            <MapPin className="h-2.5 w-2.5 mr-0.5 flex-shrink-0" />
-            <span className="text-[10px] line-clamp-1">{property.location}</span>
-          </div>
-
-          <div className="mb-1.5">
-            <div className="text-sm md:text-base font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-none">
-              {property.price}
-            </div>
-            <div className="text-[9px] text-muted-foreground">
-              {property.type === 'rent' ? 'Per Month' : 'Total Price'}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1.5 text-[9px] text-muted-foreground mb-2">
-            <div className="flex items-center gap-0.5 bg-muted px-1.5 py-0.5 rounded">
-              <Bed className="h-2.5 w-2.5 text-primary" />
-              <span>{property.bedrooms}</span>
-            </div>
-            <div className="flex items-center gap-0.5 bg-muted px-1.5 py-0.5 rounded">
-              <Bath className="h-2.5 w-2.5 text-primary" />
-              <span>{property.bathrooms}</span>
-            </div>
-            <div className="flex items-center gap-0.5 bg-muted px-1.5 py-0.5 rounded">
-              <Square className="h-2.5 w-2.5 text-primary" />
-              <span>{property.area}m²</span>
-            </div>
-          </div>
-
-          <div className="flex gap-1">
-            <Button 
-              size="sm"
-              className="flex-1 font-medium transition-all duration-300 text-[9px] h-6 px-2" 
-              onClick={handleViewDetails}
-            >
-              <Eye className="h-2.5 w-2.5 mr-0.5" />
-              Details
-            </Button>
-            {(property.three_d_model_url || property.virtual_tour_url) && (
-              <Button 
-                variant="outline"
-                size="sm"
-                className="font-medium transition-all duration-300 text-[9px] h-6 px-2" 
-                onClick={handleView3D}
-              >
-                <Box className="h-2.5 w-2.5 mr-0.5" />
-                3D
-              </Button>
-            )}
-          </div>
         </CardContent>
       </Card>
 
