@@ -46,8 +46,10 @@ interface Property {
   area_sqm: number;
   images: string[];
   image_urls: string[];
+  thumbnail_url?: string;
   status: string;
   created_at: string;
+  property_features?: Record<string, any>;
 }
 
 interface SearchFilters {
@@ -500,6 +502,7 @@ const Dijual = () => {
                       property_type: property.property_type,
                       images: property.images,
                       thumbnail_url: property.thumbnail_url,
+                      property_features: property.property_features,
                     }} />
                     <Button
                       size="sm"
