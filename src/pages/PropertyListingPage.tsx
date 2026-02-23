@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useInfiniteProperties } from '@/hooks/useInfiniteProperties';
+import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -113,8 +115,6 @@ const demoPreLaunchingProjects = [
 ];
 
 const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageProps) => {
-  const [properties, setProperties] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -127,51 +127,31 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
   });
   const language = 'en';
 
-  useEffect(() => {
-    fetchProperties();
-  }, [pageType]);
+  const listingType = pageType === 'buy' ? 'sale' : pageType === 'rent' ? 'rent' : undefined;
+  const developmentStatus = pageType === 'buy' || pageType === 'rent'
+    ? ['completed', 'ready']
+    : pageType === 'new-projects'
+      ? ['new_project']
+      : pageType === 'pre-launching'
+        ? ['pre_launching']
+        : undefined;
 
-  const fetchProperties = async () => {
-    setIsLoading(true);
-    try {
-      let query = supabase
-        .from('properties')
-        .select('*')
-        .eq('status', 'active')
-        .not('title', 'is', null)
-        .gt('price', 0);
+  const {
+    properties: fetchedProperties,
+    isLoading,
+    isFetchingMore,
+    hasMore,
+    sentinelRef,
+  } = useInfiniteProperties({
+    listingType,
+    developmentStatus,
+    pageSize: 12,
+  });
 
-      if (pageType === 'buy') {
-        query = query.eq('listing_type', 'sale').in('development_status', ['completed', 'ready']);
-      } else if (pageType === 'rent') {
-        query = query.eq('listing_type', 'rent').in('development_status', ['completed', 'ready']);
-      } else if (pageType === 'new-projects') {
-        query = query.eq('development_status', 'new_project');
-      } else if (pageType === 'pre-launching') {
-        query = query.eq('development_status', 'pre_launching');
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false }).limit(50);
-      if (!error) {
-        const realData = (data || []).filter(p => p.title?.trim() && p.price > 0);
-        // Use demo data for pre-launching if no real data
-        if (realData.length === 0 && pageType === 'pre-launching') {
-          setProperties(demoPreLaunchingProjects);
-        } else {
-          setProperties(realData);
-        }
-      }
-    } catch (e) {
-      // Fallback to demo data for pre-launching
-      if (pageType === 'pre-launching') {
-        setProperties(demoPreLaunchingProjects);
-      } else {
-        setProperties([]);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Fallback to demo data for pre-launching
+  const properties = fetchedProperties.length === 0 && !isLoading && pageType === 'pre-launching'
+    ? demoPreLaunchingProjects
+    : fetchedProperties;
 
   const handleSearch = async () => {
     setIsSearching(true);
@@ -463,6 +443,23 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
               );
             })}
           </div>
+        )}
+
+        {/* Infinite scroll sentinel */}
+        {!isLoading && !hasSearched && (
+          <>
+            <div ref={sentinelRef} className="h-4" />
+            {isFetchingMore && (
+              <div className="flex justify-center py-6">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              </div>
+            )}
+            {!hasMore && properties.length > 0 && (
+              <p className="text-center text-sm text-muted-foreground py-6">
+                Semua properti telah ditampilkan
+              </p>
+            )}
+          </>
         )}
       </div>
     </div>

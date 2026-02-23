@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
+import { useInfiniteProperties } from "@/hooks/useInfiniteProperties";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import PropertySidebarFilters from "@/components/property/PropertySidebarFilters";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
@@ -66,11 +68,19 @@ const Dijual = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const cameFromHome = searchParams.get('from') === 'home';
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const {
+    properties: fetchedProperties,
+    isLoading: loading,
+    isFetchingMore,
+    hasMore,
+    sentinelRef,
+  } = useInfiniteProperties({
+    listingType: 'sale',
+    pageSize: 12,
+  });
 
   // Demo properties for display
   const demoProperties: Property[] = [
@@ -209,41 +219,11 @@ const Dijual = () => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
-  useEffect(() => {
-    fetchProperties();
-  }, []);
+  // Use demo data if no real properties
+  const properties = fetchedProperties.length > 0 ? fetchedProperties : (!loading ? demoProperties : []);
 
-  useEffect(() => {
-    applyFilters();
-  }, [properties, filters]);
 
-  const fetchProperties = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('listing_type', 'sale')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      // Use demo data if no real properties exist
-      const realData = data || [];
-      setProperties(realData.length > 0 ? realData : demoProperties);
-    } catch (error) {
-      console.error('Error fetching properties:', error);
-      // Fallback to demo data on error
-      setProperties(demoProperties);
-      toast({
-        title: "Info",
-        description: "Menampilkan data demo.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const applyFilters = () => {
+  const filteredProperties = useMemo(() => {
     let filtered = properties.filter(property => {
       const matchesSearch = !filters.searchTerm || 
         property.title?.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
@@ -291,8 +271,8 @@ const Dijual = () => {
         break;
     }
 
-    setFilteredProperties(filtered);
-  };
+    return filtered;
+  }, [properties, filters]);
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}M`;
@@ -402,7 +382,7 @@ const Dijual = () => {
       <PropertySidebarFilters
         filters={filters}
         onFiltersChange={setFilters}
-        onSearch={applyFilters}
+        onSearch={() => {}}
         propertyTypes={propertyTypes}
         cities={cities}
         areas={areas}
@@ -533,6 +513,19 @@ const Dijual = () => {
               </Card>
             ))}
           </div>
+        )}
+
+        {/* Infinite scroll sentinel */}
+        <div ref={sentinelRef} className="h-4" />
+        {isFetchingMore && (
+          <div className="flex justify-center py-6">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        )}
+        {!hasMore && properties.length > 0 && !loading && (
+          <p className="text-center text-sm text-muted-foreground py-6">
+            Semua properti telah ditampilkan
+          </p>
         )}
 
         {/* Stats Summary */}
