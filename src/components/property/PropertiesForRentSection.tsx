@@ -104,7 +104,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
     <section className="rounded-xl p-3">
       <div className="mb-3 flex items-center justify-center gap-2">
         <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-chart-4 to-primary flex items-center justify-center shadow-md shadow-chart-4/30">
-          <Key className="h-3.5 w-3.5 text-primary-foreground" />
+          <Key className="h-3.5 w-3.5 text-white" />
         </div>
         <h2 className="text-sm font-bold text-foreground">Properti Disewa</h2>
       </div>
@@ -118,7 +118,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
             <div
               key={property.id}
               onClick={() => onPropertyClick(property)}
-              className="group cursor-pointer rounded-xl border border-border/30 dark:border-border/15 bg-card/60 dark:bg-card/5 backdrop-blur-xl shadow-lg shadow-chart-4/5 hover:shadow-2xl hover:shadow-chart-4/15 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-chart-4/5 before:via-transparent before:to-primary/5 before:pointer-events-none before:rounded-xl"
+              className="group cursor-pointer rounded-xl border border-border bg-card backdrop-blur-xl shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-400 overflow-hidden relative"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -134,11 +134,11 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
 
                 {/* Top Badges */}
                 <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between">
-                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gradient-to-r from-chart-4 to-primary text-primary-foreground shadow-lg shadow-chart-4/40 ring-1 ring-background/30">
-                    <Key className="h-2 w-2" />
-                    RENT
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md backdrop-blur-sm">
+                    <Key className="h-2.5 w-2.5" />
+                    Disewa
                   </span>
-                  <span className="flex items-center gap-0.5 bg-background/20 backdrop-blur-lg text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full border border-background/30 shadow-sm">
+                  <span className="flex items-center gap-0.5 bg-black/40 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded-full">
                     <Building className="h-2 w-2" />
                     {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
                   </span>
@@ -146,7 +146,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
 
                 {/* Image count badge */}
                 {imageCount > 1 && (
-                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 bg-background/15 backdrop-blur-lg text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full border border-background/25 shadow-sm">
+                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 bg-black/40 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded-full">
                     <Camera className="h-2 w-2" />
                     {imageCount}
                   </div>
@@ -161,8 +161,8 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
 
                 {/* Hover eye */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="h-10 w-10 rounded-full bg-card/80 backdrop-blur-xl flex items-center justify-center shadow-xl ring-2 ring-primary/50 ring-offset-2 ring-offset-transparent">
-                    <Eye className="h-4 w-4 text-primary" />
+                  <div className="h-10 w-10 rounded-full bg-primary/90 backdrop-blur-sm flex items-center justify-center shadow-lg shadow-primary/30 scale-75 group-hover:scale-100 transition-transform duration-300">
+                    <Eye className="h-4 w-4 text-white" />
                   </div>
                 </div>
               </div>
@@ -170,45 +170,45 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
               {/* Content */}
               <div className="p-2.5 space-y-1.5 relative">
                 {/* Price */}
-                <div className="flex items-baseline gap-1 bg-gradient-to-r from-primary/15 via-primary/10 to-primary/15 border border-primary/25 rounded-lg px-2 py-1.5 backdrop-blur-sm">
-                  <span className="text-base font-black bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent leading-none tracking-tight">{priceInfo.main}</span>
+                <div className="flex items-baseline gap-1 bg-primary/5 border border-primary/15 rounded-lg px-2.5 py-2 flex-wrap">
+                  <span className="text-sm sm:text-base font-black text-primary leading-none tracking-tight">{priceInfo.main}</span>
                   {priceInfo.suffix && (
-                    <span className="text-[11px] font-extrabold text-primary/70">{priceInfo.suffix}</span>
+                    <span className="text-xs font-extrabold text-primary/60">{priceInfo.suffix}</span>
                   )}
-                  <span className="text-[9px] text-primary/70 font-bold ml-auto bg-card/40 backdrop-blur-sm rounded-full px-1.5 border border-border/30">/bln</span>
+                  <span className="text-[10px] text-muted-foreground font-bold ml-auto">/bln</span>
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[11px] font-semibold text-foreground truncate leading-snug group-hover:text-primary transition-colors group-hover:whitespace-normal group-hover:overflow-visible" title={property.title}>
+                <h3 className="text-xs font-semibold text-foreground truncate leading-snug group-hover:text-primary transition-colors group-hover:whitespace-normal group-hover:overflow-visible" title={property.title}>
                   {property.title}
                 </h3>
 
                 {/* Location */}
-                <div className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-chart-4/10 via-primary/8 to-chart-4/10 border border-chart-4/25 px-1.5 py-0.5 backdrop-blur-sm" title={getLocation(property)}>
-                  <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-chart-4" />
-                  <span className="text-[10px] text-foreground/70 font-medium truncate">{getLocation(property)}</span>
+                <div className="flex items-center gap-1" title={getLocation(property)}>
+                  <MapPin className="h-3 w-3 flex-shrink-0 text-muted-foreground" />
+                  <span className="text-[11px] text-muted-foreground font-medium truncate">{getLocation(property)}</span>
                 </div>
 
                 {/* Specs */}
-                <div className="flex items-center gap-1 pt-1.5 border-t border-chart-4/15">
+                <div className="flex items-center flex-wrap gap-1.5 pt-1.5 border-t border-border/30">
                   {Number(property.bedrooms) > 0 && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-accent/15 to-accent/10 border border-accent/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-accent/10">
-                      <Bed className="h-2.5 w-2.5 text-accent" />
-                      <span className="text-[10px] font-bold text-foreground/80">{property.bedrooms}</span>
-                      <span className="text-[8px] text-accent/70 font-bold">KT</span>
+                    <div className="flex items-center gap-0.5 text-muted-foreground">
+                      <Bed className="h-3 w-3" />
+                      <span className="text-[11px] font-semibold text-foreground/80">{property.bedrooms}</span>
+                      <span className="text-[9px] font-medium">KT</span>
                     </div>
                   )}
                   {Number(property.bathrooms) > 0 && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-chart-4/15 to-primary/15 border border-chart-4/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-chart-4/10">
-                      <Bath className="h-2.5 w-2.5 text-chart-4" />
-                      <span className="text-[10px] font-bold text-foreground/80">{property.bathrooms}</span>
-                      <span className="text-[8px] text-chart-4/70 font-bold">KM</span>
+                    <div className="flex items-center gap-0.5 text-muted-foreground">
+                      <Bath className="h-3 w-3" />
+                      <span className="text-[11px] font-semibold text-foreground/80">{property.bathrooms}</span>
+                      <span className="text-[9px] font-medium">KM</span>
                     </div>
                   )}
                   {Number(property.area_sqm) > 0 && (
-                    <div className="flex items-center gap-0.5 bg-gradient-to-br from-gold-primary/15 to-chart-3/15 border border-gold-primary/30 rounded-lg px-1.5 py-0.5 backdrop-blur-sm shadow-sm shadow-gold-primary/10">
-                      <Maximize className="h-2.5 w-2.5 text-gold-primary" />
-                      <span className="text-[10px] font-bold text-foreground/80">{property.area_sqm}m²</span>
+                    <div className="flex items-center gap-0.5 text-muted-foreground">
+                      <Maximize className="h-3 w-3" />
+                      <span className="text-[11px] font-semibold text-foreground/80">{property.area_sqm}m²</span>
                     </div>
                   )}
                 </div>

@@ -113,7 +113,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
     <section className="w-full p-3">
       <div className="mb-3 flex items-center justify-center gap-2">
         <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-chart-1 to-primary flex items-center justify-center shadow-md shadow-chart-1/30">
-          <Home className="h-3.5 w-3.5 text-primary-foreground" />
+          <Home className="h-3.5 w-3.5 text-white" />
         </div>
         <h2 className="text-sm font-bold text-foreground">Properti Dijual</h2>
       </div>

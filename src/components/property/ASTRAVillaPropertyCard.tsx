@@ -133,7 +133,7 @@ const ASTRAVillaPropertyCard = ({
         {/* Top Row */}
         <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
           <span className={cn(
-            "flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-md",
+            "flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold shadow-md",
             isRent
               ? "bg-gradient-to-r from-sky-500 to-blue-600 text-white backdrop-blur-sm"
               : "bg-gradient-to-r from-emerald-500 to-green-600 text-white backdrop-blur-sm"
@@ -141,7 +141,7 @@ const ASTRAVillaPropertyCard = ({
             <ListingIcon className="h-2.5 w-2.5" />
             {getListingLabel(property.listing_type)}
           </span>
-          <span className="flex items-center gap-0.5 bg-black/40 backdrop-blur-md text-white text-[9px] px-1.5 py-0.5 rounded-full">
+          <span className="flex items-center gap-0.5 bg-black/40 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded-full">
             <Building className="h-2.5 w-2.5" />
             {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : "Property"}
           </span>
@@ -164,7 +164,7 @@ const ASTRAVillaPropertyCard = ({
 
         {/* Image Count Badge */}
         {imageCount > 1 && (
-          <div className="absolute bottom-2 right-2 flex items-center gap-0.5 bg-black/40 backdrop-blur-md text-white text-[9px] px-1.5 py-0.5 rounded-full">
+          <div className="absolute bottom-2 right-2 flex items-center gap-0.5 bg-black/40 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded-full">
             <Camera className="h-2.5 w-2.5" />
             <span>{imageCount}</span>
           </div>
@@ -188,33 +188,33 @@ const ASTRAVillaPropertyCard = ({
           "flex items-baseline gap-1 rounded-lg px-2.5 py-2 border flex-wrap",
           "bg-primary/5 border-primary/15"
         )}>
-          <span className="text-base font-black leading-none tracking-tight text-primary">
+          <span className="text-sm sm:text-base font-black leading-none tracking-tight text-primary">
             {priceInfo.main}
           </span>
           {priceInfo.suffix && (
-            <span className="text-[11px] font-extrabold text-primary/60">
+            <span className="text-xs font-extrabold text-primary/60">
               {priceInfo.suffix}
             </span>
           )}
           {isRent && (
-            <span className="text-[9px] text-muted-foreground font-bold ml-auto">/{language === "id" ? "bln" : "mo"}</span>
+            <span className="text-[10px] text-muted-foreground font-bold ml-auto">/{language === "id" ? "bln" : "mo"}</span>
           )}
           {!isRent && (
-            <span className="text-[9px] text-muted-foreground/50 font-medium bg-muted/50 rounded-full px-1.5 ml-auto">
+            <span className="text-[10px] text-muted-foreground/50 font-medium bg-muted/50 rounded-full px-1.5 ml-auto">
               ≈ {formatMonthlyPayment(property.price)}
             </span>
           )}
         </div>
 
         {/* Title */}
-        <h3 className="text-[11px] font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-200">
+        <h3 className="text-xs font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-200">
           {property.title}
         </h3>
 
         {/* Location */}
         <div className="flex items-center gap-1">
           <MapPin className="h-3 w-3 flex-shrink-0 text-muted-foreground" />
-          <span className="text-[10px] text-muted-foreground font-medium line-clamp-1">{getLocation()}</span>
+          <span className="text-[11px] text-muted-foreground font-medium line-clamp-1">{getLocation()}</span>
         </div>
 
         {/* Specs */}
@@ -222,27 +222,27 @@ const ASTRAVillaPropertyCard = ({
           {property.bedrooms !== undefined && Number(property.bedrooms) > 0 && (
             <div className="flex items-center gap-0.5 text-muted-foreground">
               <Bed className="h-3 w-3" />
-              <span className="text-[10px] font-semibold text-foreground/80">{property.bedrooms}</span>
-              <span className="text-[8px] font-medium">KT</span>
+              <span className="text-[11px] font-semibold text-foreground/80">{property.bedrooms}</span>
+              <span className="text-[9px] font-medium">KT</span>
             </div>
           )}
           {property.bathrooms !== undefined && Number(property.bathrooms) > 0 && (
             <div className="flex items-center gap-0.5 text-muted-foreground">
               <Bath className="h-3 w-3" />
-              <span className="text-[10px] font-semibold text-foreground/80">{property.bathrooms}</span>
-              <span className="text-[8px] font-medium">KM</span>
+              <span className="text-[11px] font-semibold text-foreground/80">{property.bathrooms}</span>
+              <span className="text-[9px] font-medium">KM</span>
             </div>
           )}
           {property.land_area && (
             <div className="flex items-center gap-0.5 text-muted-foreground">
               <span className="text-[8px] font-semibold">LT</span>
-              <span className="text-[10px] font-semibold text-foreground/80">{property.land_area}m²</span>
+              <span className="text-[11px] font-semibold text-foreground/80">{property.land_area}m²</span>
             </div>
           )}
           {property.area_sqm && (
             <div className="flex items-center gap-0.5 text-muted-foreground">
               <Maximize className="h-3 w-3" />
-              <span className="text-[10px] font-semibold text-foreground/80">{property.area_sqm}m²</span>
+              <span className="text-[11px] font-semibold text-foreground/80">{property.area_sqm}m²</span>
             </div>
           )}
         </div>
