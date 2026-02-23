@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import PropertyComparisonButton from "@/components/property/PropertyComparisonButton";
 import InlineFilterPanel from "@/components/property/InlineFilterPanel";
 import PropertyListingMapView from "@/components/property/PropertyListingMapView";
 import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
@@ -485,20 +486,35 @@ const Dijual = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   
-                  {/* Save Button */}
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="absolute top-2 right-2 h-8 w-8 p-0 bg-background/90 hover:bg-background rounded-full shadow-md"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSaveProperty(property.id);
-                    }}
-                  >
-                    <Heart 
-                      className={`h-4 w-4 ${savedProperties.has(property.id) ? 'fill-accent text-accent' : 'text-muted-foreground'}`}
-                    />
-                  </Button>
+                  {/* Action Buttons */}
+                  <div className="absolute top-2 right-2 flex gap-1.5">
+                    <PropertyComparisonButton property={{
+                      id: property.id,
+                      title: property.title,
+                      price: property.price || 0,
+                      location: property.location || '',
+                      listing_type: 'sale',
+                      bedrooms: property.bedrooms,
+                      bathrooms: property.bathrooms,
+                      area_sqm: property.area_sqm,
+                      property_type: property.property_type,
+                      images: property.images,
+                      thumbnail_url: property.thumbnail_url,
+                    }} />
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0 bg-background/90 hover:bg-background rounded-full shadow-md"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSaveProperty(property.id);
+                      }}
+                    >
+                      <Heart 
+                        className={`h-4 w-4 ${savedProperties.has(property.id) ? 'fill-accent text-accent' : 'text-muted-foreground'}`}
+                      />
+                    </Button>
+                  </div>
                   
                   {/* Badges */}
                   <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
