@@ -1,7 +1,9 @@
 import { useState, useEffect, lazy, Suspense, useRef, useMemo, useCallback } from "react";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useHeroSliderConfig } from "@/hooks/useHeroSliderConfig";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -120,6 +122,23 @@ const Index = () => {
   const [isOnline, setIsOnline] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const { speed: connectionSpeed } = useConnectionSpeed();
+  const queryClient = useQueryClient();
+
+  // Pull-to-refresh for homepage
+  const {
+    isPulling, pullDistance, isRefreshing,
+    indicatorOpacity, indicatorRotation, threshold,
+    handlers: pullHandlers,
+  } = usePullToRefresh({
+    onRefresh: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['sale-properties'] }),
+        queryClient.invalidateQueries({ queryKey: ['rent-properties'] }),
+        queryClient.invalidateQueries({ queryKey: ['featured-properties-simple'] }),
+      ]);
+      toast.success('Properties refreshed!');
+    },
+  });
 
   // Wrap search function with retry logic
   const performSearch = async (searchData?: any) => {
@@ -506,7 +525,7 @@ const Index = () => {
 
   // Mobile-first responsive layout wrapper
   const content = (
-    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-background">
+    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-background" {...pullHandlers}>
       <SEOHead
         title="Platform Properti Premium Indonesia"
         description="Temukan villa, apartemen, rumah, dan properti mewah di Indonesia. Pencarian AI, tur virtual 3D, dan investasi properti dengan ASTRA Villa Realty."
@@ -515,6 +534,14 @@ const Index = () => {
       />
       {/* Network Status Indicator */}
       <NetworkStatusIndicator onStatusChange={setIsOnline} />
+      <PullToRefreshIndicator
+        isPulling={isPulling}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        indicatorOpacity={indicatorOpacity}
+        indicatorRotation={indicatorRotation}
+        threshold={threshold}
+      />
 
 
       {/* Content Layer - full width edge-to-edge */}

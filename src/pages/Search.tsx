@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SEOHead } from '@/components/SEOHead';
 import { useSearchParams } from 'react-router-dom';
-import { Search as SearchIcon, Filter, MapPin, Home, Building2, RefreshCw } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Search as SearchIcon, Filter, MapPin, Home, Building2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import PullToRefreshIndicator from '@/components/ui/PullToRefreshIndicator';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,15 +42,10 @@ const Search = () => {
   const [selectedLocation, setSelectedLocation] = useState(searchParams.get('location') || 'all');
   
   // Pull-to-refresh state
-  const [isPulling, setIsPulling] = useState(false);
-  const [pullDistance, setPullDistance] = useState(0);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [newPropertyIds, setNewPropertyIds] = useState<Set<string>>(new Set());
-  const touchStartY = useRef(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const previousCountRef = useRef<number>(0);
   const previousPropertyIdsRef = useRef<Set<string>>(new Set());
-  const PULL_THRESHOLD = 80; // Pixels to pull before triggering refresh
 
   const { data: dbProperties = [], isLoading, refetch } = useQuery({
     queryKey: ['search-properties', searchTerm, selectedType, selectedLocation],
@@ -91,11 +88,69 @@ const Search = () => {
     virtual_tour_url: prop.virtual_tour_url,
   }));
 
+  // Pull-to-refresh
+  const {
+    isPulling, pullDistance, isRefreshing,
+    indicatorOpacity, indicatorRotation, threshold,
+    handlers: pullHandlers,
+  } = usePullToRefresh({
+    onRefresh: async () => {
+      try {
+        const result = await refetch();
+        const newCount = result.data?.length || 0;
+        const previousCount = previousCountRef.current;
+        
+        const currentPropertyIds = new Set((result.data || []).map((p: any) => p.id));
+        const newIds = new Set<string>();
+        currentPropertyIds.forEach(id => {
+          if (!previousPropertyIdsRef.current.has(id)) {
+            newIds.add(id);
+          }
+        });
+
+        if (newIds.size > 0) {
+          setNewPropertyIds(newIds);
+        }
+
+        const difference = newCount - previousCount;
+        if (difference > 0) {
+          toast({
+            title: "Search Refreshed",
+            description: `Found ${difference} new ${difference === 1 ? 'property' : 'properties'}! Total: ${newCount}`,
+          });
+        } else if (difference < 0) {
+          toast({
+            title: "Search Refreshed",
+            description: `${Math.abs(difference)} ${Math.abs(difference) === 1 ? 'property' : 'properties'} removed. Total: ${newCount}`,
+          });
+        } else if (newCount === 0) {
+          toast({
+            title: "Search Refreshed",
+            description: "No properties found matching your criteria",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Search Refreshed",
+            description: `${newCount} ${newCount === 1 ? 'property' : 'properties'} found`,
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Refresh Failed",
+          description: "Unable to refresh search results. Please try again.",
+          variant: "destructive"
+        });
+        throw error;
+      }
+    },
+    threshold: 80,
+  });
+
   // Track property count for refresh notifications
   useEffect(() => {
     if (!isRefreshing && properties.length > 0) {
       previousCountRef.current = properties.length;
-      // Store current property IDs for comparison on next refresh
       previousPropertyIdsRef.current = new Set(properties.map(p => p.id));
     }
   }, [properties.length, isRefreshing]);
@@ -125,132 +180,11 @@ const Search = () => {
     setSearchParams({});
   };
 
-  // Pull-to-refresh handlers
-  const handleTouchStart = (e: React.TouchEvent) => {
-    // Only enable pull-to-refresh at the top of the page
-    if (window.scrollY === 0) {
-      touchStartY.current = e.touches[0].clientY;
-      setIsPulling(true);
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isPulling || window.scrollY > 0) return;
-
-    const currentY = e.touches[0].clientY;
-    const distance = currentY - touchStartY.current;
-
-    // Only track downward pulls
-    if (distance > 0) {
-      // Add resistance - the further you pull, the harder it gets
-      const resistedDistance = Math.min(distance * 0.5, PULL_THRESHOLD * 1.5);
-      setPullDistance(resistedDistance);
-
-      // Prevent default scrolling when pulling
-      if (distance > 10) {
-        e.preventDefault();
-      }
-    }
-  };
-
-  const handleTouchEnd = async () => {
-    if (!isPulling) return;
-
-    setIsPulling(false);
-
-    // Trigger refresh if pulled past threshold
-    if (pullDistance >= PULL_THRESHOLD) {
-      setIsRefreshing(true);
-      
-      // Haptic feedback
-      if ('vibrate' in navigator) {
-        navigator.vibrate(50);
-      }
-
-      try {
-        const result = await refetch();
-        const newCount = result.data?.length || 0;
-        const previousCount = previousCountRef.current;
-        
-        // Identify new properties
-        const currentPropertyIds = new Set((result.data || []).map((p: any) => p.id));
-        const newIds = new Set<string>();
-        
-        currentPropertyIds.forEach(id => {
-          if (!previousPropertyIdsRef.current.has(id)) {
-            newIds.add(id);
-          }
-        });
-        
-        // Show success feedback
-        setTimeout(() => {
-          setIsRefreshing(false);
-          setPullDistance(0);
-          
-          // Success haptic
-          if ('vibrate' in navigator) {
-            navigator.vibrate([30, 20, 30]);
-          }
-
-          // Highlight new properties
-          if (newIds.size > 0) {
-            setNewPropertyIds(newIds);
-          }
-
-          // Show toast with results
-          const difference = newCount - previousCount;
-          
-          if (difference > 0) {
-            toast({
-              title: "Search Refreshed",
-              description: `Found ${difference} new ${difference === 1 ? 'property' : 'properties'}! Total: ${newCount}`,
-            });
-          } else if (difference < 0) {
-            toast({
-              title: "Search Refreshed",
-              description: `${Math.abs(difference)} ${Math.abs(difference) === 1 ? 'property' : 'properties'} removed. Total: ${newCount}`,
-            });
-          } else if (newCount === 0) {
-            toast({
-              title: "Search Refreshed",
-              description: "No properties found matching your criteria",
-              variant: "destructive"
-            });
-          } else {
-            toast({
-              title: "Search Refreshed",
-              description: `${newCount} ${newCount === 1 ? 'property' : 'properties'} found`,
-            });
-          }
-        }, 500);
-      } catch (error) {
-        console.error('Refresh failed:', error);
-        setIsRefreshing(false);
-        setPullDistance(0);
-        
-        toast({
-          title: "Refresh Failed",
-          description: "Unable to refresh search results. Please try again.",
-          variant: "destructive"
-        });
-      }
-    } else {
-      // Didn't pull enough - reset
-      setPullDistance(0);
-    }
-  };
-
-  // Calculate refresh indicator opacity and rotation
-  const indicatorOpacity = Math.min(pullDistance / PULL_THRESHOLD, 1);
-  const indicatorRotation = (pullDistance / PULL_THRESHOLD) * 360;
-
   return (
     <div 
       ref={scrollContainerRef}
       className="min-h-screen bg-background pt-11 md:pt-12"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      {...pullHandlers}
     >
       <SEOHead
         title="Cari Properti"
@@ -265,41 +199,14 @@ const Search = () => {
       </div>
 
       {/* Pull-to-Refresh Indicator */}
-      <AnimatePresence>
-        {(isPulling || isRefreshing) && (
-          <motion.div
-            initial={{ opacity: 0, y: -40 }}
-            animate={{ 
-              opacity: isRefreshing ? 1 : indicatorOpacity,
-              y: isRefreshing ? 0 : Math.min(pullDistance - 40, 0)
-            }}
-            exit={{ opacity: 0, y: -40 }}
-            transition={{ duration: 0.2 }}
-            className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-primary text-primary-foreground px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"
-          >
-            <motion.div
-              animate={{ 
-                rotate: isRefreshing ? 360 : indicatorRotation
-              }}
-              transition={{
-                duration: isRefreshing ? 1 : 0,
-                repeat: isRefreshing ? Infinity : 0,
-                ease: "linear"
-              }}
-            >
-              <RefreshCw className="h-3 w-3" />
-            </motion.div>
-            <span className="text-xs font-medium">
-              {isRefreshing 
-                ? 'Refreshing...' 
-                : pullDistance >= PULL_THRESHOLD 
-                  ? 'Release to refresh' 
-                  : 'Pull to refresh'
-              }
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <PullToRefreshIndicator
+        isPulling={isPulling}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        indicatorOpacity={indicatorOpacity}
+        indicatorRotation={indicatorRotation}
+        threshold={threshold}
+      />
 
       <div className="container mx-auto px-2 md:px-3 py-2">
         {/* Back Link */}
