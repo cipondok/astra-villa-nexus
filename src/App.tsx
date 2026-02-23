@@ -93,7 +93,7 @@ const Notifications = lazy(() => import('@/pages/Notifications'));
 const Users = lazy(() => import('@/pages/Users'));
 const Analytics = lazy(() => import('@/pages/Analytics'));
 const MobileFirstDemo = lazy(() => import('@/components/responsive/MobileFirstDemo'));
-const ForeignInvestment = lazy(() => import('@/pages/ForeignInvestment'));
+const Investment = lazy(() => import('@/pages/Investment'));
 const Offers = lazy(() => import('@/pages/Offers'));
 const PartnerNetwork = lazy(() => import('@/pages/partners/PartnerNetwork'));
 const BecomePartner = lazy(() => import('@/pages/partners/BecomePartner'));
@@ -239,7 +239,8 @@ const AppContent = () => {
             <Route path="/calculators/loan" element={<HomeLoanCalculator />} />
             <Route path="/calculators/area" element={<AreaUnitConverter />} />
             <Route path="/areas" element={<AreaGuides />} />
-            <Route path="/foreign-investment" element={<ForeignInvestment />} />
+            <Route path="/investment" element={<Investment />} />
+            <Route path="/foreign-investment" element={<Navigate to="/investment" replace />} />
             <Route path="/offers" element={<Offers />} />
             <Route path="/partners/network" element={<PartnerNetwork />} />
             <Route path="/partners/become" element={<BecomePartner />} />
@@ -261,8 +262,8 @@ const AppContent = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/help" element={<Help />} />
             <Route path="/support" element={<Contact />} />
-            <Route path="/investor/wni" element={<Navigate to="/foreign-investment?section=wni" replace />} />
-            <Route path="/investor/wna" element={<Navigate to="/foreign-investment?section=wna" replace />} />
+            <Route path="/investor/wni" element={<Navigate to="/investment?section=wni" replace />} />
+            <Route path="/investor/wna" element={<Navigate to="/investment?section=wna" replace />} />
             <Route path="/verification" element={<VerificationCenter />} />
             <Route path="/verification-center" element={<VerificationCenter />} />
             <Route path="/ai-content-generator" element={<AIContentGenerator />} />

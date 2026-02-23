@@ -225,7 +225,7 @@ const defaultTemplates: EmailTemplate[] = [
     headerText: 'Investment Inquiry Received 🌏',
     body: 'Dear {{user_name}},\n\nThank you for your interest in investing in Indonesian real estate through ASTRA Villa.\n\n🏠 Property: {{property_title}}\n💰 Investment Type: {{investment_type}}\n🌏 Country: {{investor_country}}\n\nOur foreign investment specialists will contact you within 1-2 business days to discuss the opportunities and legal framework.',
     buttonText: 'View Investment Guide',
-    buttonUrl: '{{site_url}}/foreign-investment',
+    buttonUrl: '{{site_url}}/investment',
     showSocialLinks: true,
     showUnsubscribe: true,
     isActive: true,

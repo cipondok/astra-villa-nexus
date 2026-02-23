@@ -49,7 +49,7 @@ import wnaHeroImage from "@/assets/wna-investment-hero.jpg";
 
 type ActiveSection = 'all' | 'wna' | 'wni' | 'dashboard';
 
-const ForeignInvestment = () => {
+const Investment = () => {
   const { language } = useLanguage();
   const { user, isAuthenticated } = useAuth();
   const { isAdmin } = useIsAdmin();
@@ -86,7 +86,7 @@ const ForeignInvestment = () => {
 
   const t = {
     en: {
-      title: "Foreign Investment Guide",
+      title: "Investment Guide",
       subtitle: "Your complete guide to investing in Indonesian property — WNA, WNI, and everything in between",
       badge: "Your Journey Starts Here",
       signIn: "Sign In to Get Started",
@@ -804,4 +804,4 @@ const CTASection = ({ copy, navigate, openChat, isAuthenticated }: any) => (
   </div>
 );
 
-export default ForeignInvestment;
+export default Investment;
