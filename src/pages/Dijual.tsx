@@ -277,8 +277,11 @@ const Dijual = () => {
       case 'price_high':
         filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
         break;
-      case 'area_large':
-        filtered.sort((a, b) => (b.area_sqm || 0) - (a.area_sqm || 0));
+      case 'oldest':
+        filtered.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+        break;
+      case 'popular':
+        filtered.sort((a, b) => ((b as any).views || 0) - ((a as any).views || 0));
         break;
       case 'newest':
       default:
@@ -351,7 +354,21 @@ const Dijual = () => {
                 </p>
               </div>
             </div>
-            <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+            <div className="flex items-center gap-2">
+              <Select value={filters.sortBy} onValueChange={(value) => updateFilter('sortBy', value)}>
+                <SelectTrigger className="h-8 sm:h-9 w-[130px] sm:w-[160px] text-xs sm:text-sm bg-background border-border rounded-md">
+                  <SelectValue placeholder="Urutkan" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Terbaru</SelectItem>
+                  <SelectItem value="oldest">Terlama</SelectItem>
+                  <SelectItem value="price_low">Harga Terendah</SelectItem>
+                  <SelectItem value="price_high">Harga Tertinggi</SelectItem>
+                  <SelectItem value="popular">Terpopuler</SelectItem>
+                </SelectContent>
+              </Select>
+              <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+            </div>
           </div>
         </div>
       </div>
