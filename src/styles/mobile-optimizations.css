@@ -146,8 +146,8 @@
 
   /* Card Grid Mobile Overrides */
   .mobile-app-layout .card-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1rem !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
   }
 
   .mobile-app-layout .card-grid-item {
