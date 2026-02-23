@@ -314,7 +314,7 @@ const Navigation = () => {
                 variant="ghost" 
                 size="sm"
                 className={`h-8 px-3 text-xs font-medium rounded-xl border ${navIconStyle}`}
-                onClick={() => navigate('/foreign-investment')}
+                onClick={() => navigate('/investment')}
               >
                 <TrendingUp className={`h-4 w-4 xl:mr-1.5 ${navIconColor}`} />
                 <span className="hidden xl:inline text-foreground/80">Investment</span>
@@ -472,7 +472,7 @@ const Navigation = () => {
                     <div className="px-2 py-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Investment
                     </div>
-                    <MobileNavButton icon={Building} label="Foreign Investment" onClick={() => { navigate('/foreign-investment'); toggleMenu(); }} indent />
+                    <MobileNavButton icon={Building} label="Investment" onClick={() => { navigate('/investment'); toggleMenu(); }} indent />
                   </div>
 
                   {/* Dashboard links */}

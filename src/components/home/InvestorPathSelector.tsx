@@ -81,7 +81,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
   const paths: Path[] = [
     {
       id: 'wni',
-      path: '/foreign-investment?section=wni',
+      path: '/investment?section=wni',
       icon: Home,
       title: t.wniTitle,
       description: t.wniDesc,
@@ -95,7 +95,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
     },
     {
       id: 'wna',
-      path: '/foreign-investment?section=wna',
+      path: '/investment?section=wna',
       icon: Globe,
       title: t.wnaTitle,
       description: t.wnaDesc,
@@ -111,7 +111,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
 
   const centralPath: Path = {
     id: 'all',
-    path: '/foreign-investment',
+    path: '/investment',
     icon: Building2,
     title: language === 'en' ? 'All Investment Options' : 'Semua Opsi Investasi',
     description: language === 'en' ? 'Complete investment guide' : 'Panduan investasi lengkap',
