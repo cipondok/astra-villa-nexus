@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Link2, CheckCircle2, AlertCircle, Home, MapPin, Bed, Bath, Square, ExternalLink, Sparkles } from "lucide-react";
+import { Loader2, Link2, CheckCircle2, AlertCircle, Home, MapPin, Bed, Bath, Square, ExternalLink, Sparkles, Tag, Key } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -210,7 +210,8 @@ const PropertyImporter = ({ onImport }: PropertyImporterProps) => {
                 <Badge variant="secondary" className="text-[10px] sm:text-xs bg-muted text-muted-foreground">
                   {extractedData.property_type}
                 </Badge>
-                <Badge className={`text-[10px] sm:text-xs ${extractedData.listing_type === 'sale' ? 'bg-chart-1 text-primary-foreground' : 'bg-chart-4 text-primary-foreground'}`}>
+                <Badge className={`text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1 ${extractedData.listing_type === 'sale' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white'}`}>
+                  {extractedData.listing_type === 'sale' ? <Tag className="h-3 w-3" /> : <Key className="h-3 w-3" />}
                   {extractedData.listing_type === 'sale' ? 'Dijual' : 'Disewa'}
                 </Badge>
               </div>

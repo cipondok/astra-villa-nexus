@@ -10,7 +10,9 @@ import {
   Bath, 
   Square,
   DollarSign,
-  PlusCircle
+  PlusCircle,
+  Tag,
+  Key
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 
@@ -92,7 +94,13 @@ const DemoPropertyList = () => {
   };
 
   const getListingTypeText = (type: string) => {
-    return type === 'sale' ? '💰 Dijual' : '🏠 Disewakan';
+    return type === 'sale' ? 'Dijual' : 'Disewa';
+  };
+
+  const getListingTypeGradient = (type: string) => {
+    return type === 'sale'
+      ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white border-0 shadow-md'
+      : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white border-0 shadow-md';
   };
 
   const getPropertyTypeText = (type: string) => {
@@ -152,7 +160,8 @@ const DemoPropertyList = () => {
                           <Badge variant="outline" className={getStatusColor(property.status)}>
                             {getStatusText(property.status)}
                           </Badge>
-                          <Badge variant="outline" className="bg-chart-4/10 text-chart-4 border-chart-4/20">
+                          <Badge className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-md ${getListingTypeGradient(property.listing_type)}`}>
+                            {property.listing_type === 'sale' ? <Tag className="h-3 w-3" /> : <Key className="h-3 w-3" />}
                             {getListingTypeText(property.listing_type)}
                           </Badge>
                           <Badge variant="outline" className="bg-accent/10 text-accent border-accent/20">

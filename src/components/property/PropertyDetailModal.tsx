@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X, MapPin, Bed, Bath, Square, Car, Home, Eye, Share2, Heart, Phone, MessageSquare, User, Calendar } from "lucide-react";
+import { X, MapPin, Bed, Bath, Square, Car, Home, Eye, Share2, Heart, Phone, MessageSquare, User, Calendar, Tag, Key } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BaseProperty } from "@/types/property";
 import ScheduleSurveyModal from "@/components/ScheduleSurveyModal";
@@ -198,7 +198,8 @@ const PropertyDetailModal = ({
 
                   {/* Property Type Badge */}
                   <div className="absolute top-4 left-4">
-                    <Badge variant="secondary" className="bg-card/90 backdrop-blur-sm text-foreground">
+                    <Badge className={`font-bold px-2.5 py-1 rounded-md shadow-md border-0 flex items-center gap-1 backdrop-blur-sm ${property.listing_type === 'sale' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white'}`}>
+                      {property.listing_type === 'sale' ? <Tag className="h-3.5 w-3.5" /> : <Key className="h-3.5 w-3.5" />}
                       {getListingTypeLabel(property.listing_type)}
                     </Badge>
                   </div>

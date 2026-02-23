@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Percent } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Key, Percent } from "lucide-react";
 import { useState } from "react";
 import PropertyDetailModal from "./PropertyDetailModal";
 import Property3DViewModal from "./Property3DViewModal";
@@ -184,10 +184,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
             <Badge 
               className={`${listing_type === 'sale' 
-                ? 'bg-chart-1 text-primary-foreground' 
-                : 'bg-primary text-primary-foreground'
-              } text-xs font-semibold px-2 py-0.5 rounded`}
+                ? 'bg-gradient-to-r from-emerald-500 to-green-600' 
+                : 'bg-gradient-to-r from-sky-500 to-blue-600'
+              } text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-md border-0 flex items-center gap-1`}
             >
+              {listing_type === 'sale' ? <Tag className="h-3 w-3" /> : <Key className="h-3 w-3" />}
               {listing_type === 'sale' ? 'Dijual' : 'Disewa'}
             </Badge>
             {development_status === 'new_project' && (
