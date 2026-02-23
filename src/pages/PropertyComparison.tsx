@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { usePropertyComparison } from '@/contexts/PropertyComparisonContext';
-import { ArrowLeft, X, Eye, Trash2 } from 'lucide-react';
+import { ArrowLeft, X, Eye, Trash2, Check, Minus } from 'lucide-react';
 import { formatIDR } from '@/utils/formatters';
 
 const PropertyComparison = () => {
@@ -135,6 +135,74 @@ const PropertyComparison = () => {
     },
   ];
 
+  // Common amenities to compare
+  const amenityKeys = [
+    { key: 'swimming_pool', label: 'Swimming Pool' },
+    { key: 'pool', label: 'Swimming Pool' },
+    { key: 'garage', label: 'Garage' },
+    { key: 'garden', label: 'Garden' },
+    { key: 'parking', label: 'Parking' },
+    { key: 'security', label: 'Security' },
+    { key: 'gym', label: 'Gym / Fitness' },
+    { key: 'air_conditioning', label: 'Air Conditioning' },
+    { key: 'ac', label: 'Air Conditioning' },
+    { key: 'furnished', label: 'Furnished' },
+    { key: 'balcony', label: 'Balcony' },
+    { key: 'terrace', label: 'Terrace' },
+    { key: 'elevator', label: 'Elevator' },
+    { key: 'cctv', label: 'CCTV' },
+    { key: 'playground', label: 'Playground' },
+    { key: 'clubhouse', label: 'Clubhouse' },
+    { key: 'rooftop', label: 'Rooftop' },
+    { key: 'water_heater', label: 'Water Heater' },
+    { key: 'internet', label: 'Internet' },
+    { key: 'laundry', label: 'Laundry' },
+  ];
+
+  // Collect all amenity keys present in any property, dedup by label
+  const getFeatureValue = (p: typeof selectedProperties[0], key: string) => {
+    const features = p.property_features;
+    if (!features) return undefined;
+    return features[key];
+  };
+
+  const seenLabels = new Set<string>();
+  const activeAmenities = amenityKeys.filter(({ key, label }) => {
+    if (seenLabels.has(label)) return false;
+    const hasAny = selectedProperties.some(p => {
+      const val = getFeatureValue(p, key);
+      return val !== undefined && val !== null && val !== false && val !== '' && val !== 0;
+    });
+    if (hasAny) seenLabels.add(label);
+    return hasAny;
+  });
+
+  // Also find extra feature keys not in our predefined list
+  const predefinedKeys = new Set(amenityKeys.map(a => a.key));
+  const extraKeys = new Set<string>();
+  selectedProperties.forEach(p => {
+    if (p.property_features) {
+      Object.keys(p.property_features).forEach(key => {
+        if (!predefinedKeys.has(key) && !['bedrooms', 'bathrooms', 'area_sqm', 'parking_spaces'].includes(key)) {
+          const val = p.property_features![key];
+          if (val !== undefined && val !== null && val !== false && val !== '' && val !== 0) {
+            extraKeys.add(key);
+          }
+        }
+      });
+    }
+  });
+
+  const renderAmenityValue = (value: any) => {
+    if (value === undefined || value === null || value === false || value === '' || value === 0) {
+      return <Minus className="h-4 w-4 text-muted-foreground" />;
+    }
+    if (value === true) {
+      return <Check className="h-4 w-4 text-primary" />;
+    }
+    return <span className="text-sm">{String(value)}</span>;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -207,6 +275,43 @@ const PropertyComparison = () => {
                       </TableCell>
                       {selectedProperties.map((p) => (
                         <TableCell key={p.id}>{spec.render(p)}</TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+
+                  {/* Amenities Section Header */}
+                  {(activeAmenities.length > 0 || extraKeys.size > 0) && (
+                    <TableRow className="bg-muted/30">
+                      <TableCell colSpan={selectedProperties.length + 1} className="font-semibold text-foreground sticky left-0 bg-muted/30 z-10">
+                        Amenities & Features
+                      </TableCell>
+                    </TableRow>
+                  )}
+
+                  {/* Predefined Amenities */}
+                  {activeAmenities.map(({ key, label }) => (
+                    <TableRow key={`amenity-${key}`}>
+                      <TableCell className="font-medium text-muted-foreground sticky left-0 bg-background z-10">
+                        {label}
+                      </TableCell>
+                      {selectedProperties.map((p) => (
+                        <TableCell key={p.id}>
+                          {renderAmenityValue(getFeatureValue(p, key))}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+
+                  {/* Extra Amenities */}
+                  {Array.from(extraKeys).map((key) => (
+                    <TableRow key={`extra-${key}`}>
+                      <TableCell className="font-medium text-muted-foreground sticky left-0 bg-background z-10 capitalize">
+                        {key.replace(/_/g, ' ')}
+                      </TableCell>
+                      {selectedProperties.map((p) => (
+                        <TableCell key={p.id}>
+                          {renderAmenityValue(p.property_features?.[key])}
+                        </TableCell>
                       ))}
                     </TableRow>
                   ))}
