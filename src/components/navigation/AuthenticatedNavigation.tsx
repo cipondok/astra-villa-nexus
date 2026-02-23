@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import LanguageToggleSwitch from "@/components/LanguageToggleSwitch";
 import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 import { 
@@ -260,16 +261,37 @@ const AuthenticatedNavigation = ({
             </div>
 
             {/* User Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 sm:h-9 sm:w-9 lg:h-8 lg:w-8 rounded-full p-0">
-                  <Avatar className="h-8 w-8 sm:h-9 sm:w-9 lg:h-8 lg:w-8">
-                    <AvatarFallback className="bg-gradient-to-br from-gold-primary to-gold-primary/80 text-background text-xs sm:text-sm lg:text-xs">
-                      {getUserInitials()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
+            <HoverCard openDelay={300} closeDelay={200}>
+              <DropdownMenu modal={false}>
+                <HoverCardTrigger asChild>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-8 w-8 sm:h-9 sm:w-9 lg:h-8 lg:w-8 rounded-full p-0">
+                      <Avatar className="h-8 w-8 sm:h-9 sm:w-9 lg:h-8 lg:w-8">
+                        <AvatarFallback className="bg-gradient-to-br from-gold-primary to-gold-primary/80 text-background text-xs sm:text-sm lg:text-xs">
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                </HoverCardTrigger>
+                <HoverCardContent side="bottom" align="end" className="w-64 p-4 backdrop-blur-xl bg-popover border-border/30 shadow-xl">
+                  <div className="flex items-start gap-3">
+                    <Avatar className="h-10 w-10">
+                      <AvatarFallback className="bg-gradient-to-br from-gold-primary to-gold-primary/80 text-background text-sm">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col gap-1">
+                      <p className="text-sm font-semibold text-foreground">{profile?.full_name || user?.email}</p>
+                      <p className="text-xs text-muted-foreground">{user?.email}</p>
+                      {profile?.role && (
+                        <Badge className={`text-[10px] w-fit mt-0.5 ${getRoleBadgeColor(profile.role)}`}>
+                          {profile.role.replace('_', ' ').toLowerCase()}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                </HoverCardContent>
               <DropdownMenuContent className="w-48 sm:w-52 lg:w-48 backdrop-blur-xl bg-popover/95 border-gold-primary/15 shadow-xl" align="end" forceMount>
                 <div className="flex items-center justify-start gap-2 p-2">
                   <div className="flex flex-col space-y-1 leading-none">
@@ -323,7 +345,8 @@ const AuthenticatedNavigation = ({
                   <span>{currentText.logout}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+              </DropdownMenu>
+            </HoverCard>
 
             {/* Mobile menu button */}
             <Button

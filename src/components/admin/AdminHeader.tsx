@@ -193,7 +193,7 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
           </Button>
 
           {/* Profile */}
-          <DropdownMenu>
+          <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="relative h-8 w-8">
                 <Avatar className="h-7 w-7 ring-2 ring-primary/20">
