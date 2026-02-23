@@ -12,6 +12,7 @@ interface UseInfinitePropertiesOptions {
 export function useInfiniteProperties(options: UseInfinitePropertiesOptions = {}) {
   const { listingType, developmentStatus, pageSize = 12, enabled = true } = options;
   const [properties, setProperties] = useState<any[]>([]);
+  const [totalCount, setTotalCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -80,13 +81,28 @@ export function useInfiniteProperties(options: UseInfinitePropertiesOptions = {}
     }
   }, [listingType, developmentStatus, pageSize]);
 
-  // Initial fetch
+  // Initial fetch + total count
   useEffect(() => {
     if (!enabled) return;
     offsetRef.current = 0;
     setHasMore(true);
     setProperties([]);
     fetchBatch(0, true);
+
+    // Fetch total count
+    const fetchCount = async () => {
+      let query = supabase
+        .from('properties')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'active')
+        .not('title', 'is', null)
+        .gt('price', 0);
+      if (listingType) query = query.eq('listing_type', listingType);
+      if (developmentStatus && developmentStatus.length > 0) query = query.in('development_status', developmentStatus);
+      const { count } = await query;
+      setTotalCount(count);
+    };
+    fetchCount();
   }, [enabled, listingType, JSON.stringify(developmentStatus), fetchBatch]);
 
   // Load more when sentinel visible
@@ -111,6 +127,7 @@ export function useInfiniteProperties(options: UseInfinitePropertiesOptions = {}
 
   return {
     properties,
+    totalCount,
     isLoading,
     isFetchingMore,
     hasMore,
