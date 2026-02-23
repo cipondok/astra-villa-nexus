@@ -203,6 +203,7 @@ const AppContent = () => {
             <Route path="/add-property" element={<AddProperty />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/dashboard/admin" element={<AdminDashboard />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
             <Route path="/admin/location-analytics" element={<LocationAnalyticsDashboard />} />
             <Route path="/province-properties" element={<ProvinceProperties />} />
