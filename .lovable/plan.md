@@ -1,62 +1,47 @@
 
 
-# Fix: User Icon -- Single Function Popup + Hover Smart Info
+# Fix: Page Dancing -- All Remaining DropdownMenu Components Missing `modal={false}`
 
 ## Problem
-The user icon dropdown uses Radix's `DropdownMenu` which defaults to `modal={true}`. This triggers Radix's internal scroll-locking (`react-remove-scroll`), which adds/removes `data-scroll-locked` and `padding-right` on the body -- causing the visible "page dancing" layout shift on desktop.
+
+Several `DropdownMenu` components still use the default `modal={true}`, which triggers Radix's internal scroll-locking (`react-remove-scroll`). This adds/removes `data-scroll-locked` and `padding-right` on the body, causing the visible horizontal "jump" on desktop.
+
+The previous fix only applied `modal={false}` to 3 components, but missed others that are actively used on the current pages.
+
+## Root Cause Components
+
+| Component | File | Issue |
+|-----------|------|-------|
+| UserIconWithBadge (main user icon) | `src/components/ui/UserIconWithBadge.tsx` line 111 | `<DropdownMenu>` without `modal={false}` |
+| Notifications dropdown | `src/components/admin/AdminHeader.tsx` line 105 | `<DropdownMenu>` without `modal={false}` |
+| `scrollbar-gutter: stable both-edges` | `src/index.css` line 60 | `both-edges` reserves space on BOTH sides of viewport -- unusual and causes extra shifting |
 
 ## Solution
 
-### 1. Set `modal={false}` on user DropdownMenu components
+### 1. Add `modal={false}` to UserIconWithBadge
 
-When `modal={false}`, Radix does NOT activate its scroll-lock mechanism, so no `data-scroll-locked`, no `padding-right` injection, and no page shift. The dropdown is small and doesn't need scroll prevention.
+This is the **main** user icon component used across the site (including the `/foreign-investment` page). It was missed in the previous fix.
 
-**Files affected:**
-- `src/components/navigation/AuthenticatedNavigation.tsx` (line 263)
-- `src/components/RoleBasedNavigation.tsx` (line 194)
-- `src/components/admin/AdminHeader.tsx` (line 196)
+**File:** `src/components/ui/UserIconWithBadge.tsx`
+**Line 111:** Change `<DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>` to `<DropdownMenu modal={false} open={isOpen} onOpenChange={handleOpenChange}>`
 
-Change: `<DropdownMenu>` becomes `<DropdownMenu modal={false}>`
+### 2. Add `modal={false}` to AdminHeader notifications dropdown
 
-### 2. Add HoverCard for "smart user info" on mouseover
+**File:** `src/components/admin/AdminHeader.tsx`
+**Line 105:** Change `<DropdownMenu open={notificationsOpen} onOpenChange={setNotificationsOpen}>` to `<DropdownMenu modal={false} open={notificationsOpen} onOpenChange={setNotificationsOpen}>`
 
-Wrap the user Avatar button with a Radix `HoverCard` that shows user details (name, role, email, membership status) on hover -- without requiring a click.
+### 3. Fix `scrollbar-gutter` value
 
-**Files affected:**
-- `src/components/navigation/AuthenticatedNavigation.tsx` -- wrap the avatar trigger with `HoverCard` + `HoverCardContent`
-- `src/components/RoleBasedNavigation.tsx` -- same treatment
+Change `scrollbar-gutter: stable both-edges` to just `scrollbar-gutter: stable`. The `both-edges` modifier reserves equal space on the left side too, which causes unnecessary layout asymmetry and contributes to the perceived "jumping."
 
-The HoverCard will display:
-- User name and avatar initial
-- Email address
-- Role badge
-- A "View Profile" shortcut link
+**File:** `src/index.css`
+**Line 60:** Change `scrollbar-gutter: stable both-edges;` to `scrollbar-gutter: stable;`
 
-### 3. Also set `modal={false}` on filter Popovers in AstraSearchPanel
-
-The same `modal` scroll-lock issue likely affects the color filter and other popovers. Adding `modal={false}` to those Popover components will prevent the dancing there too.
-
-## Technical Details
-
-### Changes per file
+## Files to Change
 
 | File | Change |
 |------|--------|
-| `src/components/navigation/AuthenticatedNavigation.tsx` | Add `modal={false}` to user DropdownMenu; wrap avatar with HoverCard showing user info |
-| `src/components/RoleBasedNavigation.tsx` | Add `modal={false}` to user DropdownMenu; wrap avatar with HoverCard |
-| `src/components/admin/AdminHeader.tsx` | Add `modal={false}` to profile DropdownMenu |
-| `src/components/ui/dropdown-menu.tsx` | No changes needed -- `modal` is already a supported prop on `DropdownMenu` (it's `DropdownMenuPrimitive.Root`) |
+| `src/components/ui/UserIconWithBadge.tsx` | Add `modal={false}` to DropdownMenu |
+| `src/components/admin/AdminHeader.tsx` | Add `modal={false}` to notifications DropdownMenu |
+| `src/index.css` | Change `stable both-edges` to `stable` |
 
-### HoverCard content structure
-
-```text
-+---------------------------+
-|  [A]  Full Name           |
-|        user@email.com     |
-|        [Role Badge]       |
-|                           |
-|  View Profile ->          |
-+---------------------------+
-```
-
-The HoverCard uses the existing `@radix-ui/react-hover-card` already installed and the existing `HoverCard`, `HoverCardTrigger`, `HoverCardContent` components from `src/components/ui/hover-card.tsx`.
