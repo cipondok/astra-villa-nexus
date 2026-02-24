@@ -1,7 +1,27 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { safeLocalStorage } from "@/lib/safeStorage";
 
 type Language = "en" | "id" | "zh" | "ja" | "ko";
+
+const VALID_LANGS: Language[] = ["en", "id", "zh", "ja", "ko"];
+
+const detectBrowserLanguage = (): Language => {
+  try {
+    const langs = navigator.languages ?? [navigator.language];
+    for (const locale of langs) {
+      const prefix = locale.split("-")[0].toLowerCase();
+      if (prefix === "zh") return "zh";
+      if (prefix === "ja") return "ja";
+      if (prefix === "ko") return "ko";
+      if (prefix === "id" || prefix === "ms") return "id";
+      if (prefix === "en") return "en";
+    }
+  } catch {
+    // navigator may not be available
+  }
+  return "en";
+};
 
 interface LanguageContextProps {
   language: Language;
@@ -12,19 +32,14 @@ const LanguageContext = createContext<LanguageContextProps | undefined>(undefine
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    // Use localStorage if available, fallback to "en"
-    if (typeof window !== "undefined") {
-      const savedLang = localStorage.getItem("language");
-      const validLangs: Language[] = ["en", "id", "zh", "ja", "ko"];
-      return validLangs.includes(savedLang as Language) ? (savedLang as Language) : "en";
-    }
-    return "en";
+    const saved = safeLocalStorage.getItem("language");
+    if (saved && VALID_LANGS.includes(saved as Language)) return saved as Language;
+    return detectBrowserLanguage();
   });
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("language", language);
-    }
+    safeLocalStorage.setItem("language", language);
+    document.documentElement.lang = language;
   }, [language]);
 
   const setLanguage = (lang: Language) => setLanguageState(lang);
