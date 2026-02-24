@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useUserBehaviorAnalytics } from '@/hooks/useUserBehaviorAnalytics';
+import { useTranslation } from '@/i18n/useTranslation';
 import { SEOHead, seoSchemas } from '@/components/SEOHead';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -134,6 +135,7 @@ const PropertyDetail: React.FC = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
+  const { t } = useTranslation();
   const [property, setProperty] = useState<PropertyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -411,7 +413,7 @@ const PropertyDetail: React.FC = () => {
                 className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
               >
                 <ArrowLeft className="h-3.5 w-3.5 mr-1" />
-                Back
+                {t('propertyDetail.back')}
               </Button>
               <Button 
                 variant="ghost" 
@@ -420,7 +422,7 @@ const PropertyDetail: React.FC = () => {
                 className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
               >
                 <Home className="h-3.5 w-3.5 mr-1" />
-                Home
+                {t('propertyDetail.home')}
               </Button>
             </div>
           </div>
@@ -432,8 +434,8 @@ const PropertyDetail: React.FC = () => {
             <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 animate-pulse">
               <Building2 className="h-8 w-8 text-primary" />
             </div>
-            <h3 className="text-sm font-semibold mb-1">Memuat Detail Properti...</h3>
-            <p className="text-xs text-muted-foreground">Mohon tunggu sebentar</p>
+            <h3 className="text-sm font-semibold mb-1">{t('propertyDetail.loading')}</h3>
+            <p className="text-xs text-muted-foreground">{t('propertyDetail.pleaseWait')}</p>
           </div>
         </div>
       </div>
@@ -454,7 +456,7 @@ const PropertyDetail: React.FC = () => {
                 className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
               >
                 <ArrowLeft className="h-3.5 w-3.5 mr-1" />
-                Back
+                {t('propertyDetail.back')}
               </Button>
               <Button 
                 variant="ghost" 
@@ -463,7 +465,7 @@ const PropertyDetail: React.FC = () => {
                 className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
               >
                 <Home className="h-3.5 w-3.5 mr-1" />
-                Home
+                {t('propertyDetail.home')}
               </Button>
               <Button 
                 variant="ghost" 
@@ -472,7 +474,7 @@ const PropertyDetail: React.FC = () => {
                 className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
               >
                 <MapPin className="h-3.5 w-3.5 mr-1" />
-                Properties
+                {t('propertyDetail.properties')}
               </Button>
             </div>
           </div>
@@ -484,8 +486,8 @@ const PropertyDetail: React.FC = () => {
             <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
               <X className="h-8 w-8 text-destructive" />
             </div>
-            <h1 className="text-lg font-bold text-foreground mb-2">Properti Tidak Ditemukan</h1>
-            <p className="text-sm text-muted-foreground mb-4">Properti ini tidak ada atau telah dihapus.</p>
+            <h1 className="text-lg font-bold text-foreground mb-2">{t('propertyDetail.notFound')}</h1>
+            <p className="text-sm text-muted-foreground mb-4">{t('propertyDetail.notFoundDesc')}</p>
             <Button 
               variant="outline" 
               size="sm"
@@ -493,7 +495,7 @@ const PropertyDetail: React.FC = () => {
               className="text-xs h-8"
             >
               <MapPin className="h-3 w-3 mr-1" />
-              Lihat Properti Lain
+              {t('propertyDetail.viewOther')}
             </Button>
           </div>
         </div>
@@ -511,8 +513,8 @@ const PropertyDetail: React.FC = () => {
           ogType="product"
           jsonLd={[
             seoSchemas.breadcrumb([
-              { name: 'Beranda', url: '/' },
-              { name: 'Properti', url: '/properties' },
+              { name: t('propertyDetail.home'), url: '/' },
+              { name: t('propertyDetail.properties'), url: '/properties' },
               { name: property.title, url: `/properties/${property.id}` },
             ]),
             seoSchemas.property({
@@ -584,8 +586,8 @@ const PropertyDetail: React.FC = () => {
                     window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
                   } else {
                     toast({
-                      title: "Sign in required", 
-                      description: "Please sign in to contact via WhatsApp.",
+                      title: t('propertyDetail.signInRequired'), 
+                      description: t('propertyDetail.signInToContact'),
                       variant: "destructive",
                     });
                   }
@@ -618,7 +620,7 @@ const PropertyDetail: React.FC = () => {
                 className="hidden sm:flex items-center gap-1 hover:bg-muted/50 h-7 px-2 active:scale-95"
               >
                 <Home className="h-3.5 w-3.5 text-foreground" />
-                <span className="text-[10px] text-foreground">Home</span>
+                <span className="text-[10px] text-foreground">{t('propertyDetail.home')}</span>
               </Button>
               {/* Property Title in Header */}
               <span className="text-[10px] sm:text-xs font-medium text-foreground/70 truncate max-w-[120px] sm:max-w-[200px] ml-1">
@@ -637,13 +639,13 @@ const PropertyDetail: React.FC = () => {
                     className="bg-primary hover:bg-primary/90 text-primary-foreground h-6 text-[9px] px-2"
                   >
                     <Edit className="h-2.5 w-2.5 mr-0.5" />
-                    {isEditMode ? 'Cancel' : 'Edit'}
+                    {isEditMode ? t('common.cancel') : t('common.edit')}
                   </Button>
                   <Button 
                     variant="destructive" 
                     size="sm"
                     onClick={async () => {
-                      if (confirm('Delete this property?')) {
+                      if (confirm(t('propertyDetail.deleteConfirm'))) {
                         try {
                           const { error } = await supabase.from('properties').delete().eq('id', id);
                           if (error) throw error;
@@ -707,7 +709,7 @@ const PropertyDetail: React.FC = () => {
             <CardHeader className="p-2 sm:p-3 bg-primary/5">
               <CardTitle className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground">
                 <Edit className="h-3 w-3" />
-                Edit Property
+                {t('propertyDetail.editProperty')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-2 sm:p-3">
@@ -913,7 +915,7 @@ const PropertyDetail: React.FC = () => {
                     
                     <div className="flex flex-wrap gap-1">
                       <Badge className={`px-1.5 py-0 h-5 text-[9px] rounded-md shadow-sm border-0 ${property.listing_type === 'sale' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white'}`}>
-                        {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
+                        {property.listing_type === 'sale' ? t('propertyDetail.forSale') : t('propertyDetail.forRent')}
                       </Badge>
                       <Badge variant="outline" className="border-border/50 px-1.5 py-0 h-5 text-[9px] rounded-md bg-muted/50 text-foreground capitalize">
                         {property.property_type}
@@ -929,12 +931,12 @@ const PropertyDetail: React.FC = () => {
                   {/* Price Display - Slim */}
                   <div className="w-full sm:w-auto">
                     <div className="bg-primary/5 rounded-lg p-2 sm:p-3 border border-primary/15">
-                      <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5">Price</p>
+                      <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5">{t('propertyDetail.price')}</p>
                       <div className="text-base sm:text-2xl font-bold text-primary">
                         {formatPrice(property.price)}
                       </div>
                       {property.listing_type === 'rent' && (
-                        <span className="text-[9px] sm:text-xs text-muted-foreground">/month</span>
+                        <span className="text-[9px] sm:text-xs text-muted-foreground">{t('propertyDetail.perMonth')}</span>
                       )}
                     </div>
                   </div>
@@ -948,7 +950,7 @@ const PropertyDetail: React.FC = () => {
                         <Bed className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-primary" />
                       </div>
                       <div className="font-bold text-xs sm:text-sm text-foreground">{property.bedrooms}</div>
-                      <div className="text-[7px] sm:text-[9px] text-muted-foreground">Beds</div>
+                      <div className="text-[7px] sm:text-[9px] text-muted-foreground">{t('propertyDetail.beds')}</div>
                     </div>
                   )}
                   {property.bathrooms && (
@@ -957,7 +959,7 @@ const PropertyDetail: React.FC = () => {
                         <Bath className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-primary" />
                       </div>
                       <div className="font-bold text-xs sm:text-sm text-foreground">{property.bathrooms}</div>
-                      <div className="text-[7px] sm:text-[9px] text-muted-foreground">Baths</div>
+                      <div className="text-[7px] sm:text-[9px] text-muted-foreground">{t('propertyDetail.baths')}</div>
                     </div>
                   )}
                   {property.area_sqm && (
@@ -976,7 +978,7 @@ const PropertyDetail: React.FC = () => {
                     <div className="font-bold text-xs sm:text-sm text-foreground">
                       {new Date(property.created_at).getFullYear()}
                     </div>
-                    <div className="text-[7px] sm:text-[9px] text-muted-foreground">Listed</div>
+                    <div className="text-[7px] sm:text-[9px] text-muted-foreground">{t('propertyDetail.listed')}</div>
                   </div>
                 </div>
 
@@ -990,7 +992,7 @@ const PropertyDetail: React.FC = () => {
                         className="w-full h-9 text-[10px] sm:text-xs font-medium rounded-lg bg-primary hover:bg-primary/90 active:scale-95 transition-transform"
                       >
                         <Calendar className="h-3 w-3 mr-1" />
-                        Schedule Viewing
+                        {t('propertyDetail.scheduleViewing')}
                       </Button>
                     }
                   />
@@ -1004,7 +1006,7 @@ const PropertyDetail: React.FC = () => {
                         className="w-full h-9 text-[10px] sm:text-xs font-medium rounded-lg border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground active:scale-95 transition-transform"
                       >
                         <ClipboardCheck className="h-3 w-3 mr-1" />
-                        Book Survey
+                        {t('propertyDetail.bookSurvey')}
                       </Button>
                     }
                   />
@@ -1017,14 +1019,14 @@ const PropertyDetail: React.FC = () => {
               <CardContent className="p-2 sm:p-4">
                 <Tabs defaultValue="description" className="w-full">
                   <TabsList className="grid w-full grid-cols-3 bg-muted/30 rounded-lg h-8 p-0.5 border border-border">
-                    <TabsTrigger value="description" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">Description</TabsTrigger>
-                    <TabsTrigger value="features" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">Features</TabsTrigger>
-                    <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">Details</TabsTrigger>
+                    <TabsTrigger value="description" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">{t('propertyDetail.description')}</TabsTrigger>
+                    <TabsTrigger value="features" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">{t('propertyDetail.features')}</TabsTrigger>
+                    <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">{t('propertyDetail.details')}</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="description" className="mt-2 sm:mt-3">
                     <p className="text-foreground leading-relaxed text-xs sm:text-sm">
-                      {property.description || 'No description available.'}
+                      {property.description || t('propertyDetail.noDescription')}
                     </p>
                   </TabsContent>
                   
@@ -1038,7 +1040,7 @@ const PropertyDetail: React.FC = () => {
                           </div>
                         ))
                       ) : (
-                        <p className="text-muted-foreground text-center py-4 text-xs">No features listed.</p>
+                        <p className="text-muted-foreground text-center py-4 text-xs">{t('propertyDetail.noFeatures')}</p>
                       )}
                     </div>
                   </TabsContent>
@@ -1046,21 +1048,21 @@ const PropertyDetail: React.FC = () => {
                   <TabsContent value="details" className="mt-2 sm:mt-3">
                     <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
                       <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs">
-                        <span className="font-medium text-foreground">Type</span>
+                        <span className="font-medium text-foreground">{t('propertyDetail.type')}</span>
                         <span className="text-muted-foreground capitalize">{property.property_type}</span>
                       </div>
                       <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs">
-                        <span className="font-medium text-foreground">Listing</span>
+                        <span className="font-medium text-foreground">{t('propertyDetail.listing')}</span>
                         <span className="text-muted-foreground capitalize">{property.listing_type}</span>
                       </div>
                       <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs items-center">
-                        <span className="font-medium text-foreground">Status</span>
+                        <span className="font-medium text-foreground">{t('propertyDetail.status')}</span>
                         <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="h-4 text-[8px] px-1.5 rounded-md">
                           {property.status}
                         </Badge>
                       </div>
                       <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs">
-                        <span className="font-medium text-foreground">Listed</span>
+                        <span className="font-medium text-foreground">{t('propertyDetail.listed')}</span>
                         <span className="text-muted-foreground">
                           {new Date(property.created_at).toLocaleDateString()}
                         </span>
@@ -1090,20 +1092,20 @@ const PropertyDetail: React.FC = () => {
                     <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center">
                       <Camera className="h-2.5 w-2.5 text-primary" />
                     </div>
-                    Virtual Experience
+                    {t('propertyDetail.virtualExperience')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-2 sm:p-3 pt-1 space-y-1">
                   {property.virtual_tour_url && (
                     <Button className="w-full h-7 text-[10px] sm:text-xs bg-primary hover:bg-primary/90">
                       <Globe className="h-3 w-3 mr-1" />
-                      Virtual Tour
+                      {t('propertyDetail.virtualTour')}
                     </Button>
                   )}
                   {property.three_d_model_url && (
                     <Button variant="outline" className="w-full h-7 text-[10px] sm:text-xs">
                       <Box className="h-3 w-3 mr-1" />
-                      3D Model
+                      {t('propertyDetail.model3D')}
                     </Button>
                   )}
                 </CardContent>
@@ -1131,8 +1133,8 @@ const PropertyDetail: React.FC = () => {
                 <CardTitle className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground">
                   <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center">
                     <User className="h-2.5 w-2.5 text-primary" />
-                  </div>
-                  Agent Info
+                   </div>
+                  {t('propertyDetail.agentInfo')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-2 sm:p-3 pt-1 space-y-2">
@@ -1179,7 +1181,7 @@ const PropertyDetail: React.FC = () => {
                           } else if (!user) {
                             setShowAuthModal(true);
                           } else {
-                            toast({ title: "Contact not available", variant: "destructive" });
+                            toast({ title: t('propertyDetail.contactNotAvailable'), variant: "destructive" });
                           }
                         }}
                       >
@@ -1193,12 +1195,12 @@ const PropertyDetail: React.FC = () => {
                             if (user && property.posted_by?.phone_number) {
                               window.open(`tel:${property.posted_by.phone_number}`, '_self');
                             } else {
-                              toast({ title: "Sign in required", variant: "destructive" });
+                              toast({ title: t('propertyDetail.signInRequired'), variant: "destructive" });
                             }
                           }}
                         >
                           <Phone className="h-2.5 w-2.5 mr-0.5" />
-                          Call
+                          {t('propertyDetail.call')}
                         </Button>
                         <Button 
                           variant="outline" 
@@ -1207,12 +1209,12 @@ const PropertyDetail: React.FC = () => {
                             if (user && ownerInfo?.email) {
                               window.open(`mailto:${ownerInfo.email}?subject=Inquiry: ${property.title}`, '_self');
                             } else {
-                              toast({ title: "Sign in required", variant: "destructive" });
+                              toast({ title: t('propertyDetail.signInRequired'), variant: "destructive" });
                             }
                           }}
                         >
                           <Mail className="h-2.5 w-2.5 mr-0.5" />
-                          Email
+                          {t('propertyDetail.email')}
                         </Button>
                       </div>
                       
@@ -1226,7 +1228,7 @@ const PropertyDetail: React.FC = () => {
                             className="w-full h-7 text-[9px] sm:text-[10px] font-medium rounded-lg border-primary text-primary hover:bg-primary hover:text-primary-foreground active:scale-95 transition-transform"
                           >
                             <Calendar className="h-2.5 w-2.5 mr-0.5" />
-                            Schedule Viewing
+                            {t('propertyDetail.scheduleViewing')}
                           </Button>
                         }
                       />
@@ -1241,7 +1243,7 @@ const PropertyDetail: React.FC = () => {
                             className="w-full h-7 text-[9px] sm:text-[10px] font-medium rounded-lg border-accent text-accent hover:bg-accent hover:text-accent-foreground active:scale-95 transition-transform"
                           >
                             <ClipboardCheck className="h-2.5 w-2.5 mr-0.5" />
-                            Book Survey
+                            {t('propertyDetail.bookSurvey')}
                           </Button>
                         }
                       />
@@ -1251,17 +1253,17 @@ const PropertyDetail: React.FC = () => {
                     <div className="grid grid-cols-2 gap-1 pt-2 mt-2 border-t border-border">
                       <div className="text-center p-1.5 bg-primary/5 rounded-lg">
                         <div className="font-bold text-xs sm:text-sm text-primary">{property.posted_by.total_properties}+</div>
-                        <div className="text-[7px] sm:text-[8px] text-muted-foreground">Properties</div>
+                        <div className="text-[7px] sm:text-[8px] text-muted-foreground">{t('propertyDetail.properties')}</div>
                       </div>
                       <div className="text-center p-1.5 bg-primary/5 rounded-lg">
                         <div className="font-bold text-xs sm:text-sm text-primary">{property.posted_by.experience_years}y</div>
-                        <div className="text-[7px] sm:text-[8px] text-muted-foreground">Experience</div>
+                        <div className="text-[7px] sm:text-[8px] text-muted-foreground">{t('propertyDetail.experience')}</div>
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    <p className="text-xs text-muted-foreground mb-2">Agent info not available</p>
+                    <p className="text-xs text-muted-foreground mb-2">{t('propertyDetail.agentNotAvailable')}</p>
                     <SurveyBookingDialog 
                       propertyId={property.id} 
                       propertyTitle={property.title}
@@ -1271,8 +1273,8 @@ const PropertyDetail: React.FC = () => {
                           variant="outline"
                           className="w-full h-8 text-[10px] sm:text-xs font-medium rounded-lg border-accent text-accent hover:bg-accent hover:text-accent-foreground active:scale-95 transition-transform"
                         >
-                          <ClipboardCheck className="h-3 w-3 mr-1" />
-                          Book Survey
+                           <ClipboardCheck className="h-3 w-3 mr-1" />
+                           {t('propertyDetail.bookSurvey')}
                         </Button>
                       }
                     />
@@ -1284,7 +1286,7 @@ const PropertyDetail: React.FC = () => {
                           className="w-full h-8 text-[10px] sm:text-xs font-medium rounded-lg bg-primary hover:bg-primary/90 active:scale-95 transition-transform"
                         >
                           <Calendar className="h-3 w-3 mr-1" />
-                          Schedule Viewing
+                          {t('propertyDetail.scheduleViewing')}
                         </Button>
                       }
                     />
@@ -1313,7 +1315,7 @@ const PropertyDetail: React.FC = () => {
                   <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/10 flex items-center justify-center">
                     <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
                   </div>
-                  More from {agentInfo?.full_name || ownerInfo?.full_name || 'Agent'}
+                  More from {agentInfo?.full_name || ownerInfo?.full_name || t('propertyDetail.agentInfo')}
                 </h2>
               </div>
               
