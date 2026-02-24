@@ -2120,7 +2120,7 @@ const AstraSearchPanel = ({
         {showSuggestions && hasSuggestions && (
           <div
             ref={suggestionsRef}
-            className="fixed left-2 right-2 rounded-xl shadow-2xl shadow-primary/30 z-[10040] max-h-[60vh] overflow-y-auto overscroll-contain glass-popup backdrop-blur-2xl border-primary/20"
+            className="fixed left-2 right-2 rounded-xl shadow-2xl shadow-primary/30 z-[100002] max-h-[60vh] overflow-y-auto overscroll-contain glass-popup backdrop-blur-2xl border-primary/20"
             style={{ top: suggestionsTop }}
             onTouchStart={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
@@ -2537,7 +2537,8 @@ const AstraSearchPanel = ({
               {showSuggestions && (
                 <div
                   ref={suggestionsRef}
-                  className="absolute top-full left-0 right-0 mt-0.5 bg-card/95 backdrop-blur-2xl border border-gold-primary/15 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[100001] max-h-80 overflow-y-auto"
+                  className="fixed glass-popup backdrop-blur-2xl border border-gold-primary/15 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[100002] max-h-80 overflow-y-auto"
+                  style={{ top: suggestionsRect.top, left: suggestionsRect.left, width: suggestionsRect.width }}
                 >
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
