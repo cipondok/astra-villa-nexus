@@ -14691,6 +14691,63 @@ export type Database = {
           },
         ]
       }
+      property_alerts: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean | null
+          match_reason: string | null
+          property_id: string
+          property_image: string | null
+          property_price: number | null
+          property_title: string | null
+          search_id: string
+          search_name: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          match_reason?: string | null
+          property_id: string
+          property_image?: string | null
+          property_price?: number | null
+          property_title?: string | null
+          search_id: string
+          search_name?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          match_reason?: string | null
+          property_id?: string
+          property_image?: string | null
+          property_price?: number | null
+          property_title?: string | null
+          search_id?: string
+          search_name?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_alerts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_alerts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_answers: {
         Row: {
           author_id: string | null
