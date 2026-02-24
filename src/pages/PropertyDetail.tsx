@@ -22,6 +22,7 @@ import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import { PropertyReviews } from '@/components/property/PropertyReviews';
 import PropertyRecommendations from '@/components/property/PropertyRecommendations';
 import { KPRCalculator } from '@/components/property/KPRCalculator';
+import PropertyMortgageWidget from '@/components/mortgage/PropertyMortgageWidget';
 import { PropertyPosterInfo } from '@/components/property/PropertyPosterInfo';
 import { 
   MapPin, 
@@ -1067,7 +1068,13 @@ const PropertyDetail: React.FC = () => {
             
             {/* KPR Calculator */}
             {property.listing_type === 'sale' && (
-              <KPRCalculator propertyPrice={property.price} />
+              <div className="space-y-2 sm:space-y-3">
+                <KPRCalculator propertyPrice={property.price} />
+                <PropertyMortgageWidget
+                  propertyPrice={property.price}
+                  propertyId={property.id}
+                />
+              </div>
             )}
             
             {/* Contact Information - Slim Agent Card */}
