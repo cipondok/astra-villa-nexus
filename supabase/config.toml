@@ -156,3 +156,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.submit-mortgage-application]
     verify_jwt = false
+
+  [functions.visit-reminders]
+    verify_jwt = false

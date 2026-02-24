@@ -16147,6 +16147,8 @@ export type Database = {
           id: string
           notes: string | null
           property_id: string
+          reminder_1h_sent: boolean | null
+          reminder_24h_sent: boolean | null
           start_time: string
           status: string
           updated_at: string
@@ -16166,6 +16168,8 @@ export type Database = {
           id?: string
           notes?: string | null
           property_id: string
+          reminder_1h_sent?: boolean | null
+          reminder_24h_sent?: boolean | null
           start_time: string
           status?: string
           updated_at?: string
@@ -16185,6 +16189,8 @@ export type Database = {
           id?: string
           notes?: string | null
           property_id?: string
+          reminder_1h_sent?: boolean | null
+          reminder_24h_sent?: boolean | null
           start_time?: string
           status?: string
           updated_at?: string
