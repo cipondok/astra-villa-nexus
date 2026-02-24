@@ -1,11 +1,12 @@
 
 import { useState, useEffect, useCallback } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { useAllSystemSettings, selectSettingByKey } from "@/hooks/useAllSystemSettings";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { getEdgeFunctionUserMessage, throwIfEdgeFunctionReturnedError } from "@/lib/supabaseFunctionErrors";
@@ -60,24 +61,14 @@ const AIFooterBot = () => {
     }
   }, [isOpen, shouldShowWelcome]);
 
-  // Fetch chatbot logo from system settings (branding category)
-  const { data: chatbotLogoUrl } = useQuery({
-    queryKey: ['branding', 'chatbotLogo'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('system_settings')
-        .select('value')
-        .eq('category', 'branding')
-        .eq('key', 'chatbotLogo')
-        .maybeSingle();
-      
-      if (error || !data?.value) return null;
-      const value = typeof data.value === 'string' ? data.value : null;
-      return value && value.trim() !== '' ? value : null;
-    },
-    staleTime: 60_000,
-    refetchOnWindowFocus: false,
-  });
+  // Derive chatbot logo from cached system settings
+  const { data: allSettings } = useAllSystemSettings();
+  const chatbotLogoUrl = (() => {
+    const raw = selectSettingByKey(allSettings, 'chatbotLogo');
+    if (!raw) return null;
+    const value = typeof raw === 'string' ? raw : null;
+    return value && value.trim() !== '' ? value : null;
+  })();
 
   const aiChatMutation = useMutation({
     mutationFn: async (userMessage: string) => {

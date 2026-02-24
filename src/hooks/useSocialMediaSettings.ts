@@ -1,8 +1,9 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { useAllSystemSettings, selectSettingsByKeys, useInvalidateSystemSettings } from './useAllSystemSettings';
 
 interface SocialMediaSettings {
   facebookUrl: string;
@@ -12,6 +13,11 @@ interface SocialMediaSettings {
   whatsappNumber: string;
   tiktokUrl: string;
 }
+
+const SOCIAL_KEYS = [
+  'facebookUrl', 'twitterUrl', 'instagramUrl',
+  'youtubeUrl', 'whatsappNumber', 'tiktokUrl'
+] as const;
 
 const defaultSocialSettings: SocialMediaSettings = {
   facebookUrl: '',
@@ -25,21 +31,9 @@ const defaultSocialSettings: SocialMediaSettings = {
 export const useSocialMediaSettings = () => {
   const [settings, setSettings] = useState<SocialMediaSettings>(defaultSocialSettings);
   const queryClient = useQueryClient();
+  const invalidateAll = useInvalidateSystemSettings();
 
-  const { data: socialData, isLoading } = useQuery({
-    queryKey: ['social-media-settings'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('system_settings')
-        .select('key, value')
-        .in('key', [
-          'facebookUrl', 'twitterUrl', 'instagramUrl',
-          'youtubeUrl', 'whatsappNumber', 'tiktokUrl'
-        ]);
-      if (error) throw error;
-      return data;
-    },
-  });
+  const { data: allSettings, isLoading } = useAllSystemSettings();
 
   const saveMutation = useMutation({
     mutationFn: async (newSettings: Partial<SocialMediaSettings>) => {
@@ -59,7 +53,7 @@ export const useSocialMediaSettings = () => {
     },
     onSuccess: () => {
       toast.success('Social media settings saved successfully!');
-      queryClient.invalidateQueries({ queryKey: ['social-media-settings'] });
+      invalidateAll();
       queryClient.invalidateQueries({ queryKey: ['website-settings'] });
     },
     onError: (error) => {
@@ -69,16 +63,16 @@ export const useSocialMediaSettings = () => {
   });
 
   useEffect(() => {
-    if (socialData) {
-      const loadedSettings = { ...defaultSocialSettings };
-      socialData.forEach((setting) => {
-        if (setting.key in loadedSettings) {
-          (loadedSettings as any)[setting.key] = setting.value || '';
-        }
-      });
-      setSettings(loadedSettings);
+    if (!allSettings) return;
+    const picked = selectSettingsByKeys(allSettings, [...SOCIAL_KEYS]);
+    const loadedSettings = { ...defaultSocialSettings };
+    for (const key of SOCIAL_KEYS) {
+      if (picked[key] !== undefined) {
+        (loadedSettings as any)[key] = String(picked[key] || '');
+      }
     }
-  }, [socialData]);
+    setSettings(loadedSettings);
+  }, [allSettings]);
 
   const updateSetting = (key: keyof SocialMediaSettings, value: string) => {
     setSettings(prev => ({ ...prev, [key]: value }));
