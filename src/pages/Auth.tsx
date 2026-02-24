@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SEOHead } from "@/components/SEOHead";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 
 const Auth = () => {
+  const { t } = useTranslation();
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -233,8 +235,8 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gold-primary/5 via-background to-accent/5 px-4 py-12">
       <SEOHead
-        title="Login & Daftar"
-        description="Masuk atau daftar akun ASTRA Villa Realty untuk akses properti premium, simpan favorit, dan kelola transaksi Anda."
+        title={t('seo.auth.title')}
+        description={t('seo.auth.description')}
         noIndex={true}
       />
       <Card className="w-full max-w-md shadow-xl border-gold-primary/15 bg-primary-foreground/5 backdrop-blur-2xl">

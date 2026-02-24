@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { SEOHead } from "@/components/SEOHead";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -66,6 +67,7 @@ const useArticles = () => {
 };
 
 const Community = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: articles = [], isLoading } = useArticles();
@@ -113,8 +115,8 @@ const Community = () => {
   return (
     <div>
       <SEOHead
-        title="Property Discussion & Articles"
-        description="Join the community: post property articles, comment, reply, like and rate discussions on Astra Villa Realty."
+        title={t('seo.community.title')}
+        description={t('seo.community.description')}
         canonical="https://astra-villa-realty.lovable.app/community"
       />
       <header className="container mx-auto px-4 pt-6 pb-4">

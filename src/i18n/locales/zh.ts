@@ -1063,6 +1063,20 @@ const zh: TranslationMap = {
     forLease: '租赁',
     view3D: '3D 视图',
   },
+  seo: {
+    home: { title: '印尼高端房产平台', description: '在印尼寻找别墅、公寓、住宅和豪华房产。AI搜索、3D虚拟看房，尽在ASTRA Villa Realty。' },
+    properties: { title: '印尼所有房产', description: '浏览印尼各地数千套出售和出租房产。按位置、类型和价格筛选，找到您的理想房产。' },
+    dijual: { title: '印尼出售房产', description: '在印尼各地寻找出售的住宅、别墅、公寓和房产。ASTRA Villa Realty提供最优价格和最全选择。' },
+    disewa: { title: '印尼出租房产', description: '在印尼各地租赁别墅、公寓、住宅和公寓房间。ASTRA Villa Realty提供便捷快速的在线预订。' },
+    about: { title: '关于Astra Villa', description: 'ASTRA Villa Realty是印尼高端房产平台。了解我们的使命、愿景和专业团队。' },
+    contact: { title: '联系我们', description: '联系ASTRA Villa Realty团队，咨询房产、合作或寻求帮助。我们全天候为您服务。' },
+    help: { title: '帮助与支持', description: '查找关于房产、账户和ASTRA Villa Realty服务的常见问题解答。我们的支持团队全天候待命。' },
+    auth: { title: '登录与注册', description: '登录或注册ASTRA Villa Realty账户，获取高端房产访问权限，保存收藏并管理交易。' },
+    investment: { title: '印尼外国投资指南', description: '外国人和本地人在印尼房产投资的完整指南。法规、要求和购买流程。' },
+    community: { title: '房产讨论与文章', description: '加入社区：发布房产文章、评论、回复、点赞和评价Astra Villa Realty上的讨论。' },
+    agentDirectory: { title: '房产经纪人目录', description: '在印尼各地寻找值得信赖且经过验证的房产经纪人。数千名专业经纪人随时协助您的房产交易。' },
+    locationMap: { title: '印尼房产地图', description: '浏览印尼34个省份的房产。通过互动地图按位置寻找您的理想房产。' },
+  },
 };
 
 export default zh;

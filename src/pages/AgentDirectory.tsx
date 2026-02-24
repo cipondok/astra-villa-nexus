@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SEOHead } from '@/components/SEOHead';
+import { useTranslation } from "@/i18n/useTranslation";
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
@@ -13,6 +14,7 @@ import AgentSearchResults from '@/components/agents/AgentSearchResults';
 import AgentRegistrationCTA from '@/components/agents/AgentRegistrationCTA';
 
 const AgentDirectory = () => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('all');
 
@@ -49,8 +51,8 @@ const AgentDirectory = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Direktori Agen Properti"
-        description="Temukan agen properti terpercaya dan terverifikasi di seluruh Indonesia. Ribuan agen profesional siap membantu transaksi properti Anda."
+        title={t('seo.agentDirectory.title')}
+        description={t('seo.agentDirectory.description')}
         keywords="agen properti indonesia, agen properti terpercaya, cari agen, real estate agent"
       />
       {/* Hero Banner Section */}

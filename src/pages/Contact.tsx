@@ -82,8 +82,8 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Hubungi Kami"
-        description="Hubungi tim ASTRA Villa Realty untuk pertanyaan properti, kerjasama, atau bantuan. Kami siap membantu Anda 24/7."
+        title={t('seo.contact.title')}
+        description={t('seo.contact.description')}
         keywords="kontak ASTRA Villa, hubungi agen properti, customer service properti Indonesia"
       />
       <EnhancedNavigation

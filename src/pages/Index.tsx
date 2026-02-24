@@ -515,8 +515,8 @@ const Index = () => {
   const content = (
     <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-background" {...pullHandlers}>
       <SEOHead
-        title="Platform Properti Premium Indonesia"
-        description="Temukan villa, apartemen, rumah, dan properti mewah di Indonesia. Pencarian AI, tur virtual 3D, dan investasi properti dengan ASTRA Villa Realty."
+        title={t('seo.home.title')}
+        description={t('seo.home.description')}
         keywords="properti Indonesia, villa mewah, apartemen Jakarta, rumah dijual, properti Bali, investasi properti"
         jsonLd={[seoSchemas.organization(), seoSchemas.realEstateAgent(), seoSchemas.searchAction()]}
       />

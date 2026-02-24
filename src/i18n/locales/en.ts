@@ -1115,6 +1115,20 @@ const en: TranslationMap = {
     forLease: 'For Lease',
     view3D: '3D View',
   },
+  seo: {
+    home: { title: 'Premium Property Platform Indonesia', description: 'Find villas, apartments, houses, and luxury properties in Indonesia. AI search, 3D virtual tours, and property investment with ASTRA Villa Realty.' },
+    properties: { title: 'All Properties in Indonesia', description: 'Explore thousands of properties for sale and rent across Indonesia. Filter by location, type, and price to find your ideal property.' },
+    dijual: { title: 'Properties for Sale in Indonesia', description: 'Find houses, villas, apartments, and properties for sale across Indonesia. Best prices, widest selection at ASTRA Villa Realty.' },
+    disewa: { title: 'Properties for Rent in Indonesia', description: 'Rent villas, apartments, houses, and boarding rooms across Indonesia. Easy & fast online booking at ASTRA Villa Realty.' },
+    about: { title: 'About Astra Villa', description: 'ASTRA Villa Realty is Indonesia\'s premium property platform. Learn about our mission, vision, and dedicated professional team.' },
+    contact: { title: 'Contact Us', description: 'Contact the ASTRA Villa Realty team for property inquiries, partnerships, or assistance. We\'re ready to help you 24/7.' },
+    help: { title: 'Help & Support', description: 'Find answers to common questions about properties, accounts, and ASTRA Villa Realty services. Our support team is ready 24/7.' },
+    auth: { title: 'Login & Register', description: 'Sign in or create an ASTRA Villa Realty account for premium property access, save favorites, and manage your transactions.' },
+    investment: { title: 'Foreign Investment Guide in Indonesia', description: 'Complete guide to property investment in Indonesia for foreigners and locals. Regulations, requirements, and purchasing process.' },
+    community: { title: 'Property Discussion & Articles', description: 'Join the community: post property articles, comment, reply, like and rate discussions on Astra Villa Realty.' },
+    agentDirectory: { title: 'Property Agent Directory', description: 'Find trusted and verified property agents across Indonesia. Thousands of professional agents ready to assist your property transactions.' },
+    locationMap: { title: 'Indonesia Property Map', description: 'Explore properties across all 34 provinces of Indonesia. Find your dream property by location with an interactive map.' },
+  },
 };
 
 export default en;
