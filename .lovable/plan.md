@@ -1,75 +1,29 @@
 
 
-## Add Email/Push Notification Alerts for Listing Subscriptions
+## What's Been Built So Far
 
-### Current State
-- **Database tables exist**: `user_searches`, `push_subscriptions`, `search_notifications` -- all with RLS
-- **Edge function exists**: `check-search-notifications` checks for new matches and price drops, but only sends push notifications (not email)
-- **Push subscription logic exists**: In `StickySearchPanel.tsx` (toggle per saved search, VAPID-based push)
-- **Email service exists**: `send-email` edge function with template support
+The recent conversation has focused on the KPR (mortgage) calculator ecosystem and property recommendations:
 
-### What's Missing
-1. The `check-search-notifications` edge function doesn't send email alerts
-2. No "Subscribe to alerts" UI on listing pages (`PropertyListingPage.tsx`)
-3. No user-facing frequency preference (instant vs daily digest)
+1. Amortization schedule chart (principal vs interest breakdown)
+2. Bank comparison widget integrated into property detail
+3. Affordability calculator with DTI ratio
+4. Enhanced recommendation engine with user behavior signals
+5. "Why this match?" score breakdown on recommendation cards
+6. Tiered candidate queries for better recommendation results
 
-### Plan
+## Suggested Next Steps
 
-#### 1. Update `check-search-notifications` Edge Function
-- After finding new matches or price drops, also send email notifications via the existing `send-email` function
-- Look up user email from `auth.users` using the service role key
-- Send a summary email with property titles, prices, and links
-- Add a `notification_channel` preference check (email, push, or both) from user preferences
+Here are logical next features to continue building on this foundation:
 
-#### 2. Create `src/components/search/SearchAlertSubscribeButton.tsx`
-A compact, reusable button/card component for listing pages:
-- Shows a bell icon with "Get Alerts" label
-- On click (if logged in): saves current filters as a `user_search` entry + creates a `push_subscription` record
-- Lets user pick notification channel: Email, Push, or Both
-- Shows confirmation toast on success
-- If already subscribed with current filters, shows "Subscribed" state with option to unsubscribe
-- Requires authentication -- shows sign-in prompt if not logged in
+1. **Optimize property detail page load performance** — The testing revealed 15-20s load times due to excessive `system_settings` queries. Consolidating these into a single cached query would significantly improve UX.
 
-#### 3. Integrate into `PropertyListingPage.tsx`
-- Add the `SearchAlertSubscribeButton` in the sticky header area, next to the view mode toggle and filter button
-- Pass current active filters (property type, price range, location, listing type, bedrooms) to the component
-- Button updates reactively when filters change
+2. **Add a mortgage pre-qualification flow** — Extend the affordability calculator into a step-by-step pre-qualification wizard that collects income documentation details and generates a shareable pre-qualification letter (PDF).
 
-#### 4. Add `email_enabled` column to `push_subscriptions` table
-- Migration to add `email_enabled BOOLEAN DEFAULT true` column
-- The edge function checks this flag before sending emails
+3. **Save and compare KPR scenarios** — Let users save multiple mortgage configurations (different down payments, terms, banks) and compare them side-by-side.
 
-### Technical Details
+4. **User interaction tracking for recommendations** — The recommendation engine reads from `user_interactions` and `activity_logs`, but property views and searches may not be consistently logged. Adding tracking hooks would improve personalization accuracy.
 
-**SearchAlertSubscribeButton flow:**
-```
-User clicks "Get Alerts"
-  -> Check auth (prompt sign-in if needed)
-  -> Show channel picker popover (Email / Push / Both)
-  -> Save to user_searches with current filters
-  -> Create push_subscription record with email_enabled flag
-  -> Show success toast
-```
+5. **Real-time collaborative search recommendations** — The `useCollaborativeRecommendations` hook exists but the Edge Function `get-collaborative-recommendations` may need implementation or testing.
 
-**Edge function email integration (in check-search-notifications):**
-```
-For each subscription with new matches:
-  1. Send push notification (existing)
-  2. If email_enabled:
-     - Look up user email via auth.admin.getUserById()
-     - Invoke send-email with template containing:
-       - Search name
-       - Number of new matches
-       - Top 3 property previews (title, price, location, image)
-       - "View All" link to the listing page with filters
-```
+Pick any direction and I'll create a detailed implementation plan.
 
-**Files to create:**
-- `src/components/search/SearchAlertSubscribeButton.tsx`
-
-**Files to modify:**
-- `supabase/functions/check-search-notifications/index.ts` -- add email sending
-- `src/pages/PropertyListingPage.tsx` -- add subscribe button to header
-
-**Database migration:**
-- Add `email_enabled` boolean column to `push_subscriptions`
