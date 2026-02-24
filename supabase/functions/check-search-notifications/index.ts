@@ -1,12 +1,11 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.10';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -16,41 +15,35 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    console.log('Starting notification check...');
+    console.log('🔔 Starting saved search notification check...');
 
-    const { data: subscriptions, error: subError } = await supabase
-      .from('push_subscriptions')
-      .select('*, user_searches!inner(*)')
+    // Fetch all active searches with email notifications enabled
+    const { data: searches, error: searchError } = await supabase
+      .from('user_searches')
+      .select('*')
+      .eq('email_notifications', true)
       .eq('is_active', true);
 
-    if (subError) throw subError;
+    if (searchError) throw searchError;
 
-    console.log(`Found ${subscriptions?.length || 0} active subscriptions`);
+    console.log(`📋 Found ${searches?.length || 0} saved searches with email alerts`);
 
     let notificationsCreated = 0;
+    let emailsSent = 0;
 
-    for (const sub of subscriptions || []) {
+    for (const search of searches || []) {
       try {
-        const searchId = sub.search_id;
-        
-        const { data: search } = await supabase
-          .from('user_searches')
-          .select('*')
-          .eq('id', searchId)
-          .single();
+        const filters = (search.filters || {}) as Record<string, any>;
+        const lastChecked = search.updated_at || search.created_at;
 
-        if (!search) continue;
-
-        const filters = search.filters || {};
-        const lastCheck = new Date(sub.updated_at);
-        
-        // Build property query based on saved filters
+        // Build query for new properties since last check
         let query = supabase
           .from('properties')
-          .select('id, title, price, location, city, images, created_at')
-          .eq('status', 'available')
-          .gte('created_at', lastCheck.toISOString());
+          .select('id, title, price, location, city, district, images, created_at, property_type, listing_type, bedrooms')
+          .eq('status', 'approved')
+          .gte('created_at', lastChecked);
 
+        // Apply saved filters
         if (filters.propertyType && filters.propertyType !== 'all') {
           query = query.eq('property_type', filters.propertyType);
         }
@@ -60,118 +53,78 @@ serve(async (req) => {
         if (filters.city && filters.city !== 'all') {
           query = query.ilike('city', `%${filters.city}%`);
         }
+        if (filters.location && filters.location !== 'all') {
+          query = query.ilike('city', `%${filters.location}%`);
+        }
         if (filters.minPrice) {
           query = query.gte('price', filters.minPrice);
         }
         if (filters.maxPrice) {
           query = query.lte('price', filters.maxPrice);
         }
+        if (filters.priceRange && Array.isArray(filters.priceRange)) {
+          if (filters.priceRange[0] > 0) query = query.gte('price', filters.priceRange[0]);
+          if (filters.priceRange[1] < 50000000000) query = query.lte('price', filters.priceRange[1]);
+        }
         if (filters.bedrooms && filters.bedrooms !== 'all') {
-          query = query.eq('bedrooms', parseInt(filters.bedrooms));
+          query = query.gte('bedrooms', parseInt(filters.bedrooms));
+        }
+        if (filters.propertyTypes && Array.isArray(filters.propertyTypes) && filters.propertyTypes.length > 0) {
+          query = query.in('property_type', filters.propertyTypes);
         }
 
-        const { data: newMatches } = await query.limit(10);
+        const { data: newMatches } = await query.order('created_at', { ascending: false }).limit(20);
 
         if (newMatches && newMatches.length > 0) {
-          for (const property of newMatches) {
+          // Create in-app notifications
+          for (const property of newMatches.slice(0, 10)) {
             await supabase.from('search_notifications').insert({
-              user_id: sub.user_id,
-              search_id: searchId,
+              user_id: search.user_id,
+              search_id: search.id,
               notification_type: 'new_match',
               property_id: property.id,
               title: 'New Property Match!',
-              message: `${property.title} in ${property.location}`,
-              metadata: { price: property.price }
+              message: `${property.title} in ${property.city || property.location || 'N/A'}`,
+              metadata: { price: property.price, listing_type: property.listing_type },
             });
             notificationsCreated++;
           }
 
-          // Send push notification
-          if (sub.subscription) {
-            await sendPushNotification(
-              sub.subscription,
-              'New Property Match!',
-              `Found ${newMatches.length} new properties matching "${search.name}"`
-            );
-          }
-
-          // Send email notification if enabled
-          const emailEnabled = sub.email_enabled !== false;
-          if (emailEnabled) {
-            await sendEmailNotification(supabase, supabaseUrl, sub.user_id, search.name, newMatches);
-          }
+          // Send email notification
+          const emailSent = await sendEmailNotification(
+            supabase,
+            supabaseUrl,
+            search.user_id,
+            search.name,
+            newMatches
+          );
+          if (emailSent) emailsSent++;
         }
 
-        // Check for price drops on existing matches
-        const existingQuery = supabase
-          .from('properties')
-          .select('id, title, price, location')
-          .eq('status', 'available');
-
-        if (filters.propertyType && filters.propertyType !== 'all') {
-          existingQuery.eq('property_type', filters.propertyType);
-        }
-        if (filters.listingType && filters.listingType !== 'all') {
-          existingQuery.eq('listing_type', filters.listingType);
-        }
-        if (filters.city && filters.city !== 'all') {
-          existingQuery.ilike('city', `%${filters.city}%`);
-        }
-
-        const { data: existingMatches } = await existingQuery.limit(100);
-
-        if (existingMatches) {
-          for (const property of existingMatches) {
-            const previousPrice = filters.maxPrice || property.price * 1.15;
-            const dropPercent = ((previousPrice - property.price) / previousPrice) * 100;
-
-            if (dropPercent >= 10) {
-              await supabase.from('search_notifications').insert({
-                user_id: sub.user_id,
-                search_id: searchId,
-                notification_type: 'price_drop',
-                property_id: property.id,
-                title: 'Price Drop Alert!',
-                message: `${property.title} - ${Math.round(dropPercent)}% price drop`,
-                metadata: { old_price: previousPrice, new_price: property.price }
-              });
-              notificationsCreated++;
-
-              if (sub.subscription) {
-                await sendPushNotification(
-                  sub.subscription,
-                  'Price Drop Alert!',
-                  `${property.title} dropped ${Math.round(dropPercent)}%`
-                );
-              }
-            }
-          }
-        }
-
-        // Update subscription timestamp
+        // Update timestamp so we don't re-check the same period
         await supabase
-          .from('push_subscriptions')
+          .from('user_searches')
           .update({ updated_at: new Date().toISOString() })
-          .eq('id', sub.id);
+          .eq('id', search.id);
 
       } catch (error) {
-        console.error(`Error processing subscription ${sub.id}:`, error);
+        console.error(`Error processing search ${search.id}:`, error);
       }
     }
 
-    console.log(`Created ${notificationsCreated} notifications`);
+    console.log(`✅ Created ${notificationsCreated} notifications, sent ${emailsSent} emails`);
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        checked: subscriptions?.length || 0,
-        notifications: notificationsCreated 
+      JSON.stringify({
+        success: true,
+        searched: searches?.length || 0,
+        notifications: notificationsCreated,
+        emails: emailsSent,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-
   } catch (error) {
-    console.error('Error:', error);
+    console.error('❌ Error:', error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -179,85 +132,79 @@ serve(async (req) => {
   }
 });
 
-async function sendPushNotification(subscription: any, title: string, body: string) {
-  try {
-    const vapidPublicKey = Deno.env.get('VAPID_PUBLIC_KEY');
-    const vapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY');
-
-    if (!vapidPublicKey || !vapidPrivateKey) {
-      console.error('VAPID keys not configured');
-      return;
-    }
-
-    console.log('Would send push:', { title, body, subscription: subscription.endpoint });
-  } catch (error) {
-    console.error('Error sending push:', error);
-  }
-}
-
 async function sendEmailNotification(
   supabase: any,
   supabaseUrl: string,
   userId: string,
   searchName: string,
   matches: any[]
-) {
+): Promise<boolean> {
   try {
-    // Look up user email
     const { data: userData, error: userError } = await supabase.auth.admin.getUserById(userId);
     if (userError || !userData?.user?.email) {
       console.error('Could not fetch user email:', userError);
-      return;
+      return false;
     }
 
     const userEmail = userData.user.email;
-    const top3 = matches.slice(0, 3);
+    const top5 = matches.slice(0, 5);
 
     const formatPrice = (price: number) => {
-      if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}M`;
-      if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}Jt`;
+      if (price >= 1_000_000_000) return `Rp ${(price / 1_000_000_000).toFixed(1)}M`;
+      if (price >= 1_000_000) return `Rp ${(price / 1_000_000).toFixed(0)}Jt`;
       return `Rp ${price.toLocaleString('id-ID')}`;
     };
 
-    const propertyListHtml = top3.map(p => `
-      <div style="margin-bottom:16px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;">
-        <h3 style="margin:0 0 4px;font-size:14px;color:#1a1a1a;">${p.title}</h3>
-        <p style="margin:0 0 4px;font-size:16px;font-weight:bold;color:#2563eb;">${formatPrice(p.price)}</p>
-        <p style="margin:0;font-size:12px;color:#6b7280;">${p.city || p.location || ''}</p>
-      </div>
-    `).join('');
+    const propertyListHtml = top5
+      .map(
+        (p: any) => `
+      <tr>
+        <td style="padding:12px;border-bottom:1px solid #e5e7eb;">
+          <h3 style="margin:0 0 4px;font-size:14px;color:#1a1a1a;">${p.title}</h3>
+          <p style="margin:0 0 4px;font-size:16px;font-weight:bold;color:#2563eb;">${formatPrice(p.price)}</p>
+          <p style="margin:0;font-size:12px;color:#6b7280;">${p.city || p.district || p.location || ''} · ${p.property_type || ''} · ${p.bedrooms || '?'} BR</p>
+        </td>
+      </tr>`
+      )
+      .join('');
 
     const html = `
-      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:480px;margin:0 auto;padding:24px;">
-        <h2 style="color:#1a1a1a;margin-bottom:8px;">New Property Matches!</h2>
-        <p style="color:#6b7280;margin-bottom:20px;">Found ${matches.length} new ${matches.length === 1 ? 'property' : 'properties'} matching "<strong>${searchName}</strong>"</p>
-        ${propertyListHtml}
-        ${matches.length > 3 ? `<p style="color:#6b7280;font-size:13px;">...and ${matches.length - 3} more</p>` : ''}
-        <a href="${supabaseUrl.replace('.supabase.co', '.lovable.app')}/properties" style="display:inline-block;margin-top:16px;padding:10px 24px;background:#2563eb;color:#fff;border-radius:6px;text-decoration:none;font-size:14px;">View All Matches</a>
-        <p style="margin-top:24px;font-size:11px;color:#9ca3af;">You're receiving this because you subscribed to property alerts.</p>
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:520px;margin:0 auto;padding:24px;background:#ffffff;">
+        <h2 style="color:#1a1a1a;margin-bottom:8px;">🏠 New Property Matches!</h2>
+        <p style="color:#6b7280;margin-bottom:20px;">
+          Found <strong>${matches.length}</strong> new ${matches.length === 1 ? 'property' : 'properties'} matching your saved search "<strong>${searchName}</strong>"
+        </p>
+        <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:8px;">
+          ${propertyListHtml}
+        </table>
+        ${matches.length > 5 ? `<p style="color:#6b7280;font-size:13px;margin-top:12px;">...and ${matches.length - 5} more</p>` : ''}
+        <a href="https://astra-villa-realty.lovable.app/properties" style="display:inline-block;margin-top:20px;padding:12px 28px;background:#2563eb;color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500;">View All Matches</a>
+        <p style="margin-top:24px;font-size:11px;color:#9ca3af;">You received this because you enabled email alerts for "${searchName}". Manage your saved searches to unsubscribe.</p>
       </div>
     `;
 
-    // Invoke send-email edge function
     const response = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+        Authorization: `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
       },
       body: JSON.stringify({
         to: userEmail,
         subject: `${matches.length} New Properties Matching "${searchName}"`,
         html,
+        skipAuth: true,
       }),
     });
 
     if (!response.ok) {
       console.error('Email send failed:', await response.text());
-    } else {
-      console.log(`Email sent to ${userEmail} for search "${searchName}"`);
+      return false;
     }
+    console.log(`📧 Email sent to ${userEmail} for search "${searchName}"`);
+    return true;
   } catch (error) {
     console.error('Error sending email notification:', error);
+    return false;
   }
 }

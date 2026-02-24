@@ -20628,8 +20628,10 @@ export type Database = {
       user_searches: {
         Row: {
           created_at: string
+          email_notifications: boolean | null
           filters: Json | null
           id: string
+          is_active: boolean | null
           name: string
           query: string | null
           timestamp: number
@@ -20638,8 +20640,10 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          email_notifications?: boolean | null
           filters?: Json | null
           id?: string
+          is_active?: boolean | null
           name: string
           query?: string | null
           timestamp: number
@@ -20648,8 +20652,10 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          email_notifications?: boolean | null
           filters?: Json | null
           id?: string
+          is_active?: boolean | null
           name?: string
           query?: string | null
           timestamp?: number
