@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { SEOHead } from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useTheme } from "@/components/ThemeProvider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNaviga
 
 const About = () => {
   const { isAuthenticated } = useAuth();
-  const { language, setLanguage } = useLanguage();
+  const { t, language, setLanguage } = useTranslation();
   const { theme, setTheme } = useTheme();
 
   const toggleLanguage = () => {
@@ -22,58 +22,19 @@ const About = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
 
-  const text = {
-    en: {
-      title: "About Astra Villa",
-      subtitle: "Your Trusted Partner in Real Estate",
-      mission: "Our Mission",
-      missionText: "To revolutionize the real estate industry by providing innovative, transparent, and customer-centric solutions that make property transactions seamless and enjoyable.",
-      vision: "Our Vision",
-      visionText: "To become the leading real estate platform in Southeast Asia, connecting people with their dream properties while building lasting relationships.",
-      values: "Our Values",
-      valuesItems: [
-        { icon: Heart, title: "Customer First", description: "We prioritize our customers' needs and satisfaction above all else." },
-        { icon: Shield, title: "Trust & Transparency", description: "We maintain the highest standards of integrity in all our dealings." },
-        { icon: Award, title: "Excellence", description: "We strive for excellence in every service we provide." },
-        { icon: Globe, title: "Innovation", description: "We embrace technology to create better experiences." }
-      ],
-      stats: "Company Statistics",
-      statsItems: [
-        { number: "10,000+", label: "Properties Listed" },
-        { number: "5,000+", label: "Happy Customers" },
-        { number: "50+", label: "Expert Agents" },
-        { number: "15+", label: "Cities Covered" }
-      ],
-      team: "Our Team",
-      teamText: "Our dedicated team of real estate professionals brings years of experience and local market knowledge to help you make informed decisions."
-    },
-    id: {
-      title: "Tentang Astra Villa",
-      subtitle: "Mitra Terpercaya Anda di Bidang Real Estate",
-      mission: "Misi Kami",
-      missionText: "Merevolusi industri real estate dengan menyediakan solusi inovatif, transparan, dan berpusat pada pelanggan yang membuat transaksi properti menjadi mudah dan menyenangkan.",
-      vision: "Visi Kami",
-      visionText: "Menjadi platform real estate terdepan di Asia Tenggara, menghubungkan orang dengan properti impian mereka sambil membangun hubungan yang langgeng.",
-      values: "Nilai-nilai Kami",
-      valuesItems: [
-        { icon: Heart, title: "Pelanggan Utama", description: "Kami mengutamakan kebutuhan dan kepuasan pelanggan di atas segalanya." },
-        { icon: Shield, title: "Kepercayaan & Transparansi", description: "Kami menjaga standar integritas tertinggi dalam semua urusan kami." },
-        { icon: Award, title: "Keunggulan", description: "Kami berusaha untuk keunggulan dalam setiap layanan yang kami berikan." },
-        { icon: Globe, title: "Inovasi", description: "Kami merangkul teknologi untuk menciptakan pengalaman yang lebih baik." }
-      ],
-      stats: "Statistik Perusahaan",
-      statsItems: [
-        { number: "10,000+", label: "Properti Terdaftar" },
-        { number: "5,000+", label: "Pelanggan Puas" },
-        { number: "50+", label: "Agen Ahli" },
-        { number: "15+", label: "Kota Terjangkau" }
-      ],
-      team: "Tim Kami",
-      teamText: "Tim profesional real estate kami yang berdedikasi membawa pengalaman bertahun-tahun dan pengetahuan pasar lokal untuk membantu Anda membuat keputusan yang tepat."
-    }
-  };
+  const valuesItems = [
+    { icon: Heart, title: t('about.customerFirst'), description: t('about.customerFirstDesc') },
+    { icon: Shield, title: t('about.trustTransparency'), description: t('about.trustTransparencyDesc') },
+    { icon: Award, title: t('about.excellence'), description: t('about.excellenceDesc') },
+    { icon: Globe, title: t('about.innovation'), description: t('about.innovationDesc') },
+  ];
 
-  const currentText = text[language];
+  const statsItems = [
+    { number: "10,000+", label: t('about.statsPropertiesListed') },
+    { number: "5,000+", label: t('about.statsHappyCustomers') },
+    { number: "50+", label: t('about.statsExpertAgents') },
+    { number: "15+", label: t('about.statsCitiesCovered') },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -96,10 +57,10 @@ const About = () => {
           {/* Header */}
           <div className="text-center mb-16">
             <h1 className="text-4xl font-bold text-foreground mb-4">
-              {currentText.title}
+              {t('about.title')}
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {currentText.subtitle}
+              {t('about.subtitle')}
             </p>
           </div>
 
@@ -109,12 +70,12 @@ const About = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Building className="h-6 w-6 text-primary" />
-                  {currentText.mission}
+                  {t('about.mission')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  {currentText.missionText}
+                  {t('about.missionText')}
                 </p>
               </CardContent>
             </Card>
@@ -123,12 +84,12 @@ const About = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Globe className="h-6 w-6 text-primary" />
-                  {currentText.vision}
+                  {t('about.vision')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  {currentText.visionText}
+                  {t('about.visionText')}
                 </p>
               </CardContent>
             </Card>
@@ -137,10 +98,10 @@ const About = () => {
           {/* Statistics */}
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
-              {currentText.stats}
+              {t('about.stats')}
             </h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {currentText.statsItems.map((stat, index) => (
+              {statsItems.map((stat, index) => (
                 <Card key={index} className="text-center">
                   <CardContent className="pt-6">
                     <div className="text-3xl font-bold text-primary mb-2">
@@ -158,10 +119,10 @@ const About = () => {
           {/* Values */}
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
-              {currentText.values}
+              {t('about.values')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {currentText.valuesItems.map((value, index) => {
+              {valuesItems.map((value, index) => {
                 const IconComponent = value.icon;
                 return (
                   <Card key={index} className="text-center">
@@ -187,12 +148,12 @@ const About = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-center justify-center">
                 <Users className="h-6 w-6 text-primary" />
-                {currentText.team}
+                {t('about.team')}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-center">
               <p className="text-muted-foreground max-w-3xl mx-auto">
-                {currentText.teamText}
+                {t('about.teamText')}
               </p>
             </CardContent>
           </Card>

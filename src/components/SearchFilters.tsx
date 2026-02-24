@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -7,6 +6,7 @@ import { Search } from "lucide-react";
 import { useState } from "react";
 import LocationSelector from "@/components/location/LocationSelector";
 import AdvancedFiltersDialog from "@/components/property/AdvancedFiltersDialog";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface SearchFiltersProps {
   language: "en" | "id";
@@ -23,46 +23,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
 
-  const text = {
-    en: {
-      search: "Search properties, location, or area...",
-      state: "Select State",
-      city: "Select City", 
-      propertyType: "Property Type",
-      listingType: "Listing Type",
-      price: "Price Range",
-      bedrooms: "Bedrooms",
-      bathrooms: "Bathrooms",
-      searchBtn: "🔍 Search Properties",
-      forSale: "For Sale",
-      forRent: "For Rent",
-      allTypes: "All Types",
-      anyPrice: "Any Price",
-      anyBedroom: "Any",
-      anyBathroom: "Any"
-    },
-    id: {
-      search: "Cari properti, lokasi, atau area...",
-      state: "Pilih Provinsi",
-      city: "Pilih Kota",
-      propertyType: "Jenis Properti",
-      listingType: "Tipe Listing",
-      price: "Range Harga",
-      bedrooms: "Kamar Tidur",
-      bathrooms: "Kamar Mandi",
-      searchBtn: "🔍 Cari Properti",
-      forSale: "Dijual",
-      forRent: "Disewa",
-      allTypes: "Semua Jenis",
-      anyPrice: "Semua Harga",
-      anyBedroom: "Semua",
-      anyBathroom: "Semua"
-    }
-  };
-
-  const currentText = text[language];
-
-  // Location handling is now done by LocationSelector component
+  const { t } = useTranslation();
 
   const propertyTypes = [
     { value: "house", label: language === "en" ? "🏠 House" : "🏠 Rumah" },
@@ -76,7 +37,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
 
   const handleProvinceChange = (province: string) => {
     setSelectedProvince(province);
-    setSelectedCity("all"); // Reset city when province changes
+    setSelectedCity("all");
   };
 
   const handleCityChange = (city: string) => {
@@ -114,12 +75,11 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
   return (
     <Card className="enhanced-card glow-gold border-binance-orange/30 backdrop-blur-lg">
       <CardContent className="p-8">
-        {/* Main Search Bar */}
         <div className="grid grid-cols-1 gap-4 mb-6">
           <div className="relative">
             <Search className="absolute left-4 top-4 h-5 w-5 text-binance-orange" />
             <Input
-              placeholder={currentText.search}
+              placeholder={t('searchFilters.search')}
               className="enhanced-input pl-12 h-12 bg-binance-gray border-binance-light-gray text-binance-white placeholder:text-binance-light-gray"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -140,10 +100,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
             
             <Select value={propertyType} onValueChange={setPropertyType}>
               <SelectTrigger className="h-12 bg-binance-gray border-binance-light-gray text-binance-white">
-                <SelectValue placeholder={`🏠 ${currentText.propertyType}`} />
+                <SelectValue placeholder={`🏠 ${t('searchFilters.propertyType')}`} />
               </SelectTrigger>
               <SelectContent className="bg-binance-dark-gray border-binance-gray">
-                <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.allTypes}</SelectItem>
+                <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{t('searchFilters.allTypes')}</SelectItem>
                 {propertyTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value} className="text-binance-white hover:bg-binance-gray">{type.label}</SelectItem>
                 ))}
@@ -165,7 +125,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
               onClick={handleSearch}
               className="btn btn-primary h-12 font-bold text-lg glow-gold"
             >
-              {currentText.searchBtn}
+              {t('searchFilters.searchBtn')}
             </Button>
           </div>
         </div>

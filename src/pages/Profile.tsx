@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { useAlert } from '@/contexts/AlertContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -35,7 +35,7 @@ const BIO_MAX_LENGTH = 160;
 
 const Profile = () => {
   const { user, profile, signOut, updateProfile, refreshProfile } = useAuth();
-  const { language } = useLanguage();
+  const { t: tr, language } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -93,64 +93,33 @@ const Profile = () => {
     building_address: '',
   });
 
-  const text = {
-    en: {
-      profile: 'Profile',
-      roles: 'Roles',
-      signIn: 'Sign In',
-      signInPrompt: 'Sign in to view your profile',
-      edit: 'Edit',
-      save: 'Save',
-      saving: 'Saving...',
-      cancel: 'Cancel',
-      signOut: 'Sign Out',
-      settings: 'Settings',
-      home: 'Home',
-      email: 'Email',
-      name: 'Full Name',
-      phone: 'Phone',
-      company: 'Company',
-      address: 'Address',
-      bio: 'Bio',
-      membership: 'Membership',
-      verification: 'Verification',
-      notSet: 'Not set',
-      verified: 'Verified',
-      pending: 'Pending',
-      editProfile: 'Edit Profile',
-      viewMembership: 'View Membership',
-      locked: 'Locked',
-    },
-    id: {
-      profile: 'Profil',
-      roles: 'Role',
-      signIn: 'Masuk',
-      signInPrompt: 'Masuk untuk melihat profil Anda',
-      edit: 'Edit',
-      save: 'Simpan',
-      saving: 'Menyimpan...',
-      cancel: 'Batal',
-      signOut: 'Keluar',
-      settings: 'Pengaturan',
-      home: 'Beranda',
-      email: 'Email',
-      name: 'Nama Lengkap',
-      phone: 'Telepon',
-      company: 'Perusahaan',
-      address: 'Alamat',
-      bio: 'Bio',
-      membership: 'Keanggotaan',
-      verification: 'Verifikasi',
-      notSet: 'Belum diisi',
-      verified: 'Terverifikasi',
-      pending: 'Menunggu',
-      editProfile: 'Edit Profil',
-      viewMembership: 'Lihat Keanggotaan',
-      locked: 'Terkunci',
-    }
+  const t = {
+    profile: tr('profilePage.profile'),
+    roles: tr('profilePage.roles'),
+    signIn: tr('profilePage.signIn'),
+    signInPrompt: tr('profilePage.signInPrompt'),
+    edit: tr('profilePage.edit'),
+    save: tr('profilePage.save'),
+    saving: tr('profilePage.saving'),
+    cancel: tr('profilePage.cancel'),
+    signOut: tr('profilePage.signOut'),
+    settings: tr('profilePage.settings'),
+    home: tr('profilePage.home'),
+    email: tr('profilePage.email'),
+    name: tr('profilePage.name'),
+    phone: tr('profilePage.phone'),
+    company: tr('profilePage.company'),
+    address: tr('profilePage.address'),
+    bio: tr('profilePage.bio'),
+    membership: tr('profilePage.membership'),
+    verification: tr('profilePage.verification'),
+    notSet: tr('profilePage.notSet'),
+    verified: tr('profilePage.verified'),
+    pending: tr('profilePage.pending'),
+    editProfile: tr('profilePage.editProfile'),
+    viewMembership: tr('profilePage.viewMembership'),
+    locked: tr('profilePage.locked'),
   };
-
-  const t = text[language];
 
   // Initialize form data when profile loads or edit mode starts
   React.useEffect(() => {

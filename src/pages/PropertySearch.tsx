@@ -1,6 +1,6 @@
 
 import { useState, useRef } from 'react';
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -22,7 +22,7 @@ const PropertySearch = () => {
   const navigate = useNavigate();
   const { showSuccess, showError } = useAlert();
   const { toast } = useToast();
-  const { language, setLanguage } = useLanguage();
+  const { t, language, setLanguage } = useTranslation();
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map' | 'image'>('grid');
   const [savedProperties, setSavedProperties] = useState<string[]>([]);
   const [areaFilteredProperties, setAreaFilteredProperties] = useState<BaseProperty[] | null>(null);
@@ -213,29 +213,6 @@ const PropertySearch = () => {
     return count;
   };
 
-  const text = {
-    en: {
-      title: "Property Search",
-      subtitle: "Find your perfect property with advanced search filters",
-      results: "Search Results",
-      propertiesFound: "properties found",
-      viewMode: "View Mode",
-      clearAll: "Clear All Filters",
-      noFilters: "No active filters"
-    },
-    id: {
-      title: "Pencarian Properti",
-      subtitle: "Temukan properti impian Anda dengan filter pencarian lanjutan",
-      results: "Hasil Pencarian",
-      propertiesFound: "properti ditemukan",
-      viewMode: "Mode Tampilan",
-      clearAll: "Hapus Semua Filter",
-      noFilters: "Tidak ada filter aktif"
-    }
-  };
-
-  const currentText = text[language];
-
   return (
     <div className="min-h-screen bg-muted/50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -245,9 +222,9 @@ const PropertySearch = () => {
             <div>
               <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
                 <Search className="h-8 w-8" />
-                {currentText.title}
+                {t('propertySearch.title')}
               </h1>
-              <p className="text-muted-foreground mt-2">{currentText.subtitle}</p>
+              <p className="text-muted-foreground mt-2">{t('propertySearch.subtitle')}</p>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -478,13 +455,13 @@ const PropertySearch = () => {
                         Image Search Results
                       </>
                     ) : (
-                      currentText.results
+                      t('propertySearch.results')
                     )}
                     {!isLoading && !isImageSearching && (
                       <Badge variant="secondary">
                         {viewMode === 'image'
-                          ? `${imageSearchResults.length} ${currentText.propertiesFound}`
-                          : `${searchResults?.length || 0} ${currentText.propertiesFound}`
+                          ? `${imageSearchResults.length} ${t('propertySearch.propertiesFound')}`
+                          : `${searchResults?.length || 0} ${t('propertySearch.propertiesFound')}`
                         }
                       </Badge>
                     )}
@@ -525,17 +502,17 @@ const PropertySearch = () => {
                           onClick={clearSearch}
                           className="text-destructive hover:text-destructive/80"
                         >
-                          {currentText.clearAll}
+                          {t('propertySearch.clearAll')}
                         </Button>
                       </>
                     ) : (
-                      <span className="text-sm text-muted-foreground">{currentText.noFilters}</span>
+                      <span className="text-sm text-muted-foreground">{t('propertySearch.noFilters')}</span>
                     )}
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground mr-2">{currentText.viewMode}:</span>
+                  <span className="text-sm text-muted-foreground mr-2">{t('propertySearch.viewMode')}:</span>
                   <div className="flex border border-border rounded-md overflow-hidden">
                     <Button
                       size="sm"

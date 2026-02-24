@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, MapPin, Home, DollarSign, Filter, X, Bed, Bath } from "lucide-react";
-
+import { useTranslation } from "@/i18n/useTranslation";
 interface EnhancedModernSearchPanelProps {
   language: "en" | "id";
   onSearch: (searchData: any) => void;
@@ -26,68 +26,37 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     amenities: [] as string[],
   });
 
-  const text = {
-    en: {
-      searchPlaceholder: "Search by location, property type, or keywords...",
-      location: "Location",
-      propertyType: "Property Type",
-      listingType: "Listing Type",
-      priceRange: "Price Range",
-      bedrooms: "Bedrooms",
-      bathrooms: "Bathrooms",
-      amenities: "Amenities",
-      search: "Search Properties",
-      advancedFilters: "More Filters",
-      clearAll: "Clear",
-      from: "Min Price",
-      to: "Max Price",
-      any: "Any",
-      forSale: "For Sale",
-      forRent: "For Rent",
-      villa: "Villa",
-      apartment: "Apartment",
-      house: "House",
-      townhouse: "Townhouse",
-      land: "Land",
-      pool: "Pool",
-      garage: "Garage",
-      garden: "Garden",
-      security: "Security",
-      gym: "Gym",
-      furnished: "Furnished"
-    },
-    id: {
-      searchPlaceholder: "Cari berdasarkan lokasi, jenis properti, atau kata kunci...",
-      location: "Lokasi",
-      propertyType: "Jenis Properti",
-      listingType: "Tipe Listing",
-      priceRange: "Range Harga",
-      bedrooms: "Kamar Tidur",
-      bathrooms: "Kamar Mandi",
-      amenities: "Fasilitas",
-      search: "Cari Properti",
-      advancedFilters: "Filter Lanjut",
-      clearAll: "Hapus",
-      from: "Harga Min",
-      to: "Harga Max",
-      any: "Semua",
-      forSale: "Dijual",
-      forRent: "Disewa",
-      villa: "Villa",
-      apartment: "Apartemen",
-      house: "Rumah",
-      townhouse: "Rumah Teres",
-      land: "Tanah",
-      pool: "Kolam",
-      garage: "Garasi",
-      garden: "Taman",
-      security: "Keamanan",
-      gym: "Gym",
-      furnished: "Furnished"
-    }
-  };
+  const { t } = useTranslation();
 
-  const currentText = text[language];
+  const currentText = {
+    searchPlaceholder: t('modernSearch.searchPlaceholder'),
+    location: t('modernSearch.location'),
+    propertyType: t('modernSearch.propertyType'),
+    listingType: t('modernSearch.listingType'),
+    priceRange: t('modernSearch.priceRange'),
+    bedrooms: t('modernSearch.bedrooms'),
+    bathrooms: t('modernSearch.bathrooms'),
+    amenities: t('modernSearch.amenities'),
+    search: t('modernSearch.search'),
+    advancedFilters: t('modernSearch.advancedFilters'),
+    clearAll: t('modernSearch.clearAll'),
+    from: t('modernSearch.from'),
+    to: t('modernSearch.to'),
+    any: t('modernSearch.any'),
+    forSale: t('modernSearch.forSale'),
+    forRent: t('modernSearch.forRent'),
+    villa: t('modernSearch.villa'),
+    apartment: t('modernSearch.apartment'),
+    house: t('modernSearch.house'),
+    townhouse: t('modernSearch.townhouse'),
+    land: t('modernSearch.land'),
+    pool: t('modernSearch.pool'),
+    garage: t('modernSearch.garage'),
+    garden: t('modernSearch.garden'),
+    security: t('modernSearch.security'),
+    gym: t('modernSearch.gym'),
+    furnished: t('modernSearch.furnished'),
+  };
 
   const propertyTypes = [
     { value: 'villa', label: currentText.villa, icon: '🏖️' },

@@ -9,68 +9,12 @@ import AgentTools from '@/components/agent/AgentTools';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useLanguage } from '@/contexts/LanguageContext';
-
+import { useTranslation } from '@/i18n/useTranslation';
 const Services = () => {
   const { profile } = useAuth();
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { t, language } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  const text = {
-    en: {
-      title: 'Professional Services',
-      subtitle: 'Connect with verified professionals for all your property needs',
-      agentTitle: 'Agent Tools & Services',
-      agentSubtitle: 'Access your professional real estate tools and manage your property listings, clients, and business operations.',
-      back: 'Back',
-      allServices: 'All Services',
-      noServices: 'No services available',
-      noServicesDesc: 'No services are currently available. Check back soon!',
-      noCategoryDesc: 'No services found in this category. Try selecting a different category.',
-      viewDetails: 'View Details',
-      needCustom: 'Need a Custom Service?',
-      needCustomDesc: "Can't find what you're looking for? Contact us and we'll connect you with the right professional.",
-      requestCustom: 'Request Custom Service',
-      contactSupport: 'Contact Support',
-      featured: 'Featured',
-      verifiedVendors: 'Verified Vendors',
-      verifiedVendorsDesc: 'All service providers are thoroughly vetted and verified',
-      qualityGuarantee: 'Quality Guarantee',
-      qualityGuaranteeDesc: '100% satisfaction guarantee on all services',
-      insuredServices: 'Insured Services',
-      insuredServicesDesc: 'All services covered by comprehensive insurance',
-      support247: '24/7 Support',
-      support247Desc: 'Round-the-clock customer support available'
-    },
-    id: {
-      title: 'Layanan Profesional',
-      subtitle: 'Terhubung dengan profesional terverifikasi untuk semua kebutuhan properti Anda',
-      agentTitle: 'Alat & Layanan Agen',
-      agentSubtitle: 'Akses alat real estate profesional Anda dan kelola listing properti, klien, dan operasi bisnis.',
-      back: 'Kembali',
-      allServices: 'Semua Layanan',
-      noServices: 'Tidak ada layanan tersedia',
-      noServicesDesc: 'Tidak ada layanan yang tersedia saat ini. Cek kembali nanti!',
-      noCategoryDesc: 'Tidak ada layanan dalam kategori ini. Coba pilih kategori lain.',
-      viewDetails: 'Lihat Detail',
-      needCustom: 'Butuh Layanan Khusus?',
-      needCustomDesc: 'Tidak menemukan yang Anda cari? Hubungi kami dan kami akan menghubungkan Anda dengan profesional yang tepat.',
-      requestCustom: 'Minta Layanan Khusus',
-      contactSupport: 'Hubungi Dukungan',
-      featured: 'Unggulan',
-      verifiedVendors: 'Vendor Terverifikasi',
-      verifiedVendorsDesc: 'Semua penyedia layanan telah diperiksa dan diverifikasi',
-      qualityGuarantee: 'Jaminan Kualitas',
-      qualityGuaranteeDesc: 'Jaminan kepuasan 100% untuk semua layanan',
-      insuredServices: 'Layanan Berasuransi',
-      insuredServicesDesc: 'Semua layanan dilindungi asuransi komprehensif',
-      support247: 'Dukungan 24/7',
-      support247Desc: 'Dukungan pelanggan tersedia sepanjang waktu'
-    }
-  };
-
-  const t = text[language];
 
   // If user is an agent, show agent tools instead of general services
   if (profile?.role === 'agent') {
@@ -83,12 +27,12 @@ const Services = () => {
               <Link to="/">
                 <Button variant="ghost" size="sm" className="h-8 px-2 sm:px-3">
                   <ArrowLeft className="h-4 w-4 mr-1" />
-                  <span className="hidden sm:inline">{t.back}</span>
+                  <span className="hidden sm:inline">{t('services.back')}</span>
                 </Button>
               </Link>
               <h1 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-foreground">
                 <Briefcase className="h-5 w-5 text-primary" />
-                <span className="hidden sm:inline">{t.agentTitle}</span>
+                <span className="hidden sm:inline">{t('services.agentTitle')}</span>
                 <span className="sm:hidden">Agent Tools</span>
               </h1>
             </div>
@@ -98,7 +42,7 @@ const Services = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center mb-6">
             <p className="text-sm text-muted-foreground max-w-3xl mx-auto">
-              {t.agentSubtitle}
+              {t('services.agentSubtitle')}
             </p>
           </div>
           <AgentTools />
@@ -165,10 +109,10 @@ const Services = () => {
   });
 
   const features = [
-    { icon: CheckCircle, title: t.verifiedVendors, description: t.verifiedVendorsDesc },
-    { icon: Star, title: t.qualityGuarantee, description: t.qualityGuaranteeDesc },
-    { icon: Shield, title: t.insuredServices, description: t.insuredServicesDesc },
-    { icon: Clock, title: t.support247, description: t.support247Desc }
+    { icon: CheckCircle, title: t('services.verifiedVendors'), description: t('services.verifiedVendorsDesc') },
+    { icon: Star, title: t('services.qualityGuarantee'), description: t('services.qualityGuaranteeDesc') },
+    { icon: Shield, title: t('services.insuredServices'), description: t('services.insuredServicesDesc') },
+    { icon: Clock, title: t('services.support247'), description: t('services.support247Desc') }
   ];
 
   const formatPrice = (priceRange: any) => {
@@ -191,12 +135,12 @@ const Services = () => {
             <Link to="/">
               <Button variant="ghost" size="sm" className="h-8 px-2 sm:px-3">
                 <ArrowLeft className="h-4 w-4 mr-1" />
-                <span className="hidden sm:inline">{t.back}</span>
+                <span className="hidden sm:inline">{t('services.back')}</span>
               </Button>
             </Link>
             <h1 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-foreground">
               <Sparkles className="h-5 w-5 text-primary" />
-              <span>{t.title}</span>
+              <span>{t('services.title')}</span>
             </h1>
           </div>
         </div>
@@ -206,7 +150,7 @@ const Services = () => {
         {/* Subtitle */}
         <div className="text-center mb-6 md:mb-8">
           <p className="text-sm md:text-base text-muted-foreground max-w-3xl mx-auto">
-            {t.subtitle}
+            {t('services.subtitle')}
           </p>
         </div>
 
@@ -234,7 +178,7 @@ const Services = () => {
               size="sm"
               className="h-7 md:h-9 text-[10px] md:text-sm px-2 md:px-4 rounded-full"
             >
-              {t.allServices}
+              {t('services.allServices')}
             </Button>
             {mainCategories?.map((category) => (
               <Button
@@ -291,7 +235,7 @@ const Services = () => {
                     {service.featured && (
                       <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground text-[9px] md:text-xs px-1.5 md:px-2 py-0.5 shadow-md">
                         <Star className="h-2.5 w-2.5 md:h-3 md:w-3 mr-0.5 fill-current" />
-                        {t.featured}
+                        {t('services.featured')}
                       </Badge>
                     )}
                   </div>
@@ -362,7 +306,7 @@ const Services = () => {
                     </div>
 
                     <Button className="w-full mt-3 h-8 md:h-9 text-xs md:text-sm bg-primary hover:bg-primary/90 text-primary-foreground">
-                      {t.viewDetails}
+                      {t('services.viewDetails')}
                       <ArrowRight className="h-3 w-3 md:h-4 md:w-4 ml-1.5" />
                     </Button>
                   </div>
@@ -377,10 +321,10 @@ const Services = () => {
                 <Shield className="h-8 w-8 md:h-10 md:w-10 text-muted-foreground" />
               </div>
               <h3 className="text-base md:text-lg font-semibold text-foreground mb-2">
-                {t.noServices}
+                {t('services.noServices')}
               </h3>
               <p className="text-xs md:text-sm text-muted-foreground">
-                {selectedCategory ? t.noCategoryDesc : t.noServicesDesc}
+                {selectedCategory ? t('services.noCategoryDesc') : t('services.noServicesDesc')}
               </p>
             </CardContent>
           </Card>
@@ -390,17 +334,17 @@ const Services = () => {
         <Card className="text-center border-primary/20 bg-gradient-to-br from-primary/5 via-background to-accent/5">
           <CardContent className="pt-5 md:pt-8 pb-5 md:pb-8 px-4 md:px-6">
             <h2 className="text-base md:text-xl font-bold text-foreground mb-2 md:mb-3">
-              {t.needCustom}
+              {t('services.needCustom')}
             </h2>
             <p className="text-xs md:text-sm text-muted-foreground mb-4 md:mb-6 max-w-2xl mx-auto">
-              {t.needCustomDesc}
+              {t('services.needCustomDesc')}
             </p>
             <div className="flex flex-col sm:flex-row gap-2 md:gap-3 justify-center">
               <Button size="sm" className="h-9 md:h-10 px-4 md:px-6 bg-primary hover:bg-primary/90 text-primary-foreground">
-                {t.requestCustom}
+                {t('services.requestCustom')}
               </Button>
               <Button variant="outline" size="sm" className="h-9 md:h-10 px-4 md:px-6 border-border">
-                {t.contactSupport}
+                {t('services.contactSupport')}
               </Button>
             </div>
           </CardContent>

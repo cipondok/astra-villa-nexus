@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Search, MapPin, Filter, ChevronDown, Home, Bed, Bath, Car, Wifi, AirVent, Sofa, Shield, Droplets, Tv, Wind, Warehouse, Building2 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface EnhancedSearchFiltersProps {
   language: "en" | "id";
@@ -28,62 +29,34 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showFacilities, setShowFacilities] = useState(false);
 
-  const text = {
-    en: {
-      search: "Search properties, location, or area...",
-      state: "State",
-      city: "City", 
-      area: "Area",
-      propertyType: "Property Type",
-      listingType: "Listing Type",
-      price: "Price Range",
-      bedrooms: "Bedrooms",
-      bathrooms: "Bathrooms",
-      amenities: "Amenities",
-      searchBtn: "Search",
-      trending: "Trending Searches",
-      forSale: "For Sale",
-      forRent: "For Rent",
-      forLease: "For Lease",
-      allTypes: "All Types",
-      anyPrice: "Any Price",
-      anyBedroom: "Any",
-      anyBathroom: "Any",
-      filters: "Filters",
-      myLocation: "My Location",
-      facilities: "Facilities",
-      buyFacilities: "For Buy",
-      rentFacilities: "For Rent"
-    },
-    id: {
-      search: "Cari properti, lokasi, atau area...",
-      state: "Provinsi",
-      city: "Kota",
-      area: "Area", 
-      propertyType: "Jenis Properti",
-      listingType: "Tipe Listing",
-      price: "Range Harga",
-      bedrooms: "Kamar Tidur",
-      bathrooms: "Kamar Mandi",
-      amenities: "Fasilitas",
-      searchBtn: "Cari",
-      trending: "Pencarian Trending",
-      forSale: "Dijual",
-      forRent: "Disewa",
-      forLease: "Disewakan",
-      allTypes: "Semua Jenis",
-      anyPrice: "Semua Harga",
-      anyBedroom: "Semua",
-      anyBathroom: "Semua",
-      filters: "Filter",
-      myLocation: "Lokasi Saya",
-      facilities: "Fasilitas",
-      buyFacilities: "Untuk Beli",
-      rentFacilities: "Untuk Sewa"
-    }
-  };
+  const { t } = useTranslation();
 
-  const currentText = text[language];
+  const currentText = {
+    search: t('enhancedSearch.search'),
+    state: t('enhancedSearch.state'),
+    city: t('enhancedSearch.city'),
+    area: t('enhancedSearch.area'),
+    propertyType: t('enhancedSearch.propertyType'),
+    listingType: t('enhancedSearch.listingType'),
+    price: t('enhancedSearch.price'),
+    bedrooms: t('enhancedSearch.bedrooms'),
+    bathrooms: t('enhancedSearch.bathrooms'),
+    amenities: t('enhancedSearch.amenities'),
+    searchBtn: t('enhancedSearch.searchBtn'),
+    trending: t('enhancedSearch.trending'),
+    forSale: t('enhancedSearch.forSale'),
+    forRent: t('enhancedSearch.forRent'),
+    forLease: t('enhancedSearch.forLease'),
+    allTypes: t('enhancedSearch.allTypes'),
+    anyPrice: t('enhancedSearch.anyPrice'),
+    anyBedroom: t('enhancedSearch.anyBedroom'),
+    anyBathroom: t('enhancedSearch.anyBathroom'),
+    filters: t('enhancedSearch.filters'),
+    myLocation: t('enhancedSearch.myLocation'),
+    facilities: t('enhancedSearch.facilities'),
+    buyFacilities: t('enhancedSearch.buyFacilities'),
+    rentFacilities: t('enhancedSearch.rentFacilities'),
+  };
 
   const indonesianStates = [
     "DKI Jakarta", "West Java", "East Java", "Central Java", "Bali", "North Sumatra",

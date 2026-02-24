@@ -1,20 +1,14 @@
-
 import { Button } from "@/components/ui/button";
 import { Home, Key } from "lucide-react";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface SearchTabToggleProps {
   activeTab: "buy" | "rent";
   onTabChange: (tab: "buy" | "rent") => void;
-  language: "en" | "id";
 }
 
-const SearchTabToggle = ({ activeTab, onTabChange, language }: SearchTabToggleProps) => {
-  const text = {
-    en: { buy: "Buy", rent: "Rent" },
-    id: { buy: "Beli", rent: "Sewa" }
-  };
-
-  const currentText = text[language];
+const SearchTabToggle = ({ activeTab, onTabChange }: SearchTabToggleProps) => {
+  const { t } = useTranslation();
 
   return (
     <div className="flex items-center bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl p-1.5 shadow-sm">
@@ -31,7 +25,7 @@ const SearchTabToggle = ({ activeTab, onTabChange, language }: SearchTabTogglePr
         `}
       >
         <Home className="h-4 w-4" />
-        {currentText.buy}
+        {t('search.buy')}
       </Button>
       
       <Button
@@ -47,7 +41,7 @@ const SearchTabToggle = ({ activeTab, onTabChange, language }: SearchTabTogglePr
         `}
       >
         <Key className="h-4 w-4" />
-        {currentText.rent}
+        {t('search.rent')}
       </Button>
     </div>
   );
