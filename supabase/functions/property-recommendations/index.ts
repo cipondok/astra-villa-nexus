@@ -5,11 +5,27 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 }
 
+interface ScoreBreakdown {
+  type: number;
+  location: number;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  features: number;
+  userType: number;
+  userCity: number;
+  userPrice: number;
+  userBedrooms: number;
+  userFeatures: number;
+}
+
 interface ScoredProperty {
   property: any;
   score: number;
   matchPercentage: number;
   reasons: string[];
+  scoreBreakdown: ScoreBreakdown;
 }
 
 interface UserPreferences {
@@ -73,115 +89,116 @@ function buildUserPreferences(properties: any[]): UserPreferences {
 function scoreProperty(target: any, candidate: any, userPrefs: UserPreferences | null): ScoredProperty {
   let score = 0;
   const reasons: string[] = [];
-
-  // === Content-based scoring (max 100 pts) ===
+  const bd: ScoreBreakdown = { type: 0, location: 0, price: 0, bedrooms: 0, bathrooms: 0, area: 0, features: 0, userType: 0, userCity: 0, userPrice: 0, userBedrooms: 0, userFeatures: 0 };
 
   // Property type match (25 pts)
   if (candidate.property_type && candidate.property_type === target.property_type) {
-    score += 25;
+    bd.type = 25; score += 25;
     reasons.push('Same type');
   }
 
-  // Location match (city: 20pts, state: 10pts)
+  // Location match
   if (candidate.city && target.city && candidate.city.toLowerCase() === target.city.toLowerCase()) {
-    score += 20;
+    bd.location = 20; score += 20;
     reasons.push('Same area');
   } else if (candidate.state && target.state && candidate.state.toLowerCase() === target.state.toLowerCase()) {
-    score += 10;
+    bd.location = 10; score += 10;
     reasons.push('Same region');
   }
 
   // Price proximity (up to 20 pts)
   if (target.price && candidate.price && target.price > 0) {
     const priceDiffPct = Math.abs(candidate.price - target.price) / target.price;
-    score += Math.max(0, 20 - priceDiffPct * 100);
+    bd.price = Math.round(Math.max(0, 20 - priceDiffPct * 100));
+    score += bd.price;
     if (priceDiffPct < 0.15) reasons.push('Similar price');
   }
 
   // Bedroom match (up to 10 pts)
   if (target.bedrooms && candidate.bedrooms) {
     if (candidate.bedrooms === target.bedrooms) {
-      score += 10;
+      bd.bedrooms = 10; score += 10;
       reasons.push('Same bedrooms');
     } else if (Math.abs(candidate.bedrooms - target.bedrooms) === 1) {
-      score += 5;
+      bd.bedrooms = 5; score += 5;
     }
   }
 
   // Bathroom match (up to 5 pts)
   if (target.bathrooms && candidate.bathrooms) {
     if (candidate.bathrooms === target.bathrooms) {
-      score += 5;
+      bd.bathrooms = 5; score += 5;
     }
   }
 
   // Area similarity (up to 10 pts)
   if (target.area_sqm && candidate.area_sqm && target.area_sqm > 0) {
     const areaDiffPct = Math.abs(candidate.area_sqm - target.area_sqm) / target.area_sqm;
-    const areaScore = Math.max(0, 10 - areaDiffPct * 50);
-    score += areaScore;
+    bd.area = Math.round(Math.max(0, 10 - areaDiffPct * 50));
+    score += bd.area;
     if (areaDiffPct < 0.2) reasons.push('Similar size');
   }
 
-  // Feature/amenity overlap (up to 10 pts)
+  // Feature overlap (up to 10 pts)
   const targetFeatures = extractFeatureKeys(target.property_features);
   const candidateFeatures = extractFeatureKeys(candidate.property_features);
   const shared = targetFeatures.filter(f => candidateFeatures.includes(f));
-  score += Math.min(10, shared.length * 2);
+  bd.features = Math.min(10, shared.length * 2);
+  score += bd.features;
   shared.slice(0, 3).forEach(f => {
     const label = featureLabels[f] || f;
     reasons.push(label);
   });
 
-  // === User behavior scoring (up to 50 bonus pts) ===
+  // === User behavior scoring ===
   if (userPrefs) {
-    // Preferred type boost (up to 15 pts)
     if (candidate.property_type && userPrefs.preferredTypes[candidate.property_type]) {
       const typeCount = userPrefs.preferredTypes[candidate.property_type];
-      score += Math.min(15, typeCount * 5);
+      bd.userType = Math.min(15, typeCount * 5);
+      score += bd.userType;
       if (typeCount >= 2 && !reasons.includes('Same type')) reasons.push('Your preferred type');
     }
 
-    // Preferred city boost (up to 15 pts)
     if (candidate.city) {
       const cityKey = candidate.city.toLowerCase();
       if (userPrefs.preferredCities[cityKey]) {
         const cityCount = userPrefs.preferredCities[cityKey];
-        score += Math.min(15, cityCount * 5);
+        bd.userCity = Math.min(15, cityCount * 5);
+        score += bd.userCity;
         if (cityCount >= 2 && !reasons.includes('Same area')) reasons.push('Preferred area');
       }
     }
 
-    // Price range alignment (up to 10 pts)
     if (userPrefs.priceRange && candidate.price > 0) {
       const { min, max, avg } = userPrefs.priceRange;
       const margin = (max - min) * 0.3 || avg * 0.3;
       if (candidate.price >= min - margin && candidate.price <= max + margin) {
         const diffFromAvg = Math.abs(candidate.price - avg) / avg;
-        score += Math.max(0, 10 - diffFromAvg * 20);
+        bd.userPrice = Math.round(Math.max(0, 10 - diffFromAvg * 20));
+        score += bd.userPrice;
         if (diffFromAvg < 0.2) reasons.push('In your budget');
       }
     }
 
-    // Preferred bedroom boost (up to 5 pts)
     if (candidate.bedrooms && userPrefs.preferredBedrooms[candidate.bedrooms]) {
-      score += Math.min(5, userPrefs.preferredBedrooms[candidate.bedrooms] * 2);
+      bd.userBedrooms = Math.min(5, userPrefs.preferredBedrooms[candidate.bedrooms] * 2);
+      score += bd.userBedrooms;
     }
 
-    // Preferred feature boost (up to 5 pts)
     let featureBoost = 0;
     for (const f of candidateFeatures) {
       if (userPrefs.preferredFeatures[f]) {
         featureBoost += userPrefs.preferredFeatures[f];
       }
     }
-    score += Math.min(5, featureBoost);
+    bd.userFeatures = Math.min(5, featureBoost);
+    score += bd.userFeatures;
   }
 
   const maxScore = userPrefs ? 150 : 100;
   const matchPercentage = Math.round(Math.min(100, (score / maxScore) * 100));
 
-  return { property: candidate, score, matchPercentage, reasons };
+  return { property: candidate, score, matchPercentage, reasons, scoreBreakdown: bd };
 }
 
 Deno.serve(async (req) => {
