@@ -20,6 +20,7 @@ import EnhancedAuthModal from '@/components/auth/EnhancedAuthModal';
 import { UserMembershipBadge } from '@/components/user/UserMembershipBadge';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import { PropertyReviews } from '@/components/property/PropertyReviews';
+import PropertyRecommendations from '@/components/property/PropertyRecommendations';
 import { KPRCalculator } from '@/components/property/KPRCalculator';
 import { PropertyPosterInfo } from '@/components/property/PropertyPosterInfo';
 import { 
@@ -1246,80 +1247,8 @@ const PropertyDetail: React.FC = () => {
 
         {/* Similar Properties & More From - Side by Side on Wide Screens */}
         <div className="mt-4 sm:mt-8 grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
-          {/* Similar Properties */}
-          {relatedProperties.length > 0 && (
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm sm:text-lg font-bold text-foreground">Similar Properties</h2>
-                <Button variant="ghost" size="sm" className="text-primary text-xs h-7 px-2">View All</Button>
-              </div>
-              
-              <div ref={similarScrollRef} className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-2 px-2">
-                {relatedProperties.map((relatedProperty) => {
-                  const rpPrice = relatedProperty.price;
-                  const rpPriceFormatted = rpPrice >= 1000000000
-                    ? { main: `Rp ${(rpPrice / 1000000000).toFixed(1)}`, suffix: 'Miliar' }
-                    : rpPrice >= 1000000
-                    ? { main: `Rp ${(rpPrice / 1000000).toFixed(0)}`, suffix: 'Juta' }
-                    : { main: `Rp ${rpPrice.toLocaleString('id-ID')}`, suffix: '' };
-
-                  return (
-                    <Card 
-                      key={relatedProperty.id}
-                      className="flex-shrink-0 w-[160px] sm:w-[220px] border border-border/50 bg-card shadow-sm cursor-pointer snap-start rounded-xl overflow-hidden group hover:shadow-md hover:border-primary/30 transition-all"
-                      onClick={() => navigate(`/properties/${relatedProperty.id}`)}
-                    >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                        <img
-                          src={getPropertyImage(relatedProperty.images, undefined, relatedProperty.image_urls)}
-                          alt={relatedProperty.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                        />
-                      </div>
-                      <div className="p-2.5 space-y-1.5">
-                        <div className="border border-border/40 bg-primary/5 dark:bg-primary/10 rounded-lg px-2 py-1.5">
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-sm sm:text-base font-black text-primary tracking-tight leading-none">{rpPriceFormatted.main}</span>
-                            {rpPriceFormatted.suffix && (
-                              <span className="text-[10px] sm:text-xs font-extrabold text-primary/70">{rpPriceFormatted.suffix}</span>
-                            )}
-                          </div>
-                        </div>
-                        <h4 className="font-semibold text-[11px] sm:text-xs line-clamp-2 leading-snug group-hover:text-primary transition-colors">{relatedProperty.title}</h4>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-primary" />
-                          <span className="text-[9px] sm:text-[10px] text-muted-foreground font-medium line-clamp-1">{relatedProperty.location}</span>
-                        </div>
-                        <div className="flex items-center flex-wrap gap-1.5 pt-1.5 border-t border-border/30">
-                          {relatedProperty.bedrooms && relatedProperty.bedrooms > 0 && (
-                            <div className="flex items-center gap-1 border border-border/40 bg-primary/5 dark:bg-primary/10 rounded-lg px-2 py-0.5">
-                              <Bed className="h-3 w-3 text-primary" />
-                              <span className="text-[10px] text-foreground font-bold">{relatedProperty.bedrooms}</span>
-                              <span className="text-[9px] text-muted-foreground font-semibold">KT</span>
-                            </div>
-                          )}
-                          {relatedProperty.bathrooms && relatedProperty.bathrooms > 0 && (
-                            <div className="flex items-center gap-1 border border-border/40 bg-primary/5 dark:bg-primary/10 rounded-lg px-2 py-0.5">
-                              <Bath className="h-3 w-3 text-primary" />
-                              <span className="text-[10px] text-foreground font-bold">{relatedProperty.bathrooms}</span>
-                              <span className="text-[9px] text-muted-foreground font-semibold">KM</span>
-                            </div>
-                          )}
-                          {relatedProperty.area_sqm && (
-                            <div className="flex items-center gap-1 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2 py-0.5">
-                              <span className="text-[9px] text-accent font-bold">LB</span>
-                              <span className="text-[10px] text-foreground font-bold">{relatedProperty.area_sqm}m²</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </Card>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          {/* Smart Property Recommendations */}
+          <PropertyRecommendations propertyId={property.id} propertyType={property.property_type} />
 
           {/* More from Agent */}
           {userMoreProperties.length > 0 && (
