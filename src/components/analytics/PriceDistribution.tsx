@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { BarChart3 } from 'lucide-react';
 import { formatIDR } from '@/utils/currency';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface PropertyRecord {
   price: number;
@@ -31,6 +32,8 @@ const CHART_COLORS: Record<string, string> = {
 };
 
 const PriceDistribution = () => {
+  const { t } = useTranslation();
+
   const { data: properties, isLoading } = useQuery({
     queryKey: ['price-distribution-properties'],
     queryFn: async () => {
@@ -84,17 +87,16 @@ const PriceDistribution = () => {
 
   return (
     <div className="space-y-4">
-      {/* Price Histogram */}
       <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
         <CardHeader className="p-3">
           <CardTitle className="text-xs md:text-sm flex items-center gap-2">
             <BarChart3 className="h-4 w-4 text-primary" />
-            Price Distribution by Property Type
+            {t('analytics.priceDistribution')}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-2 md:p-3">
           {histogramData.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-8">No data available</p>
+            <p className="text-xs text-muted-foreground text-center py-8">{t('common.noData')}</p>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={histogramData}>
@@ -112,14 +114,13 @@ const PriceDistribution = () => {
         </CardContent>
       </Card>
 
-      {/* Price per sqm by city */}
       <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
         <CardHeader className="p-3">
-          <CardTitle className="text-xs md:text-sm">Average Price per m² by City</CardTitle>
+          <CardTitle className="text-xs md:text-sm">{t('analytics.pricePerSqm')}</CardTitle>
         </CardHeader>
         <CardContent className="p-2 md:p-3">
           {pricePerSqmData.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-8">No data with area information</p>
+            <p className="text-xs text-muted-foreground text-center py-8">{t('analytics.noAreaData')}</p>
           ) : (
             <ResponsiveContainer width="100%" height={Math.max(200, pricePerSqmData.length * 40)}>
               <BarChart data={pricePerSqmData} layout="vertical">

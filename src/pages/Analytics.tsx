@@ -28,6 +28,7 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 import { format, subDays } from 'date-fns';
 import AIToolsTabBar from '@/components/common/AIToolsTabBar';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface AnalyticsData {
   users: {
@@ -51,6 +52,7 @@ interface AnalyticsData {
 const Analytics = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [timeRange, setTimeRange] = useState("7d");
+  const { t } = useTranslation();
 
   // Fetch analytics data
   const { data: analyticsData, isLoading } = useQuery({
@@ -179,14 +181,14 @@ const Analytics = () => {
         <div className="text-center mb-3 md:mb-4">
           <div className="flex items-center justify-center gap-2 mb-1">
             <BarChart3 className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-            <h1 className="text-sm md:text-lg font-bold text-foreground">Analytics Dashboard</h1>
+            <h1 className="text-sm md:text-lg font-bold text-foreground">{t('analytics.dashboard')}</h1>
           </div>
-          <p className="text-[10px] md:text-xs text-muted-foreground">Comprehensive insights into platform performance</p>
+          <p className="text-[10px] md:text-xs text-muted-foreground">{t('analytics.subtitle')}</p>
         </div>
 
         {/* Time Range Selector - Compact */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-2 mb-4">
-          <h2 className="text-xs md:text-sm font-semibold text-foreground">Platform Overview</h2>
+          <h2 className="text-xs md:text-sm font-semibold text-foreground">{t('analytics.platformOverview')}</h2>
           <div className="flex gap-1.5">
             <Button
               variant={timeRange === '7d' ? 'default' : 'outline'}
@@ -194,7 +196,7 @@ const Analytics = () => {
               size="sm"
               className="h-7 text-[10px] md:text-xs px-2 md:px-3"
             >
-              7 Days
+              {t('analytics.days7')}
             </Button>
             <Button
               variant={timeRange === '30d' ? 'default' : 'outline'}
@@ -202,7 +204,7 @@ const Analytics = () => {
               size="sm"
               className="h-7 text-[10px] md:text-xs px-2 md:px-3"
             >
-              30 Days
+              {t('analytics.days30')}
             </Button>
             <Button
               variant={timeRange === '90d' ? 'default' : 'outline'}
@@ -210,7 +212,7 @@ const Analytics = () => {
               size="sm"
               className="h-7 text-[10px] md:text-xs px-2 md:px-3"
             >
-              90 Days
+              {t('analytics.days90')}
             </Button>
           </div>
         </div>
@@ -221,11 +223,11 @@ const Analytics = () => {
             <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Total Users</p>
+                   <p className="text-[9px] md:text-xs font-medium text-muted-foreground">{t('analytics.totalUsers')}</p>
                   <div className="text-sm md:text-lg font-bold text-foreground">{analyticsData?.users.total}</div>
                   <div className="flex items-center text-[8px] md:text-[10px]">
                     <TrendingUp className="h-2.5 w-2.5 text-chart-1 mr-0.5" />
-                    <span className="text-chart-1">+{analyticsData?.users.new_today} today</span>
+                    <span className="text-chart-1">+{analyticsData?.users.new_today} {t('common.today').toLowerCase()}</span>
                   </div>
                 </div>
                 <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-chart-4/10 flex items-center justify-center">
@@ -239,11 +241,11 @@ const Analytics = () => {
             <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Total Properties</p>
+                   <p className="text-[9px] md:text-xs font-medium text-muted-foreground">{t('analytics.totalProperties')}</p>
                   <div className="text-sm md:text-lg font-bold text-foreground">{analyticsData?.properties.total}</div>
                   <div className="flex items-center text-[8px] md:text-[10px]">
                     <TrendingUp className="h-2.5 w-2.5 text-chart-1 mr-0.5" />
-                    <span className="text-chart-1">+{analyticsData?.properties.new_today} today</span>
+                    <span className="text-chart-1">+{analyticsData?.properties.new_today} {t('common.today').toLowerCase()}</span>
                   </div>
                 </div>
                 <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-chart-1/10 flex items-center justify-center">
@@ -257,11 +259,11 @@ const Analytics = () => {
             <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Page Views</p>
+                   <p className="text-[9px] md:text-xs font-medium text-muted-foreground">{t('analytics.pageViews')}</p>
                   <div className="text-sm md:text-lg font-bold text-foreground">{analyticsData?.engagement.page_views.toLocaleString()}</div>
                   <div className="flex items-center text-[8px] md:text-[10px]">
                     <Eye className="h-2.5 w-2.5 text-accent mr-0.5" />
-                    <span className="text-accent">This month</span>
+                    <span className="text-accent">{t('common.thisMonth')}</span>
                   </div>
                 </div>
                 <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-accent/10 flex items-center justify-center">
@@ -275,11 +277,11 @@ const Analytics = () => {
             <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Avg. Session</p>
+                   <p className="text-[9px] md:text-xs font-medium text-muted-foreground">{t('analytics.avgSession')}</p>
                   <div className="text-sm md:text-lg font-bold text-foreground">{formatDuration(analyticsData?.engagement.avg_session_duration || 0)}</div>
                   <div className="flex items-center text-[8px] md:text-[10px]">
                     <Clock className="h-2.5 w-2.5 text-chart-3 mr-0.5" />
-                    <span className="text-chart-3">Duration</span>
+                    <span className="text-chart-3">{t('common.duration')}</span>
                   </div>
                 </div>
                 <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-chart-3/10 flex items-center justify-center">
@@ -293,21 +295,21 @@ const Analytics = () => {
         {/* Charts Section - Slim Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full mb-3 h-8 flex overflow-x-auto">
-            <TabsTrigger value="overview" className="text-[10px] md:text-xs h-7">Overview</TabsTrigger>
-            <TabsTrigger value="users" className="text-[10px] md:text-xs h-7">Users</TabsTrigger>
-            <TabsTrigger value="properties" className="text-[10px] md:text-xs h-7">Properties</TabsTrigger>
-            <TabsTrigger value="engagement" className="text-[10px] md:text-xs h-7">Engagement</TabsTrigger>
-            <TabsTrigger value="market-trends" className="text-[10px] md:text-xs h-7">Market Trends</TabsTrigger>
-            <TabsTrigger value="price-analysis" className="text-[10px] md:text-xs h-7">Price Analysis</TabsTrigger>
-            <TabsTrigger value="neighborhoods" className="text-[10px] md:text-xs h-7">Neighborhoods</TabsTrigger>
-            <TabsTrigger value="roi" className="text-[10px] md:text-xs h-7">ROI Calculator</TabsTrigger>
+            <TabsTrigger value="overview" className="text-[10px] md:text-xs h-7">{t('analytics.overview')}</TabsTrigger>
+            <TabsTrigger value="users" className="text-[10px] md:text-xs h-7">{t('analytics.users')}</TabsTrigger>
+            <TabsTrigger value="properties" className="text-[10px] md:text-xs h-7">{t('analytics.properties')}</TabsTrigger>
+            <TabsTrigger value="engagement" className="text-[10px] md:text-xs h-7">{t('analytics.engagement')}</TabsTrigger>
+            <TabsTrigger value="market-trends" className="text-[10px] md:text-xs h-7">{t('analytics.marketTrends')}</TabsTrigger>
+            <TabsTrigger value="price-analysis" className="text-[10px] md:text-xs h-7">{t('analytics.priceAnalysis')}</TabsTrigger>
+            <TabsTrigger value="neighborhoods" className="text-[10px] md:text-xs h-7">{t('analytics.neighborhoods')}</TabsTrigger>
+            <TabsTrigger value="roi" className="text-[10px] md:text-xs h-7">{t('analytics.roiCalculator')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-3">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
               <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
                 <CardHeader className="p-3">
-                  <CardTitle className="text-xs md:text-sm">User Growth Trend</CardTitle>
+                  <CardTitle className="text-xs md:text-sm">{t('analytics.userGrowth')}</CardTitle>
                 </CardHeader>
                 <CardContent className="p-2 md:p-3">
                   <ResponsiveContainer width="100%" height={200}>
@@ -324,7 +326,7 @@ const Analytics = () => {
 
               <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
                 <CardHeader className="p-3">
-                  <CardTitle className="text-xs md:text-sm">Property Listings</CardTitle>
+                  <CardTitle className="text-xs md:text-sm">{t('analytics.propertyListings')}</CardTitle>
                 </CardHeader>
                 <CardContent className="p-2 md:p-3">
                   <ResponsiveContainer width="100%" height={200}>
@@ -344,7 +346,7 @@ const Analytics = () => {
           <TabsContent value="users" className="space-y-3">
             <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
               <CardHeader className="p-3">
-                <CardTitle className="text-xs md:text-sm">User Registration Trend</CardTitle>
+                <CardTitle className="text-xs md:text-sm">{t('analytics.userRegistration')}</CardTitle>
               </CardHeader>
               <CardContent className="p-2 md:p-3">
                 <ResponsiveContainer width="100%" height={280}>
@@ -364,7 +366,7 @@ const Analytics = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
               <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
                 <CardHeader className="p-3">
-                  <CardTitle className="text-xs md:text-sm">Property Listings Trend</CardTitle>
+                  <CardTitle className="text-xs md:text-sm">{t('analytics.propertyListingsTrend')}</CardTitle>
                 </CardHeader>
                 <CardContent className="p-2 md:p-3">
                   <ResponsiveContainer width="100%" height={200}>
@@ -381,7 +383,7 @@ const Analytics = () => {
 
               <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
                 <CardHeader className="p-3">
-                  <CardTitle className="text-xs md:text-sm">Properties by Type</CardTitle>
+                  <CardTitle className="text-xs md:text-sm">{t('analytics.propertiesByType')}</CardTitle>
                 </CardHeader>
                 <CardContent className="p-2 md:p-3">
                   <ResponsiveContainer width="100%" height={200}>
@@ -416,7 +418,7 @@ const Analytics = () => {
                     <Globe className="h-4 w-4 text-chart-4" />
                   </div>
                   <div className="text-sm md:text-lg font-bold">{analyticsData?.engagement.unique_visitors.toLocaleString()}</div>
-                  <div className="text-[9px] md:text-xs text-muted-foreground">Unique Visitors</div>
+                  <div className="text-[9px] md:text-xs text-muted-foreground">{t('analytics.uniqueVisitors')}</div>
                 </CardContent>
               </Card>
               
@@ -426,7 +428,7 @@ const Analytics = () => {
                     <MousePointer className="h-4 w-4 text-chart-1" />
                   </div>
                   <div className="text-sm md:text-lg font-bold">{analyticsData?.engagement.bounce_rate}%</div>
-                  <div className="text-[9px] md:text-xs text-muted-foreground">Bounce Rate</div>
+                  <div className="text-[9px] md:text-xs text-muted-foreground">{t('analytics.bounceRate')}</div>
                 </CardContent>
               </Card>
               
@@ -436,14 +438,14 @@ const Analytics = () => {
                     <Activity className="h-4 w-4 text-accent" />
                   </div>
                   <div className="text-sm md:text-lg font-bold">{formatDuration(analyticsData?.engagement.avg_session_duration || 0)}</div>
-                  <div className="text-[9px] md:text-xs text-muted-foreground">Avg. Duration</div>
+                  <div className="text-[9px] md:text-xs text-muted-foreground">{t('analytics.avgDuration')}</div>
                 </CardContent>
               </Card>
             </div>
 
             <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
               <CardHeader className="p-3">
-                <CardTitle className="text-xs md:text-sm">Page Views Trend</CardTitle>
+                <CardTitle className="text-xs md:text-sm">{t('analytics.pageViewsTrend')}</CardTitle>
               </CardHeader>
               <CardContent className="p-2 md:p-3">
                 <ResponsiveContainer width="100%" height={280}>

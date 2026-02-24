@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ResponsiveContainer, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { TrendingUp, Filter } from 'lucide-react';
 import { formatIDR } from '@/utils/currency';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface PropertyRecord {
   price: number;
@@ -16,6 +17,7 @@ interface PropertyRecord {
 }
 
 const MarketTrendsChart = () => {
+  const { t } = useTranslation();
   const [cityFilter, setCityFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [listingFilter, setListingFilter] = useState<string>('all');
@@ -78,52 +80,50 @@ const MarketTrendsChart = () => {
 
   return (
     <div className="space-y-4">
-      {/* Filters */}
       <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
         <CardContent className="p-3">
           <div className="flex items-center gap-2 mb-2">
             <Filter className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="text-xs font-medium text-muted-foreground">Filters</span>
+            <span className="text-xs font-medium text-muted-foreground">{t('common.filters')}</span>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <Select value={cityFilter} onValueChange={setCityFilter}>
-              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="City" /></SelectTrigger>
+              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={t('property.location')} /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Cities</SelectItem>
+                <SelectItem value="all">{t('analytics.allCities')}</SelectItem>
                 {cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Type" /></SelectTrigger>
+              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={t('property.type')} /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                {propertyTypes.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                <SelectItem value="all">{t('analytics.allTypes')}</SelectItem>
+                {propertyTypes.map(t2 => <SelectItem key={t2} value={t2}>{t2}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={listingFilter} onValueChange={setListingFilter}>
-              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Listing" /></SelectTrigger>
+              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={t('property.listingType')} /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="sale">Sale</SelectItem>
-                <SelectItem value="rent">Rent</SelectItem>
-                <SelectItem value="lease">Lease</SelectItem>
+                <SelectItem value="all">{t('common.all')}</SelectItem>
+                <SelectItem value="sale">{t('analytics.sale')}</SelectItem>
+                <SelectItem value="rent">{t('analytics.rent')}</SelectItem>
+                <SelectItem value="lease">{t('analytics.lease')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </CardContent>
       </Card>
 
-      {/* Price Trends */}
       <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
         <CardHeader className="p-3">
           <CardTitle className="text-xs md:text-sm flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-primary" />
-            Price Trends (Avg & Median)
+            {t('analytics.priceTrends')}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-2 md:p-3">
           {chartData.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-8">No data available for selected filters</p>
+            <p className="text-xs text-muted-foreground text-center py-8">{t('common.noData')}</p>
           ) : (
             <ResponsiveContainer width="100%" height={280}>
               <LineChart data={chartData}>
@@ -132,22 +132,21 @@ const MarketTrendsChart = () => {
                 <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1e6).toFixed(0)}M`} />
                 <Tooltip formatter={(value: number) => formatIDR(value)} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Line type="monotone" dataKey="avgPrice" name="Average" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="medianPrice" name="Median" stroke="hsl(var(--chart-1))" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="avgPrice" name={t('analytics.average')} stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="medianPrice" name={t('analytics.median')} stroke="hsl(var(--chart-1))" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           )}
         </CardContent>
       </Card>
 
-      {/* Listing Volume */}
       <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
         <CardHeader className="p-3">
-          <CardTitle className="text-xs md:text-sm">Listing Volume Over Time</CardTitle>
+          <CardTitle className="text-xs md:text-sm">{t('analytics.listingVolume')}</CardTitle>
         </CardHeader>
         <CardContent className="p-2 md:p-3">
           {chartData.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-8">No data available</p>
+            <p className="text-xs text-muted-foreground text-center py-8">{t('common.noData')}</p>
           ) : (
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={chartData}>
@@ -155,7 +154,7 @@ const MarketTrendsChart = () => {
                 <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                 <YAxis tick={{ fontSize: 10 }} />
                 <Tooltip />
-                <Area type="monotone" dataKey="listings" name="Listings" stroke="hsl(var(--chart-3))" fill="hsl(var(--chart-3) / 0.2)" />
+                <Area type="monotone" dataKey="listings" name={t('analytics.listings')} stroke="hsl(var(--chart-3))" fill="hsl(var(--chart-3) / 0.2)" />
               </AreaChart>
             </ResponsiveContainer>
           )}
