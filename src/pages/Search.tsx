@@ -244,7 +244,7 @@ const Search = () => {
             {/* Compact Filters */}
             <div className="flex flex-wrap gap-1.5 items-center">
               <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="h-7 text-[10px] md:text-xs w-24 md:w-28 rounded-lg border-border/40 bg-muted/20">
+                <SelectTrigger className="h-8 sm:h-7 text-[10px] md:text-xs w-24 md:w-28 rounded-lg border-border/40 bg-muted/20">
                   <Home className="h-3 w-3 text-muted-foreground mr-1 shrink-0" />
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
@@ -258,7 +258,7 @@ const Search = () => {
               </Select>
 
               <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                <SelectTrigger className="h-7 text-[10px] md:text-xs w-24 md:w-28 rounded-lg border-border/40 bg-muted/20">
+                <SelectTrigger className="h-8 sm:h-7 text-[10px] md:text-xs w-24 md:w-28 rounded-lg border-border/40 bg-muted/20">
                   <MapPin className="h-3 w-3 text-muted-foreground mr-1 shrink-0" />
                   <SelectValue placeholder="Location" />
                 </SelectTrigger>

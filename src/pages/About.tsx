@@ -52,20 +52,20 @@ const About = () => {
         />
       )}
       
-      <div className={`${isAuthenticated ? 'pt-16' : 'pt-8'} px-4 sm:px-6 lg:px-8`}>
-        <div className="max-w-7xl mx-auto py-12">
+      <div className={`${isAuthenticated ? 'pt-16' : 'pt-8'} px-3 sm:px-4 md:px-6 lg:px-8`}>
+        <div className="max-w-7xl mx-auto py-6 sm:py-8 md:py-12">
           {/* Header */}
-          <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-foreground mb-4">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">
               {t('about.title')}
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
               {t('about.subtitle')}
             </p>
           </div>
 
           {/* Mission & Vision */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12 md:mb-16">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -96,11 +96,11 @@ const About = () => {
           </div>
 
           {/* Statistics */}
-          <div className="mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
+          <div className="mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-4 sm:mb-6 md:mb-8 text-center">
               {t('about.stats')}
             </h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
               {statsItems.map((stat, index) => (
                 <Card key={index} className="text-center">
                   <CardContent className="pt-6">
@@ -117,11 +117,11 @@ const About = () => {
           </div>
 
           {/* Values */}
-          <div className="mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
+          <div className="mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-4 sm:mb-6 md:mb-8 text-center">
               {t('about.values')}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
               {valuesItems.map((value, index) => {
                 const IconComponent = value.icon;
                 return (

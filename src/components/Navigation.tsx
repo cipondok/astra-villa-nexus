@@ -272,7 +272,7 @@ const Navigation = () => {
             <>
               <div className="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-[9998] animate-in fade-in duration-200" onClick={() => setIsMenuOpen(false)} onTouchEnd={(e) => { e.preventDefault(); setIsMenuOpen(false); }} />
               
-              <div ref={menuRef} className="lg:hidden absolute top-full right-0 w-52 bg-popover/95 backdrop-blur-2xl border border-gold-primary/15 shadow-2xl z-[9999] rounded-b-2xl rounded-tl-lg overflow-hidden animate-in slide-in-from-top-2 fade-in duration-300 origin-top-right">
+              <div ref={menuRef} className="lg:hidden absolute top-full right-0 w-56 max-w-[80vw] max-h-[70vh] overflow-y-auto overscroll-contain bg-popover/95 backdrop-blur-2xl border border-gold-primary/15 shadow-2xl z-[9999] rounded-b-2xl rounded-tl-lg animate-in slide-in-from-top-2 fade-in duration-300 origin-top-right">
                 <div className="p-2 space-y-0.5">
                   <MobileNavButton icon={HomeIcon} label={t('nav.home')} onClick={() => { navigate('/'); toggleMenu(); }} />
 
@@ -337,13 +337,13 @@ const MobileNavButton: React.FC<{
   <Button
     variant="ghost"
     className={cn(
-      "w-full justify-start h-8 text-[11px] font-medium rounded-lg hover:bg-muted/50",
+      "w-full justify-start h-10 text-xs font-medium rounded-lg hover:bg-muted/50 touch-manipulation",
       colorClass || "text-foreground/70 hover:text-foreground",
       indent && "pl-4"
     )}
     onClick={onClick}
   >
-    <Icon className="h-3 w-3 mr-1.5 flex-shrink-0" />
+    <Icon className="h-3.5 w-3.5 mr-1.5 flex-shrink-0" />
     {label}
   </Button>
 );

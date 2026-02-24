@@ -1,32 +1,6 @@
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
 
-/* Mobile-First Responsive Design */
-@layer base {
-  /* Ensure proper mobile viewport handling */
-  html {
-    -webkit-text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
-    font-size: 16px; /* Prevent zoom on iOS */
-  }
-  
-  body {
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    font-size: 16px; /* Base mobile font size */
-  }
-  
-  /* Mobile device auto-detection and adjustment */
-  @media screen and (max-device-width: 768px) {
-    html, body {
-      font-size: 16px !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      overflow-x: hidden !important;
-    }
-  }
-}
+/* Mobile-First Responsive Design - Utilities & Scoped Rules */
 
 @layer utilities {
   /* Mobile-specific utilities */
@@ -266,11 +240,13 @@
     padding-right: 1rem;
   }
   
-  /* Auto-adjust inputs and selects for mobile - Important form elements */
-  .mobile-app-layout input,
-  .mobile-app-layout select,
-  .mobile-app-layout button,
-  .mobile-app-layout textarea {
+  /* Auto-adjust form inputs for mobile - scoped to form contexts only */
+  .mobile-app-layout .form-mobile input,
+  .mobile-app-layout .form-mobile select,
+  .mobile-app-layout .form-mobile textarea,
+  .mobile-app-layout .auth-form input,
+  .mobile-app-layout .auth-form select,
+  .mobile-app-layout .auth-form textarea {
     font-size: 16px !important; /* Prevents zoom on iOS */
     -webkit-appearance: none;
     -webkit-border-radius: 0;
@@ -314,10 +290,11 @@
     -webkit-touch-callout: none;
   }
   
-  /* Ensure proper touch targets */
-  .mobile-app-layout button,
-  .mobile-app-layout input,
-  .mobile-app-layout select {
+  /* Ensure proper touch targets - scoped to form/nav contexts */
+  .mobile-app-layout .form-mobile button,
+  .mobile-app-layout .form-mobile input,
+  .mobile-app-layout .form-mobile select,
+  .mobile-app-layout .mobile-nav-button {
     min-height: 44px;
     min-width: 44px;
   }

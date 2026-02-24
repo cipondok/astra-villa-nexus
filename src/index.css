@@ -142,9 +142,9 @@ body[data-scroll-locked] {
     -webkit-text-size-adjust: none;
   }
   
-  /* Professional mobile typography */
+  /* Professional mobile typography - keep 16px to prevent iOS zoom */
   body {
-    font-size: 14px;
+    font-size: 16px;
   }
   
   h1 {
