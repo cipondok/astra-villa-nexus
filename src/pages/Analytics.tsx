@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+const MarketTrendsChart = lazy(() => import('@/components/analytics/MarketTrendsChart'));
+const PriceDistribution = lazy(() => import('@/components/analytics/PriceDistribution'));
+const NeighborhoodInsights = lazy(() => import('@/components/analytics/NeighborhoodInsights'));
+const InvestmentROICalculator = lazy(() => import('@/components/analytics/InvestmentROICalculator'));
 import { 
   BarChart3,
   TrendingUp,
@@ -287,11 +292,15 @@ const Analytics = () => {
 
         {/* Charts Section - Slim Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-3 h-8">
+          <TabsList className="w-full mb-3 h-8 flex overflow-x-auto">
             <TabsTrigger value="overview" className="text-[10px] md:text-xs h-7">Overview</TabsTrigger>
             <TabsTrigger value="users" className="text-[10px] md:text-xs h-7">Users</TabsTrigger>
             <TabsTrigger value="properties" className="text-[10px] md:text-xs h-7">Properties</TabsTrigger>
             <TabsTrigger value="engagement" className="text-[10px] md:text-xs h-7">Engagement</TabsTrigger>
+            <TabsTrigger value="market-trends" className="text-[10px] md:text-xs h-7">Market Trends</TabsTrigger>
+            <TabsTrigger value="price-analysis" className="text-[10px] md:text-xs h-7">Price Analysis</TabsTrigger>
+            <TabsTrigger value="neighborhoods" className="text-[10px] md:text-xs h-7">Neighborhoods</TabsTrigger>
+            <TabsTrigger value="roi" className="text-[10px] md:text-xs h-7">ROI Calculator</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-3">
@@ -448,6 +457,30 @@ const Analytics = () => {
                 </ResponsiveContainer>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="market-trends">
+            <Suspense fallback={<div className="animate-pulse"><Card><CardContent className="p-6"><div className="h-64 bg-muted rounded" /></CardContent></Card></div>}>
+              <MarketTrendsChart />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="price-analysis">
+            <Suspense fallback={<div className="animate-pulse"><Card><CardContent className="p-6"><div className="h-64 bg-muted rounded" /></CardContent></Card></div>}>
+              <PriceDistribution />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="neighborhoods">
+            <Suspense fallback={<div className="animate-pulse"><Card><CardContent className="p-6"><div className="h-64 bg-muted rounded" /></CardContent></Card></div>}>
+              <NeighborhoodInsights />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="roi">
+            <Suspense fallback={<div className="animate-pulse"><Card><CardContent className="p-6"><div className="h-64 bg-muted rounded" /></CardContent></Card></div>}>
+              <InvestmentROICalculator />
+            </Suspense>
           </TabsContent>
         </Tabs>
       </div>
