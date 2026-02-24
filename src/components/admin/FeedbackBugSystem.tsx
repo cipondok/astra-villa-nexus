@@ -54,140 +54,20 @@ interface HealthMetric {
   unit: string;
 }
 
-const text = {
-  en: {
-    pageTitle: "Feedback & System Health",
-    subtitle: "Bug reports, feedback, system updates, and health monitoring",
-    feedbackTab: "Feedback",
-    bugsTab: "Bug Reports",
-    updatesTab: "System Updates",
-    healthTab: "Health",
-    totalFeedback: "Total Feedback",
-    openBugs: "Open Bugs",
-    pendingUpdates: "Pending Updates",
-    systemHealth: "System Health",
-    submitFeedback: "Submit Feedback",
-    feedbackType: "Type",
-    bugReport: "Bug Report",
-    featureRequest: "Feature Request",
-    generalFeedback: "General Feedback",
-    complaint: "Complaint",
-    severity: "Severity",
-    low: "Low",
-    medium: "Medium",
-    high: "High",
-    critical: "Critical",
-    feedbackTitle: "Title",
-    description: "Description",
-    submit: "Submit",
-    status: "Status",
-    newStatus: "New",
-    reviewing: "Reviewing",
-    inProgress: "In Progress",
-    resolved: "Resolved",
-    closed: "Closed",
-    priority: "Priority",
-    date: "Date",
-    actions: "Actions",
-    view: "View",
-    noData: "No data found",
-    loading: "Loading...",
-    refresh: "Refresh",
-    planned: "Planned",
-    maintenance: "Maintenance",
-    feature: "Feature",
-    bugfix: "Bug Fix",
-    security: "Security",
-    improvement: "Improvement",
-    healthy: "Healthy",
-    degraded: "Degraded",
-    down: "Down",
-    database: "Database",
-    api: "API",
-    auth: "Authentication",
-    payments: "Payments",
-    storage: "Storage",
-    uptime: "Uptime",
-    responseTime: "Response Time",
-    errorRate: "Error Rate",
-    activeUsers: "Active Users"
-  },
-  id: {
-    pageTitle: "Umpan Balik & Kesehatan Sistem",
-    subtitle: "Laporan bug, umpan balik, pembaruan sistem, dan pemantauan kesehatan",
-    feedbackTab: "Umpan Balik",
-    bugsTab: "Laporan Bug",
-    updatesTab: "Pembaruan",
-    healthTab: "Kesehatan",
-    totalFeedback: "Total Umpan Balik",
-    openBugs: "Bug Terbuka",
-    pendingUpdates: "Pembaruan Tertunda",
-    systemHealth: "Kesehatan Sistem",
-    submitFeedback: "Kirim Umpan Balik",
-    feedbackType: "Tipe",
-    bugReport: "Laporan Bug",
-    featureRequest: "Permintaan Fitur",
-    generalFeedback: "Umpan Balik Umum",
-    complaint: "Keluhan",
-    severity: "Tingkat Keparahan",
-    low: "Rendah",
-    medium: "Sedang",
-    high: "Tinggi",
-    critical: "Kritis",
-    feedbackTitle: "Judul",
-    description: "Deskripsi",
-    submit: "Kirim",
-    status: "Status",
-    newStatus: "Baru",
-    reviewing: "Ditinjau",
-    inProgress: "Sedang Diproses",
-    resolved: "Terselesaikan",
-    closed: "Ditutup",
-    priority: "Prioritas",
-    date: "Tanggal",
-    actions: "Aksi",
-    view: "Lihat",
-    noData: "Tidak ada data",
-    loading: "Memuat...",
-    refresh: "Segarkan",
-    planned: "Direncanakan",
-    maintenance: "Pemeliharaan",
-    feature: "Fitur",
-    bugfix: "Perbaikan Bug",
-    security: "Keamanan",
-    improvement: "Peningkatan",
-    healthy: "Sehat",
-    degraded: "Terdegradasi",
-    down: "Mati",
-    database: "Basis Data",
-    api: "API",
-    auth: "Autentikasi",
-    payments: "Pembayaran",
-    storage: "Penyimpanan",
-    uptime: "Waktu Aktif",
-    responseTime: "Waktu Respons",
-    errorRate: "Tingkat Error",
-    activeUsers: "Pengguna Aktif"
-  }
-};
-
 const FeedbackBugSystem = () => {
-  const { language } = useTranslation();
+  const { t, language } = useTranslation();
   const { user } = useAuth();
-  const t = text[language] || text.en;
   
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [updates, setUpdates] = useState<SystemUpdate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   
-  // Form state
   const [formType, setFormType] = useState("general_feedback");
   const [formSeverity, setFormSeverity] = useState("medium");
   const [formTitle, setFormTitle] = useState("");
   const [formDescription, setFormDescription] = useState("");
 
-  // Mock health data (would be real data from system_health_metrics)
   const healthMetrics: HealthMetric[] = [
     { component: "database", status: "healthy", value: 99.9, unit: "%" },
     { component: "api", status: "healthy", value: 45, unit: "ms" },
@@ -227,7 +107,6 @@ const FeedbackBugSystem = () => {
   useEffect(() => {
     fetchData();
 
-    // Real-time subscription for feedback
     const channel = supabase
       .channel('feedback-realtime')
       .on('postgres_changes', {
@@ -246,7 +125,7 @@ const FeedbackBugSystem = () => {
 
   const handleSubmitFeedback = async () => {
     if (!formTitle || !formDescription) {
-      toast.error(language === 'id' ? 'Harap isi semua field' : 'Please fill all fields');
+      toast.error(t('feedbackSystem.fillAllFields'));
       return;
     }
 
@@ -269,14 +148,14 @@ const FeedbackBugSystem = () => {
 
       if (error) throw error;
 
-      toast.success(language === 'id' ? 'Umpan balik terkirim!' : 'Feedback submitted!');
+      toast.success(t('feedbackSystem.feedbackSubmitted'));
       setShowSubmitDialog(false);
       setFormTitle("");
       setFormDescription("");
       fetchData();
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      toast.error(language === 'id' ? 'Gagal mengirim' : 'Failed to submit');
+      toast.error(t('feedbackSystem.failedToSubmit'));
     }
   };
 
@@ -330,59 +209,59 @@ const FeedbackBugSystem = () => {
         <div>
           <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Activity className="h-6 w-6 text-primary" />
-            {t.pageTitle}
+            {t('feedbackSystem.pageTitle')}
           </h2>
-          <p className="text-muted-foreground">{t.subtitle}</p>
+          <p className="text-muted-foreground">{t('feedbackSystem.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={fetchData}>
             <RefreshCw className="h-4 w-4 mr-1" />
-            {t.refresh}
+            {t('feedbackSystem.refresh')}
           </Button>
           <Dialog open={showSubmitDialog} onOpenChange={setShowSubmitDialog}>
             <DialogTrigger asChild>
               <Button size="sm">
                 <Send className="h-4 w-4 mr-1" />
-                {t.submitFeedback}
+                {t('feedbackSystem.submitFeedback')}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{t.submitFeedback}</DialogTitle>
+                <DialogTitle>{t('feedbackSystem.submitFeedback')}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label>{t.feedbackType}</Label>
+                    <Label>{t('feedbackSystem.feedbackType')}</Label>
                     <Select value={formType} onValueChange={setFormType}>
                       <SelectTrigger className="mt-1">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="bug_report">{t.bugReport}</SelectItem>
-                        <SelectItem value="feature_request">{t.featureRequest}</SelectItem>
-                        <SelectItem value="general_feedback">{t.generalFeedback}</SelectItem>
-                        <SelectItem value="complaint">{t.complaint}</SelectItem>
+                        <SelectItem value="bug_report">{t('feedbackSystem.bugReport')}</SelectItem>
+                        <SelectItem value="feature_request">{t('feedbackSystem.featureRequest')}</SelectItem>
+                        <SelectItem value="general_feedback">{t('feedbackSystem.generalFeedback')}</SelectItem>
+                        <SelectItem value="complaint">{t('feedbackSystem.complaint')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label>{t.severity}</Label>
+                    <Label>{t('feedbackSystem.severity')}</Label>
                     <Select value={formSeverity} onValueChange={setFormSeverity}>
                       <SelectTrigger className="mt-1">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="low">{t.low}</SelectItem>
-                        <SelectItem value="medium">{t.medium}</SelectItem>
-                        <SelectItem value="high">{t.high}</SelectItem>
-                        <SelectItem value="critical">{t.critical}</SelectItem>
+                        <SelectItem value="low">{t('feedbackSystem.low')}</SelectItem>
+                        <SelectItem value="medium">{t('feedbackSystem.medium')}</SelectItem>
+                        <SelectItem value="high">{t('feedbackSystem.high')}</SelectItem>
+                        <SelectItem value="critical">{t('feedbackSystem.critical')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
                 <div>
-                  <Label>{t.feedbackTitle}</Label>
+                  <Label>{t('feedbackSystem.feedbackTitle')}</Label>
                   <Input 
                     value={formTitle}
                     onChange={(e) => setFormTitle(e.target.value)}
@@ -390,7 +269,7 @@ const FeedbackBugSystem = () => {
                   />
                 </div>
                 <div>
-                  <Label>{t.description}</Label>
+                  <Label>{t('feedbackSystem.description')}</Label>
                   <Textarea 
                     value={formDescription}
                     onChange={(e) => setFormDescription(e.target.value)}
@@ -399,7 +278,7 @@ const FeedbackBugSystem = () => {
                   />
                 </div>
                 <Button onClick={handleSubmitFeedback} className="w-full">
-                  {t.submit}
+                  {t('feedbackSystem.submit')}
                 </Button>
               </div>
             </DialogContent>
@@ -413,7 +292,7 @@ const FeedbackBugSystem = () => {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <MessageSquare className="h-5 w-5 text-chart-2" />
-              <span className="text-sm text-chart-2">{t.totalFeedback}</span>
+              <span className="text-sm text-chart-2">{t('feedbackSystem.totalFeedback')}</span>
             </div>
             <p className="text-2xl font-bold text-foreground mt-1">{stats.totalFeedback}</p>
           </CardContent>
@@ -423,7 +302,7 @@ const FeedbackBugSystem = () => {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Bug className="h-5 w-5 text-destructive" />
-              <span className="text-sm text-destructive">{t.openBugs}</span>
+              <span className="text-sm text-destructive">{t('feedbackSystem.openBugs')}</span>
             </div>
             <p className="text-2xl font-bold text-foreground mt-1">{stats.openBugs}</p>
           </CardContent>
@@ -433,7 +312,7 @@ const FeedbackBugSystem = () => {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Settings className="h-5 w-5 text-chart-3" />
-              <span className="text-sm text-chart-3">{t.pendingUpdates}</span>
+              <span className="text-sm text-chart-3">{t('feedbackSystem.pendingUpdates')}</span>
             </div>
             <p className="text-2xl font-bold text-foreground mt-1">{stats.pendingUpdates}</p>
           </CardContent>
@@ -443,7 +322,7 @@ const FeedbackBugSystem = () => {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-chart-1" />
-              <span className="text-sm text-chart-1">{t.systemHealth}</span>
+              <span className="text-sm text-chart-1">{t('feedbackSystem.systemHealth')}</span>
             </div>
             <p className="text-2xl font-bold text-foreground mt-1">{stats.healthScore}%</p>
           </CardContent>
@@ -455,43 +334,43 @@ const FeedbackBugSystem = () => {
         <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
           <TabsTrigger value="feedback">
             <MessageSquare className="h-4 w-4 mr-1" />
-            {t.feedbackTab}
+            {t('feedbackSystem.feedbackTab')}
           </TabsTrigger>
           <TabsTrigger value="bugs">
             <Bug className="h-4 w-4 mr-1" />
-            {t.bugsTab}
+            {t('feedbackSystem.bugsTab')}
           </TabsTrigger>
           <TabsTrigger value="updates">
             <Zap className="h-4 w-4 mr-1" />
-            {t.updatesTab}
+            {t('feedbackSystem.updatesTab')}
           </TabsTrigger>
           <TabsTrigger value="health">
             <Activity className="h-4 w-4 mr-1" />
-            {t.healthTab}
+            {t('feedbackSystem.healthTab')}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="feedback" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>{t.feedbackTab}</CardTitle>
+              <CardTitle>{t('feedbackSystem.feedbackTab')}</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="text-center py-8 text-muted-foreground">{t.loading}</div>
+                <div className="text-center py-8 text-muted-foreground">{t('feedbackSystem.loading')}</div>
               ) : feedbacks.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">{t.noData}</div>
+                <div className="text-center py-8 text-muted-foreground">{t('feedbackSystem.noData')}</div>
               ) : (
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>{t.feedbackTitle}</TableHead>
-                        <TableHead>{t.feedbackType}</TableHead>
-                        <TableHead>{t.severity}</TableHead>
-                        <TableHead>{t.status}</TableHead>
-                        <TableHead>{t.date}</TableHead>
-                        <TableHead>{t.actions}</TableHead>
+                        <TableHead>{t('feedbackSystem.feedbackTitle')}</TableHead>
+                        <TableHead>{t('feedbackSystem.feedbackType')}</TableHead>
+                        <TableHead>{t('feedbackSystem.severity')}</TableHead>
+                        <TableHead>{t('feedbackSystem.status')}</TableHead>
+                        <TableHead>{t('feedbackSystem.date')}</TableHead>
+                        <TableHead>{t('feedbackSystem.actions')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -524,21 +403,21 @@ const FeedbackBugSystem = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bug className="h-5 w-5 text-destructive" />
-                {t.bugsTab}
+                {t('feedbackSystem.bugsTab')}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {feedbacks.filter(f => f.feedback_type === 'bug_report').length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">{t.noData}</div>
+                <div className="text-center py-8 text-muted-foreground">{t('feedbackSystem.noData')}</div>
               ) : (
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>{t.feedbackTitle}</TableHead>
-                        <TableHead>{t.severity}</TableHead>
-                        <TableHead>{t.status}</TableHead>
-                        <TableHead>{t.date}</TableHead>
+                        <TableHead>{t('feedbackSystem.feedbackTitle')}</TableHead>
+                        <TableHead>{t('feedbackSystem.severity')}</TableHead>
+                        <TableHead>{t('feedbackSystem.status')}</TableHead>
+                        <TableHead>{t('feedbackSystem.date')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -563,12 +442,12 @@ const FeedbackBugSystem = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Zap className="h-5 w-5 text-chart-3" />
-                {t.updatesTab}
+                {t('feedbackSystem.updatesTab')}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {updates.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">{t.noData}</div>
+                <div className="text-center py-8 text-muted-foreground">{t('feedbackSystem.noData')}</div>
               ) : (
                 <div className="space-y-4">
                   {updates.map((update) => (

@@ -26,76 +26,8 @@ interface TaxConfig {
   is_active: boolean;
 }
 
-const text = {
-  en: {
-    title: "Indonesian Tax Configuration",
-    subtitle: "Configure tax rates according to Indonesian law (PPN, PPh, BPHTB)",
-    taxCode: "Tax Code",
-    taxName: "Tax Name",
-    rate: "Rate (%)",
-    appliesTo: "Applies To",
-    status: "Status",
-    actions: "Actions",
-    active: "Active",
-    inactive: "Inactive",
-    edit: "Edit",
-    save: "Save",
-    cancel: "Cancel",
-    refresh: "Refresh",
-    minAmount: "Min Amount",
-    maxAmount: "Max Amount",
-    noLimit: "No Limit",
-    propertySale: "Property Sale",
-    propertyRental: "Rental",
-    vendorService: "Vendor Service",
-    all: "All",
-    taxCalculator: "Tax Calculator",
-    baseAmount: "Base Amount (IDR)",
-    calculate: "Calculate",
-    breakdown: "Tax Breakdown",
-    subtotal: "Subtotal",
-    totalTax: "Total Tax",
-    grandTotal: "Grand Total",
-    transactionType: "Transaction Type",
-    selectType: "Select transaction type"
-  },
-  id: {
-    title: "Konfigurasi Pajak Indonesia",
-    subtitle: "Atur tarif pajak sesuai hukum Indonesia (PPN, PPh, BPHTB)",
-    taxCode: "Kode Pajak",
-    taxName: "Nama Pajak",
-    rate: "Tarif (%)",
-    appliesTo: "Berlaku Untuk",
-    status: "Status",
-    actions: "Aksi",
-    active: "Aktif",
-    inactive: "Tidak Aktif",
-    edit: "Ubah",
-    save: "Simpan",
-    cancel: "Batal",
-    refresh: "Segarkan",
-    minAmount: "Jumlah Min",
-    maxAmount: "Jumlah Maks",
-    noLimit: "Tanpa Batas",
-    propertySale: "Penjualan Properti",
-    propertyRental: "Sewa",
-    vendorService: "Layanan Vendor",
-    all: "Semua",
-    taxCalculator: "Kalkulator Pajak",
-    baseAmount: "Jumlah Dasar (IDR)",
-    calculate: "Hitung",
-    breakdown: "Rincian Pajak",
-    subtotal: "Subtotal",
-    totalTax: "Total Pajak",
-    grandTotal: "Total Keseluruhan",
-    transactionType: "Tipe Transaksi",
-    selectType: "Pilih tipe transaksi"
-  }
-};
-
 const IndonesianTaxConfiguration = () => {
-  const { language } = useTranslation();
-  const t = text[language] || text.en;
+  const { t, language } = useTranslation();
   
   const [taxConfigs, setTaxConfigs] = useState<TaxConfig[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -141,7 +73,7 @@ const IndonesianTaxConfiguration = () => {
         .eq('id', id);
 
       if (error) throw error;
-      toast.success(language === 'id' ? 'Status diperbarui' : 'Status updated');
+      toast.success(t('taxConfig.statusUpdated'));
       fetchTaxConfigs();
     } catch (error) {
       console.error('Error updating status:', error);
@@ -157,7 +89,7 @@ const IndonesianTaxConfiguration = () => {
         .eq('id', id);
 
       if (error) throw error;
-      toast.success(language === 'id' ? 'Tarif diperbarui' : 'Rate updated');
+      toast.success(t('taxConfig.rateUpdated'));
       setEditingId(null);
       fetchTaxConfigs();
     } catch (error) {
@@ -195,12 +127,12 @@ const IndonesianTaxConfiguration = () => {
   };
 
   const getApplicableLabel = (applicable: string[]) => {
-    if (applicable.includes('all')) return t.all;
+    if (applicable.includes('all')) return t('taxConfig.all');
     return applicable.map(a => {
       switch(a) {
-        case 'property_sale': return t.propertySale;
-        case 'property_rental': return t.propertyRental;
-        case 'vendor_service': return t.vendorService;
+        case 'property_sale': return t('taxConfig.propertySale');
+        case 'property_rental': return t('taxConfig.propertyRental');
+        case 'vendor_service': return t('taxConfig.vendorService');
         default: return a;
       }
     }).join(', ');
@@ -213,42 +145,42 @@ const IndonesianTaxConfiguration = () => {
         <div>
           <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Calculator className="h-6 w-6 text-primary" />
-            {t.title}
+            {t('taxConfig.title')}
           </h2>
-          <p className="text-muted-foreground">{t.subtitle}</p>
+          <p className="text-muted-foreground">{t('taxConfig.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={fetchTaxConfigs}>
             <RefreshCw className="h-4 w-4 mr-1" />
-            {t.refresh}
+            {t('taxConfig.refresh')}
           </Button>
           <Dialog>
             <DialogTrigger asChild>
               <Button size="sm" className="bg-primary">
                 <Calculator className="h-4 w-4 mr-1" />
-                {t.taxCalculator}
+                {t('taxConfig.taxCalculator')}
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
-                <DialogTitle>{t.taxCalculator}</DialogTitle>
+                <DialogTitle>{t('taxConfig.taxCalculator')}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label>{t.transactionType}</Label>
+                    <Label>{t('taxConfig.transactionType')}</Label>
                     <select 
                       className="w-full mt-1 p-2 border rounded-md bg-background"
                       value={calcType}
                       onChange={(e) => setCalcType(e.target.value)}
                     >
-                      <option value="property_sale">{t.propertySale}</option>
-                      <option value="property_rental">{t.propertyRental}</option>
-                      <option value="vendor_service">{t.vendorService}</option>
+                      <option value="property_sale">{t('taxConfig.propertySale')}</option>
+                      <option value="property_rental">{t('taxConfig.propertyRental')}</option>
+                      <option value="vendor_service">{t('taxConfig.vendorService')}</option>
                     </select>
                   </div>
                   <div>
-                    <Label>{t.baseAmount}</Label>
+                    <Label>{t('taxConfig.baseAmount')}</Label>
                     <Input 
                       type="number"
                       value={calcAmount || ''}
@@ -259,17 +191,17 @@ const IndonesianTaxConfiguration = () => {
                   </div>
                 </div>
                 <Button onClick={calculateTaxes} className="w-full">
-                  {t.calculate}
+                  {t('taxConfig.calculate')}
                 </Button>
 
                 {calcResult && (
                   <Card className="bg-muted/50">
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm">{t.breakdown}</CardTitle>
+                      <CardTitle className="text-sm">{t('taxConfig.breakdown')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span>{t.subtotal}</span>
+                        <span>{t('taxConfig.subtotal')}</span>
                         <span className="font-mono">{formatCurrency(calcAmount)}</span>
                       </div>
                       {calcResult.taxes.map((tax, i) => (
@@ -280,11 +212,11 @@ const IndonesianTaxConfiguration = () => {
                       ))}
                       <div className="border-t pt-2">
                         <div className="flex justify-between text-sm font-medium">
-                          <span>{t.totalTax}</span>
+                          <span>{t('taxConfig.totalTax')}</span>
                           <span className="font-mono text-chart-3">{formatCurrency(calcResult.totalTax)}</span>
                         </div>
                         <div className="flex justify-between text-lg font-bold mt-1">
-                          <span>{t.grandTotal}</span>
+                          <span>{t('taxConfig.grandTotal')}</span>
                           <span className="font-mono text-primary">{formatCurrency(calcResult.grandTotal)}</span>
                         </div>
                       </div>
@@ -305,11 +237,7 @@ const IndonesianTaxConfiguration = () => {
               <Badge variant="outline" className="bg-chart-2/10 text-chart-2 border-chart-2/30">PPN</Badge>
               <span className="font-semibold">11%</span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              {language === 'id' 
-                ? 'Pajak Pertambahan Nilai untuk semua transaksi'
-                : 'Value Added Tax for all transactions'}
-            </p>
+            <p className="text-sm text-muted-foreground">{t('taxConfig.ppnDesc')}</p>
           </CardContent>
         </Card>
 
@@ -319,11 +247,7 @@ const IndonesianTaxConfiguration = () => {
               <Badge variant="outline" className="bg-chart-1/10 text-chart-1 border-chart-1/30">PPh</Badge>
               <span className="font-semibold">2.5% - 10%</span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              {language === 'id'
-                ? 'Pajak Penghasilan: 2.5% penjualan, 10% sewa'
-                : 'Income Tax: 2.5% sales, 10% rental'}
-            </p>
+            <p className="text-sm text-muted-foreground">{t('taxConfig.pphDesc')}</p>
           </CardContent>
         </Card>
 
@@ -333,11 +257,7 @@ const IndonesianTaxConfiguration = () => {
               <Badge variant="outline" className="bg-chart-4/10 text-chart-4 border-chart-4/30">BPHTB</Badge>
               <span className="font-semibold">5%</span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              {language === 'id'
-                ? 'Bea Perolehan Hak atas Tanah dan Bangunan'
-                : 'Land/Building Acquisition Tax'}
-            </p>
+            <p className="text-sm text-muted-foreground">{t('taxConfig.bphtbDesc')}</p>
           </CardContent>
         </Card>
       </div>
@@ -345,24 +265,22 @@ const IndonesianTaxConfiguration = () => {
       {/* Tax Config Table */}
       <Card>
         <CardHeader>
-          <CardTitle>{language === 'id' ? 'Daftar Konfigurasi Pajak' : 'Tax Configuration List'}</CardTitle>
+          <CardTitle>{t('taxConfig.taxConfigList')}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="text-center py-8 text-muted-foreground">
-              {language === 'id' ? 'Memuat...' : 'Loading...'}
-            </div>
+            <div className="text-center py-8 text-muted-foreground">{t('taxConfig.loading')}</div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t.taxCode}</TableHead>
-                    <TableHead>{t.taxName}</TableHead>
-                    <TableHead className="text-center">{t.rate}</TableHead>
-                    <TableHead>{t.appliesTo}</TableHead>
-                    <TableHead className="text-center">{t.status}</TableHead>
-                    <TableHead>{t.actions}</TableHead>
+                    <TableHead>{t('taxConfig.taxCode')}</TableHead>
+                    <TableHead>{t('taxConfig.taxName')}</TableHead>
+                    <TableHead className="text-center">{t('taxConfig.rate')}</TableHead>
+                    <TableHead>{t('taxConfig.appliesTo')}</TableHead>
+                    <TableHead className="text-center">{t('taxConfig.status')}</TableHead>
+                    <TableHead>{t('taxConfig.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -399,7 +317,7 @@ const IndonesianTaxConfiguration = () => {
                         <div className="flex flex-wrap gap-1">
                           {tax.applicable_to.map((a, i) => (
                             <Badge key={i} variant="secondary" className="text-xs">
-                              {a === 'all' ? t.all : a.replace('_', ' ')}
+                              {a === 'all' ? t('taxConfig.all') : a.replace('_', ' ')}
                             </Badge>
                           ))}
                         </div>
@@ -417,7 +335,7 @@ const IndonesianTaxConfiguration = () => {
                               <Save className="h-4 w-4" />
                             </Button>
                             <Button size="sm" variant="outline" onClick={() => setEditingId(null)}>
-                              {t.cancel}
+                              {t('taxConfig.cancel')}
                             </Button>
                           </div>
                         ) : (
@@ -448,14 +366,8 @@ const IndonesianTaxConfiguration = () => {
           <div className="flex items-start gap-3">
             <Info className="h-5 w-5 text-chart-3 mt-0.5" />
             <div>
-              <p className="font-medium text-chart-3">
-                {language === 'id' ? 'Catatan Penting' : 'Important Note'}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {language === 'id'
-                  ? 'Tarif pajak diatur sesuai peraturan perpajakan Indonesia. Perubahan tarif akan mempengaruhi semua transaksi baru. Pastikan untuk berkonsultasi dengan akuntan atau penasihat pajak sebelum mengubah konfigurasi.'
-                  : 'Tax rates are configured according to Indonesian tax regulations. Rate changes will affect all new transactions. Please consult with an accountant or tax advisor before modifying configurations.'}
-              </p>
+              <p className="font-medium text-chart-3">{t('taxConfig.importantNote')}</p>
+              <p className="text-sm text-muted-foreground mt-1">{t('taxConfig.importantNoteDesc')}</p>
             </div>
           </div>
         </CardContent>

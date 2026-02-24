@@ -28,50 +28,8 @@ interface RecentActivity {
   status: 'success' | 'warning' | 'error' | 'info';
 }
 
-const text = {
-  en: {
-    title: "Real-Time Transaction Monitor",
-    liveStats: "Live Statistics",
-    activeTransactions: "Active Transactions",
-    todayRevenue: "Today's Revenue",
-    todayTransactions: "Today's Transactions",
-    pendingPayments: "Pending Payments",
-    completedToday: "Completed Today",
-    avgProcessingTime: "Avg Processing Time",
-    conversionRate: "Conversion Rate",
-    recentActivity: "Recent Activity",
-    noActivity: "No recent activity",
-    liveIndicator: "LIVE",
-    minutes: "minutes",
-    transactionReceived: "New transaction received",
-    paymentCompleted: "Payment completed",
-    transactionCancelled: "Transaction cancelled",
-    refundProcessed: "Refund processed"
-  },
-  id: {
-    title: "Monitor Transaksi Real-Time",
-    liveStats: "Statistik Langsung",
-    activeTransactions: "Transaksi Aktif",
-    todayRevenue: "Pendapatan Hari Ini",
-    todayTransactions: "Transaksi Hari Ini",
-    pendingPayments: "Pembayaran Tertunda",
-    completedToday: "Selesai Hari Ini",
-    avgProcessingTime: "Rata-rata Waktu Proses",
-    conversionRate: "Tingkat Konversi",
-    recentActivity: "Aktivitas Terbaru",
-    noActivity: "Tidak ada aktivitas terbaru",
-    liveIndicator: "LANGSUNG",
-    minutes: "menit",
-    transactionReceived: "Transaksi baru diterima",
-    paymentCompleted: "Pembayaran selesai",
-    transactionCancelled: "Transaksi dibatalkan",
-    refundProcessed: "Pengembalian diproses"
-  }
-};
-
 const RealTimeTransactionMonitor = () => {
-  const { language } = useTranslation();
-  const t = text[language] || text.en;
+  const { t } = useTranslation();
   
   const [stats, setStats] = useState<LiveStats>({
     activeTransactions: 0,
@@ -108,7 +66,7 @@ const RealTimeTransactionMonitor = () => {
         todayTransactions: transactions.length,
         pendingPayments: transactions.filter(tx => tx.payment_status === 'pending').length,
         completedToday: transactions.filter(tx => tx.status === 'completed').length,
-        averageProcessingTime: 15, // Mock value - would calculate from real data
+        averageProcessingTime: 15,
         conversionRate: transactions.length > 0 
           ? Math.round((transactions.filter(tx => tx.status === 'completed').length / transactions.length) * 100)
           : 0
@@ -122,7 +80,6 @@ const RealTimeTransactionMonitor = () => {
   useEffect(() => {
     fetchStats();
 
-    // Real-time subscription
     const channel = supabase
       .channel('monitor-transactions')
       .on('postgres_changes', {
@@ -132,18 +89,17 @@ const RealTimeTransactionMonitor = () => {
       }, (payload) => {
         fetchStats();
         
-        // Add to recent activity
         const newActivity: RecentActivity = {
           id: crypto.randomUUID(),
           type: payload.eventType,
           message: payload.eventType === 'INSERT' 
-            ? t.transactionReceived
+            ? t('liveMonitor.transactionReceived')
             : payload.eventType === 'UPDATE'
             ? (payload.new as any).status === 'completed' 
-              ? t.paymentCompleted 
+              ? t('liveMonitor.paymentCompleted') 
               : (payload.new as any).status === 'cancelled'
-              ? t.transactionCancelled
-              : t.refundProcessed
+              ? t('liveMonitor.transactionCancelled')
+              : t('liveMonitor.refundProcessed')
             : 'Transaction updated',
           timestamp: new Date(),
           status: payload.eventType === 'INSERT' ? 'info' 
@@ -158,7 +114,6 @@ const RealTimeTransactionMonitor = () => {
         setIsConnected(status === 'SUBSCRIBED');
       });
 
-    // Refresh stats every 30 seconds
     const interval = setInterval(fetchStats, 30000);
 
     return () => {
@@ -187,8 +142,8 @@ const RealTimeTransactionMonitor = () => {
                 <Activity className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <h2 className="text-sm font-bold">{t.title}</h2>
-                <p className="text-xs text-muted-foreground">{t.liveStats}</p>
+                <h2 className="text-sm font-bold">{t('liveMonitor.title')}</h2>
+                <p className="text-xs text-muted-foreground">{t('liveMonitor.liveStats')}</p>
               </div>
             </div>
             <Badge 
@@ -196,7 +151,7 @@ const RealTimeTransactionMonitor = () => {
               className={`flex items-center gap-1.5 text-xs h-6 px-2 ${isConnected ? 'bg-chart-1' : ''}`}
             >
               <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-background animate-pulse' : 'bg-background'}`} />
-              {t.liveIndicator}
+              {t('liveMonitor.liveIndicator')}
             </Badge>
           </div>
         </CardContent>
@@ -208,7 +163,7 @@ const RealTimeTransactionMonitor = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5 text-chart-2">
               <Zap className="h-4 w-4" />
-              <span className="text-xs">{t.activeTransactions}</span>
+              <span className="text-xs">{t('liveMonitor.activeTransactions')}</span>
             </div>
             <p className="text-lg font-bold mt-1">{stats.activeTransactions}</p>
           </CardContent>
@@ -218,7 +173,7 @@ const RealTimeTransactionMonitor = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5 text-chart-1">
               <DollarSign className="h-4 w-4" />
-              <span className="text-xs">{t.todayRevenue}</span>
+              <span className="text-xs">{t('liveMonitor.todayRevenue')}</span>
             </div>
             <p className="text-sm font-bold mt-1">{formatIDR(stats.todayRevenue)}</p>
           </CardContent>
@@ -228,7 +183,7 @@ const RealTimeTransactionMonitor = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5 text-primary">
               <TrendingUp className="h-4 w-4" />
-              <span className="text-xs">{t.todayTransactions}</span>
+              <span className="text-xs">{t('liveMonitor.todayTransactions')}</span>
             </div>
             <p className="text-lg font-bold mt-1">{stats.todayTransactions}</p>
           </CardContent>
@@ -238,7 +193,7 @@ const RealTimeTransactionMonitor = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5 text-chart-3">
               <Clock className="h-4 w-4" />
-              <span className="text-xs">{t.pendingPayments}</span>
+              <span className="text-xs">{t('liveMonitor.pendingPayments')}</span>
             </div>
             <p className="text-lg font-bold mt-1">{stats.pendingPayments}</p>
           </CardContent>
@@ -248,7 +203,7 @@ const RealTimeTransactionMonitor = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5 text-chart-1">
               <CheckCircle className="h-4 w-4" />
-              <span className="text-xs">{t.completedToday}</span>
+              <span className="text-xs">{t('liveMonitor.completedToday')}</span>
             </div>
             <p className="text-lg font-bold mt-1">{stats.completedToday}</p>
           </CardContent>
@@ -258,9 +213,9 @@ const RealTimeTransactionMonitor = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5 text-chart-4">
               <Clock className="h-4 w-4" />
-              <span className="text-xs">{t.avgProcessingTime}</span>
+              <span className="text-xs">{t('liveMonitor.avgProcessingTime')}</span>
             </div>
-            <p className="text-lg font-bold mt-1">{stats.averageProcessingTime} {t.minutes}</p>
+            <p className="text-lg font-bold mt-1">{stats.averageProcessingTime} {t('liveMonitor.minutes')}</p>
           </CardContent>
         </Card>
 
@@ -268,7 +223,7 @@ const RealTimeTransactionMonitor = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5 text-secondary-foreground">
               <TrendingUp className="h-4 w-4" />
-              <span className="text-xs">{t.conversionRate}</span>
+              <span className="text-xs">{t('liveMonitor.conversionRate')}</span>
             </div>
             <div className="mt-1">
               <p className="text-lg font-bold">{stats.conversionRate}%</p>
@@ -283,12 +238,12 @@ const RealTimeTransactionMonitor = () => {
         <CardHeader className="p-3 pb-2">
           <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
             <Activity className="h-3.5 w-3.5" />
-            {t.recentActivity}
+            {t('liveMonitor.recentActivity')}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-3 pt-0">
           {recentActivity.length === 0 ? (
-            <p className="text-center text-muted-foreground py-6 text-xs">{t.noActivity}</p>
+            <p className="text-center text-muted-foreground py-6 text-xs">{t('liveMonitor.noActivity')}</p>
           ) : (
             <div className="space-y-1.5">
               {recentActivity.map((activity) => (

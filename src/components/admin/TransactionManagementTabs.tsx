@@ -12,30 +12,8 @@ import RealTimeTransactionMonitor from "./RealTimeTransactionMonitor";
 import TransactionAuditTrail from "./TransactionAuditTrail";
 import FeedbackBugSystem from "./FeedbackBugSystem";
 
-const text = {
-  en: {
-    title: "Transaction Management",
-    subtitle: "Complete transaction management with taxes, monitoring, and audit trails",
-    transactions: "Transactions",
-    taxConfig: "Tax Config",
-    liveMonitor: "Live Monitor",
-    auditTrail: "Audit Trail",
-    feedbackBugs: "Feedback & Bugs"
-  },
-  id: {
-    title: "Manajemen Transaksi",
-    subtitle: "Manajemen transaksi lengkap dengan pajak, monitoring, dan jejak audit",
-    transactions: "Transaksi",
-    taxConfig: "Konfigurasi Pajak",
-    liveMonitor: "Monitor Langsung",
-    auditTrail: "Jejak Audit",
-    feedbackBugs: "Umpan Balik & Bug"
-  }
-};
-
 const TransactionManagementTabs = () => {
-  const { language } = useTranslation();
-  const t = text[language] || text.en;
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("transactions");
 
   return (
@@ -47,14 +25,14 @@ const TransactionManagementTabs = () => {
             <CreditCard className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-base font-bold">{t.title}</h1>
+            <h1 className="text-base font-bold">{t('transactionTabs.title')}</h1>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <span className="w-2 h-2 bg-chart-1 rounded-full animate-pulse" />
                 Live
               </span>
               <span>•</span>
-              <span>{t.subtitle}</span>
+              <span>{t('transactionTabs.subtitle')}</span>
             </div>
           </div>
         </div>
@@ -72,35 +50,35 @@ const TransactionManagementTabs = () => {
             className="h-8 text-xs rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-1.5 px-3"
           >
             <DollarSign className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">{t.transactions}</span>
+            <span className="hidden sm:inline">{t('transactionTabs.transactions')}</span>
           </TabsTrigger>
           <TabsTrigger 
             value="tax-config" 
             className="h-8 text-xs rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-1.5 px-3"
           >
             <Calculator className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">{t.taxConfig}</span>
+            <span className="hidden sm:inline">{t('transactionTabs.taxConfig')}</span>
           </TabsTrigger>
           <TabsTrigger 
             value="live-monitor" 
             className="h-8 text-xs rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-1.5 px-3"
           >
             <Activity className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">{t.liveMonitor}</span>
+            <span className="hidden sm:inline">{t('transactionTabs.liveMonitor')}</span>
           </TabsTrigger>
           <TabsTrigger 
             value="audit-trail" 
             className="h-8 text-xs rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-1.5 px-3"
           >
             <History className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">{t.auditTrail}</span>
+            <span className="hidden sm:inline">{t('transactionTabs.auditTrail')}</span>
           </TabsTrigger>
           <TabsTrigger 
             value="feedback-bugs" 
             className="h-8 text-xs rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-1.5 px-3"
           >
             <Bug className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">{t.feedbackBugs}</span>
+            <span className="hidden sm:inline">{t('transactionTabs.feedbackBugs')}</span>
           </TabsTrigger>
         </TabsList>
 
