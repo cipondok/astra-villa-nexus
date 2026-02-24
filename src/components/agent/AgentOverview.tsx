@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useAstraToken } from "@/hooks/useAstraToken";
 import { useAstraWalletStats } from "@/hooks/useAstraWalletStats";
 import AgentTools from "./AgentTools";
+import AgentCalendarTab from "./calendar/AgentCalendarTab";
 import AgentSettings from "./AgentSettings";
 import AgentNotifications from "./AgentNotifications";
 import AgentProfileProgress from "./AgentProfileProgress";
@@ -318,6 +319,10 @@ const AgentOverview = () => {
             <TabsTrigger value="leaderboard" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Rankings</TabsTrigger>
             <TabsTrigger value="clients" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Clients</TabsTrigger>
             <TabsTrigger value="bookings" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Bookings</TabsTrigger>
+            <TabsTrigger value="visit-calendar" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              Visits
+            </TabsTrigger>
             <TabsTrigger value="payouts" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Payouts</TabsTrigger>
             <TabsTrigger value="tools" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Tools</TabsTrigger>
             <TabsTrigger value="settings" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
@@ -738,6 +743,10 @@ const AgentOverview = () => {
 
         <TabsContent value="tools">
           <AgentTools />
+        </TabsContent>
+
+        <TabsContent value="visit-calendar">
+          <AgentCalendarTab />
         </TabsContent>
 
         <TabsContent value="settings">
