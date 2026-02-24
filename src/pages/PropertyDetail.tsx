@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useUserBehaviorAnalytics } from '@/hooks/useUserBehaviorAnalytics';
 import { SEOHead, seoSchemas } from '@/components/SEOHead';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -159,12 +160,40 @@ const PropertyDetail: React.FC = () => {
   useAutoHorizontalScroll(similarScrollRef, { direction: 'rtl', speed: 1, pauseOnHover: true });
   useAutoHorizontalScroll(moreFromAgentRef, { direction: 'rtl', speed: 1, pauseOnHover: true });
 
+  // Behavior tracking
+  const { trackPropertyView, trackInteraction } = useUserBehaviorAnalytics();
+
   useEffect(() => {
     console.log('PropertyDetail mounted with id:', id);
     if (id) {
       loadProperty();
     }
   }, [id]);
+
+  // Track property view with duration
+  useEffect(() => {
+    if (!id || !property) return;
+    let cleanup: (() => void) | undefined;
+
+    trackPropertyView(id).then(fn => { cleanup = fn; });
+
+    // Also track property metadata for richer signals
+    trackInteraction({
+      interaction_type: 'view',
+      property_id: id,
+      interaction_data: {
+        view_type: 'property_detail',
+        property_type: property.property_type,
+        listing_type: property.listing_type,
+        price: property.price,
+        city: property.city,
+        bedrooms: property.bedrooms,
+        area_sqm: property.area_sqm,
+      }
+    });
+
+    return () => { cleanup?.(); };
+  }, [id, property?.id]);
 
   const loadProperty = async () => {
     try {
@@ -328,12 +357,31 @@ const PropertyDetail: React.FC = () => {
   const handleSaveFavorite = async () => {
     if (property) {
       await toggleFavorite(property.id);
+      trackInteraction({
+        interaction_type: 'save',
+        property_id: property.id,
+        interaction_data: {
+          action: isFavorite(property.id) ? 'unfavorite' : 'favorite',
+          property_type: property.property_type,
+          price: property.price,
+          city: property.city,
+        }
+      });
     }
   };
 
   const handleShareProperty = () => {
     if (property) {
       setShowShareDialog(true);
+      trackInteraction({
+        interaction_type: 'share',
+        property_id: property.id,
+        interaction_data: {
+          property_type: property.property_type,
+          price: property.price,
+          city: property.city,
+        }
+      });
     }
   };
 
