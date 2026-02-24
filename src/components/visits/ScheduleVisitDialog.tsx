@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { format, addDays, isBefore, startOfDay } from 'date-fns';
 import { CalendarIcon, Clock, User, Phone, Mail, FileText, Loader2, CheckCircle2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 interface ScheduleVisitDialogProps {
@@ -20,9 +21,12 @@ interface ScheduleVisitDialogProps {
   propertyId: string;
   agentId: string;
   propertyTitle?: string;
+  existingVisitId?: string;
+  existingDate?: string;
+  existingTime?: string;
 }
 
-export default function ScheduleVisitDialog({ open, onOpenChange, propertyId, agentId, propertyTitle }: ScheduleVisitDialogProps) {
+export default function ScheduleVisitDialog({ open, onOpenChange, propertyId, agentId, propertyTitle, existingVisitId, existingDate, existingTime }: ScheduleVisitDialogProps) {
   const { user, profile } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
@@ -71,6 +75,19 @@ export default function ScheduleVisitDialog({ open, onOpenChange, propertyId, ag
 
   const handleBook = async () => {
     if (!selectedDate || !selectedSlot) return;
+
+    // If rescheduling, cancel the old visit first
+    if (existingVisitId) {
+      const { error: cancelError } = await supabase
+        .from('property_visits')
+        .update({ status: 'cancelled', cancelled_at: new Date().toISOString(), cancellation_reason: 'Rescheduled', updated_at: new Date().toISOString() })
+        .eq('id', existingVisitId);
+      if (cancelError) {
+        toast.error('Failed to cancel previous visit');
+        return;
+      }
+    }
+
     await bookVisit.mutateAsync({
       property_id: propertyId,
       agent_id: agentId,
@@ -101,10 +118,15 @@ export default function ScheduleVisitDialog({ open, onOpenChange, propertyId, ag
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
             <CalendarIcon className="h-4 w-4 text-primary" />
-            Schedule Property Visit
+            {existingVisitId ? 'Reschedule Visit' : 'Schedule Property Visit'}
           </DialogTitle>
           {propertyTitle && (
             <DialogDescription className="text-xs truncate">{propertyTitle}</DialogDescription>
+          )}
+          {existingVisitId && existingDate && (
+            <div className="bg-muted/50 rounded-md p-2 text-[10px] text-muted-foreground">
+              Original: {existingDate} at {existingTime?.slice(0, 5)}
+            </div>
           )}
         </DialogHeader>
 

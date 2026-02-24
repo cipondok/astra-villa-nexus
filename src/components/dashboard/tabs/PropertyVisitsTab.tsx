@@ -1,14 +1,18 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useMyVisits } from '@/hooks/usePropertyVisits';
 import { format, parseISO, isPast } from 'date-fns';
-import { Calendar, Clock, MapPin, CheckCircle2, XCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Calendar, Clock, CheckCircle2, XCircle, AlertCircle, Loader2, CalendarDays, List } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import VisitCalendar from '@/components/visits/VisitCalendar';
+import VisitReminders from '@/components/visits/VisitReminders';
+import ScheduleVisitDialog from '@/components/visits/ScheduleVisitDialog';
+import type { PropertyVisit } from '@/hooks/usePropertyVisits';
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   pending: { label: 'Pending', color: 'bg-amber-500/10 text-amber-600 border-amber-200', icon: <AlertCircle className="h-3 w-3" /> },
@@ -22,6 +26,8 @@ export default function PropertyVisitsTab() {
   const { data: visits = [], isLoading } = useMyVisits();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
+  const [rescheduleVisit, setRescheduleVisit] = useState<PropertyVisit | null>(null);
 
   const handleCancel = async (visitId: string) => {
     const { error } = await supabase
@@ -91,33 +97,84 @@ export default function PropertyVisitsTab() {
 
   return (
     <div className="space-y-3">
-      {/* Upcoming */}
-      <div>
-        <h3 className="text-xs font-semibold text-foreground mb-2 flex items-center gap-1.5">
-          <Calendar className="h-3.5 w-3.5 text-primary" /> Upcoming Visits ({upcoming.length})
+      {/* View Toggle */}
+      <div className="flex items-center justify-between">
+        <h3 className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+          <Calendar className="h-3.5 w-3.5 text-primary" /> My Visits
         </h3>
-        {upcoming.length === 0 ? (
-          <Card className="bg-card/60 border-border/30">
-            <CardContent className="p-4 text-center">
-              <Calendar className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
-              <p className="text-xs text-muted-foreground">No upcoming visits scheduled</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-1.5">
-            {upcoming.map(v => <VisitCard key={v.id} visit={v} />)}
-          </div>
-        )}
+        <div className="flex items-center gap-0.5 bg-muted/50 rounded-md p-0.5">
+          <Button
+            variant={viewMode === 'calendar' ? 'default' : 'ghost'}
+            size="sm"
+            className="h-6 text-[10px] px-2 gap-1"
+            onClick={() => setViewMode('calendar')}
+          >
+            <CalendarDays className="h-3 w-3" /> Calendar
+          </Button>
+          <Button
+            variant={viewMode === 'list' ? 'default' : 'ghost'}
+            size="sm"
+            className="h-6 text-[10px] px-2 gap-1"
+            onClick={() => setViewMode('list')}
+          >
+            <List className="h-3 w-3" /> List
+          </Button>
+        </div>
       </div>
 
-      {/* Past */}
-      {past.length > 0 && (
-        <div>
-          <h3 className="text-xs font-semibold text-muted-foreground mb-2">Past Visits ({past.length})</h3>
-          <div className="space-y-1.5">
-            {past.map(v => <VisitCard key={v.id} visit={v} />)}
+      {/* Reminders */}
+      <VisitReminders visits={visits} />
+
+      {viewMode === 'calendar' ? (
+        <VisitCalendar
+          visits={visits}
+          onCancelVisit={handleCancel}
+          onRescheduleVisit={setRescheduleVisit}
+        />
+      ) : (
+        <>
+          {/* Upcoming */}
+          <div>
+            <h3 className="text-xs font-semibold text-foreground mb-2 flex items-center gap-1.5">
+              <Calendar className="h-3.5 w-3.5 text-primary" /> Upcoming Visits ({upcoming.length})
+            </h3>
+            {upcoming.length === 0 ? (
+              <Card className="bg-card/60 border-border/30">
+                <CardContent className="p-4 text-center">
+                  <Calendar className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
+                  <p className="text-xs text-muted-foreground">No upcoming visits scheduled</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-1.5">
+                {upcoming.map(v => <VisitCard key={v.id} visit={v} />)}
+              </div>
+            )}
           </div>
-        </div>
+
+          {/* Past */}
+          {past.length > 0 && (
+            <div>
+              <h3 className="text-xs font-semibold text-muted-foreground mb-2">Past Visits ({past.length})</h3>
+              <div className="space-y-1.5">
+                {past.map(v => <VisitCard key={v.id} visit={v} />)}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Reschedule Dialog */}
+      {rescheduleVisit && (
+        <ScheduleVisitDialog
+          open={!!rescheduleVisit}
+          onOpenChange={(open) => !open && setRescheduleVisit(null)}
+          propertyId={rescheduleVisit.property_id}
+          agentId={rescheduleVisit.agent_id}
+          existingVisitId={rescheduleVisit.id}
+          existingDate={rescheduleVisit.visit_date}
+          existingTime={rescheduleVisit.start_time}
+        />
       )}
     </div>
   );
