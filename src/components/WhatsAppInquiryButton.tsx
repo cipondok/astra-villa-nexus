@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue } from
 '@/components/ui/select';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { useAuth } from '@/contexts/AuthContext';
 import { openWhatsAppChat, InquiryType } from '@/utils/whatsappUtils';
 import { Badge } from '@/components/ui/badge';
@@ -48,7 +48,7 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
   className = '',
   showForm = true
 }) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const { user, profile } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [inquiryType, setInquiryType] = useState<InquiryType | 'other'>(defaultType);

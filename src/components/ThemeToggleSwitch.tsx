@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface ThemeToggleSwitchProps {
   language?: "en" | "id";
@@ -9,23 +10,10 @@ interface ThemeToggleSwitchProps {
   showLabel?: boolean;
 }
 
-const ThemeToggleSwitch = ({ language = "en", className = "", showLabel = true }: ThemeToggleSwitchProps) => {
+const ThemeToggleSwitch = ({ className = "", showLabel = true }: ThemeToggleSwitchProps) => {
   const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
 
-  const text = {
-    en: {
-      light: "Light",
-      dark: "Dark"
-    },
-    id: {
-      light: "Terang",
-      dark: "Gelap"
-    }
-  };
-
-  const currentText = text[language];
-
-  // Toggle between light and dark
   const toggleTheme = () => {
     if (theme === "light") {
       setTheme("dark");
@@ -37,11 +25,11 @@ const ThemeToggleSwitch = ({ language = "en", className = "", showLabel = true }
   const getCurrentThemeData = () => {
     switch (theme) {
       case "light":
-        return { icon: Sun, label: currentText.light, color: "text-gold-primary" };
+        return { icon: Sun, label: t('themeToggle.light'), color: "text-gold-primary" };
       case "dark":
-        return { icon: Moon, label: currentText.dark, color: "text-chart-4" };
+        return { icon: Moon, label: t('themeToggle.dark'), color: "text-chart-4" };
       default:
-        return { icon: Sun, label: currentText.light, color: "text-gold-primary" };
+        return { icon: Sun, label: t('themeToggle.light'), color: "text-gold-primary" };
     }
   };
 

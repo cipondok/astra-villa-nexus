@@ -1,28 +1,29 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Store, Wrench, Paintbrush, Hammer, Zap, Droplets, Shield, TreePine, Sparkles, LucideIcon } from 'lucide-react';
+import { Store, Wrench, Paintbrush, Hammer, Zap, Droplets, Shield, TreePine, LucideIcon } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface Service {
   icon: LucideIcon;
-  title: string;
-  description: string;
+  titleKey: string;
   category: string;
   vendorCount: number;
 }
 
 const services: Service[] = [
-  { icon: Hammer, title: 'Construction', description: 'Professional builders & contractors', category: 'construction', vendorCount: 45 },
-  { icon: Paintbrush, title: 'Interior', description: 'Expert interior designers', category: 'interior', vendorCount: 32 },
-  { icon: Wrench, title: 'Renovation', description: 'Home renovation specialists', category: 'renovation', vendorCount: 38 },
-  { icon: Zap, title: 'Electrical', description: 'Licensed electricians', category: 'electrical', vendorCount: 28 },
-  { icon: Droplets, title: 'Plumbing', description: 'Professional plumbers', category: 'plumbing', vendorCount: 25 },
-  { icon: TreePine, title: 'Landscape', description: 'Garden & landscape experts', category: 'landscaping', vendorCount: 22 },
-  { icon: Shield, title: 'Security', description: 'Home security installation', category: 'security', vendorCount: 18 },
-  { icon: Store, title: 'Furniture', description: 'Quality furniture suppliers', category: 'furniture', vendorCount: 35 },
+  { icon: Hammer, titleKey: 'marketplace.construction', category: 'construction', vendorCount: 45 },
+  { icon: Paintbrush, titleKey: 'marketplace.interior', category: 'interior', vendorCount: 32 },
+  { icon: Wrench, titleKey: 'marketplace.renovation', category: 'renovation', vendorCount: 38 },
+  { icon: Zap, titleKey: 'marketplace.electrical', category: 'electrical', vendorCount: 28 },
+  { icon: Droplets, titleKey: 'marketplace.plumbing', category: 'plumbing', vendorCount: 25 },
+  { icon: TreePine, titleKey: 'marketplace.landscape', category: 'landscaping', vendorCount: 22 },
+  { icon: Shield, titleKey: 'marketplace.security', category: 'security', vendorCount: 18 },
+  { icon: Store, titleKey: 'marketplace.furniture', category: 'furniture', vendorCount: 35 },
 ];
 
 const MarketplaceServices = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleServiceClick = (category: string) => {
     navigate(`/marketplace?category=${category}&from=home`);
@@ -36,7 +37,7 @@ const MarketplaceServices = () => {
           <div className="h-px w-4 sm:w-6 bg-gradient-to-r from-transparent to-gold-primary/30" />
           <Store className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-gold-primary" />
           <h2 className="text-[9px] sm:text-xs md:text-sm font-bold text-foreground uppercase tracking-wider">
-            Marketplace
+            {t('marketplace.title')}
           </h2>
           <div className="h-px w-4 sm:w-6 bg-gradient-to-l from-transparent to-gold-primary/30" />
         </div>
@@ -44,7 +45,7 @@ const MarketplaceServices = () => {
           onClick={() => navigate('/marketplace?from=home')} 
           className="text-[8px] sm:text-[10px] md:text-xs font-medium text-gold-primary hover:text-gold-primary/80 active:scale-95 transition-colors"
         >
-          View All →
+          {t('marketplace.viewAll')}
         </button>
       </div>
 
@@ -64,17 +65,17 @@ const MarketplaceServices = () => {
         <div className="flex items-center justify-between gap-2">
           <div>
             <h3 className="text-[10px] md:text-sm font-semibold text-foreground">
-              Service provider?
+              {t('marketplace.serviceProvider')}
             </h3>
             <p className="text-[9px] md:text-xs text-muted-foreground">
-              Join our marketplace
+              {t('marketplace.joinMarketplace')}
             </p>
           </div>
           <button 
             onClick={() => navigate('/vendor-registration?from=home')} 
             className="px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-sm bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background rounded-lg active:scale-95 whitespace-nowrap font-semibold shadow-sm hover:shadow-md hover:shadow-gold-primary/20 transition-all"
           >
-            Join
+            {t('marketplace.join')}
           </button>
         </div>
       </div>
@@ -89,6 +90,7 @@ interface ServiceCardProps {
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => {
   const IconComponent = service.icon;
+  const { t } = useTranslation();
   
   return (
     <div onClick={onClick} className="group cursor-pointer">
@@ -108,7 +110,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => {
 
         {/* Title */}
         <h3 className="hidden md:block mt-1.5 text-[9px] lg:text-[11px] font-semibold text-foreground/60 leading-tight line-clamp-2 group-hover:text-gold-primary transition-colors duration-200">
-          {service.title}
+          {t(service.titleKey)}
         </h3>
       </div>
     </div>

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import { ArrowRight, Globe, Home, Sparkles, Bot, Shield, TrendingUp, Building2, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface Path {
   id: string;
@@ -20,59 +20,15 @@ interface Path {
   hoverBorder: string;
 }
 
-interface LanguageCopy {
-  headline: string;
-  subtitle: string;
-  wniTitle: string;
-  wniDesc: string;
-  wniFeatures: string[];
-  wnaTitle: string;
-  wnaDesc: string;
-  wnaFeatures: string[];
-  explore: string;
-}
-
-interface Copy {
-  en: LanguageCopy;
-  id: LanguageCopy;
-}
-
 interface InvestorPathSelectorProps {
   variant?: 'default' | 'hero';
 }
 
 const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps) => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { t, tArray } = useTranslation();
 
   const isHero = variant === 'hero';
-
-  const copy: Copy = {
-    en: {
-      headline: "Global Investment Platform",
-      subtitle: "Choose your investment pathway",
-      wniTitle: "WNI Overseas",
-      wniDesc: "Indonesian citizens abroad",
-      wniFeatures: ["KPR Support", "Tax Benefits"],
-      wnaTitle: "Foreign Investor",
-      wnaDesc: "International investors",
-      wnaFeatures: ["Right to Use", "Legal Support"],
-      explore: "Explore"
-    },
-    id: {
-      headline: "Platform Investasi Global",
-      subtitle: "Pilih jalur investasi Anda",
-      wniTitle: "WNI Luar Negeri",
-      wniDesc: "Warga Indonesia di luar negeri",
-      wniFeatures: ["Dukungan KPR", "Manfaat Pajak"],
-      wnaTitle: "Investor Asing",
-      wnaDesc: "Investor internasional",
-      wnaFeatures: ["Hak Pakai", "Dukungan Hukum"],
-      explore: "Jelajahi"
-    }
-  };
-
-  const t = copy[language];
 
   const handleCardClick = (path: string) => {
     navigate(path);
@@ -83,9 +39,9 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
       id: 'wni',
       path: '/investment?section=wni',
       icon: Home,
-      title: t.wniTitle,
-      description: t.wniDesc,
-      features: t.wniFeatures,
+      title: t('investor.wniTitle'),
+      description: t('investor.wniDesc'),
+      features: tArray('investor.wniFeatures'),
       flag: '🇮🇩',
       gradient: 'from-destructive via-destructive/80 to-chart-3',
       accentColor: 'text-destructive',
@@ -97,9 +53,9 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
       id: 'wna',
       path: '/investment?section=wna',
       icon: Globe,
-      title: t.wnaTitle,
-      description: t.wnaDesc,
-      features: t.wnaFeatures,
+      title: t('investor.wnaTitle'),
+      description: t('investor.wnaDesc'),
+      features: tArray('investor.wnaFeatures'),
       flag: '🌍',
       gradient: 'from-chart-4 via-chart-4/80 to-accent',
       accentColor: 'text-chart-4',
@@ -113,9 +69,9 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
     id: 'all',
     path: '/investment',
     icon: Building2,
-    title: language === 'en' ? 'All Investment Options' : 'Semua Opsi Investasi',
-    description: language === 'en' ? 'Complete investment guide' : 'Panduan investasi lengkap',
-    features: language === 'en' ? ['WNI & WNA', 'Full Guide'] : ['WNI & WNA', 'Panduan Lengkap'],
+    title: t('investor.allOptions'),
+    description: t('investor.allOptionsDesc'),
+    features: tArray('investor.allOptionsFeatures'),
     flag: '🏛️',
     gradient: 'from-primary via-primary/80 to-accent',
     accentColor: 'text-primary dark:text-primary',
@@ -140,10 +96,10 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
             </div>
             <div className="text-left">
               <h2 className="text-xs md:text-sm font-bold text-foreground">
-                {t.headline}
+                {t('investor.headline')}
               </h2>
               <p className="text-[8px] md:text-[9px] text-muted-foreground">
-                {t.subtitle}
+                {t('investor.subtitle')}
               </p>
             </div>
           </div>
@@ -298,11 +254,11 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
             </div>
             <div className="text-left">
               <h2 className="text-sm md:text-base font-bold text-foreground flex items-center gap-1.5">
-                {t.headline}
+                {t('investor.headline')}
                 <TrendingUp className="h-3.5 w-3.5 text-chart-1" />
               </h2>
               <p className="text-[9px] md:text-[10px] text-muted-foreground">
-                {t.subtitle}
+                {t('investor.subtitle')}
               </p>
             </div>
           </div>
@@ -378,7 +334,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                   "group-hover:gap-2 transition-all"
                 )}>
                   <Users className="h-3 w-3" />
-                  {t.explore}
+                  {t('investor.explore')}
                   <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
                 </div>
               </motion.div>
