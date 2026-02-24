@@ -39,7 +39,7 @@ const FooterVendorServices = ({ language, onLinkClick }: FooterVendorServicesPro
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   return (
     <Accordion type="single" collapsible className="w-full">

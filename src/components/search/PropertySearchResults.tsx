@@ -76,7 +76,7 @@ const PropertySearchResults = ({
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const getListingTypeText = (listingType: string) => {
     switch (listingType) {

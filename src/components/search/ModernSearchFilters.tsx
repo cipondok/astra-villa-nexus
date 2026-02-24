@@ -91,7 +91,7 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const indonesianStates = [
     "DKI Jakarta", "West Java", "East Java", "Central Java", "Bali", "North Sumatra",

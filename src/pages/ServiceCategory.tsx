@@ -43,7 +43,7 @@ const ServiceCategory = () => {
     }
   };
 
-  const t = text[language];
+  const t = text[language] || text.en;
 
   // Fetch category details and services
   const { data: category, isLoading: categoryLoading } = useQuery({

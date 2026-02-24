@@ -118,7 +118,7 @@ const AdvancedFiltersDialog = ({
     },
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const listingTypeOptions = [
     { value: "", label: currentText.any },

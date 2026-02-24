@@ -95,7 +95,7 @@ const text = {
 
 const IndonesianTaxConfiguration = () => {
   const { language } = useTranslation();
-  const t = text[language];
+  const t = text[language] || text.en;
   
   const [taxConfigs, setTaxConfigs] = useState<TaxConfig[]>([]);
   const [isLoading, setIsLoading] = useState(true);

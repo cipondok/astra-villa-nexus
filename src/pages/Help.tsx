@@ -150,7 +150,7 @@ const Help = () => {
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const filteredFAQ = currentText.faq.map(category => ({
     ...category,

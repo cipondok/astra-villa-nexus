@@ -144,7 +144,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   // Filter Categories
   const filterCategories = {

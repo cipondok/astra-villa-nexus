@@ -42,7 +42,7 @@ export function StickyHeaderSearch({
     }
   };
 
-  const t = text[language];
+  const t = text[language] || text.en;
 
   // Sync initialQuery when it changes externally
   useEffect(() => {

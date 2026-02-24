@@ -122,7 +122,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   // Email validation function
   const validateEmail = (email: string): boolean => {

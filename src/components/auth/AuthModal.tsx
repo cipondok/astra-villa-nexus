@@ -89,7 +89,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const fillDemoData = () => {
     const timestamp = Date.now();

@@ -129,7 +129,7 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   // Email validation function
   const validateEmail = (email: string): boolean => {

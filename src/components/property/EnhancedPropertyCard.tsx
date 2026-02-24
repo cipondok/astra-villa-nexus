@@ -90,7 +90,7 @@ const EnhancedPropertyCard = ({
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {

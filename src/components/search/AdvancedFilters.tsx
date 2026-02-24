@@ -127,7 +127,7 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const propertyTypes = [
     { value: 'villa', label: currentText.villa },

@@ -174,7 +174,7 @@ const text = {
 const FeedbackBugSystem = () => {
   const { language } = useTranslation();
   const { user } = useAuth();
-  const t = text[language];
+  const t = text[language] || text.en;
   
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [updates, setUpdates] = useState<SystemUpdate[]>([]);

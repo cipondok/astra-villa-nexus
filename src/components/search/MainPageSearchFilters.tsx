@@ -139,7 +139,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   // Property types based on active tab - exclude land for rent
   const getAllPropertyTypes = () => [

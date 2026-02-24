@@ -101,7 +101,7 @@ const UnifiedPaymentSelector = ({
   paypalEnabled = false
 }: UnifiedPaymentSelectorProps) => {
   const { language } = useTranslation();
-  const t = text[language];
+  const t = text[language] || text.en;
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethodType | null>(null);
 
   const filterMethods = (category: PaymentMethod['category']) => {

@@ -179,7 +179,7 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   // Show loading if no user data at all
   if (!user) {

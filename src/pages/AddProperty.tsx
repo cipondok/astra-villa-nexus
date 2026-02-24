@@ -74,7 +74,7 @@ const AddProperty = () => {
     }
   };
 
-  const t = text[language];
+  const t = text[language] || text.en;
 
   // Show login/register prompt for non-authenticated users
   if (!isAuthenticated) {

@@ -80,7 +80,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
     }
   };
 
-  const t = text[language];
+  const t = text[language] || text.en;
 
   // Calculate completion steps
   const steps: CompletionStep[] = [

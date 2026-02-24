@@ -1367,7 +1367,7 @@ const StickySearchPanel = ({
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   return (
     <>
