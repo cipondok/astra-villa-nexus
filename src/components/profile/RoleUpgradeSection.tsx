@@ -11,7 +11,7 @@ import { useUserRoles } from '@/hooks/useUserRoles';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import AgentRegistrationModal from '@/components/agent/AgentRegistrationModal';
 import { cn } from '@/lib/utils';
 
@@ -72,7 +72,7 @@ const ROLE_OPTIONS: RoleOption[] = [
 
 const RoleUpgradeSection: React.FC = () => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const { user } = useAuth();
   const { data: userRoles = [], isLoading: rolesLoading } = useUserRoles();
   const [showAgentModal, setShowAgentModal] = useState(false);

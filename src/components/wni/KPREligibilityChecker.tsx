@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -44,7 +44,7 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
   selectedCountry,
   className
 }) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   
   // Form state
   const [monthlyIncome, setMonthlyIncome] = useState<number>(0);

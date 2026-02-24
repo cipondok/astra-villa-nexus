@@ -1,5 +1,5 @@
 import LocationSelector from "../LocationSelector";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from '@/i18n/useTranslation';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { MapPin, Home, Navigation } from "lucide-react";
@@ -10,7 +10,7 @@ interface LocationStepProps {
 }
 
 const LocationStep = ({ formData, onUpdate }: LocationStepProps) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
 
   const t = {
     en: {

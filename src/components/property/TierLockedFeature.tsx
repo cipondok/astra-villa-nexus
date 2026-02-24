@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MembershipLevel, MEMBERSHIP_LEVELS } from '@/types/membership';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 
 interface TierLockedFeatureProps {
@@ -34,7 +34,7 @@ const TierLockedFeature: React.FC<TierLockedFeatureProps> = ({
   showUpgradeButton = true
 }) => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const levelConfig = MEMBERSHIP_LEVELS[requiredLevel];
   const currentConfig = MEMBERSHIP_LEVELS[currentLevel];
 
