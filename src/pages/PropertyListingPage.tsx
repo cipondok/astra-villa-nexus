@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search, SlidersHorizontal, MapPin, Home, X, Eye, Heart, Bed, Bath, Maximize, Key, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
+import PropertyViewModeToggle from '@/components/search/PropertyViewModeToggle';
+import PropertyListingMapView from '@/components/property/PropertyListingMapView';
 interface PropertyListingPageProps {
   pageType: 'buy' | 'rent' | 'new-projects' | 'pre-launching';
   title: string;
@@ -120,6 +122,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'grid' | 'map'>('grid');
   const [filters, setFilters] = useState({
     propertyType: 'all',
     city: 'all',
@@ -216,20 +219,23 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                 </p>
               </div>
             </div>
-            <Button
-              variant={showFilters ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className="h-9 px-4 text-sm font-medium rounded-md"
-            >
-              <SlidersHorizontal className="h-4 w-4 mr-2" />
-              Filter
-              {activeFiltersCount > 0 && (
-                <span className="ml-2 h-5 w-5 flex items-center justify-center text-xs bg-accent text-accent-foreground rounded-full">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+              <Button
+                variant={showFilters ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowFilters(!showFilters)}
+                className="h-9 px-4 text-sm font-medium rounded-md"
+              >
+                <SlidersHorizontal className="h-4 w-4 mr-2" />
+                Filter
+                {activeFiltersCount > 0 && (
+                  <span className="ml-2 h-5 w-5 flex items-center justify-center text-xs bg-accent text-accent-foreground rounded-full">
+                    {activeFiltersCount}
+                  </span>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -330,8 +336,24 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
       </div>
 
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
-        {/* Properties Grid */}
-        {isLoading || isSearching ? (
+        {/* View Mode Content */}
+        {viewMode === 'map' ? (
+          <PropertyListingMapView
+            properties={(hasSearched ? searchResults : properties).map((p: any) => ({
+              id: p.id,
+              title: p.title,
+              price: p.price,
+              city: p.city || p.location,
+              images: p.images,
+              image_urls: p.image_urls,
+            }))}
+            formatPrice={(price: number) => {
+              if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}M`;
+              if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}Jt`;
+              return `Rp ${price.toLocaleString('id-ID')}`;
+            }}
+          />
+        ) : isLoading || isSearching ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="animate-pulse rounded-md overflow-hidden bg-muted h-64 sm:h-72"></div>
@@ -401,23 +423,16 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                   
                   {/* Content */}
                   <div className="p-3 sm:p-4">
-                    {/* Price */}
                     <p className="text-base sm:text-lg font-bold text-primary mb-1">
                       {formatPrice(property.price)}
                     </p>
-                    
-                    {/* Title */}
                     <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 mb-1">
                       {property.title}
                     </h3>
-                    
-                    {/* Location */}
                     <div className="flex items-center gap-1 text-muted-foreground mb-3">
                       <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
                       <span className="text-xs sm:text-sm truncate">{property.city || property.location}</span>
                     </div>
-                    
-                    {/* Property Details */}
                     <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground border-t border-border pt-3">
                       {property.bedrooms > 0 && (
                         <div className="flex items-center gap-1">
@@ -446,7 +461,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
         )}
 
         {/* Infinite scroll sentinel */}
-        {!isLoading && !hasSearched && (
+        {!isLoading && !hasSearched && viewMode !== 'map' && (
           <>
             <div ref={sentinelRef} className="h-4" />
             {isFetchingMore && (
