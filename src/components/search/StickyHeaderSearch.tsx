@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface StickyHeaderSearchProps {
@@ -29,7 +29,7 @@ export function StickyHeaderSearch({
   const [isVisible, setIsVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { language } = useLanguage();
+  const { language } = useTranslation();
 
   const text = {
     en: {

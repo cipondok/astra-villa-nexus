@@ -4,14 +4,14 @@ import { Crown, Lock, Sparkles, Image, Box, Star, Zap, Shield } from 'lucide-rea
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { usePropertyFormTiers, PROPERTY_FORM_FEATURES } from '@/hooks/usePropertyFormTiers';
 import { MEMBERSHIP_LEVELS, MembershipLevel } from '@/types/membership';
 import { cn } from '@/lib/utils';
 
 const TierFeatureBanner: React.FC = () => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const { 
     membershipLevel, 
     maxImages, 

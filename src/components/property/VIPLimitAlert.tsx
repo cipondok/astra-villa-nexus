@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Crown, AlertTriangle, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface VIPLimitAlertProps {
   currentCount: number;
@@ -21,7 +21,7 @@ export function VIPLimitAlert({
   showUpgrade = true 
 }: VIPLimitAlertProps) {
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   
   const remaining = maxCount - currentCount;
   const percentage = (currentCount / maxCount) * 100;

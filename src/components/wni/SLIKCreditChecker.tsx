@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -21,7 +21,7 @@ interface SLIKCreditCheckerProps {
 }
 
 export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className }) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
 
   const copy = {

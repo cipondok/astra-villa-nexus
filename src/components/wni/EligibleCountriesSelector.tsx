@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { Check, Globe, Shield, AlertTriangle, MessageSquare, Phone } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -94,7 +94,7 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
   onSelect,
   className
 }) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [filter, setFilter] = useState<'all' | 1 | 2>('all');
 
   const copy = {
