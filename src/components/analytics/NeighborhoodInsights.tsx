@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, TrendingUp, TrendingDown, Home, Ruler, BedDouble } from 'lucide-react';
 import { formatIDR } from '@/utils/currency';
+import { useTranslation } from '@/i18n/useTranslation';
 
 const formatNumber = (num: number) => new Intl.NumberFormat('id-ID').format(num);
 
@@ -27,6 +28,8 @@ interface CityInsight {
 }
 
 const NeighborhoodInsights = () => {
+  const { t } = useTranslation();
+
   const { data: properties, isLoading } = useQuery({
     queryKey: ['neighborhood-properties'],
     queryFn: async () => {
@@ -82,7 +85,7 @@ const NeighborhoodInsights = () => {
     return (
       <Card className="bg-transparent dark:bg-muted/10 border-border/30">
         <CardContent className="p-8 text-center">
-          <p className="text-sm text-muted-foreground">No neighborhood data available</p>
+          <p className="text-sm text-muted-foreground">{t('common.noData')}</p>
         </CardContent>
       </Card>
     );
@@ -90,7 +93,6 @@ const NeighborhoodInsights = () => {
 
   return (
     <div className="space-y-4">
-      {/* Top Cities */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {insights.slice(0, 9).map(city => {
           const supplyChange = city.newLastMonth > 0
@@ -105,14 +107,14 @@ const NeighborhoodInsights = () => {
                     <MapPin className="h-3.5 w-3.5 text-primary" />
                     {city.city}
                   </span>
-                  <Badge variant="secondary" className="text-[9px]">{city.listings} listings</Badge>
+                  <Badge variant="secondary" className="text-[9px]">{city.listings} {t('analytics.listings').toLowerCase()}</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-1">
                 <div className="grid grid-cols-2 gap-2 text-[10px] md:text-xs">
                   <div className="flex items-center gap-1">
                     <Home className="h-3 w-3 text-muted-foreground" />
-                    <span className="text-muted-foreground">Avg Price:</span>
+                    <span className="text-muted-foreground">{t('analytics.avgPrice')}:</span>
                   </div>
                   <span className="font-semibold text-right">{formatIDR(city.avgPrice)}</span>
 
@@ -120,7 +122,7 @@ const NeighborhoodInsights = () => {
                     <>
                       <div className="flex items-center gap-1">
                         <Ruler className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-muted-foreground">Avg Size:</span>
+                        <span className="text-muted-foreground">{t('analytics.avgSize')}:</span>
                       </div>
                       <span className="font-semibold text-right">{formatNumber(city.avgSize)} m²</span>
                     </>
@@ -130,7 +132,7 @@ const NeighborhoodInsights = () => {
                     <>
                       <div className="flex items-center gap-1">
                         <BedDouble className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-muted-foreground">Avg Beds:</span>
+                        <span className="text-muted-foreground">{t('analytics.avgBeds')}:</span>
                       </div>
                       <span className="font-semibold text-right">{city.avgBedrooms}</span>
                     </>
@@ -138,7 +140,7 @@ const NeighborhoodInsights = () => {
 
                   <div className="col-span-2 pt-1 border-t border-border/30 mt-1">
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Supply this month:</span>
+                      <span className="text-muted-foreground">{t('analytics.supplyThisMonth')}:</span>
                       <span className="flex items-center gap-0.5 font-medium">
                         {supplyChange >= 0 ? (
                           <TrendingUp className="h-3 w-3 text-chart-1" />
@@ -156,10 +158,9 @@ const NeighborhoodInsights = () => {
         })}
       </div>
 
-      {/* Rankings */}
       <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
         <CardHeader className="p-3">
-          <CardTitle className="text-xs md:text-sm">City Rankings</CardTitle>
+          <CardTitle className="text-xs md:text-sm">{t('analytics.cityRankings')}</CardTitle>
         </CardHeader>
         <CardContent className="p-3 pt-0">
           <div className="space-y-2">
@@ -170,7 +171,7 @@ const NeighborhoodInsights = () => {
                   <span className="text-xs font-medium">{city.city}</span>
                 </div>
                 <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
-                  <span>{city.listings} listings</span>
+                  <span>{city.listings} {t('analytics.listings').toLowerCase()}</span>
                   <span className="font-semibold text-foreground">{formatIDR(city.avgPrice)}</span>
                 </div>
               </div>
