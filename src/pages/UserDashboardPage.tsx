@@ -26,6 +26,7 @@ import SearchHistoryTab from '@/components/dashboard/tabs/SearchHistoryTab';
 import KprScenariosTab from '@/components/dashboard/tabs/KprScenariosTab';
 import MarketInsightsTab from '@/components/dashboard/tabs/MarketInsightsTab';
 import MortgageApplicationsTab from '@/components/dashboard/tabs/MortgageApplicationsTab';
+import PropertyVisitsTab from '@/components/dashboard/tabs/PropertyVisitsTab';
 import { useUserDashboardData } from '@/hooks/useUserDashboardData';
 import { useUserRoles } from '@/hooks/useUserRoles';
 import { useAstraToken } from '@/hooks/useAstraToken';
@@ -53,7 +54,8 @@ import {
   Wallet,
   Calculator,
   BarChart3,
-  FileCheck
+  FileCheck,
+  CalendarCheck
 } from 'lucide-react';
 
 const UserDashboardPage = () => {
@@ -337,7 +339,7 @@ const UserDashboardPage = () => {
 
         {/* Dashboard Tabs - Slim */}
         <Tabs defaultValue="overview" className="space-y-2">
-          <TabsList className="grid w-full grid-cols-6 h-8 bg-primary-foreground/5 backdrop-blur-xl p-0.5 border border-border/30">
+          <TabsList className="grid w-full grid-cols-7 h-8 bg-primary-foreground/5 backdrop-blur-xl p-0.5 border border-border/30">
              <TabsTrigger value="overview" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
                <Home className="h-3 w-3" />
                <span className="hidden sm:inline">Overview</span>
@@ -345,6 +347,10 @@ const UserDashboardPage = () => {
              <TabsTrigger value="saved" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
                <Heart className="h-3 w-3" />
                <span className="hidden sm:inline">Saved</span>
+             </TabsTrigger>
+             <TabsTrigger value="visits" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+               <CalendarCheck className="h-3 w-3" />
+               <span className="hidden sm:inline">Visits</span>
              </TabsTrigger>
              <TabsTrigger value="searches" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
                <Search className="h-3 w-3" />
@@ -480,6 +486,10 @@ const UserDashboardPage = () => {
 
           <TabsContent value="insights" className="space-y-2 mt-2">
             <MarketInsightsTab />
+          </TabsContent>
+
+          <TabsContent value="visits" className="space-y-2 mt-2">
+            <PropertyVisitsTab />
           </TabsContent>
 
 

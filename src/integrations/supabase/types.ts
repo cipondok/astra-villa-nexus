@@ -1522,6 +1522,66 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_availability: {
+        Row: {
+          agent_id: string
+          created_at: string
+          day_of_week: number
+          end_time: string
+          id: string
+          is_available: boolean
+          slot_duration_minutes: number
+          start_time: string
+          updated_at: string
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string
+          day_of_week: number
+          end_time: string
+          id?: string
+          is_available?: boolean
+          slot_duration_minutes?: number
+          start_time: string
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          is_available?: boolean
+          slot_duration_minutes?: number
+          start_time?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      agent_blocked_dates: {
+        Row: {
+          agent_id: string
+          blocked_date: string
+          created_at: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          agent_id: string
+          blocked_date: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          agent_id?: string
+          blocked_date?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       agent_leaderboard_rewards: {
         Row: {
           agent_id: string | null
@@ -16027,6 +16087,81 @@ export type Database = {
           },
           {
             foreignKeyName: "property_valuations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_visits: {
+        Row: {
+          agent_id: string
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          confirmed_at: string | null
+          created_at: string
+          end_time: string
+          id: string
+          notes: string | null
+          property_id: string
+          start_time: string
+          status: string
+          updated_at: string
+          visit_date: string
+          visitor_email: string | null
+          visitor_id: string
+          visitor_name: string | null
+          visitor_phone: string | null
+        }
+        Insert: {
+          agent_id: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          end_time: string
+          id?: string
+          notes?: string | null
+          property_id: string
+          start_time: string
+          status?: string
+          updated_at?: string
+          visit_date: string
+          visitor_email?: string | null
+          visitor_id: string
+          visitor_name?: string | null
+          visitor_phone?: string | null
+        }
+        Update: {
+          agent_id?: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          end_time?: string
+          id?: string
+          notes?: string | null
+          property_id?: string
+          start_time?: string
+          status?: string
+          updated_at?: string
+          visit_date?: string
+          visitor_email?: string | null
+          visitor_id?: string
+          visitor_name?: string | null
+          visitor_phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_visits_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_visits_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"
