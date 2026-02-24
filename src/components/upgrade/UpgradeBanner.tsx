@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import { X, Crown, Sparkles, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -25,7 +25,7 @@ interface UpgradeBannerProps {
 }
 
 const UpgradeBanner = ({ onDismiss }: UpgradeBannerProps) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const t = text[language];
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(true);

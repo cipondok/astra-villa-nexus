@@ -12,9 +12,8 @@ import {
 import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones, Box, Settings2, Bell, Coins, ChevronDown, TrendingUp, Plus, List, MapPin, Search } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { useTheme } from "@/components/ThemeProvider";
 import { useTranslation } from "@/i18n/useTranslation";
+import { useTheme } from "@/components/ThemeProvider";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
 import EnhancedAuthModal from "./auth/EnhancedAuthModal";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -31,9 +30,8 @@ const Navigation = () => {
   const [headerSearchQuery, setHeaderSearchQuery] = useState('');
   const { user, profile, signOut } = useAuth();
   const { isAdmin } = useAdminCheck();
-  const { language } = useLanguage();
+  const { language, t } = useTranslation();
   const { theme, setTheme } = useTheme();
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 

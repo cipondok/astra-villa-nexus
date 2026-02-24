@@ -7,12 +7,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import AIToolsTabBar from '@/components/common/AIToolsTabBar';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
 
 const AreaGuides = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [selectedCity, setSelectedCity] = useState('');
   const [searchSociety, setSearchSociety] = useState('');
   const [cities, setCities] = useState<Array<{ id: string; name: string; count: number }>>([]);

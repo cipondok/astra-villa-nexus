@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { useWelcomeScreenLogo } from '@/hooks/useBrandingLogo';
 
@@ -40,7 +40,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
   showConnectionStatus: propShowConnectionStatus = false,
   connectionStatus = 'connecting'
 }) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const t = text[language];
   const { logoUrl: brandingLogo } = useWelcomeScreenLogo();
   const [logoUrl, setLogoUrl] = useState<string>(brandingLogo);

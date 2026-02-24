@@ -6,7 +6,7 @@ import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useHeroSliderConfig } from "@/hooks/useHeroSliderConfig";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -65,7 +65,7 @@ const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
 type ViewMode = 'list' | 'grid' | 'map';
 
 const Index = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const copy = {
     en: {
       findYour: "Find Your Dream Property",

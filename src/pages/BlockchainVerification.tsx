@@ -21,13 +21,13 @@ import {
   Globe
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 
 const BlockchainVerification = () => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
 
   const text = {
     en: {

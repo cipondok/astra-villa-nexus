@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useTheme } from "@/components/ThemeProvider";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +13,7 @@ import { CheckCircle, Clock, XCircle } from "lucide-react";
 
 const VendorRegistration = () => {
   const { isAuthenticated, loading, user, profile } = useAuth();
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage } = useTranslation();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const [vendorRequest, setVendorRequest] = useState<any>(null);

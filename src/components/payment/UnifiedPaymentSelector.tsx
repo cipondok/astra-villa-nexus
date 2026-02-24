@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { formatIDR } from '@/utils/currency';
 import { 
   CreditCard, 
@@ -100,7 +100,7 @@ const UnifiedPaymentSelector = ({
   isLoading = false,
   paypalEnabled = false
 }: UnifiedPaymentSelectorProps) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const t = text[language];
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethodType | null>(null);
 

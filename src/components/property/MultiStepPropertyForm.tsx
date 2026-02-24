@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -44,7 +44,7 @@ const MultiStepPropertyForm = () => {
   const navigate = useNavigate();
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const isAdmin = profile?.role === 'admin';
   const isAgent = profile?.role === 'agent';
   

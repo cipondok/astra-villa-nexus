@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { useIsAdmin } from '@/hooks/useUserRoles';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -33,7 +33,7 @@ import KPRPaymentMethods from '@/components/wni/KPRPaymentMethods';
 
 const WNIPage = () => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const { isAdmin } = useIsAdmin();
   const { isAuthenticated } = useAuth();
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);

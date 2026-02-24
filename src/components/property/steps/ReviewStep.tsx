@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building2, MapPin, DollarSign, Bed, Bath, Maximize, CheckCircle2, Eye, Box, Sparkles } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface ReviewStepProps {
   formData: {
@@ -13,7 +13,7 @@ interface ReviewStepProps {
 }
 
 const ReviewStep = ({ formData, features }: ReviewStepProps) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
 
   const t = {
     en: {

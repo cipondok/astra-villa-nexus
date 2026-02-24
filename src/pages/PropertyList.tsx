@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useTheme } from "@/components/ThemeProvider";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,7 +30,7 @@ import { formatIDR } from "@/utils/currency";
 
 const PropertyList = () => {
   const { user, profile, isAuthenticated } = useAuth();
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage } = useTranslation();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { showSuccess, showError } = useAlert();

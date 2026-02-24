@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2, XCircle, AlertCircle, TrendingUp } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { formatIDR, parseIDR } from "@/utils/currency";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -86,7 +86,7 @@ interface EligibilityResult {
 }
 
 export const EligibilityChecker = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [step, setStep] = useState(1);
   const [result, setResult] = useState<EligibilityResult | null>(null);
   

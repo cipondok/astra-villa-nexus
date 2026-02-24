@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Label } from "@/components/ui/label";
 import { MapPin, ChevronRight, AlertCircle } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import SearchableSelect from "@/components/ui/SearchableSelect";
 import { useCentralLocation } from "@/hooks/useCentralLocation";
@@ -31,7 +31,7 @@ const LocationSelector = ({
   onSubdistrictChange,
   onLocationChange
 }: LocationSelectorProps) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const prevLocationRef = useRef<string>('');
   
   // Track selected codes for proper cascading

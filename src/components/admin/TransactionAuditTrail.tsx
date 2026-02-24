@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { 
   History, Search, Filter, Download, RefreshCw,
   ArrowRight, User, Calendar, Clock
@@ -76,7 +76,7 @@ const text = {
 };
 
 const TransactionAuditTrail = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const t = text[language];
   
   const [logs, setLogs] = useState<AuditLog[]>([]);

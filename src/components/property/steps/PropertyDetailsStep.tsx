@@ -1,6 +1,6 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import NumberSelector from "@/components/ui/NumberSelector";
 import PillSelector from "@/components/ui/PillSelector";
 
@@ -10,7 +10,7 @@ interface PropertyDetailsStepProps {
 }
 
 const PropertyDetailsStep = ({ formData, onUpdate }: PropertyDetailsStepProps) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
 
   const t = {
     en: {

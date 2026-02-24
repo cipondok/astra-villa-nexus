@@ -2,7 +2,7 @@ import { Users, CheckCircle, Network, Building, Mail, Phone, User, Check, X } fr
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { SimpleCaptcha, useCaptcha } from "@/components/captcha/SimpleCaptcha";
@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
 const PartnerNetwork = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const { toast } = useToast();
   const { captchaCode, refreshCaptcha } = useCaptcha();
   const [formData, setFormData] = useState({

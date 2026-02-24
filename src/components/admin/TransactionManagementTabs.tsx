@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { DollarSign, Calculator, Activity, History, Bug, RefreshCw, CreditCard } from "lucide-react";
 import TransactionManagementHub from "./TransactionManagementHub";
@@ -34,7 +34,7 @@ const text = {
 };
 
 const TransactionManagementTabs = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const t = text[language];
   const [activeTab, setActiveTab] = useState("transactions");
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Bot, Search, Sparkles } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface SearchLoadingDialogProps {
   open: boolean;
@@ -48,7 +48,7 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
   onOpenChange,
   searchQuery = ""
 }) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const t = text[language];
   const [progress, setProgress] = useState(0);
   const [searchCount, setSearchCount] = useState<number | null>(null);
