@@ -26,58 +26,8 @@ interface AuditLog {
   metadata: unknown;
 }
 
-const text = {
-  en: {
-    title: "Transaction Audit Trail",
-    subtitle: "Complete history of all transaction changes and actions",
-    transactionId: "Transaction ID",
-    action: "Action",
-    change: "Change",
-    changedBy: "Changed By",
-    timestamp: "Timestamp",
-    ipAddress: "IP Address",
-    reason: "Reason",
-    search: "Search by transaction ID...",
-    filterByAction: "Filter by action",
-    allActions: "All Actions",
-    statusChange: "Status Change",
-    paymentStatusChange: "Payment Status",
-    created: "Created",
-    updated: "Updated",
-    noLogs: "No audit logs found",
-    loading: "Loading...",
-    refresh: "Refresh",
-    export: "Export",
-    totalLogs: "Total Logs"
-  },
-  id: {
-    title: "Jejak Audit Transaksi",
-    subtitle: "Riwayat lengkap semua perubahan dan aksi transaksi",
-    transactionId: "ID Transaksi",
-    action: "Aksi",
-    change: "Perubahan",
-    changedBy: "Diubah Oleh",
-    timestamp: "Waktu",
-    ipAddress: "Alamat IP",
-    reason: "Alasan",
-    search: "Cari berdasarkan ID transaksi...",
-    filterByAction: "Filter berdasarkan aksi",
-    allActions: "Semua Aksi",
-    statusChange: "Perubahan Status",
-    paymentStatusChange: "Status Pembayaran",
-    created: "Dibuat",
-    updated: "Diperbarui",
-    noLogs: "Tidak ada log audit ditemukan",
-    loading: "Memuat...",
-    refresh: "Segarkan",
-    export: "Ekspor",
-    totalLogs: "Total Log"
-  }
-};
-
 const TransactionAuditTrail = () => {
-  const { language } = useTranslation();
-  const t = text[language] || text.en;
+  const { t } = useTranslation();
   
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -165,21 +115,21 @@ const TransactionAuditTrail = () => {
         <div>
           <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <History className="h-6 w-6 text-primary" />
-            {t.title}
+            {t('auditTrail.title')}
           </h2>
-          <p className="text-muted-foreground">{t.subtitle}</p>
+          <p className="text-muted-foreground">{t('auditTrail.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <Badge variant="outline" className="px-3 py-1">
-            {t.totalLogs}: {filteredLogs.length}
+            {t('auditTrail.totalLogs')}: {filteredLogs.length}
           </Badge>
           <Button variant="outline" size="sm" onClick={fetchLogs}>
             <RefreshCw className="h-4 w-4 mr-1" />
-            {t.refresh}
+            {t('auditTrail.refresh')}
           </Button>
           <Button variant="outline" size="sm" onClick={exportLogs}>
             <Download className="h-4 w-4 mr-1" />
-            {t.export}
+            {t('auditTrail.export')}
           </Button>
         </div>
       </div>
@@ -191,7 +141,7 @@ const TransactionAuditTrail = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input 
-                placeholder={t.search}
+                placeholder={t('auditTrail.search')}
                 className="pl-9"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -200,13 +150,13 @@ const TransactionAuditTrail = () => {
             <Select value={actionFilter} onValueChange={setActionFilter}>
               <SelectTrigger className="w-48">
                 <Filter className="h-4 w-4 mr-1" />
-                <SelectValue placeholder={t.filterByAction} />
+                <SelectValue placeholder={t('auditTrail.filterByAction')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{t.allActions}</SelectItem>
-                <SelectItem value="created">{t.created}</SelectItem>
-                <SelectItem value="status_change">{t.statusChange}</SelectItem>
-                <SelectItem value="payment_status_change">{t.paymentStatusChange}</SelectItem>
+                <SelectItem value="all">{t('auditTrail.allActions')}</SelectItem>
+                <SelectItem value="created">{t('auditTrail.created')}</SelectItem>
+                <SelectItem value="status_change">{t('auditTrail.statusChange')}</SelectItem>
+                <SelectItem value="payment_status_change">{t('auditTrail.paymentStatusChange')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -216,26 +166,24 @@ const TransactionAuditTrail = () => {
       {/* Audit Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">
-            {language === 'id' ? 'Log Audit' : 'Audit Logs'}
-          </CardTitle>
+          <CardTitle className="text-lg">{t('auditTrail.auditLogs')}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="text-center py-8 text-muted-foreground">{t.loading}</div>
+            <div className="text-center py-8 text-muted-foreground">{t('auditTrail.loading')}</div>
           ) : filteredLogs.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">{t.noLogs}</div>
+            <div className="text-center py-8 text-muted-foreground">{t('auditTrail.noLogs')}</div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t.transactionId}</TableHead>
-                    <TableHead>{t.action}</TableHead>
-                    <TableHead>{t.change}</TableHead>
-                    <TableHead>{t.changedBy}</TableHead>
-                    <TableHead>{t.timestamp}</TableHead>
-                    <TableHead>{t.ipAddress}</TableHead>
+                    <TableHead>{t('auditTrail.transactionId')}</TableHead>
+                    <TableHead>{t('auditTrail.action')}</TableHead>
+                    <TableHead>{t('auditTrail.change')}</TableHead>
+                    <TableHead>{t('auditTrail.changedBy')}</TableHead>
+                    <TableHead>{t('auditTrail.timestamp')}</TableHead>
+                    <TableHead>{t('auditTrail.ipAddress')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

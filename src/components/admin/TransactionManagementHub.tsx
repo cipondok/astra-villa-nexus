@@ -42,90 +42,8 @@ interface TransactionStats {
   totalServiceCharges: number;
 }
 
-const text = {
-  en: {
-    title: "Transaction Management Hub",
-    subtitle: "Manage all transactions - Property Sales, Rentals & Vendor Services",
-    overview: "Overview",
-    propertySales: "Property Sales",
-    rentals: "Rentals",
-    vendorServices: "Vendor Services",
-    alerts: "Alerts",
-    allTransactions: "All Transactions",
-    totalTransactions: "Total Transactions",
-    pendingPayments: "Pending Payments",
-    completed: "Completed",
-    cancelled: "Cancelled",
-    totalRevenue: "Total Revenue",
-    taxCollected: "Tax Collected",
-    serviceCharges: "Service Charges",
-    recentTransactions: "Recent Transactions",
-    transactionNumber: "Transaction #",
-    type: "Type",
-    amount: "Amount",
-    status: "Status",
-    paymentStatus: "Payment",
-    date: "Date",
-    actions: "Actions",
-    search: "Search transactions...",
-    filterByStatus: "Filter by status",
-    all: "All",
-    pending: "Pending",
-    processing: "Processing",
-    refunded: "Refunded",
-    disputed: "Disputed",
-    refresh: "Refresh",
-    exportData: "Export",
-    viewDetails: "View",
-    noTransactions: "No transactions found",
-    loading: "Loading transactions...",
-    realTimeActive: "Real-time Active",
-    liveUpdates: "Live Updates"
-  },
-  id: {
-    title: "Pusat Manajemen Transaksi",
-    subtitle: "Kelola semua transaksi - Penjualan, Sewa & Layanan Vendor",
-    overview: "Ringkasan",
-    propertySales: "Penjualan Properti",
-    rentals: "Penyewaan",
-    vendorServices: "Layanan Vendor",
-    alerts: "Peringatan",
-    allTransactions: "Semua Transaksi",
-    totalTransactions: "Total Transaksi",
-    pendingPayments: "Pembayaran Tertunda",
-    completed: "Selesai",
-    cancelled: "Dibatalkan",
-    totalRevenue: "Total Pendapatan",
-    taxCollected: "Pajak Terkumpul",
-    serviceCharges: "Biaya Layanan",
-    recentTransactions: "Transaksi Terbaru",
-    transactionNumber: "No. Transaksi",
-    type: "Tipe",
-    amount: "Jumlah",
-    status: "Status",
-    paymentStatus: "Pembayaran",
-    date: "Tanggal",
-    actions: "Aksi",
-    search: "Cari transaksi...",
-    filterByStatus: "Filter berdasarkan status",
-    all: "Semua",
-    pending: "Tertunda",
-    processing: "Diproses",
-    refunded: "Dikembalikan",
-    disputed: "Disengketakan",
-    refresh: "Segarkan",
-    exportData: "Ekspor",
-    viewDetails: "Lihat",
-    noTransactions: "Tidak ada transaksi ditemukan",
-    loading: "Memuat transaksi...",
-    realTimeActive: "Real-time Aktif",
-    liveUpdates: "Pembaruan Langsung"
-  }
-};
-
 const TransactionManagementHub = () => {
-  const { language } = useTranslation();
-  const t = text[language] || text.en;
+  const { t, language } = useTranslation();
   
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [stats, setStats] = useState<TransactionStats>({
@@ -161,7 +79,6 @@ const TransactionManagementHub = () => {
       if (error) throw error;
       setTransactions(data || []);
 
-      // Calculate stats
       const allTx = data || [];
       setStats({
         total: allTx.length,
@@ -183,7 +100,6 @@ const TransactionManagementHub = () => {
   useEffect(() => {
     fetchTransactions();
 
-    // Real-time subscription
     const channel = supabase
       .channel('transactions-realtime')
       .on('postgres_changes', {
@@ -192,7 +108,7 @@ const TransactionManagementHub = () => {
         table: 'unified_transactions'
       }, () => {
         fetchTransactions();
-        toast.info(language === 'id' ? 'Transaksi diperbarui' : 'Transaction updated');
+        toast.info(t('transactionHub.transactionUpdated'));
       })
       .subscribe();
 
@@ -239,22 +155,22 @@ const TransactionManagementHub = () => {
                 <DollarSign className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <h2 className="text-sm font-bold">{t.title}</h2>
-                <p className="text-xs text-muted-foreground">{t.subtitle}</p>
+                <h2 className="text-sm font-bold">{t('transactionHub.title')}</h2>
+                <p className="text-xs text-muted-foreground">{t('transactionHub.subtitle')}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="flex items-center gap-1.5 text-xs h-6 px-2 bg-chart-1/10 text-chart-1 border-chart-1/30">
                 <span className="w-2 h-2 bg-chart-1 rounded-full animate-pulse" />
-                {t.realTimeActive}
+                {t('transactionHub.realTimeActive')}
               </Badge>
               <Button variant="outline" size="sm" className="h-7 text-xs" onClick={fetchTransactions}>
                 <RefreshCw className="h-3.5 w-3.5 mr-1" />
-                {t.refresh}
+                {t('transactionHub.refresh')}
               </Button>
               <Button variant="outline" size="sm" className="h-7 text-xs">
                 <Download className="h-3.5 w-3.5 mr-1" />
-                {t.exportData}
+                {t('transactionHub.exportData')}
               </Button>
             </div>
           </div>
@@ -267,7 +183,7 @@ const TransactionManagementHub = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
               <DollarSign className="h-4 w-4 text-chart-4" />
-              <span className="text-xs text-chart-4">{t.totalTransactions}</span>
+              <span className="text-xs text-chart-4">{t('transactionHub.totalTransactions')}</span>
             </div>
             <p className="text-lg font-bold text-foreground mt-1">{stats.total}</p>
           </CardContent>
@@ -277,7 +193,7 @@ const TransactionManagementHub = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
               <Clock className="h-4 w-4 text-chart-3" />
-              <span className="text-xs text-chart-3">{t.pendingPayments}</span>
+              <span className="text-xs text-chart-3">{t('transactionHub.pendingPayments')}</span>
             </div>
             <p className="text-lg font-bold text-foreground mt-1">{stats.pending}</p>
           </CardContent>
@@ -287,7 +203,7 @@ const TransactionManagementHub = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
               <CheckCircle className="h-4 w-4 text-chart-1" />
-              <span className="text-xs text-chart-1">{t.completed}</span>
+              <span className="text-xs text-chart-1">{t('transactionHub.completed')}</span>
             </div>
             <p className="text-lg font-bold text-foreground mt-1">{stats.completed}</p>
           </CardContent>
@@ -297,7 +213,7 @@ const TransactionManagementHub = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
               <XCircle className="h-4 w-4 text-destructive" />
-              <span className="text-xs text-destructive">{t.cancelled}</span>
+              <span className="text-xs text-destructive">{t('transactionHub.cancelled')}</span>
             </div>
             <p className="text-lg font-bold text-foreground mt-1">{stats.cancelled}</p>
           </CardContent>
@@ -307,7 +223,7 @@ const TransactionManagementHub = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
               <TrendingUp className="h-4 w-4 text-accent-foreground" />
-              <span className="text-xs text-accent-foreground">{t.totalRevenue}</span>
+              <span className="text-xs text-accent-foreground">{t('transactionHub.totalRevenue')}</span>
             </div>
             <p className="text-sm font-bold text-foreground mt-1">{formatIDR(stats.totalRevenue)}</p>
           </CardContent>
@@ -317,7 +233,7 @@ const TransactionManagementHub = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
               <Building className="h-4 w-4 text-primary" />
-              <span className="text-xs text-primary">{t.taxCollected}</span>
+              <span className="text-xs text-primary">{t('transactionHub.taxCollected')}</span>
             </div>
             <p className="text-sm font-bold text-foreground mt-1">{formatIDR(stats.totalTax)}</p>
           </CardContent>
@@ -327,7 +243,7 @@ const TransactionManagementHub = () => {
           <CardContent className="p-3">
             <div className="flex items-center gap-1.5">
               <Wrench className="h-4 w-4 text-chart-3" />
-              <span className="text-xs text-chart-3">{t.serviceCharges}</span>
+              <span className="text-xs text-chart-3">{t('transactionHub.serviceCharges')}</span>
             </div>
             <p className="text-sm font-bold text-foreground mt-1">{formatIDR(stats.totalServiceCharges)}</p>
           </CardContent>
@@ -337,22 +253,22 @@ const TransactionManagementHub = () => {
       {/* Tabs */}
       <Tabs defaultValue="all" className="w-full">
         <TabsList className="h-9 p-1 bg-muted/50 rounded-lg inline-flex gap-1">
-          <TabsTrigger value="all" onClick={() => setTypeFilter('all')} className="h-7 text-xs px-3">{t.allTransactions}</TabsTrigger>
+          <TabsTrigger value="all" onClick={() => setTypeFilter('all')} className="h-7 text-xs px-3">{t('transactionHub.allTransactions')}</TabsTrigger>
           <TabsTrigger value="property_sale" onClick={() => setTypeFilter('property_sale')} className="h-7 text-xs px-3">
             <Building className="h-3.5 w-3.5 mr-1" />
-            {t.propertySales}
+            {t('transactionHub.propertySales')}
           </TabsTrigger>
           <TabsTrigger value="property_rental" onClick={() => setTypeFilter('property_rental')} className="h-7 text-xs px-3">
             <Home className="h-3.5 w-3.5 mr-1" />
-            {t.rentals}
+            {t('transactionHub.rentals')}
           </TabsTrigger>
           <TabsTrigger value="vendor_service" onClick={() => setTypeFilter('vendor_service')} className="h-7 text-xs px-3">
             <Wrench className="h-3.5 w-3.5 mr-1" />
-            {t.vendorServices}
+            {t('transactionHub.vendorServices')}
           </TabsTrigger>
           <TabsTrigger value="alerts" className="h-7 text-xs px-3">
             <Bell className="h-3.5 w-3.5 mr-1" />
-            {t.alerts}
+            {t('transactionHub.alerts')}
           </TabsTrigger>
         </TabsList>
 
@@ -360,12 +276,12 @@ const TransactionManagementHub = () => {
           <Card>
             <CardHeader>
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <CardTitle>{t.recentTransactions}</CardTitle>
+                <CardTitle>{t('transactionHub.recentTransactions')}</CardTitle>
                 <div className="flex flex-wrap gap-2">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input 
-                      placeholder={t.search}
+                      placeholder={t('transactionHub.search')}
                       className="pl-9 w-64"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
@@ -374,16 +290,16 @@ const TransactionManagementHub = () => {
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
                     <SelectTrigger className="w-40">
                       <Filter className="h-4 w-4 mr-1" />
-                      <SelectValue placeholder={t.filterByStatus} />
+                      <SelectValue placeholder={t('transactionHub.filterByStatus')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">{t.all}</SelectItem>
-                      <SelectItem value="pending">{t.pending}</SelectItem>
-                      <SelectItem value="processing">{t.processing}</SelectItem>
-                      <SelectItem value="completed">{t.completed}</SelectItem>
-                      <SelectItem value="cancelled">{t.cancelled}</SelectItem>
-                      <SelectItem value="refunded">{t.refunded}</SelectItem>
-                      <SelectItem value="disputed">{t.disputed}</SelectItem>
+                      <SelectItem value="all">{t('transactionHub.all')}</SelectItem>
+                      <SelectItem value="pending">{t('transactionHub.pending')}</SelectItem>
+                      <SelectItem value="processing">{t('transactionHub.processing')}</SelectItem>
+                      <SelectItem value="completed">{t('transactionHub.completed')}</SelectItem>
+                      <SelectItem value="cancelled">{t('transactionHub.cancelled')}</SelectItem>
+                      <SelectItem value="refunded">{t('transactionHub.refunded')}</SelectItem>
+                      <SelectItem value="disputed">{t('transactionHub.disputed')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -391,21 +307,21 @@ const TransactionManagementHub = () => {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="text-center py-8 text-muted-foreground">{t.loading}</div>
+                <div className="text-center py-8 text-muted-foreground">{t('transactionHub.loading')}</div>
               ) : transactions.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">{t.noTransactions}</div>
+                <div className="text-center py-8 text-muted-foreground">{t('transactionHub.noTransactions')}</div>
               ) : (
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>{t.transactionNumber}</TableHead>
-                        <TableHead>{t.type}</TableHead>
-                        <TableHead className="text-right">{t.amount}</TableHead>
-                        <TableHead>{t.status}</TableHead>
-                        <TableHead>{t.paymentStatus}</TableHead>
-                        <TableHead>{t.date}</TableHead>
-                        <TableHead>{t.actions}</TableHead>
+                        <TableHead>{t('transactionHub.transactionNumber')}</TableHead>
+                        <TableHead>{t('transactionHub.type')}</TableHead>
+                        <TableHead className="text-right">{t('transactionHub.amount')}</TableHead>
+                        <TableHead>{t('transactionHub.status')}</TableHead>
+                        <TableHead>{t('transactionHub.paymentStatus')}</TableHead>
+                        <TableHead>{t('transactionHub.date')}</TableHead>
+                        <TableHead>{t('transactionHub.actions')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -446,21 +362,12 @@ const TransactionManagementHub = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Building className="h-5 w-5 text-chart-4" />
-                {t.propertySales}
+                {t('transactionHub.propertySales')}
               </CardTitle>
-              <CardDescription>
-                {language === 'id' 
-                  ? 'Transaksi penjualan properti dengan PPh 2.5% dan BPHTB 5%'
-                  : 'Property sales with Income Tax 2.5% and BPHTB 5%'}
-              </CardDescription>
+              <CardDescription>{t('transactionHub.propertySalesDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
-              {/* Property sales specific content */}
-              <p className="text-muted-foreground">
-                {language === 'id' 
-                  ? 'Menampilkan transaksi penjualan properti...'
-                  : 'Showing property sales transactions...'}
-              </p>
+              <p className="text-muted-foreground">{t('transactionHub.showingPropertySales')}</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -470,20 +377,12 @@ const TransactionManagementHub = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Home className="h-5 w-5 text-chart-1" />
-                {t.rentals}
+                {t('transactionHub.rentals')}
               </CardTitle>
-              <CardDescription>
-                {language === 'id'
-                  ? 'Transaksi sewa properti dengan PPh Sewa 10%'
-                  : 'Property rentals with Rental Income Tax 10%'}
-              </CardDescription>
+              <CardDescription>{t('transactionHub.rentalsDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">
-                {language === 'id'
-                  ? 'Menampilkan transaksi sewa properti...'
-                  : 'Showing rental transactions...'}
-              </p>
+              <p className="text-muted-foreground">{t('transactionHub.showingRentals')}</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -493,20 +392,12 @@ const TransactionManagementHub = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Wrench className="h-5 w-5 text-chart-3" />
-                {t.vendorServices}
+                {t('transactionHub.vendorServices')}
               </CardTitle>
-              <CardDescription>
-                {language === 'id'
-                  ? 'Layanan vendor dengan PPN 11% dan biaya layanan 3%'
-                  : 'Vendor services with VAT 11% and platform fee 3%'}
-              </CardDescription>
+              <CardDescription>{t('transactionHub.vendorServicesDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">
-                {language === 'id'
-                  ? 'Menampilkan transaksi layanan vendor...'
-                  : 'Showing vendor service transactions...'}
-              </p>
+              <p className="text-muted-foreground">{t('transactionHub.showingVendorServices')}</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -516,15 +407,11 @@ const TransactionManagementHub = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bell className="h-5 w-5 text-chart-3" />
-                {t.alerts}
+                {t('transactionHub.alerts')}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">
-                {language === 'id'
-                  ? 'Peringatan transaksi akan ditampilkan di sini...'
-                  : 'Transaction alerts will be shown here...'}
-              </p>
+              <p className="text-muted-foreground">{t('transactionHub.alertsPlaceholder')}</p>
             </CardContent>
           </Card>
         </TabsContent>
