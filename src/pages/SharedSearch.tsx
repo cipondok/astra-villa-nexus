@@ -287,15 +287,14 @@ const SharedSearch = () => {
     setFilterHistory(newHistory);
     setHistoryIndex(newHistory.length - 1);
     
-    // Broadcast to other collaborators
-    const channel = supabase.channel(`collab-${shareId}`);
-    channel.send({
+    // Broadcast to other collaborators via existing channel
+    channelRef.current?.send({
       type: 'broadcast',
       event: 'filters',
       payload: newFilters
     });
     
-    channel.send({
+    channelRef.current?.send({
       type: 'broadcast',
       event: 'filter_history',
       payload: {
@@ -313,14 +312,13 @@ const SharedSearch = () => {
       setHistoryIndex(newIndex);
       fetchProperties(previousFilters);
       
-      // Broadcast
-      const channel = supabase.channel(`collab-${shareId}`);
-      channel.send({
+      // Broadcast via existing channel
+      channelRef.current?.send({
         type: 'broadcast',
         event: 'filters',
         payload: previousFilters
       });
-      channel.send({
+      channelRef.current?.send({
         type: 'broadcast',
         event: 'filter_history',
         payload: {
@@ -339,14 +337,13 @@ const SharedSearch = () => {
       setHistoryIndex(newIndex);
       fetchProperties(nextFilters);
       
-      // Broadcast
-      const channel = supabase.channel(`collab-${shareId}`);
-      channel.send({
+      // Broadcast via existing channel
+      channelRef.current?.send({
         type: 'broadcast',
         event: 'filters',
         payload: nextFilters
       });
-      channel.send({
+      channelRef.current?.send({
         type: 'broadcast',
         event: 'filter_history',
         payload: {
@@ -363,14 +360,13 @@ const SharedSearch = () => {
     setHistoryIndex(index);
     fetchProperties(historyFilters);
     
-    // Broadcast
-    const channel = supabase.channel(`collab-${shareId}`);
-    channel.send({
+    // Broadcast via existing channel
+    channelRef.current?.send({
       type: 'broadcast',
       event: 'filters',
       payload: historyFilters
     });
-    channel.send({
+    channelRef.current?.send({
       type: 'broadcast',
       event: 'filter_history',
       payload: {
@@ -391,9 +387,8 @@ const SharedSearch = () => {
     
     setChatMessages(prev => [...prev, message]);
     
-    // Broadcast
-    const channel = supabase.channel(`collab-${shareId}`);
-    channel.send({
+    // Broadcast via existing channel
+    channelRef.current?.send({
       type: 'broadcast',
       event: 'chat_message',
       payload: message
