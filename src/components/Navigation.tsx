@@ -239,7 +239,7 @@ const Navigation = () => {
                 {theme === "light" ? <Moon className="h-4 w-4 text-foreground/70" /> : <Sun className="h-4 w-4 text-gold-primary" />}
               </Button>
 
-              <div className="hidden xl:block">
+              <div className="hidden lg:block">
                 <LanguageToggleSwitch />
               </div>
 
