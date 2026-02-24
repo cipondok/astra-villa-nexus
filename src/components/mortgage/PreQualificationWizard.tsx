@@ -17,14 +17,15 @@ import {
 import {
   User, Briefcase, DollarSign, CreditCard, Home,
   CheckCircle, AlertCircle, ChevronLeft, ChevronRight,
-  Download, RotateCcw, FileText, Send, Loader2
+  Download, RotateCcw, FileText, Send, Loader2, Building2, Star
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { generatePreQualificationPDF, type PreQualificationData } from '@/utils/preQualificationPdf';
-import { useMortgageApplication } from '@/hooks/useMortgageApplication';
+import { useMortgageApplication, usePartnerBanks } from '@/hooks/useMortgageApplication';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const formatIDR = (v: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
@@ -67,10 +68,14 @@ const PreQualificationWizard: React.FC<{ className?: string }> = ({ className })
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>(initialForm);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
-  const { submitApplication, isSubmitting } = useMortgageApplication();
+  const { submitApplication, isSubmitting, submitToBank, isSubmittingToBank } = useMortgageApplication();
+  const { data: partnerBanks = [] } = usePartnerBanks();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
+  const [submittedAppId, setSubmittedAppId] = useState<string | null>(null);
+  const [selectedBankId, setSelectedBankId] = useState<string | null>(null);
+  const [bankSubmitted, setBankSubmitted] = useState(false);
 
   const update = (key: keyof FormData, value: string | number) => {
     setForm(prev => ({ ...prev, [key]: value }));
@@ -369,18 +374,101 @@ const PreQualificationWizard: React.FC<{ className?: string }> = ({ className })
 
                   {user ? (
                     submitted ? (
-                      <div className="p-3 rounded-xl bg-chart-2/10 border border-chart-2/20 text-center">
-                        <CheckCircle className="h-5 w-5 text-chart-2 mx-auto mb-1" />
-                        <p className="text-sm font-medium">Application Submitted!</p>
-                        <Button variant="link" size="sm" className="text-xs mt-1" onClick={() => navigate('/dashboard')}>
-                          View in Dashboard →
-                        </Button>
-                      </div>
+                      bankSubmitted ? (
+                        <div className="p-3 rounded-xl bg-chart-2/10 border border-chart-2/20 text-center">
+                          <CheckCircle className="h-5 w-5 text-chart-2 mx-auto mb-1" />
+                          <p className="text-sm font-medium">Application Sent to Bank!</p>
+                          <p className="text-xs text-muted-foreground mt-1">Track progress in your dashboard</p>
+                          <Button variant="link" size="sm" className="text-xs mt-1" onClick={() => navigate('/dashboard')}>
+                            View in Dashboard →
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          <div className="p-3 rounded-xl bg-chart-2/10 border border-chart-2/20 text-center">
+                            <CheckCircle className="h-5 w-5 text-chart-2 mx-auto mb-1" />
+                            <p className="text-sm font-medium">Application Saved!</p>
+                          </div>
+
+                          {/* Bank Selection */}
+                          {partnerBanks.length > 0 && (
+                            <div className="space-y-2">
+                              <p className="text-sm font-semibold flex items-center gap-1.5">
+                                <Building2 className="h-4 w-4 text-primary" />
+                                Select a Partner Bank
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                Submit your application directly to a partner bank for faster processing
+                              </p>
+                              <RadioGroup
+                                value={selectedBankId || ''}
+                                onValueChange={setSelectedBankId}
+                                className="space-y-2"
+                              >
+                                {partnerBanks.map(bank => (
+                                  <label
+                                    key={bank.id}
+                                    className={cn(
+                                      "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors",
+                                      selectedBankId === bank.id
+                                        ? "border-primary bg-primary/5"
+                                        : "border-border/50 hover:border-primary/30"
+                                    )}
+                                  >
+                                    <RadioGroupItem value={bank.id} />
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center gap-2">
+                                        <p className="text-sm font-medium">{bank.bank_name}</p>
+                                        {bank.is_featured && (
+                                          <Star className="h-3 w-3 text-gold-primary fill-gold-primary" />
+                                        )}
+                                      </div>
+                                      {bank.interest_rate_range && (
+                                        <p className="text-[11px] text-muted-foreground">
+                                          Rate: {bank.interest_rate_range}
+                                        </p>
+                                      )}
+                                    </div>
+                                    {bank.partnership_tier && (
+                                      <Badge variant="outline" className="text-[9px]">
+                                        {bank.partnership_tier}
+                                      </Badge>
+                                    )}
+                                  </label>
+                                ))}
+                              </RadioGroup>
+
+                              <Button
+                                onClick={async () => {
+                                  if (!selectedBankId || !submittedAppId) return;
+                                  try {
+                                    await submitToBank({ applicationId: submittedAppId, bankId: selectedBankId });
+                                    setBankSubmitted(true);
+                                  } catch (e) { /* handled by hook */ }
+                                }}
+                                disabled={!selectedBankId || isSubmittingToBank}
+                                className="w-full"
+                              >
+                                {isSubmittingToBank ? (
+                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                ) : (
+                                  <Send className="h-4 w-4 mr-2" />
+                                )}
+                                Submit to Bank
+                              </Button>
+                            </div>
+                          )}
+
+                          <Button variant="link" size="sm" className="w-full text-xs" onClick={() => navigate('/dashboard')}>
+                            Skip — View in Dashboard →
+                          </Button>
+                        </div>
+                      )
                     ) : (
                       <Button
                         onClick={async () => {
                           try {
-                            await submitApplication({
+                            const result = await submitApplication({
                               full_name: form.fullName,
                               email: form.email,
                               phone: form.phone,
@@ -402,6 +490,7 @@ const PreQualificationWizard: React.FC<{ className?: string }> = ({ className })
                               qualification_status: calculations.qualificationStatus,
                             });
                             setSubmitted(true);
+                            setSubmittedAppId(result?.id || null);
                           } catch (e) { /* handled by hook */ }
                         }}
                         variant="outline"
