@@ -108,6 +108,7 @@ const BookingsPage = lazy(() => import('@/pages/BookingsPage'));
 const LocationMap = lazy(() => import('@/pages/LocationMap'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
+const About = lazy(() => import('@/pages/About'));
 const WNIPage = lazy(() => import('@/pages/investor/WNIPage'));
 const WNAPage = lazy(() => import('@/pages/investor/WNAPage'));
 const VerificationCenter = lazy(() => import('@/pages/VerificationCenter'));
@@ -268,6 +269,7 @@ const AppContent = () => {
             <Route path="/location-map" element={<LocationMap />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/about" element={<About />} />
             <Route path="/support" element={<Contact />} />
             <Route path="/investor/wni" element={<Navigate to="/investment?section=wni" replace />} />
             <Route path="/investor/wna" element={<Navigate to="/investment?section=wna" replace />} />
