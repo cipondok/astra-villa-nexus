@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAlert } from "@/contexts/AlertContext";
 import { UserPlus, Eye, EyeOff, Loader2, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useTranslation } from "@/i18n/useTranslation";
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
 
@@ -25,6 +25,7 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
   const [role, setRole] = useState<UserRole>("general_user");
   const [showPassword, setShowPassword] = useState(false);
   const [isRateLimited, setIsRateLimited] = useState(false);
+  const { t } = useTranslation();
 
   const { showSuccess, showError, showWarning } = useAlert();
   const queryClient = useQueryClient();
@@ -93,7 +94,7 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
       }
     },
     onSuccess: (user) => {
-      showSuccess("User Created Successfully", "The new user has been created and can now login to the system.");
+      showSuccess(t('simpleRegistration.successTitle'), t('simpleRegistration.successDesc'));
       
       // Invalidate and refetch all user-related queries
       queryClient.invalidateQueries({ queryKey: ['admin-users-management'] });
@@ -106,12 +107,9 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
       console.error('User creation failed:', error);
       
       if (error.message === 'RATE_LIMITED') {
-        showWarning(
-          "Rate Limited", 
-          "Too many signup attempts detected. Please wait 5-10 minutes before trying again, or use a different email address."
-        );
+        showWarning(t('simpleRegistration.rateLimitTitle'), t('simpleRegistration.rateLimitDesc'));
       } else {
-        showError("Registration Failed", error.message || "Failed to create user. Please try again.");
+        showError(t('simpleRegistration.failedTitle'), error.message || "Failed to create user. Please try again.");
       }
     },
   });
@@ -120,7 +118,7 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
     e.preventDefault();
     
     if (!email.trim() || !password.trim() || !fullName.trim()) {
-      showError("Validation Error", "Please fill in all required fields");
+      showError("Validation Error", t('simpleRegistration.validationError'));
       return;
     }
 
@@ -153,10 +151,10 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserPlus className="h-5 w-5" />
-            Quick User Registration
+            {t('simpleRegistration.title')}
           </DialogTitle>
           <DialogDescription>
-            Create a new user account with simplified process
+            {t('simpleRegistration.description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -164,22 +162,22 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              Signup rate limit reached. Please wait 5-10 minutes or try with a different email address.
+              {t('simpleRegistration.rateLimitDesc')}
               <br />
-              <strong>Tip:</strong> Ask your admin to disable email confirmation in Supabase settings for faster testing.
+              <strong>Tip:</strong> {t('simpleRegistration.rateLimitTip')}
             </AlertDescription>
           </Alert>
         )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="email">Email Address *</Label>
+            <Label htmlFor="email">{t('simpleRegistration.emailLabel')} *</Label>
             <Input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="user@example.com"
+              placeholder={t('simpleRegistration.emailPlaceholder')}
               required
               disabled={isLoading}
               className="mt-1"
@@ -187,12 +185,12 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
           </div>
 
           <div>
-            <Label htmlFor="fullName">Full Name *</Label>
+            <Label htmlFor="fullName">{t('simpleRegistration.nameLabel')} *</Label>
             <Input
               id="fullName"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="John Doe"
+              placeholder={t('simpleRegistration.namePlaceholder')}
               required
               disabled={isLoading}
               className="mt-1"
@@ -200,14 +198,14 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
           </div>
 
           <div>
-            <Label htmlFor="password">Password *</Label>
+            <Label htmlFor="password">{t('simpleRegistration.passwordLabel')} *</Label>
             <div className="relative mt-1">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimum 6 characters"
+                placeholder={t('simpleRegistration.passwordPlaceholder')}
                 required
                 disabled={isLoading}
                 minLength={6}
@@ -226,17 +224,17 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
           </div>
 
           <div>
-            <Label htmlFor="role">User Role</Label>
+            <Label htmlFor="role">{t('simpleRegistration.roleLabel')}</Label>
             <Select value={role} onValueChange={(value: UserRole) => setRole(value)} disabled={isLoading}>
               <SelectTrigger className="mt-1">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="general_user">General User</SelectItem>
-                <SelectItem value="property_owner">Property Owner</SelectItem>
-                <SelectItem value="agent">Agent</SelectItem>
-                <SelectItem value="vendor">Vendor</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="general_user">{t('simpleRegistration.generalUser')}</SelectItem>
+                <SelectItem value="property_owner">{t('simpleRegistration.propertyOwner')}</SelectItem>
+                <SelectItem value="agent">{t('simpleRegistration.agent')}</SelectItem>
+                <SelectItem value="vendor">{t('simpleRegistration.vendor')}</SelectItem>
+                <SelectItem value="admin">{t('simpleRegistration.admin')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -249,7 +247,7 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
             onClick={handleClose}
             disabled={isLoading}
           >
-            Cancel
+            {t('simpleRegistration.cancel')}
           </Button>
           <Button 
             type="submit"
@@ -259,10 +257,10 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
             {isLoading ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Creating...
+                {t('simpleRegistration.creating')}
               </>
             ) : (
-              "Create User"
+              t('simpleRegistration.createUser')
             )}
           </Button>
         </DialogFooter>
