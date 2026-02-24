@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { 
   Building2, 
@@ -18,7 +18,7 @@ import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 
 const WNAPropertyTypes: React.FC = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
 
   const copy = {
     en: {

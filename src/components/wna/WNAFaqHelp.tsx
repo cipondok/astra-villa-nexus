@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { 
   HelpCircle, 
@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 
 const WNAFaqHelp: React.FC = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const navigate = useNavigate();
   const [expandedFaq, setExpandedFaq] = useState<number | null>(0);
 

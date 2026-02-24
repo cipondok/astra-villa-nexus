@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { 
   ClipboardList, 
@@ -18,7 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 
 const WNAProcessProcedure: React.FC = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [expandedStep, setExpandedStep] = useState<number | null>(0);
 
   const copy = {

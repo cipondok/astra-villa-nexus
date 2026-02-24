@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { 
   Users, 
@@ -26,7 +26,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 
 const WNAFamilyBenefits: React.FC = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [expandedSection, setExpandedSection] = useState<string | null>('spouse');
 
   const copy = {

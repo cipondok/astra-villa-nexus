@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { 
   Clock, 
@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 
 const WNAProcessingTime: React.FC = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
 
   const copy = {
     en: {
