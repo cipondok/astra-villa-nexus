@@ -48,7 +48,7 @@ const LanguageToggleSwitch: React.FC<LanguageToggleSwitchProps> = ({ className =
 
       {open && (
         <div
-          className="absolute right-0 top-full z-[200] mt-1 min-w-[160px] overflow-hidden rounded-xl border border-border bg-popover p-1 shadow-xl animate-in fade-in-0 zoom-in-95"
+          className="absolute right-0 bottom-full z-[10002] mb-1 min-w-[160px] overflow-hidden rounded-xl border border-border bg-popover p-1 shadow-xl animate-in fade-in-0 zoom-in-95 lg:bottom-auto lg:top-full lg:mb-0 lg:mt-1"
           role="listbox"
           aria-label="Language options"
         >
