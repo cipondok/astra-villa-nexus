@@ -3,9 +3,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MapPin, Bed, Bath, Sparkles } from 'lucide-react';
+import { MapPin, Bed, Bath, Sparkles, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface RecommendedProperty {
   property: any;
@@ -59,17 +60,20 @@ const RecommendationSkeleton = () => (
 const PropertyRecommendations = ({ propertyId, propertyType }: PropertyRecommendationsProps) => {
   const [recommendations, setRecommendations] = useState<RecommendedProperty[]>([]);
   const [loading, setLoading] = useState(true);
+  const [personalized, setPersonalized] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchRecommendations = async () => {
       setLoading(true);
       try {
         const { data, error } = await supabase.functions.invoke('property-recommendations', {
-          body: { propertyId, limit: 6 },
+          body: { propertyId, userId: user?.id || null, limit: 6 },
         });
         if (!error && data?.recommendations) {
           setRecommendations(data.recommendations);
+          setPersonalized(!!data.personalized);
         }
       } catch (err) {
         console.error('Failed to fetch recommendations:', err);
@@ -79,7 +83,7 @@ const PropertyRecommendations = ({ propertyId, propertyType }: PropertyRecommend
     };
 
     if (propertyId) fetchRecommendations();
-  }, [propertyId]);
+  }, [propertyId, user?.id]);
 
   if (loading) {
     return (
@@ -100,6 +104,12 @@ const PropertyRecommendations = ({ propertyId, propertyType }: PropertyRecommend
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="h-4 w-4 text-primary" />
         <h2 className="text-sm sm:text-lg font-bold text-foreground">Recommended For You</h2>
+        {personalized && (
+          <Badge variant="outline" className="text-[10px] bg-primary/5 border-primary/20 text-primary gap-1">
+            <User className="h-2.5 w-2.5" />
+            Personalized
+          </Badge>
+        )}
       </div>
 
       <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-2 px-2">
