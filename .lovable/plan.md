@@ -1,75 +1,32 @@
 
 
-## Property Recommendation Engine Enhancement
+## Add Map View to Property Listing Pages
 
-### Current State
-The property detail page already has two recommendation sections:
-1. **`relatedProperties`** (inline in PropertyDetail.tsx) - Very basic: only filters by `property_type` + `status`
-2. **`SimilarProperties` component** - Better: filters by type, listing type, price range (+-30%), and city/state
+### Overview
+Integrate the existing `PropertyListingMapView` component into the `PropertyListingPage` with a view mode toggle (Grid / Map), so users can switch between browsing properties in a card grid or on an interactive Mapbox map with clustered markers and property preview popups.
 
-Neither provides match scoring, feature/amenity matching, or explains why properties are recommended.
+### What Changes
 
-### What We'll Build
-An enhanced recommendation engine that replaces the basic `relatedProperties` section with a smart, scored recommendation system. It will match on type, location, price range, bedrooms/bathrooms, AND property features (pool, garage, garden, etc.), showing a match percentage for each result.
-
-### Implementation
-
-#### 1. Create a Supabase Edge Function: `property-recommendations`
-- Accepts a property ID and returns scored similar properties
-- Scoring algorithm:
-  - **Property type match**: 25 points
-  - **Location match** (city: 20pts, state: 10pts)
-  - **Price proximity**: up to 20 points (closer = higher)
-  - **Bedroom match**: up to 10 points
-  - **Bathroom match**: up to 5 points
-  - **Area similarity**: up to 10 points
-  - **Feature/amenity overlap**: up to 10 points (pool, garage, garden, security, gym, etc.)
-- Returns top N properties sorted by score with match reasons
-
-#### 2. Create `src/components/property/PropertyRecommendations.tsx`
-- New component replacing the inline `relatedProperties` section
-- Shows each recommended property with:
-  - Match percentage badge (e.g., "92% Match")
-  - Match reason tags (e.g., "Same area", "Similar price", "Has pool")
-  - Property card with image, price, specs
-- Animated entrance with framer-motion
-- Loading skeleton and empty state
-
-#### 3. Update `src/pages/PropertyDetail.tsx`
-- Replace the inline `relatedProperties` section (lines 1250-1330) with the new `PropertyRecommendations` component
-- Pass current property data to the component
-- Keep the `SimilarProperties` component as a secondary fallback section
+#### 1. Update `src/pages/PropertyListingPage.tsx`
+- **Add a view mode toggle** (Grid | Map) in the sticky header next to the Filter button, using the existing `PropertyViewModeToggle` component (simplified to just "grid" and "map" options, or reusing the existing toggle with list/grid/map).
+- **Add state**: `viewMode` state (`'grid' | 'map'`), defaulting to `'grid'`.
+- **Conditionally render** the property grid OR the `PropertyListingMapView` based on the selected view mode.
+- **Extract `formatPrice`** into a shared helper so it can be passed to `PropertyListingMapView` (currently defined inline inside the `.map()` callback).
+- **Pass properties** to `PropertyListingMapView` with the correct shape (`id`, `title`, `price`, `city`, `images`).
 
 ### Technical Details
 
-**Edge Function scoring logic (pseudocode):**
+**Header area** (around line 209-234): Add view mode toggle buttons next to the Filter button:
 ```
-score = 0
-reasons = []
-
-if same property_type: score += 25, reasons.push("Same type")
-if same city: score += 20, reasons.push("Same area")
-else if same state: score += 10, reasons.push("Same region")
-
-price_diff_pct = abs(price - target_price) / target_price
-score += max(0, 20 - price_diff_pct * 100)
-if price_diff_pct < 0.15: reasons.push("Similar price")
-
-if same bedrooms: score += 10, reasons.push("Same bedrooms")
-if same bathrooms: score += 5
-
-// Feature overlap from property_features JSON
-shared_features = intersection(property.features, target.features)
-score += min(10, shared_features.length * 2)
-for each shared: reasons.push(feature_name)
-
-return { property, score, matchPercentage, reasons }
+[Grid icon] [Map icon]   [Filter button]
 ```
 
-**Files to create:**
-- `supabase/functions/property-recommendations/index.ts`
-- `src/components/property/PropertyRecommendations.tsx`
+**Conditional rendering** (around line 332-463): Wrap the existing grid in a condition:
+- If `viewMode === 'grid'`: show current grid + infinite scroll sentinel
+- If `viewMode === 'map'`: show `PropertyListingMapView` with current properties
 
-**Files to modify:**
-- `src/pages/PropertyDetail.tsx` - swap relatedProperties section for new component
-- `supabase/config.toml` - add function config with `verify_jwt = false`
+**No new files needed** -- both `PropertyListingMapView` and `PropertyViewModeToggle` already exist. This is purely an integration task in `PropertyListingPage.tsx`.
+
+### Files to Modify
+- `src/pages/PropertyListingPage.tsx` -- add view toggle state, import existing components, conditionally render map vs grid
+
