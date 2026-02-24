@@ -5,8 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { X, Crown, Sparkles, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+interface UpgradeBannerProps {
+  onDismiss: () => void;
+}
+
 const UpgradeBanner = ({ onDismiss }: UpgradeBannerProps) => {
-  const { t, language } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(true);
 
@@ -70,14 +74,14 @@ const UpgradeBanner = ({ onDismiss }: UpgradeBannerProps) => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <h3 className="text-sm font-bold text-primary-foreground truncate">
-                    {t.headline}
+                    {t('upgradeBanner.headline')}
                   </h3>
                   <span className="flex-shrink-0 px-1.5 py-0.5 text-[10px] font-bold bg-chart-3 text-chart-3-foreground rounded">
-                    {t.discount}
+                    {t('upgradeBanner.discount')}
                   </span>
                 </div>
                 <p className="text-xs text-primary-foreground/80 line-clamp-1">
-                  {t.subtext}
+                  {t('upgradeBanner.subtext')}
                 </p>
               </div>
 
@@ -88,7 +92,7 @@ const UpgradeBanner = ({ onDismiss }: UpgradeBannerProps) => {
                 className="flex-shrink-0 bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-1"
               >
                 <Sparkles className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">{t.cta}</span>
+                <span className="hidden sm:inline">{t('upgradeBanner.cta')}</span>
                 <ArrowRight className="h-3.5 w-3.5 sm:hidden" />
               </Button>
             </div>

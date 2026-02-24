@@ -604,11 +604,11 @@ const Index = () => {
                 </div>
                 
                 <h2 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white drop-shadow-lg">
-                  {t.findYour}
+                  {t('indexPage.findYour')}
                 </h2>
                 <p className="flex text-xs sm:text-sm text-white/80 items-center justify-center gap-2 font-medium">
                   <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  {t.searchPowered}
+                  {t('indexPage.searchPowered')}
                 </p>
               </div>
               
@@ -645,7 +645,7 @@ const Index = () => {
               <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent to-gold-primary/40" />
               <Star className="h-3 w-3 md:h-3.5 md:w-3.5 text-gold-primary fill-gold-primary/40" />
               <h3 className="text-[11px] md:text-sm font-semibold text-foreground/80 uppercase tracking-widest">
-                {t.featuredProperties}
+                {t('indexPage.featuredProperties')}
               </h3>
               <Star className="h-3 w-3 md:h-3.5 md:w-3.5 text-gold-primary fill-gold-primary/40" />
               <div className="h-px w-8 sm:w-12 bg-gradient-to-l from-transparent to-gold-primary/40" />
@@ -700,7 +700,7 @@ const Index = () => {
                     size="sm"
                     className="h-7 px-3 text-xs"
                   >
-                    {t.clearError}
+                    {t('indexPage.clearError')}
                   </Button>
                 </div>
               </div>
@@ -761,13 +761,13 @@ const Index = () => {
                   <div className="flex items-center justify-between mb-2 sm:mb-4 md:mb-6 mt-1.5 sm:mt-2 md:mt-4">
                     <div>
                       <h2 className="text-sm sm:text-base md:text-2xl font-bold mb-0.5 sm:mb-1 md:mb-2 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-                        {t.searchResults}
+                        {t('indexPage.searchResults')}
                       </h2>
                       <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">
-                        {isSearching ? t.searching : `${searchResults.length} ${t.propertiesFound}`}
+                        {isSearching ? t('indexPage.searching') : `${searchResults.length} ${t('indexPage.propertiesFound')}`}
                         {quickSearch && (
                           <span className="ml-1 sm:ml-2 text-primary font-medium">
-                            {t.for} "{quickSearch}"
+                            {t('indexPage.for')} "{quickSearch}"
                           </span>
                         )}
                       </p>
