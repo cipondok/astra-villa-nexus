@@ -15821,6 +15821,7 @@ export type Database = {
           created_at: string
           device_name: string | null
           device_type: string | null
+          email_enabled: boolean | null
           endpoint: string | null
           id: string
           is_active: boolean
@@ -15836,6 +15837,7 @@ export type Database = {
           created_at?: string
           device_name?: string | null
           device_type?: string | null
+          email_enabled?: boolean | null
           endpoint?: string | null
           id?: string
           is_active?: boolean
@@ -15851,6 +15853,7 @@ export type Database = {
           created_at?: string
           device_name?: string | null
           device_type?: string | null
+          email_enabled?: boolean | null
           endpoint?: string | null
           id?: string
           is_active?: boolean

@@ -1,0 +1,1 @@
+ALTER TABLE public.push_subscriptions ADD COLUMN IF NOT EXISTS email_enabled BOOLEAN DEFAULT true;
