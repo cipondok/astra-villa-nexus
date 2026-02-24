@@ -1,90 +1,43 @@
 
 
-# Dynamic SEO Meta Tags Based on Selected Language
+## Problem Diagnosis
 
-## Problem
+The search suggestions dropdown is not appearing on top of other content despite having `position: fixed` and `z-index: 100002`. 
 
-All 12+ pages using `<SEOHead>` pass hardcoded Indonesian strings for `title` and `description`. When a user switches to Chinese, Japanese, Korean, or English, the meta tags (page title, OG tags, Twitter cards, canonical) remain in Indonesian.
+**Root cause**: The parent container at line 2363 uses `backdrop-blur-xl`, which creates a new **containing block** for `position: fixed` descendants. This means the "fixed" dropdown is actually positioned relative to this blurred container instead of the viewport, causing it to render incorrectly (clipped or misplaced).
 
-## Approach
+This same issue affects both the mobile and desktop suggestion dropdowns.
 
-Add a `seo` namespace to all 5 locale files with per-page titles and descriptions, then update each page's `<SEOHead>` call to use `t('seo.pageName.title')` / `t('seo.pageName.description')`.
+## Solution
 
-## Step 1: Add `seo` namespace to locale files
+Render both suggestion dropdowns (mobile at line 2120 and desktop at line 2537) through `createPortal(... , document.body)` -- the same pattern already used for the Advanced Filters modal at line 3383. This escapes the `backdrop-filter` containing block entirely.
 
-Add translated titles and descriptions for each page:
+Additionally, change the trigger from "on focus" to "after typing" per the user's preference: only show suggestions when `searchQuery.length >= 1`.
 
-```
-seo: {
-  home: { title, description },
-  properties: { title, description },
-  dijual: { title, description },
-  disewa: { title, description },
-  about: { title, description },
-  contact: { title, description },
-  help: { title, description },
-  auth: { title, description },
-  investment: { title, description },
-  community: { title, description },
-  agentDirectory: { title, description },
-  buy: { title, description },
-  rent: { title, description },
-  preLaunching: { title, description },
-}
-```
+## Changes
 
-That is ~28 keys per locale file, across 5 files = 140 translated strings.
+### 1. `src/components/AstraSearchPanel.tsx`
 
-## Step 2: Update pages to use `t()` for SEOHead props
+**A. Mobile suggestions dropdown (around line 2119-2248)**:
+- Wrap the entire `{showSuggestions && hasSuggestions && ( <div ...> ... </div> )}` block in `createPortal(..., document.body)`.
+- The `fixed` positioning and `suggestionsTop` style already handle placement correctly once portaled.
 
-Each page that renders `<SEOHead>` will:
-1. Import `useTranslation` (if not already)
-2. Replace hardcoded `title="Tentang Astra Villa"` with `title={t('seo.about.title')}`
-3. Replace hardcoded `description="..."` with `description={t('seo.about.description')}`
-4. Keep `keywords` as-is (keywords meta tag is largely ignored by search engines and not user-visible)
+**B. Desktop suggestions dropdown (around line 2536-2750)**:
+- Wrap the `{showSuggestions && ( <div ...> ... </div> )}` block in `createPortal(..., document.body)`.
+- The `fixed` positioning with `suggestionsRect` style already handles placement.
 
-Pages to update:
-- `Index.tsx` — `seo.home`
-- `Properties.tsx` — `seo.properties`
-- `Dijual.tsx` — `seo.dijual`
-- `Disewa.tsx` — `seo.disewa`
-- `About.tsx` — `seo.about`
-- `Contact.tsx` — `seo.contact`
-- `Help.tsx` — `seo.help`
-- `Auth.tsx` — `seo.auth`
-- `Investment.tsx` — `seo.investment`
-- `Community.tsx` — `seo.community`
-- `AgentDirectory.tsx` — `seo.agentDirectory`
-- `PropertyDetail.tsx` — keeps dynamic property title (no change needed)
+**C. Change trigger from "on focus" to "after typing"**:
+- Mobile `onFocus` (line 2058-2065): Remove `setShowSuggestions(true)` from onFocus.
+- Desktop `onFocus` (line 2451-2454): Remove `setShowSuggestions(true)` from onFocus.
+- In `handleSearchChange` (line 1660-1662): Add `setShowSuggestions(value.length > 0)` so suggestions only show when there is text.
+- Keep `updateSuggestionsPosition` call in a `useEffect` watching `showSuggestions` (already exists at line 1837).
 
-## Step 3: Update `<html lang>` attribute
+**D. Click-outside detection update (line 1806-1826)**:
+- The existing `handleClickOutside` logic checks `suggestionsRef.current.contains(target)`. Since the dropdown is now portaled to `document.body`, this check still works because `suggestionsRef` points to the portaled DOM node. Also add a check for the `anchorRef` so clicking inside the input does not close suggestions.
 
-Already done in the previous commit — `LanguageContext` sets `document.documentElement.lang` on language change.
-
-## Files Modified
-
-**Locale files (5):**
-- `src/i18n/locales/en.ts` — add `seo` namespace (~28 keys)
-- `src/i18n/locales/id.ts` — same, Indonesian
-- `src/i18n/locales/zh.ts` — same, Chinese
-- `src/i18n/locales/ja.ts` — same, Japanese
-- `src/i18n/locales/ko.ts` — same, Korean
-
-**Page files (11):**
-- `src/pages/Index.tsx`
-- `src/pages/Properties.tsx`
-- `src/pages/Dijual.tsx`
-- `src/pages/Disewa.tsx`
-- `src/pages/About.tsx`
-- `src/pages/Contact.tsx`
-- `src/pages/Help.tsx`
-- `src/pages/Auth.tsx`
-- `src/pages/Investment.tsx`
-- `src/pages/Community.tsx`
-- `src/pages/AgentDirectory.tsx`
-
-## Risk
-
-- **Low**: `SEOHead` already accepts string props — swapping hardcoded strings for `t()` calls is a safe pattern swap
-- **PropertyDetail.tsx** is excluded because it uses the actual property title/description from the database, which is correct behavior
+### Summary of changes
+- 1 file modified: `src/components/AstraSearchPanel.tsx`
+- Both mobile and desktop dropdowns portaled to `document.body`
+- Trigger changed: suggestions appear after typing (not on focus)
+- No new dependencies needed (`createPortal` is already imported at line 2)
 
