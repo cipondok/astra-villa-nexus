@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
 import { X, Eye, EyeOff, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -27,69 +28,37 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
   const [authSuccess, setAuthSuccess] = useState(false);
   
   const { signIn, signUp } = useAuth();
+  const { t } = useTranslation();
 
-  const text = {
-    en: {
-      login: "Sign In",
-      register: "Sign Up",
-      email: "Email Address",
-      password: "Password",
-      confirmPassword: "Confirm Password",
-      fullName: "Full Name",
-      loginBtn: "Sign In",
-      registerBtn: "Create Account",
-      close: "Close",
-      fillDemo: "Fill Demo Data",
-      passwordsDontMatch: "Passwords do not match",
-      emailRequired: "Email is required",
-      passwordRequired: "Password is required",
-      nameRequired: "Full name is required",
-      invalidEmail: "Please enter a valid email address",
-      passwordTooShort: "Password must be at least 6 characters",
-      alreadyHaveAccount: "Already have an account?",
-      dontHaveAccount: "Don't have an account?",
-      switchToLogin: "Sign in here",
-      switchToRegister: "Sign up here",
-      signingIn: "Signing in...",
-      creatingAccount: "Creating account...",
-      loginSuccess: "Login successful! Redirecting...",
-      signupSuccess: "Account created successfully!",
-      loginError: "Login failed. Please check your credentials.",
-      signupError: "Failed to create account. Please try again.",
-      tryAgain: "Try Again"
-    },
-    id: {
-      login: "Masuk",
-      register: "Daftar",
-      email: "Alamat Email",
-      password: "Kata Sandi",
-      confirmPassword: "Konfirmasi Kata Sandi",
-      fullName: "Nama Lengkap",
-      loginBtn: "Masuk",
-      registerBtn: "Buat Akun",
-      close: "Tutup",
-      fillDemo: "Isi Data Demo",
-      passwordsDontMatch: "Kata sandi tidak cocok",
-      emailRequired: "Email wajib diisi",
-      passwordRequired: "Kata sandi wajib diisi",
-      nameRequired: "Nama lengkap wajib diisi",
-      invalidEmail: "Masukkan alamat email yang valid",
-      passwordTooShort: "Kata sandi minimal 6 karakter",
-      alreadyHaveAccount: "Sudah punya akun?",
-      dontHaveAccount: "Belum punya akun?",
-      switchToLogin: "Masuk di sini",
-      switchToRegister: "Daftar di sini",
-      signingIn: "Sedang masuk...",
-      creatingAccount: "Membuat akun...",
-      loginSuccess: "Login berhasil! Mengalihkan...",
-      signupSuccess: "Akun berhasil dibuat!",
-      loginError: "Login gagal. Periksa kredensial Anda.",
-      signupError: "Gagal membuat akun. Silakan coba lagi.",
-      tryAgain: "Coba Lagi"
-    }
+  const currentText = {
+    login: t('authModal.login'),
+    register: t('authModal.register'),
+    email: t('authModal.email'),
+    password: t('authModal.password'),
+    confirmPassword: t('authModal.confirmPassword'),
+    fullName: t('authModal.fullName'),
+    loginBtn: t('authModal.loginBtn'),
+    registerBtn: t('authModal.registerBtn'),
+    close: t('authModal.close'),
+    fillDemo: t('authModal.fillDemo'),
+    passwordsDontMatch: t('authModal.passwordsDontMatch'),
+    emailRequired: t('authModal.emailRequired'),
+    passwordRequired: t('authModal.passwordRequired'),
+    nameRequired: t('authModal.nameRequired'),
+    invalidEmail: t('authModal.invalidEmail'),
+    passwordTooShort: t('authModal.passwordTooShort'),
+    alreadyHaveAccount: t('authModal.alreadyHaveAccount'),
+    dontHaveAccount: t('authModal.dontHaveAccount'),
+    switchToLogin: t('authModal.switchToLogin'),
+    switchToRegister: t('authModal.switchToRegister'),
+    signingIn: t('authModal.signingIn'),
+    creatingAccount: t('authModal.creatingAccount'),
+    loginSuccess: t('authModal.loginSuccess'),
+    signupSuccess: t('authModal.signupSuccess'),
+    loginError: t('authModal.loginError'),
+    signupError: t('authModal.signupError'),
+    tryAgain: t('authModal.tryAgain'),
   };
-
-  const currentText = text[language] || text.en;
 
   const fillDemoData = () => {
     const timestamp = Date.now();
