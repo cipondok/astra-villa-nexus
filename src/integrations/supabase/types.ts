@@ -5305,6 +5305,63 @@ export type Database = {
         }
         Relationships: []
       }
+      conversations: {
+        Row: {
+          agent_id: string
+          agent_unread_count: number | null
+          buyer_id: string
+          buyer_unread_count: number | null
+          created_at: string
+          id: string
+          is_archived: boolean | null
+          last_message_at: string | null
+          last_message_preview: string | null
+          property_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          agent_id: string
+          agent_unread_count?: number | null
+          buyer_id: string
+          buyer_unread_count?: number | null
+          created_at?: string
+          id?: string
+          is_archived?: boolean | null
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          property_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string
+          agent_unread_count?: number | null
+          buyer_id?: string
+          buyer_unread_count?: number | null
+          created_at?: string
+          id?: string
+          is_archived?: boolean | null
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          property_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       core_team_members: {
         Row: {
           avatar_url: string | null
@@ -10487,6 +10544,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      messages: {
+        Row: {
+          attachment_url: string | null
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message_type: string
+          read_at: string | null
+          sender_id: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message_type?: string
+          read_at?: string | null
+          sender_id: string
+        }
+        Update: {
+          attachment_url?: string | null
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message_type?: string
+          read_at?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mfa_settings: {
         Row: {
