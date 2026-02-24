@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Copy, Users, DollarSign, Share2, MousePointerClick, TrendingUp, UserPlus } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
+import ReferralLeaderboard from '@/components/referral/ReferralLeaderboard';
 
 const ReferralDashboardTab = () => {
   const { user } = useAuth();
@@ -131,6 +132,9 @@ const ReferralDashboardTab = () => {
           </Card>
         ))}
       </div>
+
+      {/* Referral Leaderboard */}
+      <ReferralLeaderboard limit={10} />
 
       {/* Recent Activity */}
       <Card>
