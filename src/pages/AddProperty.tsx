@@ -29,52 +29,28 @@ const AddProperty = () => {
     isLoading: limitsLoading 
   } = useVIPLimits();
 
-  const text = {
-    en: {
-      loginRequired: "Login Required",
-      loginDesc: "Please login or register to add a property",
-      login: "Login",
-      register: "Register",
-      backHome: "Back to Home",
-      upgradeRequired: "Upgrade Required",
-      upgradeDesc: "Upgrade to Agent, Vendor, or Property Owner to add listings",
-      upgradeAccount: "Upgrade Account",
-      backDashboard: "Back to Dashboard",
-      limitReached: "Property Limit Reached",
-      limitDesc: (current: number, max: number, level: string) => 
-        `You've reached ${current}/${max} properties for your ${level} tier.`,
-      upgradeVIP: "Upgrade VIP Level",
-      addProperty: "Add Property",
-      createListing: "Create new listing",
-      createManually: "Create Manually",
-      importFromUrl: "Import from URL",
-      importError: "Please log in first.",
-      importSuccess: "Form auto-filled. Please review and submit."
-    },
-    id: {
-      loginRequired: "Login Diperlukan",
-      loginDesc: "Silakan login atau daftar untuk menambahkan properti",
-      login: "Masuk",
-      register: "Daftar",
-      backHome: "Kembali",
-      upgradeRequired: "Upgrade Diperlukan",
-      upgradeDesc: "Upgrade ke Agent, Vendor, atau Property Owner untuk listing",
-      upgradeAccount: "Upgrade Akun",
-      backDashboard: "Kembali",
-      limitReached: "Batas Properti Tercapai",
-      limitDesc: (current: number, max: number, level: string) => 
-        `Anda telah mencapai ${current}/${max} properti untuk level ${level}.`,
-      upgradeVIP: "Upgrade Level VIP",
-      addProperty: "Tambah Properti",
-      createListing: "Buat listing baru",
-      createManually: "Buat Manual",
-      importFromUrl: "Impor dari URL",
-      importError: "Silakan login dulu.",
-      importSuccess: "Form terisi otomatis. Silakan cek lalu submit."
-    }
+  const { t: tr } = useTranslation();
+  const txt = {
+    loginRequired: tr('addProperty.loginRequired', 'Login Required'),
+    loginDesc: tr('addProperty.loginDesc', 'Please login or register to add a property'),
+    login: tr('common.login'),
+    register: tr('common.register'),
+    backHome: tr('addProperty.backHome', 'Back to Home'),
+    upgradeRequired: tr('addProperty.upgradeRequired', 'Upgrade Required'),
+    upgradeDesc: tr('addProperty.upgradeDesc', 'Upgrade to Agent, Vendor, or Property Owner to add listings'),
+    upgradeAccount: tr('addProperty.upgradeAccount', 'Upgrade Account'),
+    backDashboard: tr('addProperty.backDashboard', 'Back to Dashboard'),
+    limitReached: tr('addProperty.limitReached', 'Property Limit Reached'),
+    limitDesc: (current: number, max: number, level: string) => 
+      tr('addProperty.limitDescTemplate', `You've reached ${current}/${max} properties for your ${level} tier.`),
+    upgradeVIP: tr('addProperty.upgradeVIP', 'Upgrade VIP Level'),
+    addProperty: tr('nav.addProperty'),
+    createListing: tr('addProperty.createListing', 'Create new listing'),
+    createManually: tr('addProperty.createManually', 'Create Manually'),
+    importFromUrl: tr('addProperty.importFromUrl', 'Import from URL'),
+    importError: tr('addProperty.importError', 'Please log in first.'),
+    importSuccess: tr('addProperty.importSuccess', 'Form auto-filled. Please review and submit.'),
   };
-
-  const t = text[language] || text.en;
 
   // Show login/register prompt for non-authenticated users
   if (!isAuthenticated) {
@@ -85,9 +61,9 @@ const AddProperty = () => {
             <div className="mx-auto w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-3">
               <Lock className="h-6 w-6 text-primary" />
             </div>
-            <CardTitle className="text-lg text-foreground">{t.loginRequired}</CardTitle>
+            <CardTitle className="text-lg text-foreground">{txt.loginRequired}</CardTitle>
             <CardDescription className="text-sm text-muted-foreground">
-              {t.loginDesc}
+              {txt.loginDesc}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2.5 p-4 pt-0">
@@ -96,7 +72,7 @@ const AddProperty = () => {
               className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               <LogIn className="h-4 w-4 mr-2" />
-              {t.login}
+              {txt.login}
             </Button>
             <Button 
               onClick={() => navigate('/auth?mode=signup&redirect=/add-property')}
@@ -104,14 +80,14 @@ const AddProperty = () => {
               className="w-full h-10 border-border"
             >
               <UserPlus className="h-4 w-4 mr-2" />
-              {t.register}
+              {txt.register}
             </Button>
             <Button 
               onClick={() => navigate('/')}
               variant="ghost"
               className="w-full h-9 text-sm text-muted-foreground"
             >
-              {t.backHome}
+              {txt.backHome}
             </Button>
           </CardContent>
         </Card>
@@ -134,9 +110,9 @@ const AddProperty = () => {
             <div className="mx-auto w-14 h-14 bg-chart-3/10 rounded-xl flex items-center justify-center mb-3">
               <Building className="h-7 w-7 text-chart-3" />
             </div>
-            <CardTitle className="text-xl text-foreground">{t.upgradeRequired}</CardTitle>
+            <CardTitle className="text-xl text-foreground">{txt.upgradeRequired}</CardTitle>
             <CardDescription className="text-sm text-muted-foreground mt-1">
-              {t.upgradeDesc}
+              {txt.upgradeDesc}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-5 pt-0 space-y-3">
@@ -171,7 +147,7 @@ const AddProperty = () => {
                 variant="outline"
                 className="w-full h-9 border-border"
               >
-                {t.backDashboard}
+                {txt.backDashboard}
               </Button>
             </div>
           </CardContent>
@@ -189,9 +165,9 @@ const AddProperty = () => {
             <div className="mx-auto w-12 h-12 bg-destructive/10 rounded-xl flex items-center justify-center mb-3">
               <AlertTriangle className="h-6 w-6 text-destructive" />
             </div>
-            <CardTitle className="text-lg text-foreground">{t.limitReached}</CardTitle>
+            <CardTitle className="text-lg text-foreground">{txt.limitReached}</CardTitle>
             <CardDescription className="text-sm text-muted-foreground">
-              {t.limitDesc(currentProperties, maxProperties, membershipLevel)}
+              {txt.limitDesc(currentProperties, maxProperties, membershipLevel)}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2.5 p-4 pt-0">
@@ -200,14 +176,14 @@ const AddProperty = () => {
               className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               <Crown className="h-4 w-4 mr-2" />
-              {t.upgradeVIP}
+              {txt.upgradeVIP}
             </Button>
             <Button 
               onClick={() => navigate('/dashboard')}
               variant="outline"
               className="w-full h-9 border-border"
             >
-              {t.backDashboard}
+              {txt.backDashboard}
             </Button>
           </CardContent>
         </Card>
@@ -229,7 +205,7 @@ const AddProperty = () => {
             </Link>
             <h1 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-foreground">
               <Plus className="h-5 w-5 text-primary" />
-              <span>{t.addProperty}</span>
+              <span>{txt.addProperty}</span>
             </h1>
           </div>
           
@@ -269,14 +245,14 @@ const AddProperty = () => {
               className="text-xs sm:text-sm gap-1.5 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
             >
               <PenTool className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              {t.createManually}
+              {txt.createManually}
             </TabsTrigger>
             <TabsTrigger 
               value="import" 
               className="text-xs sm:text-sm gap-1.5 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
             >
               <Link2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              {t.importFromUrl}
+              {txt.importFromUrl}
             </TabsTrigger>
           </TabsList>
           
@@ -294,7 +270,7 @@ const AddProperty = () => {
                 if (!user) {
                   toast({
                     title: "Error",
-                    description: t.importError,
+                    description: txt.importError,
                     variant: "destructive",
                   });
                   return;
@@ -368,7 +344,7 @@ const AddProperty = () => {
 
                 toast({
                   title: language === "en" ? "Imported" : "Berhasil diimpor",
-                  description: t.importSuccess,
+                  description: txt.importSuccess,
                 });
 
                 setActiveTab("manual");

@@ -884,6 +884,23 @@ const zh: TranslationMap = {
     addName: '添加您的姓名', addPhone: '添加电话号码',
     uploadPhoto: '上传头像', writeBio: '写一段简介', addAddress: '添加地址',
   },
+  addProperty: {
+    loginRequired: '需要登录',
+    loginDesc: '请登录或注册以添加房产',
+    backHome: '返回首页',
+    upgradeRequired: '需要升级',
+    upgradeDesc: '升级为经纪人、供应商或房产所有者以发布房源',
+    upgradeAccount: '升级账户',
+    backDashboard: '返回仪表板',
+    limitReached: '房产数量已达上限',
+    limitDescTemplate: '您已达到此等级的房产数量上限。',
+    upgradeVIP: '升级VIP等级',
+    createListing: '创建新房源',
+    createManually: '手动创建',
+    importFromUrl: '从URL导入',
+    importError: '请先登录。',
+    importSuccess: '表单已自动填充，请检查后提交。',
+  },
 };
 
 export default zh;
