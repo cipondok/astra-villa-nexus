@@ -17,11 +17,14 @@ import {
 import {
   User, Briefcase, DollarSign, CreditCard, Home,
   CheckCircle, AlertCircle, ChevronLeft, ChevronRight,
-  Download, RotateCcw, FileText
+  Download, RotateCcw, FileText, Send, Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { generatePreQualificationPDF, type PreQualificationData } from '@/utils/preQualificationPdf';
+import { useMortgageApplication } from '@/hooks/useMortgageApplication';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const formatIDR = (v: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
@@ -64,6 +67,10 @@ const PreQualificationWizard: React.FC<{ className?: string }> = ({ className })
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>(initialForm);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const { submitApplication, isSubmitting } = useMortgageApplication();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [submitted, setSubmitted] = useState(false);
 
   const update = (key: keyof FormData, value: string | number) => {
     setForm(prev => ({ ...prev, [key]: value }));
@@ -359,7 +366,68 @@ const PreQualificationWizard: React.FC<{ className?: string }> = ({ className })
                     <Download className="h-4 w-4 mr-2" />
                     Download Pre-Qualification PDF
                   </Button>
-                  <Button onClick={handleReset} variant="outline" className="w-full">
+
+                  {user ? (
+                    submitted ? (
+                      <div className="p-3 rounded-xl bg-chart-2/10 border border-chart-2/20 text-center">
+                        <CheckCircle className="h-5 w-5 text-chart-2 mx-auto mb-1" />
+                        <p className="text-sm font-medium">Application Submitted!</p>
+                        <Button variant="link" size="sm" className="text-xs mt-1" onClick={() => navigate('/dashboard')}>
+                          View in Dashboard →
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        onClick={async () => {
+                          try {
+                            await submitApplication({
+                              full_name: form.fullName,
+                              email: form.email,
+                              phone: form.phone,
+                              employment_type: form.employmentType,
+                              company_name: form.companyName,
+                              years_employed: form.yearsEmployed,
+                              monthly_income: form.monthlyIncome,
+                              other_income: form.otherIncome,
+                              monthly_expenses: form.monthlyExpenses,
+                              existing_debt: form.existingDebt,
+                              property_price: form.propertyPrice,
+                              down_payment: calculations.downPayment,
+                              down_payment_percent: form.downPaymentPercent,
+                              loan_amount: calculations.loanAmount,
+                              loan_term_years: form.loanTermYears,
+                              interest_rate: form.interestRate,
+                              monthly_payment: calculations.monthlyPayment,
+                              dti_ratio: calculations.dtiRatio,
+                              qualification_status: calculations.qualificationStatus,
+                            });
+                            setSubmitted(true);
+                          } catch (e) { /* handled by hook */ }
+                        }}
+                        variant="outline"
+                        className="w-full h-12 border-primary/30 hover:bg-primary/5"
+                        size="lg"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          <Send className="h-4 w-4 mr-2" />
+                        )}
+                        Submit Pre-Approval Application
+                      </Button>
+                    )
+                  ) : (
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => navigate('/?auth=true')}
+                    >
+                      Sign in to Submit Application
+                    </Button>
+                  )}
+
+                  <Button onClick={handleReset} variant="ghost" className="w-full text-muted-foreground">
                     <RotateCcw className="h-4 w-4 mr-2" />
                     Start Over
                   </Button>

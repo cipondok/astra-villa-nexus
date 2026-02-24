@@ -11278,6 +11278,149 @@ export type Database = {
           },
         ]
       }
+      mortgage_applications: {
+        Row: {
+          admin_notes: string | null
+          approved_at: string | null
+          bank_id: string | null
+          bank_notes: string | null
+          bank_reference_number: string | null
+          company_name: string | null
+          created_at: string
+          down_payment: number
+          down_payment_percent: number
+          dti_ratio: number | null
+          email: string
+          employment_type: string
+          existing_debt: number | null
+          full_name: string
+          id: string
+          interest_rate: number
+          loan_amount: number
+          loan_term_years: number
+          monthly_expenses: number | null
+          monthly_income: number
+          monthly_payment: number
+          other_income: number | null
+          phone: string
+          property_id: string | null
+          property_price: number
+          qualification_status: string
+          rejected_at: string | null
+          reviewed_at: string | null
+          simulation_id: string | null
+          status: string
+          status_history: Json | null
+          submitted_at: string
+          updated_at: string
+          user_id: string
+          years_employed: number | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          approved_at?: string | null
+          bank_id?: string | null
+          bank_notes?: string | null
+          bank_reference_number?: string | null
+          company_name?: string | null
+          created_at?: string
+          down_payment: number
+          down_payment_percent: number
+          dti_ratio?: number | null
+          email: string
+          employment_type: string
+          existing_debt?: number | null
+          full_name: string
+          id?: string
+          interest_rate: number
+          loan_amount: number
+          loan_term_years: number
+          monthly_expenses?: number | null
+          monthly_income: number
+          monthly_payment: number
+          other_income?: number | null
+          phone: string
+          property_id?: string | null
+          property_price: number
+          qualification_status?: string
+          rejected_at?: string | null
+          reviewed_at?: string | null
+          simulation_id?: string | null
+          status?: string
+          status_history?: Json | null
+          submitted_at?: string
+          updated_at?: string
+          user_id: string
+          years_employed?: number | null
+        }
+        Update: {
+          admin_notes?: string | null
+          approved_at?: string | null
+          bank_id?: string | null
+          bank_notes?: string | null
+          bank_reference_number?: string | null
+          company_name?: string | null
+          created_at?: string
+          down_payment?: number
+          down_payment_percent?: number
+          dti_ratio?: number | null
+          email?: string
+          employment_type?: string
+          existing_debt?: number | null
+          full_name?: string
+          id?: string
+          interest_rate?: number
+          loan_amount?: number
+          loan_term_years?: number
+          monthly_expenses?: number | null
+          monthly_income?: number
+          monthly_payment?: number
+          other_income?: number | null
+          phone?: string
+          property_id?: string | null
+          property_price?: number
+          qualification_status?: string
+          rejected_at?: string | null
+          reviewed_at?: string | null
+          simulation_id?: string | null
+          status?: string
+          status_history?: Json | null
+          submitted_at?: string
+          updated_at?: string
+          user_id?: string
+          years_employed?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mortgage_applications_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "mortgage_banks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_applications_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_applications_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mortgage_applications_simulation_id_fkey"
+            columns: ["simulation_id"]
+            isOneToOne: false
+            referencedRelation: "mortgage_simulations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mortgage_banks: {
         Row: {
           admin_fee: number | null
