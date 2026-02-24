@@ -233,33 +233,62 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Fetch candidates
-    let query = supabase
-      .from('properties')
-      .select('*')
-      .eq('status', 'active')
-      .neq('id', propertyId)
-      .limit(50);
+    // Fetch candidates using tiered queries for better coverage
+    const baseFilter = (q: any) => {
+      q = q.eq('status', 'active').neq('id', propertyId);
+      if (target.listing_type) q = q.eq('listing_type', target.listing_type);
+      return q;
+    };
 
-    if (target.listing_type) {
-      query = query.eq('listing_type', target.listing_type);
-    }
+    // Tier 1: Same city + same type (best matches)
+    const tier1 = baseFilter(supabase.from('properties').select('*'))
+      .eq('city', target.city || '')
+      .eq('property_type', target.property_type || '')
+      .limit(20);
+
+    // Tier 2: Same city, any type
+    const tier2 = baseFilter(supabase.from('properties').select('*'))
+      .eq('city', target.city || '')
+      .limit(20);
+
+    // Tier 3: Same state + same type
+    const tier3 = baseFilter(supabase.from('properties').select('*'))
+      .eq('state', target.state || '')
+      .eq('property_type', target.property_type || '')
+      .limit(20);
+
+    // Tier 4: Same type anywhere (fallback)
+    const tier4 = baseFilter(supabase.from('properties').select('*'))
+      .eq('property_type', target.property_type || '')
+      .limit(20);
 
     // Build user preferences from behavior signals (parallel fetches)
     let userPrefs: UserPreferences | null = null;
-    const candidatesPromise = query;
+
+    // Helper to merge and deduplicate candidates from tiered queries
+    const mergeCandidates = (results: any[][]): any[] => {
+      const seen = new Set<string>();
+      const merged: any[] = [];
+      for (const batch of results) {
+        for (const p of batch) {
+          if (!seen.has(p.id)) {
+            seen.add(p.id);
+            merged.push(p);
+          }
+        }
+      }
+      return merged;
+    };
 
     if (userId) {
-      const [candidatesRes, favoritesRes, viewedRes, searchesRes] = await Promise.all([
-        candidatesPromise,
-        // Favorites - strong signal
+      const [t1Res, t2Res, t3Res, t4Res, favoritesRes, viewedRes, searchesRes] = await Promise.all([
+        tier1, tier2, tier3, tier4,
         supabase
           .from('favorites')
           .select('property_id')
           .eq('user_id', userId)
           .order('created_at', { ascending: false })
           .limit(20),
-        // Recently viewed via activity_logs
         supabase
           .from('activity_logs')
           .select('metadata')
@@ -267,7 +296,6 @@ Deno.serve(async (req) => {
           .eq('activity_type', 'property_view')
           .order('created_at', { ascending: false })
           .limit(30),
-        // Saved searches
         supabase
           .from('user_searches')
           .select('filters')
@@ -276,7 +304,9 @@ Deno.serve(async (req) => {
           .limit(10),
       ]);
 
-      const candidates = candidatesRes.data || [];
+      const candidates = mergeCandidates([
+        t1Res.data || [], t2Res.data || [], t3Res.data || [], t4Res.data || []
+      ]);
 
       // Collect property IDs from favorites and views
       const behaviorPropertyIds = new Set<string>();
@@ -300,22 +330,18 @@ Deno.serve(async (req) => {
           .in('id', ids);
 
         if (behaviorProperties && behaviorProperties.length > 0) {
-          // Weight favorites 2x by duplicating them
           const favoriteIds = new Set((favoritesRes.data || []).map(f => f.property_id));
           const weighted: any[] = [];
           for (const p of behaviorProperties) {
             weighted.push(p);
-            // Favorites count double
             if (favoriteIds.has((p as any).id)) {
               weighted.push(p);
             }
           }
 
-          // Also incorporate search filter preferences
           for (const s of (searchesRes.data || [])) {
             const filters = s.filters as any;
             if (!filters) continue;
-            // Create a synthetic property from search filters to influence preferences
             const synthetic: any = {};
             if (filters.propertyType) synthetic.property_type = filters.propertyType;
             if (filters.city) synthetic.city = filters.city;
@@ -328,7 +354,6 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Score and sort with user preferences
       const scored = candidates
         .map(c => scoreProperty(target, c, userPrefs))
         .filter(s => s.score > 10)
@@ -344,9 +369,12 @@ Deno.serve(async (req) => {
     }
 
     // No user - content-based only
-    const { data: candidates } = await candidatesPromise;
+    const [t1Res, t2Res, t3Res, t4Res] = await Promise.all([tier1, tier2, tier3, tier4]);
+    const candidates = mergeCandidates([
+      t1Res.data || [], t2Res.data || [], t3Res.data || [], t4Res.data || []
+    ]);
 
-    const scored = (candidates || [])
+    const scored = candidates
       .map(c => scoreProperty(target, c, null))
       .filter(s => s.score > 10)
       .sort((a, b) => b.score - a.score)
