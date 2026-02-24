@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 import AnimatedLogo from "@/components/AnimatedLogo";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface EnhancedNavigationProps {
   onLoginClick?: () => void;
@@ -19,6 +20,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut, profile } = useAuth();
   const { themeSettings } = useThemeSettings();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -27,28 +29,20 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
   useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {
       if (!isOpen) return;
-
       const target = event.target as Node | null;
       if (!target) return;
-
       const isInsideMenu = mobileMenuRef.current?.contains(target);
       const isMenuButton = menuButtonRef.current?.contains(target);
-
-      // Only close if clicking outside both menu and button
       if (!isInsideMenu && !isMenuButton) {
         setIsOpen(false);
       }
     };
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!isOpen) return;
       if (event.key === 'Escape') setIsOpen(false);
     };
-
-    // Use capture phase so it still fires even if some elements stop propagation
     document.addEventListener('pointerdown', handlePointerDown, true);
     document.addEventListener('keydown', handleKeyDown);
-
     return () => {
       document.removeEventListener('pointerdown', handlePointerDown, true);
       document.removeEventListener('keydown', handleKeyDown);
@@ -64,7 +58,6 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
         .eq("category", "general")
         .eq("key", "headerLogo")
         .maybeSingle();
-
       if (error) return null;
       return (data?.value as string) || null;
     },
@@ -77,48 +70,22 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
     queryKey: ["admin-status", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-
       const { data, error } = await supabase
         .from("admin_users")
         .select("*")
         .eq("user_id", user.id)
         .single();
-
       if (error) return null;
       return data;
     },
     enabled: !!user?.id,
   });
 
-
-  const text = {
-    en: {
-      home: "Home",
-      properties: "Properties", 
-      about: "About",
-      admin: "Admin",
-      signIn: "Sign In",
-      signOut: "Sign Out",
-      language: "ID"
-    },
-    id: {
-      home: "Beranda",
-      properties: "Properti",
-      about: "Tentang", 
-      admin: "Admin",
-      signIn: "Masuk",
-      signOut: "Keluar",
-      language: "EN"
-    }
-  };
-
-  const currentText = text[language];
-
   const navItems = [
-    { name: currentText.home, path: "/", icon: undefined },
-    { name: language === 'en' ? 'Location' : 'Lokasi', path: "/location", icon: MapPin },
-    { name: language === 'en' ? 'VR Tour' : 'Tur VR', path: "/vr-tour", icon: Glasses },
-    { name: currentText.about, path: "/about", icon: undefined },
+    { name: t('nav.home'), path: "/", icon: undefined },
+    { name: t('nav2.location'), path: "/location", icon: MapPin },
+    { name: t('nav2.vrTour'), path: "/vr-tour", icon: Glasses },
+    { name: t('nav.about'), path: "/about", icon: undefined },
   ];
 
   const handleSignOut = async () => {
@@ -177,7 +144,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
               title={language === 'en' ? 'Switch to Indonesian' : 'Ganti ke Bahasa Inggris'}
               className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 transition-all duration-200 h-8 px-2.5 text-xs md:h-9 md:px-3 md:text-sm"
             >
-              {currentText.language}
+              {t('nav2.languageToggle')}
             </Button>
 
             {/* User Actions */}
@@ -188,11 +155,11 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     onClick={handleAdminClick}
                     variant="ghost"
                     size="sm"
-                    title={currentText.admin}
+                    title={t('nav.adminPanel')}
                     className="bg-destructive/10 hover:bg-destructive/20 text-destructive hover:text-destructive border-destructive/30 hover:border-destructive/50 transition-all duration-300 h-8 px-2.5 md:h-9 md:px-3"
                   >
                     <Shield className="h-3.5 w-3.5 md:h-4 md:w-4 md:mr-2" />
-                    <span className="hidden sm:inline text-xs md:text-sm">{currentText.admin}</span>
+                    <span className="hidden sm:inline text-xs md:text-sm">{t('nav.adminPanel')}</span>
                   </Button>
                 )}
                 
@@ -214,11 +181,11 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                   onClick={handleSignOut}
                   variant="ghost"
                   size="sm"
-                  title={currentText.signOut}
+                  title={t('auth.signOut')}
                   className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 transition-all duration-200 h-8 px-2.5 md:h-9 md:px-3"
                 >
                   <LogOut className="h-3.5 w-3.5 md:h-4 md:w-4 md:mr-2" />
-                  <span className="hidden sm:inline text-xs md:text-sm">{currentText.signOut}</span>
+                  <span className="hidden sm:inline text-xs md:text-sm">{t('auth.signOut')}</span>
                 </Button>
               </div>
             ) : (
@@ -228,7 +195,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     size="sm"
                     className="btn-primary-ios h-8 px-3 text-xs md:h-9 md:px-4"
                   >
-                    {currentText.signIn}
+                    {t('auth.signIn')}
                   </Button>
               )
             )}
@@ -280,7 +247,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     className="w-full justify-start bg-destructive/10 hover:bg-destructive/20 text-destructive h-9 text-sm"
                   >
                     <Shield className="h-4 w-4 mr-2" />
-                    {currentText.admin}
+                    {t('nav.adminPanel')}
                   </Button>
                 )}
                 
@@ -306,7 +273,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                   className="w-full justify-start text-muted-foreground hover:text-foreground h-9 text-sm"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  {currentText.signOut}
+                  {t('auth.signOut')}
                 </Button>
               </div>
             ) : (
@@ -320,7 +287,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     size="sm"
                     className="w-full btn-primary-ios h-9 text-sm"
                   >
-                    {currentText.signIn}
+                    {t('auth.signIn')}
                   </Button>
                 </div>
               )

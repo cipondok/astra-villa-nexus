@@ -36,7 +36,29 @@ export const useTranslation = () => {
     return typeof result === 'string' ? result : fallback || key;
   };
 
-  return { t, language, setLanguage };
+  /** Get an array translation (e.g. footer.benefits) */
+  const tArray = (key: string): string[] => {
+    const keys = key.split('.');
+    let result: any = translations[language];
+    for (const k of keys) {
+      if (result && typeof result === 'object' && k in result) {
+        result = result[k];
+      } else {
+        let enResult: any = translations.en;
+        for (const ek of keys) {
+          if (enResult && typeof enResult === 'object' && ek in enResult) {
+            enResult = enResult[ek];
+          } else {
+            return [];
+          }
+        }
+        return Array.isArray(enResult) ? enResult : [];
+      }
+    }
+    return Array.isArray(result) ? result : [];
+  };
+
+  return { t, tArray, language, setLanguage };
 };
 
 export default useTranslation;

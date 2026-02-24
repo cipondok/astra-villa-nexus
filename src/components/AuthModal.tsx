@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import LoadingPage from "./LoadingPage";
 import { X } from "lucide-react";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -22,43 +23,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
   const [role, setRole] = useState("general_user");
   const [loading, setLoading] = useState(false);
   const [authAction, setAuthAction] = useState<'login' | 'register' | null>(null);
-
-  const text = {
-    en: {
-      login: "Login",
-      register: "Register",
-      email: "Email",
-      password: "Password",
-      name: "Full Name",
-      role: "I am a",
-      loginBtn: "Sign In",
-      registerBtn: "Create Account",
-      close: "Close",
-      generalUser: "General User",
-      propertyOwner: "Property Owner",
-      agent: "Real Estate Agent",
-      vendor: "Service Vendor",
-      customerService: "Customer Service"
-    },
-    id: {
-      login: "Masuk",
-      register: "Daftar",
-      email: "Email",
-      password: "Kata Sandi",
-      name: "Nama Lengkap",
-      role: "Saya adalah",
-      loginBtn: "Masuk",
-      registerBtn: "Buat Akun",
-      close: "Tutup",
-      generalUser: "Pengguna Umum",
-      propertyOwner: "Pemilik Properti",
-      agent: "Agen Real Estat",
-      vendor: "Vendor Layanan",
-      customerService: "Layanan Pelanggan"
-    }
-  };
-
-  const currentText = text[language];
+  const { t } = useTranslation();
 
   if (!isOpen) return null;
 
@@ -122,97 +87,54 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
           
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-muted/80">
-              <TabsTrigger value="login" className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">{currentText.login}</TabsTrigger>
-              <TabsTrigger value="register" className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">{currentText.register}</TabsTrigger>
+              <TabsTrigger value="login" className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">{t('authModal.login')}</TabsTrigger>
+              <TabsTrigger value="register" className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">{t('authModal.register')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="login" className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label htmlFor="login-email" className="text-foreground/80">{currentText.email}</Label>
-                <Input
-                  id="login-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={currentText.email}
-                  className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30"
-                />
+                <Label htmlFor="login-email" className="text-foreground/80">{t('authModal.email')}</Label>
+                <Input id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t('authModal.email')} className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="login-password" className="text-foreground/80">{currentText.password}</Label>
-                <Input
-                  id="login-password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={currentText.password}
-                  className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30"
-                />
+                <Label htmlFor="login-password" className="text-foreground/80">{t('authModal.password')}</Label>
+                <Input id="login-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t('authModal.password')} className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30" />
               </div>
-              <Button 
-                className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg"
-                onClick={handleLogin}
-                disabled={loading || !email || !password}
-              >
-                {loading ? 'Signing in...' : currentText.loginBtn}
+              <Button className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg" onClick={handleLogin} disabled={loading || !email || !password}>
+                {loading ? t('authModal.signingIn') : t('authModal.loginBtn')}
               </Button>
             </TabsContent>
             
             <TabsContent value="register" className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label htmlFor="register-name" className="text-foreground/80">{currentText.name}</Label>
-                <Input
-                  id="register-name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={currentText.name}
-                  className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30"
-                />
+                <Label htmlFor="register-name" className="text-foreground/80">{t('authModal.name')}</Label>
+                <Input id="register-name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder={t('authModal.name')} className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-email" className="text-foreground/80">{currentText.email}</Label>
-                <Input
-                  id="register-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={currentText.email}
-                  className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30"
-                />
+                <Label htmlFor="register-email" className="text-foreground/80">{t('authModal.email')}</Label>
+                <Input id="register-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t('authModal.email')} className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-password" className="text-foreground/80">{currentText.password}</Label>
-                <Input
-                  id="register-password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={currentText.password}
-                  className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30"
-                />
+                <Label htmlFor="register-password" className="text-foreground/80">{t('authModal.password')}</Label>
+                <Input id="register-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t('authModal.password')} className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-role" className="text-foreground/80">{currentText.role}</Label>
+                <Label htmlFor="register-role" className="text-foreground/80">{t('authModal.role')}</Label>
                 <Select value={role} onValueChange={setRole}>
                   <SelectTrigger className="bg-background/70 border-border/50 focus:border-primary focus:ring-primary/30">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border">
-                    <SelectItem value="general_user">{currentText.generalUser}</SelectItem>
-                    <SelectItem value="property_owner">{currentText.propertyOwner}</SelectItem>
-                    <SelectItem value="agent">{currentText.agent}</SelectItem>
-                    <SelectItem value="vendor">{currentText.vendor}</SelectItem>
-                    <SelectItem value="customer_service">{currentText.customerService}</SelectItem>
+                    <SelectItem value="general_user">{t('authModal.generalUser')}</SelectItem>
+                    <SelectItem value="property_owner">{t('authModal.propertyOwner')}</SelectItem>
+                    <SelectItem value="agent">{t('authModal.agent')}</SelectItem>
+                    <SelectItem value="vendor">{t('authModal.vendor')}</SelectItem>
+                    <SelectItem value="customer_service">{t('authModal.customerService')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <Button 
-                className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg"
-                onClick={handleRegister}
-                disabled={loading || !email || !password || !name}
-              >
-                {loading ? 'Creating account...' : currentText.registerBtn}
+              <Button className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg" onClick={handleRegister} disabled={loading || !email || !password || !name}>
+                {loading ? t('authModal.creatingAccount') : t('authModal.registerBtn')}
               </Button>
             </TabsContent>
           </Tabs>
