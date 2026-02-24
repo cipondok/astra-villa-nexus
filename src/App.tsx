@@ -119,6 +119,7 @@ const MediaHub = lazy(() => import('@/pages/MediaHub'));
 const AgentDirectory = lazy(() => import('@/pages/AgentDirectory'));
 const AgentRegistration = lazy(() => import('@/pages/AgentRegistration'));
 const PropertyComparison = lazy(() => import('@/pages/PropertyComparison'));
+const PreQualificationPage = lazy(() => import('@/pages/PreQualificationPage'));
 
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
@@ -280,6 +281,8 @@ const AppContent = () => {
             <Route path="/agent-registration" element={<AgentRegistration />} />
             <Route path="/daftar-agen" element={<AgentRegistration />} />
             <Route path="/property-comparison" element={<PropertyComparison />} />
+            <Route path="/pre-qualification" element={<PreQualificationPage />} />
+            <Route path="/mortgage-prequalification" element={<PreQualificationPage />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Suspense>
