@@ -1,79 +1,80 @@
 
 
-## Property Visit Calendar — Enhanced Calendar View
+## Advanced Analytics Dashboard
 
-### What Already Exists
-The project has a complete visit scheduling system:
-- **3 database tables**: `property_visits`, `agent_availability`, `agent_blocked_dates`
-- **Hooks**: `useMyVisits`, `useAgentVisits`, `useBookVisit`, `useAgentAvailability`, `useAgentBlockedDates` with real-time subscriptions
-- **Scheduling UI**: `ScheduleVisitDialog` (date picker + time slots + booking form) and `ScheduleVisitButton`
-- **Dashboard tab**: `PropertyVisitsTab` — a simple list of upcoming/past visits with cancel functionality
-- **No calendar view** — visits are displayed as cards in a flat list, not on a calendar
+### Current State
+- An `/analytics` page already exists with basic stats (user counts, property counts by type, engagement metrics)
+- `MarketInsightsTab` in the user dashboard shows city-level price averages and user preference profiles
+- `recharts` is installed and used extensively across 32+ files
+- The `properties` table has: `price`, `property_type`, `listing_type`, `city`, `state`, `area_sqm`, `bedrooms`, `bathrooms`, `created_at`, `status`
+- Tables like `activity_logs`, `favorites`, `user_searches`, `property_visits` provide engagement data
+- Existing admin analytics cover token stats, KYC, search analytics, and performance monitoring
 
 ### What We Will Build
 
-#### 1. Visit Calendar Component
-Create `src/components/visits/VisitCalendar.tsx` — a month calendar view that:
-- Highlights dates with scheduled visits using colored dots (green = confirmed, amber = pending, red = cancelled)
-- Clicking a date reveals the visits for that day in a detail panel below
-- Shows a mini-summary count on each date cell
-- Uses the existing `react-day-picker` (already installed via shadcn Calendar) with custom `modifiers` and `modifiersStyles`
+#### 1. Market Trends Charts
+Create `src/components/analytics/MarketTrendsChart.tsx`:
+- Price trend line chart grouped by month (based on property `created_at` and `price`)
+- Filterable by city, property type, and listing type (sale vs rent)
+- Shows average price, median price, and listing count over time
+- Uses recharts `LineChart` + `AreaChart`
 
-#### 2. Day Detail Panel
-Create `src/components/visits/VisitDayDetail.tsx` — shown below the calendar when a date is selected:
-- Lists all visits for that day with time, property info, status badge, and actions
-- Reschedule button opens the `ScheduleVisitDialog` pre-filled with the property/agent
-- Cancel button with confirmation
-- "Add to Calendar" button that generates an `.ics` file download for the visit
+#### 2. Price Distribution Analysis
+Create `src/components/analytics/PriceDistribution.tsx`:
+- Histogram showing price ranges and how many listings fall in each bucket
+- Breakdown by property type using stacked bars
+- Price per sqm comparison across cities using horizontal bar chart
 
-#### 3. Visit Reminders
-Create `src/components/visits/VisitReminders.tsx` — a small alert card shown above the calendar:
-- Shows visits happening today or tomorrow
-- Uses a countdown format ("In 3 hours", "Tomorrow at 10:00")
-- Color-coded urgency (today = primary, tomorrow = muted)
+#### 3. Neighborhood Insights
+Create `src/components/analytics/NeighborhoodInsights.tsx`:
+- City comparison cards with avg price, listing count, avg size, avg bedrooms
+- Top neighborhoods ranked by listing density and average price
+- Supply indicator (new listings this month vs last month)
 
-#### 4. Rescheduling Flow
-Add reschedule capability to the existing `ScheduleVisitDialog`:
-- Accept an optional `existingVisitId` prop
-- When rescheduling, cancel the old visit and create a new one in a single flow
-- Show the original date/time for reference
+#### 4. Investment ROI Projector
+Create `src/components/analytics/InvestmentROICalculator.tsx`:
+- Input: purchase price, down payment %, interest rate, rental yield estimate
+- Output: monthly mortgage, annual rental income, cash-on-cash return, break-even timeline
+- Visualization: ROI projection chart over 5/10/15/20 years using recharts `ComposedChart`
+- Pre-fill with market averages from the selected city
 
-#### 5. Enhanced PropertyVisitsTab
-Replace the current flat list in `PropertyVisitsTab` with:
-- A toggle between "Calendar View" and "List View"
-- Calendar view uses the new `VisitCalendar` + `VisitDayDetail`
-- List view preserves the existing card-based layout
-- Visit reminders shown at the top in both views
+#### 5. Enhanced Analytics Page
+Update `src/pages/Analytics.tsx` to add new tabs:
+- "Market Trends" tab with the trends chart
+- "Price Analysis" tab with distribution and per-sqm analysis
+- "Neighborhoods" tab with city/area insights
+- "ROI Calculator" tab with the investment projector
+- Keep existing "Overview" tab intact
 
 ### Technical Details
 
-**Calendar date highlighting** uses react-day-picker's `modifiers` API:
+**Data queries** all use the existing `properties` table — no new tables needed:
 ```typescript
-const modifiers = {
-  hasVisit: visitDates,
-  confirmed: confirmedDates,
-  pending: pendingDates,
-};
+// Price trends by month
+const { data } = await supabase
+  .from('properties')
+  .select('price, city, property_type, listing_type, created_at, area_sqm')
+  .eq('status', 'active')
+  .eq('approval_status', 'approved');
 ```
 
-**ICS file generation** for "Add to Calendar":
+**ROI calculation** is pure client-side math:
 ```typescript
-const generateICS = (visit) => {
-  const ics = `BEGIN:VCALENDAR\nBEGIN:VEVENT\nDTSTART:${formatICS(visit)}\nSUMMARY:Property Visit\nEND:VEVENT\nEND:VCALENDAR`;
-  // Trigger download as .ics file
-};
+const monthlyMortgage = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
+const annualRental = purchasePrice * (rentalYield / 100);
+const cashOnCash = (annualRental - annualMortgage) / downPayment * 100;
 ```
 
-**Rescheduling** cancels the existing visit and books a new one in sequence using the existing `useBookVisit` and status update mutations.
+**Chart components** use recharts (already installed) with `ResponsiveContainer`, matching existing patterns across the codebase.
 
-**No database changes needed** — the existing `property_visits`, `agent_availability`, and `agent_blocked_dates` tables support all required functionality.
+**No database changes required** — all analytics are computed from existing property data.
 
 ### Files to Create
-- `src/components/visits/VisitCalendar.tsx` — month calendar with visit indicators
-- `src/components/visits/VisitDayDetail.tsx` — day detail panel with actions
-- `src/components/visits/VisitReminders.tsx` — upcoming visit alerts
+- `src/components/analytics/MarketTrendsChart.tsx`
+- `src/components/analytics/PriceDistribution.tsx`
+- `src/components/analytics/NeighborhoodInsights.tsx`
+- `src/components/analytics/InvestmentROICalculator.tsx`
 
 ### Files to Edit
-- `src/components/dashboard/tabs/PropertyVisitsTab.tsx` — add calendar/list toggle, integrate new components
-- `src/components/visits/ScheduleVisitDialog.tsx` — add reschedule support (optional `existingVisitId` prop)
+- `src/pages/Analytics.tsx` — add new tabs integrating the four new components
 
