@@ -22,6 +22,7 @@ import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import { usePropertyAlerts } from '@/hooks/usePropertyAlerts';
+import { useReferralTracking } from '@/hooks/useReferralTracking';
 import { useQueryLoadingIntegration } from '@/hooks/useQueryLoadingIntegration';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import MaintenancePage from '@/pages/MaintenancePage';
@@ -162,6 +163,7 @@ const AppContent = () => {
   useScrollRestore(true);
   useVIPNotifications();
   usePropertyAlerts();
+  useReferralTracking();
   useQueryLoadingIntegration();
   
   const location = useLocation();

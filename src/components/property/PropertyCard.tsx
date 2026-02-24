@@ -14,6 +14,7 @@ import VerificationBadge from '@/components/ui/VerificationBadge';
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
 import SocialProofWidget from "./SocialProofWidget";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
+import SharePropertyButton from "./SharePropertyButton";
 
 interface PropertyCardProps {
   id: string;
@@ -173,12 +174,21 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           />
           
           {/* Save Button */}
-          <button 
-            className="absolute top-2 right-2 h-8 w-8 bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 rounded-full shadow-md flex items-center justify-center transition-all duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Heart className="h-4 w-4 text-white/90" />
-          </button>
+          <div className="absolute top-2 right-2 flex gap-1.5">
+            <button 
+              className="h-8 w-8 bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 rounded-full shadow-md flex items-center justify-center transition-all duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Heart className="h-4 w-4 text-white/90" />
+            </button>
+            <SharePropertyButton
+              propertyId={id}
+              propertyTitle={title}
+              propertyPrice={price}
+              propertyLocation={location}
+              className="h-8 w-8 p-0 bg-black/30 backdrop-blur-md hover:bg-black/50 text-white rounded-full border border-white/20 shadow-md"
+            />
+          </div>
           
           {/* Badges */}
           <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">

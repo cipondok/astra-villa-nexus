@@ -15968,6 +15968,48 @@ export type Database = {
           },
         ]
       }
+      property_shares: {
+        Row: {
+          channel: string
+          id: string
+          property_id: string | null
+          referral_code: string | null
+          shared_at: string
+          user_id: string | null
+        }
+        Insert: {
+          channel: string
+          id?: string
+          property_id?: string | null
+          referral_code?: string | null
+          shared_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          channel?: string
+          id?: string
+          property_id?: string | null
+          referral_code?: string | null
+          shared_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_shares_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_shares_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_survey_bookings: {
         Row: {
           admin_notes: string | null
