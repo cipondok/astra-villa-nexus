@@ -5,7 +5,7 @@ import { useSocialMediaSettings } from "@/hooks/useSocialMediaSettings";
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface FooterBrandProps {
-  language?: "en" | "id";
+  language?: "en" | "id" | "zh" | "ja" | "ko";
 }
 
 const FooterBrand = ({ language }: FooterBrandProps) => {

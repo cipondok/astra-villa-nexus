@@ -11,7 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AdvancedFiltersDialogProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   listingType: string;
   priceRange: string;
   bedrooms: string;

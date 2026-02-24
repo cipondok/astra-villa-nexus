@@ -3,7 +3,7 @@ import { Wrench, UserPlus, HelpCircle, Settings, Shield, CreditCard, Zap, Award,
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface FooterVendorServicesProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   onLinkClick: (path: string, label?: string) => void;
 }
 

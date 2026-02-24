@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 interface AdvancedFiltersProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   onFiltersChange: (filters: any) => void;
   onSearch: (searchData: any) => void;
   open: boolean;

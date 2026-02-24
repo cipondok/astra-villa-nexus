@@ -9,7 +9,7 @@ import AdvancedFiltersDialog from "@/components/property/AdvancedFiltersDialog";
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface SearchFiltersProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   onSearch: (filters: any) => void;
 }
 

@@ -13,7 +13,7 @@ interface PropertyDetailModalProps {
   property: BaseProperty;
   isOpen: boolean;
   onClose: () => void;
-  language?: "en" | "id";
+  language?: "en" | "id" | "zh" | "ja" | "ko";
   onView3D?: (property: BaseProperty) => void;
 }
 

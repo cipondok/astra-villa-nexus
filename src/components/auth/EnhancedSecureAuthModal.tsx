@@ -16,7 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface EnhancedSecureAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
 }
 
 interface BehavioralMetrics {

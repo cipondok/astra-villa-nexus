@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
 
 interface SearchLoadingAnimationProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
 }
 
 const SearchLoadingAnimation = ({ language }: SearchLoadingAnimationProps) => {

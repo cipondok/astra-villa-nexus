@@ -3,7 +3,7 @@ import { Zap, Eye, Shield, FileCheck, Bitcoin, Mic, Smartphone, BarChart3 } from
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface FooterInnovationHubProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   onLinkClick: (path: string, label?: string) => void;
 }
 

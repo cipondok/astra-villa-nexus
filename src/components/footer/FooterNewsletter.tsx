@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface FooterNewsletterProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
 }
 
 const FooterNewsletter = ({ language }: FooterNewsletterProps) => {

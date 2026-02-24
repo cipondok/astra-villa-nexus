@@ -8,7 +8,7 @@ import { Zap, Clock, Users, TrendingUp, Gavel, Filter, SortAsc } from "lucide-re
 import LiveAuctionCard from "./LiveAuctionCard";
 
 interface LiveListingsSectionProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
 }
 
 const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {

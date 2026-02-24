@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 
 interface RoleDashboardProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
 }
 
 const RoleDashboard = ({ language }: RoleDashboardProps) => {

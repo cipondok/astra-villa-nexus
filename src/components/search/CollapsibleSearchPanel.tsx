@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import AdvancedFilters from './AdvancedFilters';
 
 interface CollapsibleSearchPanelProps {
-  language?: "en" | "id";
+  language?: "en" | "id" | "zh" | "ja" | "ko";
   onSearch?: (searchData: any) => void;
 }
 
