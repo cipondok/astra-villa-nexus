@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, Clock, Calendar, TrendingUp, MessageSquare, ScanEye, Tag, Percent } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
 import PropertyDetailModal from './PropertyDetailModal';
 import PropertyComparisonButton from './PropertyComparisonButton';
 import PropertyImageCarousel from './PropertyImageCarousel';
@@ -58,7 +59,7 @@ interface CompactProperty {
 
 interface CompactPropertyCardProps {
   property: CompactProperty;
-  language: "en" | "id";
+  language?: "en" | "id";
   onView?: (id: string) => void;
   isSaved?: boolean;
   onSave?: (id: string) => void;
@@ -77,7 +78,6 @@ interface CompactPropertyCardProps {
 
 const CompactPropertyCard = ({ 
   property, 
-  language, 
   onView, 
   isSaved = false,
   onSave,
@@ -96,26 +96,7 @@ const CompactPropertyCard = ({
   const { aggregate } = usePropertyRatings(property.id);
   const { getPropertyImage } = useDefaultPropertyImage();
 
-  const text = {
-    en: {
-      viewDetails: "View Details",
-      view3D: "3D View",
-      forSale: "For Sale",
-      forRent: "For Rent",
-      bedrooms: "bed",
-      bathrooms: "bath"
-    },
-    id: {
-      viewDetails: "Lihat Detail",
-      view3D: "Tampilan 3D",
-      forSale: "Dijual",
-      forRent: "Disewa",
-      bedrooms: "kmr", 
-      bathrooms: "kmdi"
-    }
-  };
-
-  const currentText = text[language];
+  const { t, language } = useTranslation();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {
@@ -221,7 +202,7 @@ const CompactPropertyCard = ({
               </Badge>
             )}
              <Badge className={`font-bold px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-xs shadow-md text-white rounded-full ${property.listing_type === 'sale' ? 'bg-gradient-to-r from-emerald-500 to-green-600' : 'bg-gradient-to-r from-sky-500 to-blue-600'}`}>
-              {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
+              {property.listing_type === 'sale' ? t('propertyCard.forSale') : t('propertyCard.forRent')}
             </Badge>
             {property.property_type && (
               <Badge variant="outline" className="bg-black/40 backdrop-blur-md capitalize text-[9px] sm:text-xs px-1.5 sm:px-2 py-0.5 text-white border-white/20 rounded-full">

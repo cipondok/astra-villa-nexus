@@ -2,32 +2,15 @@
 import { Shield, Star, Facebook, Twitter, Instagram, Youtube, MessageCircle, Sparkles, Music2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSocialMediaSettings } from "@/hooks/useSocialMediaSettings";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface FooterBrandProps {
-  language: "en" | "id";
+  language?: "en" | "id";
 }
 
 const FooterBrand = ({ language }: FooterBrandProps) => {
   const { settings } = useSocialMediaSettings();
-
-  const text = {
-    en: {
-      company: "Astra Villa",
-      tagline: "Your dream property awaits",
-      trustedBy: "Trusted by 50,000+ property seekers",
-      followUs: "Follow Us",
-      description: "Indonesia's premier property marketplace connecting buyers, sellers, and industry professionals.",
-    },
-    id: {
-      company: "Astra Villa",
-      tagline: "Properti impian Anda menanti",
-      trustedBy: "Dipercaya oleh 50,000+ pencari properti",
-      followUs: "Ikuti Kami",
-      description: "Marketplace properti terdepan Indonesia yang menghubungkan pembeli, penjual, dan profesional industri.",
-    }
-  };
-
-  const currentText = text[language];
+  const { t } = useTranslation();
 
   const socialLinks = [
     { url: settings.facebookUrl, icon: Facebook, label: 'Facebook', colorClass: 'from-chart-4/20 to-chart-4/10 hover:from-chart-4/30 hover:to-chart-4/20 border-chart-4/30 hover:border-chart-4/50', iconColor: 'text-chart-4' },
@@ -54,17 +37,17 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
             <Sparkles className="h-6 w-6 text-primary-foreground" />
           </div>
           <h3 className="text-2xl font-bold bg-gradient-to-r from-primary via-primary to-primary/80 bg-clip-text text-transparent">
-            {currentText.company}
+            {t('footerBrand.company')}
           </h3>
         </div>
-        <p className="text-muted-foreground text-sm leading-relaxed">{currentText.description}</p>
-        <p className="text-primary font-medium text-sm">{currentText.tagline}</p>
+        <p className="text-muted-foreground text-sm leading-relaxed">{t('footerBrand.description')}</p>
+        <p className="text-primary font-medium text-sm">{t('footerBrand.tagline')}</p>
       </div>
 
       <div className="space-y-4">
         <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border/30">
           <Shield className="h-5 w-5 text-chart-1 flex-shrink-0" />
-          <span className="text-xs text-foreground font-medium">{currentText.trustedBy}</span>
+          <span className="text-xs text-foreground font-medium">{t('footerBrand.trustedBy')}</span>
         </div>
         <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-border/30">
           <div className="flex items-center gap-1">
@@ -79,7 +62,7 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
 
       {visibleLinks.length > 0 && (
         <div className="space-y-3">
-          <h4 className="font-semibold text-foreground text-sm">{currentText.followUs}</h4>
+          <h4 className="font-semibold text-foreground text-sm">{t('footerBrand.followUs')}</h4>
           <div className="flex flex-wrap gap-2">
             {visibleLinks.map((link) => {
               const href = getHref(link);

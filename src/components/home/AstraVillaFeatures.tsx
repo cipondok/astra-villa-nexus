@@ -1,23 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Building2, Calculator, Landmark, Map, MapPin, TrendingUp, Ruler, BarChart3, LucideIcon } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface Feature {
   icon: LucideIcon;
-  title: string;
+  titleKey: string;
   description: string;
+  routeTitle: string;
 }
-
-const features: Feature[] = [
-  { icon: Building2, title: 'New Projects', description: 'The best investment opportunities' },
-  { icon: Calculator, title: 'Construction Cost Calculator', description: 'Get construction cost estimate' },
-  { icon: Landmark, title: 'Home Loan Calculator', description: 'Find affordable loan packages' },
-  { icon: Map, title: 'Area Guides', description: 'Explore housing societies in Indonesia' },
-  { icon: MapPin, title: 'Plot Finder', description: 'Find plots in any housing society' },
-  { icon: TrendingUp, title: 'Property Index', description: 'Track changes in real estate prices' },
-  { icon: Ruler, title: 'Area Unit Converter', description: 'Convert any area unit instantly' },
-  { icon: BarChart3, title: 'Property Trends', description: 'Find popular areas to buy property' },
-];
 
 interface AstraVillaFeaturesProps {
   variant?: 'default' | 'hero';
@@ -25,6 +16,18 @@ interface AstraVillaFeaturesProps {
 
 const AstraVillaFeatures: React.FC<AstraVillaFeaturesProps> = ({ variant = 'default' }) => {
   const isHero = variant === 'hero';
+  const { t } = useTranslation();
+
+  const features: Feature[] = [
+    { icon: Building2, titleKey: 'home.newProjects', description: 'The best investment opportunities', routeTitle: 'New Projects' },
+    { icon: Calculator, titleKey: 'home.constructionCostCalc', description: 'Get construction cost estimate', routeTitle: 'Construction Cost Calculator' },
+    { icon: Landmark, titleKey: 'home.homeLoanCalc', description: 'Find affordable loan packages', routeTitle: 'Home Loan Calculator' },
+    { icon: Map, titleKey: 'home.areaGuides', description: 'Explore housing societies in Indonesia', routeTitle: 'Area Guides' },
+    { icon: MapPin, titleKey: 'home.plotFinder', description: 'Find plots in any housing society', routeTitle: 'Plot Finder' },
+    { icon: TrendingUp, titleKey: 'home.propertyIndex', description: 'Track changes in real estate prices', routeTitle: 'Property Index' },
+    { icon: Ruler, titleKey: 'home.areaUnitConverter', description: 'Convert any area unit instantly', routeTitle: 'Area Unit Converter' },
+    { icon: BarChart3, titleKey: 'home.propertyTrends', description: 'Find popular areas to buy property', routeTitle: 'Property Trends' },
+  ];
 
   return (
     <div className={`rounded-xl md:rounded-2xl ${isHero ? 'p-0' : 'p-1.5 sm:p-2 md:p-3'}`}>
@@ -37,7 +40,7 @@ const AstraVillaFeatures: React.FC<AstraVillaFeaturesProps> = ({ variant = 'defa
             ? 'text-[10px] md:text-xs text-foreground/80'
             : 'text-[9px] sm:text-xs md:text-sm text-foreground/80'
         }`}>
-          AI Tools & Features
+          {t('home.aiToolsFeatures')}
         </h2>
         <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />
         <div className="h-px w-6 sm:w-10 bg-gradient-to-l from-transparent to-gold-primary/30" />
@@ -61,6 +64,7 @@ interface FeatureCardProps {
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'default' }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const IconComponent = feature.icon;
   const isHero = variant === 'hero';
 
@@ -75,7 +79,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
       'Area Unit Converter': '/calculators/area',
       'Property Trends': '/analytics?tab=trends'
     };
-    const route = routes[feature.title];
+    const route = routes[feature.routeTitle];
     if (route) navigate(route);
   };
 
@@ -113,7 +117,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
             ? 'mt-0.5 text-[8px] lg:text-[9px] font-medium text-foreground/60 group-hover:text-gold-primary'
             : 'mt-1 text-[9px] lg:text-[11px] font-semibold text-foreground/60 group-hover:text-gold-primary'
         }`}>
-          {feature.title}
+          {t(feature.titleKey)}
         </h3>
       </div>
     </div>
