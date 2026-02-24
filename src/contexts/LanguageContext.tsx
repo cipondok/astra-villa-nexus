@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
-type Language = "en" | "id";
+type Language = "en" | "id" | "zh" | "ja" | "ko";
 
 interface LanguageContextProps {
   language: Language;
@@ -15,7 +15,8 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     // Use localStorage if available, fallback to "en"
     if (typeof window !== "undefined") {
       const savedLang = localStorage.getItem("language");
-      return savedLang === "id" ? "id" : "en";
+      const validLangs: Language[] = ["en", "id", "zh", "ja", "ko"];
+      return validLangs.includes(savedLang as Language) ? (savedLang as Language) : "en";
     }
     return "en";
   });
