@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, LogOut, Shield, Headphones, Glasses, MapPin } from "lucide-react";
+import NotificationCenter from "@/components/notifications/NotificationCenter";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useQuery } from "@tanstack/react-query";
@@ -146,6 +147,9 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
             >
               {t('nav2.languageToggle')}
             </Button>
+
+            {/* Notification Center */}
+            {user && <NotificationCenter />}
 
             {/* User Actions */}
             {user ? (

@@ -36,6 +36,7 @@ import {
   MessageSquare,
   Bell
 } from "lucide-react";
+import NotificationCenter from "@/components/notifications/NotificationCenter";
 
 interface AuthenticatedNavigationProps {
   language: "en" | "id";
@@ -259,6 +260,9 @@ const AuthenticatedNavigation = ({
             <div className="hidden sm:block">
               <LanguageToggleSwitch />
             </div>
+
+            {/* Notification Center */}
+            <NotificationCenter />
 
             {/* User Menu */}
             <HoverCard openDelay={300} closeDelay={200}>
