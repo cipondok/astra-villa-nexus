@@ -6,6 +6,7 @@ import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { Calculator, Percent, Calendar, Banknote, TrendingDown, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import KPRAmortizationChart from './KPRAmortizationChart';
 
 interface KPRCalculatorProps {
   propertyPrice: number;
@@ -191,6 +192,13 @@ export const KPRCalculator: React.FC<KPRCalculatorProps> = ({ propertyPrice, cla
               <div className="text-xs sm:text-sm font-semibold">{calculations.numberOfPayments}x</div>
             </div>
           </div>
+
+          <KPRAmortizationChart
+            loanAmount={calculations.loanAmount}
+            interestRate={interestRate}
+            loanTermYears={loanTerm}
+            monthlyPayment={calculations.monthlyPayment}
+          />
 
           <p className="text-[10px] text-muted-foreground text-center">
             * Simulasi ini hanya perkiraan. Hubungi bank untuk informasi lebih lanjut.
