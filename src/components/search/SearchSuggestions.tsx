@@ -94,7 +94,7 @@ const SearchSuggestions = ({ query, onSelect, isVisible, language }: SearchSugge
   }
 
   return (
-    <Card className="absolute top-full left-0 right-0 z-50 mt-1 bg-card border border-border shadow-lg">
+    <Card className="absolute top-full left-0 right-0 z-[9999] mt-1 bg-card border border-border shadow-2xl">
       <CardContent className="p-2">
         <div className="space-y-1">
           {suggestions.map((suggestion, index) => (
