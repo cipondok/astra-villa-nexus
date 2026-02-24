@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calculator, Percent, Calendar, Banknote, TrendingDown, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import KPRAmortizationChart from './KPRAmortizationChart';
+import KPRAffordability from './KPRAffordability';
 
 interface KPRCalculatorProps {
   propertyPrice: number;
@@ -198,6 +199,11 @@ export const KPRCalculator: React.FC<KPRCalculatorProps> = ({ propertyPrice, cla
             interestRate={interestRate}
             loanTermYears={loanTerm}
             monthlyPayment={calculations.monthlyPayment}
+          />
+
+          <KPRAffordability
+            monthlyPayment={calculations.monthlyPayment}
+            downPayment={calculations.downPayment}
           />
 
           <p className="text-[10px] text-muted-foreground text-center">
