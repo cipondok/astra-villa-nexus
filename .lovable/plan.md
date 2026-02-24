@@ -1,32 +1,86 @@
 
 
-## Current Status
+## Social Sharing and Referral System
 
-All four features from this iteration are complete:
+### Overview
+Build a social sharing feature for property listings and comparison results, plus a referral rewards system that leverages the existing `affiliates`, `referrals`, and `referral_tracking` tables.
 
-1. Collaborative recommendations edge function with real similarity logic
-2. Saved searches with email notifications
-3. Enhanced property comparison with KPR projections and neighborhood data
-4. User-facing dashboard with 5 tabs (Overview, Saved, Searches, KPR, Insights)
+### What Already Exists
+- `affiliates` table with referral codes, earnings tracking
+- `referrals` table linking affiliates to referred users
+- `referral_tracking` table with UTM params, share channels, click counts
+- `referral_campaigns` table for campaign management
+- `AffiliatePanel` component with join/copy link functionality
 
-## Recommended Next Steps
+### Implementation Plan
 
-Here are the logical next features to build on the current foundation:
+#### 1. Share Property Button Component
+Create `src/components/property/SharePropertyButton.tsx` -- a dropdown button with share options:
+- **Copy Link**: Copies property URL with the user's referral code appended (e.g., `/?ref=CODE&property=ID`)
+- **WhatsApp**: Opens WhatsApp share with property title, price, and link
+- **Facebook**: Opens Facebook share dialog
+- **Twitter/X**: Opens tweet compose with property details
+- **Telegram**: Opens Telegram share
 
-### 1. Mortgage Pre-Approval Integration with Banks
-Extend the pre-qualification wizard to submit applications to partner banks via an edge function, tracking application status in a new `mortgage_applications` table. This moves from informational PDF to an actionable workflow with status tracking (submitted, under review, approved, rejected) visible in the user dashboard.
+The button uses the Web Share API as a fallback on mobile devices. If the user is logged in and has an affiliate record, all links automatically include their referral code.
 
-### 2. Real-Time Property Alerts via WebSocket
-Use Supabase Realtime to push instant notifications when a new property matches a user's saved search, rather than relying solely on the cron-based email check. This would add a notification bell in the header with live updates.
+#### 2. Share Comparison Results
+Create `src/components/property/ShareComparisonButton.tsx` -- generates a shareable URL for the current comparison set (encodes property IDs in query params). Same social channels as above.
 
-### 3. Agent-to-Buyer Messaging System
-Build a direct messaging system between property agents and interested buyers, with conversation threads tied to specific properties. This would use a `messages` table with Supabase Realtime for live chat.
+#### 3. Referral Landing Logic
+Create `src/hooks/useReferralTracking.ts`:
+- On app load, check URL for `ref` query parameter
+- Store the referral code in `localStorage`
+- Insert/update a row in `referral_tracking` with `share_channel`, UTM params, and increment `click_count`
+- On user signup, link the new user to the referrer by inserting into `referrals` table and updating affiliate stats
 
-### 4. Property Visit Scheduling & Calendar
-Allow buyers to book property viewings directly from listings, with calendar integration for agents. This would extend the existing `property_survey_bookings` table with time slot management and confirmation workflows.
+#### 4. Database Migration
+Create a new migration to add:
+- A `property_shares` table to track individual share events (user_id, property_id, channel, shared_at) for analytics
+- A trigger function `process_referral_signup` that fires when a new row is inserted into `referrals`, automatically incrementing the affiliate's `total_referrals` count
 
-### 5. Social Sharing & Referral System
-Enable users to share property listings or comparison results via social media or direct links, with a referral tracking system that rewards users for bringing new sign-ups.
+#### 5. Integration Points
+- Add `SharePropertyButton` to `PropertyDetailModal`, `CompactPropertyCard`, and `PropertyCard` components
+- Add `ShareComparisonButton` to the property comparison view
+- Mount `useReferralTracking` in `App.tsx` to capture referral clicks on page load
+- Add a "Referrals" tab to the user dashboard showing share stats, click counts, and conversion tracking from `referral_tracking`
 
-Pick any direction and I will create a detailed implementation plan.
+#### 6. Referral Dashboard Tab
+Create `src/components/dashboard/tabs/ReferralDashboardTab.tsx`:
+- Shows the user's referral code and copy button
+- Displays stats: total shares, clicks, sign-ups, rewards earned
+- Lists recent referral activity from `referral_tracking`
+
+### Technical Details
+
+**Share URL format**: `https://astra-villa-realty.lovable.app/property/{id}?ref={code}&utm_source={channel}`
+
+**Web Share API fallback**:
+```typescript
+if (navigator.share) {
+  await navigator.share({ title, text, url });
+} else {
+  // Show dropdown with manual share options
+}
+```
+
+**Tables touched**: `affiliates` (read), `referral_tracking` (insert/update), `referrals` (insert on signup), new `property_shares` (insert on share)
+
+**RLS policies**: 
+- `property_shares`: Users can insert their own rows, select their own rows
+- Existing tables already have appropriate policies
+
+### Files to Create
+- `src/components/property/SharePropertyButton.tsx`
+- `src/components/property/ShareComparisonButton.tsx`
+- `src/hooks/useReferralTracking.ts`
+- `src/components/dashboard/tabs/ReferralDashboardTab.tsx`
+- Migration SQL for `property_shares` table and signup trigger
+
+### Files to Edit
+- `src/components/property/PropertyDetailModal.tsx` -- add share button
+- `src/components/property/CompactPropertyCard.tsx` -- add share button
+- `src/components/property/PropertyCard.tsx` -- add share button
+- `src/App.tsx` -- mount referral tracking hook
+- `src/pages/UserDashboardPage.tsx` -- add Referrals tab
 
