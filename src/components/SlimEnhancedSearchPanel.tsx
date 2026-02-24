@@ -84,7 +84,7 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch, resultsCoun
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);

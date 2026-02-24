@@ -675,7 +675,7 @@ const AstraSearchPanel = ({
       selectArea: "Pilih Area"
     }
   };
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   // Get user's current location
   const getUserLocation = () => {

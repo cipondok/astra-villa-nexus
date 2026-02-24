@@ -131,7 +131,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   // Auto-close countdown timer
   useEffect(() => {

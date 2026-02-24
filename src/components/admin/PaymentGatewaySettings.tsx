@@ -90,7 +90,7 @@ interface GatewayConfig {
 
 const PaymentGatewaySettings = () => {
   const { language } = useTranslation();
-  const t = text[language];
+  const t = text[language] || text.en;
   
   const [config, setConfig] = useState<GatewayConfig>({
     midtrans: { enabled: false, serverKey: '', clientKey: '', isProduction: false },

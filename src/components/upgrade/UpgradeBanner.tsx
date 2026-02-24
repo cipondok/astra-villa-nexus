@@ -26,7 +26,7 @@ interface UpgradeBannerProps {
 
 const UpgradeBanner = ({ onDismiss }: UpgradeBannerProps) => {
   const { language } = useTranslation();
-  const t = text[language];
+  const t = text[language] || text.en;
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(true);
 

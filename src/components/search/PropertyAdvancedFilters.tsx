@@ -227,7 +227,7 @@ const PropertyAdvancedFilters = ({
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const propertyTypes = [
     { value: 'house', label: currentText.house },

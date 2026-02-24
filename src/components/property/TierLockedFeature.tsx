@@ -58,7 +58,7 @@ const TierLockedFeature: React.FC<TierLockedFeatureProps> = ({
     }
   };
 
-  const t = text[language];
+  const t = text[language] || text.en;
 
   if (variant === 'badge') {
     return (

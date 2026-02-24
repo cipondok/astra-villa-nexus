@@ -77,7 +77,7 @@ const text = {
 
 const TransactionAuditTrail = () => {
   const { language } = useTranslation();
-  const t = text[language];
+  const t = text[language] || text.en;
   
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);

@@ -51,7 +51,7 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   // Handle scroll-based minimize/expand
   const handleScroll = useCallback(() => {

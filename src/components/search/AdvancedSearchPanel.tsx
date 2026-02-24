@@ -200,7 +200,7 @@ const AdvancedSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "bu
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const propertyTypes = [
     { value: 'villa', label: currentText.villa, icon: '🏖️' },

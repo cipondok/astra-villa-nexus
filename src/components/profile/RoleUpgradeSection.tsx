@@ -122,7 +122,7 @@ const RoleUpgradeSection: React.FC = () => {
     }
   };
 
-  const t = text[language];
+  const t = text[language] || text.en;
 
   const hasRole = (role: string) => userRoles.includes(role as any);
   

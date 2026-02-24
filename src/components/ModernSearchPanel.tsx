@@ -169,7 +169,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     }
   }), [language]);
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   // Define propertyType options for the toggle group and keep the existing text usage
   const propertyTypeOptions = [

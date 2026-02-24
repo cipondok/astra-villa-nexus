@@ -125,7 +125,7 @@ const text = {
 
 const TransactionManagementHub = () => {
   const { language } = useTranslation();
-  const t = text[language];
+  const t = text[language] || text.en;
   
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [stats, setStats] = useState<TransactionStats>({

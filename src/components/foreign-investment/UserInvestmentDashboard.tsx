@@ -76,7 +76,7 @@ export const UserInvestmentDashboard = () => {
     }
   };
 
-  const t = text[language];
+  const t = text[language] || text.en;
 
   useEffect(() => {
     if (user) {

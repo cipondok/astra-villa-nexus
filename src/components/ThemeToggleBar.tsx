@@ -21,7 +21,7 @@ const ThemeToggleBar = ({ language }: ThemeToggleBarProps) => {
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const themes = [
     { key: "light", label: currentText.light, icon: Sun },

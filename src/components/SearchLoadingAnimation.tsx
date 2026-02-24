@@ -20,7 +20,7 @@ const SearchLoadingAnimation = ({ language }: SearchLoadingAnimationProps) => {
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   useEffect(() => {
     const timer = setInterval(() => {

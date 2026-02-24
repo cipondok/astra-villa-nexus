@@ -35,7 +35,7 @@ const text = {
 
 const TransactionManagementTabs = () => {
   const { language } = useTranslation();
-  const t = text[language];
+  const t = text[language] || text.en;
   const [activeTab, setActiveTab] = useState("transactions");
 
   return (

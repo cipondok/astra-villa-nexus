@@ -251,7 +251,7 @@ const JointVentures = () => {
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-16">

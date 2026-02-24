@@ -43,7 +43,7 @@ const QuickFiltersChipBar = ({ language, onFilterSelect }: QuickFiltersChipBarPr
     },
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   const quickFilters: QuickFilter[] = [
     {

@@ -131,7 +131,7 @@ const AuthenticatedNavigation = ({
     }
   };
 
-  const currentText = text[language];
+  const currentText = text[language] || text.en;
 
   return (
     <nav className="bg-background/80 backdrop-blur-2xl border-b border-gold-primary/10">

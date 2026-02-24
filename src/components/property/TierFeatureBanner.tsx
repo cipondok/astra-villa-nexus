@@ -53,7 +53,7 @@ const TierFeatureBanner: React.FC = () => {
     }
   };
 
-  const t = text[language];
+  const t = text[language] || text.en;
 
   // Get icons for features
   const getFeatureIcon = (id: string) => {
