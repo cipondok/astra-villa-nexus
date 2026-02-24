@@ -73,8 +73,8 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
   };
 
   return (
-    <Card className="enhanced-card glow-gold border-binance-orange/30 backdrop-blur-lg">
-      <CardContent className="p-8">
+    <Card className="enhanced-card glow-gold border-binance-orange/30 backdrop-blur-lg overflow-visible">
+      <CardContent className="p-8 overflow-visible">
         <div className="grid grid-cols-1 gap-4 mb-6">
           <div className="relative">
             <Search className="absolute left-4 top-4 h-5 w-5 text-binance-orange" />
