@@ -148,7 +148,7 @@ const LiveMonitoringDashboard = () => {
     try {
       const { data, error } = await supabase
         .from('activity_logs')
-        .select('*')
+        .select('id, activity_type, user_id, activity_description, created_at, metadata')
         .order('created_at', { ascending: false })
         .limit(50);
 

@@ -39,37 +39,29 @@ const ProjectMapVisualization = () => {
   
   // Real-time subscriptions for auto-updates
   useEffect(() => {
-    const channels = [
-      supabase.channel('project-map-bookings')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'property_bookings' }, () => {
-          refetch();
-          setLastAutoUpdate(new Date());
-          toast.success('Booking data updated', { duration: 2000 });
-        })
-        .subscribe(),
-      supabase.channel('project-map-reviews')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'property_reviews' }, () => {
-          refetch();
-          setLastAutoUpdate(new Date());
-          toast.success('Review data updated', { duration: 2000 });
-        })
-        .subscribe(),
-      supabase.channel('project-map-properties')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'properties' }, () => {
-          refetch();
-          setLastAutoUpdate(new Date());
-        })
-        .subscribe(),
-      supabase.channel('project-map-profiles')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
-          refetch();
-          setLastAutoUpdate(new Date());
-        })
-        .subscribe()
-    ];
+    const channel = supabase.channel('project-map-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'property_bookings' }, () => {
+        refetch();
+        setLastAutoUpdate(new Date());
+        toast.success('Booking data updated', { duration: 2000 });
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'property_reviews' }, () => {
+        refetch();
+        setLastAutoUpdate(new Date());
+        toast.success('Review data updated', { duration: 2000 });
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'properties' }, () => {
+        refetch();
+        setLastAutoUpdate(new Date());
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
+        refetch();
+        setLastAutoUpdate(new Date());
+      })
+      .subscribe();
 
     return () => {
-      channels.forEach(channel => supabase.removeChannel(channel));
+      supabase.removeChannel(channel);
     };
   }, [refetch]);
   

@@ -23,7 +23,7 @@ import {
   Home
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAdminAlerts } from "@/hooks/useAdminAlerts";
+import { useRealTimeAlerts } from "@/hooks/useRealTimeAlerts";
 
 interface QuickActionProps {
   onTabChange: (tab: string) => void;
@@ -33,8 +33,8 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   
-  // Initialize admin alerts hook to start monitoring
-  useAdminAlerts();
+  // Initialize real-time alerts hook to start monitoring
+  useRealTimeAlerts();
 
   // Fetch property statistics
   const { data: propertyStats } = useQuery({

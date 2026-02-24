@@ -43,7 +43,7 @@ export function useOptimizedQuery<T>({
     staleTime,
     gcTime: cacheTime,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnReconnect: background,
     retry: (failureCount, error) => {
       // Don't retry on 4xx errors

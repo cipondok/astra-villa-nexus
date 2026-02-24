@@ -23,10 +23,10 @@ const CSPerformanceMonitor = () => {
   const { data: metrics, isLoading } = useQuery({
     queryKey: ['cs-performance-metrics'],
     queryFn: async () => {
-      const { data: tickets } = await supabase.from('customer_complaints').select('*');
-      const { data: inquiries } = await supabase.from('inquiries').select('*');
-      const { data: agents } = await supabase.from('user_roles').select('*').eq('role', 'customer_service').eq('is_active', true);
-      const { data: chatSessions } = await supabase.from('live_chat_sessions').select('*');
+      const { data: tickets } = await supabase.from('customer_complaints').select('id, status, resolved_at').limit(500);
+      const { data: inquiries } = await supabase.from('inquiries').select('id, status').limit(500);
+      const { data: agents } = await supabase.from('user_roles').select('id').eq('role', 'customer_service').eq('is_active', true).limit(100);
+      const { data: chatSessions } = await supabase.from('live_chat_sessions').select('id, status').limit(200);
 
       const today = new Date().toDateString();
       const totalTickets = tickets?.length || 0;

@@ -25,7 +25,7 @@ export const createCacheUtils = (queryClient: QueryClient) => ({
           const { supabase } = await import('@/integrations/supabase/client');
           const { data } = await supabase
             .from('properties')
-            .select('*')
+            .select('id, title, price, images, image_urls, location, property_type, status, listing_type, bedrooms, bathrooms, area_sqm')
             .eq('status', 'available')
             .limit(6);
           return data;
@@ -38,7 +38,7 @@ export const createCacheUtils = (queryClient: QueryClient) => ({
           const { supabase } = await import('@/integrations/supabase/client');
           const { data } = await supabase
             .from('vendor_subcategories')
-            .select('*')
+            .select('id, name, slug, category_id, is_active, icon')
             .eq('is_active', true);
           return data;
         },

@@ -288,7 +288,7 @@ const PropertyDetail: React.FC = () => {
       // Load related properties (same type and location)
       const { data: related } = await supabase
         .from('properties')
-        .select('*')
+        .select('id, title, price, images, image_urls, location, property_type, listing_type, bedrooms, bathrooms, area_sqm, status, created_at, description, owner_id, agent_id, development_status')
         .eq('property_type', propertyData.property_type)
         .eq('status', 'active')
         .neq('id', id)
@@ -303,7 +303,7 @@ const PropertyDetail: React.FC = () => {
       if (userId) {
         const { data: userProperties } = await supabase
           .from('properties')
-          .select('*')
+          .select('id, title, price, images, image_urls, location, property_type, listing_type, bedrooms, bathrooms, area_sqm, status, created_at, description, owner_id, agent_id, development_status')
           .or(`owner_id.eq.${userId},agent_id.eq.${userId}`)
           .eq('status', 'active')
           .neq('id', id)
