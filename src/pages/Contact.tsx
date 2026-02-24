@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +15,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
-  const { language, setLanguage } = useLanguage();
+  const { t, tArray, language, setLanguage } = useTranslation();
   const { theme } = useTheme();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -34,68 +34,7 @@ const Contact = () => {
     setLanguage(language === "en" ? "id" : "en");
   };
 
-  const text = {
-    en: {
-      title: "Contact Us",
-      subtitle: "We're here to help. Get in touch with our team.",
-      form: {
-        name: "Full Name",
-        email: "Email Address",
-        phone: "Phone Number",
-        subject: "Subject",
-        category: "Category",
-        message: "Your Message",
-        submit: "Send Message",
-        submitting: "Sending...",
-        categories: ["General Inquiry", "Property Listing", "Technical Support", "Partnership", "Feedback", "Other"]
-      },
-      contact: {
-        office: "Office Address",
-        officeAddress: "Jl. Sudirman No. 123, Jakarta Selatan, Indonesia 12190",
-        phone: "Phone",
-        phoneNumber: "+62 21 1234 5678",
-        email: "Email",
-        emailAddress: "support@astravilladev.com",
-        hours: "Business Hours",
-        hoursDetail: "Mon - Fri: 9:00 AM - 6:00 PM (WIB)"
-      },
-      success: {
-        title: "Message Sent!",
-        description: "Thank you for contacting us. We'll get back to you within 24 hours."
-      }
-    },
-    id: {
-      title: "Hubungi Kami",
-      subtitle: "Kami siap membantu. Hubungi tim kami.",
-      form: {
-        name: "Nama Lengkap",
-        email: "Alamat Email",
-        phone: "Nomor Telepon",
-        subject: "Subjek",
-        category: "Kategori",
-        message: "Pesan Anda",
-        submit: "Kirim Pesan",
-        submitting: "Mengirim...",
-        categories: ["Pertanyaan Umum", "Listing Properti", "Dukungan Teknis", "Kemitraan", "Masukan", "Lainnya"]
-      },
-      contact: {
-        office: "Alamat Kantor",
-        officeAddress: "Jl. Sudirman No. 123, Jakarta Selatan, Indonesia 12190",
-        phone: "Telepon",
-        phoneNumber: "+62 21 1234 5678",
-        email: "Email",
-        emailAddress: "support@astravilladev.com",
-        hours: "Jam Operasional",
-        hoursDetail: "Sen - Jum: 09:00 - 18:00 (WIB)"
-      },
-      success: {
-        title: "Pesan Terkirim!",
-        description: "Terima kasih telah menghubungi kami. Kami akan merespons dalam 24 jam."
-      }
-    }
-  };
-
-  const currentText = text[language];
+  const categories = tArray('contact.categories');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,8 +54,8 @@ const Contact = () => {
 
       setIsSubmitted(true);
       toast({
-        title: currentText.success.title,
-        description: currentText.success.description,
+        title: t('contact.successTitle'),
+        description: t('contact.successDescription'),
       });
 
       setTimeout(() => {
@@ -126,8 +65,8 @@ const Contact = () => {
     } catch (err: any) {
       console.error('Contact form error:', err);
       toast({
-        title: "Gagal mengirim pesan",
-        description: "Terjadi kesalahan. Silakan coba lagi.",
+        title: t('contact.sendFailed'),
+        description: t('contact.sendFailedDesc'),
         variant: "destructive",
       });
     } finally {
@@ -166,10 +105,10 @@ const Contact = () => {
             </Button>
             <div>
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
-                {currentText.title}
+                {t('contact.title')}
               </h1>
               <p className="text-xs sm:text-sm text-muted-foreground">
-                {currentText.subtitle}
+                {t('contact.subtitle')}
               </p>
             </div>
           </div>
@@ -181,10 +120,10 @@ const Contact = () => {
                 <CardHeader className="p-3 sm:p-4 md:p-6">
                   <CardTitle className="flex items-center gap-2 text-sm sm:text-base md:text-lg">
                     <Send className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                    {language === 'en' ? 'Send us a Message' : 'Kirim Pesan'}
+                    {t('contact.sendUsMessage')}
                   </CardTitle>
                   <CardDescription className="text-[10px] sm:text-xs md:text-sm">
-                    {language === 'en' ? 'Fill out the form below and we\'ll respond promptly.' : 'Isi formulir di bawah dan kami akan segera merespons.'}
+                    {t('contact.fillForm')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
@@ -193,14 +132,14 @@ const Contact = () => {
                       <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-chart-1/10 flex items-center justify-center mb-4">
                         <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-chart-1" />
                       </div>
-                      <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">{currentText.success.title}</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground">{currentText.success.description}</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">{t('contact.successTitle')}</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{t('contact.successDescription')}</p>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                       <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                         <div className="space-y-1.5">
-                          <Label htmlFor="name" className="text-xs sm:text-sm">{currentText.form.name}</Label>
+                          <Label htmlFor="name" className="text-xs sm:text-sm">{t('contact.formName')}</Label>
                           <Input 
                             id="name" 
                             value={formData.name}
@@ -210,7 +149,7 @@ const Contact = () => {
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <Label htmlFor="email" className="text-xs sm:text-sm">{currentText.form.email}</Label>
+                          <Label htmlFor="email" className="text-xs sm:text-sm">{t('contact.formEmail')}</Label>
                           <Input 
                             id="email" 
                             type="email"
@@ -224,7 +163,7 @@ const Contact = () => {
 
                       <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                         <div className="space-y-1.5">
-                          <Label htmlFor="phone" className="text-xs sm:text-sm">{currentText.form.phone}</Label>
+                          <Label htmlFor="phone" className="text-xs sm:text-sm">{t('contact.formPhone')}</Label>
                           <Input 
                             id="phone" 
                             type="tel"
@@ -234,13 +173,13 @@ const Contact = () => {
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <Label htmlFor="category" className="text-xs sm:text-sm">{currentText.form.category}</Label>
+                          <Label htmlFor="category" className="text-xs sm:text-sm">{t('contact.formCategory')}</Label>
                           <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
                             <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm">
-                              <SelectValue placeholder={language === 'en' ? 'Select category' : 'Pilih kategori'} />
+                              <SelectValue placeholder={t('contact.selectCategory')} />
                             </SelectTrigger>
                             <SelectContent>
-                              {currentText.form.categories.map((cat, idx) => (
+                              {categories.map((cat, idx) => (
                                 <SelectItem key={idx} value={cat} className="text-xs sm:text-sm">{cat}</SelectItem>
                               ))}
                             </SelectContent>
@@ -249,7 +188,7 @@ const Contact = () => {
                       </div>
 
                       <div className="space-y-1.5">
-                        <Label htmlFor="subject" className="text-xs sm:text-sm">{currentText.form.subject}</Label>
+                        <Label htmlFor="subject" className="text-xs sm:text-sm">{t('contact.formSubject')}</Label>
                         <Input 
                           id="subject" 
                           value={formData.subject}
@@ -260,7 +199,7 @@ const Contact = () => {
                       </div>
 
                       <div className="space-y-1.5">
-                        <Label htmlFor="message" className="text-xs sm:text-sm">{currentText.form.message}</Label>
+                        <Label htmlFor="message" className="text-xs sm:text-sm">{t('contact.formMessage')}</Label>
                         <Textarea 
                           id="message" 
                           value={formData.message}
@@ -279,12 +218,12 @@ const Contact = () => {
                         {isSubmitting ? (
                           <>
                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2" />
-                            {currentText.form.submitting}
+                            {t('contact.formSubmitting')}
                           </>
                         ) : (
                           <>
                             <Send className="h-4 w-4 mr-2" />
-                            {currentText.form.submit}
+                            {t('contact.formSubmit')}
                           </>
                         )}
                       </Button>
@@ -303,8 +242,8 @@ const Contact = () => {
                       <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-xs sm:text-sm text-foreground">{currentText.contact.office}</h3>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{currentText.contact.officeAddress}</p>
+                      <h3 className="font-semibold text-xs sm:text-sm text-foreground">{t('contact.office')}</h3>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{t('contact.officeAddress')}</p>
                     </div>
                   </div>
 
@@ -313,8 +252,8 @@ const Contact = () => {
                       <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-xs sm:text-sm text-foreground">{currentText.contact.phone}</h3>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{currentText.contact.phoneNumber}</p>
+                      <h3 className="font-semibold text-xs sm:text-sm text-foreground">{t('contact.phone')}</h3>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{t('contact.phoneNumber')}</p>
                     </div>
                   </div>
 
@@ -323,8 +262,8 @@ const Contact = () => {
                       <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-xs sm:text-sm text-foreground">{currentText.contact.email}</h3>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{currentText.contact.emailAddress}</p>
+                      <h3 className="font-semibold text-xs sm:text-sm text-foreground">{t('contact.email')}</h3>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{t('contact.emailAddress')}</p>
                     </div>
                   </div>
 
@@ -333,8 +272,8 @@ const Contact = () => {
                       <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-xs sm:text-sm text-foreground">{currentText.contact.hours}</h3>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{currentText.contact.hoursDetail}</p>
+                      <h3 className="font-semibold text-xs sm:text-sm text-foreground">{t('contact.hours')}</h3>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{t('contact.hoursDetail')}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -344,20 +283,20 @@ const Contact = () => {
               <Card className="border-border/50">
                 <CardContent className="p-3 sm:p-4 md:p-6 space-y-2 sm:space-y-3">
                   <h3 className="font-semibold text-xs sm:text-sm text-foreground mb-2">
-                    {language === 'en' ? 'Quick Actions' : 'Aksi Cepat'}
+                    {t('contact.quickActions')}
                   </h3>
                   <Button 
                     variant="outline" 
                     className="w-full justify-start h-9 sm:h-10 text-xs sm:text-sm"
                     onClick={() => {
                       toast({
-                        title: language === 'en' ? 'Live Chat' : 'Live Chat',
-                        description: language === 'en' ? 'Live chat feature coming soon!' : 'Fitur live chat segera hadir!',
+                        title: 'Live Chat',
+                        description: t('contact.liveChatSoon'),
                       });
                     }}
                   >
                     <MessageCircle className="h-4 w-4 mr-2" />
-                    {language === 'en' ? 'Start Live Chat' : 'Mulai Live Chat'}
+                    {t('contact.startLiveChat')}
                   </Button>
                   <Button 
                     variant="outline" 
@@ -367,7 +306,7 @@ const Contact = () => {
                     }}
                   >
                     <Phone className="h-4 w-4 mr-2" />
-                    {language === 'en' ? 'Call Support' : 'Hubungi Support'}
+                    {t('contact.callSupport')}
                   </Button>
                 </CardContent>
               </Card>

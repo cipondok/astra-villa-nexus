@@ -1,11 +1,10 @@
-
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { LoaderCircle, CheckCircle, AlertCircle } from "lucide-react";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface LoadingPopupProps {
   isOpen: boolean;
   message?: string;
-  language?: "en" | "id";
   type?: "loading" | "success" | "error";
   onClose?: () => void;
 }
@@ -13,30 +12,10 @@ interface LoadingPopupProps {
 const LoadingPopup = ({ 
   isOpen, 
   message, 
-  language = "en", 
   type = "loading",
   onClose 
 }: LoadingPopupProps) => {
-  const text = {
-    en: {
-      loading: "Loading...",
-      processing: "Processing your request...",
-      success: "Success!",
-      error: "Something went wrong",
-      tryAgain: "Try Again",
-      close: "Close"
-    },
-    id: {
-      loading: "Memuat...",
-      processing: "Memproses permintaan Anda...",
-      success: "Berhasil!",
-      error: "Terjadi kesalahan",
-      tryAgain: "Coba Lagi",
-      close: "Tutup"
-    }
-  };
-
-  const currentText = text[language];
+  const { t } = useTranslation();
 
   const getIcon = () => {
     switch (type) {
@@ -52,11 +31,11 @@ const LoadingPopup = ({
   const getDefaultMessage = () => {
     switch (type) {
       case "success":
-        return currentText.success;
+        return t('loadingPopup.success');
       case "error":
-        return currentText.error;
+        return t('loadingPopup.error');
       default:
-        return currentText.processing;
+        return t('loadingPopup.processing');
     }
   };
 
@@ -64,7 +43,6 @@ const LoadingPopup = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md bg-background/95 dark:bg-card/95 backdrop-blur-xl border-border/20 dark:border-border/10 shadow-2xl">
         <div className="flex flex-col items-center justify-center py-8 space-y-6">
-          {/* Animated ASTRA Villa Logo */}
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-3">
               <span className="inline-block animate-gradient bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent bg-[length:300%_300%]">
@@ -73,7 +51,6 @@ const LoadingPopup = ({
             </h1>
           </div>
 
-          {/* Status Icon */}
           <div className="flex flex-col items-center space-y-4 text-center">
             {getIcon()}
             <p className={`text-lg ${type === 'loading' ? 'animate-pulse' : ''} ${
@@ -85,7 +62,6 @@ const LoadingPopup = ({
             </p>
           </div>
 
-          {/* Action Buttons for non-loading states */}
           {type !== 'loading' && onClose && (
             <div className="flex gap-3 mt-4">
               <button
@@ -96,7 +72,7 @@ const LoadingPopup = ({
                     : 'bg-destructive text-destructive-foreground hover:opacity-90'
                 }`}
               >
-                {currentText.close}
+                {t('loadingPopup.close')}
               </button>
             </div>
           )}
