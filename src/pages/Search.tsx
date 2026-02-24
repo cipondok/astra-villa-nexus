@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SEOHead } from '@/components/SEOHead';
+import { useTranslation } from '@/i18n/useTranslation';
 import { useSearchParams } from 'react-router-dom';
 import { Search as SearchIcon, Filter, MapPin, Home, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -35,6 +36,7 @@ interface Property {
 }
 
 const Search = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
@@ -187,8 +189,8 @@ const Search = () => {
       {...pullHandlers}
     >
       <SEOHead
-        title="Cari Properti"
-        description="Cari properti impian Anda di Indonesia. Filter berdasarkan lokasi, tipe properti, harga, dan jumlah kamar untuk hasil pencarian terbaik."
+        title={t('seo.search.title')}
+        description={t('seo.search.description')}
         keywords="cari properti indonesia, search properti, filter properti, properti dijual disewa"
       />
       {/* Luxury Background - matches home page */}

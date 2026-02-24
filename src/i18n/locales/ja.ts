@@ -1083,6 +1083,7 @@ const ja: TranslationMap = {
     community: { title: '不動産ディスカッション＆記事', description: 'コミュニティに参加：Astra Villa Realtyで不動産記事の投稿、コメント、返信、いいね、評価をしましょう。' },
     agentDirectory: { title: '不動産エージェントディレクトリ', description: 'インドネシア全土で信頼できる認証済みの不動産エージェントを見つけましょう。数千人のプロのエージェントがお取引をサポートします。' },
     locationMap: { title: 'インドネシア物件マップ', description: 'インドネシア全34州の物件を探索。インタラクティブマップで場所から理想の物件を見つけましょう。' },
+    search: { title: '物件を検索', description: 'インドネシアで理想の物件を検索。場所、物件タイプ、価格、寝室数でフィルターして最良の結果を。' },
   },
   stickySearch: {
     search: '物件、場所、デベロッパーを検索...',
