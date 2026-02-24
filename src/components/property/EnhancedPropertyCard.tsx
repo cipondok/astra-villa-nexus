@@ -9,6 +9,7 @@ import { BaseProperty } from '@/types/property';
 import { formatDistanceToNow } from '@/utils/dateUtils';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface Property {
   id: string;
@@ -60,37 +61,21 @@ const EnhancedPropertyCard = ({
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
   const { getPropertyImage } = useDefaultPropertyImage();
+  const { t } = useTranslation();
 
-  const text = {
-    en: {
-      view: "View Details",
-      save: "Save",
-      share: "Share",
-      bedrooms: "Bedrooms",
-      bathrooms: "Bathrooms",
-      area: "Area",
-      parking: "Parking",
-      forSale: "For Sale",
-      forRent: "For Rent",
-      forLease: "For Lease",
-      view3D: "3D View"
-    },
-    id: {
-      view: "Lihat Detail",
-      save: "Simpan",
-      share: "Bagikan",
-      bedrooms: "Kamar Tidur",
-      bathrooms: "Kamar Mandi",
-      area: "Luas",
-      parking: "Parkir",
-      forSale: "Dijual",
-      forRent: "Disewa",
-      forLease: "Disewakan",
-      view3D: "Tampilan 3D"
-    }
+  const currentText = {
+    view: t('enhancedPropertyCard.view'),
+    save: t('enhancedPropertyCard.save'),
+    share: t('enhancedPropertyCard.share'),
+    bedrooms: t('enhancedPropertyCard.bedrooms'),
+    bathrooms: t('enhancedPropertyCard.bathrooms'),
+    area: t('enhancedPropertyCard.area'),
+    parking: t('enhancedPropertyCard.parking'),
+    forSale: t('enhancedPropertyCard.forSale'),
+    forRent: t('enhancedPropertyCard.forRent'),
+    forLease: t('enhancedPropertyCard.forLease'),
+    view3D: t('enhancedPropertyCard.view3D'),
   };
-
-  const currentText = text[language] || text.en;
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {

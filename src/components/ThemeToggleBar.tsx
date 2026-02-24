@@ -2,30 +2,19 @@
 import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface ThemeToggleBarProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language?: "en" | "id" | "zh" | "ja" | "ko";
 }
 
 const ThemeToggleBar = ({ language }: ThemeToggleBarProps) => {
   const { theme, setTheme } = useTheme();
-
-  const text = {
-    en: {
-      light: "Light",
-      dark: "Dark"
-    },
-    id: {
-      light: "Terang",
-      dark: "Gelap"
-    }
-  };
-
-  const currentText = text[language] || text.en;
+  const { t } = useTranslation();
 
   const themes = [
-    { key: "light", label: currentText.light, icon: Sun },
-    { key: "dark", label: currentText.dark, icon: Moon }
+    { key: "light", label: t('themeToggle.light'), icon: Sun },
+    { key: "dark", label: t('themeToggle.dark'), icon: Moon }
   ] as const;
 
   return (

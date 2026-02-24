@@ -8,9 +8,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Search, SlidersHorizontal, X, MapPin, Home, Bed, Bath, Car, Wifi, AirVent, Sofa, ChevronDown, ChevronUp } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface SearchFiltersProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language?: "en" | "id" | "zh" | "ja" | "ko";
   onSearch: (filters: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
 }
@@ -20,7 +21,6 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
   
-  // Filter states
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [propertyType, setPropertyType] = useState("");
@@ -29,69 +29,37 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
   const [bathrooms, setBathrooms] = useState("");
   const [furnishing, setFurnishing] = useState("");
   const [amenities, setAmenities] = useState<string[]>([]);
+  const { t } = useTranslation();
 
-  const text = {
-    en: {
-      search: "Search properties, location, or area...",
-      filters: "Filters",
-      advancedFilters: "Advanced Filters",
-      state: "Select State",
-      city: "Select City",
-      type: "Property Type",
-      price: "Price Range",
-      bedrooms: "Bedrooms",
-      bathrooms: "Bathrooms",
-      furnishing: "Furnishing",
-      amenities: "Amenities",
-      searchBtn: "Search Properties",
-      clearAll: "Clear All",
-      activeFilters: "Active Filters",
-      showingResults: "Showing results for",
-      allTypes: "All Types",
-      anyPrice: "Any Price",
-      anyBedroom: "Any",
-      anyBathroom: "Any",
-      furnished: "Furnished",
-      unfurnished: "Unfurnished",
-      partiallyFurnished: "Partially Furnished",
-      anyFurnishing: "Any Furnishing",
-      apartment: "Apartment",
-      house: "House",
-      villa: "Villa",
-      condo: "Condo"
-    },
-    id: {
-      search: "Cari properti, lokasi, atau area...",
-      filters: "Filter",
-      advancedFilters: "Filter Lanjutan",
-      state: "Pilih Provinsi",
-      city: "Pilih Kota",
-      type: "Jenis Properti",
-      price: "Range Harga",
-      bedrooms: "Kamar Tidur",
-      bathrooms: "Kamar Mandi",
-      furnishing: "Perabotan",
-      amenities: "Fasilitas",
-      searchBtn: "Cari Properti",
-      clearAll: "Hapus Semua",
-      activeFilters: "Filter Aktif",
-      showingResults: "Menampilkan hasil untuk",
-      allTypes: "Semua Jenis",
-      anyPrice: "Semua Harga",
-      anyBedroom: "Semua",
-      anyBathroom: "Semua",
-      furnished: "Berperabotan",
-      unfurnished: "Tidak Berperabotan",
-      partiallyFurnished: "Sebagian Berperabotan",
-      anyFurnishing: "Semua",
-      apartment: "Apartemen",
-      house: "Rumah",
-      villa: "Villa",
-      condo: "Kondominium"
-    }
+  const currentText = {
+    search: t('modernSearchFilters.search'),
+    filters: t('modernSearchFilters.filters'),
+    advancedFilters: t('modernSearchFilters.advancedFilters'),
+    state: t('modernSearchFilters.state'),
+    city: t('modernSearchFilters.city'),
+    type: t('modernSearchFilters.type'),
+    price: t('modernSearchFilters.price'),
+    bedrooms: t('modernSearchFilters.bedrooms'),
+    bathrooms: t('modernSearchFilters.bathrooms'),
+    furnishing: t('modernSearchFilters.furnishing'),
+    amenities: t('modernSearchFilters.amenities'),
+    searchBtn: t('modernSearchFilters.searchBtn'),
+    clearAll: t('modernSearchFilters.clearAll'),
+    activeFilters: t('modernSearchFilters.activeFilters'),
+    showingResults: t('modernSearchFilters.showingResults'),
+    allTypes: t('modernSearchFilters.allTypes'),
+    anyPrice: t('modernSearchFilters.anyPrice'),
+    anyBedroom: t('modernSearchFilters.anyBedroom'),
+    anyBathroom: t('modernSearchFilters.anyBathroom'),
+    furnished: t('modernSearchFilters.furnished'),
+    unfurnished: t('modernSearchFilters.unfurnished'),
+    partiallyFurnished: t('modernSearchFilters.partiallyFurnished'),
+    anyFurnishing: t('modernSearchFilters.anyFurnishing'),
+    apartment: t('modernSearchFilters.apartment'),
+    house: t('modernSearchFilters.house'),
+    villa: t('modernSearchFilters.villa'),
+    condo: t('modernSearchFilters.condo'),
   };
-
-  const currentText = text[language] || text.en;
 
   const indonesianStates = [
     "DKI Jakarta", "West Java", "East Java", "Central Java", "Bali", "North Sumatra",

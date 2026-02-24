@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { MapPin, Building2, ChevronRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface ProfileLocationSelectorProps {
   selectedProvinceCode: string;
@@ -43,45 +44,7 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
   const [loadingCities, setLoadingCities] = useState(false);
   const [loadingDistricts, setLoadingDistricts] = useState(false);
   const [loadingSubdistricts, setLoadingSubdistricts] = useState(false);
-
-  const t = {
-    en: {
-      province: 'Province',
-      city: 'City/Regency',
-      district: 'District',
-      subdistrict: 'Sub-district',
-      buildingAddress: 'Building/Street Address',
-      selectProvince: 'Select Province',
-      selectCity: 'Select City',
-      selectDistrict: 'Select District',
-      selectSubdistrict: 'Select Sub-district',
-      selectProvinceFirst: 'Select province first',
-      selectCityFirst: 'Select city first',
-      selectDistrictFirst: 'Select district first',
-      loading: 'Loading...',
-      buildingPlaceholder: 'Building name, street, number, RT/RW...',
-      step: 'Step',
-    },
-    id: {
-      province: 'Provinsi',
-      city: 'Kota/Kabupaten',
-      district: 'Kecamatan',
-      subdistrict: 'Kelurahan/Desa',
-      buildingAddress: 'Alamat Gedung/Jalan',
-      selectProvince: 'Pilih Provinsi',
-      selectCity: 'Pilih Kota/Kabupaten',
-      selectDistrict: 'Pilih Kecamatan',
-      selectSubdistrict: 'Pilih Kelurahan/Desa',
-      selectProvinceFirst: 'Pilih provinsi dulu',
-      selectCityFirst: 'Pilih kota dulu',
-      selectDistrictFirst: 'Pilih kecamatan dulu',
-      loading: 'Memuat...',
-      buildingPlaceholder: 'Nama gedung, jalan, nomor, RT/RW...',
-      step: 'Langkah',
-    },
-  };
-
-  const text = t[language] || t.en;
+  const { t } = useTranslation();
 
   // Fetch provinces on mount
   useEffect(() => {
@@ -122,14 +85,8 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
     try {
       setLoadingProvinces(true);
       const { data, error } = await supabase.rpc('get_distinct_provinces');
-
       if (error) throw error;
-
-      const mapped = (data || []).map((d: any) => ({
-        code: d.province_code,
-        name: d.province_name,
-      }));
-
+      const mapped = (data || []).map((d: any) => ({ code: d.province_code, name: d.province_name }));
       setProvinces(mapped);
     } catch (error) {
       console.error('Error fetching provinces:', error);
@@ -140,19 +97,11 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
 
   const fetchCities = async (provinceCode: string) => {
     if (!provinceCode) return;
-    
     try {
       setLoadingCities(true);
       const { data, error } = await supabase.rpc('get_distinct_cities', { p_province_code: provinceCode });
-
       if (error) throw error;
-
-      const mapped = (data || []).map((d: any) => ({
-        code: d.city_code,
-        name: d.city_name,
-        type: d.city_type || '',
-      }));
-
+      const mapped = (data || []).map((d: any) => ({ code: d.city_code, name: d.city_name, type: d.city_type || '' }));
       setCities(mapped);
     } catch (error) {
       console.error('Error fetching cities:', error);
@@ -163,18 +112,11 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
 
   const fetchDistricts = async (cityCode: string) => {
     if (!cityCode) return;
-    
     try {
       setLoadingDistricts(true);
       const { data, error } = await supabase.rpc('get_distinct_districts', { p_city_code: cityCode });
-
       if (error) throw error;
-
-      const mapped = (data || []).map((d: any) => ({
-        code: d.district_code,
-        name: d.district_name,
-      }));
-
+      const mapped = (data || []).map((d: any) => ({ code: d.district_code, name: d.district_name }));
       setDistricts(mapped);
     } catch (error) {
       console.error('Error fetching districts:', error);
@@ -185,18 +127,11 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
 
   const fetchSubdistricts = async (districtCode: string) => {
     if (!districtCode) return;
-    
     try {
       setLoadingSubdistricts(true);
       const { data, error } = await supabase.rpc('get_distinct_subdistricts', { p_district_code: districtCode });
-
       if (error) throw error;
-
-      const mapped = (data || []).map((d: any) => ({
-        code: d.subdistrict_code,
-        name: d.subdistrict_name,
-      }));
-
+      const mapped = (data || []).map((d: any) => ({ code: d.subdistrict_code, name: d.subdistrict_name }));
       setSubdistricts(mapped);
     } catch (error) {
       console.error('Error fetching subdistricts:', error);
@@ -208,7 +143,6 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
   const handleProvinceChange = (value: string) => {
     const selectedProvince = provinces.find(p => p.code === value);
     onProvinceChange(value, selectedProvince?.name || '');
-    // Reset dependent fields
     onCityChange('', '');
     onDistrictChange('', '');
     onSubdistrictChange('', '');
@@ -217,7 +151,6 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
   const handleCityChange = (value: string) => {
     const selectedCity = cities.find(c => c.code === value);
     onCityChange(value, selectedCity?.name || '');
-    // Reset dependent fields
     onDistrictChange('', '');
     onSubdistrictChange('', '');
   };
@@ -225,7 +158,6 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
   const handleDistrictChange = (value: string) => {
     const selectedDistrict = districts.find(d => d.code === value);
     onDistrictChange(value, selectedDistrict?.name || '');
-    // Reset dependent field
     onSubdistrictChange('', '');
   };
 
@@ -269,16 +201,16 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
         })}
       </div>
 
-      {/* Selectors Grid - 2 columns on mobile, 4 columns on desktop */}
+      {/* Selectors Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Step 1: Province */}
         <div className="space-y-1">
           <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
-            {text.province}
+            {t('profileLocation.province')}
           </Label>
           <Select value={selectedProvinceCode} onValueChange={handleProvinceChange}>
             <SelectTrigger className="h-9 text-xs bg-background border-border text-foreground">
-              <SelectValue placeholder={loadingProvinces ? text.loading : text.selectProvince} />
+              <SelectValue placeholder={loadingProvinces ? t('profileLocation.loading') : t('profileLocation.selectProvince')} />
             </SelectTrigger>
             <SelectContent position="popper" sideOffset={4}>
               {provinces.map((province) => (
@@ -293,7 +225,7 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
         {/* Step 2: City */}
         <div className="space-y-1">
           <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
-            {text.city}
+            {t('profileLocation.city')}
           </Label>
           <Select 
             value={selectedCityCode} 
@@ -304,11 +236,11 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
               {loadingCities ? (
                 <div className="flex items-center gap-1.5">
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  <span>{text.loading}</span>
+                  <span>{t('profileLocation.loading')}</span>
                 </div>
               ) : (
                 <SelectValue 
-                  placeholder={!selectedProvinceCode ? text.selectProvinceFirst : text.selectCity} 
+                  placeholder={!selectedProvinceCode ? t('profileLocation.selectProvinceFirst') : t('profileLocation.selectCity')} 
                 />
               )}
             </SelectTrigger>
@@ -325,7 +257,7 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
         {/* Step 3: District */}
         <div className="space-y-1">
           <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
-            {text.district}
+            {t('profileLocation.district')}
           </Label>
           <Select 
             value={selectedDistrictCode} 
@@ -336,11 +268,11 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
               {loadingDistricts ? (
                 <div className="flex items-center gap-1.5">
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  <span>{text.loading}</span>
+                  <span>{t('profileLocation.loading')}</span>
                 </div>
               ) : (
                 <SelectValue 
-                  placeholder={!selectedCityCode ? text.selectCityFirst : text.selectDistrict} 
+                  placeholder={!selectedCityCode ? t('profileLocation.selectCityFirst') : t('profileLocation.selectDistrict')} 
                 />
               )}
             </SelectTrigger>
@@ -357,7 +289,7 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
         {/* Step 4: Subdistrict */}
         <div className="space-y-1">
           <Label className="text-[10px] text-muted-foreground uppercase tracking-wide">
-            {text.subdistrict}
+            {t('profileLocation.subdistrict')}
           </Label>
           <Select 
             value={selectedSubdistrictCode} 
@@ -368,11 +300,11 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
               {loadingSubdistricts ? (
                 <div className="flex items-center gap-1.5">
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  <span>{text.loading}</span>
+                  <span>{t('profileLocation.loading')}</span>
                 </div>
               ) : (
                 <SelectValue 
-                  placeholder={!selectedDistrictCode ? text.selectDistrictFirst : text.selectSubdistrict} 
+                  placeholder={!selectedDistrictCode ? t('profileLocation.selectDistrictFirst') : t('profileLocation.selectSubdistrict')} 
                 />
               )}
             </SelectTrigger>
@@ -391,12 +323,12 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
       <div className="space-y-1 pt-3 border-t border-border/50">
         <Label className="text-[10px] text-muted-foreground uppercase tracking-wide flex items-center gap-1">
           <Building2 className="h-3 w-3" />
-          {text.buildingAddress}
+          {t('profileLocation.buildingAddress')}
         </Label>
         <Input
           value={buildingAddress}
           onChange={(e) => onBuildingAddressChange(e.target.value)}
-          placeholder={text.buildingPlaceholder}
+          placeholder={t('profileLocation.buildingPlaceholder')}
           className="h-9 text-xs"
           maxLength={200}
         />
