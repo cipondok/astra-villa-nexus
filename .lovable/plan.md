@@ -1,65 +1,57 @@
 
 
-# Security Scan Results & Remediation Plan
+# Plan: Add Chinese, Japanese, and Korean Language Support
 
-The full security scan has been completed. Here is a summary of all findings and what needs to be done.
+## Overview
+Add three new languages (Chinese/zh, Japanese/ja, Korean/ko) to the existing i18n system. This involves updating the type system, context, translation file, and language switcher UI.
 
-## Scan Summary
+## Architecture
 
-| Category | Count | Severity |
-|----------|-------|----------|
-| Already mitigated / informational | 7 | info |
-| Actionable warnings | 3 | warn |
-| Errors (already justified) | 1 | error |
+The current system has a `Language` type union (`"en" | "id"`), a single `translations.ts` file (~1583 lines with both EN and ID), and a toggle switch that only handles two languages. All three touchpoints need updating.
 
----
+## File Structure Change
 
-## Findings That Need Action
+The translations file is already ~1600 lines. Adding 3 more languages (~800 lines each) would make it ~4000 lines. To keep it maintainable, translations will be split into per-language files:
 
-### 1. Enable Leaked Password Protection (Dashboard Action)
-**Severity:** Warning
-**Issue:** Supabase's built-in leaked password protection is currently disabled. This feature checks passwords against known breached databases (HaveIBeenPwned) during signup and login.
-**Fix:** Enable it in the Supabase Dashboard under **Authentication > Settings > Security**. No code changes needed.
+```text
+src/i18n/
+├── translations.ts       → re-export aggregator
+├── useTranslation.ts     → no changes needed
+├── locales/
+│   ├── en.ts             → English strings (extracted from current file)
+│   ├── id.ts             → Indonesian strings (extracted from current file)
+│   ├── zh.ts             → Chinese (Simplified)
+│   ├── ja.ts             → Japanese
+│   └── ko.ts             → Korean
+```
 
-### 2. Upgrade Postgres Version (Dashboard Action)
-**Severity:** Warning
-**Issue:** The current Postgres version has security patches available.
-**Fix:** Upgrade via the Supabase Dashboard under **Settings > Infrastructure**. No code changes needed. Schedule during low-traffic hours as it involves brief downtime.
+## Changes Required
 
-### 3. Overly Permissive RLS Policies (No Action Required)
-**Severity:** Warning
-**Issue:** Flagged policies using `USING (true)` or `WITH CHECK (true)`.
-**Analysis:** All flagged policies are either:
-- **SELECT policies** on intentionally public tables (articles, market_trends, locations, leaderboards, badge definitions, etc.) — this is correct for public-facing data
-- **INSERT policies** scoped to `service_role` only (in_app_notifications, property_alerts) — these cannot be exploited by regular users
+### 1. Create `src/i18n/locales/` directory with 5 locale files
+- Extract existing `en` block (~798 lines) into `locales/en.ts`
+- Extract existing `id` block (~780 lines) into `locales/id.ts`
+- Create `locales/zh.ts` with Simplified Chinese translations for all keys
+- Create `locales/ja.ts` with Japanese translations for all keys
+- Create `locales/ko.ts` with Korean translations for all keys
 
-**Verdict:** No changes needed. These are all intentional and correctly scoped.
+### 2. Update `src/i18n/translations.ts`
+- Import from locale files and re-export the aggregated `Record<Language, TranslationMap>`
+- Update `Language` type to `'en' | 'id' | 'zh' | 'ja' | 'ko'`
 
----
+### 3. Update `src/contexts/LanguageContext.tsx`
+- Expand `Language` type to include `'zh' | 'ja' | 'ko'`
+- Update localStorage validation to accept new language codes
 
-## Findings Already Mitigated (No Action Needed)
+### 4. Replace `src/components/LanguageToggleSwitch.tsx`
+- Replace the binary toggle with a dropdown selector showing all 5 languages
+- Display language names in their native script (e.g., 中文, 日本語, 한국어)
+- Use a compact dropdown or popover design to fit the existing UI
 
-| Finding | Status |
-|---------|--------|
-| XSS via dangerouslySetInnerHTML | All uses sanitized with DOMPurify or use controlled data |
-| 352 SECURITY DEFINER functions | All have `search_path` set; role checks in place |
-| Payment logs sensitive data | RLS restricts to owners/admins; webhook validates signatures |
-| KYC bucket was initially public | Fixed — now private with owner-only RLS |
-| Hardcoded super admin email | Remediated — now uses role-based system |
-| Edge functions without auth | All sensitive endpoints now use JWT; remaining public endpoints have alternative security |
-| Client-side admin checks | Mitigated by RLS + edge function validation |
-| localStorage session data | Only stores timestamps/preferences, no credentials |
-| API key encryption | Informational — consider Supabase Vault for future improvement |
-| Security Definer View (public_profiles) | Intentional — exposes only non-sensitive fields |
+### 5. Update `public/manifest.json`
+- No required change (lang stays "en" as default)
 
----
-
-## Recommended Actions
-
-### You need to do (in Supabase Dashboard):
-1. **Enable leaked password protection** — Go to Authentication > Settings > Security
-2. **Upgrade Postgres** — Go to Settings > Infrastructure
-
-### No code changes required
-The codebase security posture is strong. All previously identified vulnerabilities have been remediated in prior migrations. The remaining warnings are dashboard-level settings that you control directly.
+## Technical Notes
+- The `useTranslation` hook's fallback-to-English logic already handles missing keys, so partial translations in new languages will gracefully degrade
+- All ~40 migrated components continue working with zero changes — they use `t('key')` which resolves through the same hook
+- New translations will cover all existing key namespaces (common, nav, auth, property, analytics, search, footer, about, contact, services, etc.)
 
