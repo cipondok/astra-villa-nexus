@@ -1,45 +1,90 @@
 
 
-# Improve Language Switcher UX
+# Dynamic SEO Meta Tags Based on Selected Language
 
-## Current State
+## Problem
 
-- **localStorage persistence**: Already implemented in `LanguageContext.tsx` (line 17 reads, line 26 writes). This already works and survives page refreshes.
-- **Browser auto-detection**: Not implemented. When no saved language exists, it defaults to `"en"` unconditionally (line 19).
-- **Uses raw `localStorage`** instead of the project's `safeLocalStorage` wrapper, which could throw in privacy mode.
+All 12+ pages using `<SEOHead>` pass hardcoded Indonesian strings for `title` and `description`. When a user switches to Chinese, Japanese, Korean, or English, the meta tags (page title, OG tags, Twitter cards, canonical) remain in Indonesian.
 
-## Changes
+## Approach
 
-### 1. Auto-detect browser language on first visit (`LanguageContext.tsx`)
+Add a `seo` namespace to all 5 locale files with per-page titles and descriptions, then update each page's `<SEOHead>` call to use `t('seo.pageName.title')` / `t('seo.pageName.description')`.
 
-Add a `detectBrowserLanguage()` helper that reads `navigator.languages` / `navigator.language` and maps browser locale prefixes to supported languages:
+## Step 1: Add `seo` namespace to locale files
 
-- `zh` → `"zh"`
-- `ja` → `"ja"`  
-- `ko` → `"ko"`
-- `id` / `ms` → `"id"` (Malay is close enough to default Indonesian)
-- Everything else → `"en"`
+Add translated titles and descriptions for each page:
 
-This runs only when no saved language exists in localStorage (first visit).
+```
+seo: {
+  home: { title, description },
+  properties: { title, description },
+  dijual: { title, description },
+  disewa: { title, description },
+  about: { title, description },
+  contact: { title, description },
+  help: { title, description },
+  auth: { title, description },
+  investment: { title, description },
+  community: { title, description },
+  agentDirectory: { title, description },
+  buy: { title, description },
+  rent: { title, description },
+  preLaunching: { title, description },
+}
+```
 
-### 2. Use `safeLocalStorage` instead of raw `localStorage`
+That is ~28 keys per locale file, across 5 files = 140 translated strings.
 
-Replace `localStorage.getItem`/`localStorage.setItem` with the project's `safeLocalStorage` from `@/lib/safeStorage` to prevent crashes in privacy/incognito modes.
+## Step 2: Update pages to use `t()` for SEOHead props
 
-### 3. Set `lang` attribute on `<html>` element
+Each page that renders `<SEOHead>` will:
+1. Import `useTranslation` (if not already)
+2. Replace hardcoded `title="Tentang Astra Villa"` with `title={t('seo.about.title')}`
+3. Replace hardcoded `description="..."` with `description={t('seo.about.description')}`
+4. Keep `keywords` as-is (keywords meta tag is largely ignored by search engines and not user-visible)
 
-When language changes, update `document.documentElement.lang` for accessibility and SEO.
+Pages to update:
+- `Index.tsx` — `seo.home`
+- `Properties.tsx` — `seo.properties`
+- `Dijual.tsx` — `seo.dijual`
+- `Disewa.tsx` — `seo.disewa`
+- `About.tsx` — `seo.about`
+- `Contact.tsx` — `seo.contact`
+- `Help.tsx` — `seo.help`
+- `Auth.tsx` — `seo.auth`
+- `Investment.tsx` — `seo.investment`
+- `Community.tsx` — `seo.community`
+- `AgentDirectory.tsx` — `seo.agentDirectory`
+- `PropertyDetail.tsx` — keeps dynamic property title (no change needed)
 
-## File Changes
+## Step 3: Update `<html lang>` attribute
 
-**`src/contexts/LanguageContext.tsx`** — Single file edit:
-- Import `safeLocalStorage` from `@/lib/safeStorage`
-- Add `detectBrowserLanguage()` function (~15 lines)
-- In the `useState` initializer: if no saved language, call `detectBrowserLanguage()` instead of defaulting to `"en"`
-- In the `useEffect`: use `safeLocalStorage.setItem` and also set `document.documentElement.lang`
-- Replace `localStorage.getItem` with `safeLocalStorage.getItem`
+Already done in the previous commit — `LanguageContext` sets `document.documentElement.lang` on language change.
+
+## Files Modified
+
+**Locale files (5):**
+- `src/i18n/locales/en.ts` — add `seo` namespace (~28 keys)
+- `src/i18n/locales/id.ts` — same, Indonesian
+- `src/i18n/locales/zh.ts` — same, Chinese
+- `src/i18n/locales/ja.ts` — same, Japanese
+- `src/i18n/locales/ko.ts` — same, Korean
+
+**Page files (11):**
+- `src/pages/Index.tsx`
+- `src/pages/Properties.tsx`
+- `src/pages/Dijual.tsx`
+- `src/pages/Disewa.tsx`
+- `src/pages/About.tsx`
+- `src/pages/Contact.tsx`
+- `src/pages/Help.tsx`
+- `src/pages/Auth.tsx`
+- `src/pages/Investment.tsx`
+- `src/pages/Community.tsx`
+- `src/pages/AgentDirectory.tsx`
 
 ## Risk
 
-- **Very low**: Only changes the default for brand-new visitors. Returning visitors keep their saved preference. The `safeLocalStorage` swap is strictly safer than the current raw access.
+- **Low**: `SEOHead` already accepts string props — swapping hardcoded strings for `t()` calls is a safe pattern swap
+- **PropertyDetail.tsx** is excluded because it uses the actual property title/description from the database, which is correct behavior
 
