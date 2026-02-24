@@ -21,6 +21,7 @@ import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
+import { usePropertyAlerts } from '@/hooks/usePropertyAlerts';
 import { useQueryLoadingIntegration } from '@/hooks/useQueryLoadingIntegration';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import MaintenancePage from '@/pages/MaintenancePage';
@@ -160,6 +161,7 @@ const AppContent = () => {
   useCLSMonitor(process.env.NODE_ENV === 'development');
   useScrollRestore(true);
   useVIPNotifications();
+  usePropertyAlerts();
   useQueryLoadingIntegration();
   
   const location = useLocation();
