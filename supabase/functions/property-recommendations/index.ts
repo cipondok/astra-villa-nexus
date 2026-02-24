@@ -12,6 +12,14 @@ interface ScoredProperty {
   reasons: string[];
 }
 
+interface UserPreferences {
+  preferredTypes: Record<string, number>;
+  preferredCities: Record<string, number>;
+  priceRange: { min: number; max: number; avg: number } | null;
+  preferredBedrooms: Record<number, number>;
+  preferredFeatures: Record<string, number>;
+}
+
 function extractFeatureKeys(features: Record<string, any> | null): string[] {
   if (!features) return [];
   return Object.entries(features)
@@ -29,9 +37,44 @@ const featureLabels: Record<string, string> = {
   furnished: 'Furnished', beachaccess: 'Beach Access',
 };
 
-function scoreProperty(target: any, candidate: any): ScoredProperty {
+function buildUserPreferences(properties: any[]): UserPreferences {
+  const preferredTypes: Record<string, number> = {};
+  const preferredCities: Record<string, number> = {};
+  const preferredBedrooms: Record<number, number> = {};
+  const preferredFeatures: Record<string, number> = {};
+  const prices: number[] = [];
+
+  for (const p of properties) {
+    if (p.property_type) {
+      preferredTypes[p.property_type] = (preferredTypes[p.property_type] || 0) + 1;
+    }
+    if (p.city) {
+      const city = p.city.toLowerCase();
+      preferredCities[city] = (preferredCities[city] || 0) + 1;
+    }
+    if (p.bedrooms) {
+      preferredBedrooms[p.bedrooms] = (preferredBedrooms[p.bedrooms] || 0) + 1;
+    }
+    if (p.price && p.price > 0) {
+      prices.push(p.price);
+    }
+    for (const f of extractFeatureKeys(p.property_features)) {
+      preferredFeatures[f] = (preferredFeatures[f] || 0) + 1;
+    }
+  }
+
+  const priceRange = prices.length > 0
+    ? { min: Math.min(...prices), max: Math.max(...prices), avg: prices.reduce((a, b) => a + b, 0) / prices.length }
+    : null;
+
+  return { preferredTypes, preferredCities, priceRange, preferredBedrooms, preferredFeatures };
+}
+
+function scoreProperty(target: any, candidate: any, userPrefs: UserPreferences | null): ScoredProperty {
   let score = 0;
   const reasons: string[] = [];
+
+  // === Content-based scoring (max 100 pts) ===
 
   // Property type match (25 pts)
   if (candidate.property_type && candidate.property_type === target.property_type) {
@@ -90,7 +133,52 @@ function scoreProperty(target: any, candidate: any): ScoredProperty {
     reasons.push(label);
   });
 
-  const maxScore = 100;
+  // === User behavior scoring (up to 50 bonus pts) ===
+  if (userPrefs) {
+    // Preferred type boost (up to 15 pts)
+    if (candidate.property_type && userPrefs.preferredTypes[candidate.property_type]) {
+      const typeCount = userPrefs.preferredTypes[candidate.property_type];
+      score += Math.min(15, typeCount * 5);
+      if (typeCount >= 2 && !reasons.includes('Same type')) reasons.push('Your preferred type');
+    }
+
+    // Preferred city boost (up to 15 pts)
+    if (candidate.city) {
+      const cityKey = candidate.city.toLowerCase();
+      if (userPrefs.preferredCities[cityKey]) {
+        const cityCount = userPrefs.preferredCities[cityKey];
+        score += Math.min(15, cityCount * 5);
+        if (cityCount >= 2 && !reasons.includes('Same area')) reasons.push('Preferred area');
+      }
+    }
+
+    // Price range alignment (up to 10 pts)
+    if (userPrefs.priceRange && candidate.price > 0) {
+      const { min, max, avg } = userPrefs.priceRange;
+      const margin = (max - min) * 0.3 || avg * 0.3;
+      if (candidate.price >= min - margin && candidate.price <= max + margin) {
+        const diffFromAvg = Math.abs(candidate.price - avg) / avg;
+        score += Math.max(0, 10 - diffFromAvg * 20);
+        if (diffFromAvg < 0.2) reasons.push('In your budget');
+      }
+    }
+
+    // Preferred bedroom boost (up to 5 pts)
+    if (candidate.bedrooms && userPrefs.preferredBedrooms[candidate.bedrooms]) {
+      score += Math.min(5, userPrefs.preferredBedrooms[candidate.bedrooms] * 2);
+    }
+
+    // Preferred feature boost (up to 5 pts)
+    let featureBoost = 0;
+    for (const f of candidateFeatures) {
+      if (userPrefs.preferredFeatures[f]) {
+        featureBoost += userPrefs.preferredFeatures[f];
+      }
+    }
+    score += Math.min(5, featureBoost);
+  }
+
+  const maxScore = userPrefs ? 150 : 100;
   const matchPercentage = Math.round(Math.min(100, (score / maxScore) * 100));
 
   return { property: candidate, score, matchPercentage, reasons };
@@ -102,7 +190,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { propertyId, limit = 6 } = await req.json();
+    const { propertyId, userId, limit = 6 } = await req.json();
 
     if (!propertyId) {
       return new Response(JSON.stringify({ error: 'propertyId required' }), {
@@ -128,7 +216,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Fetch candidate properties - same listing_type, active, exclude self
+    // Fetch candidates
     let query = supabase
       .from('properties')
       .select('*')
@@ -140,22 +228,117 @@ Deno.serve(async (req) => {
       query = query.eq('listing_type', target.listing_type);
     }
 
-    const { data: candidates, error: candErr } = await query;
+    // Build user preferences from behavior signals (parallel fetches)
+    let userPrefs: UserPreferences | null = null;
+    const candidatesPromise = query;
 
-    if (candErr || !candidates) {
-      return new Response(JSON.stringify({ recommendations: [] }), {
+    if (userId) {
+      const [candidatesRes, favoritesRes, viewedRes, searchesRes] = await Promise.all([
+        candidatesPromise,
+        // Favorites - strong signal
+        supabase
+          .from('favorites')
+          .select('property_id')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+          .limit(20),
+        // Recently viewed via activity_logs
+        supabase
+          .from('activity_logs')
+          .select('metadata')
+          .eq('user_id', userId)
+          .eq('activity_type', 'property_view')
+          .order('created_at', { ascending: false })
+          .limit(30),
+        // Saved searches
+        supabase
+          .from('user_searches')
+          .select('filters')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+          .limit(10),
+      ]);
+
+      const candidates = candidatesRes.data || [];
+
+      // Collect property IDs from favorites and views
+      const behaviorPropertyIds = new Set<string>();
+      
+      for (const fav of (favoritesRes.data || [])) {
+        behaviorPropertyIds.add(fav.property_id);
+      }
+      
+      for (const log of (viewedRes.data || [])) {
+        const meta = log.metadata as any;
+        if (meta?.propertyId) behaviorPropertyIds.add(meta.propertyId);
+        if (meta?.property_id) behaviorPropertyIds.add(meta.property_id);
+      }
+
+      // Fetch the actual properties for behavior signals
+      if (behaviorPropertyIds.size > 0) {
+        const ids = Array.from(behaviorPropertyIds).slice(0, 30);
+        const { data: behaviorProperties } = await supabase
+          .from('properties')
+          .select('property_type, city, state, price, bedrooms, bathrooms, area_sqm, property_features')
+          .in('id', ids);
+
+        if (behaviorProperties && behaviorProperties.length > 0) {
+          // Weight favorites 2x by duplicating them
+          const favoriteIds = new Set((favoritesRes.data || []).map(f => f.property_id));
+          const weighted: any[] = [];
+          for (const p of behaviorProperties) {
+            weighted.push(p);
+            // Favorites count double
+            if (favoriteIds.has((p as any).id)) {
+              weighted.push(p);
+            }
+          }
+
+          // Also incorporate search filter preferences
+          for (const s of (searchesRes.data || [])) {
+            const filters = s.filters as any;
+            if (!filters) continue;
+            // Create a synthetic property from search filters to influence preferences
+            const synthetic: any = {};
+            if (filters.propertyType) synthetic.property_type = filters.propertyType;
+            if (filters.city) synthetic.city = filters.city;
+            if (filters.minPrice && filters.maxPrice) synthetic.price = (filters.minPrice + filters.maxPrice) / 2;
+            if (filters.bedrooms) synthetic.bedrooms = filters.bedrooms;
+            if (Object.keys(synthetic).length > 0) weighted.push(synthetic);
+          }
+
+          userPrefs = buildUserPreferences(weighted);
+        }
+      }
+
+      // Score and sort with user preferences
+      const scored = candidates
+        .map(c => scoreProperty(target, c, userPrefs))
+        .filter(s => s.score > 10)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit);
+
+      return new Response(JSON.stringify({ 
+        recommendations: scored,
+        personalized: !!userPrefs,
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    // Score and sort
-    const scored = candidates
-      .map(c => scoreProperty(target, c))
+    // No user - content-based only
+    const { data: candidates } = await candidatesPromise;
+
+    const scored = (candidates || [])
+      .map(c => scoreProperty(target, c, null))
       .filter(s => s.score > 10)
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
 
-    return new Response(JSON.stringify({ recommendations: scored }), {
+    return new Response(JSON.stringify({ 
+      recommendations: scored,
+      personalized: false,
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
 
