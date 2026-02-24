@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useMortgageCalculator, calculateMortgage, BankComparison } from '@/hooks/useMortgageCalculator';
+import { useSavedScenarios } from '@/hooks/useSavedScenarios';
+import ScenarioComparison from './ScenarioComparison';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,7 +37,7 @@ import {
 import {
   Calculator, TrendingUp, Building2, Percent, Calendar,
   DollarSign, PiggyBank, AlertCircle, CheckCircle, Phone,
-  ArrowRight, Sparkles, BarChart3
+  ArrowRight, Sparkles, BarChart3, Save, GitCompareArrows
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -84,6 +86,9 @@ const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({
     phone: '',
     employment_type: ''
   });
+
+  // Saved scenarios for comparison
+  const { scenarios, addScenario, removeScenario, clearAll: clearAllScenarios } = useSavedScenarios();
 
   // Derived calculations
   const downPayment = (propertyPrice * downPaymentPercent) / 100;
@@ -137,6 +142,27 @@ const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({
 
     setShowInquiry(false);
     setInquiryForm({ full_name: '', email: '', phone: '', employment_type: '' });
+  };
+
+  const handleSaveScenario = () => {
+    const selectedBank = banks.find(b => b.id === selectedBankId);
+    const label = `DP ${downPaymentPercent}% • ${loanTermYears}yr • ${(selectedRate?.interest_rate_year1 || 7.0).toFixed(1)}%`;
+    addScenario({
+      label,
+      propertyPrice,
+      downPaymentPercent,
+      downPayment,
+      loanAmount,
+      loanTermYears,
+      interestRate: selectedRate?.interest_rate_year1 || 7.0,
+      monthlyPayment: calculationResult.monthlyPayment,
+      totalPayment: calculationResult.totalPayment,
+      totalInterest: calculationResult.totalInterest,
+      affordabilityRatio: calculationResult.affordabilityRatio,
+      monthlyIncome: monthlyIncome || undefined,
+      bankName: selectedBank?.bank_name,
+      rateName: selectedRate?.rate_name,
+    });
   };
 
   const getAffordabilityStatus = () => {
@@ -353,6 +379,30 @@ const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({
           </div>
         </CardContent>
       </Card>
+
+      {/* Save Scenario Button */}
+      <div className="flex items-center gap-2">
+        <Button
+          onClick={handleSaveScenario}
+          variant="outline"
+          className="flex-1"
+        >
+          <Save className="h-4 w-4 mr-2" />
+          Save Scenario for Comparison
+          {scenarios.length > 0 && (
+            <Badge variant="secondary" className="ml-2">{scenarios.length}</Badge>
+          )}
+        </Button>
+      </div>
+
+      {/* Saved Scenarios & Comparison */}
+      {!compact && (
+        <ScenarioComparison
+          scenarios={scenarios}
+          onRemove={removeScenario}
+          onClearAll={clearAllScenarios}
+        />
+      )}
 
       {/* Bank Comparison */}
       {!compact && (
