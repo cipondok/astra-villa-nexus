@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,10 +9,19 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { 
   FileText, Clock, CheckCircle, XCircle, AlertCircle, 
-  Building2, ChevronRight, Send, Eye
+  Building2, ChevronRight, Send, Eye, Loader2, Star
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { useMortgageApplication, usePartnerBanks } from '@/hooks/useMortgageApplication';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { cn } from '@/lib/utils';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 const formatIDR = (v: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
@@ -52,6 +61,10 @@ const STATUS_CONFIG: Record<string, { label: string; icon: React.ElementType; co
 const MortgageApplicationsTab: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { submitToBank, isSubmittingToBank } = useMortgageApplication();
+  const { data: partnerBanks = [] } = usePartnerBanks();
+  const [bankDialogAppId, setBankDialogAppId] = useState<string | null>(null);
+  const [selectedBankId, setSelectedBankId] = useState<string | null>(null);
 
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ['mortgage-applications', user?.id],
@@ -183,6 +196,19 @@ const MortgageApplicationsTab: React.FC = () => {
                   </div>
                 )}
 
+                {/* Submit to Bank action */}
+                {app.status === 'submitted' && !app.bank_id && partnerBanks.length > 0 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full mt-2 h-7 text-[10px] border-primary/30"
+                    onClick={() => { setBankDialogAppId(app.id); setSelectedBankId(null); }}
+                  >
+                    <Building2 className="h-3 w-3 mr-1" />
+                    Submit to Partner Bank
+                  </Button>
+                )}
+
                 {/* Reference */}
                 {app.bank_reference_number && (
                   <p className="text-[9px] text-muted-foreground mt-1.5">
@@ -198,6 +224,67 @@ const MortgageApplicationsTab: React.FC = () => {
           </motion.div>
         );
       })}
+
+      {/* Bank Selection Dialog */}
+      <Dialog open={!!bankDialogAppId} onOpenChange={(open) => { if (!open) setBankDialogAppId(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base">
+              <Building2 className="h-4 w-4 text-primary" />
+              Select Partner Bank
+            </DialogTitle>
+          </DialogHeader>
+          <RadioGroup
+            value={selectedBankId || ''}
+            onValueChange={setSelectedBankId}
+            className="space-y-2"
+          >
+            {partnerBanks.map(bank => (
+              <label
+                key={bank.id}
+                className={cn(
+                  "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors",
+                  selectedBankId === bank.id
+                    ? "border-primary bg-primary/5"
+                    : "border-border/50 hover:border-primary/30"
+                )}
+              >
+                <RadioGroupItem value={bank.id} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium">{bank.bank_name}</p>
+                    {bank.is_featured && <Star className="h-3 w-3 text-gold-primary fill-gold-primary" />}
+                  </div>
+                  {bank.interest_rate_range && (
+                    <p className="text-[11px] text-muted-foreground">Rate: {bank.interest_rate_range}</p>
+                  )}
+                </div>
+                {bank.partnership_tier && (
+                  <Badge variant="outline" className="text-[9px]">{bank.partnership_tier}</Badge>
+                )}
+              </label>
+            ))}
+          </RadioGroup>
+          <Button
+            onClick={async () => {
+              if (!selectedBankId || !bankDialogAppId) return;
+              try {
+                await submitToBank({ applicationId: bankDialogAppId, bankId: selectedBankId });
+                setBankDialogAppId(null);
+              } catch (e) { /* handled */ }
+            }}
+            disabled={!selectedBankId || isSubmittingToBank}
+            className="w-full"
+          >
+            {isSubmittingToBank ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4 mr-2" />
+            )}
+            Submit to Bank
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
