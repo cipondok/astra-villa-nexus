@@ -5,28 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { X, Crown, Sparkles, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const text = {
-  en: {
-    headline: "Unlock your full potential",
-    subtext: "You're using 80% of your free limits. Upgrade for unlimited access.",
-    cta: "Upgrade Now",
-    discount: "50% OFF"
-  },
-  id: {
-    headline: "Buka potensi penuh Anda",
-    subtext: "Anda menggunakan 80% dari batas gratis. Upgrade untuk akses tanpa batas.",
-    cta: "Upgrade Sekarang",
-    discount: "DISKON 50%"
-  }
-};
-
-interface UpgradeBannerProps {
-  onDismiss: () => void;
-}
-
 const UpgradeBanner = ({ onDismiss }: UpgradeBannerProps) => {
-  const { language } = useTranslation();
-  const t = text[language] || text.en;
+  const { t, language } = useTranslation();
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(true);
 

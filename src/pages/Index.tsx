@@ -65,32 +65,7 @@ const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
 type ViewMode = 'list' | 'grid' | 'map';
 
 const Index = () => {
-  const { language } = useTranslation();
-  const copy = {
-    en: {
-      findYour: "Find Your Dream Property",
-      searchPowered: "Enhanced search & filtering powered by AI",
-      searchResults: "Search Results",
-      searching: "Searching...",
-      propertiesFound: "properties found",
-      for: "for",
-      clearError: "Clear Error",
-      featuredProperties: "Featured Properties",
-      premiumProperties: "Premium properties with enhanced display"
-    },
-    id: {
-      findYour: "Temukan Properti Impian Anda",
-      searchPowered: "Pencarian & penyaringan canggih dengan AI",
-      searchResults: "Hasil Pencarian",
-      searching: "Mencari...",
-      propertiesFound: "properti ditemukan",
-      for: "untuk",
-      clearError: "Hapus Kesalahan",
-      featuredProperties: "Properti Unggulan",
-      premiumProperties: "Properti premium dengan tampilan lebih baik"
-    }
-  } as const;
-  const t = copy[language] || copy.en;
+  const { t, language } = useTranslation();
   const { user, profile, loading } = useAuth();
   const { trackInteraction } = useUserBehaviorAnalytics();
   const { data: heroConfig } = useHeroSliderConfig();

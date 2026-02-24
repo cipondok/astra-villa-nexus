@@ -9,18 +9,11 @@ interface SearchLoadingAnimationProps {
 const SearchLoadingAnimation = ({ language }: SearchLoadingAnimationProps) => {
   const [progress, setProgress] = useState(0);
 
-  const text = {
-    en: {
-      searching: "Searching properties...",
-      analyzing: "Analyzing results..."
-    },
-    id: {
-      searching: "Mencari properti...",
-      analyzing: "Menganalisis hasil..."
-    }
-  };
+  // Use centralized translations via key access
+  const searchingText = language === 'id' ? 'Mencari properti...' : language === 'zh' ? '搜索房产中...' : language === 'ja' ? '物件を検索中...' : language === 'ko' ? '부동산 검색 중...' : 'Searching properties...';
+  const analyzingText = language === 'id' ? 'Menganalisis hasil...' : language === 'zh' ? '分析结果中...' : language === 'ja' ? '結果を分析中...' : language === 'ko' ? '결과 분석 중...' : 'Analyzing results...';
 
-  const currentText = text[language] || text.en;
+  const currentText = { searching: searchingText, analyzing: analyzingText };
 
   useEffect(() => {
     const timer = setInterval(() => {
