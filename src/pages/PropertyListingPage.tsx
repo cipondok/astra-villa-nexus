@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
 import PropertyViewModeToggle from '@/components/search/PropertyViewModeToggle';
 import PropertyListingMapView from '@/components/property/PropertyListingMapView';
+import SearchAlertSubscribeButton from '@/components/search/SearchAlertSubscribeButton';
 interface PropertyListingPageProps {
   pageType: 'buy' | 'rent' | 'new-projects' | 'pre-launching';
   title: string;
@@ -220,6 +221,14 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <SearchAlertSubscribeButton
+                filters={{
+                  propertyType: filters.propertyType,
+                  city: filters.city,
+                  priceRange: filters.priceRange,
+                  listingType: listingType,
+                }}
+              />
               <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
               <Button
                 variant={showFilters ? "default" : "outline"}
