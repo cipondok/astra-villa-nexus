@@ -212,7 +212,7 @@ export const KPRRequirementsChecklist: React.FC<KPRRequirementsChecklistProps> =
     }
   };
 
-  const t = copy[language];
+  const t = copy[language] || copy.en;
 
   const categoryIcons = {
     identity: FileText,

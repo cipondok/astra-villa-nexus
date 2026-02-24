@@ -43,7 +43,7 @@ export class ContentValidator {
       }
     };
 
-    const t = messages[language];
+    const t = messages[language] || messages.en;
 
     // Check for phone numbers
     if (PHONE_PATTERN.test(text)) {

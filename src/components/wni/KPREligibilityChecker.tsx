@@ -162,7 +162,7 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
     }
   };
 
-  const t = copy[language];
+  const t = copy[language] || copy.en;
 
   const calculateEligibility = (): EligibilityResult => {
     const issues: string[] = [];

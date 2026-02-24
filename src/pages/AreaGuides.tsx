@@ -143,7 +143,7 @@ const AreaGuides = () => {
     }
   };
 
-  const t = translations[language];
+  const t = translations[language] || translations.en;
 
   const mainFeatures = [
     {

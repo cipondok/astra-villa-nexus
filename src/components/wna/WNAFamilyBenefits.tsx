@@ -424,7 +424,7 @@ const WNAFamilyBenefits: React.FC = () => {
     }
   };
 
-  const t = copy[language];
+  const t = copy[language] || copy.en;
 
   const colorClasses = {
     rose: { bg: 'bg-destructive/10', text: 'text-destructive' },

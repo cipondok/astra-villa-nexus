@@ -90,7 +90,7 @@ const Index = () => {
       premiumProperties: "Properti premium dengan tampilan lebih baik"
     }
   } as const;
-  const t = copy[language];
+  const t = copy[language] || copy.en;
   const { user, profile, loading } = useAuth();
   const { trackInteraction } = useUserBehaviorAnalytics();
   const { data: heroConfig } = useHeroSliderConfig();

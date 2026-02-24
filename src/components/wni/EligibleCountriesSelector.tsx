@@ -136,7 +136,7 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
     }
   };
 
-  const t = copy[language];
+  const t = copy[language] || copy.en;
   
   const filteredCountries = filter === 'all' 
     ? ELIGIBLE_COUNTRIES 
