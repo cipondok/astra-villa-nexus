@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { 
   Calculator, 
@@ -36,7 +36,7 @@ interface FormData {
 }
 
 const WNAEligibilityChecker: React.FC = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [formData, setFormData] = useState<FormData>({
     nationality: '',
     visaType: '',

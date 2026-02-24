@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { Globe, CheckCircle, Star, TrendingUp, Shield, Users, Building2, Search, Crown, Award, Medal } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -50,7 +50,7 @@ interface WelcomingCountriesListProps {
 }
 
 const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selectedCountry, onSelect }) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
 
