@@ -1659,6 +1659,7 @@ const AstraSearchPanel = ({
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
+    setShowSuggestions(value.length > 0);
   }, []);
   const handleFilterChange = (key: string, value: any) => {
     const actualValue = value === "all" ? "" : value;
@@ -1809,7 +1810,7 @@ const AstraSearchPanel = ({
       const target = event.target as HTMLElement;
 
       // Close suggestions if clicking outside the suggestions dropdown
-      if (suggestionsRef.current && !suggestionsRef.current.contains(target) && showSuggestions) {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(target) && showSuggestions && !(anchorRef.current && anchorRef.current.contains(target))) {
         setShowSuggestions(false);
       }
 
@@ -2057,7 +2058,9 @@ const AstraSearchPanel = ({
               onChange={(e) => handleSearchChange(e.target.value)}
               onFocus={(e) => {
                 e.preventDefault();
-                setShowSuggestions(true);
+                if (searchQuery.length > 0) {
+                  setShowSuggestions(true);
+                }
                 if (anchorRef.current) {
                   const rect = anchorRef.current.getBoundingClientRect();
                   setSuggestionsTop(rect.bottom + 4);
@@ -2117,7 +2120,7 @@ const AstraSearchPanel = ({
         </div>
 
         {/* Mobile Suggestions Dropdown */}
-        {showSuggestions && hasSuggestions && (
+        {showSuggestions && hasSuggestions && createPortal(
           <div
             ref={suggestionsRef}
             className="fixed left-2 right-2 rounded-xl shadow-2xl shadow-primary/30 z-[100002] max-h-[60vh] overflow-y-auto overscroll-contain glass-popup backdrop-blur-2xl border-primary/20"
@@ -2245,7 +2248,8 @@ const AstraSearchPanel = ({
                     </div>
                   </div>
                 )}
-              </div>
+              </div>,
+          document.body
             )}
             
             {/* Recent Image Searches */}
@@ -2449,7 +2453,9 @@ const AstraSearchPanel = ({
                 value={searchQuery} 
                 onChange={e => handleSearchChange(e.target.value)} 
                 onFocus={() => {
-                  setShowSuggestions(true);
+                  if (searchQuery.length > 0) {
+                    setShowSuggestions(true);
+                  }
                   requestAnimationFrame(() => updateSuggestionsPosition());
                 }}
                 onKeyDown={(e) => {
@@ -2534,7 +2540,7 @@ const AstraSearchPanel = ({
                 </div>}
               
               {/* Smart Suggestions Dropdown */}
-              {showSuggestions && (
+              {showSuggestions && createPortal(
                 <div
                   ref={suggestionsRef}
                   className="fixed glass-popup backdrop-blur-2xl border border-gold-primary/15 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-[100002] max-h-80 overflow-y-auto"
@@ -2738,7 +2744,8 @@ const AstraSearchPanel = ({
                       })}
                     </div>
                   </div>}
-                </div>
+                </div>,
+                document.body
               )}
             </div>
 
