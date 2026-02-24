@@ -15,6 +15,7 @@ import {
   ArrowLeft, X, Eye, Trash2, Check, Minus,
   Banknote, MapPin, Building, TrendingUp, School, ShoppingBag, HeartPulse, Train
 } from 'lucide-react';
+import ShareComparisonButton from '@/components/property/ShareComparisonButton';
 import { formatIDR } from '@/utils/formatters';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -264,9 +265,12 @@ const PropertyComparison = () => {
               </p>
             </div>
           </div>
-          <Button variant="destructive" size="sm" onClick={clearComparison}>
-            <Trash2 className="h-4 w-4 mr-2" />Clear All
-          </Button>
+          <div className="flex items-center gap-2">
+            <ShareComparisonButton propertyIds={selectedProperties.map(p => p.id)} />
+            <Button variant="destructive" size="sm" onClick={clearComparison}>
+              <Trash2 className="h-4 w-4 mr-2" />Clear All
+            </Button>
+          </div>
         </div>
 
         {/* Tabs for sections */}

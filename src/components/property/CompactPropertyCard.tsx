@@ -15,6 +15,7 @@ import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
 import { BaseProperty } from '@/types/property';
 import VerificationBadge from '@/components/ui/VerificationBadge';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
+import SharePropertyButton from './SharePropertyButton';
 import VIPLevelBadge from '@/components/ui/VIPLevelBadge';
 
 interface CompactProperty {
@@ -262,14 +263,12 @@ const CompactPropertyCard = ({
                 <ViewIcon className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
               </Button>
             )}
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-6 w-6 sm:h-7 sm:w-7 p-0 bg-black/30 backdrop-blur-md hover:bg-black/50 text-white rounded-full border border-white/20"
-              onClick={handleShare}
-            >
-              <Share2 className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
-            </Button>
+            <SharePropertyButton
+              propertyId={property.id}
+              propertyTitle={property.title}
+              propertyPrice={property.price}
+              propertyLocation={property.location}
+            />
             <PropertyComparisonButton property={convertedProperty} />
           </div>
 

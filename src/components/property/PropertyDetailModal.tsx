@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { BaseProperty } from "@/types/property";
 import ScheduleSurveyModal from "@/components/ScheduleSurveyModal";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
+import SharePropertyButton from "./SharePropertyButton";
 
 interface PropertyDetailModalProps {
   property: BaseProperty;
@@ -327,9 +328,14 @@ const PropertyDetailModal = ({
                     <Button variant="outline" size="lg" className="flex-1">
                       <Heart className="h-5 w-5" />
                     </Button>
-                    <Button variant="outline" size="lg" className="flex-1">
-                      <Share2 className="h-5 w-5" />
-                    </Button>
+                    <SharePropertyButton
+                      propertyId={property.id}
+                      propertyTitle={property.title}
+                      propertyPrice={property.price}
+                      propertyLocation={property.location}
+                      variant="button"
+                      className="flex-1"
+                    />
                   </div>
                 </div>
               </div>
