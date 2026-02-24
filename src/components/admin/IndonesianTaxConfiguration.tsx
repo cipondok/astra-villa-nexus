@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { Calculator, Percent, Edit, Save, RefreshCw, Info } from "lucide-react";
 import { toast } from "sonner";
 
@@ -94,7 +94,7 @@ const text = {
 };
 
 const IndonesianTaxConfiguration = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const t = text[language];
   
   const [taxConfigs, setTaxConfigs] = useState<TaxConfig[]>([]);

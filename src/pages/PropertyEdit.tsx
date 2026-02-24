@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useTheme } from "@/components/ThemeProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -18,7 +18,7 @@ import { toast } from "sonner";
 
 const PropertyEdit = () => {
   const { isAuthenticated, profile, user } = useAuth();
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage } = useTranslation();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { id } = useParams();

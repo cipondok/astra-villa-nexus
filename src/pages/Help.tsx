@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { SEOHead } from "@/components/SEOHead";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import { useTheme } from "@/components/ThemeProvider";
 
 const Help = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage } = useTranslation();
   const { theme } = useTheme();
 
   const toggleLanguage = () => {

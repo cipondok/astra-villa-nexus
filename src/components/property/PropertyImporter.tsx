@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Link2, CheckCircle2, AlertCircle, Home, MapPin, Bed, Bath, Square, ExternalLink, Sparkles, Tag, Key } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface ExtractedProperty {
   title: string;
@@ -42,7 +42,7 @@ interface PropertyImporterProps {
 }
 
 const PropertyImporter = ({ onImport }: PropertyImporterProps) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const { toast } = useToast();
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);

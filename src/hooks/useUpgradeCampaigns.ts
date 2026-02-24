@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 type CampaignType = 'interested_viewer' | 'competitor_alert' | 'almost_there';
 
@@ -15,7 +15,7 @@ interface CampaignData {
 
 export function useUpgradeCampaigns() {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
 
   const sendCampaignEmail = useCallback(async (
     campaignType: CampaignType,

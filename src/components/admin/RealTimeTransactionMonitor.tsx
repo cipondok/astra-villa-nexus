@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { 
   Activity, TrendingUp, TrendingDown, DollarSign, 
   Clock, CheckCircle, AlertTriangle, Users, Zap
@@ -70,7 +70,7 @@ const text = {
 };
 
 const RealTimeTransactionMonitor = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const t = text[language];
   
   const [stats, setStats] = useState<LiveStats>({

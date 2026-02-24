@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Bug, MessageSquare, AlertTriangle, CheckCircle, Clock, 
@@ -172,7 +172,7 @@ const text = {
 };
 
 const FeedbackBugSystem = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const { user } = useAuth();
   const t = text[language];
   

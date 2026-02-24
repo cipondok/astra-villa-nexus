@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { 
@@ -46,7 +46,7 @@ import WNAFamilyBenefits from '@/components/wna/WNAFamilyBenefits';
 
 const WNAPage = () => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const { isAuthenticated } = useAuth();
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 

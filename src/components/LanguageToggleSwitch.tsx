@@ -1,13 +1,13 @@
 
 import React from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface LanguageToggleSwitchProps {
   className?: string;
 }
 
 const LanguageToggleSwitch: React.FC<LanguageToggleSwitchProps> = ({ className = "" }) => {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage } = useTranslation();
 
   return (
     <div

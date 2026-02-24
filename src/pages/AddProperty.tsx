@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate, Link } from "react-router-dom";
 import MultiStepPropertyForm from "@/components/property/MultiStepPropertyForm";
 import PropertyImporter from "@/components/property/PropertyImporter";
@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const AddProperty = () => {
   const { isAuthenticated, profile, user } = useAuth();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const [activeTab, setActiveTab] = useState<string>("manual");
   const { toast } = useToast();

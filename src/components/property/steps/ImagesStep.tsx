@@ -1,5 +1,5 @@
 import PropertyImageUpload from "../PropertyImageUpload";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { usePropertyFormTiers } from "@/hooks/usePropertyFormTiers";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Image as ImageIcon } from "lucide-react";
@@ -11,7 +11,7 @@ interface ImagesStepProps {
 }
 
 const ImagesStep = ({ formData, onUpdate }: ImagesStepProps) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const { maxImages, membershipLevel, canAccessFeature } = usePropertyFormTiers();
 
   const levelConfig = MEMBERSHIP_LEVELS[membershipLevel];

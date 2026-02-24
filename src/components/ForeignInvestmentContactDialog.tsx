@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface ForeignInvestmentContactDialogProps {
   open: boolean;
@@ -16,7 +16,7 @@ interface ForeignInvestmentContactDialogProps {
 
 export const ForeignInvestmentContactDialog = ({ open, onOpenChange }: ForeignInvestmentContactDialogProps) => {
   const { toast } = useToast();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",

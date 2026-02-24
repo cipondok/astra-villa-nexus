@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { usePropertyFeatures, getDefaultFeaturesForPropertyType } from "@/hooks/usePropertyFeatures";
 import { Loader2 } from "lucide-react";
 import {
@@ -36,7 +36,7 @@ interface FeaturesStepProps {
 }
 
 const FeaturesStep = ({ features, listingType, propertyType, onUpdate }: FeaturesStepProps) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
   

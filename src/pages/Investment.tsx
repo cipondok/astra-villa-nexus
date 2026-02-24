@@ -11,7 +11,7 @@ import {
   Headphones, MessageSquare, BookOpen, ListChecks, ArrowLeft, Users, Sparkles, ArrowRight, Bot, TrendingUp,
   MapPin, Gift, UserCheck, Clock, HelpCircle, Award, Phone, CheckCircle, CreditCard, FileCheck, Scale, UserCircle
 } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useUserRoles";
 import { useNavigate, Link } from "react-router-dom";
@@ -50,7 +50,7 @@ import wnaHeroImage from "@/assets/wna-investment-hero.jpg";
 type ActiveSection = 'all' | 'wna' | 'wni' | 'dashboard';
 
 const Investment = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const { user, isAuthenticated } = useAuth();
   const { isAdmin } = useIsAdmin();
   const navigate = useNavigate();

@@ -16,7 +16,7 @@ import { Toaster as Sonner } from '@/components/ui/sonner';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { DesignSystemProvider } from '@/components/DesignSystemProvider';
 import CookieSystem from '@/components/cookies/CookieSystem';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -167,7 +167,7 @@ const AppContent = () => {
   useQueryLoadingIntegration();
   
   const location = useLocation();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings'].includes(location.pathname);
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();

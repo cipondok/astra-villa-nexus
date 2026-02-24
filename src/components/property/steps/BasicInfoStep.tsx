@@ -2,7 +2,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { ContentCensor } from "@/utils/contentCensor";
 import { useState } from "react";
 import { AlertCircle } from "lucide-react";
@@ -13,7 +13,7 @@ interface BasicInfoStepProps {
 }
 
 const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [showCensorWarning, setShowCensorWarning] = useState<boolean>(false);
 
   const t = {

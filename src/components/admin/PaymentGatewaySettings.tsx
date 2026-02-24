@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { 
@@ -89,7 +89,7 @@ interface GatewayConfig {
 }
 
 const PaymentGatewaySettings = () => {
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const t = text[language];
   
   const [config, setConfig] = useState<GatewayConfig>({

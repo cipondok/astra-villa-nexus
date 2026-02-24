@@ -8,12 +8,12 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { ArrowLeft, MapPin, Clock, Star, Phone, Mail, Layers, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import PropertyServiceBooking from '@/components/property/PropertyServiceBooking';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 const ServiceCategory = () => {
   const { categoryId } = useParams();
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language } = useTranslation();
   const [selectedService, setSelectedService] = useState<{serviceId: string, vendorId: string} | null>(null);
 
   const text = {
