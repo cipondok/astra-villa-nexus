@@ -1,80 +1,44 @@
 
 
-## Advanced Analytics Dashboard
+## i18n Migration — Batch 3: Core Pages & Search Components
 
 ### Current State
-- An `/analytics` page already exists with basic stats (user counts, property counts by type, engagement metrics)
-- `MarketInsightsTab` in the user dashboard shows city-level price averages and user preference profiles
-- `recharts` is installed and used extensively across 32+ files
-- The `properties` table has: `price`, `property_type`, `listing_type`, `city`, `state`, `area_sqm`, `bedrooms`, `bathrooms`, `created_at`, `status`
-- Tables like `activity_logs`, `favorites`, `user_searches`, `property_visits` provide engagement data
-- Existing admin analytics cover token stats, KYC, search analytics, and performance monitoring
+- **Migrated**: Analytics suite, Navigation, Footer, AuthModal, GlobalLoadingIndicator (10 files)
+- **Remaining**: ~75 files still use the inline `const text = { en: ..., id: ... }` pattern
 
-### What We Will Build
+### Plan
 
-#### 1. Market Trends Charts
-Create `src/components/analytics/MarketTrendsChart.tsx`:
-- Price trend line chart grouped by month (based on property `created_at` and `price`)
-- Filterable by city, property type, and listing type (sale vs rent)
-- Shows average price, median price, and listing count over time
-- Uses recharts `LineChart` + `AreaChart`
+This batch targets **high-traffic pages and search components** — the parts users interact with most.
 
-#### 2. Price Distribution Analysis
-Create `src/components/analytics/PriceDistribution.tsx`:
-- Histogram showing price ranges and how many listings fall in each bucket
-- Breakdown by property type using stacked bars
-- Price per sqm comparison across cities using horizontal bar chart
+#### Files to migrate (12 files):
 
-#### 3. Neighborhood Insights
-Create `src/components/analytics/NeighborhoodInsights.tsx`:
-- City comparison cards with avg price, listing count, avg size, avg bedrooms
-- Top neighborhoods ranked by listing density and average price
-- Supply indicator (new listings this month vs last month)
+**Pages (5)**
+1. `src/pages/Profile.tsx` — user profile page
+2. `src/pages/Contact.tsx` — contact page
+3. `src/pages/About.tsx` — about page
+4. `src/pages/Services.tsx` — services page
+5. `src/pages/PropertySearch.tsx` — property search page
 
-#### 4. Investment ROI Projector
-Create `src/components/analytics/InvestmentROICalculator.tsx`:
-- Input: purchase price, down payment %, interest rate, rental yield estimate
-- Output: monthly mortgage, annual rental income, cash-on-cash return, break-even timeline
-- Visualization: ROI projection chart over 5/10/15/20 years using recharts `ComposedChart`
-- Pre-fill with market averages from the selected city
+**Search Components (4)**
+6. `src/components/SearchFilters.tsx` — main search filters
+7. `src/components/search/SearchTabToggle.tsx` — buy/rent toggle
+8. `src/components/search/EnhancedSearchFilters.tsx` — enhanced filters
+9. `src/components/EnhancedModernSearchPanel.tsx` — modern search panel
 
-#### 5. Enhanced Analytics Page
-Update `src/pages/Analytics.tsx` to add new tabs:
-- "Market Trends" tab with the trends chart
-- "Price Analysis" tab with distribution and per-sqm analysis
-- "Neighborhoods" tab with city/area insights
-- "ROI Calculator" tab with the investment projector
-- Keep existing "Overview" tab intact
+**Common UI (3)**
+10. `src/components/LoadingPage.tsx` — loading screen
+11. `src/components/LoadingPopup.tsx` — loading popup
+12. `src/components/RoleBasedNavigation.tsx` — role-based nav
 
-### Technical Details
+#### Implementation steps:
+1. Add all new translation keys to `src/i18n/translations.ts` under sections: `profile`, `contact`, `about`, `services`, `propertySearch`, `search`, `loading`, `roleNav`
+2. Replace each file's inline `const text = { en: ..., id: ... }` + `text[language]` pattern with `const { t } = useTranslation()` and `t('section.key')` calls
+3. Remove the now-unused `useLanguage` import from migrated files (where no other usage exists)
 
-**Data queries** all use the existing `properties` table — no new tables needed:
-```typescript
-// Price trends by month
-const { data } = await supabase
-  .from('properties')
-  .select('price, city, property_type, listing_type, created_at, area_sqm')
-  .eq('status', 'active')
-  .eq('approval_status', 'approved');
-```
+#### Technical note
+- Each file's translations will be namespaced under a logical key (e.g., `profile.*`, `search.*`)
+- The `tArray()` helper will be used where list data exists
+- Fallback to English is automatic via the hook
 
-**ROI calculation** is pure client-side math:
-```typescript
-const monthlyMortgage = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
-const annualRental = purchasePrice * (rentalYield / 100);
-const cashOnCash = (annualRental - annualMortgage) / downPayment * 100;
-```
-
-**Chart components** use recharts (already installed) with `ResponsiveContainer`, matching existing patterns across the codebase.
-
-**No database changes required** — all analytics are computed from existing property data.
-
-### Files to Create
-- `src/components/analytics/MarketTrendsChart.tsx`
-- `src/components/analytics/PriceDistribution.tsx`
-- `src/components/analytics/NeighborhoodInsights.tsx`
-- `src/components/analytics/InvestmentROICalculator.tsx`
-
-### Files to Edit
-- `src/pages/Analytics.tsx` — add new tabs integrating the four new components
+This brings the total migrated count to ~22 files, covering the most user-facing surfaces. Approximately 63 files will remain for future batches.
 
