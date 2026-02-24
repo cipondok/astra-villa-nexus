@@ -7,9 +7,11 @@ module.exports = {
       startServerReadyTimeout: 30000,
       url: [
         'http://localhost:8080/',
-        // Add more URLs to test additional pages
-        // 'http://localhost:8080/about',
-        // 'http://localhost:8080/contact',
+        'http://localhost:8080/search',
+        'http://localhost:8080/properties',
+        'http://localhost:8080/contact',
+        'http://localhost:8080/help',
+        'http://localhost:8080/about',
       ],
       numberOfRuns: 3, // Run Lighthouse 3 times and take median
       settings: {
