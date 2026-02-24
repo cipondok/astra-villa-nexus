@@ -1,57 +1,136 @@
 
 
-# Plan: Add Chinese, Japanese, and Korean Language Support
+# Plan: Audit and Optimize Supabase Queries & Real-Time Subscriptions
 
-## Overview
-Add three new languages (Chinese/zh, Japanese/ja, Korean/ko) to the existing i18n system. This involves updating the type system, context, translation file, and language switcher UI.
+## Findings Summary
 
-## Architecture
+After auditing the codebase, I identified several categories of performance issues across ~26 files with real-time subscriptions and ~284 files with Supabase queries.
 
-The current system has a `Language` type union (`"en" | "id"`), a single `translations.ts` file (~1583 lines with both EN and ID), and a toggle switch that only handles two languages. All three touchpoints need updating.
+---
 
-## File Structure Change
+## Issue 1: Duplicate Real-Time Channels on the Same Tables
 
-The translations file is already ~1600 lines. Adding 3 more languages (~800 lines each) would make it ~4000 lines. To keep it maintainable, translations will be split into per-language files:
+**Problem:** Multiple hooks subscribe to the same tables independently, creating redundant WebSocket connections. Each open channel consumes a Supabase Realtime slot (default limit: 100 concurrent).
 
-```text
-src/i18n/
-├── translations.ts       → re-export aggregator
-├── useTranslation.ts     → no changes needed
-├── locales/
-│   ├── en.ts             → English strings (extracted from current file)
-│   ├── id.ts             → Indonesian strings (extracted from current file)
-│   ├── zh.ts             → Chinese (Simplified)
-│   ├── ja.ts             → Japanese
-│   └── ko.ts             → Korean
-```
+Duplicated subscriptions found:
 
-## Changes Required
+| Table | Channel 1 | Channel 2 |
+|-------|-----------|-----------|
+| `profiles` INSERT | `useRealTimeAlerts` (`profiles-realtime`) | `useAdminAlerts` (`profiles-changes`) |
+| `profiles` INSERT | `usePlatformStats` (`stats-profiles`) | (same table, 3rd listener) |
+| `properties` INSERT | `useRealTimeAlerts` (`properties-realtime`) | `useAdminAlerts` (`properties-changes`) |
+| `properties` * | `usePlatformStats` (`stats-properties`) | `ProjectMapVisualization` (`project-map-properties`) |
+| `vendor_services` INSERT | `useRealTimeAlerts` (`vendor-services-realtime`) | `useAdminAlerts` (`vendor-services-changes`) |
+| `user_login_alerts` INSERT | `useRealTimeAlerts` (`security-realtime`) | `useAdminAlerts` (`login-alerts-changes`) |
 
-### 1. Create `src/i18n/locales/` directory with 5 locale files
-- Extract existing `en` block (~798 lines) into `locales/en.ts`
-- Extract existing `id` block (~780 lines) into `locales/id.ts`
-- Create `locales/zh.ts` with Simplified Chinese translations for all keys
-- Create `locales/ja.ts` with Japanese translations for all keys
-- Create `locales/ko.ts` with Korean translations for all keys
+**Fix:** Consolidate `useAdminAlerts` into `useRealTimeAlerts` — they both listen to the exact same tables and create alerts. Remove `useAdminAlerts` entirely and ensure `useRealTimeAlerts` handles all alert creation. This eliminates ~4 duplicate channels.
 
-### 2. Update `src/i18n/translations.ts`
-- Import from locale files and re-export the aggregated `Record<Language, TranslationMap>`
-- Update `Language` type to `'en' | 'id' | 'zh' | 'ja' | 'ko'`
+**Files changed:**
+- Delete or gut `src/hooks/useAdminAlerts.ts`
+- Update any imports of `useAdminAlerts` to use `useRealTimeAlerts` instead
 
-### 3. Update `src/contexts/LanguageContext.tsx`
-- Expand `Language` type to include `'zh' | 'ja' | 'ko'`
-- Update localStorage validation to accept new language codes
+---
 
-### 4. Replace `src/components/LanguageToggleSwitch.tsx`
-- Replace the binary toggle with a dropdown selector showing all 5 languages
-- Display language names in their native script (e.g., 中文, 日本語, 한국어)
-- Use a compact dropdown or popover design to fit the existing UI
+## Issue 2: `usePlatformStats` — Cascading Refetches
 
-### 5. Update `public/manifest.json`
-- No required change (lang stays "en" as default)
+**Problem:** `usePlatformStats` subscribes to 4 tables (`profiles`, `vendor_business_profiles`, `properties`, `activity_logs`) and calls `fetchStats()` on every single change. `fetchStats` fires **19 parallel queries** plus 1 sequential query (vendor_reviews for avg rating). Any INSERT to `activity_logs` (which happens frequently) triggers all 20 queries.
 
-## Technical Notes
-- The `useTranslation` hook's fallback-to-English logic already handles missing keys, so partial translations in new languages will gracefully degrade
-- All ~40 migrated components continue working with zero changes — they use `t('key')` which resolves through the same hook
-- New translations will cover all existing key namespaces (common, nav, auth, property, analytics, search, footer, about, contact, services, etc.)
+**Fix:**
+1. **Debounce** the real-time callback — batch rapid changes into a single refetch (500ms debounce)
+2. **Consolidate 4 channels into 1** — a single channel can listen to multiple tables
+3. **Replace the sequential avg rating query** with a `count + head` approach or move it into the parallel batch
+4. **Use `select('id', { count: 'exact', head: true })` instead of `select('*', { count: 'exact', head: true })`** — while `head: true` prevents data transfer, specifying `'id'` is more semantically clear and future-proof
+
+**Files changed:**
+- `src/hooks/usePlatformStats.ts`
+
+---
+
+## Issue 3: Excessive `select('*')` Queries
+
+**Problem:** ~284 files use `.select('*')` fetching all columns when only a subset is needed. Key offenders:
+
+- `PropertyDetail.tsx`: Fetches `select('*')` for related properties (lines 291, 306) when only `id, title, price, images, location, property_type` are displayed
+- `LiveMonitoringDashboard.tsx`: `select('*')` on `activity_logs` but only uses 5 fields
+- `useOrders.ts`: `select('status')` is correct for stats, but main query uses `select('*')`
+- `CSPerformanceMonitor.tsx`: `select('*')` on 4 tables with no limits
+
+**Fix:** Replace `select('*')` with explicit column lists in the highest-traffic queries:
+
+| File | Current | Optimized |
+|------|---------|-----------|
+| `PropertyDetail.tsx` (related) | `select('*')` | `select('id, title, price, images, location, property_type, listing_type, bedrooms, bathrooms, land_size')` |
+| `LiveMonitoringDashboard.tsx` | `select('*')` on activity_logs | `select('id, activity_type, user_id, activity_description, created_at, metadata')` |
+| `queryClient.ts` prefetch | `select('*')` on properties | `select('id, title, price, images, location, property_type, status')` |
+| `CSPerformanceMonitor.tsx` | 4x `select('*')` with no limit | Add `.limit()` and select specific columns |
+
+**Files changed:**
+- `src/pages/PropertyDetail.tsx`
+- `src/components/admin/LiveMonitoringDashboard.tsx`
+- `src/lib/queryClient.ts`
+- `src/components/admin/cs-tools/CSPerformanceMonitor.tsx`
+
+---
+
+## Issue 4: Missing Query Limits
+
+**Problem:** Several queries fetch unbounded result sets which can return up to 1000 rows (Supabase default):
+
+- `CSPerformanceMonitor.tsx`: `select('*')` on `customer_complaints`, `inquiries`, `live_chat_sessions` — no limit
+- `usePlatformStats.ts`: The `vendor_reviews` rating query fetches ALL reviews to compute avg in JS
+- `usePropertyAlerts.ts`: Limited to 20, which is fine
+
+**Fix:**
+- Add `.limit()` to unbounded queries
+- For avg rating computation, use a database function or `.select('rating')` with a reasonable limit, or better yet create an RPC function
+
+**Files changed:**
+- `src/components/admin/cs-tools/CSPerformanceMonitor.tsx`
+- `src/hooks/usePlatformStats.ts`
+
+---
+
+## Issue 5: SharedSearch.tsx Creates New Channels Without Reusing
+
+**Problem:** In `SharedSearch.tsx`, functions like `handleSaveFilter`, `handleRemoveFilter`, `handleSortChange`, `handleViewChange`, and `toggleFilter` each create `supabase.channel(`collab-${shareId}`)` to send broadcasts. These create new channel instances each invocation instead of reusing the existing `channelRef.current`.
+
+**Fix:** Replace all `supabase.channel(...)` broadcast calls with `channelRef.current?.send(...)`.
+
+**Files changed:**
+- `src/pages/SharedSearch.tsx`
+
+---
+
+## Issue 6: `ProjectMapVisualization` — 3 Separate Channels for Same Component
+
+**Problem:** Creates 3 channels (`project-map-bookings`, `project-map-reviews`, `project-map-properties`) that all call `refetch()`. These can be consolidated into a single channel with multiple `.on()` listeners.
+
+**Fix:** Merge into one channel with 3 `.on()` handlers.
+
+**Files changed:**
+- `src/components/admin/ProjectMapVisualization.tsx`
+
+---
+
+## Issue 7: `useOptimizedQuery` — Stale Default Config
+
+**Problem:** `useOptimizedQuery` sets `refetchOnMount: false` which means navigating to a page won't show fresh data even if the cache is stale. Combined with `refetchOnWindowFocus: false`, users can see very outdated data.
+
+**Fix:** Change to `refetchOnMount: 'always'` only when `staleTime` has elapsed (this is actually the default TanStack Query behavior, which is `true`). Keep `refetchOnWindowFocus: false` since the app has real-time subscriptions.
+
+**Files changed:**
+- `src/hooks/useOptimizedQuery.ts`
+
+---
+
+## Implementation Order
+
+1. Consolidate duplicate real-time channels (Issues 1, 6)
+2. Debounce and optimize `usePlatformStats` (Issues 2, 4)
+3. Fix SharedSearch channel reuse (Issue 5)
+4. Optimize high-traffic `select('*')` queries (Issue 3)
+5. Add missing query limits (Issue 4)
+6. Fix `useOptimizedQuery` defaults (Issue 7)
+
+Total files to modify: ~8 files. One file to delete/deprecate (`useAdminAlerts.ts`).
 
