@@ -150,3 +150,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.seo-analyzer]
     verify_jwt = false
+
+  [functions.property-recommendations]
+    verify_jwt = false
