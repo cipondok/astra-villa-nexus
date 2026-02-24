@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { Button } from "@/components/ui/button";
@@ -94,44 +95,25 @@ const AuthenticatedNavigation = ({
   const canAccessPropertyManagement = profile?.role && 
     ['property_owner', 'agent', 'admin'].includes(profile.role);
 
-  const text = {
-    en: {
-      home: "Home",
-      properties: "Properties",
-      myProperties: "My Properties",
-      addProperty: "Add Property",
-      browse: "Browse",
-      forSale: "For Sale",
-      forRent: "For Rent",
-      newProjects: "New Projects",
-      preLaunching: "Pre-launching",
-      dashboard: "Dashboard",
-      admin: "Admin",
-      profile: "Profile",
-      settings: "Settings",
-      logout: "Logout",
-      welcome: "Welcome"
-    },
-    id: {
-      home: "Beranda",
-      properties: "Properti",
-      myProperties: "Properti Saya",
-      addProperty: "Tambah Properti",
-      browse: "Jelajahi",
-      forSale: "Dijual",
-      forRent: "Disewa",
-      newProjects: "Proyek Baru",
-      preLaunching: "Pra-launching",
-      dashboard: "Dashboard",
-      admin: "Admin",
-      profile: "Profil",
-      settings: "Pengaturan",
-      logout: "Keluar",
-      welcome: "Selamat datang"
-    }
-  };
+  const { t } = useTranslation();
 
-  const currentText = text[language] || text.en;
+  const currentText = {
+    home: t('authenticatedNav.home'),
+    properties: t('authenticatedNav.properties'),
+    myProperties: t('authenticatedNav.myProperties'),
+    addProperty: t('authenticatedNav.addProperty'),
+    browse: t('authenticatedNav.browse'),
+    forSale: t('authenticatedNav.forSale'),
+    forRent: t('authenticatedNav.forRent'),
+    newProjects: t('authenticatedNav.newProjects'),
+    preLaunching: t('authenticatedNav.preLaunching'),
+    dashboard: t('authenticatedNav.dashboard'),
+    admin: t('authenticatedNav.admin'),
+    profile: t('authenticatedNav.profile'),
+    settings: t('authenticatedNav.settings'),
+    logout: t('authenticatedNav.logout'),
+    welcome: t('authenticatedNav.welcome'),
+  };
 
   return (
     <nav className="bg-background/80 backdrop-blur-2xl border-b border-gold-primary/10">

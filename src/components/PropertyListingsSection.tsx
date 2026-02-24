@@ -7,9 +7,10 @@ import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 import AutoScrollCarousel from "@/components/property/AutoScrollCarousel";
 import MaintenanceMode from './MaintenanceMode';
 import { useSystemControls } from '@/hooks/useSystemControls';
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface PropertyListingsSectionProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language?: "en" | "id" | "zh" | "ja" | "ko";
   searchResults?: any[];
   isSearching?: boolean;
   hasSearched?: boolean;
@@ -31,35 +32,7 @@ const PropertyListingsSection = ({
   const [favoriteProperties, setFavoriteProperties] = useState<Set<string>>(new Set());
   const [propertyFor3DView, setPropertyFor3DView] = useState<any | null>(null);
   const navigate = useNavigate();
-
-  const text = {
-    en: {
-      title: "Featured Properties",
-      subtitle: "Discover premium real estate opportunities",
-      noResults: "No properties found matching your search",
-      searchResults: "Search Results",
-      noFeaturedProperties: "No properties available at the moment",
-      showingResults: "Showing",
-      loadingProperties: "Searching properties...",
-      tryDifferentSearch: "Try adjusting your search criteria",
-      browseAll: "Browse All Properties",
-      connectionIssue: "Having trouble loading properties? Check your connection."
-    },
-    id: {
-      title: "Properti Unggulan",
-      subtitle: "Temukan peluang real estate premium",
-      noResults: "Tidak ada properti yang sesuai pencarian Anda",
-      searchResults: "Hasil Pencarian",
-      noFeaturedProperties: "Tidak ada properti tersedia saat ini",
-      showingResults: "Menampilkan",
-      loadingProperties: "Mencari properti...",
-      tryDifferentSearch: "Coba sesuaikan kriteria pencarian Anda",
-      browseAll: "Lihat Semua Properti",
-      connectionIssue: "Kesulitan memuat properti? Periksa koneksi Anda."
-    }
-  };
-
-  const currentText = text[language] || text.en;
+  const { t } = useTranslation();
 
   const toggleFavorite = (propertyId: string) => {
     setFavoriteProperties(prev => {
@@ -84,9 +57,9 @@ const PropertyListingsSection = ({
   const { isFeatureEnabled, getFeatureErrorMessage } = useSystemControls();
 
   const sectionData = useMemo(() => ({
-    sectionTitle: hasSearched ? currentText.searchResults : currentText.title,
-    sectionSubtitle: hasSearched ? undefined : currentText.subtitle,
-  }), [hasSearched, currentText]);
+    sectionTitle: hasSearched ? t('propertyListings.searchResults') : t('propertyListings.title'),
+    sectionSubtitle: hasSearched ? undefined : t('propertyListings.subtitle'),
+  }), [hasSearched, t]);
 
   if (!isFeatureEnabled('property_listings')) {
     return (
@@ -110,9 +83,9 @@ const PropertyListingsSection = ({
               <Sparkles className="absolute inset-0 m-auto w-4 h-4 text-primary" />
             </div>
             <p className="text-sm sm:text-base font-semibold text-primary">
-              {currentText.loadingProperties}
+              {t('propertyListings.loadingProperties')}
             </p>
-            <p className="text-xs text-muted-foreground mt-2">This should only take a few seconds...</p>
+            <p className="text-xs text-muted-foreground mt-2">{t('propertyListings.loadingSubtext')}</p>
           </div>
         </div>
       </section>
@@ -152,11 +125,11 @@ const PropertyListingsSection = ({
                   </div>
                 </div>
                 <h3 className="text-base sm:text-lg font-semibold mb-2 text-foreground">
-                  {hasSearched ? currentText.noResults : currentText.noFeaturedProperties}
+                  {hasSearched ? t('propertyListings.noResults') : t('propertyListings.noFeaturedProperties')}
                 </h3>
                 {hasSearched && (
                   <p className="text-xs sm:text-sm text-muted-foreground mb-4">
-                    {currentText.tryDifferentSearch}
+                    {t('propertyListings.tryDifferentSearch')}
                   </p>
                 )}
                 <div className="space-y-2">
@@ -166,17 +139,17 @@ const PropertyListingsSection = ({
                     className="w-full text-sm border-border hover:bg-muted hover:border-primary/30 transition-all duration-300"
                   >
                     <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
-                    Refresh
+                    {t('common.refresh')}
                   </Button>
                   <Button
                     onClick={() => navigate('/dijual')}
                     className="w-full text-sm bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg hover:shadow-primary/20 transition-all"
                   >
-                    {currentText.browseAll}
+                    {t('propertyListings.browseAll')}
                     <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
                   </Button>
                 </div>
-                <p className="text-xs text-muted-foreground mt-3">{currentText.connectionIssue}</p>
+                <p className="text-xs text-muted-foreground mt-3">{t('propertyListings.connectionIssue')}</p>
               </div>
             </div>
           ) : displayProperties.length >= 4 ? (
@@ -196,7 +169,7 @@ const PropertyListingsSection = ({
                 <div key={`${property.id}-${index}`}>
                   <CompactPropertyCard
                     property={property}
-                    language={language}
+                    language={language || "en"}
                     isSaved={favoriteProperties.has(property.id)}
                     onSave={() => toggleFavorite(property.id)}
                     onView={() => handleViewDetails(property.id)}

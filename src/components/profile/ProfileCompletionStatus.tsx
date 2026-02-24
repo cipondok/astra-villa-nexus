@@ -9,6 +9,7 @@ import {
 import { cn } from '@/lib/utils';
 import { MembershipLevel, MEMBERSHIP_LEVELS } from '@/types/membership';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface ProfileCompletionStatusProps {
   profile: {
@@ -26,7 +27,7 @@ interface ProfileCompletionStatusProps {
 
 interface CompletionStep {
   key: string;
-  label: { en: string; id: string };
+  labelKey: string;
   isComplete: boolean;
   points: number;
 }
@@ -47,70 +48,40 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
   language
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const levelConfig = MEMBERSHIP_LEVELS[membershipLevel];
   const nextLevel = NEXT_LEVEL_MAP[membershipLevel];
   const nextLevelConfig = nextLevel ? MEMBERSHIP_LEVELS[nextLevel] : null;
-
-  const text = {
-    en: {
-      profileCompletion: 'Profile Completion',
-      complete: 'Complete',
-      nextTarget: 'Next Target',
-      benefits: 'Your Benefits',
-      congratulations: '🎉 Congratulations!',
-      profileComplete: 'Your profile is complete!',
-      almostThere: 'Almost there!',
-      completeSteps: 'Complete these steps to unlock more features',
-      upgradeTo: 'Upgrade to',
-      currentLevel: 'Current Level',
-      maxLevel: 'You\'ve reached the highest level!'
-    },
-    id: {
-      profileCompletion: 'Kelengkapan Profil',
-      complete: 'Selesai',
-      nextTarget: 'Target Selanjutnya',
-      benefits: 'Keuntungan Anda',
-      congratulations: '🎉 Selamat!',
-      profileComplete: 'Profil Anda sudah lengkap!',
-      almostThere: 'Hampir selesai!',
-      completeSteps: 'Selesaikan langkah ini untuk membuka fitur lebih banyak',
-      upgradeTo: 'Upgrade ke',
-      currentLevel: 'Level Saat Ini',
-      maxLevel: 'Anda sudah mencapai level tertinggi!'
-    }
-  };
-
-  const t = text[language] || text.en;
 
   // Calculate completion steps
   const steps: CompletionStep[] = [
     {
       key: 'name',
-      label: { en: 'Add your name', id: 'Tambahkan nama' },
+      labelKey: 'profileCompletion.addName',
       isComplete: !!profile?.full_name,
       points: 20
     },
     {
       key: 'phone',
-      label: { en: 'Add phone number', id: 'Tambahkan nomor telepon' },
+      labelKey: 'profileCompletion.addPhone',
       isComplete: !!profile?.phone,
       points: 20
     },
     {
       key: 'avatar',
-      label: { en: 'Upload profile photo', id: 'Upload foto profil' },
+      labelKey: 'profileCompletion.uploadPhoto',
       isComplete: !!profile?.avatar_url,
       points: 25
     },
     {
       key: 'bio',
-      label: { en: 'Write a short bio', id: 'Tulis bio singkat' },
+      labelKey: 'profileCompletion.writeBio',
       isComplete: !!profile?.bio,
       points: 15
     },
     {
       key: 'address',
-      label: { en: 'Add your address', id: 'Tambahkan alamat' },
+      labelKey: 'profileCompletion.addAddress',
       isComplete: !!profile?.business_address,
       points: 20
     }
@@ -130,7 +101,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Target className="h-4 w-4 text-primary" />
-              <span className="font-semibold text-sm">{t.profileCompletion}</span>
+              <span className="font-semibold text-sm">{t('profileCompletion.profileCompletion')}</span>
             </div>
             <Badge 
               variant={isProfileComplete ? "default" : "outline"}
@@ -139,7 +110,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
                 isProfileComplete && "bg-chart-1 hover:bg-chart-1/90"
               )}
             >
-              {completionPercentage}% {t.complete}
+              {completionPercentage}% {t('profileCompletion.complete')}
             </Badge>
           </div>
 
@@ -154,15 +125,15 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
           {isProfileComplete ? (
             <div className="bg-chart-1/10 rounded-lg p-3 text-center">
               <p className="text-lg font-bold text-chart-1 mb-1">
-                {t.congratulations}
+                {t('profileCompletion.congratulations')}
               </p>
               <p className="text-sm text-chart-1/80">
-                {t.profileComplete}
+                {t('profileCompletion.profileComplete')}
               </p>
             </div>
           ) : (
             <div className="space-y-2">
-              <p className="text-xs text-muted-foreground mb-2">{t.completeSteps}</p>
+              <p className="text-xs text-muted-foreground mb-2">{t('profileCompletion.completeSteps')}</p>
               {steps.map((step) => (
                 <div 
                   key={step.key}
@@ -182,7 +153,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
                     "text-sm flex-1",
                     step.isComplete && "line-through text-muted-foreground"
                   )}>
-                    {step.label[language]}
+                    {t(step.labelKey)}
                   </span>
                   <Badge variant="outline" className="text-[10px] px-1.5">
                     +{step.points} XP
@@ -199,7 +170,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-3">
             <Trophy className="h-4 w-4 text-gold-primary" />
-            <span className="font-semibold text-sm">{t.nextTarget}</span>
+            <span className="font-semibold text-sm">{t('profileCompletion.nextTarget')}</span>
           </div>
 
           {/* Current Level */}
@@ -212,7 +183,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
                 <span className="text-sm">{levelConfig.icon}</span>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">{t.currentLevel}</p>
+                <p className="text-xs text-muted-foreground">{t('profileCompletion.currentLevel')}</p>
                 <p className={cn("font-semibold text-sm", levelConfig.color)}>
                   {levelConfig.label}
                 </p>
@@ -244,7 +215,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
                   <span className="text-sm">{nextLevelConfig.icon}</span>
                 </div>
                 <div className="text-left">
-                  <p className="text-xs text-muted-foreground">{t.upgradeTo}</p>
+                  <p className="text-xs text-muted-foreground">{t('profileCompletion.upgradeTo')}</p>
                   <p className={cn("font-semibold text-sm", nextLevelConfig.color)}>
                     {nextLevelConfig.label}
                   </p>
@@ -256,7 +227,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
             <div className="p-3 rounded-lg bg-gradient-to-r from-accent/10 via-primary/10 to-accent/10 text-center">
               <Gem className="h-6 w-6 mx-auto mb-1 text-accent" />
               <p className="text-sm font-medium text-accent">
-                {t.maxLevel}
+                {t('profileCompletion.maxLevel')}
               </p>
             </div>
           )}
@@ -268,7 +239,7 @@ export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = (
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-3">
             <Gift className="h-4 w-4 text-primary" />
-            <span className="font-semibold text-sm">{t.benefits}</span>
+            <span className="font-semibold text-sm">{t('profileCompletion.benefits')}</span>
             <Badge variant="outline" className={cn("text-[10px]", levelConfig.color)}>
               {levelConfig.shortLabel}
             </Badge>
