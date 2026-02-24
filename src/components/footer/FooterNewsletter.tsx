@@ -4,6 +4,7 @@ import { Send, Mail, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface FooterNewsletterProps {
   language: "en" | "id";
@@ -12,39 +13,9 @@ interface FooterNewsletterProps {
 const FooterNewsletter = ({ language }: FooterNewsletterProps) => {
   const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const { t, tArray } = useTranslation();
 
-  const text = {
-    en: {
-      newsletter: "Stay Updated",
-      newsletterText: "Get the latest property listings, market insights, and exclusive deals delivered to your inbox.",
-      emailPlaceholder: "Enter your email address",
-      subscribe: "Subscribe Now",
-      benefits: [
-        "Weekly market reports",
-        "New property alerts",
-        "Exclusive pre-launch access",
-        "Investment insights"
-      ],
-      successMessage: "Thank you for subscribing!",
-      subscribed: "You're subscribed!"
-    },
-    id: {
-      newsletter: "Tetap Update",
-      newsletterText: "Dapatkan listing properti terbaru, wawasan pasar, dan penawaran eksklusif langsung ke inbox Anda.",
-      emailPlaceholder: "Masukkan alamat email Anda",
-      subscribe: "Berlangganan Sekarang",
-      benefits: [
-        "Laporan pasar mingguan",
-        "Peringatan properti baru",
-        "Akses pra-peluncuran eksklusif",
-        "Wawasan investasi"
-      ],
-      successMessage: "Terima kasih telah berlangganan!",
-      subscribed: "Anda sudah berlangganan!"
-    }
-  };
-
-  const currentText = text[language];
+  const benefits = tArray('footer.benefits');
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,10 +23,8 @@ const FooterNewsletter = ({ language }: FooterNewsletterProps) => {
     
     console.log("Subscribing email:", email);
     setIsSubscribed(true);
-    toast.success(currentText.successMessage);
+    toast.success(t('footer.successMessage'));
     setEmail("");
-    
-    // Reset after 3 seconds for demo purposes
     setTimeout(() => setIsSubscribed(false), 3000);
   };
 
@@ -66,13 +35,13 @@ const FooterNewsletter = ({ language }: FooterNewsletterProps) => {
           <Mail className="h-5 w-5 text-primary" />
         </div>
         <h4 className="font-bold text-foreground text-sm">
-          {currentText.newsletter}
+          {t('footer.newsletter')}
         </h4>
       </div>
       
       <div className="space-y-4">
         <p className="text-muted-foreground text-sm leading-relaxed">
-          {currentText.newsletterText}
+          {t('footer.newsletterText')}
         </p>
         
         {!isSubscribed ? (
@@ -80,7 +49,7 @@ const FooterNewsletter = ({ language }: FooterNewsletterProps) => {
             <div className="relative">
               <Input
                 type="email"
-                placeholder={currentText.emailPlaceholder}
+                placeholder={t('footer.emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pr-12 bg-background/50 border-border/30 focus:border-primary/50 text-sm"
@@ -94,14 +63,14 @@ const FooterNewsletter = ({ language }: FooterNewsletterProps) => {
               size="sm"
             >
               <Send className="h-3 w-3 mr-2" />
-              {currentText.subscribe}
+              {t('footer.subscribe')}
             </Button>
           </form>
         ) : (
           <div className="flex items-center gap-2 p-3 bg-chart-1/10 rounded-lg border border-chart-1/20">
             <CheckCircle className="h-4 w-4 text-chart-1" />
             <span className="text-chart-1 text-sm font-medium">
-              {currentText.subscribed}
+              {t('footer.subscribed')}
             </span>
           </div>
         )}
@@ -109,7 +78,7 @@ const FooterNewsletter = ({ language }: FooterNewsletterProps) => {
         <div className="space-y-2">
           <p className="text-xs text-muted-foreground font-medium">What you'll get:</p>
           <ul className="space-y-1">
-            {currentText.benefits.map((benefit, index) => (
+            {benefits.map((benefit, index) => (
               <li key={index} className="text-xs text-muted-foreground flex items-center gap-2">
                 <div className="h-1 w-1 bg-primary rounded-full flex-shrink-0" />
                 {benefit}

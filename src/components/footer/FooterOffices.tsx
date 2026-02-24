@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface FooterOfficesProps {
   language: "en" | "id";
@@ -30,6 +31,7 @@ type OfficeLocation = {
 };
 
 const FooterOffices = ({ language }: FooterOfficesProps) => {
+  const { t } = useTranslation();
   const { data: offices, isLoading } = useQuery<OfficeLocation[]>({
     queryKey: ["office_locations_active"],
     queryFn: async () => {
@@ -57,13 +59,6 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
 
   const selectedOffice = offices?.find((office) => office.id === selectedOfficeId);
 
-  const text = {
-    en: { offices: "Our Offices", select_office: "Select an office" },
-    id: { offices: "Kantor Kami", select_office: "Pilih kantor" },
-  };
-
-  const currentText = text[language];
-
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 mb-2">
@@ -71,7 +66,7 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
           <Building className="h-5 w-5 text-primary" />
         </div>
         <h4 className="font-bold text-foreground text-lg">
-          {currentText.offices}
+          {t('footer.offices')}
         </h4>
       </div>
 
@@ -84,7 +79,7 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
         <div className="space-y-4">
           <Select onValueChange={setSelectedOfficeId} value={selectedOfficeId}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={currentText.select_office} />
+              <SelectValue placeholder={t('footer.selectOffice')} />
             </SelectTrigger>
             <SelectContent>
               {offices?.map((office) => (

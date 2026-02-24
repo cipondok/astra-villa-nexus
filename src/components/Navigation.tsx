@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
+import { useTranslation } from "@/i18n/useTranslation";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
 import EnhancedAuthModal from "./auth/EnhancedAuthModal";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -32,18 +33,16 @@ const Navigation = () => {
   const { isAdmin } = useAdminCheck();
   const { language } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Fetch header logo from system settings (checks both categories)
   const { logoUrl: headerLogoUrl, isLoading: isLogoLoading, hasCustomLogo } = useHeaderLogo();
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location]);
 
-  // Close mobile menu on scroll
   useEffect(() => {
     if (!isMenuOpen) return;
     const handleScroll = () => setIsMenuOpen(false);
@@ -51,7 +50,6 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isMenuOpen]);
 
-  // Close mobile menu on window resize to desktop
   useEffect(() => {
     if (!isMenuOpen) return;
     const handleResize = () => {
@@ -61,7 +59,6 @@ const Navigation = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [isMenuOpen]);
 
-  // Close mobile menu when clicking anywhere outside the menu and toggle button
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -72,7 +69,6 @@ const Navigation = () => {
       if (menuButtonRef.current?.contains(target)) return;
       setIsMenuOpen(false);
     };
-    // Use capture phase to catch clicks before they're stopped
     document.addEventListener('click', handleGlobalClick, true);
     document.addEventListener('touchend', handleGlobalClick, true);
     return () => {
@@ -81,16 +77,13 @@ const Navigation = () => {
     };
   }, [isMenuOpen]);
 
-  // Handle scroll effect - transparent at top, solid when scrolled
   useEffect(() => {
     let ticking = false;
-    
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
           const isScrolled = window.scrollY > 10;
           setScrolled(isScrolled);
-          // Check if hero section is scrolled past
           const heroSection = document.getElementById('hero-section');
           if (heroSection) {
             const heroBottom = heroSection.getBoundingClientRect().bottom;
@@ -103,106 +96,28 @@ const Navigation = () => {
         ticking = true;
       }
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial check
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
+  const handleSignOut = async () => { await signOut(); navigate('/'); };
 
-  const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
-  };
-
-  const text = {
-    en: {
-      home: "Home",
-      services: "Services",
-      admin: "Admin",
-      signIn: "Sign In",
-      signOut: "Sign Out",
-      user: "User",
-      adminPanel: "Admin Panel",
-      settings: "Settings",
-      properties: "All Properties",
-      saved: "Saved",
-      messages: "Messages",
-      buyProperties: "Buy Properties",
-      rentProperties: "Rent Properties",
-      preLaunch: "Pre Launch",
-      newProjects: "New Projects",
-      profile: "Profile",
-      dashboard: "Dashboard",
-      csDashboard: "CS Dashboard"
-    },
-    id: {
-      home: "Beranda",
-      services: "Layanan",
-      admin: "Admin",
-      signIn: "Masuk",
-      signOut: "Keluar",
-      user: "Pengguna",
-      adminPanel: "Panel Admin",
-      settings: "Pengaturan",
-      properties: "Semua Properti",
-      saved: "Disimpan",
-      messages: "Pesan",
-      buyProperties: "Dijual",
-      rentProperties: "Disewa",
-      preLaunch: "Pra Peluncuran",
-      newProjects: "Proyek Baru",
-      profile: "Profil",
-      dashboard: "Dashboard",
-      csDashboard: "Dashboard CS"
-    }
-  };
-
-  const currentText = text[language] || text.en;
-
-  // Property navigation items
   const navIconStyle = 'bg-muted/50 border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 hover:shadow-md transition-all duration-300';
   const navIconColor = 'text-foreground/70';
 
   const propertyNavItems = [
-    { 
-      icon: Building, 
-      label: currentText.buyProperties, 
-      path: '/dijual',
-    },
-    { 
-      icon: Key, 
-      label: currentText.rentProperties, 
-      path: '/disewa',
-    },
-    { 
-      icon: Rocket, 
-      label: currentText.preLaunch, 
-      path: '/pre-launching',
-    },
-    { 
-      icon: Hammer, 
-      label: currentText.newProjects, 
-      path: '/new-projects',
-    },
-    { 
-      icon: Box, 
-      label: 'VR Tours', 
-      path: '/vr-tour',
-    }
+    { icon: Building, label: t('nav2.buyProperties'), path: '/dijual' },
+    { icon: Key, label: t('nav2.rentProperties'), path: '/disewa' },
+    { icon: Rocket, label: t('nav2.preLaunch'), path: '/pre-launching' },
+    { icon: Hammer, label: t('nav2.newProjects'), path: '/new-projects' },
+    { icon: Box, label: 'VR Tours', path: '/vr-tour' },
   ];
 
   const isAgent = profile?.role === 'agent';
   const isHomePage = location.pathname === '/';
-  
-  // Note: admin check is handled by isAdmin hook
 
   const handleHeaderSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -233,19 +148,12 @@ const Navigation = () => {
             >
               {hasCustomLogo ? (
                 <div className="relative group/logo overflow-visible">
-                  <CrystalLogo3D 
-                    logoUrl={headerLogoUrl} 
-                    size="lg"
-                  />
+                  <CrystalLogo3D logoUrl={headerLogoUrl} size="lg" />
                 </div>
               ) : (
                 <>
                   <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-primary/80 via-accent/70 to-primary/60 backdrop-blur-sm border border-primary/30 flex items-center justify-center shadow-lg shadow-primary/15 group-hover:shadow-xl group-hover:shadow-primary/25 transition-all duration-500 group-hover:scale-105">
-                    <img 
-                      src={headerLogoUrl} 
-                      alt="ASTRA Villa" 
-                      className="h-7 w-7 md:h-8 md:w-8 object-contain"
-                    />
+                    <img src={headerLogoUrl} alt="ASTRA Villa" className="h-7 w-7 md:h-8 md:w-8 object-contain" />
                   </div>
                   <div className="hidden sm:flex items-center space-x-1 ml-1">
                     <span className={cn("text-lg font-bold transition-all duration-500", isHomePage && !scrolled ? "text-primary-foreground drop-shadow-lg" : "text-foreground")}>ASTRA</span>
@@ -257,25 +165,14 @@ const Navigation = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1 flex-1 justify-center max-w-5xl">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                className="h-8 px-3 text-xs font-medium rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/80"
-                onClick={() => navigate('/')}
-              >
+              <Button variant="ghost" size="sm" className="h-8 px-3 text-xs font-medium rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/80" onClick={() => navigate('/')}>
                 <HomeIcon className="h-4 w-4 xl:mr-1.5 text-gold-primary" />
-                <span className="hidden xl:inline">{currentText.home}</span>
+                <span className="hidden xl:inline">{t('nav.home')}</span>
               </Button>
 
-              {/* Property Navigation Items */}
               {propertyNavItems.map((item) => (
                 <div key={item.path} className="relative group">
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    className={`w-8 h-8 p-0 rounded-xl border ${navIconStyle}`}
-                    onClick={() => navigate(item.path)}
-                  >
+                  <Button variant="ghost" size="sm" className={`w-8 h-8 p-0 rounded-xl border ${navIconStyle}`} onClick={() => navigate(item.path)}>
                     <item.icon className={`h-4 w-4 ${navIconColor}`} />
                   </Button>
                   <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-foreground text-background text-[10px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
@@ -286,94 +183,53 @@ const Navigation = () => {
               ))}
 
               <div className="relative group">
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  className={`w-8 h-8 p-0 rounded-xl border ${navIconStyle}`}
-                  onClick={() => navigate('/services')}
-                >
+                <Button variant="ghost" size="sm" className={`w-8 h-8 p-0 rounded-xl border ${navIconStyle}`} onClick={() => navigate('/services')}>
                   <Settings2 className={`h-4 w-4 ${navIconColor}`} />
                 </Button>
                 <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-foreground text-background text-[10px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
-                  {currentText.services}
+                  {t('nav.services')}
                   <span className="absolute bottom-full left-1/2 -translate-x-1/2 w-2 h-2 bg-foreground rotate-45 -mb-1" />
                 </div>
               </div>
 
-              <Button 
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/add-property')}
-                className={`h-8 px-3 text-xs font-medium rounded-xl border ${navIconStyle}`}
-              >
+              <Button variant="ghost" size="sm" onClick={() => navigate('/add-property')} className={`h-8 px-3 text-xs font-medium rounded-xl border ${navIconStyle}`}>
                 <Plus className={`h-4 w-4 xl:mr-1.5 ${navIconColor}`} />
-                <span className="hidden xl:inline text-foreground/80">Add Property</span>
+                <span className="hidden xl:inline text-foreground/80">{t('nav2.addProperty')}</span>
               </Button>
 
-              <Button 
-                variant="ghost" 
-                size="sm"
-                className={`h-8 px-3 text-xs font-medium rounded-xl border ${navIconStyle}`}
-                onClick={() => navigate('/investment')}
-              >
+              <Button variant="ghost" size="sm" className={`h-8 px-3 text-xs font-medium rounded-xl border ${navIconStyle}`} onClick={() => navigate('/investment')}>
                 <TrendingUp className={`h-4 w-4 xl:mr-1.5 ${navIconColor}`} />
-                <span className="hidden xl:inline text-foreground/80">Investment</span>
+                <span className="hidden xl:inline text-foreground/80">{t('nav2.investment')}</span>
               </Button>
 
-               {/* Dashboard link */}
-               {user && !isAdmin && !isAgent && (
-                 <Button 
-                   variant="ghost" 
-                   size="sm"
-                   className="h-8 px-2.5 text-xs font-medium text-foreground/70 hover:text-foreground hover:bg-muted/50 rounded-xl transition-all duration-300"
-                   onClick={() => navigate('/dashboard/user')}
-                 >
-                   <BarChart3 className="h-4 w-4 xl:mr-1" />
-                   <span className="hidden xl:inline">Dashboard</span>
-                 </Button>
-               )}
+              {user && !isAdmin && !isAgent && (
+                <Button variant="ghost" size="sm" className="h-8 px-2.5 text-xs font-medium text-foreground/70 hover:text-foreground hover:bg-muted/50 rounded-xl transition-all duration-300" onClick={() => navigate('/dashboard/user')}>
+                  <BarChart3 className="h-4 w-4 xl:mr-1" />
+                  <span className="hidden xl:inline">{t('nav.dashboard')}</span>
+                </Button>
+              )}
 
-              {/* Agent Dashboard */}
               {isAgent && (
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  className="h-8 px-2.5 text-xs font-medium text-chart-1 hover:bg-chart-1/10 rounded-xl transition-all duration-300"
-                  onClick={() => navigate('/agent')}
-                >
+                <Button variant="ghost" size="sm" className="h-8 px-2.5 text-xs font-medium text-chart-1 hover:bg-chart-1/10 rounded-xl transition-all duration-300" onClick={() => navigate('/agent')}>
                   <User className="h-4 w-4 xl:mr-1" />
                   <span className="hidden xl:inline">Agent</span>
                 </Button>
               )}
 
-              {/* Vendor Dashboard */}
               {profile?.role === 'vendor' && (
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  className="h-8 px-2.5 text-xs font-medium text-accent-foreground hover:bg-accent/10 rounded-xl transition-all duration-300"
-                  onClick={() => navigate('/vendor')}
-                >
+                <Button variant="ghost" size="sm" className="h-8 px-2.5 text-xs font-medium text-accent-foreground hover:bg-accent/10 rounded-xl transition-all duration-300" onClick={() => navigate('/vendor')}>
                   <Settings className="h-4 w-4 xl:mr-1" />
                   <span className="hidden xl:inline">Vendor</span>
                 </Button>
               )}
-
             </div>
 
             {/* Right Section */}
             <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-              {/* Search bar - appears when scrolled past hero */}
               {pastHero && isHomePage && (
                 <form onSubmit={handleHeaderSearch} className="flex items-center gap-1">
                   <div className="relative">
-                    <Input
-                      type="text"
-                      value={headerSearchQuery}
-                      onChange={(e) => setHeaderSearchQuery(e.target.value)}
-                      placeholder="Search..."
-                      className="px-3 h-7 sm:h-8 w-24 sm:w-32 lg:w-44 xl:w-56 text-[11px] sm:text-xs bg-muted/50 border-border/50 rounded-lg focus:bg-background focus:border-gold-primary/30 focus:w-36 sm:focus:w-44 lg:focus:w-56 transition-all duration-300"
-                    />
+                    <Input type="text" value={headerSearchQuery} onChange={(e) => setHeaderSearchQuery(e.target.value)} placeholder={t('common.search') + '...'} className="px-3 h-7 sm:h-8 w-24 sm:w-32 lg:w-44 xl:w-56 text-[11px] sm:text-xs bg-muted/50 border-border/50 rounded-lg focus:bg-background focus:border-gold-primary/30 focus:w-36 sm:focus:w-44 lg:focus:w-56 transition-all duration-300" />
                   </div>
                   <Button type="submit" size="sm" className="h-7 sm:h-8 w-7 sm:w-8 p-0 rounded-lg bg-gold-primary hover:bg-gold-primary/90 text-background shrink-0">
                     <Search className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
@@ -381,57 +237,32 @@ const Navigation = () => {
                 </form>
               )}
 
-              {/* Theme Toggle */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleTheme}
-                className="w-8 h-8 p-0 rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300"
-              >
-                {theme === "light" ? (
-                  <Moon className="h-4 w-4 text-foreground/70" />
-                ) : (
-                  <Sun className="h-4 w-4 text-gold-primary" />
-                )}
+              <Button variant="ghost" size="sm" onClick={toggleTheme} className="w-8 h-8 p-0 rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300">
+                {theme === "light" ? <Moon className="h-4 w-4 text-foreground/70" /> : <Sun className="h-4 w-4 text-gold-primary" />}
               </Button>
 
-              {/* Language Toggle */}
               <div className="hidden xl:block">
                 <LanguageToggleSwitch />
               </div>
 
-              {/* Notifications */}
               {user && <NotificationDropdown />}
 
-              {/* User */}
               {user ? (
                 <UserIconWithBadge onNavigate={(path) => navigate(path)} />
               ) : (
                 <div className="relative group">
-                  <Button
-                    onClick={() => setShowAuthModal(true)}
-                    variant="ghost"
-                    size="sm"
-                    className="w-8 h-8 p-0 rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/70 hover:text-gold-primary"
-                  >
+                  <Button onClick={() => setShowAuthModal(true)} variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/70 hover:text-gold-primary">
                     <User className="h-4 w-4" />
                   </Button>
                   <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-foreground text-background text-[10px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
-                    {currentText.signIn}
+                    {t('auth.signIn')}
                     <span className="absolute bottom-full left-1/2 -translate-x-1/2 w-2 h-2 bg-foreground rotate-45 -mb-1" />
                   </div>
                 </div>
               )}
 
-              {/* Mobile menu button */}
               <div className="lg:hidden flex items-center">
-                <Button
-                  ref={menuButtonRef}
-                  variant="ghost"
-                  size="sm"
-                  className="w-8 h-8 p-0 rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-all duration-300 text-foreground/70"
-                  onClick={toggleMenu}
-                >
+                <Button ref={menuButtonRef} variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-all duration-300 text-foreground/70" onClick={toggleMenu}>
                   {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
                 </Button>
               </div>
@@ -441,58 +272,40 @@ const Navigation = () => {
           {/* Mobile Navigation Menu */}
           {isMenuOpen && (
             <>
-              <div 
-                className="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-[9998] animate-in fade-in duration-200"
-                onClick={() => setIsMenuOpen(false)}
-                onTouchEnd={(e) => { e.preventDefault(); setIsMenuOpen(false); }}
-              />
+              <div className="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-[9998] animate-in fade-in duration-200" onClick={() => setIsMenuOpen(false)} onTouchEnd={(e) => { e.preventDefault(); setIsMenuOpen(false); }} />
               
               <div ref={menuRef} className="lg:hidden absolute top-full right-0 w-52 bg-popover/95 backdrop-blur-2xl border border-gold-primary/15 shadow-2xl z-[9999] rounded-b-2xl rounded-tl-lg overflow-hidden animate-in slide-in-from-top-2 fade-in duration-300 origin-top-right">
                 <div className="p-2 space-y-0.5">
-                  <MobileNavButton icon={HomeIcon} label={currentText.home} onClick={() => { navigate('/'); toggleMenu(); }} />
+                  <MobileNavButton icon={HomeIcon} label={t('nav.home')} onClick={() => { navigate('/'); toggleMenu(); }} />
 
-                  {/* Property Navigation */}
                   {propertyNavItems.map((item) => (
-                    <MobileNavButton 
-                      key={item.path}
-                      icon={item.icon} 
-                      label={item.label} 
-                      colorClass={navIconColor}
-                      onClick={() => { navigate(item.path); toggleMenu(); }}
-                    />
+                    <MobileNavButton key={item.path} icon={item.icon} label={item.label} colorClass={navIconColor} onClick={() => { navigate(item.path); toggleMenu(); }} />
                   ))}
 
-                  <MobileNavButton icon={MapPin} label={language === 'en' ? 'Location Map' : 'Peta Lokasi'} onClick={() => { navigate('/location'); toggleMenu(); }} />
-                  <MobileNavButton icon={Settings2} label={currentText.services} onClick={() => { navigate('/services'); toggleMenu(); }} />
-                  <MobileNavButton icon={Building} label="Properties" onClick={() => { navigate('/buy'); toggleMenu(); }} />
-                  <MobileNavButton icon={Plus} label="Add Property" onClick={() => { navigate('/add-property'); toggleMenu(); }} />
+                  <MobileNavButton icon={MapPin} label={t('nav2.location')} onClick={() => { navigate('/location'); toggleMenu(); }} />
+                  <MobileNavButton icon={Settings2} label={t('nav.services')} onClick={() => { navigate('/services'); toggleMenu(); }} />
+                  <MobileNavButton icon={Building} label={t('nav.properties')} onClick={() => { navigate('/buy'); toggleMenu(); }} />
+                  <MobileNavButton icon={Plus} label={t('nav2.addProperty')} onClick={() => { navigate('/add-property'); toggleMenu(); }} />
 
-                  {/* Investment Section */}
                   <div className="border-t border-gold-primary/10 pt-1.5 mt-1.5">
                     <div className="px-2 py-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                      Investment
+                      {t('nav2.investment')}
                     </div>
-                    <MobileNavButton icon={Building} label="Investment" onClick={() => { navigate('/investment'); toggleMenu(); }} indent />
+                    <MobileNavButton icon={Building} label={t('nav2.investment')} onClick={() => { navigate('/investment'); toggleMenu(); }} indent />
                   </div>
 
-                  {/* Dashboard links */}
                   {user && !isAdmin && !isAgent && (
-                    <MobileNavButton icon={BarChart3} label={currentText.dashboard} onClick={() => { navigate('/dashboard/user'); toggleMenu(); }} />
+                    <MobileNavButton icon={BarChart3} label={t('nav.dashboard')} onClick={() => { navigate('/dashboard/user'); toggleMenu(); }} />
                   )}
                   {isAgent && (
-                    <MobileNavButton icon={User} label="Agent Dashboard" colorClass="text-chart-1" onClick={() => { navigate('/agent'); toggleMenu(); }} />
+                    <MobileNavButton icon={User} label={t('nav.agentDashboard')} colorClass="text-chart-1" onClick={() => { navigate('/agent'); toggleMenu(); }} />
                   )}
                   {profile?.role === 'vendor' && (
-                    <MobileNavButton icon={Settings} label="Vendor Dashboard" colorClass="text-accent-foreground" onClick={() => { navigate('/vendor'); toggleMenu(); }} />
+                    <MobileNavButton icon={Settings} label={t('nav.vendorDashboard')} colorClass="text-accent-foreground" onClick={() => { navigate('/vendor'); toggleMenu(); }} />
                   )}
                   
                   <div className="flex items-center justify-between pt-1.5 border-t border-gold-primary/10">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={toggleTheme}
-                      className="h-7 text-[11px] text-foreground/70 hover:text-foreground hover:bg-muted/50 rounded-lg"
-                    >
+                    <Button variant="ghost" size="sm" onClick={toggleTheme} className="h-7 text-[11px] text-foreground/70 hover:text-foreground hover:bg-muted/50 rounded-lg">
                       {theme === "light" ? <Moon className="h-3 w-3 mr-1" /> : <Sun className="h-3 w-3 mr-1" />}
                       {theme === "light" ? "Dark" : "Light"}
                     </Button>
@@ -501,7 +314,7 @@ const Navigation = () => {
                   {user && (
                     <Button variant="ghost" className="w-full justify-start h-8 text-[11px] font-medium text-destructive hover:text-destructive hover:bg-destructive/10 rounded-lg" onClick={handleSignOut}>
                       <LogOut className="h-3 w-3 mr-1.5" />
-                      {currentText.signOut}
+                      {t('auth.signOut')}
                     </Button>
                   )}
                 </div>
@@ -511,17 +324,11 @@ const Navigation = () => {
         </div>
       </nav>
 
-      {/* Enhanced Auth Modal */}
-      <EnhancedAuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        language={language}
-      />
+      <EnhancedAuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} language={language} />
     </>
   );
 };
 
-// Reusable mobile nav button
 const MobileNavButton: React.FC<{
   icon: React.ElementType;
   label: string;
