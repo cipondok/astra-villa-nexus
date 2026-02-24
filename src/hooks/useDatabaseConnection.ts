@@ -20,8 +20,7 @@ export const useDatabaseConnection = () => {
 
       const { data, error } = await supabase
         .from('system_settings')
-        .select('id')
-        .eq('is_public', true)
+        .select('key')
         .limit(1)
         .abortSignal(controller.signal);
 

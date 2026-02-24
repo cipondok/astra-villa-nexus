@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { useMemo } from 'react';
+import { useAllSystemSettings, selectSettingByKey } from './useAllSystemSettings';
 
 export interface HeroSliderConfig {
   bannerImages: string[];
@@ -68,21 +68,20 @@ const defaultConfig: HeroSliderConfig = {
 };
 
 export const useHeroSliderConfig = () => {
-  return useQuery({
-    queryKey: ['hero-slider-config'],
-    queryFn: async (): Promise<HeroSliderConfig> => {
-      const { data, error } = await supabase
-        .from('system_settings')
-        .select('value')
-        .eq('key', 'hero_slider_config')
-        .maybeSingle();
+  const { data: allSettings, isLoading, error } = useAllSystemSettings();
 
-      if (error) throw error;
-      if (data?.value) {
-        return { ...defaultConfig, ...JSON.parse(String(data.value)) };
+  const data = useMemo(() => {
+    const raw = selectSettingByKey(allSettings, 'hero_slider_config');
+    if (raw) {
+      try {
+        const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        return { ...defaultConfig, ...parsed };
+      } catch {
+        return defaultConfig;
       }
-      return defaultConfig;
-    },
-    staleTime: 30_000, // refresh every 30s
-  });
+    }
+    return defaultConfig;
+  }, [allSettings]);
+
+  return { data, isLoading, error };
 };
