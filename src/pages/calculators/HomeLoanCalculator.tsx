@@ -230,7 +230,7 @@ const HomeLoanCalculator = () => {
     }
   };
 
-  const t = translations[language];
+  const t = translations[language] || translations.en;
 
   return (
     <div className="min-h-screen bg-background pt-11 md:pt-12">

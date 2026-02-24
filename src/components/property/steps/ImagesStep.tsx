@@ -47,7 +47,7 @@ const ImagesStep = ({ formData, onUpdate }: ImagesStepProps) => {
     }
   };
 
-  const t = translations[language];
+  const t = translations[language] || translations.en;
 
   return (
     <div className="space-y-6">

@@ -132,7 +132,7 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
     }
   };
 
-  const t = copy[language];
+  const t = copy[language] || copy.en;
 
   const getMethodColor = (color: string) => {
     switch (color) {

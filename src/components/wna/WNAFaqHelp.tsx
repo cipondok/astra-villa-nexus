@@ -175,7 +175,7 @@ const WNAFaqHelp: React.FC = () => {
     }
   };
 
-  const t = copy[language];
+  const t = copy[language] || copy.en;
 
   const openChat = () => {
     const event = new CustomEvent('openAIChat');

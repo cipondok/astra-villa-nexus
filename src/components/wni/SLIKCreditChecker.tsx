@@ -215,7 +215,7 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
     }
   };
 
-  const t = copy[language];
+  const t = copy[language] || copy.en;
 
   const getStatusColor = (color: string) => {
     switch (color) {

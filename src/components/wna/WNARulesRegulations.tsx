@@ -199,7 +199,7 @@ const WNARulesRegulations: React.FC = () => {
     }
   };
 
-  const t = copy[language];
+  const t = copy[language] || copy.en;
 
   const colorClasses = {
     blue: { bg: 'bg-chart-4/10', text: 'text-chart-4' },

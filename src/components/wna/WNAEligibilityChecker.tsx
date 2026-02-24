@@ -176,7 +176,7 @@ const WNAEligibilityChecker: React.FC = () => {
     }
   };
 
-  const t = copy[language];
+  const t = copy[language] || copy.en;
 
   const nationalities = [
     'Singapore', 'Australia', 'Japan', 'China', 'USA', 'Malaysia', 'South Korea',

@@ -81,7 +81,7 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
     }
   };
 
-  const t = copy[language];
+  const t = copy[language] || copy.en;
 
   const filteredCountries = countries.filter(country => {
     const matchesSearch = country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
