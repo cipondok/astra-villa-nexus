@@ -1,32 +1,32 @@
 
 
-## All 4 Original Milestones Complete
+## Current Status
 
-Every feature from the previous plan has been implemented:
+All four features from this iteration are complete:
 
-1. Consolidated system_settings queries (performance fix)
-2. Save and compare KPR scenarios
-3. User interaction tracking hooks
-4. Pre-qualification wizard with PDF export
+1. Collaborative recommendations edge function with real similarity logic
+2. Saved searches with email notifications
+3. Enhanced property comparison with KPR projections and neighborhood data
+4. User-facing dashboard with 5 tabs (Overview, Saved, Searches, KPR, Insights)
 
 ## Recommended Next Steps
 
-Here are the next logical features to build on the existing foundation:
+Here are the logical next features to build on the current foundation:
 
-### 1. Implement the Collaborative Recommendations Edge Function
-The hook `useCollaborativeRecommendations.ts` and the function stub `get-collaborative-recommendations/` exist, but the edge function likely needs real logic -- finding users with similar browsing/saving patterns and surfacing properties they viewed that the current user has not. This would close the loop on the recommendation ecosystem.
+### 1. Mortgage Pre-Approval Integration with Banks
+Extend the pre-qualification wizard to submit applications to partner banks via an edge function, tracking application status in a new `mortgage_applications` table. This moves from informational PDF to an actionable workflow with status tracking (submitted, under review, approved, rejected) visible in the user dashboard.
 
-### 2. Saved Searches with Email Notifications
-Allow users to save their search filters and receive periodic email notifications when new matching properties are listed. The `check-search-notifications` edge function directory already exists, suggesting groundwork was laid. This would tie into the interaction tracking data now being collected.
+### 2. Real-Time Property Alerts via WebSocket
+Use Supabase Realtime to push instant notifications when a new property matches a user's saved search, rather than relying solely on the cron-based email check. This would add a notification bell in the header with live updates.
 
-### 3. Property Comparison Tool Enhancement
-`PropertyComparisonButton.tsx` and `PropertyComparisonPanel.tsx` exist. Enhancing these with side-by-side specs, KPR cost projections per property, and neighborhood data would add significant value for buyers evaluating multiple listings.
+### 3. Agent-to-Buyer Messaging System
+Build a direct messaging system between property agents and interested buyers, with conversation threads tied to specific properties. This would use a `messages` table with Supabase Realtime for live chat.
 
-### 4. Mortgage Pre-Approval Integration with Banks
-Extend the pre-qualification wizard to submit applications to partner banks via edge functions, tracking application status in a new `mortgage_applications` table. This moves from informational PDF to actionable workflow.
+### 4. Property Visit Scheduling & Calendar
+Allow buyers to book property viewings directly from listings, with calendar integration for agents. This would extend the existing `property_survey_bookings` table with time slot management and confirmation workflows.
 
-### 5. Dashboard Analytics for User Engagement
-Build a user-facing dashboard showing their saved properties, search history, KPR scenarios, and personalized market insights -- leveraging all the interaction data now being tracked.
+### 5. Social Sharing & Referral System
+Enable users to share property listings or comparison results via social media or direct links, with a referral tracking system that rewards users for bringing new sign-ups.
 
 Pick any direction and I will create a detailed implementation plan.
 
