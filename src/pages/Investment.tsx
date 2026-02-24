@@ -209,7 +209,7 @@ const Investment = () => {
     }
   };
 
-  const copy = t[language];
+  const copy = t[language] || t.en;
 
   return (
     <div className="min-h-screen bg-background">
