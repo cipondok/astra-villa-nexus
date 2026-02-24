@@ -2,7 +2,8 @@
  * Advanced Search Page - Full-featured property search with facets and autocomplete
  */
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { useUserBehaviorAnalytics } from "@/hooks/useUserBehaviorAnalytics";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,6 +37,7 @@ type ViewMode = 'grid' | 'list' | 'map';
 
 const AdvancedSearchPage = () => {
   const navigate = useNavigate();
+  const { trackSearch, trackInteraction } = useUserBehaviorAnalytics();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<FacetedFilters>(defaultFacetedFilters);
   const [sortBy, setSortBy] = useState("newest");
@@ -43,6 +45,7 @@ const AdvancedSearchPage = () => {
   const [page, setPage] = useState(1);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const pageSize = 20;
+  const lastTrackedSearch = useRef("");
 
   // Property modals
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
@@ -136,6 +139,20 @@ const AdvancedSearchPage = () => {
   const searchTimeMs = data?.searchTimeMs;
   const totalPages = Math.ceil(totalCount / pageSize);
 
+  // Track search interactions
+  useEffect(() => {
+    if (!data || isLoading) return;
+    const searchKey = `${searchQuery}|${JSON.stringify(filters)}|${sortBy}|${page}`;
+    if (searchKey === lastTrackedSearch.current) return;
+    lastTrackedSearch.current = searchKey;
+
+    trackSearch(searchQuery, {
+      ...filters,
+      sortBy,
+      page,
+    }, totalCount);
+  }, [data, isLoading]);
+
   // Active filters for display
   const activeFilters = useMemo(() => {
     const filters_list: { key: string; label: string; value: string }[] = [];
@@ -188,6 +205,18 @@ const AdvancedSearchPage = () => {
   }, []);
 
   const handlePropertyClick = (property: BaseProperty) => {
+    trackInteraction({
+      interaction_type: 'click',
+      property_id: property.id,
+      interaction_data: {
+        source: 'search_results',
+        search_query: searchQuery,
+        property_type: property.property_type,
+        listing_type: property.listing_type,
+        price: property.price,
+        city: property.city,
+      }
+    });
     setSelectedProperty(property);
     setShowDetailModal(true);
   };

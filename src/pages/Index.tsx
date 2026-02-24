@@ -1,4 +1,5 @@
 import { useState, useEffect, lazy, Suspense, useRef, useMemo, useCallback } from "react";
+import { useUserBehaviorAnalytics } from "@/hooks/useUserBehaviorAnalytics";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
@@ -91,6 +92,7 @@ const Index = () => {
   } as const;
   const t = copy[language];
   const { user, profile, loading } = useAuth();
+  const { trackInteraction } = useUserBehaviorAnalytics();
   const { data: heroConfig } = useHeroSliderConfig();
   const navigate = useNavigate();
   const { isMobile, isTablet, deviceInfo } = useIsMobile();
@@ -462,6 +464,17 @@ const Index = () => {
 
 
   const handlePropertyClick = (property: BaseProperty) => {
+    trackInteraction({
+      interaction_type: 'click',
+      property_id: property.id,
+      interaction_data: {
+        source: 'homepage',
+        property_type: property.property_type,
+        listing_type: property.listing_type,
+        price: property.price,
+        city: property.city,
+      }
+    });
     navigate(`/properties/${property.id}`);
   };
 
