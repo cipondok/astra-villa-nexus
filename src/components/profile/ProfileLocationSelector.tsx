@@ -81,7 +81,7 @@ const ProfileLocationSelector: React.FC<ProfileLocationSelectorProps> = ({
     },
   };
 
-  const text = t[language];
+  const text = t[language] || t.en;
 
   // Fetch provinces on mount
   useEffect(() => {
