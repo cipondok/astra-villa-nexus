@@ -1,42 +1,45 @@
 
 
-# Audit Results: Inline Translation Objects with English Fallbacks
+# Improve Language Switcher UX
 
-## Finding
+## Current State
 
-All **41 components** using `text[language] || text.en` and all **17 components** using `copy[language] || copy.en` already have English fallbacks in place. **No component will crash** when switching to Chinese, Japanese, or Korean — the fallback to `text.en` / `copy.en` ensures they render English text instead of erroring.
+- **localStorage persistence**: Already implemented in `LanguageContext.tsx` (line 17 reads, line 26 writes). This already works and survives page refreshes.
+- **Browser auto-detection**: Not implemented. When no saved language exists, it defaults to `"en"` unconditionally (line 19).
+- **Uses raw `localStorage`** instead of the project's `safeLocalStorage` wrapper, which could throw in privacy mode.
 
-## Complete Inventory (58 components with inline translations)
+## Changes
 
-### Group A: `text[language] || text.en` pattern (41 files) — All safe
-These components define `en` and `id` keys only, but fall back to English for zh/ja/ko:
+### 1. Auto-detect browser language on first visit (`LanguageContext.tsx`)
 
-| Category | Components |
-|----------|-----------|
-| **Search** (10) | `StickySearchPanel`, `AstraSearchPanel`, `ModernSearchPanel`, `SlimEnhancedSearchPanel`, `SmartSearchPanel`, `CollapsibleSearchPanel`, `MainPageSearchFilters`, `AdvancedFilters`, `PropertyAdvancedFilters`, `AdvancedSearchPanel` |
-| **Search results** (3) | `PropertySearchResults`, `StickyHeaderSearch`, `AdvancedFiltersDialog` |
-| **Admin** (6) | `TransactionManagementHub`, `TransactionManagementTabs`, `TransactionAuditTrail`, `RealTimeTransactionMonitor`, `IndonesianTaxConfiguration`, `FeedbackBugSystem` |
-| **Auth** (2) | `AuthModal`, `SecureAuthModal` |
-| **Profile** (1) | `RoleUpgradeSection` |
-| **Property** (4) | `TierLockedFeature`, `TierFeatureBanner`, `PropertyDetailsStep`, `PropertyInsertForm` (hardcoded ID) |
-| **Pages** (6) | `BlockchainVerification`, `ServiceCategory`, `PartnerBenefits`, `PartnerNetwork`, `BecomePartner`, `JointVentures` |
-| **Footer** (2) | `FooterInnovationHub`, `FooterVendorServices` |
-| **Other** (7) | `LiveListingsSection`, `CustomizableLoadingPage`, `SearchLoadingDialog`, `WhatsAppInquiryButton`, `UserInvestmentDashboard`, `UnifiedPaymentSelector`, `RoleDashboard` |
+Add a `detectBrowserLanguage()` helper that reads `navigator.languages` / `navigator.language` and maps browser locale prefixes to supported languages:
 
-### Group B: `copy[language] || copy.en` pattern (17 files) — All safe, intentionally exempt
-These are WNA/WNI investment components that use `copy` objects containing React elements (icons, styled spans). Per architecture rules, these must remain as local objects:
+- `zh` → `"zh"`
+- `ja` → `"ja"`  
+- `ko` → `"ko"`
+- `id` / `ms` → `"id"` (Malay is close enough to default Indonesian)
+- Everything else → `"en"`
 
-`WNAPage`, `WNAFaqHelp`, `WNACitizenshipInfo`, `WNARulesRegulations`, `WNAProcessingTime`, `WNAProcessProcedure`, `WNAInvestmentFacilities`, `WNAPropertyTypes`, `WNAEligibilityChecker`, `WNAFamilyBenefits`, `WelcomingCountriesList`, `WNIPage`, `KPREligibilityChecker`, `KPRRequirementsChecklist`, `KPRPaymentMethods`, `SLIKCreditChecker`, `EligibleCountriesSelector`
+This runs only when no saved language exists in localStorage (first visit).
 
-### Group C: Ternary chain pattern (1 file) — Safe
-`SearchLoadingAnimation` uses `language === 'zh' ? ... : language === 'ja' ? ...` with English default at the end.
+### 2. Use `safeLocalStorage` instead of raw `localStorage`
 
-## Conclusion
+Replace `localStorage.getItem`/`localStorage.setItem` with the project's `safeLocalStorage` from `@/lib/safeStorage` to prevent crashes in privacy/incognito modes.
 
-**No action is required.** Every component using inline translation objects already has an English fallback (`|| text.en` or `|| copy.en`). Switching to Chinese, Japanese, or Korean will show English text for unmigrated components rather than crashing.
+### 3. Set `lang` attribute on `<html>` element
 
-### Recommended next steps (no urgency — zero crash risk):
-1. **Batch-migrate Group A** to `useTranslation()` over time for full 5-language support (currently they show English for zh/ja/ko)
-2. **Group B (WNA/WNI)** should stay as-is per the architecture exception rule
-3. **Group C** (`SearchLoadingAnimation`) is already fully translated inline for all 5 languages
+When language changes, update `document.documentElement.lang` for accessibility and SEO.
+
+## File Changes
+
+**`src/contexts/LanguageContext.tsx`** — Single file edit:
+- Import `safeLocalStorage` from `@/lib/safeStorage`
+- Add `detectBrowserLanguage()` function (~15 lines)
+- In the `useState` initializer: if no saved language, call `detectBrowserLanguage()` instead of defaulting to `"en"`
+- In the `useEffect`: use `safeLocalStorage.setItem` and also set `document.documentElement.lang`
+- Replace `localStorage.getItem` with `safeLocalStorage.getItem`
+
+## Risk
+
+- **Very low**: Only changes the default for brand-new visitors. Returning visitors keep their saved preference. The `safeLocalStorage` swap is strictly safer than the current raw access.
 
