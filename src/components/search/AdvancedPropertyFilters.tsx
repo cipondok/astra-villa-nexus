@@ -391,8 +391,8 @@ const AdvancedPropertyFilters = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                   {recommendations.map((rec) => (
                     <button
-                      key={rec.id}
-                      onClick={() => handleApplySmartSuggestion(rec.filters)}
+                      key={rec.propertyId}
+                      onClick={() => window.location.href = `/property/${rec.propertyId}`}
                       className="group p-2.5 rounded-lg border border-chart-4/30 bg-background hover:border-chart-4 hover:shadow-md transition-all text-left"
                     >
                       <div className="flex items-center gap-2">
@@ -404,11 +404,11 @@ const AdvancedPropertyFilters = ({
                             {rec.title}
                           </h3>
                           <p className="text-xs text-muted-foreground line-clamp-1">
-                            {rec.description}
+                            {rec.reason}
                           </p>
                         </div>
                         <Badge variant="outline" className="text-xs border-chart-4/30 text-chart-4 shrink-0">
-                          {rec.matchCount}
+                          {rec.score}
                         </Badge>
                       </div>
                     </button>

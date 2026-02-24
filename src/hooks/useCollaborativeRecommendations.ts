@@ -1,25 +1,36 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { PropertyFilters } from '@/components/search/AdvancedPropertyFilters';
+import { useAuth } from '@/contexts/AuthContext';
 
-interface Recommendation {
-  id: string;
+export interface CollaborativeRecommendation {
+  propertyId: string;
   title: string;
-  description: string;
+  city: string;
+  district: string;
+  price: number;
+  propertyType: string;
+  bedrooms: number;
+  bathrooms: number;
+  image: string | null;
+  listingType: string;
+  score: number;
+  reason: string;
   icon: string;
-  filters: Partial<PropertyFilters>;
-  matchCount: number;
 }
 
 export const useCollaborativeRecommendations = (
-  currentFilterId: string | null,
-  sessionId: string
+  currentFilterId: string | null = null,
+  sessionId: string = ''
 ) => {
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const { user } = useAuth();
+  const [recommendations, setRecommendations] = useState<CollaborativeRecommendation[]>([]);
+  const [strategy, setStrategy] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (!currentFilterId) {
+    // Fetch if we have a userId, a currentFilterId, or just as fallback
+    const shouldFetch = user?.id || currentFilterId;
+    if (!shouldFetch && !sessionId) {
       setRecommendations([]);
       return;
     }
@@ -30,14 +41,19 @@ export const useCollaborativeRecommendations = (
         const { data, error } = await supabase.functions.invoke(
           'get-collaborative-recommendations',
           {
-            body: { currentFilterId, sessionId },
+            body: {
+              currentFilterId,
+              sessionId,
+              userId: user?.id || null,
+            },
           }
         );
 
         if (error) throw error;
         setRecommendations(data?.recommendations || []);
+        setStrategy(data?.strategy || '');
       } catch (error) {
-        console.error('Error fetching recommendations:', error);
+        console.error('Error fetching collaborative recommendations:', error);
         setRecommendations([]);
       } finally {
         setIsLoading(false);
@@ -46,14 +62,15 @@ export const useCollaborativeRecommendations = (
 
     const timer = setTimeout(fetchRecommendations, 300);
     return () => clearTimeout(timer);
-  }, [currentFilterId, sessionId]);
+  }, [currentFilterId, sessionId, user?.id]);
 
-  const trackSequence = async (previousFilterId: string, currentFilterId: string) => {
+  const trackSequence = async (previousFilterId: string, newFilterId: string) => {
     try {
       await supabase.from('filter_sequences').insert({
         session_id: sessionId,
         previous_filter_id: previousFilterId,
-        current_filter_id: currentFilterId,
+        current_filter_id: newFilterId,
+        user_id: user?.id || null,
       });
     } catch (error) {
       console.error('Error tracking filter sequence:', error);
@@ -62,6 +79,7 @@ export const useCollaborativeRecommendations = (
 
   return {
     recommendations,
+    strategy,
     isLoading,
     trackSequence,
   };
