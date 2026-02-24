@@ -14,7 +14,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface FooterOfficesProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
 }
 
 type OfficeLocation = {

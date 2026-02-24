@@ -4,7 +4,7 @@ import villaCommunityDaylight from "@/assets/villa-community-daylight.jpg";
 
 interface HomeIntroSliderProps {
   className?: string;
-  language?: "en" | "id";
+  language?: "en" | "id" | "zh" | "ja" | "ko";
   children?: React.ReactNode;
 }
 

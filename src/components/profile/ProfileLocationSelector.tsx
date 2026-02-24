@@ -17,7 +17,7 @@ interface ProfileLocationSelectorProps {
   onDistrictChange: (code: string, name: string) => void;
   onSubdistrictChange: (code: string, name: string) => void;
   onBuildingAddressChange: (address: string) => void;
-  language?: 'en' | 'id';
+  language?: 'en' | 'id' | 'zh' | 'ja' | 'ko';
   className?: string;
 }
 

@@ -13,7 +13,7 @@ import { toast } from "sonner";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
 }
 
 const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {

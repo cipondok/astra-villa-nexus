@@ -24,7 +24,7 @@ import {
 
 interface PropertySearchResultsProps {
   properties: BaseProperty[];
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   isLoading?: boolean;
   onPropertyClick?: (property: BaseProperty) => void;
   onSaveProperty?: (propertyId: string) => void;

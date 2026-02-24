@@ -9,7 +9,7 @@ import MaintenanceMode from './MaintenanceMode';
 import { useSystemControls } from '@/hooks/useSystemControls';
 
 interface PropertyListingsSectionProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   searchResults?: any[];
   isSearching?: boolean;
   hasSearched?: boolean;

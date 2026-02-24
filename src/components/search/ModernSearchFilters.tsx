@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface SearchFiltersProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   onSearch: (filters: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
 }

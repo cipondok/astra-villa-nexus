@@ -59,7 +59,7 @@ interface CompactProperty {
 
 interface CompactPropertyCardProps {
   property: CompactProperty;
-  language?: "en" | "id";
+  language?: "en" | "id" | "zh" | "ja" | "ko";
   onView?: (id: string) => void;
   isSaved?: boolean;
   onSave?: (id: string) => void;

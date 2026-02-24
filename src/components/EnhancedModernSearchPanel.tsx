@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, MapPin, Home, DollarSign, Filter, X, Bed, Bath } from "lucide-react";
 import { useTranslation } from "@/i18n/useTranslation";
 interface EnhancedModernSearchPanelProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   onSearch: (searchData: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
 }

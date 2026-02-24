@@ -17,7 +17,7 @@ import { RiskAssessment } from "./RiskAssessment";
 interface SecureAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
 }
 
 interface BehavioralMetrics {

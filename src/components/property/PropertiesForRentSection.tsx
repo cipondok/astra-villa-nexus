@@ -12,7 +12,7 @@ import { useBadgeSettings } from "@/hooks/useBadgeSettings";
 import PropertyCardSkeleton from "./PropertyCardSkeleton";
 
 interface PropertiesForRentSectionProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   onPropertyClick: (property: BaseProperty) => void;
 }
 

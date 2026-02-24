@@ -11,7 +11,7 @@ import { Search, MapPin, Home, DollarSign, Bed, Bath, Filter, X, Calendar as Cal
 import { format, differenceInDays } from 'date-fns';
 
 interface MainPageSearchFiltersProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   onSearch: (filters: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
   activeTab?: "buy" | "rent";

@@ -4,7 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface FooterCompanyInfoProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   onLinkClick: (path: string, label?: string) => void;
 }
 

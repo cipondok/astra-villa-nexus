@@ -233,7 +233,7 @@ const WNARulesRegulations: React.FC = () => {
           return (
             <div key={key} className="flex items-center gap-1">
               <Icon className={cn("h-3 w-3", color)} />
-              <span className="text-[8px] text-muted-foreground">{label}</span>
+              <span className="text-[8px] text-muted-foreground">{label as string}</span>
             </div>
           );
         })}

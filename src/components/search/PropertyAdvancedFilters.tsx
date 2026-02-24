@@ -13,7 +13,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { formatIDR } from '@/utils/currency';
 
 interface PropertyAdvancedFiltersProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
   onFiltersChange: (filters: any) => void;
   onSearch: (searchData: any) => void;
   initialFilters?: any;

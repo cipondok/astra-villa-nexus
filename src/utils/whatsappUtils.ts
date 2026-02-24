@@ -17,7 +17,7 @@ interface InquiryContext {
   propertyTitle?: string;
   propertyId?: string;
   userName?: string;
-  language?: 'en' | 'id';
+  language?: 'en' | 'id' | 'zh' | 'ja' | 'ko';
   customMessage?: string;
 }
 

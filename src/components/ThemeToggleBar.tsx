@@ -4,7 +4,7 @@ import { Sun, Moon } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 
 interface ThemeToggleBarProps {
-  language: "en" | "id";
+  language: "en" | "id" | "zh" | "ja" | "ko";
 }
 
 const ThemeToggleBar = ({ language }: ThemeToggleBarProps) => {
