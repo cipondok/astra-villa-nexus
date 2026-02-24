@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { X, Eye, EyeOff, AlertTriangle, Loader2, CheckCircle, Phone, Mail, MessageCircle, KeyRound } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,6 +45,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
   const closeRef = useRef<HTMLButtonElement>(null);
   
   const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { t } = useTranslation();
 
   // Load remembered email on mount
   useEffect(() => {
@@ -54,84 +56,43 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     }
   }, []);
 
-  const text = {
-    en: {
-      login: "Sign In",
-      register: "Sign Up",
-      email: "Email Address",
-      password: "Password",
-      confirmPassword: "Confirm Password",
-      fullName: "Full Name",
-      loginBtn: "Sign In",
-      registerBtn: "Create Account",
-      close: "Close",
-      switchToLogin: "Already have an account? Sign in here",
-      switchToRegister: "Don't have an account? Sign up here",
-      passwordsDontMatch: "Passwords do not match",
-      emailRequired: "Email is required",
-      passwordRequired: "Password is required",
-      nameRequired: "Full name is required",
-      invalidEmail: "Please enter a valid email address",
-      passwordTooShort: "Password must be at least 6 characters",
-      signingIn: "Signing in...",
-      creatingAccount: "Creating account...",
-      success: "Success!",
-      loginSuccess: "Welcome back!",
-      signupSuccess: "Account created successfully!",
-      googleLogin: "Continue with Google",
-      orDivider: "or continue with email",
-      whatsapp: "WhatsApp Number",
-      whatsappInvalid: "Enter valid WhatsApp (e.g. +62812xxxx)",
-      useEmail: "Email",
-      useWhatsapp: "WhatsApp",
-      rememberMe: "Remember me",
-      forgotPassword: "Forgot password?",
-      resetPassword: "Reset Password",
-      resetDescription: "Enter your email to receive a password reset link.",
-      sendResetLink: "Send Reset Link",
-      resetSent: "Reset email sent! Check your inbox.",
-      passwordWeak: "Password too weak"
-    },
-    id: {
-      login: "Masuk",
-      register: "Daftar",
-      email: "Alamat Email",
-      password: "Kata Sandi",
-      confirmPassword: "Konfirmasi Kata Sandi",
-      fullName: "Nama Lengkap",
-      loginBtn: "Masuk",
-      registerBtn: "Buat Akun",
-      close: "Tutup",
-      switchToLogin: "Sudah punya akun? Masuk di sini",
-      switchToRegister: "Belum punya akun? Daftar di sini",
-      passwordsDontMatch: "Kata sandi tidak cocok",
-      emailRequired: "Email wajib diisi",
-      passwordRequired: "Kata sandi wajib diisi",
-      nameRequired: "Nama lengkap wajib diisi",
-      invalidEmail: "Masukkan alamat email yang valid",
-      passwordTooShort: "Kata sandi minimal 6 karakter",
-      signingIn: "Sedang masuk...",
-      creatingAccount: "Membuat akun...",
-      success: "Berhasil!",
-      loginSuccess: "Selamat datang kembali!",
-      signupSuccess: "Akun berhasil dibuat!",
-      googleLogin: "Lanjutkan dengan Google",
-      orDivider: "atau lanjutkan dengan email",
-      whatsapp: "Nomor WhatsApp",
-      whatsappInvalid: "Masukkan WhatsApp valid (cth: +62812xxxx)",
-      useEmail: "Email",
-      useWhatsapp: "WhatsApp",
-      rememberMe: "Ingat saya",
-      forgotPassword: "Lupa kata sandi?",
-      resetPassword: "Reset Kata Sandi",
-      resetDescription: "Masukkan email untuk menerima link reset.",
-      sendResetLink: "Kirim Link Reset",
-      resetSent: "Email reset terkirim! Cek inbox Anda.",
-      passwordWeak: "Kata sandi terlalu lemah"
-    }
+  const currentText = {
+    login: t('authModal.login'),
+    register: t('authModal.register'),
+    email: t('authModal.email'),
+    password: t('authModal.password'),
+    confirmPassword: t('authModal.confirmPassword'),
+    fullName: t('authModal.name'),
+    loginBtn: t('authModal.loginBtn'),
+    registerBtn: t('authModal.registerBtn'),
+    close: t('common.close'),
+    switchToLogin: t('authModal.switchToLogin'),
+    switchToRegister: t('authModal.switchToRegister'),
+    passwordsDontMatch: t('authModal.passwordsDontMatch'),
+    emailRequired: t('authModal.emailRequired'),
+    passwordRequired: t('authModal.passwordRequired'),
+    nameRequired: t('authModal.nameRequired'),
+    invalidEmail: t('authModal.invalidEmail'),
+    passwordTooShort: t('authModal.passwordTooShort'),
+    signingIn: t('authModal.signingIn'),
+    creatingAccount: t('authModal.creatingAccount'),
+    success: t('common.success'),
+    loginSuccess: t('authModal.loginSuccess'),
+    signupSuccess: t('authModal.signupSuccess'),
+    googleLogin: t('authModal.googleLogin'),
+    orDivider: t('authModal.orDivider'),
+    whatsapp: t('authModal.whatsapp'),
+    whatsappInvalid: t('authModal.whatsappInvalid'),
+    useEmail: t('authModal.useEmail'),
+    useWhatsapp: t('authModal.useWhatsapp'),
+    rememberMe: t('authModal.rememberMe'),
+    forgotPassword: t('authModal.forgotPassword'),
+    resetPassword: t('authModal.resetPassword'),
+    resetDescription: t('authModal.resetDescription'),
+    sendResetLink: t('authModal.sendResetLink'),
+    resetSent: t('authModal.resetSent'),
+    passwordWeak: t('authModal.passwordWeak'),
   };
-
-  const currentText = text[language] || text.en;
 
   // Auto-close countdown timer
   useEffect(() => {

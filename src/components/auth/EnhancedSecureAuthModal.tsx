@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "@/i18n/useTranslation";
 import { Eye, EyeOff, Shield, Mail, User, Lock, CheckCircle, XCircle, AlertTriangle, Loader2 } from "lucide-react";
 import { EnhancedPasswordStrengthMeter } from "./EnhancedPasswordStrengthMeter";
 import { MFASetup } from "./MFASetup";
@@ -65,6 +66,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
   });
   
   const { signIn, signUp } = useAuth();
+  const { t } = useTranslation();
   
   // Note: Security monitoring moved to server-side  
   const checkBreachStatus = async () => ({ breached: false });
@@ -75,54 +77,28 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
   const lastKeystrokeRef = useRef(0);
   const emailCheckTimeoutRef = useRef<NodeJS.Timeout>();
 
-  const text = {
-    en: {
-      login: "Sign In",
-      register: "Create Account",
-      email: "Email Address",
-      password: "Password",
-      confirmPassword: "Confirm Password",
-      fullName: "Full Name",
-      rememberMe: "Remember me for 30 days",
-      emailValid: "✅ Email is available",
-      emailInvalid: "❌ Invalid email format",
-      emailTaken: "⚠️ Email already registered",
-      emailChecking: "🔄 Checking availability...",
-      passwordsMatch: "✅ Passwords match",
-      passwordsDontMatch: "❌ Passwords don't match",
-      weakPassword: "Password strength insufficient",
-      createAccount: "Create your secure account",
-      signInAccount: "Sign in to your account",
-      alreadyHaveAccount: "Already have an account?",
-      needAccount: "Need an account?",
-      switchToLogin: "Sign in here",
-      switchToRegister: "Sign up here"
-    },
-    id: {
-      login: "Masuk",
-      register: "Buat Akun",
-      email: "Alamat Email",
-      password: "Kata Sandi",
-      confirmPassword: "Konfirmasi Kata Sandi",
-      fullName: "Nama Lengkap",
-      rememberMe: "Ingat saya selama 30 hari",
-      emailValid: "✅ Email tersedia",
-      emailInvalid: "❌ Format email tidak valid",
-      emailTaken: "⚠️ Email sudah terdaftar",
-      emailChecking: "🔄 Memeriksa ketersediaan...",
-      passwordsMatch: "✅ Kata sandi cocok",
-      passwordsDontMatch: "❌ Kata sandi tidak cocok",
-      weakPassword: "Kekuatan kata sandi tidak cukup",
-      createAccount: "Buat akun aman Anda",
-      signInAccount: "Masuk ke akun Anda",
-      alreadyHaveAccount: "Sudah punya akun?",
-      needAccount: "Perlu akun?",
-      switchToLogin: "Masuk di sini",
-      switchToRegister: "Daftar di sini"
-    }
+  const currentText = {
+    login: t('authModal.login'),
+    register: t('authModal.register'),
+    email: t('authModal.email'),
+    password: t('authModal.password'),
+    confirmPassword: t('authModal.confirmPassword'),
+    fullName: t('authModal.name'),
+    rememberMe: t('authModal.rememberMe'),
+    emailValid: '✅ ' + t('authModal.email'),
+    emailInvalid: '❌ ' + t('authModal.invalidEmail'),
+    emailTaken: '⚠️ ' + t('authModal.emailRequired'),
+    emailChecking: '🔄 ...',
+    passwordsMatch: '✅ ' + t('authModal.confirmPassword'),
+    passwordsDontMatch: '❌ ' + t('authModal.passwordsDontMatch'),
+    weakPassword: t('authModal.passwordWeak'),
+    createAccount: t('authModal.registerBtn'),
+    signInAccount: t('authModal.loginBtn'),
+    alreadyHaveAccount: t('authModal.switchToLogin'),
+    needAccount: t('authModal.switchToRegister'),
+    switchToLogin: t('authModal.switchToLogin'),
+    switchToRegister: t('authModal.switchToRegister'),
   };
-
-  const currentText = text[language] || text.en;
 
   // Email validation function
   const validateEmail = (email: string): boolean => {

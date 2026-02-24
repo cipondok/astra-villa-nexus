@@ -936,6 +936,23 @@ const id: TranslationMap = {
     writeBio: 'Tulis bio singkat',
     addAddress: 'Tambahkan alamat',
   },
+  addProperty: {
+    loginRequired: 'Login Diperlukan',
+    loginDesc: 'Silakan login atau daftar untuk menambahkan properti',
+    backHome: 'Kembali',
+    upgradeRequired: 'Upgrade Diperlukan',
+    upgradeDesc: 'Upgrade ke Agent, Vendor, atau Property Owner untuk listing',
+    upgradeAccount: 'Upgrade Akun',
+    backDashboard: 'Kembali',
+    limitReached: 'Batas Properti Tercapai',
+    limitDescTemplate: 'Anda telah mencapai batas properti untuk level ini.',
+    upgradeVIP: 'Upgrade Level VIP',
+    createListing: 'Buat listing baru',
+    createManually: 'Buat Manual',
+    importFromUrl: 'Impor dari URL',
+    importError: 'Silakan login dulu.',
+    importSuccess: 'Form terisi otomatis. Silakan cek lalu submit.',
+  },
 };
 
 export default id;

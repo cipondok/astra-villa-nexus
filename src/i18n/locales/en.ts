@@ -936,6 +936,23 @@ const en: TranslationMap = {
     writeBio: 'Write a short bio',
     addAddress: 'Add address',
   },
+  addProperty: {
+    loginRequired: 'Login Required',
+    loginDesc: 'Please login or register to add a property',
+    backHome: 'Back to Home',
+    upgradeRequired: 'Upgrade Required',
+    upgradeDesc: 'Upgrade to Agent, Vendor, or Property Owner to add listings',
+    upgradeAccount: 'Upgrade Account',
+    backDashboard: 'Back to Dashboard',
+    limitReached: 'Property Limit Reached',
+    limitDescTemplate: 'You have reached your property limit for this tier.',
+    upgradeVIP: 'Upgrade VIP Level',
+    createListing: 'Create new listing',
+    createManually: 'Create Manually',
+    importFromUrl: 'Import from URL',
+    importError: 'Please log in first.',
+    importSuccess: 'Form auto-filled. Please review and submit.',
+  },
 };
 
 export default en;

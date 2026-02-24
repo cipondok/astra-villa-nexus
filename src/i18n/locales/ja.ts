@@ -883,6 +883,23 @@ const ja: TranslationMap = {
     addName: '名前を追加', addPhone: '電話番号を追加',
     uploadPhoto: 'プロフィール写真をアップロード', writeBio: '短い自己紹介を書く', addAddress: '住所を追加',
   },
+  addProperty: {
+    loginRequired: 'ログインが必要です',
+    loginDesc: '物件を追加するにはログインまたは登録してください',
+    backHome: 'ホームに戻る',
+    upgradeRequired: 'アップグレードが必要です',
+    upgradeDesc: 'エージェント、ベンダー、または物件オーナーにアップグレードして掲載',
+    upgradeAccount: 'アカウントをアップグレード',
+    backDashboard: 'ダッシュボードに戻る',
+    limitReached: '物件数の上限に達しました',
+    limitDescTemplate: 'このティアの物件数上限に達しました。',
+    upgradeVIP: 'VIPレベルをアップグレード',
+    createListing: '新しい掲載を作成',
+    createManually: '手動で作成',
+    importFromUrl: 'URLからインポート',
+    importError: '先にログインしてください。',
+    importSuccess: 'フォームが自動入力されました。確認して送信してください。',
+  },
 };
 
 export default ja;

@@ -883,6 +883,23 @@ const ko: TranslationMap = {
     addName: '이름 추가', addPhone: '전화번호 추가',
     uploadPhoto: '프로필 사진 업로드', writeBio: '짧은 자기소개 작성', addAddress: '주소 추가',
   },
+  addProperty: {
+    loginRequired: '로그인 필요',
+    loginDesc: '매물을 추가하려면 로그인 또는 회원가입하세요',
+    backHome: '홈으로 돌아가기',
+    upgradeRequired: '업그레이드 필요',
+    upgradeDesc: '에이전트, 벤더 또는 매물 소유자로 업그레이드하여 등록',
+    upgradeAccount: '계정 업그레이드',
+    backDashboard: '대시보드로 돌아가기',
+    limitReached: '매물 수 한도에 도달',
+    limitDescTemplate: '이 등급의 매물 수 한도에 도달했습니다.',
+    upgradeVIP: 'VIP 등급 업그레이드',
+    createListing: '새 등록 생성',
+    createManually: '수동으로 생성',
+    importFromUrl: 'URL에서 가져오기',
+    importError: '먼저 로그인해주세요.',
+    importSuccess: '양식이 자동 입력되었습니다. 확인 후 제출하세요.',
+  },
 };
 
 export default ko;
