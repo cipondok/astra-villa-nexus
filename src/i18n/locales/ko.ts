@@ -1062,6 +1062,20 @@ const ko: TranslationMap = {
     forLease: '리스',
     view3D: '3D 보기',
   },
+  seo: {
+    home: { title: '인도네시아 프리미엄 부동산 플랫폼', description: '인도네시아에서 빌라, 아파트, 주택, 럭셔리 부동산을 찾아보세요. AI 검색, 3D 가상 투어, ASTRA Villa Realty와 부동산 투자.' },
+    properties: { title: '인도네시아 전체 부동산', description: '인도네시아 전역의 수천 개 매매 및 임대 부동산을 탐색하세요. 위치, 유형, 가격으로 필터링하여 이상적인 부동산을 찾으세요.' },
+    dijual: { title: '인도네시아 매매 부동산', description: '인도네시아 전역에서 판매 중인 주택, 빌라, 아파트, 부동산을 찾아보세요. ASTRA Villa Realty에서 최고의 가격과 가장 다양한 선택.' },
+    disewa: { title: '인도네시아 임대 부동산', description: '인도네시아 전역에서 빌라, 아파트, 주택, 하숙방을 임대하세요. ASTRA Villa Realty에서 쉽고 빠른 온라인 예약.' },
+    about: { title: 'Astra Villa 소개', description: 'ASTRA Villa Realty는 인도네시아의 프리미엄 부동산 플랫폼입니다. 우리의 미션, 비전, 전문 팀을 소개합니다.' },
+    contact: { title: '문의하기', description: 'ASTRA Villa Realty 팀에 부동산 문의, 파트너십, 지원에 대해 연락하세요. 24시간 연중무휴로 도와드립니다.' },
+    help: { title: '도움말 & 지원', description: '부동산, 계정, ASTRA Villa Realty 서비스에 대한 자주 묻는 질문의 답변을 찾아보세요. 지원팀이 24시간 대기합니다.' },
+    auth: { title: '로그인 & 회원가입', description: 'ASTRA Villa Realty 계정에 로그인하거나 가입하여 프리미엄 부동산 접근, 즐겨찾기 저장, 거래 관리를 하세요.' },
+    investment: { title: '인도네시아 외국인 투자 가이드', description: '외국인과 현지인을 위한 인도네시아 부동산 투자 완전 가이드. 규정, 요건, 구매 절차.' },
+    community: { title: '부동산 토론 & 기사', description: '커뮤니티에 참여하세요: Astra Villa Realty에서 부동산 기사 게시, 댓글, 답글, 좋아요, 평가를 하세요.' },
+    agentDirectory: { title: '부동산 중개인 디렉토리', description: '인도네시아 전역에서 신뢰할 수 있고 인증된 부동산 중개인을 찾으세요. 수천 명의 전문 중개인이 거래를 도와드립니다.' },
+    locationMap: { title: '인도네시아 부동산 지도', description: '인도네시아 34개 주의 부동산을 탐색하세요. 인터랙티브 지도로 위치별 꿈의 부동산을 찾으세요.' },
+  },
 };
 
 export default ko;

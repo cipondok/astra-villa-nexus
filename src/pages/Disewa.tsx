@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from "react-router-dom";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
@@ -68,6 +69,7 @@ interface RentalFilters {
 }
 
 const Disewa = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
@@ -260,8 +262,8 @@ const Disewa = () => {
         threshold={threshold}
       />
       <SEOHead
-        title="Properti Disewa di Indonesia"
-        description="Sewa villa, apartemen, rumah, dan kos-kosan di seluruh Indonesia. Booking online mudah & cepat di ASTRA Villa Realty."
+        title={t('seo.disewa.title')}
+        description={t('seo.disewa.description')}
         keywords="properti disewa, villa disewa, apartemen sewa, rumah sewa, kos-kosan Indonesia"
         jsonLd={seoSchemas.breadcrumb([{ name: 'Beranda', url: '/' }, { name: 'Properti Disewa', url: '/disewa' }])}
       />

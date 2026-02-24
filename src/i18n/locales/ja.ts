@@ -1062,6 +1062,20 @@ const ja: TranslationMap = {
     forLease: 'リース',
     view3D: '3Dビュー',
   },
+  seo: {
+    home: { title: 'インドネシアプレミアム不動産プラットフォーム', description: 'インドネシアでヴィラ、アパート、住宅、高級物件を見つけましょう。AI検索、3Dバーチャルツアー、ASTRA Villa Realtyで不動産投資。' },
+    properties: { title: 'インドネシアの全物件', description: 'インドネシア全土の売買・賃貸物件を探索。場所、タイプ、価格でフィルターして理想の物件を見つけましょう。' },
+    dijual: { title: 'インドネシアの売却物件', description: 'インドネシア全土で販売中の住宅、ヴィラ、アパート、物件を見つけましょう。ASTRA Villa Realtyで最良価格と最多選択肢。' },
+    disewa: { title: 'インドネシアの賃貸物件', description: 'インドネシア全土でヴィラ、アパート、住宅、コスを借りましょう。ASTRA Villa Realtyで簡単・迅速なオンライン予約。' },
+    about: { title: 'Astra Villaについて', description: 'ASTRA Villa Realtyはインドネシアのプレミアム不動産プラットフォームです。私たちのミッション、ビジョン、専門チームをご紹介します。' },
+    contact: { title: 'お問い合わせ', description: 'ASTRA Villa Realtyチームに物件のご質問、提携、サポートについてお問い合わせください。24時間年中無休でお手伝いいたします。' },
+    help: { title: 'ヘルプ＆サポート', description: '物件、アカウント、ASTRA Villa Realtyサービスに関するよくある質問の回答を見つけましょう。サポートチームが24時間対応します。' },
+    auth: { title: 'ログイン＆登録', description: 'ASTRA Villa Realtyアカウントにログインまたは登録して、プレミアム物件へのアクセス、お気に入りの保存、取引管理をしましょう。' },
+    investment: { title: 'インドネシア外国投資ガイド', description: '外国人と現地人のためのインドネシア不動産投資完全ガイド。規制、要件、購入プロセス。' },
+    community: { title: '不動産ディスカッション＆記事', description: 'コミュニティに参加：Astra Villa Realtyで不動産記事の投稿、コメント、返信、いいね、評価をしましょう。' },
+    agentDirectory: { title: '不動産エージェントディレクトリ', description: 'インドネシア全土で信頼できる認証済みの不動産エージェントを見つけましょう。数千人のプロのエージェントがお取引をサポートします。' },
+    locationMap: { title: 'インドネシア物件マップ', description: 'インドネシア全34州の物件を探索。インタラクティブマップで場所から理想の物件を見つけましょう。' },
+  },
 };
 
 export default ja;

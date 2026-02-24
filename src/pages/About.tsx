@@ -39,8 +39,8 @@ const About = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Tentang Astra Villa"
-        description="ASTRA Villa Realty adalah platform properti premium Indonesia. Kenali misi, visi, dan tim profesional kami yang berdedikasi."
+        title={t('seo.about.title')}
+        description={t('seo.about.description')}
         keywords="tentang astra villa, platform properti indonesia, real estate premium"
       />
       {isAuthenticated && (

@@ -12,7 +12,7 @@ import { useTheme } from "@/components/ThemeProvider";
 
 const Help = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { language, setLanguage } = useTranslation();
+  const { language, setLanguage, t } = useTranslation();
   const { theme } = useTheme();
 
   const toggleLanguage = () => {
@@ -163,8 +163,8 @@ const Help = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Bantuan & Dukungan"
-        description="Temukan jawaban untuk pertanyaan umum seputar properti, akun, dan layanan ASTRA Villa Realty. Tim dukungan kami siap 24/7."
+        title={t('seo.help.title')}
+        description={t('seo.help.description')}
         keywords="bantuan astra villa, faq properti, dukungan pelanggan, help center"
       />
       <EnhancedNavigation

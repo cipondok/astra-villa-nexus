@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useInfiniteProperties } from "@/hooks/useInfiniteProperties";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
@@ -70,6 +71,7 @@ interface SearchFilters {
 }
 
 const Dijual = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -328,8 +330,8 @@ const Dijual = () => {
         threshold={threshold}
       />
       <SEOHead
-        title="Properti Dijual di Indonesia"
-        description="Temukan rumah, villa, apartemen, dan properti dijual di seluruh Indonesia. Harga terbaik, pilihan terlengkap di ASTRA Villa Realty."
+        title={t('seo.dijual.title')}
+        description={t('seo.dijual.description')}
         keywords="properti dijual, rumah dijual, villa dijual, apartemen dijual, jual beli properti Indonesia"
         jsonLd={seoSchemas.breadcrumb([{ name: 'Beranda', url: '/' }, { name: 'Properti Dijual', url: '/dijual' }])}
       />

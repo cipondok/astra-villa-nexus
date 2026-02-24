@@ -50,7 +50,7 @@ import wnaHeroImage from "@/assets/wna-investment-hero.jpg";
 type ActiveSection = 'all' | 'wna' | 'wni' | 'dashboard';
 
 const Investment = () => {
-  const { language } = useTranslation();
+  const { language, t: translate } = useTranslation();
   const { user, isAuthenticated } = useAuth();
   const { isAdmin } = useIsAdmin();
   const navigate = useNavigate();
@@ -214,8 +214,8 @@ const Investment = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Panduan Investasi Asing di Indonesia"
-        description="Panduan lengkap investasi properti Indonesia untuk WNA dan WNI. Regulasi, syarat, dan proses pembelian properti."
+        title={translate('seo.investment.title')}
+        description={translate('seo.investment.description')}
         keywords="investasi properti asing indonesia, WNA beli properti, WNI overseas, foreign property investment indonesia"
       />
 

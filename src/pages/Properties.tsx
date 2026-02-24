@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { SEOHead } from "@/components/SEOHead";
+import { useTranslation } from "@/i18n/useTranslation";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
 import { useQuery } from "@tanstack/react-query";
@@ -71,6 +72,7 @@ const provinceNameMapping: Record<string, string[]> = {
   'Papua': ['Papua', 'Jayapura']
 };
 const Properties = () => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const locationFilter = searchParams.get('location') || '';
   const [searchQuery, setSearchQuery] = useState("");
@@ -241,8 +243,8 @@ const Properties = () => {
   }
   return <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5" {...pullHandlers}>
       <SEOHead
-        title="Semua Properti di Indonesia"
-        description="Jelajahi ribuan properti dijual dan disewa di seluruh Indonesia. Filter berdasarkan lokasi, tipe, dan harga untuk menemukan properti ideal Anda."
+        title={t('seo.properties.title')}
+        description={t('seo.properties.description')}
         keywords="properti indonesia, semua properti, jual beli properti, sewa properti indonesia"
       />
       <PullToRefreshIndicator

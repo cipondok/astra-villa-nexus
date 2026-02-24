@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SEOHead } from '@/components/SEOHead';
+import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Building2, Home, TrendingUp, Search, Filter, ChevronRight, ArrowLeft, Loader2, Navigation2, Globe2, Star, Layers } from 'lucide-react';
@@ -78,6 +79,7 @@ const badgeColors = [
 const getBadgeColor = (index: number) => badgeColors[index % badgeColors.length];
 
 const LocationMap = () => {
+  const { t } = useTranslation();
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [selectedProvinceName, setSelectedProvinceName] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -136,8 +138,8 @@ const LocationMap = () => {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       <SEOHead
-        title="Peta Properti Indonesia"
-        description="Jelajahi properti di seluruh 34 provinsi Indonesia. Temukan properti impian Anda berdasarkan lokasi dengan peta interaktif."
+        title={t('seo.locationMap.title')}
+        description={t('seo.locationMap.description')}
         keywords="peta properti indonesia, properti per provinsi, lokasi properti, peta real estate"
       />
       {/* Decorative background blobs */}
