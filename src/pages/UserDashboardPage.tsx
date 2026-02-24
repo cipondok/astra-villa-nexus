@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import AstraWalletPopup from '@/components/dashboard/AstraWalletPopup';
 import { Progress } from '@/components/ui/progress';
 import { MEMBERSHIP_LEVELS, MembershipLevel, getMembershipConfig } from '@/types/membership';
@@ -21,6 +21,10 @@ import CustomerServiceDashboard from '@/components/dashboard/CustomerServiceDash
 import ProfileUpgradeCard from '@/components/ProfileUpgradeCard';
 import ApplicationStatusBar from '@/components/dashboard/ApplicationStatusBar';
 import AstraWalletCard from '@/components/dashboard/AstraWalletCard';
+import SavedPropertiesTab from '@/components/dashboard/tabs/SavedPropertiesTab';
+import SearchHistoryTab from '@/components/dashboard/tabs/SearchHistoryTab';
+import KprScenariosTab from '@/components/dashboard/tabs/KprScenariosTab';
+import MarketInsightsTab from '@/components/dashboard/tabs/MarketInsightsTab';
 import { useUserDashboardData } from '@/hooks/useUserDashboardData';
 import { useUserRoles } from '@/hooks/useUserRoles';
 import { useAstraToken } from '@/hooks/useAstraToken';
@@ -45,7 +49,9 @@ import {
   Clock, Zap,
   Edit,
   LogOut,
-  Wallet
+  Wallet,
+  Calculator,
+  BarChart3
 } from 'lucide-react';
 
 const UserDashboardPage = () => {
@@ -329,16 +335,28 @@ const UserDashboardPage = () => {
 
         {/* Dashboard Tabs - Slim */}
         <Tabs defaultValue="overview" className="space-y-2">
-          <TabsList className="grid w-full grid-cols-2 h-8 bg-primary-foreground/5 backdrop-blur-xl p-0.5 border border-gold-primary/15">
-             <TabsTrigger value="overview" className="flex items-center gap-1 text-[10px] data-[state=active]:bg-gold-primary/10 data-[state=active]:text-gold-primary data-[state=active]:shadow-sm">
+          <TabsList className="grid w-full grid-cols-5 h-8 bg-primary-foreground/5 backdrop-blur-xl p-0.5 border border-border/30">
+             <TabsTrigger value="overview" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
                <Home className="h-3 w-3" />
-               Overview
+               <span className="hidden sm:inline">Overview</span>
              </TabsTrigger>
-             <TabsTrigger value="settings" className="flex items-center gap-1 text-[10px] data-[state=active]:bg-gold-primary/10 data-[state=active]:text-gold-primary data-[state=active]:shadow-sm">
-               <Settings className="h-3 w-3" />
-              Settings
-            </TabsTrigger>
-          </TabsList>
+             <TabsTrigger value="saved" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+               <Heart className="h-3 w-3" />
+               <span className="hidden sm:inline">Saved</span>
+             </TabsTrigger>
+             <TabsTrigger value="searches" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+               <Search className="h-3 w-3" />
+               <span className="hidden sm:inline">Searches</span>
+             </TabsTrigger>
+             <TabsTrigger value="kpr" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+               <Calculator className="h-3 w-3" />
+               <span className="hidden sm:inline">KPR</span>
+             </TabsTrigger>
+             <TabsTrigger value="insights" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+               <BarChart3 className="h-3 w-3" />
+               <span className="hidden sm:inline">Insights</span>
+             </TabsTrigger>
+           </TabsList>
 
           <TabsContent value="overview" className="space-y-2 mt-2">
             {/* Quick Actions - Slim */}
@@ -438,77 +456,24 @@ const UserDashboardPage = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="settings" className="space-y-2 mt-2">
-            <Card className="backdrop-blur-xl bg-card/60 border-gold-primary/15">
-              <CardHeader className="p-2 pb-1.5">
-                <CardTitle className="flex items-center gap-1.5 text-xs">
-                     <div className="h-5 w-5 rounded bg-gold-primary/10 flex items-center justify-center">
-                       <User className="h-3 w-3 text-gold-primary" />
-                  </div>
-                  Account Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-2 pt-0 space-y-2">
-                <div className="grid grid-cols-2 gap-1">
-                  {[
-                    { label: 'Full Name', value: profile?.full_name || 'Not set' },
-                    { label: 'Email', value: user.email || 'Not set' },
-                    { label: 'Role', value: primaryRole?.replace('_', ' ') || 'User' },
-                    { label: 'Status', value: hasUpgradedRole ? 'Active' : 'Basic', badge: true },
-                  ].map((item) => (
-                    <div key={item.label} className="p-1.5 bg-muted/30 rounded">
-                      <label className="text-[8px] font-medium text-muted-foreground uppercase tracking-wide">{item.label}</label>
-                      {item.badge ? (
-                        <Badge 
-                          className={`text-[8px] mt-0.5 ${hasUpgradedRole ? 'bg-chart-1/20 text-chart-1 border-chart-1/30' : ''}`}
-                          variant={hasUpgradedRole ? 'outline' : 'secondary'}
-                        >
-                          {item.value}
-                        </Badge>
-                      ) : (
-                        <p className="text-[10px] font-medium truncate capitalize">{item.value}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-1">
-                  <Button 
-                    onClick={() => navigate('/profile/edit')} 
-                    className="h-7 text-[9px] flex-1"
-                    size="sm"
-                  >
-                    <User className="h-2.5 w-2.5 mr-0.5" />
-                    Edit Profile
-                  </Button>
-                  {hasUpgradedRole ? (
-                    <Button 
-                      variant="default"
-                      onClick={() => {
-                        if (userRoles.includes('property_owner')) navigate('/dashboard/property-owner');
-                        else if (userRoles.includes('agent')) navigate('/dashboard/agent');
-                        else if (userRoles.includes('vendor')) navigate('/dashboard/vendor');
-                      }} 
-                      className="h-7 text-[9px] flex-1 bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-background"
-                      size="sm"
-                    >
-                      <ChevronRight className="h-2.5 w-2.5 mr-0.5" />
-                      Dashboard
-                    </Button>
-                  ) : (
-                    <Button 
-                      variant="outline"
-                      onClick={() => {}} 
-                      className="h-7 text-[9px] flex-1"
-                      size="sm"
-                    >
-                      <UserPlus className="h-2.5 w-2.5 mr-0.5" />
-                      Upgrade
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+          <TabsContent value="saved" className="space-y-2 mt-2">
+            <SavedPropertiesTab />
           </TabsContent>
+
+          <TabsContent value="searches" className="space-y-2 mt-2">
+            <SearchHistoryTab />
+          </TabsContent>
+
+          <TabsContent value="kpr" className="space-y-2 mt-2">
+            <KprScenariosTab />
+          </TabsContent>
+
+          <TabsContent value="insights" className="space-y-2 mt-2">
+            <MarketInsightsTab />
+          </TabsContent>
+
+
+
         </Tabs>
       </div>
 
