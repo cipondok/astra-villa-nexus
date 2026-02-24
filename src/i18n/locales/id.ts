@@ -1136,6 +1136,7 @@ const id: TranslationMap = {
     community: { title: 'Diskusi & Artikel Properti', description: 'Bergabung dengan komunitas: posting artikel properti, komentar, balas, suka dan nilai diskusi di Astra Villa Realty.' },
     agentDirectory: { title: 'Direktori Agen Properti', description: 'Temukan agen properti terpercaya dan terverifikasi di seluruh Indonesia. Ribuan agen profesional siap membantu transaksi properti Anda.' },
     locationMap: { title: 'Peta Properti Indonesia', description: 'Jelajahi properti di seluruh 34 provinsi Indonesia. Temukan properti impian Anda berdasarkan lokasi dengan peta interaktif.' },
+    search: { title: 'Cari Properti', description: 'Cari properti impian Anda di Indonesia. Filter berdasarkan lokasi, tipe properti, harga, dan jumlah kamar untuk hasil pencarian terbaik.' },
   },
   stickySearch: {
     search: 'Cari properti, lokasi, atau pengembang...',

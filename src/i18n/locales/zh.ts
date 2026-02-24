@@ -1084,6 +1084,7 @@ const zh: TranslationMap = {
     community: { title: '房产讨论与文章', description: '加入社区：发布房产文章、评论、回复、点赞和评价Astra Villa Realty上的讨论。' },
     agentDirectory: { title: '房产经纪人目录', description: '在印尼各地寻找值得信赖且经过验证的房产经纪人。数千名专业经纪人随时协助您的房产交易。' },
     locationMap: { title: '印尼房产地图', description: '浏览印尼34个省份的房产。通过互动地图按位置寻找您的理想房产。' },
+    search: { title: '搜索房产', description: '在印尼搜索您的理想房产。按位置、房产类型、价格和卧室数量筛选，获取最佳结果。' },
   },
   stickySearch: {
     search: '搜索房产、位置或开发商...',

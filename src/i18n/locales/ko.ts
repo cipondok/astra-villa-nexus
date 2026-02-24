@@ -1083,6 +1083,7 @@ const ko: TranslationMap = {
     community: { title: '부동산 토론 & 기사', description: '커뮤니티에 참여하세요: Astra Villa Realty에서 부동산 기사 게시, 댓글, 답글, 좋아요, 평가를 하세요.' },
     agentDirectory: { title: '부동산 중개인 디렉토리', description: '인도네시아 전역에서 신뢰할 수 있고 인증된 부동산 중개인을 찾으세요. 수천 명의 전문 중개인이 거래를 도와드립니다.' },
     locationMap: { title: '인도네시아 부동산 지도', description: '인도네시아 34개 주의 부동산을 탐색하세요. 인터랙티브 지도로 위치별 꿈의 부동산을 찾으세요.' },
+    search: { title: '부동산 검색', description: '인도네시아에서 꿈의 부동산을 검색하세요. 위치, 부동산 유형, 가격, 침실 수로 필터링하여 최적의 결과를 얻으세요.' },
   },
   stickySearch: {
     search: '부동산, 위치 또는 개발사 검색...',

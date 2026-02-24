@@ -1136,6 +1136,7 @@ const en: TranslationMap = {
     community: { title: 'Property Discussion & Articles', description: 'Join the community: post property articles, comment, reply, like and rate discussions on Astra Villa Realty.' },
     agentDirectory: { title: 'Property Agent Directory', description: 'Find trusted and verified property agents across Indonesia. Thousands of professional agents ready to assist your property transactions.' },
     locationMap: { title: 'Indonesia Property Map', description: 'Explore properties across all 34 provinces of Indonesia. Find your dream property by location with an interactive map.' },
+    search: { title: 'Search Properties', description: 'Search for your dream property in Indonesia. Filter by location, property type, price, and bedrooms for the best results.' },
   },
   stickySearch: {
     search: 'Search properties, location, or developer...',
