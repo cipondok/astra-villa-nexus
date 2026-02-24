@@ -12,7 +12,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import LocationSelector from "./property/LocationSelector";
 import PillToggleGroup from "./ui/PillToggleGroup";
-
+import { useTranslation } from "@/i18n/useTranslation";
 // Mock: These should ideally be passed as props or lifted up to parent. For now for demo UX only.
 const useSearchUIState = () => {
   // Use parent's state if available
@@ -54,17 +54,13 @@ const useSearchUIState = () => {
 };
 
 const AdditionalFilters = ({ language }: { language: "en" | "id" | "zh" | "ja" | "ko" }) => {
-  // Placeholder component for "more filters"
-  const text = {
-    en: "More filters",
-    id: "Filter lainnya"
-  };
+  const { t } = useTranslation();
   return (
     <div className="flex items-center space-x-2">
       <SlidersHorizontal className="h-4 w-4" />
       <Select>
         <SelectTrigger className="w-40">
-          <SelectValue placeholder={text[language]} />
+          <SelectValue placeholder={t('modernSearchPanel.moreFilters')} />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="garage">Garage</SelectItem>
@@ -112,64 +108,27 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const lastSearchRef = useRef("");
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
 
-  const text = useMemo(() => ({
-    en: {
-      search: "Search properties, location, or area...",
-      propertyType: "Property Type",
-      bedrooms: "Bedrooms",
-      bathrooms: "Bathrooms",
-      location: "Location",
-      searchBtn: "Search Properties",
-      advancedFilters: "Advanced Filters",
-      hideFilters: "Hide Filters",
-      allTypes: "All Types",
-      apartment: "Apartment",
-      house: "House",
-      villa: "Villa",
-      townhouse: "Townhouse",
-      any: "Any",
-      onebed: "1",
-      twobed: "2",
-      threebed: "3",
-      fourbed: "4+",
-      jakarta: "Jakarta",
-      bali: "Bali",
-      surabaya: "Surabaya",
-      bandung: "Bandung",
-      popular: "Popular searches:",
-      clearFilters: "Clear all",
-      has3D: "With 3D View"
-    },
-    id: {
-      search: "Cari properti, lokasi, atau area...",
-      propertyType: "Jenis Properti",
-      bedrooms: "Kamar Tidur",
-      bathrooms: "Kamar Mandi",
-      location: "Lokasi",
-      searchBtn: "Cari Properti",
-      advancedFilters: "Filter Lanjutan",
-      hideFilters: "Sembunyikan Filter",
-      allTypes: "Semua Jenis",
-      apartment: "Apartemen",
-      house: "Rumah",
-      villa: "Villa",
-      townhouse: "Rumah Kota",
-      any: "Semua",
-      onebed: "1",
-      twobed: "2",
-      threebed: "3",
-      fourbed: "4+",
-      jakarta: "Jakarta",
-      bali: "Bali",
-      surabaya: "Surabaya",
-      bandung: "Bandung",
-      popular: "Pencarian populer:",
-      clearFilters: "Hapus semua",
-      has3D: "Dengan Tampilan 3D"
-    }
-  }), [language]);
+  const { t } = useTranslation();
 
-  const currentText = text[language] || text.en;
+  const currentText = {
+    search: t('modernSearchPanel.search'),
+    propertyType: t('modernSearchPanel.propertyType'),
+    bedrooms: t('modernSearchPanel.bedrooms'),
+    bathrooms: t('modernSearchPanel.bathrooms'),
+    location: t('modernSearchPanel.location'),
+    searchBtn: t('modernSearchPanel.searchBtn'),
+    advancedFilters: t('modernSearchPanel.advancedFilters'),
+    hideFilters: t('modernSearchPanel.hideFilters'),
+    allTypes: t('modernSearchPanel.allTypes'),
+    apartment: t('modernSearchPanel.apartment'),
+    house: t('modernSearchPanel.house'),
+    villa: t('modernSearchPanel.villa'),
+    townhouse: t('modernSearchPanel.townhouse'),
+    any: t('modernSearchPanel.any'),
+    popular: t('modernSearchPanel.popular'),
+    clearFilters: t('modernSearchPanel.clearFilters'),
+    has3D: t('modernSearchPanel.has3D'),
+  };
 
   // Define propertyType options for the toggle group and keep the existing text usage
   const propertyTypeOptions = [
@@ -183,49 +142,49 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   // Smart filter options
   const smartFilterCategories = [
     {
-      label: language === "id" ? "Dekat Sini" : "Nearby",
+      label: t('modernSearchPanel.nearby'),
       key: "nearby",
       options: [
-        { value: "nearby-airport", label: language === "id" ? "Bandara" : "Airport" },
-        { value: "nearby-mall", label: language === "id" ? "Mall" : "Shopping Mall" },
-        { value: "nearby-hospital", label: language === "id" ? "Rumah Sakit" : "Hospital" },
-        { value: "nearby-school", label: language === "id" ? "Sekolah Umum" : "Public School" }
+        { value: "nearby-airport", label: t('modernSearchPanel.airport') },
+        { value: "nearby-mall", label: t('modernSearchPanel.shoppingMall') },
+        { value: "nearby-hospital", label: t('modernSearchPanel.hospital') },
+        { value: "nearby-school", label: t('modernSearchPanel.publicSchool') }
       ]
     },
     {
-      label: language === "id" ? "Fasilitas Dalam" : "Indoor Facilities",
+      label: t('modernSearchPanel.indoorFacilities'),
       key: "facility",
       options: [
         { value: "gym", label: "Gym" },
-        { value: "kolam-renang", label: language === "id" ? "Kolam Renang" : "Swimming Pool" },
-        { value: "parkir", label: language === "id" ? "Area Parkir" : "Parking" },
-        { value: "keamanan", label: language === "id" ? "Keamanan 24 Jam" : "24h Security" }
+        { value: "kolam-renang", label: t('modernSearchPanel.swimmingPool') },
+        { value: "parkir", label: t('modernSearchPanel.parkingArea') },
+        { value: "keamanan", label: t('modernSearchPanel.security24h') }
       ]
     },
     {
-      label: language === "id" ? "Transportasi Umum" : "Transportation",
+      label: t('modernSearchPanel.transportation'),
       key: "transport",
       options: [
         { value: "lrt", label: "LRT" },
         { value: "mrt", label: "MRT" },
         { value: "bus", label: "Bus" },
-        { value: "kereta", label: language === "id" ? "KRL" : "Commuter Line" }
+        { value: "kereta", label: t('modernSearchPanel.commuter') }
       ]
     },
     {
-      label: language === "id" ? "Pusat Belanja" : "Shopping",
+      label: t('modernSearchPanel.shopping'),
       key: "shopping",
       options: [
-        { value: "mall", label: language === "id" ? "Mall" : "Shopping Mall" },
+        { value: "mall", label: t('modernSearchPanel.shoppingMall') },
         { value: "supermarket", label: "Supermarket" },
       ]
     },
     {
-      label: language === "id" ? "Area Publik" : "Public Area",
+      label: t('modernSearchPanel.publicArea'),
       key: "public",
       options: [
-        { value: "public-park", label: language === "id" ? "Taman Kota" : "Park" },
-        { value: "public-area", label: language === "id" ? "Fasilitas Umum" : "Facilities" }
+        { value: "public-park", label: t('modernSearchPanel.park') },
+        { value: "public-area", label: t('modernSearchPanel.facilities') }
       ]
     }
   ];
@@ -395,24 +354,18 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
         <DialogContent className="max-w-md bg-background/90 backdrop-blur-sm border-none p-0 shadow-xl animate-fade-in">
           <div className="flex flex-col items-center justify-center px-8 py-8 space-y-7">
             <h2 className="font-bold text-2xl bg-gradient-to-r from-primary via-accent to-chart-3 bg-clip-text text-transparent animate-gradient">
-              {language === "id" ? "Sedang Mencari..." : "Searching..."}
+              {t('modernSearchPanel.searching', 'Searching...')}
             </h2>
             <Progress value={progress} className="h-3 w-full mb-3" />
             {searchCount !== null
               ? (
                 <span className="text-lg font-semibold text-primary">
-                  {language === "id"
-                    ? `${searchCount} hasil ditemukan`
-                    : `${searchCount} results found`
-                  }
+                  {`${searchCount} ${t('modernSearchPanel.resultsFound', 'results found')}`}
                 </span>
               )
               : (
                 <span className="text-muted-foreground animate-pulse">
-                  {language === "id"
-                    ? "Memproses hasil, tunggu sebentar…"
-                    : "Analyzing results, please wait…"
-                  }
+                  {t('modernSearchPanel.processing', 'Analyzing results, please wait…')}
                 </span>
               )
             }
@@ -422,7 +375,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
               onClick={() => setIsSearching(false)}
               className="mt-6"
             >
-              {language === "id" ? "Tutup" : "Close"}
+              {t('modernSearchPanel.close', 'Close')}
             </Button>
           </div>
         </DialogContent>
@@ -434,11 +387,11 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
           {/* Property Type as colorful iPhone-style buttons (already at top) */}
           <IPhoneToggleGroup
             options={[
-              { value: "", label: language === "id" ? "Semua Jenis" : "All Types", colorClass: "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground" },
-              { value: "apartment", label: language === "id" ? "Apartemen" : "Apartment", colorClass: "bg-gradient-to-r from-accent to-accent/80 text-accent-foreground" },
-              { value: "house", label: language === "id" ? "Rumah" : "House", colorClass: "bg-gradient-to-r from-chart-4 to-chart-4/80 text-primary-foreground" },
-              { value: "villa", label: "Villa", colorClass: "bg-gradient-to-r from-gold-primary to-gold-primary/80 text-primary-foreground" },
-              { value: "townhouse", label: language === "id" ? "Rumah Kota" : "Townhouse", colorClass: "bg-gradient-to-r from-chart-1 to-chart-1/80 text-primary-foreground" },
+              { value: "", label: currentText.allTypes, colorClass: "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground" },
+              { value: "apartment", label: currentText.apartment, colorClass: "bg-gradient-to-r from-accent to-accent/80 text-accent-foreground" },
+              { value: "house", label: currentText.house, colorClass: "bg-gradient-to-r from-chart-4 to-chart-4/80 text-primary-foreground" },
+              { value: "villa", label: currentText.villa, colorClass: "bg-gradient-to-r from-gold-primary to-gold-primary/80 text-primary-foreground" },
+              { value: "townhouse", label: currentText.townhouse, colorClass: "bg-gradient-to-r from-chart-1 to-chart-1/80 text-primary-foreground" },
             ]}
             value={propertyType}
             onChange={setPropertyType}

@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import AdvancedFilters from './AdvancedFilters';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface CollapsibleSearchPanelProps {
   language?: "en" | "id" | "zh" | "ja" | "ko";
@@ -24,34 +25,20 @@ const CollapsibleSearchPanel = ({ language = "en", onSearch }: CollapsibleSearch
     bathrooms: 'all',
   });
 
-  const text = {
-    en: {
-      search: "Search properties...",
-      propertyType: "Property Type",
-      bedrooms: "Bedrooms",
-      bathrooms: "Bathrooms",
-      advancedFilters: "Advanced",
-      all: "All",
-      villa: "Villa",
-      apartment: "Apartment",
-      house: "House",
-      searchBtn: "Search"
-    },
-    id: {
-      search: "Cari properti...",
-      propertyType: "Tipe Properti",
-      bedrooms: "Kamar Tidur",
-      bathrooms: "Kamar Mandi",
-      advancedFilters: "Lanjutan",
-      all: "Semua",
-      villa: "Villa",
-      apartment: "Apartemen",
-      house: "Rumah",
-      searchBtn: "Cari"
-    }
-  };
+  const { t } = useTranslation();
 
-  const currentText = text[language] || text.en;
+  const currentText = {
+    search: t('collapsibleSearch.search'),
+    propertyType: t('collapsibleSearch.propertyType'),
+    bedrooms: t('collapsibleSearch.bedrooms'),
+    bathrooms: t('collapsibleSearch.bathrooms'),
+    advancedFilters: t('collapsibleSearch.advancedFilters'),
+    all: t('collapsibleSearch.all'),
+    villa: t('collapsibleSearch.villa'),
+    apartment: t('collapsibleSearch.apartment'),
+    house: t('collapsibleSearch.house'),
+    searchBtn: t('collapsibleSearch.searchBtn'),
+  };
 
   // Handle scroll-based minimize/expand
   const handleScroll = useCallback(() => {

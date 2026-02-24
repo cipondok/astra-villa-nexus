@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Search, MapPin, Home, DollarSign, Filter, X, Bed, Bath, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface SmartSearchPanelProps {
   language: "en" | "id";
@@ -69,99 +70,61 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
     return acc;
   }, {} as Record<string, { cities: Set<string>, areas: any[] }>);
 
-  const text = {
-    en: {
-      searchPlaceholder: "Search by location, property type, or keywords...",
-      location: "Location",
-      propertyType: "Property Type",
-      listingType: "Listing Type",
-      priceRange: "Price Range",
-      bedrooms: "Bedrooms",
-      bathrooms: "Bathrooms",
-      amenities: "Amenities",
-      search: "Search Properties",
-      advancedFilters: "Advanced Filters",
-      clearAll: "Clear Filters",
-      clearSelected: "Clear",
-      from: "Min Price",
-      to: "Max Price",
-      any: "Any",
-      forSale: "For Sale",
-      forRent: "For Rent",
-      villa: "Villa",
-      apartment: "Apartment",
-      house: "House",
-      townhouse: "Townhouse",
-      land: "Land",
-      pool: "Swimming Pool",
-      garage: "Garage",
-      garden: "Garden",
-      security: "Security",
-      gym: "Gym",
-      furnished: "Furnished",
-      filtersApplied: "filters applied",
-      developmentStatus: "Development Status",
-      completed: "Completed",
-      preLaunching: "Pre-Launching",
-      newProject: "New Project",
-      ready: "Ready"
-    },
-    id: {
-      searchPlaceholder: "Cari berdasarkan lokasi, jenis properti, atau kata kunci...",
-      location: "Lokasi",
-      propertyType: "Jenis Properti",
-      listingType: "Tipe Listing",
-      priceRange: "Range Harga",
-      bedrooms: "Kamar Tidur",
-      bathrooms: "Kamar Mandi",
-      amenities: "Fasilitas",
-      search: "Cari Properti",
-      advancedFilters: "Filter Lanjutan",
-      clearAll: "Hapus Filter",
-      clearSelected: "Hapus",
-      from: "Harga Min",
-      to: "Harga Max",
-      any: "Semua",
-      forSale: "Dijual",
-      forRent: "Disewa",
-      villa: "Villa",
-      apartment: "Apartemen",
-      house: "Rumah",
-      townhouse: "Rumah Teres",
-      land: "Tanah",
-      pool: "Kolam Renang",
-      garage: "Garasi",
-      garden: "Taman",
-      security: "Keamanan",
-      gym: "Gym",
-      furnished: "Furnished",
-      filtersApplied: "filter diterapkan",
-      developmentStatus: "Status Pembangunan",
-      completed: "Selesai",
-      preLaunching: "Pra-Peluncuran",
-      newProject: "Proyek Baru",
-      ready: "Siap"
-    }
-  };
+  const { t } = useTranslation();
 
-  const currentText = text[language] || text.en;
+  const currentText = {
+    searchPlaceholder: t('smartSearch.searchPlaceholder'),
+    location: t('smartSearch.location'),
+    propertyType: t('smartSearch.propertyType'),
+    listingType: t('smartSearch.listingType'),
+    priceRange: t('smartSearch.priceRange'),
+    bedrooms: t('smartSearch.bedrooms'),
+    bathrooms: t('smartSearch.bathrooms'),
+    amenities: t('smartSearch.amenities'),
+    search: t('smartSearch.search'),
+    advancedFilters: t('smartSearch.advancedFilters'),
+    clearAll: t('smartSearch.clearAll'),
+    clearSelected: t('smartSearch.clearSelected'),
+    from: t('smartSearch.from'),
+    to: t('smartSearch.to'),
+    any: t('smartSearch.any'),
+    forSale: t('smartSearch.forSale'),
+    forRent: t('smartSearch.forRent'),
+    villa: t('smartSearch.villa'),
+    apartment: t('smartSearch.apartment'),
+    house: t('smartSearch.house'),
+    townhouse: t('smartSearch.townhouse'),
+    land: t('smartSearch.land'),
+    pool: t('smartSearch.pool'),
+    garage: t('smartSearch.garage'),
+    garden: t('smartSearch.garden'),
+    security: t('smartSearch.security'),
+    gym: t('smartSearch.gym'),
+    furnished: t('smartSearch.furnished'),
+    filtersApplied: t('smartSearch.filtersApplied'),
+    developmentStatus: t('smartSearch.developmentStatus'),
+    completed: t('smartSearch.completed'),
+    preLaunching: t('smartSearch.preLaunching'),
+    newProject: t('smartSearch.newProject'),
+    ready: t('smartSearch.ready'),
+  };
 
   // Filter Categories
   const filterCategories = {
     basic: {
-      title: language === 'en' ? 'Basic Filters' : 'Filter Dasar',
+      title: t('smartSearch.basicFilters'),
       filters: ['propertyType', 'listingType', 'state']
     },
     details: {
-      title: language === 'en' ? 'Property Details' : 'Detail Properti',
+      title: t('smartSearch.propertyDetails'),
       filters: ['bedrooms', 'bathrooms', 'developmentStatus']
     },
     price: {
-      title: language === 'en' ? 'Price Range' : 'Range Harga',
+      title: t('smartSearch.priceRange'),
       filters: ['priceRange']
     },
     amenities: {
-      title: language === 'en' ? 'Amenities & Features' : 'Fasilitas & Fitur',
+      title: t('smartSearch.amenitiesFeatures'),
       filters: ['amenities']
     }
   };
