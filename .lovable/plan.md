@@ -1,86 +1,79 @@
 
 
-## Social Sharing and Referral System
-
-### Overview
-Build a social sharing feature for property listings and comparison results, plus a referral rewards system that leverages the existing `affiliates`, `referrals`, and `referral_tracking` tables.
+## Property Visit Calendar — Enhanced Calendar View
 
 ### What Already Exists
-- `affiliates` table with referral codes, earnings tracking
-- `referrals` table linking affiliates to referred users
-- `referral_tracking` table with UTM params, share channels, click counts
-- `referral_campaigns` table for campaign management
-- `AffiliatePanel` component with join/copy link functionality
+The project has a complete visit scheduling system:
+- **3 database tables**: `property_visits`, `agent_availability`, `agent_blocked_dates`
+- **Hooks**: `useMyVisits`, `useAgentVisits`, `useBookVisit`, `useAgentAvailability`, `useAgentBlockedDates` with real-time subscriptions
+- **Scheduling UI**: `ScheduleVisitDialog` (date picker + time slots + booking form) and `ScheduleVisitButton`
+- **Dashboard tab**: `PropertyVisitsTab` — a simple list of upcoming/past visits with cancel functionality
+- **No calendar view** — visits are displayed as cards in a flat list, not on a calendar
 
-### Implementation Plan
+### What We Will Build
 
-#### 1. Share Property Button Component
-Create `src/components/property/SharePropertyButton.tsx` -- a dropdown button with share options:
-- **Copy Link**: Copies property URL with the user's referral code appended (e.g., `/?ref=CODE&property=ID`)
-- **WhatsApp**: Opens WhatsApp share with property title, price, and link
-- **Facebook**: Opens Facebook share dialog
-- **Twitter/X**: Opens tweet compose with property details
-- **Telegram**: Opens Telegram share
+#### 1. Visit Calendar Component
+Create `src/components/visits/VisitCalendar.tsx` — a month calendar view that:
+- Highlights dates with scheduled visits using colored dots (green = confirmed, amber = pending, red = cancelled)
+- Clicking a date reveals the visits for that day in a detail panel below
+- Shows a mini-summary count on each date cell
+- Uses the existing `react-day-picker` (already installed via shadcn Calendar) with custom `modifiers` and `modifiersStyles`
 
-The button uses the Web Share API as a fallback on mobile devices. If the user is logged in and has an affiliate record, all links automatically include their referral code.
+#### 2. Day Detail Panel
+Create `src/components/visits/VisitDayDetail.tsx` — shown below the calendar when a date is selected:
+- Lists all visits for that day with time, property info, status badge, and actions
+- Reschedule button opens the `ScheduleVisitDialog` pre-filled with the property/agent
+- Cancel button with confirmation
+- "Add to Calendar" button that generates an `.ics` file download for the visit
 
-#### 2. Share Comparison Results
-Create `src/components/property/ShareComparisonButton.tsx` -- generates a shareable URL for the current comparison set (encodes property IDs in query params). Same social channels as above.
+#### 3. Visit Reminders
+Create `src/components/visits/VisitReminders.tsx` — a small alert card shown above the calendar:
+- Shows visits happening today or tomorrow
+- Uses a countdown format ("In 3 hours", "Tomorrow at 10:00")
+- Color-coded urgency (today = primary, tomorrow = muted)
 
-#### 3. Referral Landing Logic
-Create `src/hooks/useReferralTracking.ts`:
-- On app load, check URL for `ref` query parameter
-- Store the referral code in `localStorage`
-- Insert/update a row in `referral_tracking` with `share_channel`, UTM params, and increment `click_count`
-- On user signup, link the new user to the referrer by inserting into `referrals` table and updating affiliate stats
+#### 4. Rescheduling Flow
+Add reschedule capability to the existing `ScheduleVisitDialog`:
+- Accept an optional `existingVisitId` prop
+- When rescheduling, cancel the old visit and create a new one in a single flow
+- Show the original date/time for reference
 
-#### 4. Database Migration
-Create a new migration to add:
-- A `property_shares` table to track individual share events (user_id, property_id, channel, shared_at) for analytics
-- A trigger function `process_referral_signup` that fires when a new row is inserted into `referrals`, automatically incrementing the affiliate's `total_referrals` count
-
-#### 5. Integration Points
-- Add `SharePropertyButton` to `PropertyDetailModal`, `CompactPropertyCard`, and `PropertyCard` components
-- Add `ShareComparisonButton` to the property comparison view
-- Mount `useReferralTracking` in `App.tsx` to capture referral clicks on page load
-- Add a "Referrals" tab to the user dashboard showing share stats, click counts, and conversion tracking from `referral_tracking`
-
-#### 6. Referral Dashboard Tab
-Create `src/components/dashboard/tabs/ReferralDashboardTab.tsx`:
-- Shows the user's referral code and copy button
-- Displays stats: total shares, clicks, sign-ups, rewards earned
-- Lists recent referral activity from `referral_tracking`
+#### 5. Enhanced PropertyVisitsTab
+Replace the current flat list in `PropertyVisitsTab` with:
+- A toggle between "Calendar View" and "List View"
+- Calendar view uses the new `VisitCalendar` + `VisitDayDetail`
+- List view preserves the existing card-based layout
+- Visit reminders shown at the top in both views
 
 ### Technical Details
 
-**Share URL format**: `https://astra-villa-realty.lovable.app/property/{id}?ref={code}&utm_source={channel}`
-
-**Web Share API fallback**:
+**Calendar date highlighting** uses react-day-picker's `modifiers` API:
 ```typescript
-if (navigator.share) {
-  await navigator.share({ title, text, url });
-} else {
-  // Show dropdown with manual share options
-}
+const modifiers = {
+  hasVisit: visitDates,
+  confirmed: confirmedDates,
+  pending: pendingDates,
+};
 ```
 
-**Tables touched**: `affiliates` (read), `referral_tracking` (insert/update), `referrals` (insert on signup), new `property_shares` (insert on share)
+**ICS file generation** for "Add to Calendar":
+```typescript
+const generateICS = (visit) => {
+  const ics = `BEGIN:VCALENDAR\nBEGIN:VEVENT\nDTSTART:${formatICS(visit)}\nSUMMARY:Property Visit\nEND:VEVENT\nEND:VCALENDAR`;
+  // Trigger download as .ics file
+};
+```
 
-**RLS policies**: 
-- `property_shares`: Users can insert their own rows, select their own rows
-- Existing tables already have appropriate policies
+**Rescheduling** cancels the existing visit and books a new one in sequence using the existing `useBookVisit` and status update mutations.
+
+**No database changes needed** — the existing `property_visits`, `agent_availability`, and `agent_blocked_dates` tables support all required functionality.
 
 ### Files to Create
-- `src/components/property/SharePropertyButton.tsx`
-- `src/components/property/ShareComparisonButton.tsx`
-- `src/hooks/useReferralTracking.ts`
-- `src/components/dashboard/tabs/ReferralDashboardTab.tsx`
-- Migration SQL for `property_shares` table and signup trigger
+- `src/components/visits/VisitCalendar.tsx` — month calendar with visit indicators
+- `src/components/visits/VisitDayDetail.tsx` — day detail panel with actions
+- `src/components/visits/VisitReminders.tsx` — upcoming visit alerts
 
 ### Files to Edit
-- `src/components/property/PropertyDetailModal.tsx` -- add share button
-- `src/components/property/CompactPropertyCard.tsx` -- add share button
-- `src/components/property/PropertyCard.tsx` -- add share button
-- `src/App.tsx` -- mount referral tracking hook
-- `src/pages/UserDashboardPage.tsx` -- add Referrals tab
+- `src/components/dashboard/tabs/PropertyVisitsTab.tsx` — add calendar/list toggle, integrate new components
+- `src/components/visits/ScheduleVisitDialog.tsx` — add reschedule support (optional `existingVisitId` prop)
 
