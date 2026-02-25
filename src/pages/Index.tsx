@@ -545,11 +545,19 @@ const Index = () => {
               height: `clamp(${heroConfig?.sliderMinHeight || 400}px, 60vw, ${heroConfig?.sliderMaxHeight || 650}px)` 
             }}
           >
-          {bannerImages.map((banner, index) => (
+          {bannerImages.map((banner, index) => {
+            const kenBurnsVariants = [
+              'animate-ken-burns',
+              'animate-ken-burns-2',
+              'animate-ken-burns-3',
+              'animate-ken-burns-4',
+              'animate-ken-burns',
+            ];
+            return (
               <div
                 key={index}
                 className={cn(
-                  "absolute inset-0 transition-opacity duration-[1500ms] ease-in-out",
+                  "absolute inset-0 transition-opacity duration-[2000ms] ease-[cubic-bezier(0.4,0,0.2,1)]",
                   currentSlide === index ? "opacity-100 z-10" : "opacity-0 z-0"
                 )}
               >
@@ -557,18 +565,47 @@ const Index = () => {
                   src={banner} 
                   alt={`Astra Villa - Indonesia's Smart Property Platform ${index + 1}`} 
                   className={cn(
-                    "w-full h-full object-cover",
-                    currentSlide === index ? "animate-ken-burns" : ""
+                    "w-full h-full object-cover will-change-transform",
+                    currentSlide === index ? kenBurnsVariants[index % kenBurnsVariants.length] : ""
                   )}
                 />
               </div>
-            ))}
-            {/* Cinematic overlay for depth */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70 z-20 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/10 z-20 pointer-events-none" />
+            );
+          })}
+
+            {/* ASTRA Villa Branding Overlay */}
+            <div className="absolute inset-0 z-20 pointer-events-none flex items-start justify-center pt-[5%] sm:pt-[4%]">
+              <div key={currentSlide} className="text-center">
+                <h1
+                  className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black tracking-[0.06em] uppercase animate-hero-text-reveal"
+                  style={{ animationDelay: '0.1s', opacity: 0 }}
+                >
+                  <span className="text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">ASTRA</span>
+                  <span className="ml-3 sm:ml-5 text-gold-primary animate-hero-brand-glow drop-shadow-[0_4px_30px_rgba(212,175,55,0.5)]">
+                    Villa
+                  </span>
+                </h1>
+                <div
+                  className="mt-2 sm:mt-3 animate-hero-text-reveal"
+                  style={{ animationDelay: '0.5s', opacity: 0 }}
+                >
+                  <span className="inline-block px-5 py-1.5 sm:px-8 sm:py-2 text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-[0.35em] border border-white/15 rounded-full bg-white/5 backdrop-blur-sm">
+                    Premium Real Estate
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Cinematic overlay — stronger top to mask image-burned text */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/10 to-black/70 z-[19] pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/10 z-[19] pointer-events-none" />
+            {/* Film grain texture */}
+            <div className="absolute inset-0 z-[19] pointer-events-none opacity-[0.03] mix-blend-overlay"
+              style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")' }}
+            />
             {/* Shimmer light effect */}
             <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
-              <div className="absolute -inset-full animate-shimmer-slide bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12" />
+              <div className="absolute -inset-full animate-shimmer-slide bg-gradient-to-r from-transparent via-white/[0.04] to-transparent skew-x-12" />
             </div>
             
             {/* Slide indicators */}
@@ -578,8 +615,10 @@ const Index = () => {
                   key={i}
                   onClick={() => setCurrentSlide(i)}
                   className={cn(
-                    "w-8 h-1.5 rounded-full transition-all duration-300",
-                    currentSlide === i ? "bg-white w-12" : "bg-white/50"
+                    "h-1.5 rounded-full transition-all duration-500 ease-out",
+                    currentSlide === i 
+                      ? "bg-gold-primary w-10 shadow-[0_0_8px_hsl(var(--gold-primary)/0.5)]" 
+                      : "bg-white/40 w-6 hover:bg-white/60"
                   )}
                 />
               ))}
