@@ -627,45 +627,6 @@ const Index = () => {
                   Premium Real Estate
                 </span>
 
-                {/* ASTRA Villa Property */}
-                <h1 
-                  className="font-bold tracking-[0.06em] leading-[1.1] animate-hero-text-reveal"
-                  style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}
-                >
-                  <span 
-                    className="block text-4xl sm:text-5xl md:text-7xl lg:text-8xl transition-all duration-500 cursor-default hover:scale-105 animate-text-shimmer"
-                    style={{
-                      background: 'linear-gradient(135deg, hsl(45 90% 70%) 0%, hsl(38 85% 60%) 20%, hsl(30 80% 50%) 40%, hsl(45 95% 75%) 60%, hsl(38 85% 60%) 80%, hsl(45 90% 70%) 100%)',
-                      backgroundSize: '200% auto',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      filter: 'drop-shadow(0 4px 20px hsl(45 80% 50% / 0.35))',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.filter = 'drop-shadow(0 4px 30px hsl(45 80% 50% / 0.6))';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.filter = 'drop-shadow(0 4px 20px hsl(45 80% 50% / 0.35))';
-                    }}
-                  >
-                    ASTRA
-                  </span>
-                  <span 
-                    className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl mt-1 sm:mt-2 font-light tracking-[0.25em] uppercase transition-all duration-500 cursor-default hover:tracking-[0.35em]"
-                    style={{
-                      color: 'hsl(0 0% 100% / 0.92)',
-                      textShadow: '0 2px 15px hsl(220 80% 15% / 0.6)',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = 'hsl(45 60% 80% / 0.95)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'hsl(0 0% 100% / 0.92)';
-                    }}
-                  >
-                    Villa Property
-                  </span>
-                </h1>
 
                 {/* Decorative separator */}
                 <div 
