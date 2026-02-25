@@ -340,7 +340,7 @@ const RentalSidebarFilters = ({
 
           {/* Location */}
           <FilterSection title="Lokasi" icon={MapPin} defaultOpen>
-            <Select value={filters.province} onValueChange={v => onFiltersChange({ province: v, city: "all", area: "" })}>
+            <Select value={filters.province} onValueChange={v => onFiltersChange({ province: v, city: "all" })}>
               <SelectTrigger className="h-9 text-sm">
                 <SelectValue placeholder={locLoading ? "Memuat..." : "Pilih Provinsi"} />
               </SelectTrigger>
@@ -353,7 +353,7 @@ const RentalSidebarFilters = ({
             </Select>
             <Select 
               value={filters.city} 
-              onValueChange={v => onFiltersChange({ city: v, area: "" })}
+              onValueChange={v => onFiltersChange({ city: v })}
               disabled={!filters.province || filters.province === 'all'}
             >
               <SelectTrigger className="h-9 text-sm">
@@ -368,25 +368,6 @@ const RentalSidebarFilters = ({
                 <SelectItem value="all">Semua Kota</SelectItem>
                 {dbCities.map(c => (
                   <SelectItem key={c.code} value={c.code}>{c.type} {c.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={filters.area || 'all'}
-              onValueChange={v => onFiltersChange({ area: v === 'all' ? '' : v })}
-              disabled={!filters.city || filters.city === 'all'}
-            >
-              <SelectTrigger className="h-9 text-sm">
-                <SelectValue placeholder={
-                  !filters.city || filters.city === 'all'
-                    ? "Pilih kota dulu"
-                    : "Pilih Kecamatan/Area"
-                } />
-              </SelectTrigger>
-              <SelectContent className="max-h-60">
-                <SelectItem value="all">Semua Area</SelectItem>
-                {areas.map(a => (
-                  <SelectItem key={a} value={a}>{a}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
