@@ -383,6 +383,10 @@ const config: Config = {
           "50%": { transform: "scale(1.09) translate(-1%, 0.5%)" },
           "100%": { transform: "scale(1.03) translate(0%, 0%)" },
         },
+        "hero-search-entry": {
+          "0%": { opacity: "0", transform: "translateY(24px) scale(0.97)", filter: "blur(4px)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)", filter: "blur(0)" },
+        },
         "hero-text-reveal": {
           "0%": { opacity: "0", transform: "translateY(20px)", filter: "blur(8px)" },
           "100%": { opacity: "1", transform: "translateY(0)", filter: "blur(0)" },
@@ -442,6 +446,7 @@ const config: Config = {
         "shimmer-slide": "shimmer-slide 6s ease-in-out infinite",
         "text-shimmer": "text-shimmer 4s linear infinite",
         "diamond-pulse": "diamond-pulse 2.5s ease-in-out infinite",
+        "hero-search-entry": "hero-search-entry 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',
