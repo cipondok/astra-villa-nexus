@@ -41,6 +41,7 @@ import { UserProfileHeader } from "@/components/user/UserProfileHeader";
 import { StickyHeaderSearch } from "@/components/search/StickyHeaderSearch";
 import LazyRender from "@/components/LazyRender";
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import SectionErrorBoundary from "@/components/ui/SectionErrorBoundary";
 
 
 // Lazy load heavy components for better performance
@@ -571,6 +572,7 @@ const Index = () => {
       <div className="relative z-10 min-h-screen pb-20 md:pb-4">
         
         {/* Hero Banner + Search Overlay Section */}
+        <SectionErrorBoundary sectionName="Hero" fallbackMinHeight="400px">
         <section className="relative w-full" id="hero-section">
           {/* Hero Banner Slider */}
           <div
@@ -669,6 +671,7 @@ const Index = () => {
               </div>
               
               {/* Search Panel */}
+              <SectionErrorBoundary sectionName="Search" fallbackMinHeight="120px">
               <Suspense fallback={<SearchPanelSkeleton />}>
                 <SearchErrorBoundary>
                   <AstraSearchPanel
@@ -682,6 +685,7 @@ const Index = () => {
                   />
                 </SearchErrorBoundary>
               </Suspense>
+              </SectionErrorBoundary>
             </div>
           </div>
 
@@ -696,6 +700,7 @@ const Index = () => {
             <ChevronDown className="h-5 w-5 animate-bounce" />
           </button>
         </section>
+        </SectionErrorBoundary>
             
         {/* Retry Indicator */}
         {isRetrying && (
@@ -822,6 +827,7 @@ const Index = () => {
         </ScrollReveal>
 
         {/* Property Display Section */}
+        <SectionErrorBoundary sectionName="Properties" fallbackMinHeight="300px">
         <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-hero-fade via-hero-fade/60 to-background">
           <div className="w-full space-y-4">
             {hasSearched ? (
@@ -1025,6 +1031,7 @@ const Index = () => {
             )}
           </div>
         </div>
+        </SectionErrorBoundary>
         
         {/* AI Search Loading Dialog */}
         <Suspense fallback={null}>
