@@ -1,55 +1,58 @@
 
 
-## Plan: Add Scroll-Down Arrow Button at Bottom of Hero Slider
+## Plan: Add Interactive Hover Effects & Animations to ASTRA Villa Property Branding
 
 ### What We're Adding
-A subtle animated bouncing chevron/arrow at the bottom of the hero slider that, when clicked, smoothly scrolls the user to the content section below.
+Enhanced hover interactions and continuous animations on the hero branding text (visible on sm+ screens) to create a more premium, interactive feel.
 
 ### Technical Details
 
-**File: `src/pages/Index.tsx`**
+**File: `src/pages/Index.tsx` (lines 586-654)**
 
-1. **Add an `id` to the first section after the hero slider** so we have a scroll target (need to check what comes after the slider).
+The branding container currently has `pointer-events-none`. We need to change it to allow hover interactions on the text elements while keeping the rest non-interactive.
 
-2. **Add a scroll-down button** inside the hero slider `<div>` (the one ending around line 684), positioned at the bottom center above the slide indicators. It will:
-   - Use `ChevronDown` from lucide-react
-   - Have a bouncing animation (`animate-bounce`)
-   - Be absolutely positioned at `bottom-20 sm:bottom-24` (above the search panel)
-   - Use `z-30` to stay visible
-   - On click, call `document.getElementById('content-section')?.scrollIntoView({ behavior: 'smooth' })`
-   - Semi-transparent white styling with gold accent on hover
-   - Fade-in with delay so it appears after the branding text animations
+#### Changes:
 
-3. **Position**: Place it between the slide indicators (line 670) and the closing `</div>` at line 684, but since the search panel covers the bottom, we'll place the arrow **below the entire hero section** (after the `HomeIntroSlider` closing tag) as a floating element anchored to the bottom of the viewport-height hero.
+1. **Container (line 586)**: Keep `pointer-events-none` on the outer div but add `pointer-events-auto` on the inner content div (line 587) so hover works on the text elements.
 
-Actually, given the search panel already occupies the bottom of the slider, the best approach is to place the scroll arrow **just below the hero/search section** as a standalone element, or embed it within the search panel area. Let me reconsider — placing a small bouncing arrow at the very bottom edge of the full hero section (below the search panel) would be cleanest.
+2. **"ASTRA" text (lines 609-619)**: Add hover effects:
+   - `transition-all duration-500 cursor-default`
+   - On hover: scale up slightly, increase glow intensity, shimmer the gradient
+   - Add a CSS shimmer animation using `background-size: 200%` and `background-position` shift on hover
+   - Add `hover:scale-105` with `transform` transition
+   - Add `hover:drop-shadow` with stronger gold glow
 
-### Implementation
+3. **"Villa Property" text (lines 620-628)**: Add hover effects:
+   - `transition-all duration-500 cursor-default`
+   - On hover: subtle letter-spacing expansion, slight gold tint
+   - `hover:tracking-[0.35em]` and `hover:text-gold-primary/90`
 
-**In `src/pages/Index.tsx`:**
+4. **"Premium Real Estate" badge (lines 589-602)**: Add hover:
+   - `transition-all duration-300 cursor-default hover:scale-105`
+   - Brighter border and background on hover
 
-- After the hero slider section closes (~line 684 area, after the search panel), add a scroll-down arrow button:
+5. **"Luxury Living Redefined" tagline (lines 642-653)**: Add hover:
+   - `transition-all duration-300 cursor-default`
+   - Brighter opacity on hover
 
-```tsx
-{/* Scroll Down Indicator */}
-<button
-  onClick={() => document.getElementById('featured-section')?.scrollIntoView({ behavior: 'smooth' })}
-  className="absolute bottom-2 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-1 text-white/60 hover:text-gold-primary transition-colors duration-300 pointer-events-auto animate-fade-in"
-  style={{ animationDelay: '1.2s', opacity: 0, animationFillMode: 'forwards' }}
-  aria-label="Scroll to content"
->
-  <span className="text-[9px] uppercase tracking-[0.3em] font-medium">Explore</span>
-  <ChevronDown className="h-5 w-5 animate-bounce" />
-</button>
+6. **Decorative separator (lines 632-639)**: Add a continuous subtle pulse animation to the center diamond dot.
+
+**File: `tailwind.config.ts`** — Add a new `text-shimmer` keyframe animation:
 ```
+"text-shimmer": {
+  "0%": { backgroundPosition: "200% center" },
+  "100%": { backgroundPosition: "-200% center" }
+}
+```
+And animation: `"text-shimmer": "text-shimmer 4s linear infinite"`
 
-- Add `id="featured-section"` to the first major content section below the hero.
+### Implementation Summary
 
-- Import `ChevronDown` from `lucide-react` (check if already imported).
-
-### Visual Result
-- A small "Explore" label with a bouncing down-arrow at the very bottom of the hero
-- Fades in after 1.2s (after branding animations finish)
-- Smooth scroll on click
-- Gold highlight on hover matching the premium theme
+- Make branding elements hoverable by adding `pointer-events-auto` to the inner div
+- Add `transition-all duration-500` and scale/glow hover effects to "ASTRA"
+- Add continuous shimmer animation to "ASTRA" gradient text using `background-size: 200%` and the new `text-shimmer` keyframe
+- Add letter-spacing hover expansion on "Villa Property"
+- Add scale hover on the badge
+- Add pulse animation on the separator diamond
+- All changes scoped to 2 files: `Index.tsx` and `tailwind.config.ts`
 
