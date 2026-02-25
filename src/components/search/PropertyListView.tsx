@@ -57,7 +57,7 @@ const PropertyListView = ({
   return (
     <div className="flex flex-col gap-6">
       {properties.map((property) => (
-        <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-background rounded-xl border border-border/50">
+        <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-background rounded-xl border border-border/50 cursor-pointer" onClick={() => onPropertyClick(property)}>
           <CardContent className="p-0">
             <div className="flex flex-col md:flex-row items-stretch">
               {/* Image Section */}
@@ -192,6 +192,17 @@ const PropertyListView = ({
 
                 {/* Action Buttons */}
                 <div className="flex gap-2 mt-auto">
+                  <Button 
+                    variant="outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onPropertyClick(property);
+                    }}
+                    className="flex-shrink-0"
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Details
+                  </Button>
                   <Button 
                     variant="outline"
                     onClick={(e) => {
