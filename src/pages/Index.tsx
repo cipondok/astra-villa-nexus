@@ -19,7 +19,7 @@ import { BaseProperty } from "@/types/property";
 import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, Star } from "lucide-react";
+import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, Star, ChevronDown } from "lucide-react";
 import villaBlueDark1 from "@/assets/villa-blue-dark-1.jpg";
 import villaBlueDark2 from "@/assets/villa-blue-dark-2.jpg";
 import villaBlueDark3 from "@/assets/villa-blue-dark-3.jpg";
@@ -726,6 +726,17 @@ const Index = () => {
               </Suspense>
             </div>
           </div>
+
+          {/* Scroll Down Indicator */}
+          <button
+            onClick={() => document.getElementById('featured-section')?.scrollIntoView({ behavior: 'smooth' })}
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-1 text-white/60 hover:text-gold-primary transition-colors duration-300 pointer-events-auto animate-fade-in"
+            style={{ animationDelay: '1.2s', opacity: 0, animationFillMode: 'forwards' }}
+            aria-label="Scroll to content"
+          >
+            <span className="text-[9px] uppercase tracking-[0.3em] font-medium">Explore</span>
+            <ChevronDown className="h-5 w-5 animate-bounce" />
+          </button>
         </section>
             
         {/* Retry Indicator */}
@@ -737,6 +748,7 @@ const Index = () => {
         )}
 
         {/* Featured Properties Carousel */}
+        <div id="featured-section">
         <Suspense fallback={
           <div className="py-6 sm:py-8 max-w-7xl mx-auto px-3 sm:px-4">
             <div className="flex gap-3 overflow-hidden">
@@ -752,6 +764,7 @@ const Index = () => {
         }>
           <FeaturedPropertiesCarousel />
         </Suspense>
+        </div>
 
         {/* Error Message - Using Design Tokens */}
         {(searchError || lastError) && (
