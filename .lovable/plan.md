@@ -1,75 +1,54 @@
 
 
-## Bug: Mobile Layout Breaking — Overly Aggressive CSS Overrides
+## Fix: PropertyListingPage Jumping on Selection + ChatButton Runtime Error
 
-### Root Cause
+### Problem 1: Page "jumps" when selecting filters on /dijual and /disewa
 
-The file `src/styles/mobile-optimizations.css` contains several wildcard-style CSS rules with `!important` that break layouts on mobile. The `useIsMobile` hook adds the class `mobile-app-layout` to `document.body`, which activates all these rules. The most destructive ones:
+**Cause**: Every property card in the grid uses `motion.div` with `initial={{ opacity: 0, y: 20 }}`. When a filter Select changes state and the component re-renders, ALL cards replay their entrance animation (fading in and sliding up 20px), causing a visible jump/flash. Additionally, the filter panel uses `AnimatePresence` with `height: 0` to `height: "auto"` which can cause layout shifts.
 
-**1. All flex elements forced to column (lines 199-203):**
-```css
-.mobile-app-layout .flex,
-.mobile-app-layout .flex-wrap {
-  flex-direction: column !important;
-  gap: 1rem !important;
-}
+**Fix in `src/pages/PropertyListingPage.tsx`**:
+- Remove `initial` and `animate` from the property card `motion.div` (line 406-409), or change to a simple `div`. The entrance animation on every re-render is the jumping behavior.
+- On the collapsible filter `motion.div` (lines 280-284), add `overflow-hidden` and use `layout` instead of height animation to prevent content jumps.
+
+### Problem 2: ChatButton runtime error — `TypeError: undefined is not an object (evaluating 'event.defaultPrevented')`
+
+**Cause**: The `handleMouseUp` handler (line 151) calls `onClick()` without any event argument. The `ContextMenuTrigger` from Radix wraps the button and intercepts pointer events. When `handleMouseUp` fires, Radix's internal `handleEvent` function receives `undefined` instead of an event object and crashes trying to read `event.defaultPrevented`.
+
+**Fix in `src/components/ai/ChatButton.tsx`**:
+- Change `handleMouseUp` to accept the mouse event and pass it through, and guard the `onClick` call:
+  ```typescript
+  const handleMouseUp = (e: React.MouseEvent) => {
+    // ... existing cleanup logic ...
+    if (!isLongPress) {
+      onClick();
+    }
+  };
+  ```
+  The key issue is that `onMouseUp` on `motion.button` (line 205) doesn't forward the event. The fix is to ensure the handler signature accepts the event so React's synthetic event system doesn't pass `undefined` to Radix's delegation layer. Also add a null-guard in the handler.
+
+### Specific Changes
+
+#### File: `src/pages/PropertyListingPage.tsx`
+
+| Location | Change |
+|----------|--------|
+| Line 406-409 | Replace `motion.div` with `initial/animate` with a plain `div` (or use `layout` only). This stops the 20px jump on every filter change re-render. |
+| Lines 280-284 | Clean up the filter panel animation — use `overflow-hidden` on parent and smoother transition to prevent content reflow. |
+
+#### File: `src/components/ai/ChatButton.tsx`
+
+| Location | Change |
+|----------|--------|
+| Line 151 | Add event parameter: `const handleMouseUp = (e: React.MouseEvent) => {` |
+| Line 164 | Guard onClick: wrap in `try/catch` or check event validity before calling |
+| Line 205 | Ensure `onMouseUp` properly receives event: `onMouseUp={(e) => handleMouseUp(e)}` (explicit) |
+
+### Technical Detail
+
+The ChatButton error stack trace shows:
 ```
-Tailwind's `flex` utility class is used on hundreds of elements — nav bars, button groups, card rows, dropdown menus, icon+label pairs. This rule forces them ALL to stack vertically, breaking horizontal layouts everywhere.
-
-**2. All elements capped at max-width: 100% (lines 230-234):**
-```css
-.mobile-app-layout *,
-body.mobile-device * {
-  max-width: 100%;
-  box-sizing: border-box;
-}
+handleEvent (chunk-OD433RWB.js) → Radix ContextMenu event handler
+  ← handleMouseUp (ChatButton.tsx:116)
 ```
-The wildcard `*` with `max-width: 100%` breaks absolutely/fixed positioned elements, tooltips, popovers, and any element that intentionally overflows its parent.
-
-**3. All containers forced to column (lines 85-96):**
-```css
-.mobile-app-layout .container,
-.mobile-app-layout .container-flex,
-body.mobile-device .container {
-  flex-direction: column !important;
-  gap: 1rem !important;
-}
-```
-
-**4. Context menus disabled globally (lines 288-291):**
-```css
-body.mobile-device * {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-}
-```
-This prevents long-press context menus and text selection on every element.
-
-### Fix Plan
-
-#### File: `src/styles/mobile-optimizations.css`
-
-**Remove the destructive wildcard flex override** (lines 199-203). This is the primary cause of broken layouts. Elements that need column direction on mobile should use Tailwind's `flex-col` or responsive `md:flex-row` patterns directly in components.
-
-**Remove the wildcard `max-width: 100%` on `*`** (lines 230-234). Replace with a scoped rule that only targets images and media.
-
-**Remove the forced `flex-direction: column` from `.container`** (line 94). Containers should control their own layout. Keep the width/padding overrides.
-
-**Scope the tap-highlight and callout disable** (lines 288-291) to interactive elements only, not `*`.
-
-**Remove the unscoped `.flex` and `.flex-wrap` direction override** entirely — it's fundamentally incompatible with Tailwind's utility-first approach.
-
-#### Specific changes:
-
-| Lines | Current | Change |
-|-------|---------|--------|
-| 94 | `flex-direction: column !important;` | Remove this line |
-| 95 | `gap: 1rem !important;` | Remove this line |
-| 199-203 | `.mobile-app-layout .flex, .flex-wrap` forced column | **Delete entire rule** |
-| 230-234 | `*` with `max-width: 100%` | Scope to `img, video, canvas, svg` only |
-| 288-291 | `body.mobile-device *` tap/callout disable | Scope to `button, a, [role="button"]` |
-
-### Impact
-
-This will stop the CSS from fighting with Tailwind's responsive utilities. Components already use responsive classes like `flex-col md:flex-row` where needed — the global override was redundantly (and incorrectly) overriding those patterns and breaking elements that should remain horizontal on mobile (navigation bars, badge rows, icon+text pairs, dropdowns).
+Radix's `ContextMenuTrigger` adds a pointer event listener that expects a valid DOM event. The `motion.button`'s `onMouseUp` calls `handleMouseUp` which internally calls `onClick()`. The `onClick` triggers Radix's internal `handleEvent` which reads `event.defaultPrevented` — but `event` is undefined because the synthetic event was already consumed. The fix is to stop the event from propagating into Radix's handler after we handle our click intent.
 
