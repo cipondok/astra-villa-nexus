@@ -600,40 +600,6 @@ const Index = () => {
             {/* Gold Sparkle Effect */}
             <GoldSparkleEffect />
 
-            {/* Floating ASTRA Villa Property Branding */}
-            <div className="absolute inset-0 z-20 pointer-events-none hidden sm:flex items-start justify-center sm:pt-[6%]">
-              <div className="flex flex-col items-center text-center gap-4 sm:gap-5 pointer-events-auto">
-                {/* Decorative separator */}
-                <div 
-                  className="flex items-center justify-center gap-3 sm:gap-4 animate-hero-text-reveal"
-                  style={{ animationDelay: '0.4s', opacity: 0, animationFillMode: 'forwards' }}
-                >
-                  <div className="w-10 sm:w-16 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(45 70% 60% / 0.6))' }} />
-                  <div className="w-1.5 h-1.5 rounded-full animate-diamond-pulse" style={{ background: 'hsl(45 80% 65%)', boxShadow: '0 0 8px hsl(45 80% 50% / 0.5)' }} />
-                  <div className="w-10 sm:w-16 h-px" style={{ background: 'linear-gradient(90deg, hsl(45 70% 60% / 0.6), transparent)' }} />
-                </div>
-
-                {/* Luxury tagline */}
-                <p 
-                  className="text-[10px] sm:text-xs tracking-[0.4em] uppercase font-medium animate-hero-text-reveal transition-all duration-300 cursor-default hover:tracking-[0.5em]"
-                  style={{ 
-                    color: 'hsl(45 40% 75% / 0.8)',
-                    animationDelay: '0.5s', 
-                    opacity: 0, 
-                    animationFillMode: 'forwards',
-                    textShadow: '0 1px 8px hsl(220 60% 10% / 0.5)',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = 'hsl(45 40% 75% / 1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'hsl(45 40% 75% / 0.8)';
-                  }}
-                >
-                  Luxury Living Redefined
-                </p>
-              </div>
-            </div>
 
             {/* Cinematic overlay — theme-aware gradients */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/10 to-background/80 z-[19] pointer-events-none" />
