@@ -583,26 +583,29 @@ const Index = () => {
           })}
 
             {/* Floating ASTRA Villa Property Branding */}
-            <div className="absolute inset-0 z-20 pointer-events-none flex flex-col items-center justify-center gap-4 sm:gap-6">
-              {/* Premium Real Estate Badge */}
-              <span 
-                className="inline-block px-6 py-1.5 sm:px-10 sm:py-2 text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.45em] rounded-full animate-hero-text-reveal border"
-                style={{
-                  color: 'hsl(45 80% 72%)',
-                  borderColor: 'hsl(45 60% 55% / 0.3)',
-                  background: 'linear-gradient(135deg, hsl(45 50% 50% / 0.08), hsl(220 60% 20% / 0.15))',
-                  backdropFilter: 'blur(12px)',
-                  animationDelay: '0s',
-                  opacity: 0,
-                  animationFillMode: 'forwards',
-                }}
-              >
-                Premium Real Estate
-              </span>
+            <div className="absolute inset-0 z-20 pointer-events-none flex items-center justify-center">
+              <div className="flex flex-col items-center text-center gap-4 sm:gap-5">
+                {/* Premium Real Estate Badge */}
+                <span 
+                  className="inline-block px-6 py-1.5 sm:px-10 sm:py-2 text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.45em] rounded-full animate-hero-text-reveal border"
+                  style={{
+                    color: 'hsl(45 80% 72%)',
+                    borderColor: 'hsl(45 60% 55% / 0.3)',
+                    background: 'linear-gradient(135deg, hsl(45 50% 50% / 0.08), hsl(220 60% 20% / 0.15))',
+                    backdropFilter: 'blur(12px)',
+                    animationDelay: '0s',
+                    opacity: 0,
+                    animationFillMode: 'forwards',
+                  }}
+                >
+                  Premium Real Estate
+                </span>
 
-              {/* ASTRA Villa Property — Luxury floating text */}
-              <div className="text-center animate-hero-text-reveal" style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
-                <h1 className="font-bold tracking-[0.06em] leading-[1.1]">
+                {/* ASTRA Villa Property */}
+                <h1 
+                  className="font-bold tracking-[0.06em] leading-[1.1] animate-hero-text-reveal"
+                  style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}
+                >
                   <span 
                     className="block text-4xl sm:text-5xl md:text-7xl lg:text-8xl"
                     style={{
@@ -624,31 +627,31 @@ const Index = () => {
                     Villa Property
                   </span>
                 </h1>
-              </div>
 
-              {/* Decorative separator */}
-              <div 
-                className="flex items-center gap-3 sm:gap-4 animate-hero-text-reveal"
-                style={{ animationDelay: '0.4s', opacity: 0, animationFillMode: 'forwards' }}
-              >
-                <div className="w-10 sm:w-16 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(45 70% 60% / 0.6))' }} />
-                <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'hsl(45 80% 65%)', boxShadow: '0 0 8px hsl(45 80% 50% / 0.5)' }} />
-                <div className="w-10 sm:w-16 h-px" style={{ background: 'linear-gradient(90deg, hsl(45 70% 60% / 0.6), transparent)' }} />
-              </div>
+                {/* Decorative separator */}
+                <div 
+                  className="flex items-center justify-center gap-3 sm:gap-4 animate-hero-text-reveal"
+                  style={{ animationDelay: '0.4s', opacity: 0, animationFillMode: 'forwards' }}
+                >
+                  <div className="w-10 sm:w-16 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(45 70% 60% / 0.6))' }} />
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'hsl(45 80% 65%)', boxShadow: '0 0 8px hsl(45 80% 50% / 0.5)' }} />
+                  <div className="w-10 sm:w-16 h-px" style={{ background: 'linear-gradient(90deg, hsl(45 70% 60% / 0.6), transparent)' }} />
+                </div>
 
-              {/* Luxury tagline */}
-              <p 
-                className="text-[10px] sm:text-xs tracking-[0.4em] uppercase font-medium animate-hero-text-reveal"
-                style={{ 
-                  color: 'hsl(45 40% 75% / 0.8)',
-                  animationDelay: '0.5s', 
-                  opacity: 0, 
-                  animationFillMode: 'forwards',
-                  textShadow: '0 1px 8px hsl(220 60% 10% / 0.5)',
-                }}
-              >
-                Luxury Living Redefined
-              </p>
+                {/* Luxury tagline */}
+                <p 
+                  className="text-[10px] sm:text-xs tracking-[0.4em] uppercase font-medium animate-hero-text-reveal"
+                  style={{ 
+                    color: 'hsl(45 40% 75% / 0.8)',
+                    animationDelay: '0.5s', 
+                    opacity: 0, 
+                    animationFillMode: 'forwards',
+                    textShadow: '0 1px 8px hsl(220 60% 10% / 0.5)',
+                  }}
+                >
+                  Luxury Living Redefined
+                </p>
+              </div>
             </div>
 
             {/* Cinematic overlay — theme-aware gradients */}
