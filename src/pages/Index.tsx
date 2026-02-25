@@ -949,8 +949,8 @@ const Index = () => {
 
                 {/* Trending Searches */}
                 <ScrollReveal direction="left" delay={100}>
-                <div className="mb-4">
-                  <LazyRender minHeight="192px" fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
+                <div>
+                  <LazyRender minHeight="0px" fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
                     <TrendingSearchesWidget 
                       onSearchClick={(trendFilters) => {
                         setFilters(prev => ({ ...prev, ...trendFilters }));
