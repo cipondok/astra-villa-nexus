@@ -161,7 +161,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   return (
     <>
       <Card 
-        className="group cursor-pointer overflow-hidden bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300" 
+        className="group cursor-pointer overflow-hidden bg-card border border-border hover:border-gold-primary/40 hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)] hover:-translate-y-1 transition-all duration-300 ease-out" 
         onClick={handleViewDetails}
       >
         {/* Image Container */}

@@ -715,7 +715,7 @@ const Index = () => {
           
           {/* Search Panel Overlay - positioned at bottom of slider */}
           <div className="absolute inset-x-0 bottom-4 sm:bottom-8 z-30 flex flex-col items-center pointer-events-none max-h-[85vh] overflow-y-auto">
-            <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 pointer-events-auto">
+            <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 pointer-events-auto animate-hero-search-entry">
               {/* Title */}
               <div className="text-center mb-4 sm:mb-6">
                 <div className={cn(
@@ -777,16 +777,29 @@ const Index = () => {
           </div>
         )}
 
+        {/* Gold gradient divider between hero and content */}
+        <div className="relative h-16 sm:h-20 -mt-1 overflow-hidden" aria-hidden="true">
+          <div className="absolute inset-0 bg-gradient-to-b from-background/0 via-background to-background" />
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-gold-primary/30 to-transparent" />
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-8 bg-gradient-to-r from-transparent via-gold-primary/5 to-transparent blur-xl" />
+        </div>
+
         {/* Featured Properties Carousel */}
         <div id="featured-section">
         <Suspense fallback={
           <div className="py-6 sm:py-8 max-w-7xl mx-auto px-3 sm:px-4">
             <div className="flex gap-3 overflow-hidden">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="flex-shrink-0 w-[280px] sm:w-[320px] animate-pulse">
-                  <div className="h-48 bg-muted rounded-xl mb-2" />
-                  <div className="h-4 bg-muted rounded w-3/4 mb-1" />
-                  <div className="h-3 bg-muted rounded w-1/2" />
+                <div key={i} className="flex-shrink-0 w-[280px] sm:w-[320px]">
+                  <div className="relative overflow-hidden h-48 bg-muted rounded-xl mb-2">
+                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-gold-primary/15 to-transparent" />
+                  </div>
+                  <div className="relative overflow-hidden h-4 bg-muted rounded w-3/4 mb-1">
+                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-gold-primary/15 to-transparent" />
+                  </div>
+                  <div className="relative overflow-hidden h-3 bg-muted rounded w-1/2">
+                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-gold-primary/15 to-transparent" />
+                  </div>
                 </div>
               ))}
             </div>

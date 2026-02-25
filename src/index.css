@@ -1539,3 +1539,25 @@ body[data-scroll-locked] {
   background: hsl(var(--primary) / 0.2);
   color: hsl(var(--primary-foreground));
 }
+
+/* Accessibility: Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Mobile: Disable parallax and heavy effects */
+@media (max-width: 768px) {
+  .parallax-layer {
+    transform: none !important;
+  }
+  .animate-hero-search-entry {
+    animation-delay: 0.1s !important;
+  }
+}

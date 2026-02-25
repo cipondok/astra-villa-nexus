@@ -7,7 +7,7 @@ interface PropertyCardSkeletonProps {
 
 const Shimmer = ({ className }: { className?: string }) => (
   <div className={cn("relative overflow-hidden rounded-md bg-muted", className)}>
-    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-gold-primary/15 to-transparent" />
   </div>
 );
 
