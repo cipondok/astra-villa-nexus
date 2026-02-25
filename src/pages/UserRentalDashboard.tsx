@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard } from "lucide-react";
+import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard, Wrench, Plus } from "lucide-react";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +13,9 @@ import { useQuery } from "@tanstack/react-query";
 import { formatIDR } from "@/utils/currency";
 import RentalChatDialog from "@/components/rental/RentalChatDialog";
 import RentalDocumentsDialog from "@/components/rental/RentalDocumentsDialog";
+import MaintenanceRequestForm from "@/components/rental/MaintenanceRequestForm";
+import MaintenanceRequestList from "@/components/rental/MaintenanceRequestList";
+import { useTenantMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 
 interface BookingRow {
   id: string;
@@ -50,7 +53,7 @@ const paymentConfig: Record<string, { label: string; color: string }> = {
   refunded: { label: "Refunded", color: "text-muted-foreground" },
 };
 
-const BookingCard = ({ booking, onChat, onDocs }: { booking: BookingRow; onChat: () => void; onDocs: () => void }) => {
+const BookingCard = ({ booking, onChat, onDocs, onMaintenance }: { booking: BookingRow; onChat: () => void; onDocs: () => void; onMaintenance?: () => void }) => {
   const status = statusConfig[booking.booking_status] || statusConfig.pending;
   const payment = paymentConfig[booking.payment_status || "unpaid"] || paymentConfig.unpaid;
   const StatusIcon = status.icon;
@@ -91,6 +94,11 @@ const BookingCard = ({ booking, onChat, onDocs }: { booking: BookingRow; onChat:
               <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={onDocs}>
                 <FileText className="h-3.5 w-3.5 mr-1" /> Dokumen
               </Button>
+              {onMaintenance && (
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={onMaintenance}>
+                  <Wrench className="h-3.5 w-3.5 mr-1" /> Perbaikan
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -104,6 +112,8 @@ const UserRentalDashboard = () => {
   const { user } = useAuth();
   const [chatBooking, setChatBooking] = useState<{ id: string; title: string } | null>(null);
   const [docsBooking, setDocsBooking] = useState<{ id: string; title: string } | null>(null);
+  const [maintenanceBooking, setMaintenanceBooking] = useState<{ bookingId: string; propertyId: string } | null>(null);
+  const { data: maintenanceRequests = [], isLoading: maintenanceLoading, refetch: refetchMaintenance } = useTenantMaintenanceRequests();
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ["tenant-bookings", user?.id],
@@ -160,7 +170,7 @@ const UserRentalDashboard = () => {
     return (
       <div className="space-y-3">
         {items.map(b => (
-          <BookingCard key={b.id} booking={b} onChat={() => openChat(b)} onDocs={() => openDocs(b)} />
+          <BookingCard key={b.id} booking={b} onChat={() => openChat(b)} onDocs={() => openDocs(b)} onMaintenance={["confirmed", "pending"].includes(b.booking_status) ? () => setMaintenanceBooking({ bookingId: b.id, propertyId: b.property_id }) : undefined} />
         ))}
       </div>
     );
@@ -204,6 +214,9 @@ const UserRentalDashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="refund" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <RotateCcw className="h-3.5 w-3.5" /> Refund
+            </TabsTrigger>
+            <TabsTrigger value="maintenance" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
+              <Wrench className="h-3.5 w-3.5" /> Perbaikan
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <Settings className="h-3.5 w-3.5" /> Pengaturan
@@ -267,6 +280,20 @@ const UserRentalDashboard = () => {
             </div>
           </TabsContent>
 
+          <TabsContent value="maintenance">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-foreground">Permintaan Perbaikan</h2>
+                {activeBookings.length > 0 && (
+                  <Button size="sm" onClick={() => setMaintenanceBooking({ bookingId: activeBookings[0].id, propertyId: activeBookings[0].property_id })}>
+                    <Plus className="h-3.5 w-3.5 mr-1" /> Ajukan
+                  </Button>
+                )}
+              </div>
+              <MaintenanceRequestList requests={maintenanceRequests as any} isLoading={maintenanceLoading} />
+            </div>
+          </TabsContent>
+
           <TabsContent value="settings">
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-foreground">Pengaturan Sewa</h2>
@@ -303,6 +330,15 @@ const UserRentalDashboard = () => {
           onOpenChange={(open) => !open && setDocsBooking(null)}
           bookingId={docsBooking.id}
           propertyTitle={docsBooking.title}
+        />
+      )}
+      {maintenanceBooking && (
+        <MaintenanceRequestForm
+          open={!!maintenanceBooking}
+          onOpenChange={(open) => !open && setMaintenanceBooking(null)}
+          bookingId={maintenanceBooking.bookingId}
+          propertyId={maintenanceBooking.propertyId}
+          onSuccess={() => refetchMaintenance()}
         />
       )}
     </div>

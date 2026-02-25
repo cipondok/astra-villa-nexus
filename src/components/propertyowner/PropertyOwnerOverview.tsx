@@ -7,6 +7,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePropertyOwnerData } from "@/hooks/usePropertyOwnerData";
 import OwnerRentalManagement from "./OwnerRentalManagement";
+import OwnerMaintenanceManagement from "./OwnerMaintenanceManagement";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
 import { 
@@ -201,12 +202,15 @@ const PropertyOwnerOverview = () => {
 
       {/* Content Tabs */}
       <Tabs defaultValue={defaultTab} className="space-y-2">
-        <TabsList className="grid w-full grid-cols-4 h-7 p-0.5">
+        <TabsList className="grid w-full grid-cols-5 h-7 p-0.5">
           <TabsTrigger value="overview" className="text-[8px] h-5 gap-0.5">
             <BarChart3 className="h-2.5 w-2.5" /> Overview
           </TabsTrigger>
           <TabsTrigger value="rentals" className="text-[8px] h-5 gap-0.5">
             <CalendarDays className="h-2.5 w-2.5" /> Rentals
+          </TabsTrigger>
+          <TabsTrigger value="maintenance" className="text-[8px] h-5 gap-0.5">
+            <Settings className="h-2.5 w-2.5" /> Maintenance
           </TabsTrigger>
           <TabsTrigger value="activity" className="text-[8px] h-5 gap-0.5">
             <Activity className="h-2.5 w-2.5" /> Activity
@@ -271,6 +275,11 @@ const PropertyOwnerOverview = () => {
         {/* Rentals Tab */}
         <TabsContent value="rentals" className="mt-1.5">
           <OwnerRentalManagement />
+        </TabsContent>
+
+        {/* Maintenance Tab */}
+        <TabsContent value="maintenance" className="mt-1.5">
+          <OwnerMaintenanceManagement />
         </TabsContent>
 
         {/* Activity Tab */}
