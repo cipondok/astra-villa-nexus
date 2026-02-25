@@ -15133,6 +15133,72 @@ export type Database = {
           },
         ]
       }
+      property_engagement_scores: {
+        Row: {
+          avg_dwell_seconds: number | null
+          clicks_total: number | null
+          engagement_score: number | null
+          inquiries_total: number | null
+          investment_score: number | null
+          last_calculated_at: string | null
+          livability_score: number | null
+          luxury_score: number | null
+          predicted_roi: number | null
+          property_id: string
+          roi_confidence: number | null
+          saves_total: number | null
+          updated_at: string | null
+          views_total: number | null
+        }
+        Insert: {
+          avg_dwell_seconds?: number | null
+          clicks_total?: number | null
+          engagement_score?: number | null
+          inquiries_total?: number | null
+          investment_score?: number | null
+          last_calculated_at?: string | null
+          livability_score?: number | null
+          luxury_score?: number | null
+          predicted_roi?: number | null
+          property_id: string
+          roi_confidence?: number | null
+          saves_total?: number | null
+          updated_at?: string | null
+          views_total?: number | null
+        }
+        Update: {
+          avg_dwell_seconds?: number | null
+          clicks_total?: number | null
+          engagement_score?: number | null
+          inquiries_total?: number | null
+          investment_score?: number | null
+          last_calculated_at?: string | null
+          livability_score?: number | null
+          luxury_score?: number | null
+          predicted_roi?: number | null
+          property_id?: string
+          roi_confidence?: number | null
+          saves_total?: number | null
+          updated_at?: string | null
+          views_total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_engagement_scores_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_engagement_scores_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_facilities: {
         Row: {
           additional_cost: number | null
