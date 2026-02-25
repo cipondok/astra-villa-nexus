@@ -14641,9 +14641,11 @@ export type Database = {
           listing_type: string
           location: string
           minimum_rental_days: number | null
+          nearby_facilities: Json | null
           online_booking_enabled: boolean | null
           owner_id: string
           owner_type: string | null
+          payment_methods: Json | null
           payment_plan_available: boolean | null
           price: number | null
           property_features: Json | null
@@ -14700,9 +14702,11 @@ export type Database = {
           listing_type: string
           location: string
           minimum_rental_days?: number | null
+          nearby_facilities?: Json | null
           online_booking_enabled?: boolean | null
           owner_id: string
           owner_type?: string | null
+          payment_methods?: Json | null
           payment_plan_available?: boolean | null
           price?: number | null
           property_features?: Json | null
@@ -14759,9 +14763,11 @@ export type Database = {
           listing_type?: string
           location?: string
           minimum_rental_days?: number | null
+          nearby_facilities?: Json | null
           online_booking_enabled?: boolean | null
           owner_id?: string
           owner_type?: string | null
+          payment_methods?: Json | null
           payment_plan_available?: boolean | null
           price?: number | null
           property_features?: Json | null

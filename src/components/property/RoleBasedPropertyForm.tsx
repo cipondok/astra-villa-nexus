@@ -51,6 +51,9 @@ interface PropertyFormData {
   mail_handling?: boolean;
   // Image upload
   images?: string[];
+  // Nearby & Payment
+  nearby_facilities: string[];
+  payment_methods: string[];
 }
 
 const RoleBasedPropertyForm = () => {
@@ -91,7 +94,10 @@ const RoleBasedPropertyForm = () => {
     advance_booking_days: "7",
     rental_terms: "",
     available_from: "",
-    available_until: ""
+    available_until: "",
+    // Nearby & Payment
+    nearby_facilities: [],
+    payment_methods: [],
   });
 
   // Location selector state
@@ -160,6 +166,8 @@ const RoleBasedPropertyForm = () => {
         seo_title: data.seo_title || data.title,
         seo_description: data.seo_description || data.description,
         property_features: { ...advancedFeatures },
+        nearby_facilities: data.nearby_facilities || [],
+        payment_methods: data.payment_methods || [],
         // Rental-specific fields (only for rental properties)
         ...(data.listing_type === 'rent' && {
           rental_periods: data.rental_periods,
@@ -220,7 +228,9 @@ const RoleBasedPropertyForm = () => {
         advance_booking_days: "7",
         rental_terms: "",
         available_from: "",
-        available_until: ""
+        available_until: "",
+        nearby_facilities: [],
+        payment_methods: [],
       });
 
       // Reset location selector
@@ -253,7 +263,7 @@ const RoleBasedPropertyForm = () => {
     },
   });
 
-  const handleInputChange = (key: keyof PropertyFormData, value: string) => {
+  const handleInputChange = (key: keyof PropertyFormData, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
@@ -709,6 +719,86 @@ const RoleBasedPropertyForm = () => {
                   Complete street address including house/building number
                 </p>
               </div>
+            </div>
+          </div>
+
+          {/* Nearby Facilities */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Fasilitas Terdekat (Nearby)</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+              {[
+                { value: "public_transport", label: "Transportasi Umum" },
+                { value: "lrt_mrt", label: "LRT / MRT" },
+                { value: "airport", label: "Bandara" },
+                { value: "toll_road", label: "Jalan Tol" },
+                { value: "international_school", label: "Sekolah Internasional" },
+                { value: "shopping_mall", label: "Mall" },
+                { value: "minimarket", label: "Indomaret / Alfamart" },
+                { value: "supermarket", label: "Supermarket" },
+                { value: "hospital", label: "Rumah Sakit" },
+                { value: "restaurant", label: "Restoran / Kafe" },
+                { value: "park", label: "Taman" },
+                { value: "public_garden", label: "Kebun Raya" },
+                { value: "golf_club", label: "Golf Club" },
+                { value: "gym_fitness", label: "Gym / Fitness" },
+                { value: "beach", label: "Pantai" },
+                { value: "mosque_temple", label: "Tempat Ibadah" },
+                { value: "gas_station", label: "SPBU" },
+                { value: "coworking", label: "Co-Working Space" },
+                { value: "university", label: "Universitas" },
+                { value: "popular_area", label: "Area Populer" },
+                { value: "parking_area", label: "Parkir Luas" },
+              ].map(opt => {
+                const checked = formData.nearby_facilities.includes(opt.value);
+                return (
+                  <label key={opt.value} className="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-accent/30 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => {
+                        const updated = checked
+                          ? formData.nearby_facilities.filter(v => v !== opt.value)
+                          : [...formData.nearby_facilities, opt.value];
+                        handleInputChange('nearby_facilities', updated);
+                      }}
+                      className="rounded"
+                    />
+                    <span className="text-sm">{opt.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Payment Methods */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Metode Pembayaran yang Diterima</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              {[
+                { value: "online", label: "Online Payment" },
+                { value: "pay_on_property", label: "Bayar di Lokasi" },
+                { value: "bank_transfer", label: "Transfer Bank" },
+                { value: "installment", label: "Cicilan / KPR" },
+                { value: "crypto", label: "Crypto / Digital" },
+              ].map(opt => {
+                const checked = formData.payment_methods.includes(opt.value);
+                return (
+                  <label key={opt.value} className="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-accent/30 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => {
+                        const updated = checked
+                          ? formData.payment_methods.filter(v => v !== opt.value)
+                          : [...formData.payment_methods, opt.value];
+                        handleInputChange('payment_methods', updated);
+                      }}
+                      className="rounded"
+                    />
+                    <span className="text-sm">{opt.label}</span>
+                  </label>
+                );
+              })}
             </div>
           </div>
 

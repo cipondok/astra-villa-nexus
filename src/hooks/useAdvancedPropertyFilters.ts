@@ -64,7 +64,8 @@ const buildFilteredQuery = (filters: AdvancedRentalFilters, page: number, pageSi
        land_area_sqm, building_area_sqm, floors, has_pool, garage_count, view_type, furnishing,
        roi_percentage, rental_yield_percentage, legal_status, wna_eligible,
        payment_plan_available, handover_year,
-       has_vr, has_360_view, has_drone_video, has_interactive_floorplan, development_status`,
+       has_vr, has_360_view, has_drone_video, has_interactive_floorplan, development_status,
+       nearby_facilities, payment_methods`,
       { count: "exact" }
     )
     .eq("status", "active");
@@ -169,6 +170,16 @@ const buildFilteredQuery = (filters: AdvancedRentalFilters, page: number, pageSi
 
   // Online booking
   if (filters.onlineBookingOnly) query = query.eq("online_booking_enabled", true);
+
+  // Payment method filter
+  if (filters.paymentMethod && filters.paymentMethod !== "all") {
+    query = query.contains("payment_methods", JSON.stringify([filters.paymentMethod]));
+  }
+
+  // Nearby facilities filter (JSONB containment - all selected must be present)
+  if (filters.nearbyFacilities && filters.nearbyFacilities.length > 0) {
+    query = query.contains("nearby_facilities", JSON.stringify(filters.nearbyFacilities));
+  }
 
   // Sorting
   switch (filters.sortBy) {
