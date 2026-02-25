@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store, Bed, Bath, Maximize, Key, Tag, Clock, BadgeCheck, ShieldCheck, Crown, ShieldAlert, Gem, Award, Medal } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { useNavigate } from "react-router-dom";
@@ -191,13 +192,19 @@ export default function FeaturedAdsCarousel() {
   if (isLoading) {
     return (
       <div className="relative rounded-xl md:rounded-2xl p-2 md:p-3 overflow-hidden" style={{ minHeight: '220px' }}>
-        <div className="animate-pulse">
-          <div className="h-4 md:h-5 bg-muted rounded w-32 md:w-40 mb-2 mx-auto" />
-          <div className="flex gap-2 md:gap-3 overflow-hidden">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[220px] h-48 sm:h-52 md:h-60 bg-muted rounded-xl" />
-            ))}
-          </div>
+        {/* Header skeleton */}
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <Skeleton className="h-4 w-4 rounded-full" />
+          <Skeleton className="h-5 w-36" />
+          <Skeleton className="h-4 w-4 rounded-full" />
+        </div>
+        {/* Card skeletons */}
+        <div className="flex gap-2 md:gap-3 overflow-hidden">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[220px] rounded-xl border border-border bg-card overflow-hidden">
+              <Skeleton className="h-48 sm:h-52 md:h-60 w-full rounded-none" />
+            </div>
+          ))}
         </div>
       </div>
     );
