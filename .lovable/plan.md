@@ -1,35 +1,55 @@
 
 
-## Issue: Hero Branding Text Overlaps Search Panel on Mobile
+## Plan: Add Scroll-Down Arrow Button at Bottom of Hero Slider
 
-**What I found:** On mobile (375x812), the "ASTRA" and "VILLA PROPERTY" branding text positioned at the top (`pt-[8%]`) collides with the search panel overlay. The search panel uses `max-h-[85vh]` and is positioned from the bottom, but on small screens it extends far enough upward to overlap the branding.
+### What We're Adding
+A subtle animated bouncing chevron/arrow at the bottom of the hero slider that, when clicked, smoothly scrolls the user to the content section below.
 
-**Screenshot evidence:** The "ASTRA" text sits directly behind "Find Your Dream Property" and the search filters, making both unreadable.
+### Technical Details
 
-## Solution
+**File: `src/pages/Index.tsx`**
 
-Two options to fix this:
+1. **Add an `id` to the first section after the hero slider** so we have a scroll target (need to check what comes after the slider).
 
-**Option A (Recommended): Hide branding on mobile, show only on larger screens**
-- The search panel already contains its own "AI-POWERED SEARCH" and "PREMIUM REAL ESTATE" badges, so the floating branding is redundant on mobile.
-- Add `hidden sm:flex` to the branding container so it only appears on screens >= 640px.
+2. **Add a scroll-down button** inside the hero slider `<div>` (the one ending around line 684), positioned at the bottom center above the slide indicators. It will:
+   - Use `ChevronDown` from lucide-react
+   - Have a bouncing animation (`animate-bounce`)
+   - Be absolutely positioned at `bottom-20 sm:bottom-24` (above the search panel)
+   - Use `z-30` to stay visible
+   - On click, call `document.getElementById('content-section')?.scrollIntoView({ behavior: 'smooth' })`
+   - Semi-transparent white styling with gold accent on hover
+   - Fade-in with delay so it appears after the branding text animations
 
-**Option B: Push branding higher and make it smaller on mobile**
-- Reduce mobile padding to `pt-[2%]` and shrink text sizes further.
-- Risk: still may overlap on very small screens or when search panel is expanded.
+3. **Position**: Place it between the slide indicators (line 670) and the closing `</div>` at line 684, but since the search panel covers the bottom, we'll place the arrow **below the entire hero section** (after the `HomeIntroSlider` closing tag) as a floating element anchored to the bottom of the viewport-height hero.
 
-### Technical Change (Option A)
+Actually, given the search panel already occupies the bottom of the slider, the best approach is to place the scroll arrow **just below the hero/search section** as a standalone element, or embed it within the search panel area. Let me reconsider — placing a small bouncing arrow at the very bottom edge of the full hero section (below the search panel) would be cleanest.
 
-**File: `src/pages/Index.tsx`, line 586**
+### Implementation
 
-Change:
+**In `src/pages/Index.tsx`:**
+
+- After the hero slider section closes (~line 684 area, after the search panel), add a scroll-down arrow button:
+
+```tsx
+{/* Scroll Down Indicator */}
+<button
+  onClick={() => document.getElementById('featured-section')?.scrollIntoView({ behavior: 'smooth' })}
+  className="absolute bottom-2 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-1 text-white/60 hover:text-gold-primary transition-colors duration-300 pointer-events-auto animate-fade-in"
+  style={{ animationDelay: '1.2s', opacity: 0, animationFillMode: 'forwards' }}
+  aria-label="Scroll to content"
+>
+  <span className="text-[9px] uppercase tracking-[0.3em] font-medium">Explore</span>
+  <ChevronDown className="h-5 w-5 animate-bounce" />
+</button>
 ```
-flex items-start justify-center pt-[8%] sm:pt-[6%]
-```
-To:
-```
-hidden sm:flex items-start justify-center sm:pt-[6%]
-```
 
-This cleanly avoids the overlap by not rendering the decorative branding on mobile, where the search panel already provides context. On tablet and desktop, the branding remains visible at the top of the slider with proper spacing.
+- Add `id="featured-section"` to the first major content section below the hero.
+
+- Import `ChevronDown` from `lucide-react` (check if already imported).
+
+### Visual Result
+- A small "Explore" label with a bouncing down-arrow at the very bottom of the hero
+- Fades in after 1.2s (after branding animations finish)
+- Smooth scroll on click
+- Gold highlight on hover matching the premium theme
 
