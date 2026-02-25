@@ -2,45 +2,39 @@
 
 ## Problem Analysis
 
-The **List view** in the property search results is not working because of a critical bug in `PropertyListView.tsx`:
+The `/dijual`, `/disewa`, and `PropertyListingPage` pages all render `PropertyViewModeToggle` in their headers, but the `viewMode` state is **only used to switch to map view**. When `viewMode === 'list'`, the code falls through to the same grid layout as `viewMode === 'grid'`. There is no conditional branch that renders `PropertyListView`.
 
-**The Card component has no `onClick` handler.** The `onPropertyClick` callback is passed as a prop but never wired to any element. When a user switches to list view and clicks a property card, nothing happens — no navigation occurs.
-
-By contrast, the Grid view (`PropertyGridView`) likely has `onClick` handlers properly connected.
+The `PropertyListView` component itself is working (it was fixed previously with `onClick` handlers). The bug is that it is never imported or rendered in these three pages.
 
 ## Plan
 
-### Fix: `src/components/search/PropertyListView.tsx`
+### 1. Fix `src/pages/Dijual.tsx`
 
-1. **Add `onClick` handler to the Card** (line 60) — wire `onPropertyClick` so clicking the card navigates to the property detail page:
-   ```tsx
-   <Card 
-     key={property.id} 
-     className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-background rounded-xl border border-border/50 cursor-pointer"
-     onClick={() => onPropertyClick(property)}
-   >
-   ```
+- **Import** `PropertyListView` and `PropertyGridView` from `@/components/search/`
+- **Replace** the single grid block (lines 476-570) with a conditional:
+  - `viewMode === 'list'` → render `<PropertyListView>` with compact styling, passing `filteredProperties`, `onPropertyClick`, `onSave`, `onShare`, `onContact`
+  - `viewMode === 'grid'` (default) → keep existing grid cards as-is
+- Wire `onPropertyClick` to `navigate('/properties/${property.id}')`
 
-2. **Add a "View Details" button** in the action buttons section (around line 194) so there's also an explicit button to view the property, alongside the existing Share and WhatsApp buttons:
-   ```tsx
-   <Button 
-     variant="outline"
-     onClick={(e) => {
-       e.stopPropagation();
-       onPropertyClick(property);
-     }}
-     className="flex-shrink-0"
-   >
-     <Eye className="h-4 w-4 mr-2" />
-     Details
-   </Button>
-   ```
+### 2. Fix `src/pages/Disewa.tsx`
+
+- **Import** `PropertyListView`
+- **Replace** the single grid block (lines 369-418) with the same list/grid conditional
+- Wire `onPropertyClick` to `navigate('/properties/${property.id}')`
+
+### 3. Fix `src/pages/PropertyListingPage.tsx`
+
+- **Import** `PropertyListView`
+- **Replace** the single grid block (lines 386-469) with the same list/grid conditional
+- Wire navigation similarly
 
 ### Summary of Changes
 
 | File | Change |
 |------|--------|
-| `src/components/search/PropertyListView.tsx` | Add `onClick` to Card + add Details button |
+| `src/pages/Dijual.tsx` | Import `PropertyListView`; add `viewMode === 'list'` branch before existing grid |
+| `src/pages/Disewa.tsx` | Import `PropertyListView`; add `viewMode === 'list'` branch before existing grid |
+| `src/pages/PropertyListingPage.tsx` | Import `PropertyListView`; add `viewMode === 'list'` branch before existing grid |
 
-This is a one-file fix. The root cause is simply that `onPropertyClick` was never called anywhere in the list view component.
+Each page already has `viewMode` state and `PropertyViewModeToggle`. The only missing piece is the conditional rendering of `PropertyListView` when list mode is selected.
 
