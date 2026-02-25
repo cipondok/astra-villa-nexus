@@ -28,6 +28,7 @@ import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
 import { useRetrySearch } from "@/hooks/useRetrySearch";
 import { shareProperty } from "@/utils/shareUtils";
+import GoldSparkleEffect from "@/components/home/GoldSparkleEffect";
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
 import { CommandPalette } from "@/components/ui/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
@@ -589,6 +590,9 @@ const Index = () => {
               </div>
             );
           })}
+
+            {/* Gold Sparkle Effect */}
+            <GoldSparkleEffect />
 
             {/* Floating ASTRA Villa Property Branding */}
             <div className="absolute inset-0 z-20 pointer-events-none hidden sm:flex items-start justify-center sm:pt-[6%]">
