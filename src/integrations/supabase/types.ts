@@ -8474,6 +8474,50 @@ export type Database = {
           },
         ]
       }
+      inspection_items: {
+        Row: {
+          area: string
+          condition: string | null
+          created_at: string
+          id: string
+          inspection_id: string
+          item_name: string
+          notes: string | null
+          photo_urls: string[] | null
+          sort_order: number | null
+        }
+        Insert: {
+          area: string
+          condition?: string | null
+          created_at?: string
+          id?: string
+          inspection_id: string
+          item_name: string
+          notes?: string | null
+          photo_urls?: string[] | null
+          sort_order?: number | null
+        }
+        Update: {
+          area?: string
+          condition?: string | null
+          created_at?: string
+          id?: string
+          inspection_id?: string
+          item_name?: string
+          notes?: string | null
+          photo_urls?: string[] | null
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspection_items_inspection_id_fkey"
+            columns: ["inspection_id"]
+            isOneToOne: false
+            referencedRelation: "property_inspections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       investor_deal_access: {
         Row: {
           access_type: string | null
@@ -15427,6 +15471,82 @@ export type Database = {
           },
           {
             foreignKeyName: "property_images_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_inspections: {
+        Row: {
+          booking_id: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          inspection_date: string | null
+          inspection_type: string
+          inspector_id: string
+          notes: string | null
+          overall_condition: string | null
+          owner_signature_url: string | null
+          property_id: string
+          status: string
+          tenant_id: string
+          tenant_signature_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          inspection_date?: string | null
+          inspection_type?: string
+          inspector_id: string
+          notes?: string | null
+          overall_condition?: string | null
+          owner_signature_url?: string | null
+          property_id: string
+          status?: string
+          tenant_id: string
+          tenant_signature_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          inspection_date?: string | null
+          inspection_type?: string
+          inspector_id?: string
+          notes?: string | null
+          overall_condition?: string | null
+          owner_signature_url?: string | null
+          property_id?: string
+          status?: string
+          tenant_id?: string
+          tenant_signature_url?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_inspections_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_inspections_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_inspections_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"
