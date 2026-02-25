@@ -582,11 +582,73 @@ const Index = () => {
             );
           })}
 
-            {/* Premium Real Estate Badge */}
-            <div className="absolute inset-0 z-20 pointer-events-none flex items-start justify-center pt-[4%] sm:pt-[3%]">
-              <span className="inline-block px-5 py-1.5 sm:px-8 sm:py-2 text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-[0.35em] border border-white/15 rounded-full bg-white/5 backdrop-blur-sm animate-hero-text-reveal">
+            {/* Floating ASTRA Villa Property Branding */}
+            <div className="absolute inset-0 z-20 pointer-events-none flex flex-col items-center justify-center gap-4 sm:gap-6">
+              {/* Premium Real Estate Badge */}
+              <span 
+                className="inline-block px-6 py-1.5 sm:px-10 sm:py-2 text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.45em] rounded-full animate-hero-text-reveal border"
+                style={{
+                  color: 'hsl(45 80% 72%)',
+                  borderColor: 'hsl(45 60% 55% / 0.3)',
+                  background: 'linear-gradient(135deg, hsl(45 50% 50% / 0.08), hsl(220 60% 20% / 0.15))',
+                  backdropFilter: 'blur(12px)',
+                  animationDelay: '0s',
+                  opacity: 0,
+                  animationFillMode: 'forwards',
+                }}
+              >
                 Premium Real Estate
               </span>
+
+              {/* ASTRA Villa Property — Luxury floating text */}
+              <div className="text-center animate-hero-text-reveal" style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
+                <h1 className="font-bold tracking-[0.06em] leading-[1.1]">
+                  <span 
+                    className="block text-4xl sm:text-5xl md:text-7xl lg:text-8xl"
+                    style={{
+                      background: 'linear-gradient(135deg, hsl(45 90% 70%) 0%, hsl(38 85% 60%) 40%, hsl(30 80% 50%) 70%, hsl(45 95% 75%) 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      filter: 'drop-shadow(0 4px 20px hsl(45 80% 50% / 0.35))',
+                    }}
+                  >
+                    ASTRA
+                  </span>
+                  <span 
+                    className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl mt-1 sm:mt-2 font-light tracking-[0.25em] uppercase"
+                    style={{
+                      color: 'hsl(0 0% 100% / 0.92)',
+                      textShadow: '0 2px 15px hsl(220 80% 15% / 0.6)',
+                    }}
+                  >
+                    Villa Property
+                  </span>
+                </h1>
+              </div>
+
+              {/* Decorative separator */}
+              <div 
+                className="flex items-center gap-3 sm:gap-4 animate-hero-text-reveal"
+                style={{ animationDelay: '0.4s', opacity: 0, animationFillMode: 'forwards' }}
+              >
+                <div className="w-10 sm:w-16 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(45 70% 60% / 0.6))' }} />
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'hsl(45 80% 65%)', boxShadow: '0 0 8px hsl(45 80% 50% / 0.5)' }} />
+                <div className="w-10 sm:w-16 h-px" style={{ background: 'linear-gradient(90deg, hsl(45 70% 60% / 0.6), transparent)' }} />
+              </div>
+
+              {/* Luxury tagline */}
+              <p 
+                className="text-[10px] sm:text-xs tracking-[0.4em] uppercase font-medium animate-hero-text-reveal"
+                style={{ 
+                  color: 'hsl(45 40% 75% / 0.8)',
+                  animationDelay: '0.5s', 
+                  opacity: 0, 
+                  animationFillMode: 'forwards',
+                  textShadow: '0 1px 8px hsl(220 60% 10% / 0.5)',
+                }}
+              >
+                Luxury Living Redefined
+              </p>
             </div>
 
             {/* Cinematic overlay — theme-aware gradients */}
