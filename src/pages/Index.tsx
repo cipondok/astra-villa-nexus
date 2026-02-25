@@ -603,31 +603,6 @@ const Index = () => {
             {/* Floating ASTRA Villa Property Branding */}
             <div className="absolute inset-0 z-20 pointer-events-none hidden sm:flex items-start justify-center sm:pt-[6%]">
               <div className="flex flex-col items-center text-center gap-4 sm:gap-5 pointer-events-auto">
-                {/* Premium Real Estate Badge */}
-                <span 
-                  className="inline-block px-6 py-1.5 sm:px-10 sm:py-2 text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.45em] rounded-full animate-hero-text-reveal border transition-all duration-300 cursor-default hover:scale-105"
-                  style={{
-                    color: 'hsl(45 80% 72%)',
-                    borderColor: 'hsl(45 60% 55% / 0.3)',
-                    background: 'linear-gradient(135deg, hsl(45 50% 50% / 0.08), hsl(220 60% 20% / 0.15))',
-                    backdropFilter: 'blur(12px)',
-                    animationDelay: '0s',
-                    opacity: 0,
-                    animationFillMode: 'forwards',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'hsl(45 60% 55% / 0.6)';
-                    e.currentTarget.style.background = 'linear-gradient(135deg, hsl(45 50% 50% / 0.15), hsl(220 60% 20% / 0.25))';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'hsl(45 60% 55% / 0.3)';
-                    e.currentTarget.style.background = 'linear-gradient(135deg, hsl(45 50% 50% / 0.08), hsl(220 60% 20% / 0.15))';
-                  }}
-                >
-                  Premium Real Estate
-                </span>
-
-
                 {/* Decorative separator */}
                 <div 
                   className="flex items-center justify-center gap-3 sm:gap-4 animate-hero-text-reveal"
