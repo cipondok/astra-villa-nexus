@@ -1,66 +1,39 @@
 
 
-## Bug: Page Jumping When Interacting with Dropdowns
+## Fix: Unexpected Loading Popups Still Appearing
 
-### Root Cause
+### What's Happening
 
-There's a conflict between two scroll-compensation strategies in `src/index.css`:
+1. **`LoadingProgressPopup`** (bottom-right corner popup) is still rendered in `App.tsx` line 439. It fires whenever `useSystemSettings.saveSettings()` calls `startLoading()`, or when the admin test button is pressed. The once-per-day/session gate in `useGlobalLoading` is unreliable — it relies on `sessionStorage` keys that get cleared on refresh, so the popup can reappear on the next save action in a new session.
 
-1. **Line 66**: `scrollbar-gutter: stable` on `html` — this CSS property permanently reserves space for the scrollbar so it never causes layout shift when it appears/disappears. This is the correct modern approach.
+2. **`InitialLoadingScreen`** (full-screen splash) shows on every new browser session because `astra_app_loaded` is stored in `sessionStorage` (cleared on tab close). This is by design, but combined with the progress popup it creates a double-loading feel.
 
-2. **Lines 116-120**: `body[data-scroll-locked]` override — this rule forces `overflow: auto !important` and `padding-right: 0 !important` on the body when Radix opens any overlay (Select, Dialog, Popover). The comment says it exists *because* `scrollbar-gutter` already handles compensation. But setting `overflow: auto !important` **defeats Radix's scroll lock entirely**, meaning the page remains scrollable behind open dropdowns/modals, and the fighting between Radix trying to lock and CSS forcing unlock causes the visible flicker/jump.
+### Plan
 
-Additionally, the custom `useScrollLock` hook (used in `AstraSearchPanel` and `ProvincePropertiesModal`) directly manipulates `document.body.style.overflow` and `paddingRight`, which conflicts with both `scrollbar-gutter` and Radix's built-in `react-remove-scroll`.
+#### 1. Remove `LoadingProgressPopup` from the app shell
+**File:** `src/App.tsx` (line 439)
 
-### Fix Plan
+Remove the `<LoadingProgressPopup />` render. This component was designed for showing progress during long operations, but `useSystemSettings` already has its own `setLoading` state and shows toast notifications on success/error. The popup is redundant.
 
-#### 1. Fix the `body[data-scroll-locked]` CSS rule
-**File:** `src/index.css` (lines 114-120)
+Also remove the lazy import on line 38.
 
-Replace the current override with one that works *with* `scrollbar-gutter: stable` instead of fighting Radix:
+#### 2. Remove `startLoading` / `updateProgress` / `finishLoading` from `useSystemSettings`
+**File:** `src/hooks/useSystemSettings.ts`
 
-```css
-/* Radix (react-remove-scroll) adds padding-right to compensate for scrollbar.
-   Since we use scrollbar-gutter: stable, we only need to suppress the extra padding. */
-body[data-scroll-locked] {
-  padding-right: 0 !important;
-  margin-right: 0 !important;
-  /* DO NOT override overflow — let Radix lock scroll properly */
-}
-```
+The `saveSettings` function calls `startLoading`, `updateProgress`, and `finishLoading` from `useGlobalLoading`. These trigger the popup. Remove them — the hook already has its own `loading` state and calls `showSuccess`/`showError` toasts for feedback.
 
-The key change: **remove `overflow: auto !important`**. This single line is what breaks scroll locking and causes the jump. The `padding-right: 0` stays because `scrollbar-gutter: stable` already reserves the space.
+#### 3. Remove the `useQueryLoadingIntegration` import from App
+**File:** `src/App.tsx` (line 27)
 
-#### 2. Simplify `useScrollLock` hook
-**File:** `src/hooks/useScrollLock.ts`
+This hook is imported and called but does nothing (it was already neutered). Clean it up.
 
-Since `scrollbar-gutter: stable` handles width compensation, and Radix handles scroll locking for its own components, this hook only needs to set `overflow: hidden` without padding tricks:
+#### 4. Keep `LoadingPopup.tsx` and `LoadingProgressPopup.tsx` files
+These components aren't deleted — they can still be used explicitly where needed (e.g., admin test button in WelcomeScreenSettings). They just won't auto-fire globally.
 
-```ts
-export const useScrollLock = (lock: boolean) => {
-  useEffect(() => {
-    if (lock) {
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-    };
-  }, [lock]);
-};
-```
+### Files Changed
 
-Remove the `paddingRight` manipulation — `scrollbar-gutter: stable` already prevents layout shift.
-
-### Summary
-
-| Change | Why |
-|--------|-----|
-| Remove `overflow: auto !important` from `body[data-scroll-locked]` | Lets Radix properly lock scroll behind dropdowns/modals |
-| Keep `padding-right: 0 !important` | Prevents double compensation since `scrollbar-gutter` handles it |
-| Remove `paddingRight` from `useScrollLock` | Redundant with `scrollbar-gutter: stable` |
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Remove `LoadingProgressPopup` render and import; remove `useQueryLoadingIntegration` import |
+| `src/hooks/useSystemSettings.ts` | Remove `useGlobalLoading` usage from `saveSettings` |
 
