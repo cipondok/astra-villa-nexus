@@ -9689,6 +9689,82 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_requests: {
+        Row: {
+          booking_id: string
+          category: string
+          created_at: string
+          description: string
+          id: string
+          images: string[] | null
+          priority: string
+          property_id: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          tenant_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          category?: string
+          created_at?: string
+          description: string
+          id?: string
+          images?: string[] | null
+          priority?: string
+          property_id: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          tenant_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          images?: string[] | null
+          priority?: string
+          property_id?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_requests_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       market_trend_factors: {
         Row: {
           avg_days_on_market: number | null
