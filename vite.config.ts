@@ -26,9 +26,7 @@ export default defineConfig(({ mode }) => ({
     dedupe: ['react', 'react-dom'],
   },
   optimizeDeps: {
-    include: ['@vladmandic/face-api'],
-    // Exclude heavy blockchain/web3 libs from pre-bundling to reduce memory
-    exclude: ['three', '@react-three/fiber', '@react-three/drei'],
+    include: ['@vladmandic/face-api', 'react', 'react-dom', 'zustand'],
   },
   build: {
     // Use esbuild for minification - much lower memory than terser
