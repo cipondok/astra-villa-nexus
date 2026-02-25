@@ -19757,6 +19757,60 @@ export type Database = {
           },
         ]
       }
+      tenant_verifications: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          id_document_url: string | null
+          id_number: string
+          id_type: string
+          metadata: Json | null
+          rejection_reason: string | null
+          selfie_url: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          verification_type: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id?: string
+          id_document_url?: string | null
+          id_number: string
+          id_type?: string
+          metadata?: Json | null
+          rejection_reason?: string | null
+          selfie_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          verification_type?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          id_document_url?: string | null
+          id_number?: string
+          id_type?: string
+          metadata?: Json | null
+          rejection_reason?: string | null
+          selfie_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          verification_type?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: []
+      }
       ticket_activities: {
         Row: {
           activity_type: string

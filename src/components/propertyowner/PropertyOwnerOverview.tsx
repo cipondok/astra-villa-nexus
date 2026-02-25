@@ -10,6 +10,7 @@ import OwnerRentalManagement from "./OwnerRentalManagement";
 import OwnerMaintenanceManagement from "./OwnerMaintenanceManagement";
 import OwnerRentalAnalytics from "./OwnerRentalAnalytics";
 import OwnerLeaseRenewal from "./OwnerLeaseRenewal";
+import OwnerVerificationReview from "./OwnerVerificationReview";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
 import { 
@@ -204,23 +205,26 @@ const PropertyOwnerOverview = () => {
 
       {/* Content Tabs */}
       <Tabs defaultValue={defaultTab} className="space-y-2">
-        <TabsList className="grid w-full grid-cols-6 h-7 p-0.5">
-          <TabsTrigger value="overview" className="text-[7px] h-5 gap-0.5">
+        <TabsList className="flex w-full overflow-x-auto h-7 p-0.5">
+          <TabsTrigger value="overview" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <BarChart3 className="h-2.5 w-2.5" /> Overview
           </TabsTrigger>
-          <TabsTrigger value="rentals" className="text-[7px] h-5 gap-0.5">
+          <TabsTrigger value="rentals" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <CalendarDays className="h-2.5 w-2.5" /> Rentals
           </TabsTrigger>
-          <TabsTrigger value="renewal" className="text-[7px] h-5 gap-0.5">
+          <TabsTrigger value="renewal" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Clock className="h-2.5 w-2.5" /> Renewal
           </TabsTrigger>
-          <TabsTrigger value="maintenance" className="text-[7px] h-5 gap-0.5">
+          <TabsTrigger value="verification" className="text-[7px] h-5 gap-0.5 min-w-fit">
+            <Shield className="h-2.5 w-2.5" /> KYC
+          </TabsTrigger>
+          <TabsTrigger value="maintenance" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Settings className="h-2.5 w-2.5" /> Maint.
           </TabsTrigger>
-          <TabsTrigger value="activity" className="text-[7px] h-5 gap-0.5">
+          <TabsTrigger value="activity" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Activity className="h-2.5 w-2.5" /> Activity
           </TabsTrigger>
-          <TabsTrigger value="insights" className="text-[7px] h-5 gap-0.5">
+          <TabsTrigger value="insights" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <TrendingUp className="h-2.5 w-2.5" /> Insights
           </TabsTrigger>
         </TabsList>
@@ -285,6 +289,11 @@ const PropertyOwnerOverview = () => {
         {/* Renewal Tab */}
         <TabsContent value="renewal" className="mt-1.5">
           <OwnerLeaseRenewal />
+        </TabsContent>
+
+        {/* Verification Tab */}
+        <TabsContent value="verification" className="mt-1.5">
+          <OwnerVerificationReview />
         </TabsContent>
 
         {/* Maintenance Tab */}

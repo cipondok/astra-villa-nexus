@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard, Wrench, Plus } from "lucide-react";
+import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard, Wrench, Plus, Shield } from "lucide-react";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +16,7 @@ import RentalDocumentsDialog from "@/components/rental/RentalDocumentsDialog";
 import MaintenanceRequestForm from "@/components/rental/MaintenanceRequestForm";
 import MaintenanceRequestList from "@/components/rental/MaintenanceRequestList";
 import TenantRenewalRequests from "@/components/rental/TenantRenewalRequests";
+import TenantVerification from "@/components/rental/TenantVerification";
 import { useTenantMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 
 interface BookingRow {
@@ -222,6 +223,9 @@ const UserRentalDashboard = () => {
             <TabsTrigger value="renewal" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <RotateCcw className="h-3.5 w-3.5" /> Perpanjangan
             </TabsTrigger>
+            <TabsTrigger value="verification" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
+              <Shield className="h-3.5 w-3.5" /> Verifikasi
+            </TabsTrigger>
             <TabsTrigger value="settings" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <Settings className="h-3.5 w-3.5" /> Pengaturan
             </TabsTrigger>
@@ -300,6 +304,10 @@ const UserRentalDashboard = () => {
 
           <TabsContent value="renewal">
             <TenantRenewalRequests />
+          </TabsContent>
+
+          <TabsContent value="verification">
+            <TenantVerification />
           </TabsContent>
 
           <TabsContent value="settings">
