@@ -17,6 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import AIToolsTabBar from '@/components/common/AIToolsTabBar';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
+import NLPSearchBar from '@/components/search/NLPSearchBar';
 
 interface Property {
   id: string;
@@ -216,6 +217,21 @@ const Search = () => {
         
         {/* AI Tools Tab Bar */}
         <AIToolsTabBar className="mb-3" />
+
+        {/* AI Natural Language Search */}
+        <NLPSearchBar
+          onApplyFilters={(params) => {
+            if (params.state) setSelectedLocation(params.state.toLowerCase());
+            if (params.propertyType) setSelectedType(params.propertyType);
+            if (params.query) setSearchTerm(params.query);
+            // Trigger search via URL params
+            const urlParams = new URLSearchParams();
+            if (params.state) urlParams.set('location', params.state.toLowerCase());
+            if (params.propertyType) urlParams.set('type', params.propertyType);
+            setSearchParams(urlParams);
+          }}
+          className="mb-3"
+        />
 
         {/* Header - Slim, centered */}
         <div className="text-center mb-3">
