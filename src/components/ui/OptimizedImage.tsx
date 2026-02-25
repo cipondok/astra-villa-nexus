@@ -93,9 +93,9 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
             alt={alt}
             width={width}
             height={height}
+            ref={(el) => { if (el) { const fp = fetchPriority || (priority ? 'high' : undefined); if (fp) el.setAttribute('fetchpriority', fp); } }}
             loading={priority ? 'eager' : 'lazy'}
             decoding={priority ? 'sync' : 'async'}
-            fetchPriority={fetchPriority || (priority ? 'high' : undefined)}
             sizes={sizes || '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'}
             className={cn(
               'w-full h-full object-cover transition-opacity duration-300',

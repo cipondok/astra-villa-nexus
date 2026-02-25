@@ -597,9 +597,9 @@ const Index = () => {
                   alt={`Astra Villa - Premium Property ${index + 1}`} 
                   width={1920}
                   height={1080}
+                  ref={(el) => { if (el && isPriority) el.setAttribute('fetchpriority', 'high'); }}
                   loading={isPriority ? 'eager' : 'lazy'}
                   decoding={isPriority ? 'sync' : 'async'}
-                  fetchPriority={isPriority ? 'high' : undefined}
                   sizes="100vw"
                   className="w-full h-[120%] object-cover will-change-transform transition-transform duration-100 ease-out"
                   style={{ transform: parallaxEnabled ? `translateY(${-parallaxOffset * 0.3}px)` : undefined }}
