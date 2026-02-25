@@ -112,8 +112,8 @@ const ASTRAVillaPropertyCard = ({
       className={cn(
         "group relative overflow-hidden rounded-xl",
         "bg-card backdrop-blur-xl",
-        "border border-border hover:border-primary/40",
-        "shadow-sm hover:shadow-xl hover:shadow-primary/10",
+        "border border-border hover:border-gold-primary/40",
+        "shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)]",
         "hover:-translate-y-1 transition-all duration-500 ease-out cursor-pointer",
         className
       )}

@@ -180,7 +180,7 @@ const CompactPropertyCard = ({
 
   return (
     <>
-      <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col border border-border bg-card backdrop-blur-xl shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-400 rounded-xl relative">
+      <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col border border-border hover:border-gold-primary/40 bg-card backdrop-blur-xl shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)] hover:-translate-y-1 transition-all duration-400 rounded-xl relative">
         {/* Image Section with Overlay Info */}
         <PropertyImageCarousel
           images={property.images?.length ? property.images : [getImageUrl()]}
