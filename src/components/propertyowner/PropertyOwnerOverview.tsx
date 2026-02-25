@@ -12,13 +12,14 @@ import OwnerRentalAnalytics from "./OwnerRentalAnalytics";
 import OwnerLeaseRenewal from "./OwnerLeaseRenewal";
 import OwnerVerificationReview from "./OwnerVerificationReview";
 import OwnerInvoiceManagement from "./OwnerInvoiceManagement";
+import OwnerInspectionManagement from "./OwnerInspectionManagement";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
 import { 
   Building, Eye, Heart, MessageSquare, PlusCircle, Activity, Target, Home,
   TrendingUp, Clock, ChevronRight, Settings, ArrowLeft, Search, CalendarDays,
   User, Shield, Copy, BarChart3, MapPin, Zap, FileText, Bell, 
-  DollarSign, Star, Percent, ExternalLink
+  DollarSign, Star, Percent, ExternalLink, ClipboardCheck
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -225,6 +226,9 @@ const PropertyOwnerOverview = () => {
           <TabsTrigger value="maintenance" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Settings className="h-2.5 w-2.5" /> Maint.
           </TabsTrigger>
+          <TabsTrigger value="inspection" className="text-[7px] h-5 gap-0.5 min-w-fit">
+            <ClipboardCheck className="h-2.5 w-2.5" /> Inspeksi
+          </TabsTrigger>
           <TabsTrigger value="activity" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Activity className="h-2.5 w-2.5" /> Activity
           </TabsTrigger>
@@ -308,6 +312,11 @@ const PropertyOwnerOverview = () => {
         {/* Maintenance Tab */}
         <TabsContent value="maintenance" className="mt-1.5">
           <OwnerMaintenanceManagement />
+        </TabsContent>
+
+        {/* Inspection Tab */}
+        <TabsContent value="inspection" className="mt-1.5">
+          <OwnerInspectionManagement />
         </TabsContent>
 
         {/* Activity Tab */}
