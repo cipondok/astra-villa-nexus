@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import ScrollReveal from "@/components/ui/ScrollReveal";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Building2, RefreshCw, ArrowRight, Sparkles } from "lucide-react";
@@ -96,7 +97,7 @@ const PropertyListingsSection = ({
 
   return (
     <>
-      <section className="py-3 sm:py-4 min-h-[400px]">
+      <ScrollReveal direction="up">
         <div className="w-full px-1 sm:px-2 md:px-4">
           {!hideTitle && (
             <div className="text-center mb-3 sm:mb-4">
@@ -180,8 +181,9 @@ const PropertyListingsSection = ({
             </div>
           )}
         </div>
-      </section>
-      
+      </ScrollReveal>
+
+
       {propertyFor3DView && (
         <PropertyViewer3D
           isOpen={!!propertyFor3DView}
