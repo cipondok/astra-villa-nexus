@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAlert } from '@/contexts/AlertContext';
-import { useGlobalLoading } from './useGlobalLoading';
 
 export const useSystemSettings = () => {
   const { showSuccess, showError } = useAlert();
-  const { startLoading, updateProgress, finishLoading } = useGlobalLoading();
   const [settings, setSettings] = useState<Record<string, any>>({
     siteName: 'Property Platform',
     siteDescription: 'Find your dream property',
@@ -137,7 +135,6 @@ export const useSystemSettings = () => {
 
   const saveSettings = async () => {
     setLoading(true);
-    startLoading('Saving settings...');
     
     try {
       const entries = Object.entries(settings);
@@ -177,7 +174,6 @@ export const useSystemSettings = () => {
         if (error) throw error;
         
         completed++;
-        updateProgress((completed / total) * 100, `Saving ${key}...`);
       }
 
       showSuccess('Settings Saved', 'System settings updated successfully');
@@ -186,7 +182,6 @@ export const useSystemSettings = () => {
       showError('Error', 'Failed to save system settings');
     } finally {
       setLoading(false);
-      finishLoading();
     }
   };
 
