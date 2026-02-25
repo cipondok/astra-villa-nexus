@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,7 @@ import {
   Layers, Waves, Car, Mountain, TreePine, Landmark,
   Video, View, Box, Plane
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface AdvancedRentalFilters {
   searchTerm: string;
@@ -171,8 +172,74 @@ const FilterSection = ({ title, icon: Icon, children, defaultOpen = false }: {
 };
 
 const RentalSidebarFilters = ({
-  filters, onFiltersChange, propertyTypes, cities, resultCount, className,
+  filters, onFiltersChange, propertyTypes, cities: citiesProp, resultCount, className,
 }: RentalSidebarFiltersProps) => {
+  const [provinces, setProvinces] = useState<Array<{code: string, name: string}>>([]);
+  const [dbCities, setDbCities] = useState<Array<{code: string, name: string, type: string}>>([]);
+  const [areas, setAreas] = useState<string[]>([]);
+  const [locLoading, setLocLoading] = useState(false);
+
+  // Fetch provinces
+  useEffect(() => {
+    const fetchProvinces = async () => {
+      try {
+        const { data, error } = await supabase.rpc('get_distinct_provinces');
+        if (error) throw error;
+        setProvinces((data || []).map((d: any) => ({ code: d.province_code, name: d.province_name })));
+      } catch (e) { console.error('Error fetching provinces:', e); }
+    };
+    fetchProvinces();
+  }, []);
+
+  // Fetch cities when province changes
+  useEffect(() => {
+    if (!filters.province || filters.province === 'all') {
+      setDbCities([]);
+      setAreas([]);
+      return;
+    }
+    const fetchCities = async () => {
+      setLocLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('locations')
+          .select('city_code, city_name, city_type')
+          .eq('province_code', filters.province)
+          .eq('is_active', true)
+          .order('city_name');
+        if (error) throw error;
+        const unique = (data || []).reduce((acc: any[], curr) => {
+          if (!acc.find(c => c.code === curr.city_code)) acc.push({ code: curr.city_code, name: curr.city_name, type: curr.city_type });
+          return acc;
+        }, []);
+        setDbCities(unique);
+      } catch (e) { console.error('Error fetching cities:', e); }
+      setLocLoading(false);
+    };
+    fetchCities();
+  }, [filters.province]);
+
+  // Fetch areas when city changes
+  useEffect(() => {
+    if (!filters.city || filters.city === 'all' || !filters.province || filters.province === 'all') {
+      setAreas([]);
+      return;
+    }
+    const fetchAreas = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('locations')
+          .select('area_name')
+          .eq('province_code', filters.province)
+          .eq('city_code', filters.city)
+          .eq('is_active', true)
+          .order('area_name');
+        if (error) throw error;
+        setAreas([...new Set((data || []).map(d => d.area_name))]);
+      } catch (e) { console.error('Error fetching areas:', e); }
+    };
+    fetchAreas();
+  }, [filters.city, filters.province]);
   const activeFilterCount = [
     filters.searchTerm,
     filters.propertyType !== "all" ? filters.propertyType : "",
@@ -273,36 +340,56 @@ const RentalSidebarFilters = ({
 
           {/* Location */}
           <FilterSection title="Lokasi" icon={MapPin} defaultOpen>
-            <Select value={filters.province} onValueChange={v => onFiltersChange({ province: v, city: "all" })}>
+            <Select value={filters.province} onValueChange={v => onFiltersChange({ province: v, city: "all", area: "" })}>
               <SelectTrigger className="h-9 text-sm">
-                <SelectValue placeholder="Provinsi" />
+                <SelectValue placeholder={locLoading ? "Memuat..." : "Pilih Provinsi"} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="max-h-60">
                 <SelectItem value="all">Semua Provinsi</SelectItem>
-                <SelectItem value="bali">Bali</SelectItem>
-                <SelectItem value="jakarta">DKI Jakarta</SelectItem>
-                <SelectItem value="jawa_barat">Jawa Barat</SelectItem>
-                <SelectItem value="jawa_timur">Jawa Timur</SelectItem>
-                <SelectItem value="ntt">NTT (Lombok)</SelectItem>
-                <SelectItem value="yogyakarta">Yogyakarta</SelectItem>
+                {provinces.map(p => (
+                  <SelectItem key={p.code} value={p.code}>{p.name}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
-            <Select value={filters.city} onValueChange={v => onFiltersChange({ city: v })}>
+            <Select 
+              value={filters.city} 
+              onValueChange={v => onFiltersChange({ city: v, area: "" })}
+              disabled={!filters.province || filters.province === 'all'}
+            >
               <SelectTrigger className="h-9 text-sm">
                 <MapPin className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-                <SelectValue placeholder="Kota / Kabupaten" />
+                <SelectValue placeholder={
+                  !filters.province || filters.province === 'all' 
+                    ? "Pilih provinsi dulu" 
+                    : locLoading ? "Memuat..." : "Pilih Kota/Kabupaten"
+                } />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="max-h-60">
                 <SelectItem value="all">Semua Kota</SelectItem>
-                {cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                {dbCities.map(c => (
+                  <SelectItem key={c.code} value={c.code}>{c.type} {c.name}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
-            <Input
-              placeholder="Area / Kecamatan..."
-              value={filters.area || ""}
-              onChange={e => onFiltersChange({ area: e.target.value })}
-              className="h-9 text-sm"
-            />
+            <Select
+              value={filters.area || 'all'}
+              onValueChange={v => onFiltersChange({ area: v === 'all' ? '' : v })}
+              disabled={!filters.city || filters.city === 'all'}
+            >
+              <SelectTrigger className="h-9 text-sm">
+                <SelectValue placeholder={
+                  !filters.city || filters.city === 'all'
+                    ? "Pilih kota dulu"
+                    : "Pilih Kecamatan/Area"
+                } />
+              </SelectTrigger>
+              <SelectContent className="max-h-60">
+                <SelectItem value="all">Semua Area</SelectItem>
+                {areas.map(a => (
+                  <SelectItem key={a} value={a}>{a}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </FilterSection>
 
           <Separator />
