@@ -60,6 +60,7 @@ const PartnerLogosMarquee = lazy(() => import("@/components/home/PartnerLogosMar
 const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSearchesWidget").then(m => ({ default: m.TrendingSearchesWidget })));
 const InvestorPathSelector = lazy(() => import("@/components/home/InvestorPathSelector"));
 const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
+const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/FeaturedPropertiesCarousel"));
 
 
 type ViewMode = 'list' | 'grid' | 'map';
@@ -638,32 +639,22 @@ const Index = () => {
           </div>
         )}
 
-        {/* Featured Properties Slideshow */}
-        <section className="w-full bg-background py-5 md:py-8">
-          <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
-            <div className="flex items-center justify-center gap-2.5 mb-3">
-              <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent to-gold-primary/40" />
-              <Star className="h-3 w-3 md:h-3.5 md:w-3.5 text-gold-primary fill-gold-primary/40" />
-              <h3 className="text-[11px] md:text-sm font-semibold text-foreground/80 uppercase tracking-widest">
-                {t('indexPage.featuredProperties')}
-              </h3>
-              <Star className="h-3 w-3 md:h-3.5 md:w-3.5 text-gold-primary fill-gold-primary/40" />
-              <div className="h-px w-8 sm:w-12 bg-gradient-to-l from-transparent to-gold-primary/40" />
+        {/* Featured Properties Carousel */}
+        <Suspense fallback={
+          <div className="py-6 sm:py-8 max-w-7xl mx-auto px-3 sm:px-4">
+            <div className="flex gap-3 overflow-hidden">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex-shrink-0 w-[280px] sm:w-[320px] animate-pulse">
+                  <div className="h-48 bg-muted rounded-xl mb-2" />
+                  <div className="h-4 bg-muted rounded w-3/4 mb-1" />
+                  <div className="h-3 bg-muted rounded w-1/2" />
+                </div>
+              ))}
             </div>
-            <Suspense fallback={
-              <div className="flex gap-2 px-3 overflow-hidden justify-center">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="flex-shrink-0 w-[130px] md:w-[160px] animate-pulse">
-                    <div className="h-16 md:h-24 bg-muted rounded-lg mb-1" />
-                    <div className="h-2 bg-muted rounded w-3/4" />
-                  </div>
-                ))}
-              </div>
-            }>
-              <PropertySlideshow />
-            </Suspense>
           </div>
-        </section>
+        }>
+          <FeaturedPropertiesCarousel />
+        </Suspense>
 
         {/* Error Message - Using Design Tokens */}
         {(searchError || lastError) && (
