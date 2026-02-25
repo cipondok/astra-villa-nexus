@@ -417,7 +417,7 @@ function App() {
         {isLoading && welcomeEnabled ? (
           <Suspense fallback={null}><InitialLoadingScreen key="loading" /></Suspense>
         ) : (
-          <Router key="app">
+          <Router key="app" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <QueryClientProvider client={queryClient}>
               <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
                 <DesignSystemProvider>
