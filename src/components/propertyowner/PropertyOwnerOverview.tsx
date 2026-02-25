@@ -9,6 +9,7 @@ import { usePropertyOwnerData } from "@/hooks/usePropertyOwnerData";
 import OwnerRentalManagement from "./OwnerRentalManagement";
 import OwnerMaintenanceManagement from "./OwnerMaintenanceManagement";
 import OwnerRentalAnalytics from "./OwnerRentalAnalytics";
+import OwnerLeaseRenewal from "./OwnerLeaseRenewal";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
 import { 
@@ -203,20 +204,23 @@ const PropertyOwnerOverview = () => {
 
       {/* Content Tabs */}
       <Tabs defaultValue={defaultTab} className="space-y-2">
-        <TabsList className="grid w-full grid-cols-5 h-7 p-0.5">
-          <TabsTrigger value="overview" className="text-[8px] h-5 gap-0.5">
+        <TabsList className="grid w-full grid-cols-6 h-7 p-0.5">
+          <TabsTrigger value="overview" className="text-[7px] h-5 gap-0.5">
             <BarChart3 className="h-2.5 w-2.5" /> Overview
           </TabsTrigger>
-          <TabsTrigger value="rentals" className="text-[8px] h-5 gap-0.5">
+          <TabsTrigger value="rentals" className="text-[7px] h-5 gap-0.5">
             <CalendarDays className="h-2.5 w-2.5" /> Rentals
           </TabsTrigger>
-          <TabsTrigger value="maintenance" className="text-[8px] h-5 gap-0.5">
-            <Settings className="h-2.5 w-2.5" /> Maintenance
+          <TabsTrigger value="renewal" className="text-[7px] h-5 gap-0.5">
+            <Clock className="h-2.5 w-2.5" /> Renewal
           </TabsTrigger>
-          <TabsTrigger value="activity" className="text-[8px] h-5 gap-0.5">
+          <TabsTrigger value="maintenance" className="text-[7px] h-5 gap-0.5">
+            <Settings className="h-2.5 w-2.5" /> Maint.
+          </TabsTrigger>
+          <TabsTrigger value="activity" className="text-[7px] h-5 gap-0.5">
             <Activity className="h-2.5 w-2.5" /> Activity
           </TabsTrigger>
-          <TabsTrigger value="insights" className="text-[8px] h-5 gap-0.5">
+          <TabsTrigger value="insights" className="text-[7px] h-5 gap-0.5">
             <TrendingUp className="h-2.5 w-2.5" /> Insights
           </TabsTrigger>
         </TabsList>
@@ -276,6 +280,11 @@ const PropertyOwnerOverview = () => {
         {/* Rentals Tab */}
         <TabsContent value="rentals" className="mt-1.5">
           <OwnerRentalManagement />
+        </TabsContent>
+
+        {/* Renewal Tab */}
+        <TabsContent value="renewal" className="mt-1.5">
+          <OwnerLeaseRenewal />
         </TabsContent>
 
         {/* Maintenance Tab */}

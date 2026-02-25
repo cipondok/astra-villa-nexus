@@ -168,3 +168,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.payment-reminders]
     verify_jwt = false
+
+  [functions.lease-expiry-alerts]
+    verify_jwt = false
