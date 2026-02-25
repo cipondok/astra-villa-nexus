@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 
-export type NotificationCategory = 'system' | 'property' | 'user' | 'general';
+export type NotificationCategory = 'system' | 'property' | 'user' | 'general' | 'rental';
 
 export interface NotificationItem {
   id: string;

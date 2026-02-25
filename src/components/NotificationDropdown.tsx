@@ -19,6 +19,7 @@ import {
   Settings,
   User,
   Layers,
+  KeyRound,
 } from 'lucide-react';
 import { formatDistanceToNow } from '@/utils/dateUtils';
 import { cn } from '@/lib/utils';
@@ -27,7 +28,7 @@ const CATEGORY_TABS: { value: 'all' | NotificationCategory; label: string; icon:
   { value: 'all', label: 'All', icon: Layers },
   { value: 'system', label: 'System', icon: Settings },
   { value: 'property', label: 'Property', icon: Home },
-  { value: 'user', label: 'User', icon: User },
+  { value: 'user', label: 'Rental', icon: KeyRound },
 ];
 
 const NotificationDropdown: React.FC<{ onNavigate?: (path: string) => void }> = ({ onNavigate }) => {

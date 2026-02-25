@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-export type NotificationCategory = 'all' | 'system' | 'property' | 'application';
+export type NotificationCategory = 'all' | 'system' | 'property' | 'application' | 'rental';
 
 export interface AppNotification {
   id: string;
@@ -45,6 +45,7 @@ export const useNotifications = () => {
     if (category === 'system') return n.type === 'system' || n.alert_category === 'system';
     if (category === 'property') return n.type === 'property' || n.alert_category === 'property' || n.reference_type === 'property';
     if (category === 'application') return n.type === 'application' || n.alert_category === 'application';
+    if (category === 'rental') return n.type === 'rental' || n.alert_category === 'rental' || n.reference_type === 'rental_booking';
     return true;
   });
 
