@@ -20,11 +20,9 @@ import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, Star } from "lucide-react";
-import astraBannerMain from "@/assets/astra-banner-main.jpg";
-import astraBanner1 from "@/assets/astra-banner-1.jpg";
-import astraBanner2 from "@/assets/astra-banner-2.jpg";
-import astraBanner3 from "@/assets/astra-banner-3.jpg";
-import villaCommunityDaylight from "@/assets/villa-community-daylight.jpg";
+import villaBlueDark1 from "@/assets/villa-blue-dark-1.jpg";
+import villaBlueDark2 from "@/assets/villa-blue-dark-2.jpg";
+import villaBlueDark3 from "@/assets/villa-blue-dark-3.jpg";
 import { cn } from "@/lib/utils";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
@@ -286,7 +284,7 @@ const Index = () => {
   // Compute banner images - use admin config or fallback to defaults
   const bannerImages = heroConfig?.bannerImages && heroConfig.bannerImages.length > 0
     ? heroConfig.bannerImages
-    : [astraBannerMain, astraBanner1, astraBanner2, astraBanner3, villaCommunityDaylight];
+    : [villaBlueDark1, villaBlueDark2, villaBlueDark3];
   
   const slideInterval = (heroConfig?.autoSlideInterval || 5) * 1000;
 
