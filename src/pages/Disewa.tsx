@@ -15,6 +15,7 @@ import AdvancedRentalSearch from "@/components/rental/AdvancedRentalSearch";
 import InlineFilterPanel from "@/components/property/InlineFilterPanel";
 import PropertyListingMapView from "@/components/property/PropertyListingMapView";
 import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
+import PropertyListView from "@/components/search/PropertyListView";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { MapPin, Home, Building, Bed, Bath, Square, Heart, Share2, Eye, Calendar, Clock, Zap, User, CheckCircle, Loader2 } from "lucide-react";
 
@@ -366,6 +367,12 @@ const Disewa = () => {
               </Button>
             </div>
           </Card>
+        ) : viewMode === 'list' ? (
+          <PropertyListView
+            properties={filteredProperties as any}
+            onPropertyClick={(property) => navigate(`/properties/${property.id}`)}
+            onSave={(property) => handleSaveProperty(property.id)}
+          />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {filteredProperties.map((property) => {

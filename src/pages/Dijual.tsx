@@ -17,6 +17,7 @@ import PropertyComparisonButton from "@/components/property/PropertyComparisonBu
 import InlineFilterPanel from "@/components/property/InlineFilterPanel";
 import PropertyListingMapView from "@/components/property/PropertyListingMapView";
 import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
+import PropertyListView from "@/components/search/PropertyListView";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { 
   MapPin, 
@@ -473,6 +474,12 @@ const Dijual = () => {
               </Button>
             </div>
           </Card>
+        ) : viewMode === 'list' ? (
+          <PropertyListView
+            properties={filteredProperties as any}
+            onPropertyClick={(property) => navigate(`/properties/${property.id}`)}
+            onSave={(property) => handleSaveProperty(property.id)}
+          />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {filteredProperties.map((property) => (
@@ -481,7 +488,6 @@ const Dijual = () => {
                 onClick={() => navigate(`/properties/${property.id}`)}
                 className="group cursor-pointer overflow-hidden border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300"
               >
-                {/* Image Container */}
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img
                     src={property.image_urls?.[0] || property.images?.[0] || "/placeholder.svg"}
@@ -489,8 +495,6 @@ const Dijual = () => {
                     loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  
-                  {/* Action Buttons */}
                   <div className="absolute top-2 right-2 flex gap-1.5">
                     <PropertyComparisonButton property={{
                       id: property.id,
@@ -520,8 +524,6 @@ const Dijual = () => {
                       />
                     </Button>
                   </div>
-                  
-                  {/* Badges */}
                   <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
                     <Badge className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded">
                       Dijual
@@ -531,8 +533,6 @@ const Dijual = () => {
                     </Badge>
                   </div>
                 </div>
-                
-                {/* Content */}
                 <CardContent className="p-3 sm:p-4">
                   <p className="text-base sm:text-lg font-bold text-primary mb-1">
                     {formatPrice(property.price || 0)}
