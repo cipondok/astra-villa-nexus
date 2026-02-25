@@ -25,7 +25,7 @@ const RESULTS_PER_PAGE = 15;
 const DEFAULT_FILTERS: AdvancedRentalFilters = {
   searchTerm: "", propertyType: "all", province: "all", city: "all", area: "",
   priceRange: "all", rentalPeriod: [], checkInDate: undefined, checkOutDate: undefined,
-  onlineBookingOnly: false, minimumDays: 0, nearMe: false, userLocation: null,
+  onlineBookingOnly: false, paymentMethod: "all", minimumDays: 0, nearMe: false, userLocation: null,
   bedrooms: "all", bathrooms: "all", minPrice: 0, maxPrice: 100_000_000, sortBy: "newest",
   furnishing: "all", minArea: 0, maxArea: 1000,
   minLandArea: 0, maxLandArea: 5000, minBuildingArea: 0, maxBuildingArea: 2000,
