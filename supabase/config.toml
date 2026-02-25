@@ -165,3 +165,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.ai-nlp-search]
     verify_jwt = false
+
+  [functions.payment-reminders]
+    verify_jwt = false
