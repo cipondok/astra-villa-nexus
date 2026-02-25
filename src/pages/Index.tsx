@@ -99,6 +99,10 @@ const Index = () => {
   const [isOnline, setIsOnline] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [parallaxOffset, setParallaxOffset] = useState(0);
+  const prefersReducedMotion = useMemo(() => 
+    typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, 
+  []);
+  const parallaxEnabled = !isMobile && !isTablet && !prefersReducedMotion;
   const { speed: connectionSpeed } = useConnectionSpeed();
   const queryClient = useQueryClient();
 
@@ -317,7 +321,7 @@ const Index = () => {
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollButton(window.pageYOffset > 300);
-      setParallaxOffset(window.scrollY);
+      if (parallaxEnabled) setParallaxOffset(window.scrollY);
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -580,7 +584,7 @@ const Index = () => {
                   fetchPriority={isPriority ? 'high' : undefined}
                   sizes="100vw"
                   className="w-full h-[120%] object-cover will-change-transform transition-transform duration-100 ease-out"
-                  style={{ transform: `translateY(${-parallaxOffset * 0.3}px)` }}
+                  style={{ transform: parallaxEnabled ? `translateY(${-parallaxOffset * 0.3}px)` : undefined }}
                 />
               </div>
             );
