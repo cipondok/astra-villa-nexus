@@ -17,7 +17,15 @@ import {
   SunMedium, Palette, Move3D, Wind, Upload, Trash2, Info
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import villaCommunityDaylight from '@/assets/villa-community-daylight.jpg';
+import slideHero1 from '@/assets/home/slide-hero-1.png';
+import slideHero2 from '@/assets/home/slide-hero-2.png';
+import slideHero3 from '@/assets/home/slide-hero-3.png';
+import slideHero4 from '@/assets/home/slide-hero-4.png';
+import slideHero5 from '@/assets/home/slide-hero-5.png';
+import slideHero6 from '@/assets/home/slide-hero-6.png';
+import slideHero7 from '@/assets/home/slide-hero-7.png';
+
+const DEFAULT_BANNER_IMAGES = [slideHero1, slideHero2, slideHero3, slideHero4, slideHero5, slideHero6, slideHero7];
 
 interface HeroSliderConfig {
   // Banner images (URLs from storage)
@@ -251,13 +259,33 @@ const HeroSliderSettings: React.FC = () => {
                 </div>
               </div>
 
-              {/* Current banners */}
+              {/* Default banner images (shown when no custom banners) */}
+              {(!config.bannerImages || config.bannerImages.length === 0) && (
+                <div className="space-y-2">
+                  <Label className="text-[11px]">Default Slides ({DEFAULT_BANNER_IMAGES.length})</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {DEFAULT_BANNER_IMAGES.map((url, index) => (
+                      <div key={index} className="relative rounded-lg overflow-hidden border border-border/50 opacity-80">
+                        <img src={url} alt={`Default Slide ${index + 1}`} className="w-full h-20 object-cover" />
+                        <div className="absolute top-1 left-1">
+                          <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-background/70">
+                            Default {index + 1}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">Upload custom banners to replace the defaults above.</p>
+                </div>
+              )}
+
+              {/* Custom uploaded banners */}
               {config.bannerImages && config.bannerImages.length > 0 && (
                 <div className="space-y-2">
-                  <Label className="text-[11px]">Current Banners ({config.bannerImages.length})</Label>
+                  <Label className="text-[11px]">Custom Banners ({config.bannerImages.length})</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {config.bannerImages.map((url, index) => (
-                      <div key={index} className="relative group rounded-lg overflow-hidden border border-border">
+                      <div key={index} className="relative group rounded-lg overflow-hidden border border-primary/30">
                         <img src={url} alt={`Banner ${index + 1}`} className="w-full h-20 object-cover" />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <Button
@@ -549,7 +577,7 @@ const HeroSliderSettings: React.FC = () => {
               )}>
                 {/* Background Image */}
                 <img
-                  src={villaCommunityDaylight}
+                  src={config.bannerImages?.[0] || DEFAULT_BANNER_IMAGES[0]}
                   alt="Hero preview"
                   className="absolute inset-0 w-full h-full object-cover"
                   style={previewImageStyle}
