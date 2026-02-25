@@ -148,7 +148,7 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
     }, 300);
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (e: React.MouseEvent) => {
     if (pressTimerRef.current) {
       clearTimeout(pressTimerRef.current);
       pressTimerRef.current = null;
@@ -160,7 +160,8 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
       setIsDragging(false);
       setIsLongPress(false);
     } else if (!isLongPress) {
-      // Short click - open chat
+      // Prevent event from propagating to Radix ContextMenuTrigger
+      e.stopPropagation();
       onClick();
     }
     setIsLongPress(false);
