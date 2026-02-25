@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, MapPin, Bed, Bath, Maximize, Star, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { useTranslation } from "@/i18n/useTranslation";
 import { cn } from "@/lib/utils";
@@ -91,12 +92,32 @@ export default function FeaturedPropertiesCarousel() {
     return (
       <section className="py-6 sm:py-8">
         <div className="max-w-7xl mx-auto px-3 sm:px-4">
-          <div className="flex gap-3 overflow-hidden">
+          {/* Header skeleton */}
+          <div className="flex items-center justify-between mb-4 sm:mb-5">
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-5 w-48" />
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Skeleton className="h-8 w-8 rounded-full" />
+              <Skeleton className="h-8 w-8 rounded-full" />
+            </div>
+          </div>
+          {/* Card skeletons */}
+          <div className="flex gap-3 sm:gap-4 overflow-hidden">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex-shrink-0 w-[280px] sm:w-[320px] animate-pulse">
-                <div className="h-48 bg-muted rounded-xl mb-2" />
-                <div className="h-4 bg-muted rounded w-3/4 mb-1" />
-                <div className="h-3 bg-muted rounded w-1/2" />
+              <div key={i} className="flex-shrink-0 w-[260px] sm:w-[290px] md:w-[310px] lg:w-[330px]">
+                <div className="rounded-xl border border-border bg-card overflow-hidden">
+                  <Skeleton className="aspect-[16/10] w-full rounded-none" />
+                  <div className="p-3 sm:p-3.5 space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                    <div className="flex items-center gap-3 pt-1 border-t border-border/60">
+                      <Skeleton className="h-3.5 w-10" />
+                      <Skeleton className="h-3.5 w-10" />
+                      <Skeleton className="h-3.5 w-14" />
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
