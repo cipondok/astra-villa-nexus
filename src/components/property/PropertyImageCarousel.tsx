@@ -1,7 +1,55 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+// Individual slide with blur placeholder and fade-in
+const CarouselSlide = ({ src, alt, imageClassName, fallbackSrc, isFirst, onImageLoad, onImageError }: {
+  src: string; alt: string; imageClassName?: string; fallbackSrc: string;
+  isFirst: boolean; onImageLoad?: () => void; onImageError?: () => void;
+}) => {
+  const [loaded, setLoaded] = useState(false);
+  const [inView, setInView] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.disconnect(); } },
+      { rootMargin: '200px', threshold: 0 }
+    );
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="flex-[0_0_100%] min-w-0 h-full relative">
+      {/* Gold shimmer placeholder */}
+      {!loaded && (
+        <div className="absolute inset-0 bg-muted overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[hsl(var(--gold-primary)/0.08)] to-transparent animate-[shimmer_1.5s_infinite] translate-x-[-100%]" 
+               style={{ animation: 'shimmer 1.5s infinite' }} />
+        </div>
+      )}
+      {inView && (
+        <img
+          src={src}
+          alt={alt}
+          className={cn(
+            "w-full h-full object-cover transition-opacity duration-500",
+            loaded ? "opacity-100" : "opacity-0",
+            imageClassName
+          )}
+          loading={isFirst ? "eager" : "lazy"}
+          decoding="async"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          onLoad={() => { setLoaded(true); if (isFirst) onImageLoad?.(); }}
+          onError={(e) => { e.currentTarget.src = fallbackSrc; setLoaded(true); if (isFirst) onImageError?.(); }}
+        />
+      )}
+    </div>
+  );
+};
 
 interface PropertyImageCarouselProps {
   images: string[];
@@ -72,27 +120,16 @@ const PropertyImageCarousel = ({
       <div ref={emblaRef} className="overflow-hidden h-full">
         <div className="flex h-full">
           {images.map((src, index) => (
-            <div
+            <CarouselSlide
               key={index}
-              className="flex-[0_0_100%] min-w-0 h-full"
-            >
-              <img
-                src={src}
-                alt={`${alt} ${index + 1}`}
-                className={cn(
-                  "w-full h-full object-cover",
-                  imageClassName
-                )}
-                loading="lazy"
-                decoding="async"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                onLoad={index === 0 ? onImageLoad : undefined}
-                onError={(e) => {
-                  e.currentTarget.src = fallbackSrc;
-                  if (index === 0) onImageError?.();
-                }}
-              />
-            </div>
+              src={src}
+              alt={`${alt} ${index + 1}`}
+              imageClassName={imageClassName}
+              fallbackSrc={fallbackSrc}
+              isFirst={index === 0}
+              onImageLoad={onImageLoad}
+              onImageError={onImageError}
+            />
           ))}
         </div>
       </div>
