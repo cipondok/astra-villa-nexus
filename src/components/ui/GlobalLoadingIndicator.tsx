@@ -60,7 +60,7 @@ export const GlobalLoadingIndicator = () => {
             animate={{ scaleX: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary z-[9999] origin-left"
+            className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(var(--gold-primary))] via-[hsl(var(--gold-secondary))] to-[hsl(var(--orange-primary))] z-[9999] origin-left"
           />
           
           {/* Corner loading indicator */}
@@ -71,7 +71,7 @@ export const GlobalLoadingIndicator = () => {
             transition={{ duration: 0.2 }}
             className="fixed top-12 right-3 z-[9998] flex items-center gap-2 bg-background/95 backdrop-blur-sm border border-border/50 rounded-full px-3 py-1.5 shadow-lg"
           >
-            <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin text-[hsl(var(--gold-primary))]" />
             <span className="text-xs font-medium text-foreground">
               {isSlowConnection ? t('common.slowConnection') : t('common.loading')}
             </span>

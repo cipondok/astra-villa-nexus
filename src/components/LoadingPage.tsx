@@ -60,9 +60,9 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
           className="relative"
           animate={{ 
             boxShadow: [
-              '0 0 0px rgba(127, 90, 240, 0)',
-              '0 0 30px rgba(127, 90, 240, 0.3)',
-              '0 0 0px rgba(127, 90, 240, 0)'
+              '0 0 0px hsla(48, 100%, 52%, 0)',
+              '0 0 30px hsla(48, 100%, 52%, 0.4)',
+              '0 0 0px hsla(48, 100%, 52%, 0)'
             ]
           }}
           transition={{ duration: 2, repeat: Infinity }}
@@ -73,7 +73,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
             className="w-20 h-20 object-contain rounded-2xl"
           />
           <motion.div
-            className="absolute inset-0 rounded-2xl border-2 border-transparent border-t-primary/60 border-r-accent/40"
+            className="absolute inset-0 rounded-2xl border-2 border-transparent border-t-[hsl(var(--gold-primary))]/60 border-r-[hsl(var(--gold-secondary))]/40"
             animate={{ rotate: 360 }}
             transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
           />
@@ -87,7 +87,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <span className="bg-gradient-to-r from-primary via-accent to-chart-3 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[hsl(var(--gold-primary))] via-[hsl(var(--gold-secondary))] to-[hsl(var(--orange-primary))] bg-clip-text text-transparent">
               ASTRA
             </span>
             <span className="text-foreground ml-2">Villa</span>
@@ -109,7 +109,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
               key={i}
               className={cn(
                 "w-2 h-2 rounded-full",
-                i % 3 === 0 ? 'bg-primary' : i % 3 === 1 ? 'bg-accent' : 'bg-chart-3'
+                i % 3 === 0 ? 'bg-[hsl(var(--gold-primary))]' : i % 3 === 1 ? 'bg-[hsl(var(--gold-secondary))]' : 'bg-[hsl(var(--orange-primary))]'
               )}
               animate={{
                 y: [0, -8, 0],
@@ -162,7 +162,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
           transition={{ delay: 0.6 }}
         >
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-primary via-accent to-chart-3"
+            className="h-full rounded-full bg-gradient-to-r from-[hsl(var(--gold-primary))] via-[hsl(var(--gold-secondary))] to-[hsl(var(--orange-primary))]"
             initial={{ width: '0%' }}
             animate={{ width: '100%' }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
