@@ -615,9 +615,9 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Cinematic overlay — stronger top to mask image-burned text */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/10 to-black/70 z-[19] pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/10 z-[19] pointer-events-none" />
+            {/* Cinematic overlay — theme-aware gradients */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/10 to-background/80 z-[19] pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-transparent to-background/10 z-[19] pointer-events-none" />
             {/* Film grain texture */}
             <div className="absolute inset-0 z-[19] pointer-events-none opacity-[0.03] mix-blend-overlay"
               style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")' }}

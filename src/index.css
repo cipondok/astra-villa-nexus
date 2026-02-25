@@ -507,18 +507,14 @@ body[data-scroll-locked] {
 
   /* Glass Dropdown - Select menus and dropdowns */
   .glass-dropdown {
-    background: linear-gradient(
-      155deg,
-      hsl(270 45% 16% / 0.98) 0%,
-      hsl(280 50% 12% / 0.95) 100%
-    );
-    border: 1px solid hsl(280 60% 55% / 0.2);
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
     border-radius: 12px;
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     box-shadow: 
-      0 10px 30px hsl(229 60% 5% / 0.35),
-      inset 0 1px 0 hsl(280 50% 60% / 0.06);
+      0 10px 30px hsl(var(--foreground) / 0.08),
+      inset 0 1px 0 hsl(var(--background) / 0.5);
   }
 
   .dark .glass-dropdown {
@@ -535,28 +531,28 @@ body[data-scroll-locked] {
 
   /* Glass Tooltip */
   .glass-tooltip {
-    background: linear-gradient(
-      145deg,
-      hsl(220 45% 12% / 0.95) 0%,
-      hsl(220 50% 8% / 0.9) 100%
-    );
-    border: 1px solid hsl(45 80% 50% / 0.2);
+    background: hsl(var(--popover));
+    border: 1px solid hsl(var(--border));
     border-radius: 10px;
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    color: hsl(45 20% 95%);
+    color: hsl(var(--popover-foreground));
     box-shadow: 
-      0 8px 25px hsl(220 60% 3% / 0.4),
-      inset 0 1px 0 hsl(45 50% 50% / 0.1);
+      0 8px 25px hsl(var(--foreground) / 0.1),
+      inset 0 1px 0 hsl(var(--background) / 0.3);
   }
 
-  .light .glass-tooltip,
-  :root:not(.dark) .glass-tooltip {
+  .dark .glass-tooltip {
     background: linear-gradient(
       145deg,
-      hsl(220 50% 15% / 0.95) 0%,
-      hsl(220 55% 10% / 0.9) 100%
+      hsl(210 45% 12% / 0.95) 0%,
+      hsl(200 40% 8% / 0.9) 100%
     );
+    border: 1px solid hsl(48 80% 50% / 0.2);
+    color: hsl(48 20% 95%);
+    box-shadow: 
+      0 8px 25px hsl(210 60% 3% / 0.4),
+      inset 0 1px 0 hsl(48 50% 50% / 0.1);
   }
 
   /* Glass Input - Form inputs with glassy style */
@@ -1330,29 +1326,29 @@ body[data-scroll-locked] {
   }
 
   .macos-glass-effect {
-    background: rgba(255, 255, 255, 0.8);
+    background: hsl(var(--card) / 0.8);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid hsl(var(--border) / 0.5);
     @apply transition-all duration-300 ease-out;
   }
 
   .dark .macos-glass-effect {
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: hsl(var(--card) / 0.7);
+    border: 1px solid hsl(var(--border) / 0.3);
   }
 
   .macos-button {
-    @apply bg-white/90 hover:bg-white text-gray-900 border border-gray-200/50;
+    @apply bg-card/90 hover:bg-card text-foreground border border-border/50;
     @apply transition-all duration-200 ease-out;
-    @apply hover:shadow-md hover:border-gray-300/50;
+    @apply hover:shadow-md hover:border-border;
     @apply active:scale-95 active:shadow-sm;
     @apply rounded-lg px-4 py-2 font-medium;
   }
 
   .dark .macos-button {
-    @apply bg-gray-800/90 hover:bg-gray-700 text-white border-gray-700/50;
-    @apply hover:border-gray-600/50;
+    @apply bg-card/90 hover:bg-card text-foreground border-border/50;
+    @apply hover:border-border;
   }
 
   .macos-primary-button {
