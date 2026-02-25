@@ -351,37 +351,75 @@ const RentalSidebarFilters = ({
 
           {/* Location */}
           <FilterSection title="Lokasi" icon={MapPin} defaultOpen>
-            <Select value={filters.province} onValueChange={v => onFiltersChange({ province: v, city: "all" })}>
-              <SelectTrigger className="h-9 text-sm">
-                <SelectValue placeholder={locLoading ? "Memuat..." : "Pilih Provinsi"} />
-              </SelectTrigger>
-              <SelectContent className="max-h-60">
-                <SelectItem value="all">Semua Provinsi</SelectItem>
-                {provinces.map(p => (
-                  <SelectItem key={p.code} value={p.code}>{p.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select 
-              value={filters.city} 
-              onValueChange={v => onFiltersChange({ city: v })}
-              disabled={!filters.province || filters.province === 'all'}
-            >
-              <SelectTrigger className="h-9 text-sm">
-                <MapPin className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-                <SelectValue placeholder={
-                  !filters.province || filters.province === 'all' 
-                    ? "Pilih provinsi dulu" 
-                    : locLoading ? "Memuat..." : "Pilih Kota/Kabupaten"
-                } />
-              </SelectTrigger>
-              <SelectContent className="max-h-60">
-                <SelectItem value="all">Semua Kota</SelectItem>
-                {dbCities.map(c => (
-                  <SelectItem key={c.code} value={c.code}>{c.type} {c.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="space-y-3">
+              {/* Province */}
+              <div className="space-y-1.5">
+                <Label className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium flex items-center gap-1">
+                  <Globe className="h-3 w-3" /> Provinsi
+                </Label>
+                <Select value={filters.province} onValueChange={v => onFiltersChange({ province: v, city: "all" })}>
+                  <SelectTrigger className="h-10 text-sm bg-muted/40 border-border/60 rounded-lg hover:bg-muted/60 transition-colors focus:ring-2 focus:ring-primary/20">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <SelectValue placeholder={locLoading ? "Memuat..." : "Semua Provinsi"} />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64 rounded-lg border-border/60 shadow-xl">
+                    <SelectItem value="all" className="rounded-md">Semua Provinsi</SelectItem>
+                    {provinces.map(p => (
+                      <SelectItem key={p.code} value={p.code} className="rounded-md">{p.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* City */}
+              <div className="space-y-1.5">
+                <Label className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium flex items-center gap-1">
+                  <Building2 className="h-3 w-3" /> Kota / Kabupaten
+                </Label>
+                <Select 
+                  value={filters.city} 
+                  onValueChange={v => onFiltersChange({ city: v })}
+                  disabled={!filters.province || filters.province === 'all'}
+                >
+                  <SelectTrigger className={cn(
+                    "h-10 text-sm rounded-lg transition-colors focus:ring-2 focus:ring-primary/20",
+                    !filters.province || filters.province === 'all'
+                      ? "bg-muted/20 border-border/30 text-muted-foreground cursor-not-allowed"
+                      : "bg-muted/40 border-border/60 hover:bg-muted/60"
+                  )}>
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-3.5 w-3.5 text-primary/70 shrink-0" />
+                      <SelectValue placeholder={
+                        !filters.province || filters.province === 'all' 
+                          ? "Pilih provinsi dulu" 
+                          : locLoading ? "Memuat..." : "Pilih Kota/Kabupaten"
+                      } />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64 rounded-lg border-border/60 shadow-xl">
+                    <SelectItem value="all" className="rounded-md">Semua Kota</SelectItem>
+                    {dbCities.map(c => (
+                      <SelectItem key={c.code} value={c.code} className="rounded-md">{c.type} {c.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Selected location preview */}
+              {filters.province && filters.province !== 'all' && (
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/10 border border-primary/20 rounded-lg text-xs text-primary">
+                  <MapPin className="h-3 w-3 shrink-0" />
+                  <span className="font-medium truncate">
+                    {provinces.find(p => p.code === filters.province)?.name}
+                    {filters.city && filters.city !== 'all' && (
+                      <> → {dbCities.find(c => c.code === filters.city)?.type} {dbCities.find(c => c.code === filters.city)?.name}</>
+                    )}
+                  </span>
+                </div>
+              )}
+            </div>
           </FilterSection>
 
           <Separator />
