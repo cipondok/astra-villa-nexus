@@ -718,8 +718,8 @@ const Index = () => {
                 <div className={cn(
                   "inline-flex items-center gap-2 mb-3",
                   "px-4 py-1.5 sm:px-6 sm:py-2",
-                  "bg-white/10 backdrop-blur-md",
-                  "rounded-full border border-white/20",
+                  "bg-gold-primary/10 backdrop-blur-md",
+                  "rounded-full border border-gold-primary/25",
                 )}>
                   <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
                   <span className="text-[10px] sm:text-xs font-semibold text-white uppercase tracking-[0.2em]">
@@ -728,11 +728,11 @@ const Index = () => {
                   <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
                 </div>
                 
-                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white drop-shadow-lg">
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white" style={{ textShadow: '0 2px 20px hsl(45 80% 50% / 0.3), 0 4px 8px hsl(0 0% 0% / 0.3)' }}>
                   {t('indexPage.findYour')}
                 </h2>
                 <p className="flex text-xs sm:text-sm text-white/80 items-center justify-center gap-2 font-medium">
-                  <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gold-primary/80" />
                   {t('indexPage.searchPowered')}
                 </p>
               </div>

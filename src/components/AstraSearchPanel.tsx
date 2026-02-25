@@ -2364,9 +2364,9 @@ const AstraSearchPanel = ({
   return <div className="w-full max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1800px] 3xl:max-w-[2000px] mx-auto transition-all duration-500">
     <div className={cn("relative transition-all duration-500", isMobile ? "px-1 py-2" : "w-full px-0", showSuggestions ? "z-[100000]" : "z-[999]")}>
       {/* Transparent Full-Width Container */}
-      <div className="relative bg-white/15 dark:bg-black/30 backdrop-blur-xl overflow-visible rounded-2xl border border-white/20 dark:border-white/10 shadow-2xl">
+      <div className="relative bg-white/15 dark:bg-black/30 backdrop-blur-xl overflow-visible rounded-2xl border border-gold-primary/15 shadow-2xl">
         {/* Subtle top shine line */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none rounded-t-2xl" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-primary/30 to-transparent pointer-events-none rounded-t-2xl" />
         <div className={cn("relative space-y-1.5 overflow-visible", isMobile ? "p-1.5" : "p-2.5 lg:p-3.5 xl:p-4")}>
           
           {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
@@ -2443,7 +2443,7 @@ const AstraSearchPanel = ({
           <div className={cn("flex overflow-visible", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
             <div ref={anchorRef} className="flex-1 relative z-[100001]">
               <Search className={cn(
-                "absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/70 pointer-events-none transition-all duration-300", 
+                "absolute left-3 top-1/2 transform -translate-y-1/2 text-gold-primary/70 pointer-events-none transition-all duration-300", 
                 isMobile ? "h-3.5 w-3.5 left-2.5" : "h-4 w-4 left-3.5",
                 searchQuery && "text-primary animate-pulse"
               )} />
