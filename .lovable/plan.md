@@ -1,55 +1,37 @@
 
+## Completed: Filter-to-Backend Pipeline
 
-## Next Steps: Complete the Filter-to-Backend Pipeline and Polish
+All 4 steps are now implemented:
 
-Based on the current state, the filters UI, DB columns, property form, and admin settings are all in place. Here is what should come next to make the system fully production-ready:
+### ✅ 1. Select All / Deselect All for Nearby Facilities
+Added "Pilih Semua" and "Hapus Semua" buttons with count badge to `RentalSidebarFilters.tsx`.
 
-### 1. Add "Select All / Deselect All" buttons to Nearby Facilities filter
-The nearby facilities section has 21 checkboxes but no bulk actions beyond clearing. Add "Pilih Semua" and "Hapus Semua" buttons at the top of the section for quick toggling.
+### ✅ 2. Mobile Filter Sheet Badge Sync
+Updated `RentalMobileFilterSheet.tsx` to count ~34 filter types (matching desktop sidebar).
 
-**File:** `src/components/rental/RentalSidebarFilters.tsx` (lines 766-797)
+### ✅ 3. Property Form Fields
+Added 3 new form sections to `RoleBasedPropertyForm.tsx`:
+- **Spesifikasi Properti**: land_area, building_area, floors, garage, view_type, furnishing, has_pool
+- **Informasi Investasi**: ROI, rental yield, legal status, handover year, WNA eligible, payment plan
+- **Teknologi & Media**: VR, 360° view, drone video, interactive floorplan
 
-### 2. Sync Mobile Filter Sheet active count with desktop
-The `RentalMobileFilterSheet` only counts 9 filter types in its badge, while the desktop sidebar counts ~28. Update the mobile sheet to match.
+All fields are mapped to the Supabase insert mutation.
 
-**File:** `src/components/rental/RentalMobileFilterSheet.tsx` (lines 19-29)
+### ✅ 4. Admin Settings Persisted to DB
+`NearbyFacilitiesSettings.tsx` now reads/writes from `system_settings` table (key: `nearby_facilities`, `payment_methods`). Changes persist across sessions.
 
-### 3. Add missing property form fields for Indonesian specs
-The `RoleBasedPropertyForm` has nearby_facilities and payment_methods but is missing input fields for several columns that the filter queries against:
-- `land_area_sqm`, `building_area_sqm`, `floors`, `has_pool`, `garage_count`
-- `view_type`, `furnishing`
-- `roi_percentage`, `rental_yield_percentage`
-- `legal_status`, `wna_eligible`, `payment_plan_available`, `handover_year`
-- `has_vr`, `has_360_view`, `has_drone_video`, `has_interactive_floorplan`
-
-These fields are queried by the filters but never populated via the form, meaning filters will always return empty results for them.
-
-**File:** `src/components/property/RoleBasedPropertyForm.tsx` -- add form sections for all missing fields, grouped into collapsible sections (Specs, Investment, Technology).
-
-### 4. Admin NearbyFacilitiesSettings -- wire to database
-The settings component was created but currently uses local state. It should read/write from a `system_settings` or `filter_options` table so admins can actually persist changes to the available filter options.
-
-**File:** `src/components/admin/settings/NearbyFacilitiesSettings.tsx`
-
-### Technical Summary
+### Architecture
 
 ```text
 ┌────────────────────────┐
-│  Sidebar Filters (UI)  │ ← Add Select All/Deselect All
+│  Sidebar Filters (UI)  │ ✅ Select All/Deselect All
 ├────────────────────────┤
-│  Mobile Filter Sheet   │ ← Sync active filter count  
+│  Mobile Filter Sheet   │ ✅ Synced badge count (~34 types)
 ├────────────────────────┤
-│  Property Form         │ ← Add ~15 missing input fields
+│  Property Form         │ ✅ All 15+ fields added
 ├────────────────────────┤
-│  Admin Settings        │ ← Persist to DB (system_settings)
+│  Admin Settings        │ ✅ Persisted to system_settings DB
 ├────────────────────────┤
-│  DB / Queries          │ ← Already complete ✓
+│  DB / Queries          │ ✅ Already complete
 └────────────────────────┘
 ```
-
-### Estimated changes
-- **RentalSidebarFilters.tsx**: Add 2 bulk action buttons (~10 lines)
-- **RentalMobileFilterSheet.tsx**: Update active filter count (~20 lines)
-- **RoleBasedPropertyForm.tsx**: Add ~200 lines of form fields for missing columns
-- **NearbyFacilitiesSettings.tsx**: Add Supabase read/write integration (~50 lines)
-

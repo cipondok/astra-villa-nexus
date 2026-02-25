@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
 import {
   MapPin, Plus, Edit2, Trash2, Save, X, GripVertical,
   Train, Plane, GraduationCap, ShoppingBag, Store, Hospital,
@@ -95,24 +96,74 @@ const DEFAULT_PAYMENTS: PaymentOption[] = [
 ];
 
 const NearbyFacilitiesSettings = () => {
-  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [facilities, setFacilities] = useState<FacilityOption[]>(DEFAULT_FACILITIES);
   const [payments, setPayments] = useState<PaymentOption[]>(DEFAULT_PAYMENTS);
   const [editDialog, setEditDialog] = useState<{ open: boolean; type: 'facility' | 'payment'; item?: any }>({ open: false, type: 'facility' });
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState("all");
-
-  // Form state
   const [formData, setFormData] = useState({ value: "", label: "", icon: "MapPin", category: "transport", display_order: 0 });
 
+  // Load from DB
+  const { data: dbSettings } = useQuery({
+    queryKey: ['system-settings', 'filter_options'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('*')
+        .in('key', ['nearby_facilities', 'payment_methods']);
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  useEffect(() => {
+    if (dbSettings) {
+      const facRow = dbSettings.find((s: any) => s.key === 'nearby_facilities');
+      const payRow = dbSettings.find((s: any) => s.key === 'payment_methods');
+      if (facRow?.value) {
+        const arr = (Array.isArray(facRow.value) ? facRow.value : []) as any[];
+        setFacilities(arr.map((f: any, i: number) => ({ ...f, id: f.id || String(i + 1), display_order: f.display_order || i + 1 })));
+      }
+      if (payRow?.value) {
+        const arr = (Array.isArray(payRow.value) ? payRow.value : []) as any[];
+        setPayments(arr.map((p: any, i: number) => ({ ...p, id: p.id || String(i + 1), display_order: p.display_order || i + 1 })));
+      }
+    }
+  }, [dbSettings]);
+
+  // Persist to DB
+  const saveMutation = useMutation({
+    mutationFn: async ({ key, value }: { key: string; value: any }) => {
+      const { error } = await supabase
+        .from('system_settings')
+        .update({ value, updated_at: new Date().toISOString() })
+        .eq('key', key);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['system-settings'] });
+    },
+  });
+
+  const persistFacilities = (updated: FacilityOption[]) => {
+    setFacilities(updated);
+    saveMutation.mutate({ key: 'nearby_facilities', value: updated });
+  };
+
+  const persistPayments = (updated: PaymentOption[]) => {
+    setPayments(updated);
+    saveMutation.mutate({ key: 'payment_methods', value: updated });
+  };
+
   const handleToggleFacility = (id: string) => {
-    setFacilities(prev => prev.map(f => f.id === id ? { ...f, is_active: !f.is_active } : f));
-    toast({ title: "✅ Updated" });
+    const updated = facilities.map(f => f.id === id ? { ...f, is_active: !f.is_active } : f);
+    persistFacilities(updated);
   };
 
   const handleTogglePayment = (id: string) => {
-    setPayments(prev => prev.map(p => p.id === id ? { ...p, is_active: !p.is_active } : p));
-    toast({ title: "✅ Updated" });
+    const updated = payments.map(p => p.id === id ? { ...p, is_active: !p.is_active } : p);
+    persistPayments(updated);
   };
 
   const handleAddFacility = () => {
@@ -126,10 +177,9 @@ const NearbyFacilitiesSettings = () => {
       is_active: true,
       display_order: facilities.length + 1,
     };
-    setFacilities(prev => [...prev, newFacility]);
+    persistFacilities([...facilities, newFacility]);
     setEditDialog({ open: false, type: 'facility' });
     setFormData({ value: "", label: "", icon: "MapPin", category: "transport", display_order: 0 });
-    toast({ title: "✅ Facility Added", description: newFacility.label });
   };
 
   const handleAddPayment = () => {
@@ -142,22 +192,19 @@ const NearbyFacilitiesSettings = () => {
       is_active: true,
       display_order: payments.length + 1,
     };
-    setPayments(prev => [...prev, newPayment]);
+    persistPayments([...payments, newPayment]);
     setEditDialog({ open: false, type: 'payment' });
     setFormData({ value: "", label: "", icon: "MapPin", category: "transport", display_order: 0 });
-    toast({ title: "✅ Payment Method Added", description: newPayment.label });
   };
 
   const handleDeleteFacility = (id: string) => {
-    setFacilities(prev => prev.filter(f => f.id !== id));
+    persistFacilities(facilities.filter(f => f.id !== id));
     setDeleteConfirm(null);
-    toast({ title: "🗑️ Deleted" });
   };
 
   const handleDeletePayment = (id: string) => {
-    setPayments(prev => prev.filter(p => p.id !== id));
+    persistPayments(payments.filter(p => p.id !== id));
     setDeleteConfirm(null);
-    toast({ title: "🗑️ Deleted" });
   };
 
   const filteredFacilities = filterCategory === "all"
