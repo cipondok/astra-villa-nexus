@@ -368,6 +368,29 @@ const config: Config = {
           "50%": { transform: "scale(1.08) translate(-1%, -1%)" },
           "100%": { transform: "scale(1.04) translate(0.5%, 0)" },
         },
+        "ken-burns-2": {
+          "0%": { transform: "scale(1.02) translate(0.5%, 0)" },
+          "50%": { transform: "scale(1.1) translate(1%, -0.5%)" },
+          "100%": { transform: "scale(1.05) translate(-0.5%, 0.5%)" },
+        },
+        "ken-burns-3": {
+          "0%": { transform: "scale(1.04) translate(-0.5%, 0.5%)" },
+          "50%": { transform: "scale(1.12) translate(0%, -1%)" },
+          "100%": { transform: "scale(1.06) translate(0.5%, -0.5%)" },
+        },
+        "ken-burns-4": {
+          "0%": { transform: "scale(1) translate(0.5%, -0.5%)" },
+          "50%": { transform: "scale(1.09) translate(-1%, 0.5%)" },
+          "100%": { transform: "scale(1.03) translate(0%, 0%)" },
+        },
+        "hero-text-reveal": {
+          "0%": { opacity: "0", transform: "translateY(20px)", filter: "blur(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)", filter: "blur(0)" },
+        },
+        "hero-brand-glow": {
+          "0%, 100%": { textShadow: "0 0 20px hsl(var(--gold-primary) / 0.3), 0 0 60px hsl(var(--gold-primary) / 0.1)" },
+          "50%": { textShadow: "0 0 30px hsl(var(--gold-primary) / 0.5), 0 0 80px hsl(var(--gold-primary) / 0.2)" },
+        },
         "shimmer-slide": {
           "0%": { transform: "translateX(-100%) skewX(-12deg)" },
           "100%": { transform: "translateX(200%) skewX(-12deg)" },
@@ -403,6 +426,11 @@ const config: Config = {
         "logo-shadow": "logo-shadow 4s ease-in-out infinite",
         "marquee": "marquee 30s linear infinite",
         "ken-burns": "ken-burns 8s ease-in-out infinite alternate",
+        "ken-burns-2": "ken-burns-2 9s ease-in-out infinite alternate",
+        "ken-burns-3": "ken-burns-3 10s ease-in-out infinite alternate",
+        "ken-burns-4": "ken-burns-4 7s ease-in-out infinite alternate",
+        "hero-text-reveal": "hero-text-reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+        "hero-brand-glow": "hero-brand-glow 3s ease-in-out infinite",
         "shimmer-slide": "shimmer-slide 6s ease-in-out infinite",
       },
       backgroundImage: {
