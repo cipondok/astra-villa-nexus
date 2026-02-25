@@ -105,6 +105,7 @@ import {
   SamplePropertyGenerator,
   VerificationSystemSettings,
   AuthRegistrationSettings,
+  NearbyFacilitiesSettings,
 } from "./adminSectionRegistry";
 
 interface AdminDashboardContentProps {
@@ -228,6 +229,7 @@ const renderSection = (
     case "rent-filters":        return <PropertyFiltersManagement filterType="rent" title="Rent Property Filters" description="Manage filters for rental properties" />;
     case "sale-filters":        return <PropertyFiltersManagement filterType="sale" title="Sale Property Filters" description="Manage filters for properties for sale" />;
     case "new-project-filters": return <PropertyFiltersManagement filterType="all" title="New Project Filters" description="Manage filters for new development projects" />;
+    case "nearby-facilities-settings": return <NearbyFacilitiesSettings />;
     case "error-monitoring":    return <ErrorMonitoringDashboard />;
     case "bug-error-detection": return <BugErrorDashboard />;
     case "testing-dashboard":   return <TestingDashboard />;
