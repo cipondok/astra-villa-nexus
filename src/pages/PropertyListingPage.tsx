@@ -12,6 +12,7 @@ import PropertyViewModeToggle from '@/components/search/PropertyViewModeToggle';
 import PropertyListView from '@/components/search/PropertyListView';
 import PropertyListingMapView from '@/components/property/PropertyListingMapView';
 import SearchAlertSubscribeButton from '@/components/search/SearchAlertSubscribeButton';
+import PropertyCardSkeleton from '@/components/property/PropertyCardSkeleton';
 interface PropertyListingPageProps {
   pageType: 'buy' | 'rent' | 'new-projects' | 'pre-launching';
   title: string;
@@ -364,11 +365,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
             }}
           />
         ) : isLoading || isSearching ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="animate-pulse rounded-md overflow-hidden bg-muted h-64 sm:h-72"></div>
-            ))}
-          </div>
+          <PropertyCardSkeleton count={8} className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4" />
         ) : (hasSearched ? searchResults : properties).length === 0 ? (
           <div className="bg-card border border-border rounded-md p-8 sm:p-12">
             <div className="text-center">
