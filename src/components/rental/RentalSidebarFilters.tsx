@@ -19,7 +19,9 @@ import {
   CalendarIcon, Bed, Bath, Maximize2, Zap, Sofa, X, SlidersHorizontal, RotateCcw,
   ChevronDown, TrendingUp, ShieldCheck, Globe, CreditCard, Eye,
   Layers, Waves, Car, Mountain, TreePine, Landmark,
-  Video, View, Box, Plane
+  Video, View, Box, Plane, Train, GraduationCap, ShoppingBag, ParkingCircle,
+  Trees, Dumbbell, UtensilsCrossed, Hospital, Fuel, Church, Tent, Coffee,
+  Navigation
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -70,6 +72,8 @@ export interface AdvancedRentalFilters {
   has360View: boolean;
   hasDroneVideo: boolean;
   hasInteractiveFloorplan: boolean;
+  // Nearby
+  nearbyFacilities: string[];
   // Status
   listingStatus: string;
 }
@@ -143,6 +147,30 @@ const PAYMENT_METHOD_OPTIONS = [
   { value: "bank_transfer", label: "Transfer Bank", icon: Landmark },
   { value: "installment", label: "Cicilan/KPR", icon: TrendingUp },
   { value: "crypto", label: "Crypto/Digital", icon: Globe },
+];
+
+const NEARBY_FACILITY_OPTIONS = [
+  { value: "public_transport", label: "Transportasi Umum", icon: Train },
+  { value: "lrt_mrt", label: "LRT / MRT", icon: Train },
+  { value: "airport", label: "Bandara", icon: Plane },
+  { value: "toll_road", label: "Jalan Tol", icon: Navigation },
+  { value: "international_school", label: "Sekolah Internasional", icon: GraduationCap },
+  { value: "shopping_mall", label: "Mall / Pusat Perbelanjaan", icon: ShoppingBag },
+  { value: "minimarket", label: "Indomaret / Alfamart", icon: Store },
+  { value: "supermarket", label: "Supermarket", icon: ShoppingBag },
+  { value: "hospital", label: "Rumah Sakit / Klinik", icon: Hospital },
+  { value: "restaurant", label: "Restoran / Kafe", icon: UtensilsCrossed },
+  { value: "park", label: "Taman / Ruang Hijau", icon: Trees },
+  { value: "public_garden", label: "Kebun Raya / Botanical", icon: TreePine },
+  { value: "golf_club", label: "Golf Club", icon: Tent },
+  { value: "gym_fitness", label: "Gym / Fitness Center", icon: Dumbbell },
+  { value: "beach", label: "Pantai", icon: Waves },
+  { value: "mosque_temple", label: "Masjid / Tempat Ibadah", icon: Church },
+  { value: "gas_station", label: "SPBU / Pom Bensin", icon: Fuel },
+  { value: "coworking", label: "Co-Working Space", icon: Coffee },
+  { value: "university", label: "Universitas / Kampus", icon: GraduationCap },
+  { value: "popular_area", label: "Area Populer / Wisata", icon: MapPin },
+  { value: "parking_area", label: "Area Parkir Luas", icon: ParkingCircle },
 ];
 
 const HANDOVER_YEARS = [
@@ -274,6 +302,7 @@ const RentalSidebarFilters = ({
     filters.has360View ? "360" : "",
     filters.hasDroneVideo ? "drone" : "",
     filters.hasInteractiveFloorplan ? "floor" : "",
+    (filters.nearbyFacilities || []).length > 0 ? "nearby" : "",
     filters.minRoi > 0 ? "roi" : "",
     filters.minYield > 0 ? "yield" : "",
     filters.minLandArea > 0 ? "lt" : "",
@@ -291,7 +320,7 @@ const RentalSidebarFilters = ({
       minRoi: 0, maxRoi: 50, minYield: 0, maxYield: 30,
       legalStatus: "all", foreignOwnershipFriendly: false, paymentPlanAvailable: false,
       handoverYear: "all", has3DTour: false, hasVR: false, has360View: false,
-      hasDroneVideo: false, hasInteractiveFloorplan: false, listingStatus: "all",
+      hasDroneVideo: false, hasInteractiveFloorplan: false, nearbyFacilities: [], listingStatus: "all",
     });
   };
 
@@ -729,6 +758,42 @@ const RentalSidebarFilters = ({
                 <Switch checked={filters.hasInteractiveFloorplan} onCheckedChange={v => onFiltersChange({ hasInteractiveFloorplan: v })} />
               </div>
             </div>
+          </FilterSection>
+
+          <Separator />
+
+          {/* Nearby Facilities */}
+          <FilterSection title="Fasilitas Terdekat" icon={MapPin}>
+            <div className="space-y-1">
+              {NEARBY_FACILITY_OPTIONS.map(opt => {
+                const NIcon = opt.icon;
+                const checked = (filters.nearbyFacilities || []).includes(opt.value);
+                return (
+                  <label key={opt.value} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer group hover:bg-muted/50 transition-colors">
+                    <Checkbox
+                      checked={checked}
+                      onCheckedChange={() => {
+                        const current = filters.nearbyFacilities || [];
+                        const updated = checked
+                          ? current.filter(v => v !== opt.value)
+                          : [...current, opt.value];
+                        onFiltersChange({ nearbyFacilities: updated });
+                      }}
+                    />
+                    <NIcon className="h-3.5 w-3.5 text-primary/70 shrink-0" />
+                    <span className="text-xs text-foreground group-hover:text-primary transition-colors">{opt.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+            {(filters.nearbyFacilities || []).length > 0 && (
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-[10px] text-muted-foreground">{(filters.nearbyFacilities || []).length} dipilih</span>
+                <Button variant="ghost" size="sm" className="h-6 text-[10px] px-2" onClick={() => onFiltersChange({ nearbyFacilities: [] })}>
+                  <X className="h-2.5 w-2.5 mr-1" /> Hapus
+                </Button>
+              </div>
+            )}
           </FilterSection>
 
           <Separator />

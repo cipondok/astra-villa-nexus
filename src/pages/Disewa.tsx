@@ -33,7 +33,7 @@ const DEFAULT_FILTERS: AdvancedRentalFilters = {
   minRoi: 0, maxRoi: 50, minYield: 0, maxYield: 30,
   legalStatus: "all", foreignOwnershipFriendly: false, paymentPlanAvailable: false,
   handoverYear: "all", has3DTour: false, hasVR: false, has360View: false,
-  hasDroneVideo: false, hasInteractiveFloorplan: false, listingStatus: "all",
+  hasDroneVideo: false, hasInteractiveFloorplan: false, nearbyFacilities: [], listingStatus: "all",
 };
 
 const Disewa = () => {
