@@ -159,3 +159,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.visit-reminders]
     verify_jwt = false
+
+  [functions.ai-smart-collections]
+    verify_jwt = false

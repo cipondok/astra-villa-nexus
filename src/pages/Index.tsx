@@ -67,6 +67,7 @@ const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSear
 const InvestorPathSelector = lazy(() => import("@/components/home/InvestorPathSelector"));
 const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
 const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/FeaturedPropertiesCarousel"));
+const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsShowcase"));
 
 
 type ViewMode = 'list' | 'grid' | 'map';
@@ -742,6 +743,15 @@ const Index = () => {
           <FeaturedPropertiesCarousel />
         </Suspense>
         </div>
+        </ScrollReveal>
+
+        {/* AI Smart Collections */}
+        <ScrollReveal direction="right" delay={0}>
+        <LazyRender minHeight="300px" rootMargin="400px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto mx-3 sm:mx-4" />}>
+          <Suspense fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto mx-3 sm:mx-4" />}>
+            <SmartCollectionsShowcase />
+          </Suspense>
+        </LazyRender>
         </ScrollReveal>
 
         {/* Error Message - Using Design Tokens */}
