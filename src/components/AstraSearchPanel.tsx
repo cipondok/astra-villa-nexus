@@ -3389,12 +3389,12 @@ const AstraSearchPanel = ({
       {/* Advanced Filters Modal (mobile, tablet and desktop) */}
       {showAdvancedFilters && createPortal(
         <>
-          {/* Google-style: subtle scrim overlay */}
+          {/* Overlay backdrop with smooth fade */}
           <div 
-            className="fixed inset-0 z-[99998] bg-black/20 transition-opacity" 
+            className="fixed inset-0 z-[99998] bg-black/30 backdrop-blur-[2px] animate-in fade-in duration-200" 
             onClick={() => setShowAdvancedFilters(false)}
           />
-          {/* Google-style clean filter panel */}
+          {/* Filter panel */}
           <div 
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
@@ -3402,8 +3402,9 @@ const AstraSearchPanel = ({
             onTouchMove={(e) => e.stopPropagation()}
             className={cn(
               "fixed z-[99999] rounded-2xl shadow-2xl flex flex-col",
-              "bg-popover/95 backdrop-blur-2xl border border-border/40",
+              "bg-popover border border-border/50",
               "touch-auto select-none",
+              "animate-in slide-in-from-right-4 fade-in duration-200",
               // Mobile: full-width with margins
               "inset-x-2 top-14 bottom-3",
               // Tablet (sm): slightly more padding
@@ -3414,19 +3415,17 @@ const AstraSearchPanel = ({
               "lg:w-[460px]"
             )}
             style={{ 
-              animation: 'scaleIn 0.15s cubic-bezier(0.2, 0, 0, 1)',
-              transformOrigin: 'top right',
               overscrollBehavior: 'contain',
             }}
           >
-            {/* Google-style Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-border/40 shrink-0">
-              <h3 className="text-sm font-semibold text-foreground">Filters</h3>
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/50 shrink-0">
+              <h3 className="text-sm font-semibold text-foreground tracking-tight">Filters</h3>
               <div className="flex items-center gap-2">
                 {getActiveFiltersCount() > 0 && (
                   <button
                     onClick={clearAllFilters}
-                    className="text-xs font-medium text-primary hover:underline"
+                    className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
                   >
                     Reset all
                   </button>

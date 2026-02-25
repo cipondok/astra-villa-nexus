@@ -1,31 +1,30 @@
 import { useEffect, useRef } from 'react';
 
 export const useScrollLock = (lock: boolean) => {
-  const scrollYRef = useRef(0);
+  const scrollbarWidthRef = useRef(0);
 
   useEffect(() => {
     if (lock) {
-      scrollYRef.current = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollYRef.current}px`;
-      document.body.style.left = '0';
-      document.body.style.right = '0';
+      // Calculate scrollbar width to prevent layout shift
+      scrollbarWidthRef.current = window.innerWidth - document.documentElement.clientWidth;
+
+      // Prevent scroll without changing position (no page jump)
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
+      // Compensate for scrollbar disappearance to prevent layout shift
+      if (scrollbarWidthRef.current > 0) {
+        document.body.style.paddingRight = `${scrollbarWidthRef.current}px`;
+      }
     } else {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
-      window.scrollTo(0, scrollYRef.current);
+      document.body.style.paddingRight = '';
     }
 
     return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     };
   }, [lock]);
 };
