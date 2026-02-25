@@ -781,8 +781,8 @@ const Index = () => {
         {/* Gold gradient divider between hero and content */}
         <div className="relative h-16 sm:h-20 -mt-1 overflow-hidden" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-b from-background/0 via-background to-background" />
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-gold-primary/30 to-transparent" />
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-8 bg-gradient-to-r from-transparent via-gold-primary/5 to-transparent blur-xl" />
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-gold-primary/30 dark:via-gold-primary/40 to-transparent" />
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-8 bg-gradient-to-r from-transparent via-gold-primary/5 dark:via-gold-primary/10 to-transparent blur-xl" />
         </div>
 
         {/* Featured Properties Carousel */}

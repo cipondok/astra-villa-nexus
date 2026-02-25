@@ -392,8 +392,8 @@ const config: Config = {
           "100%": { opacity: "1", transform: "translateY(0)", filter: "blur(0)" },
         },
         "hero-brand-glow": {
-          "0%, 100%": { textShadow: "0 0 20px hsl(var(--gold-primary) / 0.3), 0 0 60px hsl(var(--gold-primary) / 0.1)" },
-          "50%": { textShadow: "0 0 30px hsl(var(--gold-primary) / 0.5), 0 0 80px hsl(var(--gold-primary) / 0.2)" },
+          "0%, 100%": { textShadow: "0 0 20px hsl(var(--gold-primary) / 0.35), 0 0 60px hsl(var(--gold-primary) / 0.12)" },
+          "50%": { textShadow: "0 0 35px hsl(var(--gold-primary) / 0.55), 0 0 90px hsl(var(--gold-primary) / 0.25)" },
         },
         "shimmer-slide": {
           "0%": { transform: "translateX(-100%) skewX(-12deg)" },
