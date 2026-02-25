@@ -1,16 +1,26 @@
 
 
-## Completed Enhancements
+## Add Gold Hover Micro-Interactions to Property Cards
 
-1. ✅ **Search panel entrance animation** — fade-in, slide-up, scale with blur on hero load (0.3s delay, 0.8s duration)
-2. ✅ **Gold hover micro-interactions on property cards** — gold border glow, shadow enhancement, subtle lift (-translate-y-1) on hover
-3. ✅ **Hero-to-content gold divider** — decorative gradient line with gold glow between hero and featured section
-4. ✅ **Gold shimmer loading skeletons** — all Skeleton components and PropertyCardSkeleton use gold-primary/15 shimmer instead of white/gray
-5. ✅ **Mobile & accessibility optimizations** — `prefers-reduced-motion` disables all animations; mobile parallax disabled
+### Current State
+- **PropertyCard** — Already has gold hover: `hover:border-gold-primary/40`, `hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)]`, `hover:-translate-y-1`
+- **CompactPropertyCard** — Uses generic `hover:shadow-primary/10`, no gold-specific border glow
+- **ASTRAVillaPropertyCard** — Uses generic `hover:border-primary/40`, `hover:shadow-primary/10`, no gold-specific styling
 
-## Next Steps
+### Plan
 
-1. **Add scroll-triggered reveal animations** — fade-in property sections and widgets as they enter the viewport using IntersectionObserver
-2. **Implement dark mode gold theme refinements** — ensure gold accents have proper contrast and glow effects in dark mode
-3. **Add page transition animations** — smooth transitions when navigating between pages using framer-motion
-4. **Performance audit** — run Lighthouse and optimize LCP, CLS, and FID scores
+**1. CompactPropertyCard (`src/components/property/CompactPropertyCard.tsx`)**
+- Replace `hover:shadow-xl hover:shadow-primary/10` with `hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)]`
+- Replace `border border-border` with `border border-border hover:border-gold-primary/40`
+- Keep existing `hover:-translate-y-1` lift effect
+
+**2. ASTRAVillaPropertyCard (`src/components/property/ASTRAVillaPropertyCard.tsx`)**
+- Replace `hover:border-primary/40` with `hover:border-gold-primary/40`
+- Replace `hover:shadow-xl hover:shadow-primary/10` with `hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)]`
+- Keep existing `hover:-translate-y-1` lift effect
+
+**3. SimilarProperties cards** — Already uses ASTRAVillaPropertyCard, so changes propagate automatically.
+
+### Scope
+Three class string updates across two files. No new CSS or keyframes needed — leverages the existing `--gold-primary` CSS variable.
+
