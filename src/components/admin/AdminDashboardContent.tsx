@@ -77,6 +77,7 @@ import {
   TestingDashboard,
   VIPAnalyticsDashboard,
   BookingManagement,
+  AdminRentalManagement,
   TransactionManagementTabs,
   InvestorSettingsHub,
   WebsiteDesignControl,
@@ -205,6 +206,7 @@ const renderSection = (
     case "ai-assistant":        return <AIPropertyAssistant />;
     case "booking-payment-settings": return <BookingPaymentSettings />;
     case "booking-management":  return <BookingManagement />;
+    case "rental-management":   return <AdminRentalManagement />;
     case "video-tours":         return <VideoTourManager />;
     case "vr-tour-settings":    return <VRTourSettings />;
     case "bpjs-api-settings":   return <BPJSAPISettings />;
