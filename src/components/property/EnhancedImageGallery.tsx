@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -33,6 +33,7 @@ const EnhancedImageGallery = ({
   const [showFullscreen, setShowFullscreen] = useState(false);
   const [imageError, setImageError] = useState<{ [key: number]: boolean }>({});
   const [retryCount, setRetryCount] = useState<{ [key: number]: number }>({});
+  const [loadedImages, setLoadedImages] = useState<{ [key: number]: boolean }>({});
   const MAX_RETRIES = 3;
 
   if (!images || images.length === 0) {
@@ -70,6 +71,7 @@ const EnhancedImageGallery = ({
   const handleImageLoad = (index: number) => {
     setImageError(prev => ({ ...prev, [index]: false }));
     setRetryCount(prev => ({ ...prev, [index]: 0 }));
+    setLoadedImages(prev => ({ ...prev, [index]: true }));
   };
 
   const getImageSrc = (url: string, index: number) => {
@@ -113,6 +115,13 @@ const EnhancedImageGallery = ({
         {/* Main Image Display */}
         <div className="relative group">
           <div className="relative aspect-[16/9] overflow-hidden rounded-xl sm:rounded-2xl bg-muted">
+            {/* Gold shimmer placeholder */}
+            {!loadedImages[currentImageIndex] && !imageError[currentImageIndex] && (
+              <div className="absolute inset-0 bg-muted overflow-hidden z-[1]">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[hsl(var(--gold-primary)/0.1)] to-transparent"
+                     style={{ animation: 'shimmer 1.5s infinite' }} />
+              </div>
+            )}
             {imageError[currentImageIndex] ? (
               <div className="w-full h-full flex items-center justify-center bg-muted">
                 <img
@@ -126,9 +135,12 @@ const EnhancedImageGallery = ({
                 key={`img-${currentImageIndex}-${retryCount[currentImageIndex] || 0}`}
                 src={getImageSrc(currentImage, currentImageIndex)}
                 alt={`${title} - Image ${currentImageIndex + 1}`}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 ${
+                  loadedImages[currentImageIndex] ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'
+                }`}
                 onError={() => handleImageError(currentImageIndex)}
                 onLoad={() => handleImageLoad(currentImageIndex)}
+                fetchPriority={currentImageIndex === 0 ? "high" : undefined}
               />
             )}
 
@@ -296,7 +308,11 @@ const EnhancedImageGallery = ({
                       key={`thumb-${index}-${retryCount[index] || 0}`}
                       src={getImageSrc(image, index)}
                       alt={`Thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className={`w-full h-full object-cover transition-opacity duration-300 ${
+                        loadedImages[index] ? 'opacity-100' : 'opacity-0'
+                      }`}
+                      loading="lazy"
+                      decoding="async"
                       onError={() => handleImageError(index)}
                       onLoad={() => handleImageLoad(index)}
                     />
