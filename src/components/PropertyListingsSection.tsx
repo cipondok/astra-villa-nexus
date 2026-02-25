@@ -167,7 +167,7 @@ const PropertyListingsSection = ({
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
               {displayProperties.map((property, index) => (
-                <div key={`${property.id}-${index}`}>
+                <ScrollReveal key={`${property.id}-${index}`} direction="up" delay={index * 100} distance={20}>
                   <CompactPropertyCard
                     property={property}
                     language={language || "en"}
@@ -176,7 +176,7 @@ const PropertyListingsSection = ({
                     onView={() => handleViewDetails(property.id)}
                     onView3D={handleView3D}
                   />
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           )}

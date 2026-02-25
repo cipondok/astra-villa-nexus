@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, User, Building2, TrendingUp, Play, Pause } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
+import ScrollReveal from "@/components/ui/ScrollReveal";
 import PropertyDetailModal from "@/components/property/PropertyDetailModal";
 import Property3DViewModal from "@/components/property/Property3DViewModal";
 import { BaseProperty } from "@/types/property";
@@ -429,20 +430,22 @@ const AutoScrollCarousel = ({
                     : `${100 / Math.min(properties.length, itemsPerView)}%`
                 }}
               >
-                <CompactPropertyCard
-                  property={property}
-                  language="en"
-                  isSaved={false}
-                  onSave={() => {}}
-                  onView={() => {
-                    setSelectedProperty(property);
-                    setShowDetailModal(true);
-                  }}
-                  onView3D={() => {
-                    setSelectedProperty(property);
-                    setShow3DModal(true);
-                  }}
-                />
+                <ScrollReveal direction="up" delay={index * 100} distance={20}>
+                  <CompactPropertyCard
+                    property={property}
+                    language="en"
+                    isSaved={false}
+                    onSave={() => {}}
+                    onView={() => {
+                      setSelectedProperty(property);
+                      setShowDetailModal(true);
+                    }}
+                    onView3D={() => {
+                      setSelectedProperty(property);
+                      setShow3DModal(true);
+                    }}
+                  />
+                </ScrollReveal>
               </div>
             ))}
           </div>
