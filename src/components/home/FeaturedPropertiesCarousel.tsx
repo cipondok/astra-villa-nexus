@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, MapPin, Bed, Bath, Maximize, Star, ArrowRigh
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import ScrollReveal from "@/components/ui/ScrollReveal";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { useTranslation } from "@/i18n/useTranslation";
 import { cn } from "@/lib/utils";
@@ -132,44 +133,46 @@ export default function FeaturedPropertiesCarousel() {
     <section className="py-6 sm:py-8 bg-gradient-to-b from-background via-muted/30 to-background overflow-hidden">
       <div className="max-w-7xl mx-auto px-3 sm:px-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4 sm:mb-5">
-          <div className="flex items-center gap-2">
-            <div className="h-px w-6 sm:w-10 bg-gradient-to-r from-transparent to-primary/40" />
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
-            <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground tracking-tight">
-              {t("indexPage.featuredProperties")}
-            </h2>
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
-            <div className="h-px w-6 sm:w-10 bg-gradient-to-l from-transparent to-primary/40" />
-          </div>
+        <ScrollReveal direction="up" distance={16} duration={500}>
+          <div className="flex items-center justify-between mb-4 sm:mb-5">
+            <div className="flex items-center gap-2">
+              <div className="h-px w-6 sm:w-10 bg-gradient-to-r from-transparent to-primary/40" />
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground tracking-tight">
+                {t("indexPage.featuredProperties")}
+              </h2>
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <div className="h-px w-6 sm:w-10 bg-gradient-to-l from-transparent to-primary/40" />
+            </div>
 
-          <div className="flex items-center gap-1.5">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => scroll("left")}
-              className="h-8 w-8 rounded-full border-border hover:border-primary/40 hover:bg-primary/5"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => scroll("right")}
-              className="h-8 w-8 rounded-full border-border hover:border-primary/40 hover:bg-primary/5"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate("/dijual")}
-              className="hidden sm:flex items-center gap-1 text-xs text-primary hover:text-primary/80 ml-1"
-            >
-              View All <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
+            <div className="flex items-center gap-1.5">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => scroll("left")}
+                className="h-8 w-8 rounded-full border-border hover:border-primary/40 hover:bg-primary/5"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => scroll("right")}
+                className="h-8 w-8 rounded-full border-border hover:border-primary/40 hover:bg-primary/5"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/dijual")}
+                className="hidden sm:flex items-center gap-1 text-xs text-primary hover:text-primary/80 ml-1"
+              >
+                View All <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Carousel */}
         <div

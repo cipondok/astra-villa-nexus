@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Building2, Calculator, Landmark, Map, MapPin, TrendingUp, Ruler, BarChart3, LucideIcon } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
+import ScrollReveal from '@/components/ui/ScrollReveal';
 
 interface Feature {
   icon: LucideIcon;
@@ -32,19 +33,21 @@ const AstraVillaFeatures: React.FC<AstraVillaFeaturesProps> = ({ variant = 'defa
   return (
     <div className={`rounded-xl md:rounded-2xl ${isHero ? 'p-0' : 'p-1.5 sm:p-2 md:p-3'}`}>
       {/* Section Header */}
-      <div className={`flex items-center justify-center gap-2 ${isHero ? 'mb-2.5' : 'mb-2.5 sm:mb-3 md:mb-4'}`}>
-        <div className="h-px w-6 sm:w-10 bg-gradient-to-r from-transparent to-gold-primary/30" />
-        <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />
-        <h2 className={`font-bold uppercase tracking-widest ${
-          isHero
-            ? 'text-[10px] md:text-xs text-foreground/80'
-            : 'text-[9px] sm:text-xs md:text-sm text-foreground/80'
-        }`}>
-          {t('home.aiToolsFeatures')}
-        </h2>
-        <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />
-        <div className="h-px w-6 sm:w-10 bg-gradient-to-l from-transparent to-gold-primary/30" />
-      </div>
+      <ScrollReveal direction="up" distance={16} duration={500}>
+        <div className={`flex items-center justify-center gap-2 ${isHero ? 'mb-2.5' : 'mb-2.5 sm:mb-3 md:mb-4'}`}>
+          <div className="h-px w-6 sm:w-10 bg-gradient-to-r from-transparent to-gold-primary/30" />
+          <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />
+          <h2 className={`font-bold uppercase tracking-widest ${
+            isHero
+              ? 'text-[10px] md:text-xs text-foreground/80'
+              : 'text-[9px] sm:text-xs md:text-sm text-foreground/80'
+          }`}>
+            {t('home.aiToolsFeatures')}
+          </h2>
+          <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />
+          <div className="h-px w-6 sm:w-10 bg-gradient-to-l from-transparent to-gold-primary/30" />
+        </div>
+      </ScrollReveal>
 
       {/* Features Grid */}
       <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 md:gap-2.5">

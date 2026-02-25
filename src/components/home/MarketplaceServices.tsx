@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Store, Wrench, Paintbrush, Hammer, Zap, Droplets, Shield, TreePine, LucideIcon } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
+import ScrollReveal from '@/components/ui/ScrollReveal';
 
 interface Service {
   icon: LucideIcon;
@@ -32,7 +33,8 @@ const MarketplaceServices = () => {
   return (
     <div className="rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3">
       {/* Section Header */}
-      <div className="mb-2.5 sm:mb-3 flex items-center justify-between">
+      <ScrollReveal direction="up" distance={16} duration={500}>
+        <div className="mb-2.5 sm:mb-3 flex items-center justify-between">
         <div className="flex items-center gap-1.5 sm:gap-2">
           <div className="h-px w-4 sm:w-6 bg-gradient-to-r from-transparent to-gold-primary/30" />
           <Store className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-gold-primary" />
@@ -48,6 +50,7 @@ const MarketplaceServices = () => {
           {t('marketplace.viewAll')}
         </button>
       </div>
+      </ScrollReveal>
 
       {/* Services Grid */}
       <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 md:gap-2.5">
