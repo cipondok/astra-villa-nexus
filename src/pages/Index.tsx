@@ -47,6 +47,7 @@ import ScrollReveal from "@/components/ui/ScrollReveal";
 const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
 const PropertyViewModeToggle = lazy(() => import("@/components/search/PropertyViewModeToggle"));
 const PropertyListView = lazy(() => import("@/components/search/PropertyListView"));
+const SearchPagination = lazy(() => import("@/components/search/SearchPagination"));
 const PropertyMapView = lazy(() => import("@/components/search/PropertyMapView"));
 const PropertyGridView = lazy(() => import("@/components/search/PropertyGridView"));
 const ActiveFilterPills = lazy(() => import("@/components/search/ActiveFilterPills").then(m => ({ default: m.ActiveFilterPills })));
@@ -82,6 +83,8 @@ const Index = () => {
   const [searchError, setSearchError] = useState<string | null>(null);
   const [quickSearch, setQuickSearch] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [currentPage, setCurrentPage] = useState(1);
+  const RESULTS_PER_PAGE = 15;
   const [filters, setFilters] = useState<PropertyFilters>({
     searchQuery: "",
     priceRange: [0, 50000000000],
@@ -261,6 +264,7 @@ const Index = () => {
 
     setIsSearching(true);
     setHasSearched(true);
+    setCurrentPage(1);
     setSearchError(null);
 
     try {
@@ -461,6 +465,12 @@ const Index = () => {
     gcTime: 30 * 60 * 1000,    // Keep in cache for 30 minutes
   });
 
+  const totalPages = Math.ceil(searchResults.length / RESULTS_PER_PAGE);
+  const paginatedResults = useMemo(() => {
+    const start = (currentPage - 1) * RESULTS_PER_PAGE;
+    return searchResults.slice(start, start + RESULTS_PER_PAGE);
+  }, [searchResults, currentPage, RESULTS_PER_PAGE]);
+
 
   const handlePropertyClick = (property: BaseProperty) => {
     trackInteraction({
@@ -480,6 +490,7 @@ const Index = () => {
   const handleFiltersChange = (newFilters: PropertyFilters) => {
     setFilters(newFilters);
     setQuickSearch(newFilters.searchQuery);
+    setCurrentPage(1);
   };
 
   const handleClearFilters = () => {
@@ -814,7 +825,7 @@ const Index = () => {
         <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-hero-fade via-hero-fade/60 to-background">
           <div className="w-full space-y-4">
             {hasSearched ? (
-              <section className="bg-primary/10 backdrop-blur-sm rounded-xl shadow-md border border-primary/15 dark:bg-primary/5 dark:border-primary/10">
+              <section id="search-results-section" className="bg-primary/10 backdrop-blur-sm rounded-xl shadow-md border border-primary/15 dark:bg-primary/5 dark:border-primary/10">
                 <div className="p-3 sm:p-4 md:p-6">
                   {/* Active Filter Pills */}
                   <Suspense fallback={null}>
@@ -860,7 +871,7 @@ const Index = () => {
                   {viewMode === 'grid' && !isSearching && (
                     <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-64 rounded-lg border border-border/40" />)}</div>}>
                       <PropertyGridView
-                        properties={searchResults}
+                        properties={paginatedResults}
                         onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
@@ -887,7 +898,7 @@ const Index = () => {
                   {viewMode === 'list' && !isSearching && (
                     <Suspense fallback={<div className="space-y-4">{[...Array(4)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-32 rounded-lg border border-border/40" />)}</div>}>
                       <PropertyListView
-                        properties={searchResults}
+                        properties={paginatedResults}
                         onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
@@ -916,6 +927,22 @@ const Index = () => {
                       <PropertyMapView
                         properties={searchResults}
                         onPropertyClick={handlePropertyClick}
+                      />
+                    </Suspense>
+                   )}
+
+                  {/* Pagination */}
+                  {!isSearching && searchResults.length > RESULTS_PER_PAGE && (
+                    <Suspense fallback={null}>
+                      <SearchPagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalCount={searchResults.length}
+                        pageSize={RESULTS_PER_PAGE}
+                        onPageChange={(page) => {
+                          setCurrentPage(page);
+                          document.getElementById('search-results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }}
                       />
                     </Suspense>
                   )}
