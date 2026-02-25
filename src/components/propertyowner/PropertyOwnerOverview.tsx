@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { usePropertyOwnerData } from "@/hooks/usePropertyOwnerData";
 import OwnerRentalManagement from "./OwnerRentalManagement";
 import OwnerMaintenanceManagement from "./OwnerMaintenanceManagement";
+import OwnerRentalAnalytics from "./OwnerRentalAnalytics";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
 import { 
@@ -314,45 +315,7 @@ const PropertyOwnerOverview = () => {
 
         {/* Insights Tab */}
         <TabsContent value="insights" className="space-y-1.5 mt-1.5">
-          <Card className="p-2">
-            <CardHeader className="p-0 pb-1.5">
-              <CardTitle className="text-[10px] flex items-center gap-1">
-                <TrendingUp className="h-3 w-3 text-chart-1" /> Performa
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0 space-y-1">
-              {[
-                { label: 'Total Properti', value: stats.totalProperties, color: '' },
-                { label: 'Listing Aktif', value: stats.activeListings, color: 'text-chart-1' },
-                { label: 'Menunggu Approval', value: stats.pendingApprovals, color: 'text-chart-3' },
-                { label: 'Disimpan', value: stats.savedCount, color: 'text-destructive' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-1.5 bg-muted/50 rounded">
-                  <span className="text-[9px]">{item.label}</span>
-                  <span className={`text-[10px] font-bold ${item.color}`}>{item.value}</span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card className="p-2">
-            <CardHeader className="p-0 pb-1.5">
-              <CardTitle className="text-[10px] flex items-center gap-1">
-                <Star className="h-3 w-3 text-chart-3" /> Tips Optimasi
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0 space-y-1">
-              {[
-                { text: '📸 Foto berkualitas tinggi +40% views', bg: 'bg-primary/10', color: 'text-primary' },
-                { text: '📝 Deskripsi lengkap = 2x inquiry', bg: 'bg-chart-1/10', color: 'text-chart-1' },
-                { text: '💰 Harga kompetitif jual lebih cepat', bg: 'bg-chart-5/10', color: 'text-chart-5' },
-              ].map((tip, i) => (
-                <div key={i} className={`p-1.5 rounded ${tip.bg}`}>
-                  <p className={`text-[8px] ${tip.color}`}>{tip.text}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+          <OwnerRentalAnalytics />
         </TabsContent>
       </Tabs>
     </div>
