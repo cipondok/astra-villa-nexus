@@ -236,22 +236,22 @@ body[data-scroll-locked] {
   .dark {
     /* Dark Mode - Deep Ocean Blue Theme */
     --background: 210 55% 8%; /* Deep ocean */
-    --foreground: 200 15% 92%; /* Light text */
+    --foreground: 200 12% 93%; /* Slightly brighter for better readability */
     --card: 210 45% 13%; /* Dark blue card */
-    --card-foreground: 200 15% 92%;
+    --card-foreground: 200 12% 93%;
     --popover: 210 50% 11%;
-    --popover-foreground: 200 15% 92%;
+    --popover-foreground: 200 12% 93%;
     --primary: 200 100% 55%; /* Bright sky blue */
     --primary-foreground: 0 0% 100%;
     --secondary: 210 35% 18%;
-    --secondary-foreground: 200 15% 92%;
+    --secondary-foreground: 200 12% 88%;
     --muted: 210 30% 16%;
-    --muted-foreground: 200 15% 60%;
+    --muted-foreground: 200 15% 65%; /* Boosted from 60% for WCAG AA contrast */
     --accent: 90 75% 50%; /* Lime green */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
-    --border: 210 30% 22%;
+    --border: 210 25% 24%; /* Slightly brighter for better card separation */
     --input: 210 35% 16%;
     --ring: 200 100% 55%;
     
@@ -263,7 +263,7 @@ body[data-scroll-locked] {
     --dark-bg: 210 55% 5%;
     --dark-card: 210 45% 10%;
     --text-light: 0 0% 100%;
-    --text-muted: 200 15% 60%;
+    --text-muted: 200 15% 65%;
     
     /* Hero & Search Section Gradients - Dark Mode */
     --hero-from: 210 55% 8%;
@@ -282,6 +282,11 @@ body[data-scroll-locked] {
     --titanium-light: 210 30% 16%;
     --titanium-white: 0 0% 100%;
     --samsung-blue-primary: 200 100% 55%;
+
+    /* Dark mode shadow tokens */
+    --shadow-card: 0 4px 24px hsl(210 60% 3% / 0.6), 0 0 0 1px hsl(200 50% 30% / 0.12);
+    --shadow-card-hover: 0 8px 32px hsl(210 60% 3% / 0.7), 0 0 0 1px hsl(45 100% 60% / 0.15);
+    --shadow-elevated: 0 12px 40px hsl(210 60% 3% / 0.8), 0 0 0 1px hsl(200 50% 40% / 0.15);
   }
 
   * {
@@ -1136,7 +1141,11 @@ body[data-scroll-locked] {
 
   .card-smooth:hover {
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    box-shadow: 0 20px 40px hsl(var(--foreground) / 0.08);
+  }
+
+  .dark .card-smooth:hover {
+    box-shadow: 0 20px 40px hsl(210 60% 3% / 0.6), 0 0 0 1px hsl(var(--gold-primary) / 0.1);
   }
 
   .gold-glow-hover {
@@ -1164,7 +1173,7 @@ body[data-scroll-locked] {
   }
 
   .gold-glow-hover:hover {
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 10px hsl(var(--gold-primary) / 0.3);
     animation: gold-pulse-local 2s infinite;
   }
 
@@ -1387,7 +1396,11 @@ body[data-scroll-locked] {
 
   .macos-smooth-hover:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px hsl(var(--foreground) / 0.06);
+  }
+
+  .dark .macos-smooth-hover:hover {
+    box-shadow: 0 10px 25px hsl(210 60% 3% / 0.5);
   }
 
   .macos-glass-effect {
@@ -1585,18 +1598,35 @@ body[data-scroll-locked] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground));
+  background: hsl(var(--muted-foreground) / 0.4);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary));
+  background: hsl(var(--primary) / 0.7);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: hsl(210 55% 6%);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(200 30% 30%);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--gold-primary) / 0.6);
 }
 
 /* Selection Styling */
 ::selection {
   background: hsl(var(--primary) / 0.2);
-  color: hsl(var(--primary-foreground));
+  color: hsl(var(--foreground));
+}
+
+.dark ::selection {
+  background: hsl(var(--gold-primary) / 0.25);
+  color: hsl(0 0% 100%);
 }
 
 /* Accessibility: Reduce motion for users who prefer it */
