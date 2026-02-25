@@ -583,7 +583,7 @@ const Index = () => {
           })}
 
             {/* Floating ASTRA Villa Property Branding */}
-            <div className="absolute inset-0 z-20 pointer-events-none flex items-center justify-center">
+            <div className="absolute inset-0 z-20 pointer-events-none flex items-start justify-center pt-[8%] sm:pt-[6%]">
               <div className="flex flex-col items-center text-center gap-4 sm:gap-5">
                 {/* Premium Real Estate Badge */}
                 <span 
