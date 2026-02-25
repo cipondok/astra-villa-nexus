@@ -3,33 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SlidersHorizontal } from "lucide-react";
 import RentalSidebarFilters from "./RentalSidebarFilters";
-
-interface RentalFilters {
-  searchTerm: string;
-  propertyType: string;
-  province: string;
-  city: string;
-  priceRange: string;
-  rentalPeriod: string[];
-  checkInDate: Date | undefined;
-  checkOutDate: Date | undefined;
-  onlineBookingOnly: boolean;
-  minimumDays: number;
-  nearMe: boolean;
-  userLocation: { lat: number; lng: number } | null;
-  bedrooms: string;
-  bathrooms: string;
-  minPrice: number;
-  maxPrice: number;
-  sortBy: string;
-  furnishing?: string;
-  minArea?: number;
-  maxArea?: number;
-}
+import type { AdvancedRentalFilters } from "./RentalSidebarFilters";
 
 interface Props {
-  filters: RentalFilters;
-  onFiltersChange: (updates: Partial<RentalFilters>) => void;
+  filters: AdvancedRentalFilters;
+  onFiltersChange: (updates: Partial<AdvancedRentalFilters>) => void;
   propertyTypes: string[];
   cities: string[];
   resultCount: number;
