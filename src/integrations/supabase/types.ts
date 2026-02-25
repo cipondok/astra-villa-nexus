@@ -14616,27 +14616,42 @@ export type Database = {
           bathrooms: number | null
           bedrooms: number | null
           booking_type: string | null
+          building_area_sqm: number | null
           city: string | null
           created_at: string | null
           description: string | null
           development_status: string
           discount_percentage: number | null
+          floors: number | null
+          furnishing: string | null
+          garage_count: number | null
+          handover_year: number | null
+          has_360_view: boolean | null
+          has_drone_video: boolean | null
+          has_interactive_floorplan: boolean | null
+          has_pool: boolean | null
+          has_vr: boolean | null
           id: string
           image_urls: string[] | null
           images: string[] | null
           investor_highlight: boolean | null
           is_featured: boolean | null
+          land_area_sqm: number | null
+          legal_status: string | null
           listing_type: string
           location: string
           minimum_rental_days: number | null
           online_booking_enabled: boolean | null
           owner_id: string
           owner_type: string | null
+          payment_plan_available: boolean | null
           price: number | null
           property_features: Json | null
           property_type: string
           rental_periods: string[] | null
           rental_terms: Json | null
+          rental_yield_percentage: number | null
+          roi_percentage: number | null
           seo_description: string | null
           seo_title: string | null
           state: string | null
@@ -14645,6 +14660,7 @@ export type Database = {
           thumbnail_url: string | null
           title: string
           updated_at: string | null
+          view_type: string | null
           virtual_tour_url: string | null
           wna_eligible: boolean | null
         }
@@ -14659,27 +14675,42 @@ export type Database = {
           bathrooms?: number | null
           bedrooms?: number | null
           booking_type?: string | null
+          building_area_sqm?: number | null
           city?: string | null
           created_at?: string | null
           description?: string | null
           development_status?: string
           discount_percentage?: number | null
+          floors?: number | null
+          furnishing?: string | null
+          garage_count?: number | null
+          handover_year?: number | null
+          has_360_view?: boolean | null
+          has_drone_video?: boolean | null
+          has_interactive_floorplan?: boolean | null
+          has_pool?: boolean | null
+          has_vr?: boolean | null
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
           investor_highlight?: boolean | null
           is_featured?: boolean | null
+          land_area_sqm?: number | null
+          legal_status?: string | null
           listing_type: string
           location: string
           minimum_rental_days?: number | null
           online_booking_enabled?: boolean | null
           owner_id: string
           owner_type?: string | null
+          payment_plan_available?: boolean | null
           price?: number | null
           property_features?: Json | null
           property_type: string
           rental_periods?: string[] | null
           rental_terms?: Json | null
+          rental_yield_percentage?: number | null
+          roi_percentage?: number | null
           seo_description?: string | null
           seo_title?: string | null
           state?: string | null
@@ -14688,6 +14719,7 @@ export type Database = {
           thumbnail_url?: string | null
           title: string
           updated_at?: string | null
+          view_type?: string | null
           virtual_tour_url?: string | null
           wna_eligible?: boolean | null
         }
@@ -14702,27 +14734,42 @@ export type Database = {
           bathrooms?: number | null
           bedrooms?: number | null
           booking_type?: string | null
+          building_area_sqm?: number | null
           city?: string | null
           created_at?: string | null
           description?: string | null
           development_status?: string
           discount_percentage?: number | null
+          floors?: number | null
+          furnishing?: string | null
+          garage_count?: number | null
+          handover_year?: number | null
+          has_360_view?: boolean | null
+          has_drone_video?: boolean | null
+          has_interactive_floorplan?: boolean | null
+          has_pool?: boolean | null
+          has_vr?: boolean | null
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
           investor_highlight?: boolean | null
           is_featured?: boolean | null
+          land_area_sqm?: number | null
+          legal_status?: string | null
           listing_type?: string
           location?: string
           minimum_rental_days?: number | null
           online_booking_enabled?: boolean | null
           owner_id?: string
           owner_type?: string | null
+          payment_plan_available?: boolean | null
           price?: number | null
           property_features?: Json | null
           property_type?: string
           rental_periods?: string[] | null
           rental_terms?: Json | null
+          rental_yield_percentage?: number | null
+          roi_percentage?: number | null
           seo_description?: string | null
           seo_title?: string | null
           state?: string | null
@@ -14731,6 +14778,7 @@ export type Database = {
           thumbnail_url?: string | null
           title?: string
           updated_at?: string | null
+          view_type?: string | null
           virtual_tour_url?: string | null
           wna_eligible?: boolean | null
         }
