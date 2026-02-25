@@ -17128,6 +17128,41 @@ export type Database = {
           },
         ]
       }
+      rental_messages: {
+        Row: {
+          booking_id: string
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          sender_id: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          sender_id: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_messages_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       report_automation_config: {
         Row: {
           ai_insights_enabled: boolean | null
@@ -26779,6 +26814,10 @@ export type Database = {
       is_admin_user: { Args: never; Returns: boolean }
       is_authenticated: { Args: never; Returns: boolean }
       is_authorized_support_user: { Args: never; Returns: boolean }
+      is_booking_participant: {
+        Args: { _booking_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_current_user_admin: { Args: never; Returns: boolean }
       is_ip_blocked: { Args: { check_ip: string }; Returns: boolean }
       is_ip_whitelisted: { Args: { check_ip: string }; Returns: boolean }

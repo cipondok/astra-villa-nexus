@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { 
   Home, Clock, CalendarDays, MapPin, Users, Star,
-  TrendingUp, AlertCircle, CheckCircle
+  TrendingUp, AlertCircle, CheckCircle, MessageSquare
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
+import RentalChatDialog from "./RentalChatDialog";
 
 export interface RentalDetail {
   id: string;
@@ -36,6 +39,7 @@ interface RentalPropertyCardProps {
 }
 
 const RentalPropertyCard = ({ rental, onClick }: RentalPropertyCardProps) => {
+  const [chatOpen, setChatOpen] = useState(false);
   const now = new Date();
   const start = new Date(rental.startDate);
   const end = new Date(rental.endDate);
@@ -126,19 +130,36 @@ const RentalPropertyCard = ({ rental, onClick }: RentalPropertyCardProps) => {
         <Progress value={paymentPercent} className="h-1" />
       </div>
 
-      {/* Bottom row: compliance + rating */}
+      {/* Bottom row: compliance + rating + chat */}
       <div className="flex items-center justify-between pt-1 border-t border-border">
         <div className="flex items-center gap-1">
           <CheckCircle className={`h-2.5 w-2.5 ${rental.complianceScore >= 80 ? 'text-chart-1' : rental.complianceScore >= 50 ? 'text-chart-3' : 'text-destructive'}`} />
           <span className="text-[8px] text-muted-foreground">Compliance: {rental.complianceScore}%</span>
         </div>
-        {rental.rating && (
-          <div className="flex items-center gap-0.5">
-            <Star className="h-2.5 w-2.5 text-chart-3 fill-chart-3" />
-            <span className="text-[8px] font-medium text-foreground">{rental.rating.toFixed(1)}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-1.5">
+          {rental.rating && (
+            <div className="flex items-center gap-0.5">
+              <Star className="h-2.5 w-2.5 text-chart-3 fill-chart-3" />
+              <span className="text-[8px] font-medium text-foreground">{rental.rating.toFixed(1)}</span>
+            </div>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-5 w-5 p-0"
+            onClick={(e) => { e.stopPropagation(); setChatOpen(true); }}
+          >
+            <MessageSquare className="h-3 w-3 text-primary" />
+          </Button>
+        </div>
       </div>
+
+      <RentalChatDialog
+        open={chatOpen}
+        onOpenChange={setChatOpen}
+        bookingId={rental.id}
+        propertyTitle={rental.propertyTitle}
+      />
     </Card>
   );
 };
