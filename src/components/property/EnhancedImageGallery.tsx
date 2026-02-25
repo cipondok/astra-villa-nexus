@@ -140,7 +140,7 @@ const EnhancedImageGallery = ({
                 }`}
                 onError={() => handleImageError(currentImageIndex)}
                 onLoad={() => handleImageLoad(currentImageIndex)}
-                fetchPriority={currentImageIndex === 0 ? "high" : undefined}
+                ref={(el) => { if (el && currentImageIndex === 0) el.setAttribute('fetchpriority', 'high'); }}
               />
             )}
 

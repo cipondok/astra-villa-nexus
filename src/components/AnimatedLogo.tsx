@@ -24,10 +24,10 @@ const AnimatedLogo = ({
   return (
     <div className={`flex items-center ${className}`.trim()}>
       <img
+        ref={(el) => { if (el) el.setAttribute('fetchpriority', 'high'); }}
         src={src || LOGO_PLACEHOLDER}
         alt={alt}
         loading="eager"
-        fetchPriority="high"
         decoding="async"
         width={120}
         height={48}
