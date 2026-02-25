@@ -24,7 +24,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import { usePropertyAlerts } from '@/hooks/usePropertyAlerts';
 import { useReferralTracking } from '@/hooks/useReferralTracking';
-import { useQueryLoadingIntegration } from '@/hooks/useQueryLoadingIntegration';
+
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import MaintenancePage from '@/pages/MaintenancePage';
 import { NetworkStatusIndicator } from '@/components/NetworkStatusIndicator';
@@ -35,7 +35,7 @@ const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'))
 const MobileFooter = lazy(() => import('@/components/MobileFooter'));
 const InitialLoadingScreen = lazy(() => import('@/components/ui/InitialLoadingScreen'));
 const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingIndicator'));
-const LoadingProgressPopup = lazy(() => import('@/components/ui/LoadingProgressPopup'));
+
 
 const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAIChatWidget'));
 const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
@@ -166,7 +166,7 @@ const AppContent = () => {
   useVIPNotifications();
   usePropertyAlerts();
   useReferralTracking();
-  useQueryLoadingIntegration();
+  
   
   const location = useLocation();
   const { language } = useTranslation();
@@ -436,7 +436,7 @@ function App() {
                             <Suspense fallback={null}>
                               <ResponsiveAIChatWidget />
                               <WhatsAppInquiryButton variant="floating" defaultType="general" />
-                              <LoadingProgressPopup />
+                              
                               <SessionExpirationHandler />
                               <AuthNotificationHandler />
                             </Suspense>
