@@ -34,6 +34,7 @@ export interface AdvancedRentalFilters {
   checkInDate: Date | undefined;
   checkOutDate: Date | undefined;
   onlineBookingOnly: boolean;
+  paymentMethod: string;
   minimumDays: number;
   nearMe: boolean;
   userLocation: { lat: number; lng: number } | null;
@@ -133,6 +134,15 @@ const LISTING_STATUS_OPTIONS = [
   { value: "leasehold", label: "Leasehold" },
   { value: "freehold", label: "Freehold" },
   { value: "off-plan", label: "Off-Plan" },
+];
+
+const PAYMENT_METHOD_OPTIONS = [
+  { value: "all", label: "Semua", icon: CreditCard },
+  { value: "online", label: "Online Payment", icon: Zap },
+  { value: "pay_on_property", label: "Bayar di Lokasi", icon: Store },
+  { value: "bank_transfer", label: "Transfer Bank", icon: Landmark },
+  { value: "installment", label: "Cicilan/KPR", icon: TrendingUp },
+  { value: "crypto", label: "Crypto/Digital", icon: Globe },
 ];
 
 const HANDOVER_YEARS = [
@@ -247,6 +257,7 @@ const RentalSidebarFilters = ({
     filters.rentalPeriod.length > 0 ? "period" : "",
     filters.checkInDate ? "checkin" : "",
     filters.onlineBookingOnly ? "online" : "",
+    filters.paymentMethod !== "all" ? "paymethod" : "",
     filters.bedrooms !== "all" ? "bed" : "",
     filters.bathrooms !== "all" ? "bath" : "",
     filters.minPrice > 0 ? "minp" : "",
@@ -273,7 +284,7 @@ const RentalSidebarFilters = ({
     onFiltersChange({
       searchTerm: "", propertyType: "all", province: "all", city: "all", area: "",
       priceRange: "all", rentalPeriod: [], checkInDate: undefined, checkOutDate: undefined,
-      onlineBookingOnly: false, minimumDays: 0, bedrooms: "all", bathrooms: "all",
+      onlineBookingOnly: false, paymentMethod: "all", minimumDays: 0, bedrooms: "all", bathrooms: "all",
       minPrice: 0, maxPrice: 100_000_000, furnishing: "all", minArea: 0, maxArea: 1000,
       minLandArea: 0, maxLandArea: 5000, minBuildingArea: 0, maxBuildingArea: 2000,
       floors: "all", hasPool: false, garageCount: "all", viewType: "all",
@@ -684,13 +695,30 @@ const RentalSidebarFilters = ({
 
           <Separator />
 
-          {/* Online Booking */}
-          <div className="flex items-center justify-between py-2">
-            <Label className="text-sm text-foreground flex items-center gap-1.5">
-              <Zap className="h-3.5 w-3.5 text-chart-1" /> Online Booking
-            </Label>
-            <Switch checked={filters.onlineBookingOnly} onCheckedChange={v => onFiltersChange({ onlineBookingOnly: v })} />
-          </div>
+          {/* Payment Method */}
+          <FilterSection title="Metode Pembayaran" icon={CreditCard}>
+            <div className="flex flex-wrap gap-1.5">
+              {PAYMENT_METHOD_OPTIONS.map(opt => {
+                const Icon = opt.icon;
+                const active = filters.paymentMethod === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => onFiltersChange({ paymentMethod: opt.value, onlineBookingOnly: opt.value === 'online' })}
+                    className={cn(
+                      "inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition-colors",
+                      active
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-background text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
+                    )}
+                  >
+                    <Icon className="h-3 w-3" />
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </FilterSection>
 
           <div className="pt-2 pb-4">
             <Button variant="default" className="w-full h-10" onClick={handleClearAll}>
