@@ -1,52 +1,66 @@
 
 
-## Problem
+## Bug: Page Jumping When Interacting with Dropdowns
 
-The app has multiple overlapping loading/progress systems that create a noisy, confusing experience:
+### Root Cause
 
-1. **InitialLoadingScreen** — A full-screen splash shown on first load. It includes a "Quick Login" button and form, which is jarring and unexpected on a loading screen. The login form belongs on the `/auth` page, not here.
+There's a conflict between two scroll-compensation strategies in `src/index.css`:
 
-2. **LoadingProgressPopup** + **useQueryLoadingIntegration** — A bottom-right popup that appears every time React Query fetches data. This fires constantly (property listings, branding settings, etc.), showing a branded progress bar for routine background fetches that don't need user attention.
+1. **Line 66**: `scrollbar-gutter: stable` on `html` — this CSS property permanently reserves space for the scrollbar so it never causes layout shift when it appears/disappears. This is the correct modern approach.
 
-3. **GlobalLoadingIndicator** — A top progress bar + corner pill that shows during navigation and fetching. This overlaps with #2.
+2. **Lines 116-120**: `body[data-scroll-locked]` override — this rule forces `overflow: auto !important` and `padding-right: 0 !important` on the body when Radix opens any overlay (Select, Dialog, Popover). The comment says it exists *because* `scrollbar-gutter` already handles compensation. But setting `overflow: auto !important` **defeats Radix's scroll lock entirely**, meaning the page remains scrollable behind open dropdowns/modals, and the fighting between Radix trying to lock and CSS forcing unlock causes the visible flicker/jump.
 
-4. **NetworkStatusIndicator** — Shows "Slow connection detected" banner. This is legitimate but compounds the visual noise.
+Additionally, the custom `useScrollLock` hook (used in `AstraSearchPanel` and `ProvincePropertiesModal`) directly manipulates `document.body.style.overflow` and `paddingRight`, which conflicts with both `scrollbar-gutter` and Radix's built-in `react-remove-scroll`.
 
-Combined, a user sees: splash screen → login popup → network banner → top progress bar → corner spinner → bottom-right popup — all within the first few seconds.
+### Fix Plan
 
-## Plan
+#### 1. Fix the `body[data-scroll-locked]` CSS rule
+**File:** `src/index.css` (lines 114-120)
 
-### 1. Remove Quick Login from InitialLoadingScreen
-**File:** `src/components/ui/InitialLoadingScreen.tsx`
-- Remove the `showQuickLogin` state, email/password fields, and the login form entirely
-- Remove the "Quick Login" button
-- Keep only the logo, brand name, progress bar, and loading text
-- Remove unused imports (`LogIn`, `User`, `Mail`, `Lock`, `Eye`, `EyeOff`, `ArrowRight`, `Sparkles`, `supabase`, `useToast`, `useState` for login fields)
-- This cuts ~150 lines from the component
+Replace the current override with one that works *with* `scrollbar-gutter: stable` instead of fighting Radix:
 
-### 2. Disable LoadingProgressPopup from firing on routine fetches
-**File:** `src/hooks/useQueryLoadingIntegration.ts`
-- Gut the hook body so it no longer calls `startLoading`/`updateProgress`/`finishLoading`
-- The popup should only appear when explicitly triggered by long operations (e.g., file uploads), not on every React Query fetch
-- Keep the hook export signature intact so nothing breaks
+```css
+/* Radix (react-remove-scroll) adds padding-right to compensate for scrollbar.
+   Since we use scrollbar-gutter: stable, we only need to suppress the extra padding. */
+body[data-scroll-locked] {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+  /* DO NOT override overflow — let Radix lock scroll properly */
+}
+```
 
-### 3. Reduce GlobalLoadingIndicator to just the top bar
-**File:** `src/components/ui/GlobalLoadingIndicator.tsx`
-- Remove the corner pill ("Loading..." / "Slow connection..." badge) — it duplicates the NetworkStatusIndicator and the top bar already communicates loading state
-- Keep only the thin top progress bar for page navigation
+The key change: **remove `overflow: auto !important`**. This single line is what breaks scroll locking and causes the jump. The `padding-right: 0` stays because `scrollbar-gutter: stable` already reserves the space.
 
-### 4. Clean up dead code
-**File:** `src/components/AppInitializer.tsx`
-- This component is never imported anywhere in the app. Delete it or leave it — no functional impact.
+#### 2. Simplify `useScrollLock` hook
+**File:** `src/hooks/useScrollLock.ts`
 
-## Summary
+Since `scrollbar-gutter: stable` handles width compensation, and Radix handles scroll locking for its own components, this hook only needs to set `overflow: hidden` without padding tricks:
 
-| Change | Effect |
-|--------|--------|
-| Remove login form from splash screen | No confusing login popup during loading |
-| Stop LoadingProgressPopup from auto-firing | No bottom-right popup on every data fetch |
-| Simplify GlobalLoadingIndicator | Just a subtle top bar on navigation |
-| Dead code cleanup | Remove unused AppInitializer |
+```ts
+export const useScrollLock = (lock: boolean) => {
+  useEffect(() => {
+    if (lock) {
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    };
+  }, [lock]);
+};
+```
 
-After these changes, the loading experience becomes: clean splash screen (first visit only) → subtle top bar on navigation → network banner only when truly offline/slow.
+Remove the `paddingRight` manipulation — `scrollbar-gutter: stable` already prevents layout shift.
+
+### Summary
+
+| Change | Why |
+|--------|-----|
+| Remove `overflow: auto !important` from `body[data-scroll-locked]` | Lets Radix properly lock scroll behind dropdowns/modals |
+| Keep `padding-right: 0 !important` | Prevents double compensation since `scrollbar-gutter` handles it |
+| Remove `paddingRight` from `useScrollLock` | Redundant with `scrollbar-gutter: stable` |
 
