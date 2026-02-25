@@ -5,10 +5,11 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { 
   Home, Clock, CalendarDays, MapPin, Users, Star,
-  TrendingUp, AlertCircle, CheckCircle, MessageSquare
+  TrendingUp, AlertCircle, CheckCircle, MessageSquare, FileText
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 import RentalChatDialog from "./RentalChatDialog";
+import RentalDocumentsDialog from "./RentalDocumentsDialog";
 
 export interface RentalDetail {
   id: string;
@@ -40,6 +41,7 @@ interface RentalPropertyCardProps {
 
 const RentalPropertyCard = ({ rental, onClick }: RentalPropertyCardProps) => {
   const [chatOpen, setChatOpen] = useState(false);
+  const [docsOpen, setDocsOpen] = useState(false);
   const now = new Date();
   const start = new Date(rental.startDate);
   const end = new Date(rental.endDate);
@@ -147,6 +149,14 @@ const RentalPropertyCard = ({ rental, onClick }: RentalPropertyCardProps) => {
             variant="ghost"
             size="sm"
             className="h-5 w-5 p-0"
+            onClick={(e) => { e.stopPropagation(); setDocsOpen(true); }}
+          >
+            <FileText className="h-3 w-3 text-primary" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-5 w-5 p-0"
             onClick={(e) => { e.stopPropagation(); setChatOpen(true); }}
           >
             <MessageSquare className="h-3 w-3 text-primary" />
@@ -157,6 +167,12 @@ const RentalPropertyCard = ({ rental, onClick }: RentalPropertyCardProps) => {
       <RentalChatDialog
         open={chatOpen}
         onOpenChange={setChatOpen}
+        bookingId={rental.id}
+        propertyTitle={rental.propertyTitle}
+      />
+      <RentalDocumentsDialog
+        open={docsOpen}
+        onOpenChange={setDocsOpen}
         bookingId={rental.id}
         propertyTitle={rental.propertyTitle}
       />

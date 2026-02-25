@@ -17128,6 +17128,68 @@ export type Database = {
           },
         ]
       }
+      rental_documents: {
+        Row: {
+          booking_id: string
+          created_at: string
+          description: string | null
+          document_type: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          file_type: string | null
+          id: string
+          requires_signature: boolean
+          signature_note: string | null
+          signed_at: string | null
+          signed_by: string | null
+          updated_at: string
+          uploaded_by: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          description?: string | null
+          document_type?: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          requires_signature?: boolean
+          signature_note?: string | null
+          signed_at?: string | null
+          signed_by?: string | null
+          updated_at?: string
+          uploaded_by: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          description?: string | null
+          document_type?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          requires_signature?: boolean
+          signature_note?: string | null
+          signed_at?: string | null
+          signed_by?: string | null
+          updated_at?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_documents_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rental_messages: {
         Row: {
           booking_id: string
