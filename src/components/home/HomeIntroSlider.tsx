@@ -31,7 +31,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
         />
         {/* Light gradient overlays for clean professional look */}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-background/90 pointer-events-none dark:from-black/40 dark:to-background/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/90 pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
       </div>
 
