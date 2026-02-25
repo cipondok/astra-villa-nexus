@@ -16816,6 +16816,50 @@ export type Database = {
           },
         ]
       }
+      refund_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number | null
+          booking_id: string
+          created_at: string | null
+          id: string
+          reason: string
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount?: number | null
+          booking_id: string
+          created_at?: string | null
+          id?: string
+          reason: string
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number | null
+          booking_id?: string
+          created_at?: string | null
+          id?: string
+          reason?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refund_requests_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "property_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rejection_codes: {
         Row: {
           auto_resubmit_allowed: boolean | null

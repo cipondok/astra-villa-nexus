@@ -1,0 +1,1 @@
+ALTER FUNCTION validate_refund_status() SET search_path = public;
