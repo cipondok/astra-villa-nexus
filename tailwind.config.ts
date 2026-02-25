@@ -395,6 +395,14 @@ const config: Config = {
           "0%": { transform: "translateX(-100%) skewX(-12deg)" },
           "100%": { transform: "translateX(200%) skewX(-12deg)" },
         },
+        "text-shimmer": {
+          "0%": { backgroundPosition: "200% center" },
+          "100%": { backgroundPosition: "-200% center" },
+        },
+        "diamond-pulse": {
+          "0%, 100%": { opacity: "0.6", transform: "scale(1)" },
+          "50%": { opacity: "1", transform: "scale(1.3)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -432,6 +440,8 @@ const config: Config = {
         "hero-text-reveal": "hero-text-reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards",
         "hero-brand-glow": "hero-brand-glow 3s ease-in-out infinite",
         "shimmer-slide": "shimmer-slide 6s ease-in-out infinite",
+        "text-shimmer": "text-shimmer 4s linear infinite",
+        "diamond-pulse": "diamond-pulse 2.5s ease-in-out infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',
