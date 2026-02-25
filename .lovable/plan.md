@@ -1,183 +1,125 @@
 
 
-## Plan: AI Smart Recommendation System — Curated Collections, ROI Prediction & Engagement Ranking
+## Plan: Natural Language AI Search System
 
-### What Already Exists
+### Context
 
-The codebase has substantial AI recommendation infrastructure:
-- `smart-recommendation-engine` edge function — scores properties against user profiles (location, price, type, features, discovery)
-- `ai-property-recommendations` edge function — uses Lovable AI (Gemini) for natural-language explanations
-- `user_behavior_signals` table — tracks clicks, views, dwell time, comparisons
-- `user_preference_profiles` + `learned_preferences` + `recommendation_history` tables
-- `useAIRecommendations` + `useSmartRecommendations` hooks
-- Properties table already has `roi_percentage`, `rental_yield_percentage`, `views_count`, `legal_status`, `wna_eligible`
+The project already has most of the infrastructure needed:
 
-### What We Will Build
+- **`ai-property-assistant`** edge function already does NLP extraction via OpenAI — but it uses a hardcoded OpenAI key (not the Lovable AI Gateway), uses `select('*')`, and doesn't integrate with the existing `usePropertySearch` hook or `search_properties_advanced` RPC.
+- **`usePropertySearch`** hook already builds structured filters and calls `search_properties_advanced` RPC with full filter support (price range, property type, location, bedrooms, amenities, features, etc.).
+- **`SearchSuggestions`** component has a static keyword dictionary but no AI-powered NLP.
+- The project uses Supabase + PostgreSQL (not MySQL) and Deno Edge Functions (not Node.js).
 
-Four new pieces on top of this foundation:
+The approach: build a new dedicated edge function that uses **Lovable AI Gateway with tool calling** to extract structured filters from natural language, then have the frontend pipe those extracted filters directly into the existing `usePropertySearch.searchProperties()` flow. This avoids duplicating query logic.
 
 ---
 
-### 1. Database: `property_engagement_scores` table + scoring function
+### 1. New Edge Function: `supabase/functions/ai-nlp-search/index.ts`
 
-New migration adding:
+Uses Lovable AI Gateway (`google/gemini-3-flash-preview`) with **tool calling** to extract structured search parameters. This is more reliable than asking the model to return JSON in prose.
 
-```sql
-CREATE TABLE property_engagement_scores (
-  property_id UUID PRIMARY KEY REFERENCES properties(id) ON DELETE CASCADE,
-  views_total INTEGER DEFAULT 0,
-  saves_total INTEGER DEFAULT 0,
-  inquiries_total INTEGER DEFAULT 0,
-  clicks_total INTEGER DEFAULT 0,
-  avg_dwell_seconds NUMERIC DEFAULT 0,
-  engagement_score NUMERIC DEFAULT 0,    -- composite 0-100
-  investment_score NUMERIC DEFAULT 0,    -- composite 0-100
-  livability_score NUMERIC DEFAULT 0,    -- composite 0-100
-  luxury_score NUMERIC DEFAULT 0,        -- composite 0-100
-  predicted_roi NUMERIC DEFAULT 0,       -- AI-predicted %
-  roi_confidence NUMERIC DEFAULT 0,      -- 0-1
-  last_calculated_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
-);
-```
-
-Scoring formulas (implemented in the edge function, not as DB functions):
-
-**Engagement Score** (0-100):
-```
-engagement = 0.30 * normalize(views) 
-           + 0.25 * normalize(saves) 
-           + 0.25 * normalize(inquiries) 
-           + 0.10 * normalize(clicks) 
-           + 0.10 * normalize(avg_dwell)
+**Tool definition** sent to the model:
+```typescript
+{
+  name: "extract_property_filters",
+  parameters: {
+    location: { type: "string" },        // "Bali", "Jakarta", etc.
+    state: { type: "string" },
+    city: { type: "string" },
+    property_type: { type: "string", enum: ["house","apartment","villa","land","commercial"] },
+    listing_type: { type: "string", enum: ["sale","rent"] },
+    min_price: { type: "number" },        // in IDR
+    max_price: { type: "number" },
+    bedrooms: { type: "number" },
+    bathrooms: { type: "number" },
+    min_area: { type: "number" },
+    max_area: { type: "number" },
+    amenities: { type: "array", items: { type: "string" } },  // pool, garden, parking...
+    features: { type: "array", items: { type: "string" } },
+    furnishing: { type: "string", enum: ["furnished","semi-furnished","unfurnished"] },
+    has_3d: { type: "boolean" },
+    has_virtual_tour: { type: "boolean" },
+    sort_by: { type: "string", enum: ["newest","price_low","price_high","popular"] },
+    investment_intent: { type: "boolean" },   // true if user mentions ROI, investment, yield
+    intent_summary: { type: "string" }        // human-readable interpretation
+  }
+}
 ```
 
-**Investment Score** (0-100):
-```
-investment = 0.30 * normalize(roi_percentage) 
-           + 0.25 * normalize(rental_yield_percentage)
-           + 0.15 * (has legal_status SHM/HGB ? 1 : 0.5)
-           + 0.15 * normalize(price_per_sqm_value)
-           + 0.15 * (wna_eligible ? 1 : 0.7)
-```
+The system prompt instructs the model to:
+- Understand Indonesian property context (IDR currency, "miliar"/"juta" = billion/million)
+- Map "under 5 billion" → `max_price: 5000000000`
+- Map "Bali" → `location: "Bali"` or `state: "Bali"`
+- Map "pool" → `amenities: ["pool"]`
+- Map "good ROI" → `investment_intent: true`, `sort_by: "popular"`
+- Map "luxury villa" → `property_type: "villa"`, plus infer premium price range
 
-**Livability Score** (0-100):
-```
-livability = 0.25 * (has_pool + garden + parking) / 3
-           + 0.20 * normalize(building_area_sqm)
-           + 0.20 * normalize(bedrooms, 3-5 optimal)
-           + 0.20 * (furnishing == 'furnished' ? 1 : 0.5)
-           + 0.15 * (view_type premium ? 1 : 0.6)
-```
+Handles 429/402 rate limit errors from the gateway.
 
-**Luxury Score** (0-100):
-```
-luxury = 0.25 * (price > 5B IDR ? 1 : price/5B)
-       + 0.20 * (has_pool + has_3d_tour + has_vr) / 3
-       + 0.20 * normalize(land_area_sqm, min 500)
-       + 0.15 * (view_type ocean/mountain ? 1 : 0.5)
-       + 0.20 * normalize(image_count, quality proxy)
-```
+**Input validation** via Zod: query string 1-500 chars.
 
 ---
 
-### 2. Edge Function: `ai-smart-collections`
-
-A new Supabase Edge Function that:
-
-1. **`recalculate_scores`** action — Iterates all active properties, aggregates behavior signals + favorites counts, computes engagement/investment/livability/luxury scores, upserts into `property_engagement_scores`.
-
-2. **`get_collection`** action — Returns curated property lists:
-   - `best_investment` — Top N by `investment_score`, enhanced with AI-predicted ROI
-   - `best_for_living` — Top N by `livability_score`
-   - `luxury_collection` — Top N by `luxury_score` where price > threshold
-   - `trending` — Top N by `engagement_score`
-   - `personalized` — Combines user behavior profile with collection scores (uses existing `user_behavior_signals`)
-
-3. **`predict_roi`** action — For a single property, calls Lovable AI (Gemini) with property data + market context to predict 12-month ROI. Stores result in `property_engagement_scores.predicted_roi`.
-
-Rate limit handling (429/402) will be surfaced to the client.
-
----
-
-### 3. React Hook: `useSmartCollections`
-
-New hook `src/hooks/useSmartCollections.ts`:
+### 2. New Hook: `src/hooks/useNLPSearch.ts`
 
 ```typescript
-export function useSmartCollections() {
-  // Returns { bestInvestment, bestForLiving, luxuryCollection, trending }
-  // Each is a query calling ai-smart-collections with the appropriate collection type
-  // Personalized variant merges user signals when authenticated
-}
-
-export function usePropertyROIPrediction(propertyId: string) {
-  // Calls predict_roi action, returns { predictedRoi, confidence, trend }
-}
-
-export function useEngagementRanking(propertyIds: string[]) {
-  // Returns properties sorted by engagement_score
+export function useNLPSearch() {
+  // State: nlpQuery, extractedFilters, intentSummary, isProcessing
+  
+  // processNaturalLanguage(query: string):
+  //   1. Calls ai-nlp-search edge function
+  //   2. Receives structured filters + intent_summary
+  //   3. Maps response to SearchFilters format matching usePropertySearch
+  //   4. Returns { filters, intentSummary, investmentIntent }
+  
+  // applyToSearch(searchProperties: Function):
+  //   Passes extracted filters directly to usePropertySearch.searchProperties()
 }
 ```
+
+This bridges NLP output → existing search infrastructure. No duplicate query logic.
 
 ---
 
-### 4. UI Component: `SmartCollectionsShowcase`
+### 3. New Component: `src/components/search/NLPSearchBar.tsx`
 
-New component `src/components/home/SmartCollectionsShowcase.tsx` — a tabbed section for the homepage showing curated collections:
+A search input with AI indicator that:
+- Shows a text input with a sparkle/brain icon indicating AI-powered search
+- On submit, calls `useNLPSearch.processNaturalLanguage()`
+- Displays extracted filter chips below the input (e.g., "Location: Bali", "Max Price: 5B IDR", "Amenities: Pool")
+- Shows the AI's `intent_summary` as a subtitle (e.g., "Looking for luxury villas in Bali under 5 billion with pool and investment potential")
+- Has an "Apply Filters & Search" button that feeds filters into `searchProperties()`
+- Shows investment-specific badges when `investment_intent` is true
+- Animated loading state while AI processes
 
-```text
-┌──────────────────────────────────────────────────┐
-│  🏆 Smart Collections                            │
-│  [Best Investment] [Best Living] [Luxury] [Hot]  │
-├──────────────────────────────────────────────────┤
-│  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐               │
-│  │Card │ │Card │ │Card │ │Card │  →             │
-│  │ROI% │ │Score│ │Score│ │Views│               │
-│  └─────┘ └─────┘ └─────┘ └─────┘               │
-│                                                  │
-│  "AI predicts 8.2% ROI for Bali villas this Q"  │
-└──────────────────────────────────────────────────┘
-```
+---
 
-Each card shows:
-- Property image + basic info
-- Collection-specific badge (ROI %, Livability score, Luxury tier, engagement count)
-- AI-generated one-liner explanation
+### 4. Integration into `PropertySearch.tsx`
 
-This gets added to `Index.tsx` as a lazy-loaded section between existing sections.
+Add `NLPSearchBar` above the existing `StickySearchPanel` as an optional AI search mode. Users can toggle between traditional filters and natural language input. When NLP extracts filters, they populate the existing filter state and trigger the same `searchProperties()` call.
 
 ---
 
 ### Files to Create
-1. `supabase/functions/ai-smart-collections/index.ts` — Edge function for scoring + collections + ROI prediction
-2. `src/hooks/useSmartCollections.ts` — React hooks for collections and ROI
-3. `src/components/home/SmartCollectionsShowcase.tsx` — Tabbed UI component
+1. `supabase/functions/ai-nlp-search/index.ts` — Edge function with Lovable AI tool calling
+2. `src/hooks/useNLPSearch.ts` — Hook bridging NLP output to existing search
+3. `src/components/search/NLPSearchBar.tsx` — AI search bar UI component
 
 ### Files to Modify
-1. `src/pages/Index.tsx` — Add `SmartCollectionsShowcase` as lazy-loaded section
-2. `supabase/config.toml` — Register new edge function with `verify_jwt = false`
-
-### Database Migration
-- Create `property_engagement_scores` table with RLS (public read, service-role write)
+1. `supabase/config.toml` — Register `ai-nlp-search` with `verify_jwt = false`
+2. `src/pages/PropertySearch.tsx` — Add NLPSearchBar toggle above existing search
 
 ### Technical Details
 
-**Algorithm pipeline:**
-1. User browses → `user_behavior_signals` records clicks/views/dwell time (already working)
-2. Periodic or on-demand `recalculate_scores` aggregates signals into `property_engagement_scores`
-3. `get_collection` reads pre-computed scores, sorts, returns top N with optional user personalization blend
-4. `predict_roi` sends property + comparable sales context to Gemini, returns structured ROI prediction via tool calling
+**Why tool calling over JSON prompting:** The existing `ai-property-assistant` asks the model to return raw JSON, which is fragile (model can wrap in markdown, add commentary). Tool calling guarantees structured output via the API's `tool_choice` parameter.
 
-**Performance for 100K+ listings:**
-- Scores are pre-computed and stored, not calculated per-request
-- Collection queries are simple `ORDER BY score DESC LIMIT N` on indexed columns
-- Personalization is a lightweight re-ranking of the top 50 candidates, not a full scan
-- Indexes on all score columns in the migration
+**Why a new function instead of reusing `ai-property-assistant`:** That function uses OpenAI directly (requires `OPENAI_API_KEY`), uses `select('*')`, and builds its own queries. The new function only extracts filters — the actual DB query runs through the existing `search_properties_advanced` RPC on the client side, which is already optimized with fallbacks.
 
-**Existing integration points:**
-- Reuses `user_behavior_signals` for click/save/view tracking (no new tracking needed)
-- Reuses `favorites` table for save counts
-- Reuses `properties` table columns (`roi_percentage`, `rental_yield_percentage`, `has_pool`, etc.)
-- Reuses Lovable AI Gateway for ROI prediction (LOVABLE_API_KEY already configured)
+**Price parsing examples:**
+- "under 5 billion" → `max_price: 5000000000`
+- "2-3 miliar" → `min_price: 2000000000, max_price: 3000000000`
+- "above 500 juta" → `min_price: 500000000`
+
+**Investment intent detection:** When detected, the UI shows ROI badges from `property_engagement_scores` and can sort by `investment_score` from the Smart Collections system built earlier.
 
