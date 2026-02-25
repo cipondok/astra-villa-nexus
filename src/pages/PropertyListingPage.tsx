@@ -9,6 +9,7 @@ import { Search, SlidersHorizontal, MapPin, Home, X, Eye, Heart, Bed, Bath, Maxi
 import { motion, AnimatePresence } from 'framer-motion';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
 import PropertyViewModeToggle from '@/components/search/PropertyViewModeToggle';
+import PropertyListView from '@/components/search/PropertyListView';
 import PropertyListingMapView from '@/components/property/PropertyListingMapView';
 import SearchAlertSubscribeButton from '@/components/search/SearchAlertSubscribeButton';
 interface PropertyListingPageProps {
@@ -383,6 +384,14 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
               </Button>
             </div>
           </div>
+        ) : viewMode === 'list' ? (
+          <PropertyListView
+            properties={(hasSearched ? searchResults : properties) as any}
+            onPropertyClick={(property) => {
+              const nav = window.location.pathname.includes('/disewa') ? `/properties/${property.id}` : `/properties/${property.id}`;
+              window.location.href = nav;
+            }}
+          />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {(hasSearched ? searchResults : properties).map((property: any) => {
@@ -400,7 +409,6 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                   animate={{ opacity: 1, y: 0 }}
                   className="group cursor-pointer overflow-hidden bg-card border border-border rounded-md hover:border-primary/30 hover:shadow-lg transition-all duration-300"
                 >
-                  {/* Image Container */}
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
                       src={imageUrl}
@@ -408,13 +416,9 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                       loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    
-                    {/* Save Button */}
                     <button className="absolute top-2 right-2 h-8 w-8 p-0 bg-background/90 hover:bg-background rounded-full shadow-md flex items-center justify-center">
                       <Heart className="h-4 w-4 text-muted-foreground" />
                     </button>
-                    
-                    {/* Badges */}
                     <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
                       <span className={`flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded text-primary-foreground ${
                         property.listing_type === 'rent' ? 'bg-primary' : 'bg-chart-1'
@@ -429,8 +433,6 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                       )}
                     </div>
                   </div>
-                  
-                  {/* Content */}
                   <div className="p-3 sm:p-4">
                     <p className="text-base sm:text-lg font-bold text-primary mb-1">
                       {formatPrice(property.price)}
