@@ -17342,6 +17342,94 @@ export type Database = {
           },
         ]
       }
+      rental_invoices: {
+        Row: {
+          amount: number
+          booking_id: string
+          created_at: string
+          description: string
+          due_date: string
+          id: string
+          invoice_number: string
+          invoice_type: string
+          issued_by: string
+          notes: string | null
+          paid_at: string | null
+          payment_method: string | null
+          payment_reference: string | null
+          property_id: string
+          status: string
+          tax_amount: number | null
+          tenant_id: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          booking_id: string
+          created_at?: string
+          description: string
+          due_date: string
+          id?: string
+          invoice_number: string
+          invoice_type?: string
+          issued_by: string
+          notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          property_id: string
+          status?: string
+          tax_amount?: number | null
+          tenant_id: string
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          booking_id?: string
+          created_at?: string
+          description?: string
+          due_date?: string
+          id?: string
+          invoice_number?: string
+          invoice_type?: string
+          issued_by?: string
+          notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          property_id?: string
+          status?: string
+          tax_amount?: number | null
+          tenant_id?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_invoices_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_invoices_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_invoices_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rental_messages: {
         Row: {
           booking_id: string

@@ -11,6 +11,7 @@ import OwnerMaintenanceManagement from "./OwnerMaintenanceManagement";
 import OwnerRentalAnalytics from "./OwnerRentalAnalytics";
 import OwnerLeaseRenewal from "./OwnerLeaseRenewal";
 import OwnerVerificationReview from "./OwnerVerificationReview";
+import OwnerInvoiceManagement from "./OwnerInvoiceManagement";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
 import { 
@@ -218,6 +219,9 @@ const PropertyOwnerOverview = () => {
           <TabsTrigger value="verification" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Shield className="h-2.5 w-2.5" /> KYC
           </TabsTrigger>
+          <TabsTrigger value="invoices" className="text-[7px] h-5 gap-0.5 min-w-fit">
+            <DollarSign className="h-2.5 w-2.5" /> Invoice
+          </TabsTrigger>
           <TabsTrigger value="maintenance" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Settings className="h-2.5 w-2.5" /> Maint.
           </TabsTrigger>
@@ -294,6 +298,11 @@ const PropertyOwnerOverview = () => {
         {/* Verification Tab */}
         <TabsContent value="verification" className="mt-1.5">
           <OwnerVerificationReview />
+        </TabsContent>
+
+        {/* Invoices Tab */}
+        <TabsContent value="invoices" className="mt-1.5">
+          <OwnerInvoiceManagement />
         </TabsContent>
 
         {/* Maintenance Tab */}
