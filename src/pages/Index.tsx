@@ -794,7 +794,7 @@ const Index = () => {
         </div>
 
         {/* Featured Properties Carousel */}
-        <ScrollReveal direction="up" delay={100}>
+        <ScrollReveal direction="left" delay={100}>
         <div id="featured-section">
         <Suspense fallback={
           <div className="py-6 sm:py-8 max-w-7xl mx-auto px-3 sm:px-4">
@@ -864,7 +864,7 @@ const Index = () => {
         )}
 
         {/* AI Tools & Features */}
-        <ScrollReveal direction="up" delay={0}>
+        <ScrollReveal direction="right" delay={0}>
         <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-hero-to via-hero-mid to-hero-end" style={{ contain: 'layout', minHeight: '120px' }}>
           <div className="w-full">
             <LazyRender minHeight="96px" rootMargin="400px" fallback={
@@ -886,7 +886,7 @@ const Index = () => {
         </ScrollReveal>
 
         {/* Global Investment Platform */}
-        <ScrollReveal direction="up" delay={100}>
+        <ScrollReveal direction="left" delay={100}>
         <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-hero-end to-hero-fade" style={{ contain: 'layout', minHeight: '80px' }}>
           <div className="w-full">
             <LazyRender minHeight="64px" rootMargin="400px" fallback={
@@ -1016,7 +1016,7 @@ const Index = () => {
             ) : (
               <>
                 {/* AI Recommended Properties */}
-                <ScrollReveal direction="up" delay={0}>
+                <ScrollReveal direction="right" delay={0}>
                 <div className="mb-4">
                   <LazyRender minHeight="320px" fallback={
                     <div className="bg-primary/10 dark:bg-primary/5 rounded-xl shadow-sm border border-primary/15 dark:border-primary/10 p-4" style={{ minHeight: '320px' }}>
@@ -1040,7 +1040,7 @@ const Index = () => {
                 </ScrollReveal>
 
                 {/* Trending Searches */}
-                <ScrollReveal direction="up" delay={100}>
+                <ScrollReveal direction="left" delay={100}>
                 <div className="mb-4">
                   <LazyRender minHeight="192px" fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
                     <TrendingSearchesWidget 
@@ -1054,7 +1054,7 @@ const Index = () => {
                 </ScrollReveal>
 
                 {/* Properties for Sale */}
-                <ScrollReveal direction="up" delay={0}>
+                <ScrollReveal direction="right" delay={0}>
                 <div id="sale-section" className="mb-4">
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
@@ -1063,7 +1063,7 @@ const Index = () => {
                 </ScrollReveal>
 
                 {/* Properties for Rent */}
-                <ScrollReveal direction="up" delay={100}>
+                <ScrollReveal direction="left" delay={100}>
                 <div id="rent-section" className="mb-4">
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
@@ -1072,7 +1072,7 @@ const Index = () => {
                 </ScrollReveal>
 
                 {/* Marketplace Services */}
-                <ScrollReveal direction="up" delay={0}>
+                <ScrollReveal direction="right" delay={0}>
                 <div id="marketplace-services-section" className="mt-6">
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <MarketplaceServices />
@@ -1081,7 +1081,7 @@ const Index = () => {
                 </ScrollReveal>
 
                 {/* Partner Logos Marquee */}
-                <ScrollReveal direction="up" delay={100}>
+                <ScrollReveal direction="left" delay={100}>
                 <LazyRender minHeight="80px" fallback={null}>
                   <PartnerLogosMarquee />
                 </LazyRender>
