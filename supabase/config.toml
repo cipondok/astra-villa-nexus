@@ -162,3 +162,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.ai-smart-collections]
     verify_jwt = false
+
+  [functions.ai-nlp-search]
+    verify_jwt = false

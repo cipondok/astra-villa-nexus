@@ -1,5 +1,5 @@
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,8 +15,9 @@ import { usePropertySearch } from '@/hooks/usePropertySearch';
 import { useImageSearch } from '@/hooks/useImageSearch';
 import { BaseProperty } from '@/types/property';
 import { useAlert } from '@/contexts/AlertContext';
-import { Search, Filter, Grid, List, Map, SlidersHorizontal, Camera, Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Search, Filter, Grid, List, Map, SlidersHorizontal, Camera, Upload, X, Image as ImageIcon, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import NLPSearchBar from '@/components/search/NLPSearchBar';
 
 const PropertySearch = () => {
   const navigate = useNavigate();
@@ -70,10 +71,10 @@ const PropertySearch = () => {
     console.log('Filters changed:', newFilters);
   };
 
-  const handleSearch = (searchData: any) => {
+  const handleSearch = useCallback((searchData: any) => {
     console.log('Searching with:', searchData);
     searchProperties(searchData);
-  };
+  }, [searchProperties]);
 
   const handlePropertyClick = (property: BaseProperty) => {
     navigate(`/property/${property.id}`);
@@ -431,6 +432,11 @@ const PropertySearch = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* AI Natural Language Search */}
+        <div className="mb-4">
+          <NLPSearchBar onApplyFilters={handleSearch} />
+        </div>
 
         {/* Sticky Search Panel */}
         <div className="mb-8">
