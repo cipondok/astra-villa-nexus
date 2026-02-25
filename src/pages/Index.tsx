@@ -97,6 +97,7 @@ const Index = () => {
   const [isLoadingPanel, setIsLoadingPanel] = useState(true);
   const [isOnline, setIsOnline] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [parallaxOffset, setParallaxOffset] = useState(0);
   const { speed: connectionSpeed } = useConnectionSpeed();
   const queryClient = useQueryClient();
 
@@ -315,6 +316,7 @@ const Index = () => {
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollButton(window.pageYOffset > 300);
+      setParallaxOffset(window.scrollY);
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -576,7 +578,8 @@ const Index = () => {
                   decoding={isPriority ? 'sync' : 'async'}
                   fetchPriority={isPriority ? 'high' : undefined}
                   sizes="100vw"
-                  className="w-full h-full object-cover"
+                  className="w-full h-[120%] object-cover will-change-transform transition-transform duration-100 ease-out"
+                  style={{ transform: `translateY(${-parallaxOffset * 0.3}px)` }}
                 />
               </div>
             );
