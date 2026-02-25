@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store, Bed, Bath, Maximize, Key, Tag, Clock, BadgeCheck, ShieldCheck, Crown, ShieldAlert, Gem, Award, Medal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import ScrollReveal from "@/components/ui/ScrollReveal";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { useNavigate } from "react-router-dom";
@@ -223,10 +224,12 @@ export default function FeaturedAdsCarousel() {
   return (
     <div className="relative rounded-xl md:rounded-2xl p-2 md:p-3 overflow-hidden group">
       {/* Compact Header */}
-      <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
-        <Star className="h-3 w-3 md:h-4 md:w-4 text-gold-primary" />
-        <h2 className="text-[10px] md:text-xs font-semibold text-foreground">Featured Properties</h2>
-      </div>
+      <ScrollReveal direction="up" distance={16} duration={500}>
+        <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
+          <Star className="h-3 w-3 md:h-4 md:w-4 text-gold-primary" />
+          <h2 className="text-[10px] md:text-xs font-semibold text-foreground">Featured Properties</h2>
+        </div>
+      </ScrollReveal>
 
       {/* Navigation Buttons */}
       <Button
