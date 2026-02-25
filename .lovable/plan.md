@@ -1,58 +1,74 @@
 
 
-## Plan: Add Interactive Hover Effects & Animations to ASTRA Villa Property Branding
+## Plan: Restyle Search Panel to Match Luxury Gold Theme
 
-### What We're Adding
-Enhanced hover interactions and continuous animations on the hero branding text (visible on sm+ screens) to create a more premium, interactive feel.
+### Problem
+The search panel on the hero slider uses blue-themed tab indicators and generic white/glass styling that doesn't match the premium gold branding ("ASTRA Villa Property") above it. The tab slider uses blue gradients (`hsl(205-215, 100%, 50-55%)`), hover states reference blue colors, and the overall panel lacks the gold-accent cohesion.
 
-### Technical Details
+### Changes Required
 
-**File: `src/pages/Index.tsx` (lines 586-654)**
+**File 1: `src/index.css` (lines 986-1052) — Restyle search tabs from blue to gold**
 
-The branding container currently has `pointer-events-none`. We need to change it to allow hover interactions on the text elements while keeping the rest non-interactive.
+- **Tab slider gradient** (lines 994-997): Change from blue (`hsl(205-215)`) to gold (`hsl(38-45)`) gradient
+- **Tab slider box-shadow** (lines 1000-1003): Change blue shadows to gold-primary shadows
+- **Tab button focus ring** (line 1020): Change `focus-visible:ring-blue-400/50` to `focus-visible:ring-gold-primary/50`
+- **Inactive tab hover** (line 1028): Change `text-blue-400 dark:text-blue-300` to gold-primary tones
+- **Active tab text**: Keep white but ensure gold glow text-shadow
 
-#### Changes:
+**File 2: `src/components/AstraSearchPanel.tsx` — Gold-themed container and input**
 
-1. **Container (line 586)**: Keep `pointer-events-none` on the outer div but add `pointer-events-auto` on the inner content div (line 587) so hover works on the text elements.
+- **Container border** (line 2367): Change `border-white/20 dark:border-white/10` to `border-white/20 dark:border-white/10` with a subtle gold accent — use `border-gold-primary/15`
+- **Top shine line** (line 2369): Change `via-white/40` to `via-gold-primary/30` for a gold shine effect
+- **Search input** (lines 2481-2484): Already uses `border-gold-primary/15` — keep as is
+- **Search icon** (line 2446): Change `text-primary/70` to `text-gold-primary/70` so it matches the gold theme
 
-2. **"ASTRA" text (lines 609-619)**: Add hover effects:
-   - `transition-all duration-500 cursor-default`
-   - On hover: scale up slightly, increase glow intensity, shimmer the gradient
-   - Add a CSS shimmer animation using `background-size: 200%` and `background-position` shift on hover
-   - Add `hover:scale-105` with `transform` transition
-   - Add `hover:drop-shadow` with stronger gold glow
+**File 3: `src/pages/Index.tsx` — Gold-themed hero search area**
 
-3. **"Villa Property" text (lines 620-628)**: Add hover effects:
-   - `transition-all duration-500 cursor-default`
-   - On hover: subtle letter-spacing expansion, slight gold tint
-   - `hover:tracking-[0.35em]` and `hover:text-gold-primary/90`
+- **"AI-Powered Search" badge** (lines 718-729): Change the badge styling from `bg-white/10 border-white/20` to `bg-gold-primary/10 border-gold-primary/20` with gold sparkle icons
+- **"Find Your Dream Property" heading** (line 731): Add a subtle gold text-shadow or gradient accent
+- **Subtitle search icon and text** (lines 734-737): Tint the search icon gold
 
-4. **"Premium Real Estate" badge (lines 589-602)**: Add hover:
-   - `transition-all duration-300 cursor-default hover:scale-105`
-   - Brighter border and background on hover
+### Specific Changes
 
-5. **"Luxury Living Redefined" tagline (lines 642-653)**: Add hover:
-   - `transition-all duration-300 cursor-default`
-   - Brighter opacity on hover
+#### `src/index.css`
+```css
+/* Tab slider: blue → gold */
+.search-tab-slider {
+  background: linear-gradient(135deg, 
+    hsl(45, 90%, 50%) 0%, 
+    hsl(38, 85%, 45%) 50%, 
+    hsl(45, 90%, 50%) 100%);
+  box-shadow: 
+    0 4px 15px hsl(45 80% 50% / 0.4),
+    0 2px 8px hsl(45 80% 50% / 0.3),
+    inset 0 1px 0 hsl(0 0% 100% / 0.3);
+}
 
-6. **Decorative separator (lines 632-639)**: Add a continuous subtle pulse animation to the center diamond dot.
+/* Inactive hover: blue → gold */
+.search-tab-btn:not(.active):hover {
+  @apply text-gold-primary;
+}
 
-**File: `tailwind.config.ts`** — Add a new `text-shimmer` keyframe animation:
-```
-"text-shimmer": {
-  "0%": { backgroundPosition: "200% center" },
-  "100%": { backgroundPosition: "-200% center" }
+/* Focus ring: blue → gold */
+.search-tab-btn {
+  @apply focus-visible:ring-gold-primary/50;
 }
 ```
-And animation: `"text-shimmer": "text-shimmer 4s linear infinite"`
 
-### Implementation Summary
+#### `src/components/AstraSearchPanel.tsx`
+- Line 2367: Add `border-gold-primary/15` to container
+- Line 2369: Change shine line to gold: `via-gold-primary/30`
+- Line 2446: Change search icon to `text-gold-primary/70`
 
-- Make branding elements hoverable by adding `pointer-events-auto` to the inner div
-- Add `transition-all duration-500` and scale/glow hover effects to "ASTRA"
-- Add continuous shimmer animation to "ASTRA" gradient text using `background-size: 200%` and the new `text-shimmer` keyframe
-- Add letter-spacing hover expansion on "Villa Property"
-- Add scale hover on the badge
-- Add pulse animation on the separator diamond
-- All changes scoped to 2 files: `Index.tsx` and `tailwind.config.ts`
+#### `src/pages/Index.tsx`
+- Lines 721-722: Badge → `bg-gold-primary/10 border-gold-primary/25`
+- Line 731: Add gold drop-shadow to heading
+
+### Visual Result
+- Tab slider glows gold instead of blue
+- Tab hover states use gold tones
+- Container has subtle gold border shimmer
+- Top shine line is gold-tinted
+- "AI-Powered Search" badge matches the gold aesthetic
+- Everything coheres with the "ASTRA" gold branding above
 
