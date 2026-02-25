@@ -403,12 +403,10 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
               };
 
               return (
-                <motion.div
-                  key={property.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="group cursor-pointer overflow-hidden bg-card border border-border rounded-md hover:border-primary/30 hover:shadow-lg transition-all duration-300"
-                >
+              <div
+                key={property.id}
+                className="group cursor-pointer overflow-hidden bg-card border border-border rounded-md hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+              >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
                       src={imageUrl}
@@ -465,7 +463,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                       )}
                     </div>
                   </div>
-                </motion.div>
+              </div>
               );
             })}
           </div>
