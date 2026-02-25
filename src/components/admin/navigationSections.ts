@@ -237,6 +237,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "rental-management",
+      label: "Rental Management",
+      icon: CalendarDays,
+      description: "Overview rental bookings, refund requests, and rental analytics",
+      badge: "New"
+    },
+    {
       key: "notifications-center",
       label: "Notifications Center",
       icon: Bell,

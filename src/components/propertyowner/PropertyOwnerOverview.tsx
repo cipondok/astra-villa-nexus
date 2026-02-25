@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePropertyOwnerData } from "@/hooks/usePropertyOwnerData";
+import OwnerRentalManagement from "./OwnerRentalManagement";
 import { formatDistanceToNow } from "date-fns";
 import { 
   Building, 
@@ -20,7 +21,8 @@ import {
   ChevronRight,
   Settings,
   ArrowLeft,
-  Search
+  Search,
+  CalendarDays
 } from "lucide-react";
 
 const PropertyOwnerOverview = () => {
@@ -122,10 +124,14 @@ const PropertyOwnerOverview = () => {
 
       {/* Content Tabs - Compact */}
       <Tabs defaultValue="properties" className="space-y-2">
-        <TabsList className="grid w-full grid-cols-3 h-7 p-0.5">
+        <TabsList className="grid w-full grid-cols-4 h-7 p-0.5">
           <TabsTrigger value="properties" className="text-[9px] h-6 gap-1">
             <Home className="h-3 w-3" />
             Properties
+          </TabsTrigger>
+          <TabsTrigger value="rentals" className="text-[9px] h-6 gap-1">
+            <CalendarDays className="h-3 w-3" />
+            Rentals
           </TabsTrigger>
           <TabsTrigger value="activity" className="text-[9px] h-6 gap-1">
             <Activity className="h-3 w-3" />
@@ -200,6 +206,10 @@ const PropertyOwnerOverview = () => {
               </Card>
             ))
           )}
+        </TabsContent>
+
+        <TabsContent value="rentals" className="mt-1.5">
+          <OwnerRentalManagement />
         </TabsContent>
 
         <TabsContent value="activity" className="space-y-1.5 mt-1.5">

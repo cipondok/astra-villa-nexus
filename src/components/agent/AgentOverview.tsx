@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useAstraToken } from "@/hooks/useAstraToken";
 import { useAstraWalletStats } from "@/hooks/useAstraWalletStats";
 import AgentTools from "./AgentTools";
+import AgentRentalManagement from "./AgentRentalManagement";
 import AgentCalendarTab from "./calendar/AgentCalendarTab";
 import AgentSettings from "./AgentSettings";
 import AgentNotifications from "./AgentNotifications";
@@ -25,7 +26,8 @@ import PayoutManagement from "./PayoutManagement";
 import { AgentAnalyticsDashboard } from "@/components/agent-analytics";
 import { ListingSuccessPredictor } from "@/components/ai/listing";
 import { 
-  Building, 
+  Building,
+  Home,
   PlusCircle, 
   BarChart3, 
   Users,
@@ -324,6 +326,10 @@ const AgentOverview = () => {
               Visits
             </TabsTrigger>
             <TabsTrigger value="payouts" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Payouts</TabsTrigger>
+            <TabsTrigger value="rentals" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex items-center gap-1">
+              <Home className="h-3 w-3" />
+              Rentals
+            </TabsTrigger>
             <TabsTrigger value="tools" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Tools</TabsTrigger>
             <TabsTrigger value="settings" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
           </TabsList>
@@ -739,6 +745,10 @@ const AgentOverview = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="rentals">
+          <AgentRentalManagement agentId={user?.id} />
         </TabsContent>
 
         <TabsContent value="tools">
