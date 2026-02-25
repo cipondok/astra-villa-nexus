@@ -764,6 +764,17 @@ const RentalSidebarFilters = ({
 
           {/* Nearby Facilities */}
           <FilterSection title="Fasilitas Terdekat" icon={MapPin}>
+            <div className="flex items-center gap-1.5 mb-2">
+              <Button variant="outline" size="sm" className="h-6 text-[10px] px-2" onClick={() => onFiltersChange({ nearbyFacilities: NEARBY_FACILITY_OPTIONS.map(o => o.value) })}>
+                Pilih Semua
+              </Button>
+              <Button variant="ghost" size="sm" className="h-6 text-[10px] px-2" onClick={() => onFiltersChange({ nearbyFacilities: [] })}>
+                Hapus Semua
+              </Button>
+              {(filters.nearbyFacilities || []).length > 0 && (
+                <span className="text-[10px] text-muted-foreground ml-auto">{(filters.nearbyFacilities || []).length}/{NEARBY_FACILITY_OPTIONS.length}</span>
+              )}
+            </div>
             <div className="space-y-1">
               {NEARBY_FACILITY_OPTIONS.map(opt => {
                 const NIcon = opt.icon;
@@ -786,14 +797,6 @@ const RentalSidebarFilters = ({
                 );
               })}
             </div>
-            {(filters.nearbyFacilities || []).length > 0 && (
-              <div className="flex items-center justify-between pt-1">
-                <span className="text-[10px] text-muted-foreground">{(filters.nearbyFacilities || []).length} dipilih</span>
-                <Button variant="ghost" size="sm" className="h-6 text-[10px] px-2" onClick={() => onFiltersChange({ nearbyFacilities: [] })}>
-                  <X className="h-2.5 w-2.5 mr-1" /> Hapus
-                </Button>
-              </div>
-            )}
           </FilterSection>
 
           <Separator />

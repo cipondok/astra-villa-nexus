@@ -54,6 +54,26 @@ interface PropertyFormData {
   // Nearby & Payment
   nearby_facilities: string[];
   payment_methods: string[];
+  // Indonesian specs
+  land_area_sqm: string;
+  building_area_sqm: string;
+  floors: string;
+  has_pool: boolean;
+  garage_count: string;
+  view_type: string;
+  furnishing: string;
+  // Investment
+  roi_percentage: string;
+  rental_yield_percentage: string;
+  legal_status: string;
+  wna_eligible: boolean;
+  payment_plan_available: boolean;
+  handover_year: string;
+  // Technology
+  has_vr: boolean;
+  has_360_view: boolean;
+  has_drone_video: boolean;
+  has_interactive_floorplan: boolean;
 }
 
 const RoleBasedPropertyForm = () => {
@@ -98,6 +118,26 @@ const RoleBasedPropertyForm = () => {
     // Nearby & Payment
     nearby_facilities: [],
     payment_methods: [],
+    // Indonesian specs
+    land_area_sqm: "",
+    building_area_sqm: "",
+    floors: "",
+    has_pool: false,
+    garage_count: "",
+    view_type: "",
+    furnishing: "",
+    // Investment
+    roi_percentage: "",
+    rental_yield_percentage: "",
+    legal_status: "",
+    wna_eligible: false,
+    payment_plan_available: false,
+    handover_year: "",
+    // Technology
+    has_vr: false,
+    has_360_view: false,
+    has_drone_video: false,
+    has_interactive_floorplan: false,
   });
 
   // Location selector state
@@ -168,6 +208,26 @@ const RoleBasedPropertyForm = () => {
         property_features: { ...advancedFeatures },
         nearby_facilities: data.nearby_facilities || [],
         payment_methods: data.payment_methods || [],
+        // Indonesian specs
+        land_area_sqm: data.land_area_sqm ? parseFloat(data.land_area_sqm) : null,
+        building_area_sqm: data.building_area_sqm ? parseFloat(data.building_area_sqm) : null,
+        floors: data.floors ? parseInt(data.floors) : null,
+        has_pool: data.has_pool,
+        garage_count: data.garage_count ? parseInt(data.garage_count) : null,
+        view_type: data.view_type || null,
+        furnishing: data.furnishing || null,
+        // Investment
+        roi_percentage: data.roi_percentage ? parseFloat(data.roi_percentage) : null,
+        rental_yield_percentage: data.rental_yield_percentage ? parseFloat(data.rental_yield_percentage) : null,
+        legal_status: data.legal_status || null,
+        wna_eligible: data.wna_eligible,
+        payment_plan_available: data.payment_plan_available,
+        handover_year: data.handover_year ? parseInt(data.handover_year) : null,
+        // Technology
+        has_vr: data.has_vr,
+        has_360_view: data.has_360_view,
+        has_drone_video: data.has_drone_video,
+        has_interactive_floorplan: data.has_interactive_floorplan,
         // Rental-specific fields (only for rental properties)
         ...(data.listing_type === 'rent' && {
           rental_periods: data.rental_periods,
@@ -231,6 +291,23 @@ const RoleBasedPropertyForm = () => {
         available_until: "",
         nearby_facilities: [],
         payment_methods: [],
+        land_area_sqm: "",
+        building_area_sqm: "",
+        floors: "",
+        has_pool: false,
+        garage_count: "",
+        view_type: "",
+        furnishing: "",
+        roi_percentage: "",
+        rental_yield_percentage: "",
+        legal_status: "",
+        wna_eligible: false,
+        payment_plan_available: false,
+        handover_year: "",
+        has_vr: false,
+        has_360_view: false,
+        has_drone_video: false,
+        has_interactive_floorplan: false,
       });
 
       // Reset location selector
@@ -802,7 +879,123 @@ const RoleBasedPropertyForm = () => {
             </div>
           </div>
 
-          {/* SEO & Advanced Settings */}
+          {/* Indonesian Specs */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Spesifikasi Properti</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="land_area_sqm">Luas Tanah (m²)</Label>
+                <Input id="land_area_sqm" type="number" value={formData.land_area_sqm} onChange={(e) => handleInputChange('land_area_sqm', e.target.value)} placeholder="e.g. 200" min="0" />
+              </div>
+              <div>
+                <Label htmlFor="building_area_sqm">Luas Bangunan (m²)</Label>
+                <Input id="building_area_sqm" type="number" value={formData.building_area_sqm} onChange={(e) => handleInputChange('building_area_sqm', e.target.value)} placeholder="e.g. 150" min="0" />
+              </div>
+              <div>
+                <Label htmlFor="floors">Jumlah Lantai</Label>
+                <Input id="floors" type="number" value={formData.floors} onChange={(e) => handleInputChange('floors', e.target.value)} placeholder="e.g. 2" min="1" />
+              </div>
+              <div>
+                <Label htmlFor="garage_count">Garasi / Carport</Label>
+                <Input id="garage_count" type="number" value={formData.garage_count} onChange={(e) => handleInputChange('garage_count', e.target.value)} placeholder="e.g. 1" min="0" />
+              </div>
+              <div>
+                <Label htmlFor="view_type">Tipe Pemandangan</Label>
+                <Select value={formData.view_type} onValueChange={(v) => handleInputChange('view_type', v)}>
+                  <SelectTrigger><SelectValue placeholder="Pilih view" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ocean">Ocean / Laut</SelectItem>
+                    <SelectItem value="mountain">Mountain / Gunung</SelectItem>
+                    <SelectItem value="rice_field">Rice Field / Sawah</SelectItem>
+                    <SelectItem value="city">City / Kota</SelectItem>
+                    <SelectItem value="garden">Garden / Taman</SelectItem>
+                    <SelectItem value="pool">Pool / Kolam</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="furnishing">Furnishing</Label>
+                <Select value={formData.furnishing} onValueChange={(v) => handleInputChange('furnishing', v)}>
+                  <SelectTrigger><SelectValue placeholder="Pilih" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="furnished">Furnished</SelectItem>
+                    <SelectItem value="semi">Semi Furnished</SelectItem>
+                    <SelectItem value="unfurnished">Unfurnished</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch id="has_pool" checked={formData.has_pool} onCheckedChange={(v) => handleInputChange('has_pool', v)} />
+              <Label htmlFor="has_pool">Kolam Renang</Label>
+            </div>
+          </div>
+
+          {/* Investment */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Informasi Investasi</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="roi_percentage">ROI (%)</Label>
+                <Input id="roi_percentage" type="number" step="0.1" value={formData.roi_percentage} onChange={(e) => handleInputChange('roi_percentage', e.target.value)} placeholder="e.g. 8.5" min="0" />
+              </div>
+              <div>
+                <Label htmlFor="rental_yield_percentage">Rental Yield (%)</Label>
+                <Input id="rental_yield_percentage" type="number" step="0.1" value={formData.rental_yield_percentage} onChange={(e) => handleInputChange('rental_yield_percentage', e.target.value)} placeholder="e.g. 6.0" min="0" />
+              </div>
+              <div>
+                <Label htmlFor="legal_status">Status Hukum</Label>
+                <Select value={formData.legal_status} onValueChange={(v) => handleInputChange('legal_status', v)}>
+                  <SelectTrigger><SelectValue placeholder="Pilih status" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="shm">SHM (Hak Milik)</SelectItem>
+                    <SelectItem value="hgb">HGB</SelectItem>
+                    <SelectItem value="leasehold">Leasehold</SelectItem>
+                    <SelectItem value="strata">Strata Title</SelectItem>
+                    <SelectItem value="girik">Girik</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="handover_year">Tahun Serah Terima</Label>
+                <Input id="handover_year" type="number" value={formData.handover_year} onChange={(e) => handleInputChange('handover_year', e.target.value)} placeholder="e.g. 2026" min="2024" max="2035" />
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-6">
+              <div className="flex items-center space-x-2">
+                <Switch id="wna_eligible" checked={formData.wna_eligible} onCheckedChange={(v) => handleInputChange('wna_eligible', v)} />
+                <Label htmlFor="wna_eligible">WNA Eligible</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch id="payment_plan_available" checked={formData.payment_plan_available} onCheckedChange={(v) => handleInputChange('payment_plan_available', v)} />
+                <Label htmlFor="payment_plan_available">Payment Plan Available</Label>
+              </div>
+            </div>
+          </div>
+
+          {/* Technology */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Teknologi & Media</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="flex items-center space-x-2">
+                <Switch id="has_vr" checked={formData.has_vr} onCheckedChange={(v) => handleInputChange('has_vr', v)} />
+                <Label htmlFor="has_vr" className="text-sm">VR Ready</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch id="has_360_view" checked={formData.has_360_view} onCheckedChange={(v) => handleInputChange('has_360_view', v)} />
+                <Label htmlFor="has_360_view" className="text-sm">360° View</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch id="has_drone_video" checked={formData.has_drone_video} onCheckedChange={(v) => handleInputChange('has_drone_video', v)} />
+                <Label htmlFor="has_drone_video" className="text-sm">Drone Video</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch id="has_interactive_floorplan" checked={formData.has_interactive_floorplan} onCheckedChange={(v) => handleInputChange('has_interactive_floorplan', v)} />
+                <Label htmlFor="has_interactive_floorplan" className="text-sm">Floor Plan Interaktif</Label>
+              </div>
+            </div>
+          </div>
+
           {(isAgent || isAdmin) && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">SEO & Advanced Settings</h3>
