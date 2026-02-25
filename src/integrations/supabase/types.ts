@@ -17089,6 +17089,82 @@ export type Database = {
         }
         Relationships: []
       }
+      renewal_requests: {
+        Row: {
+          booking_id: string
+          created_at: string
+          id: string
+          initiated_by: string
+          original_price: number | null
+          owner_notes: string | null
+          property_id: string
+          proposed_end_date: string
+          proposed_price: number
+          proposed_start_date: string
+          responded_at: string | null
+          status: string
+          tenant_id: string
+          tenant_response: string | null
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          id?: string
+          initiated_by?: string
+          original_price?: number | null
+          owner_notes?: string | null
+          property_id: string
+          proposed_end_date: string
+          proposed_price: number
+          proposed_start_date: string
+          responded_at?: string | null
+          status?: string
+          tenant_id: string
+          tenant_response?: string | null
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          id?: string
+          initiated_by?: string
+          original_price?: number | null
+          owner_notes?: string | null
+          property_id?: string
+          proposed_end_date?: string
+          proposed_price?: number
+          proposed_start_date?: string
+          responded_at?: string | null
+          status?: string
+          tenant_id?: string
+          tenant_response?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "renewal_requests_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "renewal_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "renewal_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rental_bookings: {
         Row: {
           additional_fees: Json | null
