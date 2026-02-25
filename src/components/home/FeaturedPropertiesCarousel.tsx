@@ -175,6 +175,8 @@ export default function FeaturedPropertiesCarousel() {
                   <img
                     src={getPropertyImage(p.images, p.thumbnail_url)}
                     alt={p.title}
+                    width={330}
+                    height={206}
                     loading="lazy"
                     decoding="async"
                     sizes="(max-width: 640px) 260px, (max-width: 1024px) 310px, 330px"

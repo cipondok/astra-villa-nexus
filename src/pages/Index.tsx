@@ -580,6 +580,8 @@ const Index = () => {
                 <img 
                   src={banner} 
                   alt={`Astra Villa - Premium Property ${index + 1}`} 
+                  width={1920}
+                  height={1080}
                   loading={isPriority ? 'eager' : 'lazy'}
                   decoding={isPriority ? 'sync' : 'async'}
                   fetchPriority={isPriority ? 'high' : undefined}

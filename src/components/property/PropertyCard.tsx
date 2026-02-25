@@ -169,6 +169,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <img
             src={getPropertyImage(images, thumbnail_url, image_urls)}
             alt={title}
+            width={400}
+            height={300}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }}
           />

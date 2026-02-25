@@ -190,10 +190,14 @@ export default function FeaturedAdsCarousel() {
 
   if (isLoading) {
     return (
-      <div className="relative glass-card rounded-lg p-2 md:p-3 mb-2 md:mb-3">
+      <div className="relative rounded-xl md:rounded-2xl p-2 md:p-3 overflow-hidden" style={{ minHeight: '220px' }}>
         <div className="animate-pulse">
-          <div className="h-4 md:h-5 bg-muted rounded w-32 md:w-40 mb-2" />
-          <div className="h-14 md:h-16 bg-muted rounded" />
+          <div className="h-4 md:h-5 bg-muted rounded w-32 md:w-40 mb-2 mx-auto" />
+          <div className="flex gap-2 md:gap-3 overflow-hidden">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[220px] h-48 sm:h-52 md:h-60 bg-muted rounded-xl" />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -252,7 +256,10 @@ export default function FeaturedAdsCarousel() {
               <img
                 src={getPropertyImage(p.images, p.thumbnail_url)}
                 alt={p.title}
+                width={300}
+                height={256}
                 loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
               />
 
@@ -390,7 +397,10 @@ export default function FeaturedAdsCarousel() {
               <img
                 src={ad.image_url}
                 alt={ad.title}
+                width={180}
+                height={160}
                 loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
               />
               

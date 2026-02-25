@@ -21,9 +21,10 @@ const LazyRender: React.FC<LazyRenderProps> = ({
 }) => {
   const [ref, isVisible] = useIntersectionObserver({ rootMargin });
 
+  const minHeightValue = typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
   const style: React.CSSProperties = isVisible
-    ? {}
-    : { minHeight: typeof minHeight === 'number' ? `${minHeight}px` : minHeight };
+    ? { minHeight: minHeightValue }
+    : { minHeight: minHeightValue, contain: 'content' };
 
   return (
     <div ref={ref} style={style}>
