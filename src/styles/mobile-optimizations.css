@@ -91,8 +91,6 @@
     padding-right: 0.5rem !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
-    flex-direction: column !important;
-    gap: 1rem !important;
   }
   
   /* Flex Navigation Mobile Overrides */
@@ -196,12 +194,6 @@
   }
 
   /* Flex Direction Mobile Controls */
-  .mobile-app-layout .flex,
-  .mobile-app-layout .flex-wrap {
-    flex-direction: column !important;
-    gap: 1rem !important;
-  }
-
   .mobile-app-layout .flex-row-mobile {
     flex-direction: row !important;
   }
@@ -226,9 +218,15 @@
     align-items: flex-start !important;
   }
   
-  /* Make all elements responsive */
-  .mobile-app-layout *,
-  body.mobile-device * {
+  /* Make media elements responsive */
+  .mobile-app-layout img,
+  .mobile-app-layout video,
+  .mobile-app-layout canvas,
+  .mobile-app-layout svg,
+  body.mobile-device img,
+  body.mobile-device video,
+  body.mobile-device canvas,
+  body.mobile-device svg {
     max-width: 100%;
     box-sizing: border-box;
   }
@@ -285,7 +283,9 @@
     -ms-text-size-adjust: 100%;
   }
   
-  body.mobile-device * {
+  body.mobile-device button,
+  body.mobile-device a,
+  body.mobile-device [role="button"] {
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
   }
