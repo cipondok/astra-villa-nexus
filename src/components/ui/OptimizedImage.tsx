@@ -8,12 +8,14 @@ interface OptimizedImageProps {
   width?: number;
   height?: number;
   className?: string;
+  imgClassName?: string;
   priority?: boolean;
   lazy?: boolean;
   placeholder?: string;
   onLoad?: () => void;
   onError?: () => void;
   sizes?: string;
+  fetchPriority?: 'high' | 'low' | 'auto';
 }
 
 export const OptimizedImage: React.FC<OptimizedImageProps> = ({
@@ -23,43 +25,39 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   width,
   height,
   className,
+  imgClassName,
   priority = false,
   lazy = true,
   placeholder = '/placeholder.svg',
   onLoad,
   onError,
-  sizes
+  sizes,
+  fetchPriority,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(!lazy || priority);
   const [hasError, setHasError] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Intersection Observer for lazy loading
+  // Intersection Observer for lazy loading with generous rootMargin
   useEffect(() => {
     if (!lazy || priority || isInView) return;
 
-    observerRef.current = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsInView(true);
-          observerRef.current?.disconnect();
+          observer.disconnect();
         }
       },
-      {
-        rootMargin: '50px',
-        threshold: 0.1
-      }
+      { rootMargin: '300px', threshold: 0 }
     );
 
-    if (imgRef.current) {
-      observerRef.current.observe(imgRef.current);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
     }
 
-    return () => {
-      observerRef.current?.disconnect();
-    };
+    return () => observer.disconnect();
   }, [lazy, priority, isInView]);
 
   const handleLoad = () => {
@@ -72,59 +70,44 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     onError?.();
   };
 
-  // Don't render anything if not in view and lazy loading is enabled
-  if (!isInView && lazy && !priority) {
-    return (
-      <div
-        ref={imgRef}
-        className={cn('bg-muted animate-pulse', className)}
-        style={{ width, height }}
-        aria-label={`Loading ${alt}`}
-      />
-    );
-  }
+  const aspectStyle = width && height ? { aspectRatio: `${width}/${height}` } : {};
 
   return (
-    <picture className={cn('block', className)}>
-      {/* WebP source for modern browsers */}
-      {webpSrc && (
-        <source
-          srcSet={webpSrc}
-          type="image/webp"
-          sizes={sizes}
-        />
+    <div
+      ref={containerRef}
+      className={cn('relative overflow-hidden', className)}
+      style={aspectStyle}
+    >
+      {/* Placeholder shimmer — always present until loaded to prevent CLS */}
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-muted animate-pulse" />
       )}
-      
-      {/* Fallback image */}
-      <img
-        ref={imgRef}
-        src={hasError ? placeholder : src}
-        alt={alt}
-        width={width}
-        height={height}
-        loading={priority ? 'eager' : 'lazy'}
-        decoding="async"
-        className={cn(
-          'transition-opacity duration-300',
-          isLoaded ? 'opacity-100' : 'opacity-0',
-          className
-        )}
-        onLoad={handleLoad}
-        onError={handleError}
-        sizes={sizes}
-      />
-      
-      {/* Loading placeholder */}
-      {!isLoaded && !hasError && (
-        <div
-          className={cn(
-            'absolute inset-0 bg-muted animate-pulse rounded',
-            className
+
+      {isInView && (
+        <picture className="contents">
+          {webpSrc && (
+            <source srcSet={webpSrc} type="image/webp" sizes={sizes} />
           )}
-          style={{ width, height }}
-        />
+          <img
+            src={hasError ? placeholder : src}
+            alt={alt}
+            width={width}
+            height={height}
+            loading={priority ? 'eager' : 'lazy'}
+            decoding={priority ? 'sync' : 'async'}
+            fetchPriority={fetchPriority || (priority ? 'high' : undefined)}
+            sizes={sizes || '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'}
+            className={cn(
+              'w-full h-full object-cover transition-opacity duration-300',
+              isLoaded ? 'opacity-100' : 'opacity-0',
+              imgClassName
+            )}
+            onLoad={handleLoad}
+            onError={handleError}
+          />
+        </picture>
       )}
-    </picture>
+    </div>
   );
 };
 

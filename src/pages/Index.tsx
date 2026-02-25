@@ -290,6 +290,19 @@ const Index = () => {
   
   const slideInterval = (heroConfig?.autoSlideInterval || 5) * 1000;
 
+  // Preload first hero banner for faster LCP
+  useEffect(() => {
+    if (bannerImages.length > 0) {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = bannerImages[0];
+      link.fetchPriority = 'high';
+      document.head.appendChild(link);
+      return () => { document.head.removeChild(link); };
+    }
+  }, [bannerImages]);
+
   // Auto-slide hero banner
   useEffect(() => {
     const interval = setInterval(() => {
@@ -553,20 +566,26 @@ const Index = () => {
               'animate-ken-burns-4',
               'animate-ken-burns',
             ];
+            const isActive = currentSlide === index;
+            const isPriority = index === 0; // Only first slide loads eagerly
             return (
               <div
                 key={index}
                 className={cn(
                   "absolute inset-0 transition-opacity duration-[2000ms] ease-[cubic-bezier(0.4,0,0.2,1)]",
-                  currentSlide === index ? "opacity-100 z-10" : "opacity-0 z-0"
+                  isActive ? "opacity-100 z-10" : "opacity-0 z-0"
                 )}
               >
                 <img 
                   src={banner} 
                   alt={`Astra Villa - Indonesia's Smart Property Platform ${index + 1}`} 
+                  loading={isPriority ? 'eager' : 'lazy'}
+                  decoding={isPriority ? 'sync' : 'async'}
+                  fetchPriority={isPriority ? 'high' : undefined}
+                  sizes="100vw"
                   className={cn(
                     "w-full h-full object-cover will-change-transform",
-                    currentSlide === index ? kenBurnsVariants[index % kenBurnsVariants.length] : ""
+                    isActive ? kenBurnsVariants[index % kenBurnsVariants.length] : ""
                   )}
                 />
               </div>
