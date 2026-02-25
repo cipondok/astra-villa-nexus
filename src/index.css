@@ -255,9 +255,9 @@ body[data-scroll-locked] {
     --input: 210 35% 16%;
     --ring: 200 100% 55%;
     
-    /* ASTRA Brand Colors - Dark Mode */
-    --gold-primary: 48 100% 55%;
-    --gold-secondary: 42 95% 48%;
+    /* ASTRA Brand Colors - Dark Mode (boosted for contrast on dark backgrounds) */
+    --gold-primary: 45 100% 60%; /* Brighter gold for dark bg contrast */
+    --gold-secondary: 40 95% 52%;
     --navy-primary: 200 100% 55%;
     --navy-secondary: 205 80% 48%;
     --dark-bg: 210 55% 5%;
@@ -606,6 +606,19 @@ body[data-scroll-locked] {
     );
   }
 
+  .dark .gold-accent-line {
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(45 100% 60% / 0.5) 20%,
+      hsl(40 95% 62%) 50%,
+      hsl(45 100% 60% / 0.5) 80%,
+      transparent 100%
+    );
+    filter: drop-shadow(0 0 6px hsl(45 100% 60% / 0.3));
+  }
+
   /* Gold shimmer effect for special elements */
   .gold-shimmer {
     background: linear-gradient(
@@ -620,6 +633,20 @@ body[data-scroll-locked] {
     animation: shimmer 3s ease-in-out infinite;
   }
 
+  .dark .gold-shimmer {
+    background: linear-gradient(
+      110deg,
+      hsl(45 100% 58%) 0%,
+      hsl(38 95% 65%) 25%,
+      hsl(45 100% 80%) 50%,
+      hsl(38 95% 65%) 75%,
+      hsl(45 100% 58%) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 4px hsl(45 100% 60% / 0.25));
+  }
+
   @keyframes shimmer {
     0%, 100% { background-position: -100% 0; }
     50% { background-position: 100% 0; }
@@ -630,7 +657,36 @@ body[data-scroll-locked] {
   }
 
   .dark .card-hover:hover {
-    @apply shadow-2xl shadow-primary/10;
+    @apply shadow-2xl;
+    box-shadow: 0 8px 30px -8px hsl(var(--gold-primary) / 0.2),
+                0 0 0 1px hsl(var(--gold-primary) / 0.08);
+  }
+
+  /* Dark mode gold glow utilities */
+  .dark .gold-glow {
+    box-shadow: 0 0 15px hsl(var(--gold-primary) / 0.15),
+                0 0 45px hsl(var(--gold-primary) / 0.08);
+  }
+
+  .dark .gold-glow-sm {
+    box-shadow: 0 0 8px hsl(var(--gold-primary) / 0.12),
+                0 0 20px hsl(var(--gold-primary) / 0.06);
+  }
+
+  .dark .gold-glow-lg {
+    box-shadow: 0 0 25px hsl(var(--gold-primary) / 0.2),
+                0 0 60px hsl(var(--gold-primary) / 0.1);
+  }
+
+  .dark .gold-text-glow {
+    text-shadow: 0 0 12px hsl(var(--gold-primary) / 0.4),
+                 0 0 30px hsl(var(--gold-primary) / 0.15);
+  }
+
+  .dark .gold-border-glow {
+    border-color: hsl(var(--gold-primary) / 0.4);
+    box-shadow: 0 0 10px hsl(var(--gold-primary) / 0.1),
+                inset 0 0 10px hsl(var(--gold-primary) / 0.05);
   }
 
   .btn-primary {
@@ -940,13 +996,15 @@ body[data-scroll-locked] {
     @apply shadow-yellow-600/10 border-yellow-600/20;
   }
 
-  /* Dark Mode Header - Gold Silver Black Gradient */
+  /* Dark Mode Header - Gold Silver Black Gradient with glow */
   .dark .header-ios {
     background: linear-gradient(135deg, 
-      hsla(0, 0%, 10%, 0.9) 0%, 
-      hsla(48, 80%, 30%, 0.6) 50%, 
-      hsla(0, 0%, 15%, 0.9) 100%);
-    @apply shadow-yellow-500/20 border-yellow-500/20;
+      hsla(0, 0%, 8%, 0.92) 0%, 
+      hsla(45, 80%, 30%, 0.55) 50%, 
+      hsla(0, 0%, 10%, 0.92) 100%);
+    @apply border-yellow-500/25;
+    box-shadow: 0 4px 20px hsla(45, 80%, 40%, 0.12),
+                0 1px 0 hsla(45, 90%, 50%, 0.08);
   }
 
   .header-button-ios {
@@ -975,7 +1033,8 @@ body[data-scroll-locked] {
 
   .dark .header-button-ios:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.25);
+    box-shadow: 0 6px 20px hsla(45, 90%, 55%, 0.2),
+                0 0 10px hsla(45, 90%, 55%, 0.08);
   }
 
   /* Smooth Tab List - Gold/Silver Theme for Dark Mode */
