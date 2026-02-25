@@ -16,6 +16,7 @@ import InlineFilterPanel from "@/components/property/InlineFilterPanel";
 import PropertyListingMapView from "@/components/property/PropertyListingMapView";
 import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
 import PropertyListView from "@/components/search/PropertyListView";
+import SearchPagination from "@/components/search/SearchPagination";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { MapPin, Home, Building, Bed, Bath, Square, Heart, Share2, Eye, Calendar, Clock, Zap, User, CheckCircle, Loader2 } from "lucide-react";
 
@@ -97,6 +98,8 @@ const Disewa = () => {
   });
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'grid' | 'map'>('grid');
+  const [currentPage, setCurrentPage] = useState(1);
+  const RESULTS_PER_PAGE = 15;
   const [filters, setFilters] = useState<RentalFilters>({
     searchTerm: "",
     propertyType: "all",
@@ -194,6 +197,22 @@ const Disewa = () => {
 
     return filtered;
   }, [properties, filters]);
+
+  const totalPages = Math.ceil(filteredProperties.length / RESULTS_PER_PAGE);
+  const paginatedProperties = useMemo(() => {
+    const start = (currentPage - 1) * RESULTS_PER_PAGE;
+    return filteredProperties.slice(start, start + RESULTS_PER_PAGE);
+  }, [filteredProperties, currentPage, RESULTS_PER_PAGE]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    document.getElementById('properties-content')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
 
   const formatPrice = (price: number) => {
     if (price >= 1000000) {
@@ -329,7 +348,7 @@ const Disewa = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      <div id="properties-content" className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {/* Properties Content */}
         {viewMode === 'map' ? (
           <PropertyListingMapView properties={filteredProperties} formatPrice={formatPrice} />
@@ -369,13 +388,13 @@ const Disewa = () => {
           </Card>
         ) : viewMode === 'list' ? (
           <PropertyListView
-            properties={filteredProperties as any}
+            properties={paginatedProperties as any}
             onPropertyClick={(property) => navigate(`/properties/${property.id}`)}
             onSave={(property) => handleSaveProperty(property.id)}
           />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {filteredProperties.map((property) => {
+            {paginatedProperties.map((property) => {
               const imageUrl = property.image_urls?.[0] || property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800';
               return (
                 <Card
@@ -425,17 +444,17 @@ const Disewa = () => {
           </div>
         )}
 
-        {/* Infinite scroll sentinel - hidden in map mode */}
-        {viewMode !== 'map' && <div ref={sentinelRef} className="h-4" />}
-        {isFetchingMore && (
-          <div className="flex justify-center py-6">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        {/* Pagination */}
+        {!loading && filteredProperties.length > RESULTS_PER_PAGE && viewMode !== 'map' && (
+          <div className="mt-6">
+            <SearchPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalCount={filteredProperties.length}
+              pageSize={RESULTS_PER_PAGE}
+              onPageChange={handlePageChange}
+            />
           </div>
-        )}
-        {!hasMore && properties.length > 0 && !loading && (
-          <p className="text-center text-sm text-muted-foreground py-6">
-            Semua properti telah ditampilkan
-          </p>
         )}
 
         {/* Rental Tips */}
