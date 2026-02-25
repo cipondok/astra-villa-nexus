@@ -584,19 +584,11 @@ const Index = () => {
             );
           })}
 
-            {/* ASTRA Villa Branding — compact */}
+            {/* Premium Real Estate Badge */}
             <div className="absolute inset-0 z-20 pointer-events-none flex items-start justify-center pt-[4%] sm:pt-[3%]">
-              <div key={currentSlide} className="text-center">
-                <h1
-                  className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-[0.08em] uppercase animate-hero-text-reveal"
-                  style={{ animationDelay: '0.1s', opacity: 0 }}
-                >
-                  <span className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">ASTRA</span>
-                  <span className="ml-2 sm:ml-3 text-gold-primary drop-shadow-[0_2px_12px_rgba(212,175,55,0.4)]">
-                    Villa
-                  </span>
-                </h1>
-              </div>
+              <span className="inline-block px-5 py-1.5 sm:px-8 sm:py-2 text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-[0.35em] border border-white/15 rounded-full bg-white/5 backdrop-blur-sm animate-hero-text-reveal">
+                Premium Real Estate
+              </span>
             </div>
 
             {/* Cinematic overlay — theme-aware gradients */}
