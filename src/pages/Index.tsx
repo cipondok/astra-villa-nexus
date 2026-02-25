@@ -76,7 +76,7 @@ const Index = () => {
   const { trackInteraction } = useUserBehaviorAnalytics();
   const { data: heroConfig } = useHeroSliderConfig();
   const navigate = useNavigate();
-  const { isMobile, isTablet, deviceInfo } = useIsMobile();
+  const { isMobile, isTablet } = useIsMobile();
   const [searchResults, setSearchResults] = useState<BaseProperty[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
