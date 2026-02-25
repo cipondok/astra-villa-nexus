@@ -1,25 +1,46 @@
 
 
-## Current Progress
+## Problem Analysis
 
-All four planned enhancements are complete:
+The **List view** in the property search results is not working because of a critical bug in `PropertyListView.tsx`:
 
-1. Staggered per-card fade-in animations with alternating scroll directions
-2. Duplicate React instance fix
-3. CLS optimizations (explicit image dimensions, stable lazy-loading)
-4. Smooth page transitions with framer-motion AnimatePresence
+**The Card component has no `onClick` handler.** The `onPropertyClick` callback is passed as a prop but never wired to any element. When a user switches to list view and clicks a property card, nothing happens — no navigation occurs.
 
-## Suggested Next Steps
+By contrast, the Grid view (`PropertyGridView`) likely has `onClick` handlers properly connected.
 
-Here are the most impactful improvements to consider:
+## Plan
 
-1. **Hero parallax on HomeIntroSlider** — The parallax effect exists on `Index.tsx` hero images but `HomeIntroSlider.tsx` (the reusable hero component) has a static background. Adding parallax there would unify the experience.
+### Fix: `src/components/search/PropertyListView.tsx`
 
-2. **Skeleton loading states** — Add shimmer/skeleton placeholders for property cards and carousels so content areas don't pop in abruptly during data fetches.
+1. **Add `onClick` handler to the Card** (line 60) — wire `onPropertyClick` so clicking the card navigates to the property detail page:
+   ```tsx
+   <Card 
+     key={property.id} 
+     className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-background rounded-xl border border-border/50 cursor-pointer"
+     onClick={() => onPropertyClick(property)}
+   >
+   ```
 
-3. **Scroll-triggered section headers** — Animate section titles (fade-up or typewriter) as they enter the viewport, complementing the existing card animations.
+2. **Add a "View Details" button** in the action buttons section (around line 194) so there's also an explicit button to view the property, alongside the existing Share and WhatsApp buttons:
+   ```tsx
+   <Button 
+     variant="outline"
+     onClick={(e) => {
+       e.stopPropagation();
+       onPropertyClick(property);
+     }}
+     className="flex-shrink-0"
+   >
+     <Eye className="h-4 w-4 mr-2" />
+     Details
+   </Button>
+   ```
 
-4. **Dark mode polish** — Audit and refine dark mode styles across the site for consistent contrast, shadows, and gradient overlays.
+### Summary of Changes
 
-5. **Performance audit** — Run Lighthouse CI (mobile config already exists) to get a fresh score and identify remaining bottlenecks after the CLS fixes.
+| File | Change |
+|------|--------|
+| `src/components/search/PropertyListView.tsx` | Add `onClick` to Card + add Details button |
+
+This is a one-file fix. The root cause is simply that `onPropertyClick` was never called anywhere in the list view component.
 
