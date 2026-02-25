@@ -72,6 +72,7 @@ import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
 import { BookingDialog } from '@/components/property/BookingDialog';
 import { SurveyBookingDialog } from '@/components/property/SurveyBookingDialog';
 import SocialShareDialog from '@/components/property/SocialShareDialog';
+import SmartCollectionBadges from '@/components/property/SmartCollectionBadges';
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
@@ -981,6 +982,9 @@ const PropertyDetail: React.FC = () => {
                     <div className="text-[7px] sm:text-[9px] text-muted-foreground">{t('propertyDetail.listed')}</div>
                   </div>
                 </div>
+
+                {/* AI Smart Collection Badges */}
+                <SmartCollectionBadges propertyId={property.id} />
 
                 {/* Quick Action Buttons - Book Survey prominently displayed */}
                 <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-border">
