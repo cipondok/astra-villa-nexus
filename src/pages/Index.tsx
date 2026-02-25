@@ -559,59 +559,43 @@ const Index = () => {
             }}
           >
           {bannerImages.map((banner, index) => {
-            const kenBurnsVariants = [
-              'animate-ken-burns',
-              'animate-ken-burns-2',
-              'animate-ken-burns-3',
-              'animate-ken-burns-4',
-              'animate-ken-burns',
-            ];
             const isActive = currentSlide === index;
-            const isPriority = index === 0; // Only first slide loads eagerly
+            const isPriority = index === 0;
+            // Determine slide direction: active slides in from right, exiting slides out to left
+            const isPrev = (currentSlide === 0 ? bannerImages.length - 1 : currentSlide - 1) === index;
             return (
               <div
                 key={index}
                 className={cn(
-                  "absolute inset-0 transition-opacity duration-[2000ms] ease-[cubic-bezier(0.4,0,0.2,1)]",
-                  isActive ? "opacity-100 z-10" : "opacity-0 z-0"
+                  "absolute inset-0 transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] will-change-transform",
+                  isActive ? "translate-x-0 z-10" : isPrev ? "-translate-x-full z-[9]" : "translate-x-full z-0"
                 )}
               >
                 <img 
                   src={banner} 
-                  alt={`Astra Villa - Indonesia's Smart Property Platform ${index + 1}`} 
+                  alt={`Astra Villa - Premium Property ${index + 1}`} 
                   loading={isPriority ? 'eager' : 'lazy'}
                   decoding={isPriority ? 'sync' : 'async'}
                   fetchPriority={isPriority ? 'high' : undefined}
                   sizes="100vw"
-                  className={cn(
-                    "w-full h-full object-cover will-change-transform",
-                    isActive ? kenBurnsVariants[index % kenBurnsVariants.length] : ""
-                  )}
+                  className="w-full h-full object-cover"
                 />
               </div>
             );
           })}
 
-            {/* ASTRA Villa Branding Overlay */}
-            <div className="absolute inset-0 z-20 pointer-events-none flex items-start justify-center pt-[5%] sm:pt-[4%]">
+            {/* ASTRA Villa Branding — compact */}
+            <div className="absolute inset-0 z-20 pointer-events-none flex items-start justify-center pt-[4%] sm:pt-[3%]">
               <div key={currentSlide} className="text-center">
                 <h1
-                  className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black tracking-[0.06em] uppercase animate-hero-text-reveal"
+                  className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-[0.08em] uppercase animate-hero-text-reveal"
                   style={{ animationDelay: '0.1s', opacity: 0 }}
                 >
-                  <span className="text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">ASTRA</span>
-                  <span className="ml-3 sm:ml-5 text-gold-primary animate-hero-brand-glow drop-shadow-[0_4px_30px_rgba(212,175,55,0.5)]">
+                  <span className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">ASTRA</span>
+                  <span className="ml-2 sm:ml-3 text-gold-primary drop-shadow-[0_2px_12px_rgba(212,175,55,0.4)]">
                     Villa
                   </span>
                 </h1>
-                <div
-                  className="mt-2 sm:mt-3 animate-hero-text-reveal"
-                  style={{ animationDelay: '0.5s', opacity: 0 }}
-                >
-                  <span className="inline-block px-5 py-1.5 sm:px-8 sm:py-2 text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-[0.35em] border border-white/15 rounded-full bg-white/5 backdrop-blur-sm">
-                    Premium Real Estate
-                  </span>
-                </div>
               </div>
             </div>
 
