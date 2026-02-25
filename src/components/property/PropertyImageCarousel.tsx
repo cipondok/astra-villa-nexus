@@ -84,6 +84,8 @@ const PropertyImageCarousel = ({
                   imageClassName
                 )}
                 loading="lazy"
+                decoding="async"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 onLoad={index === 0 ? onImageLoad : undefined}
                 onError={(e) => {
                   e.currentTarget.src = fallbackSrc;

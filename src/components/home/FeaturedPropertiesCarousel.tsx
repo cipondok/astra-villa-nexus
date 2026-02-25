@@ -176,6 +176,8 @@ export default function FeaturedPropertiesCarousel() {
                     src={getPropertyImage(p.images, p.thumbnail_url)}
                     alt={p.title}
                     loading="lazy"
+                    decoding="async"
+                    sizes="(max-width: 640px) 260px, (max-width: 1024px) 310px, 330px"
                     className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
