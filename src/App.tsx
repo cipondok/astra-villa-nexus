@@ -8,6 +8,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { AnimatePresence } from 'framer-motion';
+import PageTransition from '@/components/ui/PageTransition';
 import { Loader2 } from 'lucide-react';
 
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
@@ -185,115 +186,119 @@ const AppContent = () => {
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
       {!isAdminRoute && <Suspense fallback={null}><Navigation /></Suspense>}
       <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/search-advanced" element={<AdvancedSearchPage />} />
-            <Route path="/saved" element={<Saved />} />
-            <Route path="/favorites" element={<Saved />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/astra-tokens" element={<AstraTokensPage />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/services/category/:categoryId" element={<ServiceCategory />} />
-            <Route path="/dijual" element={<Dijual />} />
-            <Route path="/buy" element={<Dijual />} />
-            <Route path="/disewa" element={<Disewa />} />
-            <Route path="/rent" element={<Disewa />} />
-            <Route path="/pre-launching" element={<PreLaunching />} />
-            <Route path="/new-projects" element={<NewProjects />} />
-            <Route path="/properties" element={<Properties />} />
-            <Route path="/3d-showcase" element={<Navigate to="/vr-tour" replace />} />
-            <Route path="/vr-tour" element={<VRTourShowcase />} />
-            <Route path="/blockchain-verification" element={<BlockchainVerification />} />
-            <Route path="/properties/:id" element={<PropertyDetail />} />
-            <Route path="/add-property" element={<AddProperty />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/dashboard/admin" element={<AdminDashboard />} />
-            <Route path="/admin/analytics" element={<AdminAnalytics />} />
-            <Route path="/admin/location-analytics" element={<LocationAnalyticsDashboard />} />
-            <Route path="/province-properties" element={<ProvinceProperties />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/admin/design-system" element={<DesignSystemSettings />} />
-            <Route path="/agent-dashboard" element={<AgentDashboard />} />
-            <Route path="/agent" element={<Navigate to="/agent-dashboard" replace />} />
-            <Route path="/listings" element={<Navigate to="/agent-dashboard" replace />} />
-            <Route path="/agent-listings" element={<Navigate to="/agent-dashboard" replace />} />
-            <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
-            <Route element={<VendorOnlyRoute />}>
-              <Route path="/dashboard/vendor" element={<VendorDashboard />} />
-              <Route path="/vendor" element={<VendorDashboard />} />
-            </Route>
-            <Route element={<AgentOnlyRoute />}>
-              <Route path="/dashboard/agent" element={<AgentDashboard />} />
-            </Route>
-            <Route element={<PropertyOwnerOnlyRoute />}>
-              <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboard />} />
-            </Route>
-            <Route path="/my-properties" element={<MyProperties />} />
-            <Route path="/dashboard/customer-service" element={<CustomerServiceDashboardPage />} />
-            <Route path="/dashboard/user" element={<UserDashboardPage />} />
-            <Route path="/user-dashboard" element={<UserDashboardPage />} />
-            <Route path="/dashboard" element={<UserDashboardPage />} />
-            <Route path="/profile/edit" element={<ProfileEditPage />} />
-            <Route path="/booking/:propertyId" element={<BookingPage />} />
-            <Route path="/booking-success" element={<BookingSuccessPage />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/calculators/construction" element={<ConstructionCostCalculator />} />
-            <Route path="/calculators/loan" element={<HomeLoanCalculator />} />
-            <Route path="/calculators/area" element={<AreaUnitConverter />} />
-            <Route path="/areas" element={<AreaGuides />} />
-            <Route path="/investment" element={<Investment />} />
-            <Route path="/foreign-investment" element={<Navigate to="/investment" replace />} />
-            <Route path="/offers" element={<Offers />} />
-            <Route path="/partners/network" element={<PartnerNetwork />} />
-            <Route path="/partners/become" element={<BecomePartner />} />
-            <Route path="/partners/benefits" element={<PartnerBenefits />} />
-            <Route path="/partners/ventures" element={<JointVentures />} />
-            <Route path="/mobile-demo" element={<MobileFirstDemo />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/community-hub" element={<CommunityHub />} />
-            <Route path="/marketplace" element={<Marketplace />} />
-            <Route path="/marketplace/category/:categoryId" element={<MarketplaceCategory />} />
-            <Route path="/vendor-registration" element={<VendorRegistration />} />
-            <Route path="/shared-search/:shareId" element={<SharedSearch />} />
-            <Route path="/development" element={<AstraDevelopment />} />
-            <Route path="/astra-development" element={<AstraDevelopment />} />
-            <Route path="/membership" element={<MembershipPage />} />
-            <Route path="/bookings" element={<BookingsPage />} />
-            <Route path="/location" element={<LocationMap />} />
-            <Route path="/location-map" element={<LocationMap />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/help" element={<Help />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/support" element={<Contact />} />
-            <Route path="/investor/wni" element={<Navigate to="/investment?section=wni" replace />} />
-            <Route path="/investor/wna" element={<Navigate to="/investment?section=wna" replace />} />
-            <Route path="/verification" element={<VerificationCenter />} />
-            <Route path="/verification-center" element={<VerificationCenter />} />
-            <Route path="/ai-content-generator" element={<AIContentGenerator />} />
-            <Route path="/content-generator" element={<AIContentGenerator />} />
-            <Route path="/campaigns" element={<ViralCampaigns />} />
-            <Route path="/viral-campaigns" element={<ViralCampaigns />} />
-            <Route path="/marketing" element={<ViralCampaigns />} />
-            <Route path="/media" element={<MediaHub />} />
-            <Route path="/platform" element={<PlatformHub />} />
-            <Route path="/infrastructure" element={<PlatformHub />} />
-            <Route path="/agents" element={<AgentDirectory />} />
-            <Route path="/cari-agen" element={<AgentDirectory />} />
-            <Route path="/agent-registration" element={<AgentRegistration />} />
-            <Route path="/daftar-agen" element={<AgentRegistration />} />
-            <Route path="/property-comparison" element={<PropertyComparison />} />
-            <Route path="/pre-qualification" element={<PreQualificationPage />} />
-            <Route path="/mortgage-prequalification" element={<PreQualificationPage />} />
-            <Route path="/messages" element={<MessagesPage />} />
-            <Route path="*" element={<ErrorPage />} />
-          </Routes>
-        </Suspense>
+        <AnimatePresence mode="wait" initial={false}>
+          <PageTransition key={location.pathname}>
+            <Suspense fallback={<PageLoader />}>
+              <Routes location={location}>
+                <Route path="/" element={<Index />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/search-advanced" element={<AdvancedSearchPage />} />
+                <Route path="/saved" element={<Saved />} />
+                <Route path="/favorites" element={<Saved />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/astra-tokens" element={<AstraTokensPage />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/services/category/:categoryId" element={<ServiceCategory />} />
+                <Route path="/dijual" element={<Dijual />} />
+                <Route path="/buy" element={<Dijual />} />
+                <Route path="/disewa" element={<Disewa />} />
+                <Route path="/rent" element={<Disewa />} />
+                <Route path="/pre-launching" element={<PreLaunching />} />
+                <Route path="/new-projects" element={<NewProjects />} />
+                <Route path="/properties" element={<Properties />} />
+                <Route path="/3d-showcase" element={<Navigate to="/vr-tour" replace />} />
+                <Route path="/vr-tour" element={<VRTourShowcase />} />
+                <Route path="/blockchain-verification" element={<BlockchainVerification />} />
+                <Route path="/properties/:id" element={<PropertyDetail />} />
+                <Route path="/add-property" element={<AddProperty />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                <Route path="/dashboard/admin" element={<AdminDashboard />} />
+                <Route path="/admin/analytics" element={<AdminAnalytics />} />
+                <Route path="/admin/location-analytics" element={<LocationAnalyticsDashboard />} />
+                <Route path="/province-properties" element={<ProvinceProperties />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/admin/design-system" element={<DesignSystemSettings />} />
+                <Route path="/agent-dashboard" element={<AgentDashboard />} />
+                <Route path="/agent" element={<Navigate to="/agent-dashboard" replace />} />
+                <Route path="/listings" element={<Navigate to="/agent-dashboard" replace />} />
+                <Route path="/agent-listings" element={<Navigate to="/agent-dashboard" replace />} />
+                <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
+                <Route element={<VendorOnlyRoute />}>
+                  <Route path="/dashboard/vendor" element={<VendorDashboard />} />
+                  <Route path="/vendor" element={<VendorDashboard />} />
+                </Route>
+                <Route element={<AgentOnlyRoute />}>
+                  <Route path="/dashboard/agent" element={<AgentDashboard />} />
+                </Route>
+                <Route element={<PropertyOwnerOnlyRoute />}>
+                  <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboard />} />
+                </Route>
+                <Route path="/my-properties" element={<MyProperties />} />
+                <Route path="/dashboard/customer-service" element={<CustomerServiceDashboardPage />} />
+                <Route path="/dashboard/user" element={<UserDashboardPage />} />
+                <Route path="/user-dashboard" element={<UserDashboardPage />} />
+                <Route path="/dashboard" element={<UserDashboardPage />} />
+                <Route path="/profile/edit" element={<ProfileEditPage />} />
+                <Route path="/booking/:propertyId" element={<BookingPage />} />
+                <Route path="/booking-success" element={<BookingSuccessPage />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/calculators/construction" element={<ConstructionCostCalculator />} />
+                <Route path="/calculators/loan" element={<HomeLoanCalculator />} />
+                <Route path="/calculators/area" element={<AreaUnitConverter />} />
+                <Route path="/areas" element={<AreaGuides />} />
+                <Route path="/investment" element={<Investment />} />
+                <Route path="/foreign-investment" element={<Navigate to="/investment" replace />} />
+                <Route path="/offers" element={<Offers />} />
+                <Route path="/partners/network" element={<PartnerNetwork />} />
+                <Route path="/partners/become" element={<BecomePartner />} />
+                <Route path="/partners/benefits" element={<PartnerBenefits />} />
+                <Route path="/partners/ventures" element={<JointVentures />} />
+                <Route path="/mobile-demo" element={<MobileFirstDemo />} />
+                <Route path="/community" element={<Community />} />
+                <Route path="/community-hub" element={<CommunityHub />} />
+                <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/marketplace/category/:categoryId" element={<MarketplaceCategory />} />
+                <Route path="/vendor-registration" element={<VendorRegistration />} />
+                <Route path="/shared-search/:shareId" element={<SharedSearch />} />
+                <Route path="/development" element={<AstraDevelopment />} />
+                <Route path="/astra-development" element={<AstraDevelopment />} />
+                <Route path="/membership" element={<MembershipPage />} />
+                <Route path="/bookings" element={<BookingsPage />} />
+                <Route path="/location" element={<LocationMap />} />
+                <Route path="/location-map" element={<LocationMap />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/help" element={<Help />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/support" element={<Contact />} />
+                <Route path="/investor/wni" element={<Navigate to="/investment?section=wni" replace />} />
+                <Route path="/investor/wna" element={<Navigate to="/investment?section=wna" replace />} />
+                <Route path="/verification" element={<VerificationCenter />} />
+                <Route path="/verification-center" element={<VerificationCenter />} />
+                <Route path="/ai-content-generator" element={<AIContentGenerator />} />
+                <Route path="/content-generator" element={<AIContentGenerator />} />
+                <Route path="/campaigns" element={<ViralCampaigns />} />
+                <Route path="/viral-campaigns" element={<ViralCampaigns />} />
+                <Route path="/marketing" element={<ViralCampaigns />} />
+                <Route path="/media" element={<MediaHub />} />
+                <Route path="/platform" element={<PlatformHub />} />
+                <Route path="/infrastructure" element={<PlatformHub />} />
+                <Route path="/agents" element={<AgentDirectory />} />
+                <Route path="/cari-agen" element={<AgentDirectory />} />
+                <Route path="/agent-registration" element={<AgentRegistration />} />
+                <Route path="/daftar-agen" element={<AgentRegistration />} />
+                <Route path="/property-comparison" element={<PropertyComparison />} />
+                <Route path="/pre-qualification" element={<PreQualificationPage />} />
+                <Route path="/mortgage-prequalification" element={<PreQualificationPage />} />
+                <Route path="/messages" element={<MessagesPage />} />
+                <Route path="*" element={<ErrorPage />} />
+              </Routes>
+            </Suspense>
+          </PageTransition>
+        </AnimatePresence>
       </main>
       {!isAdminRoute && (
         <Suspense fallback={null}>
