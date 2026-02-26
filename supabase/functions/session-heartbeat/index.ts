@@ -34,14 +34,70 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Parse body for device info
+    let deviceInfo: Record<string, string> = {};
+    try {
+      const body = await req.json();
+      deviceInfo = body || {};
+    } catch {
+      // No body or invalid JSON — that's fine
+    }
+
     // Update last_seen_at in profiles
-    const { error: updateError } = await supabase
+    await supabase
       .from('profiles')
       .update({ last_seen_at: new Date().toISOString() })
       .eq('id', user.id);
 
-    if (updateError) {
-      console.error('Heartbeat update error:', updateError);
+    // Upsert session record if device_fingerprint provided
+    if (deviceInfo.device_fingerprint) {
+      const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+        || req.headers.get('cf-connecting-ip')
+        || null;
+
+      // Try to find existing session by user + fingerprint
+      const { data: existing } = await supabase
+        .from('user_sessions')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('device_fingerprint', deviceInfo.device_fingerprint)
+        .maybeSingle();
+
+      if (existing) {
+        await supabase
+          .from('user_sessions')
+          .update({
+            last_activity_at: new Date().toISOString(),
+            is_current: true,
+            ...(clientIp ? { ip_address: clientIp } : {}),
+          })
+          .eq('id', existing.id);
+      } else {
+        // Create new session record
+        const sessionToken = crypto.randomUUID();
+        await supabase
+          .from('user_sessions')
+          .insert({
+            user_id: user.id,
+            session_token: sessionToken,
+            device_fingerprint: deviceInfo.device_fingerprint,
+            device_name: deviceInfo.device_name || null,
+            device_type: deviceInfo.device_type || null,
+            browser: deviceInfo.browser || null,
+            os: deviceInfo.os || null,
+            ip_address: clientIp,
+            is_current: true,
+            last_activity_at: new Date().toISOString(),
+            expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+          });
+      }
+
+      // Mark all other sessions for this user as not current
+      await supabase
+        .from('user_sessions')
+        .update({ is_current: false })
+        .eq('user_id', user.id)
+        .neq('device_fingerprint', deviceInfo.device_fingerprint);
     }
 
     return new Response(

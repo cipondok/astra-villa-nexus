@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AvatarUpload } from '@/components/profile/AvatarUpload';
+import ActiveSessionsManager from '@/components/profile/ActiveSessionsManager';
 import RoleUpgradeSection from '@/components/profile/RoleUpgradeSection';
 import ProfileEditLockBanner from '@/components/profile/ProfileEditLockBanner';
 import ProfileInfoCard from '@/components/profile/ProfileInfoCard';
@@ -439,13 +440,17 @@ const Profile = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2 h-10 mb-4">
+          <TabsList className="grid w-full grid-cols-3 h-10 mb-4">
             <TabsTrigger value="profile" className="text-sm gap-1.5">
               <User className="h-4 w-4" />
               {t.profile}
             </TabsTrigger>
-            <TabsTrigger value="roles" className="text-sm gap-1.5">
+            <TabsTrigger value="sessions" className="text-sm gap-1.5">
               <Shield className="h-4 w-4" />
+              Sessions
+            </TabsTrigger>
+            <TabsTrigger value="roles" className="text-sm gap-1.5">
+              <Crown className="h-4 w-4" />
               {t.roles}
             </TabsTrigger>
           </TabsList>
@@ -671,6 +676,11 @@ const Profile = () => {
                 {t.home}
               </Button>
             </div>
+          </TabsContent>
+
+          {/* Sessions Tab */}
+          <TabsContent value="sessions" className="mt-0">
+            <ActiveSessionsManager />
           </TabsContent>
 
           {/* Roles Tab */}
