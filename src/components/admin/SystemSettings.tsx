@@ -23,6 +23,7 @@ import SocialMediaSettings from './settings/SocialMediaSettings';
 import WelcomeScreenSettings from './settings/WelcomeScreenSettings';
 import WebsiteDesignSettings from './settings/WebsiteDesignSettings';
 import HeroSliderSettings from './settings/HeroSliderSettings';
+import SEOSettingsHub from './settings/SEOSettingsHub';
 import LoadingPage from '../LoadingPage';
 
 const SystemSettings = () => {
@@ -76,7 +77,8 @@ const SystemSettings = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 w-full">
         <div className="overflow-x-auto pb-1">
           <TabsList className="inline-flex h-8 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
-            <TabsTrigger value="general" className="text-xs h-6 px-3">General & SEO</TabsTrigger>
+            <TabsTrigger value="general" className="text-xs h-6 px-3">General</TabsTrigger>
+            <TabsTrigger value="seo-hub" className="text-xs h-6 px-3">SEO Hub</TabsTrigger>
             <TabsTrigger value="website-design" className="text-xs h-6 px-3">Website Design</TabsTrigger>
             <TabsTrigger value="hero-slider" className="text-xs h-6 px-3">Hero Slider</TabsTrigger>
             <TabsTrigger value="branding" className="text-xs h-6 px-3">Branding</TabsTrigger>
@@ -96,6 +98,15 @@ const SystemSettings = () => {
 
         <TabsContent value="general" className="space-y-4">
           <GeneralSettings 
+            settings={settings}
+            loading={loading}
+            onInputChange={handleInputChange}
+            onSave={saveSettings}
+          />
+        </TabsContent>
+
+        <TabsContent value="seo-hub" className="space-y-4">
+          <SEOSettingsHub 
             settings={settings}
             loading={loading}
             onInputChange={handleInputChange}
