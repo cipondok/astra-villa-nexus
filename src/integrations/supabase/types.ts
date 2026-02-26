@@ -13777,6 +13777,78 @@ export type Database = {
           },
         ]
       }
+      payment_automation_settings: {
+        Row: {
+          auto_generate_invoices: boolean | null
+          created_at: string | null
+          grace_period_days: number | null
+          id: string
+          invoice_day_of_month: number | null
+          invoice_description_template: string | null
+          late_fee_amount: number | null
+          late_fee_enabled: boolean | null
+          late_fee_percentage: number | null
+          late_fee_type: string | null
+          max_late_fee_amount: number | null
+          overdue_reminder_frequency: string | null
+          owner_id: string
+          reminder_days_before: number[] | null
+          reminder_enabled: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          auto_generate_invoices?: boolean | null
+          created_at?: string | null
+          grace_period_days?: number | null
+          id?: string
+          invoice_day_of_month?: number | null
+          invoice_description_template?: string | null
+          late_fee_amount?: number | null
+          late_fee_enabled?: boolean | null
+          late_fee_percentage?: number | null
+          late_fee_type?: string | null
+          max_late_fee_amount?: number | null
+          overdue_reminder_frequency?: string | null
+          owner_id: string
+          reminder_days_before?: number[] | null
+          reminder_enabled?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          auto_generate_invoices?: boolean | null
+          created_at?: string | null
+          grace_period_days?: number | null
+          id?: string
+          invoice_day_of_month?: number | null
+          invoice_description_template?: string | null
+          late_fee_amount?: number | null
+          late_fee_enabled?: boolean | null
+          late_fee_percentage?: number | null
+          late_fee_type?: string | null
+          max_late_fee_amount?: number | null
+          overdue_reminder_frequency?: string | null
+          owner_id?: string
+          reminder_days_before?: number[] | null
+          reminder_enabled?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_automation_settings_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_automation_settings_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_disputes: {
         Row: {
           admin_notes: string | null
