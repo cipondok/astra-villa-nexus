@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 interface UserProfile {
@@ -33,6 +33,7 @@ interface UserProfile {
     type: number;
   };
   discoveryOpenness: number;
+  hasEnoughData: boolean;
 }
 
 interface MatchResult {
@@ -58,48 +59,72 @@ serve(async (req) => {
   }
 
   try {
-    // Auth check
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
-    const _authClient = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: authHeader } } });
-    const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await _authClient.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
-
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { action, userId, propertyId, limit = 10 } = await req.json();
+    // Parse the full body once
+    const body = await req.json();
+    const { action, userId, propertyId, limit = 10, signalType, signalData, preferences, feedback, recommendationId } = body;
+
+    // For actions that need auth, validate user
+    const authHeader = req.headers.get('Authorization');
+    let authenticatedUserId: string | null = null;
+
+    if (authHeader?.startsWith('Bearer ')) {
+      const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+      const authClient = createClient(supabaseUrl, anonKey, {
+        global: { headers: { Authorization: authHeader } }
+      });
+      const { data: { user } } = await authClient.auth.getUser();
+      authenticatedUserId = user?.id || null;
+    }
+
+    const effectiveUserId = userId || authenticatedUserId;
 
     switch (action) {
       case 'get_recommendations':
-        return await getRecommendations(supabase, userId, limit);
-      
+        return await getRecommendations(supabase, effectiveUserId, limit);
+
       case 'get_user_profile':
-        return await getUserProfile(supabase, userId);
-      
+        if (!effectiveUserId) {
+          return new Response(JSON.stringify({ profile: null, activitySummary: null }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+        return await getUserProfile(supabase, effectiveUserId);
+
       case 'record_signal':
-        const { signalType, signalData } = await req.json();
-        return await recordBehaviorSignal(supabase, userId, propertyId, signalType, signalData);
-      
+        if (!effectiveUserId || !propertyId) {
+          return new Response(JSON.stringify({ success: false, error: 'Missing userId or propertyId' }), {
+            status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+        return await recordBehaviorSignal(supabase, effectiveUserId, propertyId, signalType, signalData);
+
       case 'update_preferences':
-        const { preferences } = await req.json();
-        return await updatePreferences(supabase, userId, preferences);
-      
+        if (!effectiveUserId) {
+          return new Response(JSON.stringify({ error: 'Not authenticated' }), {
+            status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+        return await updatePreferences(supabase, effectiveUserId, preferences);
+
       case 'get_match_report':
-        return await getMatchReport(supabase, userId, propertyId);
-      
+        if (!effectiveUserId || !propertyId) {
+          return new Response(JSON.stringify({ error: 'Missing params' }), {
+            status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+        return await getMatchReport(supabase, effectiveUserId, propertyId);
+
       case 'provide_feedback':
-        const { feedback, recommendationId } = await req.json();
         return await provideFeedback(supabase, recommendationId, feedback);
-      
+
       default:
-        throw new Error('Invalid action');
+        return new Response(JSON.stringify({ error: 'Invalid action' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
     }
   } catch (error) {
     console.error('Recommendation engine error:', error);
@@ -110,78 +135,107 @@ serve(async (req) => {
   }
 });
 
-async function getRecommendations(supabase: any, userId: string, limit: number) {
-  // 1. Build user profile from explicit + implicit data
-  const profile = await buildUserProfile(supabase, userId);
-  
-  // 2. Get candidate properties
+async function getRecommendations(supabase: any, userId: string | null, limit: number) {
+  // Build user profile (or default for anonymous)
+  const profile = userId
+    ? await buildUserProfile(supabase, userId)
+    : getDefaultProfile();
+
+  // Get candidate properties
   const { data: properties, error } = await supabase
     .from('properties')
-    .select('*')
+    .select('id, title, price, location, city, state, property_type, listing_type, bedrooms, bathrooms, area_sqm, images, thumbnail_url, description, three_d_model_url, virtual_tour_url, created_at, owner_id, property_features, status, approval_status')
     .eq('status', 'active')
-    .limit(100);
+    .eq('approval_status', 'approved')
+    .order('created_at', { ascending: false })
+    .limit(200);
 
   if (error) throw error;
+  if (!properties || properties.length === 0) {
+    return new Response(
+      JSON.stringify({ recommendations: [], userProfile: profile, meta: { totalCandidates: 0 } }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
 
-  // 3. Score each property
-  const scored = properties.map((property: any) => 
+  // Score each property
+  const scored: MatchResult[] = properties.map((property: any) =>
     scoreProperty(property, profile)
   );
 
-  // 4. Apply 80/20 rule - 80% preference matches, 20% discovery
+  // Apply 80/20 rule - 80% preference matches, 20% discovery
   const preferenceMatches = scored
-    .filter((m: MatchResult) => !m.isDiscoveryMatch)
-    .sort((a: MatchResult, b: MatchResult) => b.overallScore - a.overallScore)
+    .filter((m) => !m.isDiscoveryMatch)
+    .sort((a, b) => b.overallScore - a.overallScore)
     .slice(0, Math.ceil(limit * 0.8));
 
   const discoveryMatches = scored
-    .filter((m: MatchResult) => m.isDiscoveryMatch)
-    .sort((a: MatchResult, b: MatchResult) => b.discoveryScore - a.discoveryScore)
-    .slice(0, Math.floor(limit * 0.2));
+    .filter((m) => m.isDiscoveryMatch)
+    .sort((a, b) => b.discoveryScore - a.discoveryScore)
+    .slice(0, Math.floor(limit * 0.2) + 1);
 
-  // 5. Interleave results (discovery items at positions 3, 7, etc.)
-  const recommendations = interleaveResults(preferenceMatches, discoveryMatches);
+  // Interleave results
+  const recommendations = interleaveResults(preferenceMatches, discoveryMatches).slice(0, limit);
 
-  // 6. Store recommendation history
-  for (let i = 0; i < recommendations.length; i++) {
-    const rec = recommendations[i];
-    await supabase.from('recommendation_history').insert({
-      user_id: userId,
-      property_id: rec.propertyId,
-      overall_score: rec.overallScore,
-      preference_score: rec.preferenceScore,
-      discovery_score: rec.discoveryScore,
-      match_reasons: rec.matchReasons,
-      discovery_reasons: rec.discoveryReasons,
-      recommendation_context: 'homepage',
-      position_shown: i + 1
-    });
+  // Store recommendation history (non-blocking, skip for anonymous)
+  if (userId) {
+    for (let i = 0; i < Math.min(recommendations.length, 5); i++) {
+      const rec = recommendations[i];
+      supabase.from('recommendation_history').insert({
+        user_id: userId,
+        property_id: rec.propertyId,
+        overall_score: rec.overallScore,
+        preference_score: rec.preferenceScore,
+        discovery_score: rec.discoveryScore,
+        match_reasons: rec.matchReasons,
+        discovery_reasons: rec.discoveryReasons,
+        recommendation_context: 'homepage',
+        position_shown: i + 1
+      }).then(() => {});
+    }
   }
 
-  // 7. Fetch full property data for response
-  const propertyIds = recommendations.map((r: MatchResult) => r.propertyId);
-  const { data: fullProperties } = await supabase
-    .from('properties')
-    .select('*')
-    .in('id', propertyIds);
-
+  // Build enriched results with full property data
   const enrichedResults = recommendations.map((rec: MatchResult) => ({
     ...rec,
-    property: fullProperties?.find((p: any) => p.id === rec.propertyId)
+    property: properties.find((p: any) => p.id === rec.propertyId)
   }));
 
   return new Response(
-    JSON.stringify({ 
+    JSON.stringify({
       recommendations: enrichedResults,
       userProfile: profile,
       meta: {
         totalCandidates: properties.length,
         preferenceMatches: preferenceMatches.length,
-        discoveryMatches: discoveryMatches.length
+        discoveryMatches: discoveryMatches.length,
+        hasPersonalization: profile.hasEnoughData,
       }
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );
+}
+
+function getDefaultProfile(): UserProfile {
+  return {
+    explicit: {
+      preferredLocations: [],
+      preferredPropertyTypes: [],
+      mustHaveFeatures: [],
+      dealBreakers: [],
+    },
+    implicit: {
+      viewedPriceRange: { min: 0, max: Infinity },
+      dwellTimeByType: {},
+      locationClusters: [],
+      featureAffinities: {},
+      stylePreferences: [],
+      timePatterns: [],
+    },
+    weights: { location: 0.25, price: 0.25, size: 0.20, features: 0.15, type: 0.15 },
+    discoveryOpenness: 0.5,
+    hasEnoughData: false,
+  };
 }
 
 async function buildUserProfile(supabase: any, userId: string): Promise<UserProfile> {
@@ -190,18 +244,28 @@ async function buildUserProfile(supabase: any, userId: string): Promise<UserProf
     .from('user_preference_profiles')
     .select('*')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   // Get behavior signals from last 30 days
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  
+
   const { data: signals } = await supabase
     .from('user_behavior_signals')
     .select('*')
     .eq('user_id', userId)
     .gte('created_at', thirtyDaysAgo.toISOString())
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(200);
+
+  // Also get user_interactions as supplementary data
+  const { data: interactions } = await supabase
+    .from('user_interactions')
+    .select('interaction_type, interaction_data, property_id')
+    .eq('user_id', userId)
+    .gte('created_at', thirtyDaysAgo.toISOString())
+    .order('created_at', { ascending: false })
+    .limit(200);
 
   // Get learned preferences
   const { data: learnedPrefs } = await supabase
@@ -210,10 +274,11 @@ async function buildUserProfile(supabase: any, userId: string): Promise<UserProf
     .eq('user_id', userId);
 
   // Analyze implicit behavior
-  const implicit = analyzeImplicitBehavior(signals || []);
-  
-  // Merge learned preferences
+  const implicit = analyzeImplicitBehavior(signals || [], interactions || []);
   const mergedLearned = mergeLearned(learnedPrefs || []);
+
+  const totalSignals = (signals?.length || 0) + (interactions?.length || 0);
+  const hasEnoughData = totalSignals >= 5;
 
   return {
     explicit: {
@@ -242,37 +307,45 @@ async function buildUserProfile(supabase: any, userId: string): Promise<UserProf
       type: explicitPrefs?.type_weight || 0.15,
     },
     discoveryOpenness: explicitPrefs?.discovery_openness || 0.2,
+    hasEnoughData,
   };
 }
 
-function analyzeImplicitBehavior(signals: any[]) {
+function analyzeImplicitBehavior(signals: any[], interactions: any[]) {
   const pricesSeen: number[] = [];
   const dwellTimeByType: Record<string, number> = {};
   const locationCounts: Record<string, number> = {};
   const hourCounts: Record<number, number> = {};
 
+  // From behavior signals
   for (const signal of signals) {
     const snapshot = signal.property_snapshot || {};
-    
-    // Track prices
-    if (snapshot.price) {
-      pricesSeen.push(snapshot.price);
-    }
 
-    // Track dwell time by property type
+    if (snapshot.price) pricesSeen.push(snapshot.price);
+
     if (snapshot.property_type && signal.time_spent_seconds) {
-      dwellTimeByType[snapshot.property_type] = 
+      dwellTimeByType[snapshot.property_type] =
         (dwellTimeByType[snapshot.property_type] || 0) + signal.time_spent_seconds;
     }
 
-    // Track locations
     if (snapshot.location) {
       locationCounts[snapshot.location] = (locationCounts[snapshot.location] || 0) + 1;
     }
 
-    // Track time patterns
     const hour = new Date(signal.created_at).getHours();
     hourCounts[hour] = (hourCounts[hour] || 0) + 1;
+  }
+
+  // From user_interactions (supplementary)
+  for (const interaction of interactions) {
+    const data = interaction.interaction_data || {};
+    if (data.price) pricesSeen.push(data.price);
+    if (data.city) {
+      locationCounts[data.city] = (locationCounts[data.city] || 0) + 1;
+    }
+    if (data.property_type) {
+      dwellTimeByType[data.property_type] = (dwellTimeByType[data.property_type] || 0) + 1;
+    }
   }
 
   // Calculate price range (exclude outliers)
@@ -311,9 +384,9 @@ function mergeLearned(learnedPrefs: any[]) {
 
   for (const pref of learnedPrefs) {
     if (pref.pattern_type === 'feature_affinity') {
-      featureAffinities[pref.pattern_key] = pref.pattern_value.score * pref.confidence_score;
+      featureAffinities[pref.pattern_key] = (pref.pattern_value?.score || 0.5) * (pref.confidence_score || 0.5);
     }
-    if (pref.pattern_type === 'style_preference' && pref.confidence_score > 0.6) {
+    if (pref.pattern_type === 'style_preference' && (pref.confidence_score || 0) > 0.6) {
       stylePreferences.push(pref.pattern_key);
     }
   }
@@ -326,54 +399,45 @@ function scoreProperty(property: any, profile: UserProfile): MatchResult {
   let totalScore = 0;
   let totalWeight = 0;
 
-  // 1. Location match
   const locationScore = scoreLocation(property, profile);
   matchReasons.push(locationScore);
   totalScore += locationScore.score * locationScore.weight;
   totalWeight += locationScore.weight;
 
-  // 2. Price match
   const priceScore = scorePrice(property, profile);
   matchReasons.push(priceScore);
   totalScore += priceScore.score * priceScore.weight;
   totalWeight += priceScore.weight;
 
-  // 3. Size/bedrooms match
   const sizeScore = scoreSize(property, profile);
   matchReasons.push(sizeScore);
   totalScore += sizeScore.score * sizeScore.weight;
   totalWeight += sizeScore.weight;
 
-  // 4. Property type match
   const typeScore = scoreType(property, profile);
   matchReasons.push(typeScore);
   totalScore += typeScore.score * typeScore.weight;
   totalWeight += typeScore.weight;
 
-  // 5. Features match
   const featuresScore = scoreFeatures(property, profile);
   matchReasons.push(featuresScore);
   totalScore += featuresScore.score * featuresScore.weight;
   totalWeight += featuresScore.weight;
 
-  const preferenceScore = totalWeight > 0 ? (totalScore / totalWeight) * 100 : 0;
+  const preferenceScore = totalWeight > 0 ? (totalScore / totalWeight) * 100 : 50;
 
-  // Calculate discovery score
   const { discoveryScore, discoveryReasons } = calculateDiscoveryScore(property, profile);
-  
-  // Determine if this is a discovery match
   const isDiscoveryMatch = preferenceScore < 60 && discoveryScore > 50;
 
-  // Overall score: 80% preference, 20% discovery potential
-  const overallScore = isDiscoveryMatch 
-    ? discoveryScore 
+  const overallScore = isDiscoveryMatch
+    ? discoveryScore
     : (preferenceScore * 0.8) + (discoveryScore * 0.2);
 
   return {
     propertyId: property.id,
-    overallScore,
-    preferenceScore,
-    discoveryScore,
+    overallScore: Math.round(overallScore),
+    preferenceScore: Math.round(preferenceScore),
+    discoveryScore: Math.round(discoveryScore),
     matchReasons,
     discoveryReasons,
     isDiscoveryMatch,
@@ -382,14 +446,11 @@ function scoreProperty(property: any, profile: UserProfile): MatchResult {
 
 function scoreLocation(property: any, profile: UserProfile): MatchReason {
   const weight = profile.weights.location;
-  const location = property.location?.toLowerCase() || '';
-  
-  // Check explicit preferences
+  const location = (property.location || property.city || '').toLowerCase();
+
   const explicitMatch = profile.explicit.preferredLocations.some(
     loc => location.includes(loc.toLowerCase())
   );
-  
-  // Check implicit patterns
   const implicitMatch = profile.implicit.locationClusters.some(
     loc => location.includes(loc.toLowerCase())
   );
@@ -399,13 +460,13 @@ function scoreLocation(property: any, profile: UserProfile): MatchReason {
 
   if (explicitMatch) {
     score = 1;
-    explanation = `Located in your preferred area: ${property.location}`;
+    explanation = `Preferred area: ${property.city || property.location}`;
   } else if (implicitMatch) {
     score = 0.8;
-    explanation = `Similar to areas you've browsed: ${property.location}`;
+    explanation = `Similar to areas you browse: ${property.city || property.location}`;
   } else {
     score = 0.3;
-    explanation = `New area to explore: ${property.location}`;
+    explanation = `New area: ${property.city || property.location}`;
   }
 
   return { factor: 'Location', score, explanation, weight };
@@ -414,7 +475,7 @@ function scoreLocation(property: any, profile: UserProfile): MatchReason {
 function scorePrice(property: any, profile: UserProfile): MatchReason {
   const weight = profile.weights.price;
   const price = property.price || 0;
-  
+
   const explicitMin = profile.explicit.minBudget || 0;
   const explicitMax = profile.explicit.maxBudget || Infinity;
   const implicitMin = profile.implicit.viewedPriceRange.min;
@@ -423,21 +484,21 @@ function scorePrice(property: any, profile: UserProfile): MatchReason {
   let score = 0;
   let explanation = '';
 
-  if (price >= explicitMin && price <= explicitMax) {
+  if (explicitMax !== Infinity && price >= explicitMin && price <= explicitMax) {
     score = 1;
-    explanation = `Within your budget ($${price.toLocaleString()})`;
-  } else if (price >= implicitMin && price <= implicitMax) {
+    explanation = `Within your budget`;
+  } else if (implicitMax !== Infinity && price >= implicitMin && price <= implicitMax) {
     score = 0.7;
-    explanation = `Similar to properties you've viewed ($${price.toLocaleString()})`;
-  } else if (price < explicitMin * 0.8) {
+    explanation = `Similar to properties you've viewed`;
+  } else if (explicitMax !== Infinity && price < explicitMin * 0.8) {
     score = 0.5;
-    explanation = `Below budget - potential value ($${price.toLocaleString()})`;
-  } else if (price > explicitMax * 1.2) {
+    explanation = `Below budget - potential value`;
+  } else if (explicitMax !== Infinity && price > explicitMax * 1.2) {
     score = 0.2;
-    explanation = `Above budget ($${price.toLocaleString()})`;
+    explanation = `Above budget`;
   } else {
-    score = 0.4;
-    explanation = `Slightly outside range ($${price.toLocaleString()})`;
+    score = 0.5;
+    explanation = `Price range match`;
   }
 
   return { factor: 'Price', score, explanation, weight };
@@ -446,19 +507,22 @@ function scorePrice(property: any, profile: UserProfile): MatchReason {
 function scoreSize(property: any, profile: UserProfile): MatchReason {
   const weight = profile.weights.size;
   const bedrooms = property.bedrooms || 0;
-  
+
   const minBed = profile.explicit.minBedrooms || 0;
   const maxBed = profile.explicit.maxBedrooms || Infinity;
 
   let score = 0;
   let explanation = '';
 
-  if (bedrooms >= minBed && bedrooms <= maxBed) {
+  if (minBed === 0 && maxBed === Infinity) {
+    score = 0.5;
+    explanation = `${bedrooms} bedrooms`;
+  } else if (bedrooms >= minBed && bedrooms <= maxBed) {
     score = 1;
     explanation = `${bedrooms} bedrooms matches your needs`;
   } else if (bedrooms === minBed - 1 || bedrooms === maxBed + 1) {
     score = 0.6;
-    explanation = `${bedrooms} bedrooms - close to your preference`;
+    explanation = `${bedrooms} bedrooms - close to preference`;
   } else {
     score = 0.3;
     explanation = `${bedrooms} bedrooms available`;
@@ -469,17 +533,17 @@ function scoreSize(property: any, profile: UserProfile): MatchReason {
 
 function scoreType(property: any, profile: UserProfile): MatchReason {
   const weight = profile.weights.type;
-  const propertyType = property.property_type?.toLowerCase() || '';
-  
-  // Check explicit preference
+  const propertyType = (property.property_type || '').toLowerCase();
+
   const explicitMatch = profile.explicit.preferredPropertyTypes.some(
     t => propertyType.includes(t.toLowerCase())
   );
-  
-  // Check implicit - time spent on type
+
   const dwellTime = profile.implicit.dwellTimeByType[propertyType] || 0;
-  const avgDwell = Object.values(profile.implicit.dwellTimeByType).reduce((a, b) => a + b, 0) / 
-    Math.max(Object.keys(profile.implicit.dwellTimeByType).length, 1);
+  const dwellValues = Object.values(profile.implicit.dwellTimeByType);
+  const avgDwell = dwellValues.length > 0
+    ? dwellValues.reduce((a, b) => a + b, 0) / dwellValues.length
+    : 0;
 
   let score = 0;
   let explanation = '';
@@ -487,12 +551,12 @@ function scoreType(property: any, profile: UserProfile): MatchReason {
   if (explicitMatch) {
     score = 1;
     explanation = `${property.property_type} - your preferred type`;
-  } else if (dwellTime > avgDwell) {
+  } else if (dwellTime > avgDwell && avgDwell > 0) {
     score = 0.8;
-    explanation = `${property.property_type} - you've shown interest in this type`;
+    explanation = `${property.property_type} - you've shown interest`;
   } else {
     score = 0.4;
-    explanation = `${property.property_type}`;
+    explanation = `${property.property_type || 'Property'}`;
   }
 
   return { factor: 'Property Type', score, explanation, weight };
@@ -500,24 +564,30 @@ function scoreType(property: any, profile: UserProfile): MatchReason {
 
 function scoreFeatures(property: any, profile: UserProfile): MatchReason {
   const weight = profile.weights.features;
-  const features = property.features || [];
+  const features: string[] = [];
   
-  // Check must-have features
+  // Extract features from property_features object
+  const pf = property.property_features;
+  if (pf && typeof pf === 'object') {
+    for (const [key, val] of Object.entries(pf)) {
+      if (val === true || val === 'yes') features.push(key.toLowerCase());
+      if (typeof val === 'string' && val.length > 0 && val !== 'no') features.push(key.toLowerCase());
+    }
+  }
+
   const mustHaves = profile.explicit.mustHaveFeatures;
-  const hasAllMustHaves = mustHaves.every(f => 
-    features.some((pf: string) => pf.toLowerCase().includes(f.toLowerCase()))
-  );
-  
-  // Check deal-breakers
-  const dealBreakers = profile.explicit.dealBreakers;
-  const hasDealBreaker = dealBreakers.some(d =>
-    features.some((pf: string) => pf.toLowerCase().includes(d.toLowerCase()))
+  const hasAllMustHaves = mustHaves.length > 0 && mustHaves.every(f =>
+    features.some(pf => pf.includes(f.toLowerCase()))
   );
 
-  // Check feature affinities
+  const dealBreakers = profile.explicit.dealBreakers;
+  const hasDealBreaker = dealBreakers.some(d =>
+    features.some(pf => pf.includes(d.toLowerCase()))
+  );
+
   const affinityScore = Object.entries(profile.implicit.featureAffinities)
     .reduce((sum, [feature, affinity]) => {
-      if (features.some((f: string) => f.toLowerCase().includes(feature.toLowerCase()))) {
+      if (features.some(f => f.includes(feature.toLowerCase()))) {
         return sum + affinity;
       }
       return sum;
@@ -529,12 +599,12 @@ function scoreFeatures(property: any, profile: UserProfile): MatchReason {
   if (hasDealBreaker) {
     score = 0;
     explanation = 'Contains features you want to avoid';
-  } else if (hasAllMustHaves && mustHaves.length > 0) {
+  } else if (hasAllMustHaves) {
     score = 1;
-    explanation = `Has all your must-have features`;
+    explanation = 'Has all your must-have features';
   } else if (affinityScore > 0.5) {
     score = 0.8;
-    explanation = `Features you've shown interest in`;
+    explanation = 'Features you\'ve shown interest in';
   } else {
     score = 0.5;
     explanation = `${features.length} features available`;
@@ -543,64 +613,56 @@ function scoreFeatures(property: any, profile: UserProfile): MatchReason {
   return { factor: 'Features', score, explanation, weight };
 }
 
-function calculateDiscoveryScore(property: any, profile: UserProfile): { 
-  discoveryScore: number; 
-  discoveryReasons: MatchReason[] 
+function calculateDiscoveryScore(property: any, profile: UserProfile): {
+  discoveryScore: number;
+  discoveryReasons: MatchReason[]
 } {
   const reasons: MatchReason[] = [];
   let score = 0;
+  let totalWeight = 0;
 
-  // 1. Trending in market
-  reasons.push({
-    factor: 'Market Trend',
-    score: 0.7,
-    explanation: 'Popular area with growing demand',
-    weight: 0.3
-  });
-  score += 0.7 * 0.3;
-
-  // 2. Unusual value proposition
-  if (property.price && property.bedrooms) {
-    const pricePerBed = property.price / property.bedrooms;
-    if (pricePerBed < 100000) {
-      reasons.push({
-        factor: 'Value Discovery',
-        score: 0.9,
-        explanation: 'Exceptional value for the size',
-        weight: 0.3
-      });
-      score += 0.9 * 0.3;
-    }
-  }
-
-  // 3. New listing
+  // 1. New listing bonus
   const createdAt = new Date(property.created_at);
   const daysSinceListing = (Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
   if (daysSinceListing < 7) {
-    reasons.push({
-      factor: 'New Listing',
-      score: 0.8,
-      explanation: 'Just listed - be among the first to see it',
-      weight: 0.2
-    });
-    score += 0.8 * 0.2;
+    const newScore = 0.9;
+    reasons.push({ factor: 'New Listing', score: newScore, explanation: 'Just listed — be among the first!', weight: 0.3 });
+    score += newScore * 0.3;
+    totalWeight += 0.3;
+  } else if (daysSinceListing < 14) {
+    const newScore = 0.6;
+    reasons.push({ factor: 'Recent Listing', score: newScore, explanation: 'Recently listed', weight: 0.2 });
+    score += newScore * 0.2;
+    totalWeight += 0.2;
   }
 
-  // 4. Style expansion
-  const isNewStyle = !profile.implicit.stylePreferences.includes(property.property_type);
+  // 2. Value proposition
+  if (property.price && property.bedrooms && property.bedrooms > 0) {
+    const pricePerBed = property.price / property.bedrooms;
+    if (pricePerBed < 500000000) { // Under 500M IDR per bedroom
+      reasons.push({ factor: 'Value', score: 0.85, explanation: 'Great value for the size', weight: 0.3 });
+      score += 0.85 * 0.3;
+      totalWeight += 0.3;
+    }
+  }
+
+  // 3. Style expansion
+  const propType = (property.property_type || '').toLowerCase();
+  const isNewStyle = !profile.implicit.stylePreferences.includes(propType);
   if (isNewStyle && profile.discoveryOpenness > 0.3) {
-    reasons.push({
-      factor: 'Style Discovery',
-      score: 0.6,
-      explanation: 'A different style you might like',
-      weight: 0.2
-    });
+    reasons.push({ factor: 'Style Discovery', score: 0.6, explanation: 'A different style you might like', weight: 0.2 });
     score += 0.6 * 0.2;
+    totalWeight += 0.2;
   }
 
-  const discoveryScore = (score / 1) * 100; // Normalize to 0-100
+  // 4. Market trend placeholder
+  reasons.push({ factor: 'Trending', score: 0.5, explanation: 'Popular area', weight: 0.2 });
+  score += 0.5 * 0.2;
+  totalWeight += 0.2;
 
-  return { discoveryScore, discoveryReasons: reasons };
+  const discoveryScore = totalWeight > 0 ? (score / totalWeight) * 100 : 50;
+
+  return { discoveryScore: Math.round(discoveryScore), discoveryReasons: reasons };
 }
 
 function interleaveResults(preference: MatchResult[], discovery: MatchResult[]): MatchResult[] {
@@ -609,7 +671,6 @@ function interleaveResults(preference: MatchResult[], discovery: MatchResult[]):
   let discIdx = 0;
 
   for (let i = 0; i < preference.length + discovery.length; i++) {
-    // Insert discovery at positions 3, 7, 11, etc.
     if ((i + 1) % 4 === 0 && discIdx < discovery.length) {
       result.push(discovery[discIdx++]);
     } else if (prefIdx < preference.length) {
@@ -624,8 +685,7 @@ function interleaveResults(preference: MatchResult[], discovery: MatchResult[]):
 
 async function getUserProfile(supabase: any, userId: string) {
   const profile = await buildUserProfile(supabase, userId);
-  
-  // Get recent activity summary
+
   const { data: recentActivity } = await supabase
     .from('user_behavior_signals')
     .select('signal_type, created_at')
@@ -633,10 +693,17 @@ async function getUserProfile(supabase: any, userId: string) {
     .order('created_at', { ascending: false })
     .limit(50);
 
+  // Also check user_interactions count
+  const { count: interactionCount } = await supabase
+    .from('user_interactions')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId);
+
   const activitySummary = {
     totalViews: recentActivity?.filter((a: any) => a.signal_type === 'view').length || 0,
     totalSaves: recentActivity?.filter((a: any) => a.signal_type === 'save').length || 0,
     totalInquiries: recentActivity?.filter((a: any) => a.signal_type === 'inquiry').length || 0,
+    totalInteractions: interactionCount || 0,
     lastActive: recentActivity?.[0]?.created_at,
   };
 
@@ -647,36 +714,37 @@ async function getUserProfile(supabase: any, userId: string) {
 }
 
 async function recordBehaviorSignal(
-  supabase: any, 
-  userId: string, 
-  propertyId: string, 
-  signalType: string, 
+  supabase: any,
+  userId: string,
+  propertyId: string,
+  signalType: string,
   signalData: any
 ) {
   // Get property snapshot
   const { data: property } = await supabase
     .from('properties')
-    .select('id, title, price, location, property_type, bedrooms, features')
+    .select('id, title, price, location, city, property_type, bedrooms, property_features')
     .eq('id', propertyId)
     .single();
 
-  // Record the signal
   await supabase.from('user_behavior_signals').insert({
     user_id: userId,
     property_id: propertyId,
     signal_type: signalType,
-    signal_strength: calculateSignalStrength(signalType, signalData),
-    time_spent_seconds: signalData.timeSpent,
-    scroll_depth: signalData.scrollDepth,
-    photos_viewed: signalData.photosViewed,
-    sections_expanded: signalData.sectionsExpanded,
+    signal_strength: calculateSignalStrength(signalType, signalData || {}),
+    time_spent_seconds: signalData?.timeSpent,
+    scroll_depth: signalData?.scrollDepth,
+    photos_viewed: signalData?.photosViewed,
+    sections_expanded: signalData?.sectionsExpanded,
     property_snapshot: property,
-    session_id: signalData.sessionId,
-    device_type: signalData.deviceType,
+    session_id: signalData?.sessionId,
+    device_type: signalData?.deviceType,
   });
 
   // Update learned preferences based on signal
-  await updateLearnedPreferences(supabase, userId, property, signalType, signalData);
+  if (property) {
+    await updateLearnedPreferences(supabase, userId, property, signalType, signalData || {});
+  }
 
   return new Response(
     JSON.stringify({ success: true }),
@@ -686,41 +754,37 @@ async function recordBehaviorSignal(
 
 function calculateSignalStrength(signalType: string, data: any): number {
   const baseStrengths: Record<string, number> = {
-    view: 0.3,
-    dwell: 0.5,
-    save: 0.8,
-    share: 0.7,
-    inquiry: 1.0,
-    revisit: 0.6,
-    compare: 0.4,
+    view: 0.3, dwell: 0.5, save: 0.8, share: 0.7, inquiry: 1.0, revisit: 0.6, compare: 0.4,
   };
 
   let strength = baseStrengths[signalType] || 0.3;
-
-  // Boost based on engagement
-  if (data.timeSpent > 120) strength *= 1.3;
-  if (data.scrollDepth > 80) strength *= 1.2;
-  if (data.photosViewed > 5) strength *= 1.1;
+  if (data?.timeSpent > 120) strength *= 1.3;
+  if (data?.scrollDepth > 80) strength *= 1.2;
+  if (data?.photosViewed > 5) strength *= 1.1;
 
   return Math.min(strength, 1.0);
 }
 
 async function updateLearnedPreferences(
-  supabase: any, 
-  userId: string, 
-  property: any, 
+  supabase: any,
+  userId: string,
+  property: any,
   signalType: string,
   signalData: any
 ) {
-  if (!property) return;
+  // Update feature affinity from property_features
+  const pf = property.property_features;
+  if (pf && typeof pf === 'object' && signalType !== 'view') {
+    const featureKeys = Object.entries(pf)
+      .filter(([_, val]) => val === true || val === 'yes')
+      .map(([key]) => key.toLowerCase())
+      .slice(0, 5); // limit to avoid too many upserts
 
-  // Update feature affinity
-  if (property.features && signalType !== 'view') {
-    for (const feature of property.features) {
+    for (const feature of featureKeys) {
       await supabase.from('learned_preferences').upsert({
         user_id: userId,
         pattern_type: 'feature_affinity',
-        pattern_key: feature.toLowerCase(),
+        pattern_key: feature,
         pattern_value: { score: signalType === 'save' || signalType === 'inquiry' ? 0.8 : 0.5 },
         confidence_score: 0.6,
         sample_count: 1,
@@ -762,20 +826,18 @@ async function updatePreferences(supabase: any, userId: string, preferences: any
 
 async function getMatchReport(supabase: any, userId: string, propertyId: string) {
   const profile = await buildUserProfile(supabase, userId);
-  
+
   const { data: property } = await supabase
     .from('properties')
     .select('*')
     .eq('id', propertyId)
     .single();
 
-  if (!property) {
-    throw new Error('Property not found');
-  }
+  if (!property) throw new Error('Property not found');
 
   const matchResult = scoreProperty(property, profile);
 
-  // Get AI explanation
+  // Generate AI explanation
   const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
   let aiExplanation = '';
 
@@ -788,24 +850,12 @@ async function getMatchReport(supabase: any, userId: string, propertyId: string)
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
+          model: 'google/gemini-3-flash-preview',
           messages: [
-            { 
-              role: 'system', 
-              content: 'You are a real estate advisor. Explain why a property matches (or doesn\'t match) a user\'s preferences in a friendly, concise way. Be specific and helpful.'
-            },
-            { 
-              role: 'user', 
-              content: `Property: ${JSON.stringify(property)}
-User preferences: ${JSON.stringify(profile.explicit)}
-Match reasons: ${JSON.stringify(matchResult.matchReasons)}
-Overall score: ${matchResult.overallScore}%
-
-Provide a 2-3 sentence explanation of why this property is a ${matchResult.overallScore > 70 ? 'good' : matchResult.overallScore > 50 ? 'moderate' : 'weak'} match.`
-            }
+            { role: 'system', content: 'You are a real estate advisor. Explain why a property matches a user\'s preferences in 2-3 friendly sentences. Be specific.' },
+            { role: 'user', content: `Property: ${property.title} in ${property.city || property.location}, ${property.property_type}, ${property.bedrooms} bed, Rp ${property.price?.toLocaleString()}. Match score: ${matchResult.overallScore}%. Top reasons: ${matchResult.matchReasons.map(r => r.explanation).join('; ')}` }
           ],
           max_tokens: 150,
-          temperature: 0.7,
         }),
       });
 
@@ -819,12 +869,7 @@ Provide a 2-3 sentence explanation of why this property is a ${matchResult.overa
   }
 
   return new Response(
-    JSON.stringify({
-      property,
-      matchResult,
-      userProfile: profile,
-      aiExplanation,
-    }),
+    JSON.stringify({ property, matchResult, userProfile: profile, aiExplanation }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );
 }
@@ -832,10 +877,7 @@ Provide a 2-3 sentence explanation of why this property is a ${matchResult.overa
 async function provideFeedback(supabase: any, recommendationId: string, feedback: string) {
   await supabase
     .from('recommendation_history')
-    .update({ 
-      user_feedback: feedback,
-      feedback_at: new Date().toISOString(),
-    })
+    .update({ user_feedback: feedback, feedback_at: new Date().toISOString() })
     .eq('id', recommendationId);
 
   return new Response(

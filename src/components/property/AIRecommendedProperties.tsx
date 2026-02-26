@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight, Key, Tag, Building, Clock, Maximize } from 'lucide-react';
+import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight, Key, Tag, Building, Clock, Maximize, Brain, Compass } from 'lucide-react';
 import BrandedStatusBadge from "@/components/ui/BrandedStatusBadge";
 import { useBadgeSettings } from "@/hooks/useBadgeSettings";
 import { formatDistanceToNow } from 'date-fns';
@@ -13,12 +13,16 @@ import { BaseProperty } from '@/types/property';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
-import { getEdgeFunctionUserMessage, getEdgeFunctionStatus, throwIfEdgeFunctionReturnedError } from '@/lib/supabaseFunctionErrors';
-import { isAiTemporarilyDisabled, markAiTemporarilyDisabledFromError } from '@/lib/aiAvailability';
 import WhatsAppInquiryDialog from './WhatsAppInquiryDialog';
 import ProgressPopup from '@/components/ui/ProgressPopup';
 import { useNavigate } from 'react-router-dom';
 import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
+
+interface ScoredProperty extends BaseProperty {
+  matchScore?: number;
+  isDiscoveryMatch?: boolean;
+  topMatchReason?: string;
+}
 
 interface AIRecommendedPropertiesProps {
   onPropertyClick: (property: BaseProperty) => void;
@@ -48,7 +52,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isGenerating, setIsGenerating] = useState(false);
-  const [recommendations, setRecommendations] = useState<BaseProperty[]>([]);
+  const [recommendations, setRecommendations] = useState<ScoredProperty[]>([]);
   const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
   const [showProgressPopup, setShowProgressPopup] = useState(false);
@@ -56,101 +60,57 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const { getPropertyImage } = useDefaultPropertyImage();
   const { settings: badgeSettings } = useBadgeSettings();
 
-  // Fetch user preferences and property data
-  const { data: userPreferences } = useQuery({
-    queryKey: ['user-preferences', user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      
-      const { data: interactions } = await supabase
-        .from('user_interactions')
-        .select('interaction_data')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(20);
-      
-      return interactions;
-    },
-    enabled: !!user,
-  });
+  // Recommendations are now powered by the smart-recommendation-engine
 
   const generateRecommendations = async () => {
     setIsGenerating(true);
     setShowProgressPopup(true);
     
     try {
-      // If AI is temporarily disabled (e.g., due to 402 credits), skip calling it.
-      if (isAiTemporarilyDisabled()) {
-        throw Object.assign(new Error('AI temporarily disabled'), { status: 402 });
-      }
-
-      // Get recent properties for context
-      const { data: recentProperties } = await supabase
-        .from('properties')
-        .select(AI_PROPERTY_SELECT)
-        .eq('status', 'active')
-        .eq('approval_status', 'approved')
-        .order('created_at', { ascending: false })
-        .limit(50);
-
-      // Use AI to analyze and recommend
-      const body: any = {
-        message: `Based on ${userPreferences ? 'user preferences and browsing history' : 'popular trends'}, recommend 8 properties that would be most suitable. Consider location, price range, property type, and amenities. Return property IDs only in format: "propertyId1,propertyId2,..."`,
-        conversationId: 'recommendations_' + Date.now(),
-      };
-      if (user?.id) body.userId = user.id;
-
-       const { data: aiResponse, error } = await supabase.functions.invoke('ai-assistant', {
-        body
+      // Call the smart recommendation engine
+      const { data: engineResponse, error } = await supabase.functions.invoke('smart-recommendation-engine', {
+        body: {
+          action: 'get_recommendations',
+          userId: user?.id || null,
+          limit: 12,
+        }
       });
 
       if (error) throw error;
-       throwIfEdgeFunctionReturnedError(aiResponse);
 
-      // Extract property IDs from AI response
-      const responseText = aiResponse?.message || '';
-      const propertyIds = responseText
-        .match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi) || [];
+      const recs = engineResponse?.recommendations || [];
 
-      if (propertyIds.length === 0) {
-        // Fallback to recent properties
-        const recommended = recentProperties
-          ?.slice(0, 8)
-          .map(transformWithOwner) || [];
-        setRecommendations(recommended);
+      if (recs.length > 0) {
+        // Transform recommendations into ScoredProperty format
+        const scored: ScoredProperty[] = recs
+          .filter((r: any) => r.property)
+          .map((r: any) => {
+            const p = r.property;
+            const transformed = transformWithOwner(p);
+            return {
+              ...transformed,
+              matchScore: r.overallScore,
+              isDiscoveryMatch: r.isDiscoveryMatch,
+              topMatchReason: r.matchReasons?.[0]?.explanation || '',
+            } as ScoredProperty;
+          });
+
+        setRecommendations(scored);
+
+        const hasPersonalization = engineResponse?.meta?.hasPersonalization;
+        toast({
+          title: hasPersonalization ? "✨ AI Picks for You" : "✨ Trending Properties",
+          description: hasPersonalization
+            ? `${scored.length} properties matched to your preferences`
+            : "Showing popular properties",
+        });
       } else {
-        // Fetch recommended properties
-        const { data: recommendedProps } = await supabase
-          .from('properties')
-          .select(AI_PROPERTY_SELECT)
-          .in('id', propertyIds.slice(0, 8))
-          .eq('status', 'active')
-          .eq('approval_status', 'approved');
-
-        const transformed = recommendedProps?.map(transformWithOwner) || [];
-
-        setRecommendations(transformed);
+        throw new Error('No recommendations returned');
       }
-
-      toast({
-        title: "✨ Recommendations Generated",
-        description: "AI has selected properties based on your preferences",
-      });
 
     } catch (error) {
       console.error('Error generating recommendations:', error);
 
-      // Back off further AI calls for a bit on common gateway failures.
-      markAiTemporarilyDisabledFromError(error);
-
-      // Friendly handling for credit/rate-limit errors.
-      // Keep the app usable by falling back to trending properties, but clearly inform the user.
-      const status = getEdgeFunctionStatus(error);
-      if (status === 402 || status === 429 || status === 503) {
-        const msg = getEdgeFunctionUserMessage(error);
-        toast({ title: msg.title, description: msg.description, variant: msg.variant });
-      }
-      
       // Fallback to trending properties
       const { data: fallbackProps } = await supabase
         .from('properties')
@@ -160,7 +120,12 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         .order('created_at', { ascending: false })
         .limit(8);
 
-      const transformed = fallbackProps?.map(transformWithOwner) || [];
+      const transformed: ScoredProperty[] = (fallbackProps?.map(transformWithOwner) || []).map(p => ({
+        ...p,
+        matchScore: undefined,
+        isDiscoveryMatch: false,
+        topMatchReason: '',
+      }));
 
       setRecommendations(transformed);
 
@@ -208,7 +173,10 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{price.toLocaleString('id-ID')}</>;
   };
 
-  const PropertyCard = ({ property }: { property: BaseProperty }) => {
+  const PropertyCard = ({ property }: { property: ScoredProperty }) => {
+    const matchScore = property.matchScore;
+    const isDiscovery = property.isDiscoveryMatch;
+    const matchReason = property.topMatchReason;
     const isRent = property.listing_type === 'rent';
     const ListingIcon = isRent ? Key : Tag;
     const formatPriceClean = (price: number) => {
@@ -244,10 +212,26 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
                 <ListingIcon className="h-2 w-2" />
                 {isRent ? 'Sewa' : 'Jual'}
               </span>
-              <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-gradient-to-r from-accent to-primary text-primary-foreground shadow-lg shadow-accent/40 ring-1 ring-background/30">
-                <Sparkles className="h-2 w-2" />
-                AI
-              </span>
+              {matchScore !== undefined ? (
+                <span className={cn(
+                  "flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full text-primary-foreground shadow-lg ring-1 ring-background/30",
+                  isDiscovery
+                    ? "bg-gradient-to-r from-chart-4 to-chart-5 shadow-chart-4/40"
+                    : matchScore >= 80
+                      ? "bg-gradient-to-r from-chart-2 to-chart-2/80 shadow-chart-2/40"
+                      : matchScore >= 60
+                        ? "bg-gradient-to-r from-accent to-primary shadow-accent/40"
+                        : "bg-gradient-to-r from-muted-foreground to-muted-foreground/80"
+                )}>
+                  {isDiscovery ? <Compass className="h-2 w-2" /> : <Brain className="h-2 w-2" />}
+                  {isDiscovery ? 'Discover' : `${matchScore}%`}
+                </span>
+              ) : (
+                <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-gradient-to-r from-accent to-primary text-primary-foreground shadow-lg shadow-accent/40 ring-1 ring-background/30">
+                  <Sparkles className="h-2 w-2" />
+                  AI
+                </span>
+              )}
             </div>
           </div>
 
@@ -284,6 +268,13 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
           <h3 className="text-[10px] sm:text-[11px] font-semibold text-foreground truncate leading-snug" title={property.title}>
             {property.title}
           </h3>
+
+          {/* Match Reason */}
+          {matchReason && (
+            <p className="text-[8px] sm:text-[9px] text-accent font-medium truncate leading-tight" title={matchReason}>
+              {matchReason}
+            </p>
+          )}
 
           {/* Location */}
           <div className="flex items-center gap-0.5 rounded-lg bg-gradient-to-r from-accent/10 via-primary/8 to-chart-4/10 border border-accent/25 px-1.5 py-0.5 backdrop-blur-sm">
