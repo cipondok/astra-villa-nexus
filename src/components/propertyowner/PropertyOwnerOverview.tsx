@@ -121,11 +121,11 @@ const PropertyOwnerOverview = () => {
         {/* Owner ID Row */}
         <div className="px-3 sm:px-4 py-2 bg-muted/30 flex items-center justify-between border-t border-border">
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-[10px] sm:text-xs text-muted-foreground">Owner ID:</span>
-            <code className="text-[10px] sm:text-xs font-mono text-foreground bg-muted px-1.5 py-0.5 rounded truncate max-w-[160px] sm:max-w-[200px]">
-              {user?.id?.slice(0, 8)}...{user?.id?.slice(-4)}
-            </code>
-            <Button variant="ghost" size="sm" className="h-5 w-5 p-0" onClick={copyId}>
+            <span className="text-[10px] sm:text-xs text-muted-foreground">Owner:</span>
+            <span className="text-[10px] sm:text-xs font-medium text-foreground truncate max-w-[160px] sm:max-w-[200px]">
+              {profile?.full_name || user?.email || '-'}
+            </span>
+            <Button variant="ghost" size="sm" className="h-5 w-5 p-0" onClick={copyId} title="Copy ID">
               <Copy className="h-3 w-3 text-muted-foreground" />
             </Button>
           </div>
