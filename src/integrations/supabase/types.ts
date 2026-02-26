@@ -3994,6 +3994,83 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_cancellations: {
+        Row: {
+          booking_id: string
+          cancellation_policy: string | null
+          created_at: string | null
+          days_before_checkin: number | null
+          id: string
+          original_amount: number | null
+          penalty_amount: number | null
+          reason: string
+          reason_category: string | null
+          refund_amount: number | null
+          refund_percentage: number | null
+          refund_processed_at: string | null
+          refund_status: string | null
+          requested_by: string
+          requester_role: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          booking_id: string
+          cancellation_policy?: string | null
+          created_at?: string | null
+          days_before_checkin?: number | null
+          id?: string
+          original_amount?: number | null
+          penalty_amount?: number | null
+          reason: string
+          reason_category?: string | null
+          refund_amount?: number | null
+          refund_percentage?: number | null
+          refund_processed_at?: string | null
+          refund_status?: string | null
+          requested_by: string
+          requester_role?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          booking_id?: string
+          cancellation_policy?: string | null
+          created_at?: string | null
+          days_before_checkin?: number | null
+          id?: string
+          original_amount?: number | null
+          penalty_amount?: number | null
+          reason?: string
+          reason_category?: string | null
+          refund_amount?: number | null
+          refund_percentage?: number | null
+          refund_processed_at?: string | null
+          refund_status?: string | null
+          requested_by?: string
+          requester_role?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_cancellations_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       booking_payments: {
         Row: {
           amount: number
@@ -17785,6 +17862,9 @@ export type Database = {
           base_price: number
           booking_status: string | null
           booking_type: string | null
+          cancellation_id: string | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
           check_in_date: string
           check_out_date: string
           contact_details: Json | null
@@ -17808,6 +17888,9 @@ export type Database = {
           base_price: number
           booking_status?: string | null
           booking_type?: string | null
+          cancellation_id?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
           check_in_date: string
           check_out_date: string
           contact_details?: Json | null
@@ -17831,6 +17914,9 @@ export type Database = {
           base_price?: number
           booking_status?: string | null
           booking_type?: string | null
+          cancellation_id?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
           check_in_date?: string
           check_out_date?: string
           contact_details?: Json | null
@@ -17861,6 +17947,13 @@ export type Database = {
             columns: ["agent_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_bookings_cancellation_id_fkey"
+            columns: ["cancellation_id"]
+            isOneToOne: false
+            referencedRelation: "booking_cancellations"
             referencedColumns: ["id"]
           },
           {
