@@ -20892,6 +20892,69 @@ export type Database = {
           },
         ]
       }
+      tenant_documents: {
+        Row: {
+          created_at: string
+          document_type: string
+          expires_at: string | null
+          file_name: string | null
+          file_url: string
+          id: string
+          notes: string | null
+          property_id: string | null
+          rejection_reason: string | null
+          tenant_id: string
+          verification_status: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_type?: string
+          expires_at?: string | null
+          file_name?: string | null
+          file_url: string
+          id?: string
+          notes?: string | null
+          property_id?: string | null
+          rejection_reason?: string | null
+          tenant_id: string
+          verification_status?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_type?: string
+          expires_at?: string | null
+          file_name?: string | null
+          file_url?: string
+          id?: string
+          notes?: string | null
+          property_id?: string | null
+          rejection_reason?: string | null
+          tenant_id?: string
+          verification_status?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_documents_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tenant_documents_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_reviews: {
         Row: {
           booking_id: string
