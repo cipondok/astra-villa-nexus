@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Globe, Search, Tags, FileText, ExternalLink, Image, Construction, AlertTriangle } from 'lucide-react';
+import { Globe, Construction, AlertTriangle } from 'lucide-react';
 
 
 interface GeneralSettingsProps {
@@ -80,38 +80,14 @@ const GeneralSettings = ({ settings, loading, onInputChange, onSave }: GeneralSe
           </CardTitle>
         </CardHeader>
         <CardContent className="px-3 pb-3 pt-0 space-y-2">
-          <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-1">
-              <Label htmlFor="siteName" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Site Name</Label>
-              <Input
-                id="siteName"
-                value={settings.siteName || ''}
-                onChange={(e) => onInputChange('siteName', e.target.value)}
-                placeholder="Enter your site name"
-                className="h-7 text-xs bg-background/50 border-border/50"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="siteTagline" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Tagline</Label>
-              <Input
-                id="siteTagline"
-                value={settings.seoTagline || ''}
-                onChange={(e) => onInputChange('seoTagline', e.target.value)}
-                placeholder="Brief description or slogan"
-                className="h-7 text-xs bg-background/50 border-border/50"
-              />
-            </div>
-          </div>
-
           <div className="space-y-1">
-            <Label htmlFor="siteDescription" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Description</Label>
-            <Textarea
-              id="siteDescription"
-              value={settings.siteDescription || ''}
-              onChange={(e) => onInputChange('siteDescription', e.target.value)}
-              placeholder="Describe your website's purpose"
-              rows={2}
-              className="text-xs min-h-[40px] bg-background/50 border-border/50"
+            <Label htmlFor="siteName" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Site Name</Label>
+            <Input
+              id="siteName"
+              value={settings.siteName || ''}
+              onChange={(e) => onInputChange('siteName', e.target.value)}
+              placeholder="Enter your site name"
+              className="h-7 text-xs bg-background/50 border-border/50"
             />
           </div>
           

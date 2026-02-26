@@ -179,6 +179,16 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
             <CardContent className="px-3 pb-3 pt-0 space-y-3">
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
+                  <Label className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Site Tagline</Label>
+                  <Input value={settings.seoTagline || ''} onChange={(e) => onInputChange('seoTagline', e.target.value)} placeholder="Brief description or slogan" className="h-7 text-xs bg-background/50 border-border/50" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Site Description</Label>
+                  <Input value={settings.siteDescription || ''} onChange={(e) => onInputChange('siteDescription', e.target.value)} placeholder="Describe your website" className="h-7 text-xs bg-background/50 border-border/50" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
                   <Label className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">SEO Title</Label>
                   <Input value={settings.seoTitle || ''} onChange={(e) => onInputChange('seoTitle', e.target.value)} placeholder="Primary SEO title" className="h-7 text-xs bg-background/50 border-border/50" />
                   <p className="text-[8px] text-muted-foreground">{(settings.seoTitle || '').length}/60 chars</p>
