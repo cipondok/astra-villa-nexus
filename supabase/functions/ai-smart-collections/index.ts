@@ -32,7 +32,7 @@ function computeInvestmentScore(p: any): number {
 }
 
 function computeLivabilityScore(p: any): number {
-  const amenities = ((p.has_pool ? 1 : 0) + (p.has_garden ? 1 : 0) + (p.parking_spaces > 0 ? 1 : 0)) / 3;
+  const amenities = ((p.has_pool ? 1 : 0) + (p.parking_spaces > 0 ? 1 : 0)) / 2;
   const area = normalize(p.building_area_sqm || p.area_sqm || 0, 500, 50);
   const beds = p.bedrooms ? (p.bedrooms >= 3 && p.bedrooms <= 5 ? 1 : normalize(p.bedrooms, 5, 1)) : 0.5;
   const furnish = p.furnishing === "furnished" ? 1 : p.furnishing === "semi-furnished" ? 0.75 : 0.5;
@@ -63,7 +63,7 @@ serve(async (req) => {
     if (action === "recalculate_scores") {
       const { data: properties, error: pErr } = await supabase
         .from("properties")
-        .select("id, price, area_sqm, bedrooms, bathrooms, roi_percentage, rental_yield_percentage, legal_status, wna_eligible, has_pool, has_garden, parking_spaces, building_area_sqm, land_area_sqm, furnishing, view_type, three_d_model_url, has_vr, has_360_view, has_drone_video, images")
+        .select("id, price, area_sqm, bedrooms, bathrooms, roi_percentage, rental_yield_percentage, legal_status, wna_eligible, has_pool, building_area_sqm, land_area_sqm, furnishing, view_type, three_d_model_url, has_vr, has_360_view, has_drone_video, images")
         .eq("status", "active")
         .limit(5000);
 
