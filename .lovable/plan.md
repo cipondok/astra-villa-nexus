@@ -1,25 +1,48 @@
 
 
-## Owner Financial Analytics Dashboard
+## Tenant Document Management
 
-Build a comprehensive financial analytics component for property owners that visualizes income vs expenses, profit margins, and financial trends using data from existing `rental_invoices` and `property_expenses` tables.
+### Overview
+Build a document management system where tenants upload documents (KTP, contracts, payment proofs) and property owners can review, verify, and track expiry dates.
+
+### Database Changes
+
+**New table: `tenant_documents`**
+- `id` (uuid, PK)
+- `tenant_id` (uuid, references auth.users, NOT NULL)
+- `property_id` (uuid, references properties, nullable)
+- `document_type` (text: 'ktp', 'kontrak', 'bukti_bayar', 'kk', 'npwp', 'other')
+- `file_url` (text, NOT NULL)
+- `file_name` (text)
+- `verification_status` (text: 'pending', 'verified', 'rejected', default 'pending')
+- `verified_by` (uuid, nullable)
+- `verified_at` (timestamptz, nullable)
+- `rejection_reason` (text, nullable)
+- `expires_at` (date, nullable) — for expiry tracking
+- `notes` (text, nullable)
+- `created_at` (timestamptz, default now())
+
+**Storage bucket: `tenant-documents`** (private, with RLS policies for tenant upload + owner read)
+
+**RLS policies:**
+- Tenants can INSERT/SELECT their own documents
+- Property owners can SELECT documents for tenants on their properties
+- Property owners can UPDATE verification_status on tenant documents
+
+### New Components
+
+1. **`OwnerTenantDocuments.tsx`** — Owner-facing tab in PropertyOwnerOverview
+   - List all tenant documents grouped by tenant/property
+   - Filter by status (pending/verified/rejected) and document type
+   - Verify/reject actions with reason input
+   - Expiry warning badges (documents expiring within 30 days)
+   - Click to preview/download document
+
+2. **Tab integration** — Add "Dokumen" tab with `FileText` icon to `PropertyOwnerOverview.tsx`
 
 ### Implementation Steps
 
-1. **Create `OwnerFinancialAnalytics.tsx`** component with:
-   - **Summary cards**: Total Revenue (from `rental_invoices` with status='paid'), Total Expenses (from `property_expenses` with status='paid'), Net Profit, and Profit Margin percentage
-   - **Revenue vs Expenses chart** (BarChart, monthly, last 6 months) using recharts
-   - **Expense breakdown by category** (PieChart) from `property_expenses`
-   - **Per-property P&L table**: each property showing revenue, expenses, and net profit
-   - **Monthly trend line chart** showing profit over time
-   - All data fetched via Supabase queries on existing tables — no new tables needed
-
-2. **Add "Keuangan" tab** to `PropertyOwnerOverview.tsx` with a `DollarSign` or `TrendingUp` icon, rendering the new component
-
-### Technical Notes
-- No database migration needed — uses existing `rental_invoices` and `property_expenses` tables
-- Uses `recharts` (already installed) for BarChart, LineChart, PieChart
-- Uses `formatIDR` for currency formatting
-- Aggregation done client-side from fetched data
-- Follows existing compact UI style (small text sizes, dense cards)
+1. Run migration: create `tenant_documents` table, storage bucket, and RLS policies
+2. Create `OwnerTenantDocuments.tsx` with document list, filters, verify/reject dialogs, and expiry tracking
+3. Add "Dokumen" tab to `PropertyOwnerOverview.tsx`
 
