@@ -14,13 +14,14 @@ import OwnerVerificationReview from "./OwnerVerificationReview";
 import OwnerInvoiceManagement from "./OwnerInvoiceManagement";
 import OwnerInspectionManagement from "./OwnerInspectionManagement";
 import OwnerTenantScreening from "./OwnerTenantScreening";
+import OwnerDepositManagement from "./OwnerDepositManagement";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
 import { 
   Building, Eye, Heart, MessageSquare, PlusCircle, Activity, Target, Home,
   TrendingUp, Clock, ChevronRight, Settings, ArrowLeft, Search, CalendarDays,
   User, Shield, Copy, BarChart3, MapPin, Zap, FileText, Bell, 
-  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck
+  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -233,6 +234,9 @@ const PropertyOwnerOverview = () => {
           <TabsTrigger value="screening" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <UserCheck className="h-2.5 w-2.5" /> Screening
           </TabsTrigger>
+          <TabsTrigger value="deposits" className="text-[7px] h-5 gap-0.5 min-w-fit">
+            <Wallet className="h-2.5 w-2.5" /> Deposit
+          </TabsTrigger>
           <TabsTrigger value="activity" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Activity className="h-2.5 w-2.5" /> Activity
           </TabsTrigger>
@@ -325,6 +329,11 @@ const PropertyOwnerOverview = () => {
         {/* Screening Tab */}
         <TabsContent value="screening" className="mt-1.5">
           <OwnerTenantScreening />
+        </TabsContent>
+
+        {/* Deposits Tab */}
+        <TabsContent value="deposits" className="mt-1.5">
+          <OwnerDepositManagement />
         </TabsContent>
 
         {/* Activity Tab */}

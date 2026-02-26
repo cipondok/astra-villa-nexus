@@ -6259,6 +6259,115 @@ export type Database = {
           },
         ]
       }
+      deposit_escrows: {
+        Row: {
+          booking_id: string
+          created_at: string
+          deduction_amount: number | null
+          deduction_items: Json | null
+          deduction_reason: string | null
+          deposit_amount: number
+          dispute_reason: string | null
+          dispute_resolved_at: string | null
+          escrow_status: string
+          held_at: string | null
+          id: string
+          notes: string | null
+          owner_id: string
+          paid_at: string | null
+          payment_method: string | null
+          payment_reference: string | null
+          property_id: string
+          refund_amount: number | null
+          refund_method: string | null
+          refund_processed_at: string | null
+          refund_reference: string | null
+          release_requested_at: string | null
+          released_amount: number | null
+          released_at: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          deduction_amount?: number | null
+          deduction_items?: Json | null
+          deduction_reason?: string | null
+          deposit_amount: number
+          dispute_reason?: string | null
+          dispute_resolved_at?: string | null
+          escrow_status?: string
+          held_at?: string | null
+          id?: string
+          notes?: string | null
+          owner_id: string
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          property_id: string
+          refund_amount?: number | null
+          refund_method?: string | null
+          refund_processed_at?: string | null
+          refund_reference?: string | null
+          release_requested_at?: string | null
+          released_amount?: number | null
+          released_at?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          deduction_amount?: number | null
+          deduction_items?: Json | null
+          deduction_reason?: string | null
+          deposit_amount?: number
+          dispute_reason?: string | null
+          dispute_resolved_at?: string | null
+          escrow_status?: string
+          held_at?: string | null
+          id?: string
+          notes?: string | null
+          owner_id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          property_id?: string
+          refund_amount?: number | null
+          refund_method?: string | null
+          refund_processed_at?: string | null
+          refund_reference?: string | null
+          release_requested_at?: string | null
+          released_amount?: number | null
+          released_at?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deposit_escrows_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deposit_escrows_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deposit_escrows_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       document_requirements: {
         Row: {
           accepted_formats: string[] | null
