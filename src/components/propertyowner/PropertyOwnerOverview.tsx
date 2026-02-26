@@ -226,8 +226,8 @@ const PropertyOwnerOverview = () => {
 
       {/* Content Tabs */}
       <Tabs defaultValue={defaultTab} className="space-y-3">
-        <div className="overflow-x-auto scrollbar-hide -mx-3 px-3 sm:-mx-0 sm:px-0">
-          <TabsList className="inline-flex w-auto min-w-full sm:min-w-0 flex-nowrap h-9 sm:h-10 p-1 gap-0.5 bg-muted/50 border border-border">
+        <div className="-mx-3 px-3 sm:-mx-0 sm:px-0">
+          <TabsList className="flex flex-wrap w-full h-auto p-1 gap-0.5 bg-muted/50 border border-border">
             {[
               { value: 'overview', icon: BarChart3, label: 'Overview' },
               { value: 'rentals', icon: CalendarDays, label: 'Rentals' },
