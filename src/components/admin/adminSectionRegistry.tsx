@@ -171,7 +171,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "tools-management": { label: "Tools Management", category: "System & Tools" },
   "rate-limiting": { label: "API Rate Limiting", category: "System & Tools" },
   "customer-service-control": { label: "CS Control Panel", category: "Support" },
-  "seo-settings": { label: "SEO Settings", category: "Settings" },
+  "seo-settings": { label: "SEO Hub", category: "Settings" },
   "seo-management": { label: "SEO Management", category: "Marketing" },
   "vendor-agent-control": { label: "Vendor/Agent Control", category: "Vendors & Services" },
   "authorization-monitoring": { label: "Authorization", category: "Security" },

@@ -93,7 +93,7 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
         { id: 'api-settings', label: 'API Settings', icon: '⚡', count: '12', color: 'yellow' },
         { id: 'database-management', label: 'Database', icon: '💾', count: '45', color: 'indigo' },
         { id: 'smtp-settings', label: 'SMTP Settings', icon: '📧', count: '3', color: 'blue' },
-        { id: 'seo-settings', label: 'SEO Settings', icon: '🔍', count: '7', color: 'green' }
+        { id: 'seo-settings', label: 'SEO Hub', icon: '🔍', count: '7', color: 'green' }
       ]
     },
     {

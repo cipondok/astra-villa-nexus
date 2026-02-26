@@ -371,7 +371,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
                         📧 SMTP Settings
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => onTabChange?.('seo-settings')} className="flex items-center gap-2 text-sm hover:bg-accent rounded">
-                        🔍 SEO Configuration
+                        🔍 SEO Hub
                       </DropdownMenuItem>
                     </div>
                     
