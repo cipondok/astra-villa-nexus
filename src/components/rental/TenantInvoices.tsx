@@ -9,8 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Receipt, CheckCircle, Clock, XCircle, Loader2, CreditCard, DollarSign } from "lucide-react";
+import { Receipt, CheckCircle, Clock, XCircle, Loader2, CreditCard, DollarSign, Download, FileText } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
+import { generateInvoicePdf } from "@/utils/invoicePdfGenerator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ElementType }> = {
@@ -134,9 +135,14 @@ const TenantInvoices = () => {
                       {inv.tax_amount > 0 && <p className="text-[10px] text-muted-foreground">Termasuk pajak {formatIDR(inv.tax_amount)}</p>}
                       <p className="text-[10px] text-destructive">Jatuh tempo: {inv.due_date}</p>
                     </div>
-                    <Button size="sm" className="h-8 text-xs" onClick={() => setPayDialog(inv)}>
-                      <CreditCard className="h-3 w-3 mr-1" /> Bayar
-                    </Button>
+                    <div className="flex gap-1.5">
+                      <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => generateInvoicePdf(inv)}>
+                        <Download className="h-3 w-3 mr-1" /> PDF
+                      </Button>
+                      <Button size="sm" className="h-8 text-xs" onClick={() => setPayDialog(inv)}>
+                        <CreditCard className="h-3 w-3 mr-1" /> Bayar
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               ))}
@@ -156,9 +162,14 @@ const TenantInvoices = () => {
                       <p className="text-xs font-medium text-foreground">{inv.invoice_number}</p>
                       <p className="text-[10px] text-muted-foreground">{inv.description}</p>
                     </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-xs font-semibold text-chart-1">{formatIDR(inv.total_amount)}</p>
-                      <p className="text-[10px] text-muted-foreground">{new Date(inv.paid_at).toLocaleDateString("id-ID")}</p>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <div className="text-right">
+                        <p className="text-xs font-semibold text-chart-1">{formatIDR(inv.total_amount)}</p>
+                        <p className="text-[10px] text-muted-foreground">{new Date(inv.paid_at).toLocaleDateString("id-ID")}</p>
+                      </div>
+                      <Button size="sm" variant="outline" className="h-7 text-[10px] px-2" onClick={() => generateInvoicePdf(inv, true)}>
+                        <Download className="h-3 w-3 mr-0.5" /> Receipt
+                      </Button>
                     </div>
                   </div>
                 </Card>
