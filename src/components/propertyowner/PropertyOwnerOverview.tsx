@@ -21,6 +21,7 @@ import OwnerAnnouncementHub from "./OwnerAnnouncementHub";
 import OwnerExpenseTracking from "./OwnerExpenseTracking";
 import OwnerPayoutManagement from "./OwnerPayoutManagement";
 import OwnerSmartPricing from "./OwnerSmartPricing";
+import OwnerBookingCancellation from "./OwnerBookingCancellation";
 import OwnerFinancialAnalytics from "./OwnerFinancialAnalytics";
 import OwnerCalendarView from "./OwnerCalendarView";
 import OwnerReviewsDashboard from "./OwnerReviewsDashboard";
@@ -30,7 +31,7 @@ import { formatIDR } from "@/utils/currency";
 import { 
   Building, Eye, Heart, MessageSquare, PlusCircle, Activity, Target, Home,
   TrendingUp, Clock, ChevronRight, Settings, ArrowLeft, Search, CalendarDays,
-  User, Shield, Copy, BarChart3, MapPin, Zap, FileText, Bell, 
+  User, Shield, Copy, BarChart3, MapPin, Zap, FileText, Bell, Ban,
   DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet, Megaphone, TrendingDown, Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
@@ -241,6 +242,7 @@ const PropertyOwnerOverview = () => {
               { value: 'financial', icon: DollarSign, label: 'Keuangan' },
               { value: 'payout', icon: Wallet, label: 'Payout' },
               { value: 'smart-pricing', icon: Sparkles, label: 'Pricing' },
+              { value: 'cancellations', icon: Ban, label: 'Batal' },
               { value: 'reviews', icon: Star, label: 'Review' },
               { value: 'insights', icon: TrendingUp, label: 'Insights' },
             ].map((tab) => (
@@ -421,6 +423,11 @@ const PropertyOwnerOverview = () => {
         {/* Smart Pricing Tab */}
         <TabsContent value="smart-pricing" className="mt-1.5">
           <OwnerSmartPricing />
+        </TabsContent>
+
+        {/* Cancellations Tab */}
+        <TabsContent value="cancellations" className="mt-1.5">
+          <OwnerBookingCancellation />
         </TabsContent>
 
         {/* Reviews Tab */}
