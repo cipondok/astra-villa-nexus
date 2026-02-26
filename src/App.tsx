@@ -24,6 +24,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import { usePropertyAlerts } from '@/hooks/usePropertyAlerts';
 import { useReferralTracking } from '@/hooks/useReferralTracking';
+import { useNewListingMatcher } from '@/hooks/useNewListingMatcher';
 
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import MaintenancePage from '@/pages/MaintenancePage';
@@ -167,6 +168,7 @@ const AppContent = () => {
   useVIPNotifications();
   usePropertyAlerts();
   useReferralTracking();
+  useNewListingMatcher();
   
   
   const location = useLocation();
