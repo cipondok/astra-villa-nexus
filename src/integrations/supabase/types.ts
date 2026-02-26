@@ -4542,6 +4542,127 @@ export type Database = {
         }
         Relationships: []
       }
+      checkin_checkout_records: {
+        Row: {
+          booking_id: string
+          checklist: Json | null
+          condition_notes: string | null
+          created_at: string | null
+          damage_description: string | null
+          damage_photos: string[] | null
+          damages_found: boolean | null
+          deduct_from_deposit: boolean | null
+          dispute_reason: string | null
+          electricity_meter: number | null
+          estimated_repair_cost: number | null
+          gas_meter: number | null
+          id: string
+          inventory_notes: string | null
+          keys_count: number | null
+          keys_notes: string | null
+          overall_condition: string | null
+          owner_agreed: boolean | null
+          owner_signature_at: string | null
+          performed_at: string | null
+          performed_by: string
+          photos: string[] | null
+          property_id: string
+          record_type: string
+          status: string | null
+          tenant_agreed: boolean | null
+          tenant_id: string
+          tenant_signature_at: string | null
+          updated_at: string | null
+          water_meter: number | null
+        }
+        Insert: {
+          booking_id: string
+          checklist?: Json | null
+          condition_notes?: string | null
+          created_at?: string | null
+          damage_description?: string | null
+          damage_photos?: string[] | null
+          damages_found?: boolean | null
+          deduct_from_deposit?: boolean | null
+          dispute_reason?: string | null
+          electricity_meter?: number | null
+          estimated_repair_cost?: number | null
+          gas_meter?: number | null
+          id?: string
+          inventory_notes?: string | null
+          keys_count?: number | null
+          keys_notes?: string | null
+          overall_condition?: string | null
+          owner_agreed?: boolean | null
+          owner_signature_at?: string | null
+          performed_at?: string | null
+          performed_by: string
+          photos?: string[] | null
+          property_id: string
+          record_type?: string
+          status?: string | null
+          tenant_agreed?: boolean | null
+          tenant_id: string
+          tenant_signature_at?: string | null
+          updated_at?: string | null
+          water_meter?: number | null
+        }
+        Update: {
+          booking_id?: string
+          checklist?: Json | null
+          condition_notes?: string | null
+          created_at?: string | null
+          damage_description?: string | null
+          damage_photos?: string[] | null
+          damages_found?: boolean | null
+          deduct_from_deposit?: boolean | null
+          dispute_reason?: string | null
+          electricity_meter?: number | null
+          estimated_repair_cost?: number | null
+          gas_meter?: number | null
+          id?: string
+          inventory_notes?: string | null
+          keys_count?: number | null
+          keys_notes?: string | null
+          overall_condition?: string | null
+          owner_agreed?: boolean | null
+          owner_signature_at?: string | null
+          performed_at?: string | null
+          performed_by?: string
+          photos?: string[] | null
+          property_id?: string
+          record_type?: string
+          status?: string | null
+          tenant_agreed?: boolean | null
+          tenant_id?: string
+          tenant_signature_at?: string | null
+          updated_at?: string | null
+          water_meter?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkin_checkout_records_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checkin_checkout_records_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checkin_checkout_records_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cloudflare_audit_log: {
         Row: {
           action: string
