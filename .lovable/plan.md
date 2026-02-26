@@ -1,96 +1,92 @@
 
 
-## Production-Ready Session System for ASTRA Villa
+## AI Property Match Engine — Plan
 
-### Important Architecture Note
-This project runs on **Supabase + React** (not Node.js/Express). Supabase already handles JWT access tokens (auto-refreshed) and refresh tokens (stored as HttpOnly cookies by the Supabase auth SDK). The plan works **within this architecture** to implement all requested behaviors.
+### Current State Assessment
 
-### What Already Exists
-- `useSessionMonitor.ts`: Basic 30s session checks, expiration modal, suppression during batch ops
-- `AuthContext.tsx`: Sign in/out, profile fetching, basic activity tracking (click/keypress only)
-- `SessionExpirationHandler.tsx` + `SessionExpirationModal.tsx`: UI for expired sessions
-- Supabase handles access token (short-lived) + refresh token (long-lived) automatically
+The codebase has extensive AI recommendation infrastructure, but critical pieces are disconnected:
 
-### What's Missing
-- **No inactivity timeout** (user stays logged in forever if token refreshes)
-- **No sliding session extension** (activity doesn't extend session)
-- **No heartbeat** to server
-- **No network resilience** (session expires on temp disconnect)
-- **No grace period** before forced logout
-- Activity tracking only covers click/keypress (missing mouse, scroll, touch, navigation)
-
----
+1. **`smart-recommendation-engine` edge function is missing** — `useSmartRecommendations.ts` calls it, but the function directory exists with no working implementation. This breaks the entire `RecommendationEngine` component.
+2. **Homepage `AIRecommendedProperties` uses generic `ai-assistant` chat** to extract property IDs from free-text — unreliable and ignores all behavior data.
+3. **Behavior tracking exists** (`useUserBehaviorAnalytics`, `useBehaviorTracking`) but signals are never fed back into homepage recommendations.
+4. **Match scores exist** in the scoring logic but are never shown to users on the homepage cards.
+5. **No "pattern detection" UI** — the system learns preferences silently but never tells users what it learned.
 
 ### Implementation Plan
 
-**1. Rewrite `useSessionMonitor.ts` — Core Session Engine**
+**1. Create `smart-recommendation-engine` edge function**
 
-- **Inactivity timeout**: Track last activity timestamp. If no activity for 30 minutes → show warning. 35 minutes (5-min grace) → force logout.
-- **Sliding session**: On activity detection, call `supabase.auth.refreshSession()` silently (throttled to max once per 10 minutes to avoid API spam).
-- **Activity events**: `mousemove`, `mousedown`, `keydown`, `scroll`, `touchstart`, `click`, plus route changes via a custom event.
-- **Network resilience**: Use `navigator.onLine` + `online`/`offline` events. When offline, pause all session checks and token refreshes. When back online, immediately validate session and resume. Never logout on network issues alone.
-- **Grace period**: 5-minute warning toast + countdown before forced logout. Any activity during grace period resets the timer.
-- **Page refresh persistence**: Activity timestamp stored in `localStorage`. On page load, calculate remaining time from stored timestamp — don't reset to zero.
-- **Tab visibility**: Use `visibilitychange` event. When tab becomes visible again, check elapsed time and validate session — don't expire just because tab was hidden.
+Build the missing function that `useSmartRecommendations` already calls. It will:
+- Accept actions: `get_recommendations`, `get_user_profile`, `get_match_report`, `record_signal`, `update_preferences`, `provide_feedback`
+- Read from `user_behavior_signals`, `user_preference_profiles`, `user_interactions`, `learned_preferences`
+- Score properties using weighted factors (location 25%, price 25%, type 20%, bedrooms 15%, features 15%) — reuse the proven scoring from `ai-property-recommendations`
+- Build implicit user profiles from behavior (viewed price ranges, dwell time by type, location clusters, feature affinities)
+- Use Lovable AI Gateway (Gemini) to generate natural-language match explanations
+- Return match scores, user profile, and metadata
 
-**2. Create `useSessionHeartbeat.ts` — Server Heartbeat**
+**2. Rewire `AIRecommendedProperties` to use the real engine**
 
-- Every 5 minutes while user is active, call a lightweight Supabase edge function (`session-heartbeat`) that:
-  - Validates the access token
-  - Updates `profiles.last_seen_at` timestamp
-  - Returns session validity status
-- Skip heartbeat when offline or tab is hidden
-- If heartbeat returns 401/403 → trigger re-login modal
+Replace the generic `ai-assistant` call with `smart-recommendation-engine`:
+- Call `get_recommendations` action with user ID
+- Show match percentage badge on each card (e.g., "92% Match")
+- Add "AI Pick" vs "Discovery" distinction on cards
+- Fall back to trending properties if user is not logged in or engine fails
 
-**3. Create Edge Function `supabase/functions/session-heartbeat/index.ts`**
+**3. Add Behavior Pattern Banner component**
 
-- Accepts authenticated request (JWT in Authorization header)
-- Extracts user ID from JWT
-- Updates `profiles.last_seen_at = now()`
-- Returns `{ valid: true, expires_at }` or 401
+Create `src/components/ai/BehaviorPatternBanner.tsx`:
+- Query `get_user_profile` from the engine
+- Display detected patterns: "You prefer 2-floor villas with pool in Bali under Rp 5M"
+- Show top 3 learned preferences as chips
+- "Update preferences" link to PreferencesEditor
+- Only show for logged-in users with sufficient browsing history (>5 interactions)
 
-**4. Update `AuthContext.tsx` — Sliding Extension**
+**4. Add match score to homepage property cards**
 
-- Add throttled `extendSession` that actually calls `supabase.auth.refreshSession()` on activity
-- Ensure `SIGNED_OUT` events during offline periods are ignored
-- On `online` event: re-validate session before taking any action
+Update `PropertyCard` inside `AIRecommendedProperties`:
+- Accept and display `matchScore` (0-100%) as a small badge
+- Show primary match reason as subtitle text (e.g., "Matches your Bali preference")
+- Color-code: green (80%+), amber (60-79%), blue (discovery match)
 
-**5. Update `SessionExpirationHandler.tsx` — Grace Period UI**
+**5. Wire real-time preference learning on PropertyDetail**
 
-- Show countdown timer in the expiration warning (not just a toast)
-- "Stay Logged In" button that immediately extends the session
-- Only force logout after grace period expires with zero activity
+The tracking already exists in `PropertyDetail.tsx` via `useUserBehaviorAnalytics`. Add:
+- After recording a signal via `record_signal`, invalidate the `smart-recommendations` query cache so homepage updates on next visit
+- Track additional granular signals: floor count, pool presence, specific amenities from `property_features`
 
-**6. Update `NetworkStatusIndicator` integration**
+### Files
 
-- Coordinate with session monitor: when offline flag is set, suppress all session expiration logic
-- When coming back online, run session validation before resuming normal checks
+| Action | File |
+|--------|------|
+| Create | `supabase/functions/smart-recommendation-engine/index.ts` |
+| Create | `src/components/ai/BehaviorPatternBanner.tsx` |
+| Modify | `src/components/property/AIRecommendedProperties.tsx` |
+| Modify | `src/pages/Index.tsx` (add BehaviorPatternBanner) |
+| Modify | `supabase/config.toml` (register function) |
 
-### Files to Create
-- `src/hooks/useSessionHeartbeat.ts`
-- `supabase/functions/session-heartbeat/index.ts`
+### Technical Details
 
-### Files to Modify
-- `src/hooks/useSessionMonitor.ts` (major rewrite)
-- `src/contexts/AuthContext.tsx` (throttled session extension, offline handling)
-- `src/components/SessionExpirationHandler.tsx` (grace period countdown)
-- `src/components/SessionExpirationModal.tsx` (stay-logged-in button, countdown)
-
-### Session Flow
+**Scoring algorithm in edge function:**
 ```text
-User Active → track activity timestamp (localStorage)
-                ↓
-        Every 10 min of activity → silent token refresh
-        Every 5 min of activity  → heartbeat ping to server
-                ↓
-30 min inactivity → warning toast + countdown
-35 min inactivity → force logout + clear tokens
-                ↓
-Network offline → pause all checks, keep local state
-Network online  → validate session, resume if valid
-                ↓
-Token invalid/tampered → immediate re-login modal
-Refresh token expired  → immediate re-login modal
-Manual logout          → clear everything, redirect home
+preferenceScore = weighted sum of:
+  - location match (25%) — exact city > same province > new area
+  - price fit (25%) — within learned budget > below > above
+  - type match (20%) — matches most-viewed property types
+  - bedroom match (15%) — meets minimum from profile
+  - feature match (15%) — has must-have features (pool, garden, etc.)
+
+discoveryScore = base 50 + popularity bonus + new-location bonus + value bonus + premium-feature bonus
+
+Final: 80% preference matches + 20% discovery matches, interleaved at positions 3, 7, etc.
+```
+
+**Implicit profile building:**
+```text
+user_interactions (last 30 days) → extract:
+  - viewedPrices → budget range (10th-90th percentile)
+  - viewedTypes → preferred property types (top 3)
+  - viewedCities → location clusters (top 5)
+  - dwellTime by type → style preferences
+  - saved/inquired features → must-have features
 ```
 
