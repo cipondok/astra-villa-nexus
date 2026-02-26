@@ -24,8 +24,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   User, Settings, LogOut, Home, Edit2, Save, X, ArrowLeft, 
   Mail, Phone, Building2, MapPin, FileText, Shield, Crown,
-  CheckCircle, Clock, Sparkles, AlertCircle
+  CheckCircle, Clock, Sparkles, AlertCircle, Brain
 } from 'lucide-react';
+import PreferenceDashboard from '@/components/profile/PreferenceDashboard';
 import { useToast } from '@/hooks/use-toast';
 import { useUserMembership } from '@/hooks/useUserMembership';
 import { MEMBERSHIP_LEVELS } from '@/types/membership';
@@ -440,10 +441,14 @@ const Profile = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3 h-10 mb-4">
+          <TabsList className="grid w-full grid-cols-4 h-10 mb-4">
             <TabsTrigger value="profile" className="text-sm gap-1.5">
               <User className="h-4 w-4" />
               {t.profile}
+            </TabsTrigger>
+            <TabsTrigger value="preferences" className="text-sm gap-1.5">
+              <Brain className="h-4 w-4" />
+              AI Insights
             </TabsTrigger>
             <TabsTrigger value="sessions" className="text-sm gap-1.5">
               <Shield className="h-4 w-4" />
@@ -676,6 +681,11 @@ const Profile = () => {
                 {t.home}
               </Button>
             </div>
+          </TabsContent>
+
+          {/* AI Insights Tab */}
+          <TabsContent value="preferences" className="mt-0">
+            <PreferenceDashboard />
           </TabsContent>
 
           {/* Sessions Tab */}
