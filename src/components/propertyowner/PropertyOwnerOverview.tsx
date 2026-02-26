@@ -226,50 +226,87 @@ const PropertyOwnerOverview = () => {
 
       {/* Content Tabs */}
       <Tabs defaultValue={defaultTab} className="space-y-3">
-        <div className="-mx-3 px-3 sm:-mx-0 sm:px-0">
-          <TabsList className="flex flex-wrap w-full h-auto p-1 gap-0.5 bg-muted/50 border border-border">
-            {[
-              { value: 'overview', icon: BarChart3, label: 'Overview' },
-              { value: 'rentals', icon: CalendarDays, label: 'Rentals' },
-              { value: 'renewal', icon: Clock, label: 'Renewal' },
-              { value: 'verification', icon: Shield, label: 'KYC' },
-              { value: 'invoices', icon: DollarSign, label: 'Invoice' },
-              { value: 'maintenance', icon: Settings, label: 'Maint.' },
-              { value: 'inspection', icon: ClipboardCheck, label: 'Inspeksi' },
-              { value: 'screening', icon: UserCheck, label: 'Screening' },
-              { value: 'deposits', icon: Wallet, label: 'Deposit' },
-              { value: 'contracts', icon: FileText, label: 'Kontrak' },
-              { value: 'expenses', icon: TrendingDown, label: 'Biaya' },
-              { value: 'automation', icon: Zap, label: 'Automasi' },
-              { value: 'announcements', icon: Megaphone, label: 'Broadcast' },
-              { value: 'notifications', icon: Bell, label: 'Notif' },
-              { value: 'reminders', icon: BellRing, label: 'Reminder' },
-              { value: 'activity', icon: Activity, label: 'Activity' },
-              { value: 'calendar', icon: CalendarDays, label: 'Kalender' },
-              { value: 'financial', icon: DollarSign, label: 'Keuangan' },
-              { value: 'payout', icon: Wallet, label: 'Payout' },
-              { value: 'smart-pricing', icon: Sparkles, label: 'Pricing' },
-              { value: 'cancellations', icon: Ban, label: 'Batal' },
-              { value: 'reviews', icon: Star, label: 'Review' },
-              { value: 'prop-analytics', icon: BarChart3, label: 'Analitik' },
-              { value: 'checkinout', icon: LogIn, label: 'Check-in' },
-              { value: 'visitors', icon: Users, label: 'Visitor' },
-              { value: 'forecast', icon: Target, label: 'Forecast' },
-              { value: 'documents', icon: FileText, label: 'Dokumen' },
-              { value: 'insights', icon: TrendingUp, label: 'Insights' },
-            ].map((tab) => (
-              <TabsTrigger
-                key={tab.value}
-                value={tab.value}
-                className="text-[9px] sm:text-[11px] h-6 sm:h-7 gap-1 px-2 sm:px-2.5 min-w-fit whitespace-nowrap data-[state=active]:bg-background data-[state=active]:shadow-sm"
-              >
-                <tab.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                <span className="hidden xs:inline sm:inline">{tab.label}</span>
-                <span className="xs:hidden">{tab.label.slice(0, 4)}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </div>
+        <Card className="p-2 sm:p-2.5 space-y-1.5">
+          {[
+            {
+              group: 'Utama',
+              tabs: [
+                { value: 'overview', icon: BarChart3, label: 'Overview' },
+                { value: 'rentals', icon: CalendarDays, label: 'Rentals' },
+                { value: 'calendar', icon: CalendarDays, label: 'Kalender' },
+                { value: 'activity', icon: Activity, label: 'Activity' },
+              ],
+            },
+            {
+              group: 'Tenant',
+              tabs: [
+                { value: 'renewal', icon: Clock, label: 'Renewal' },
+                { value: 'verification', icon: Shield, label: 'KYC' },
+                { value: 'screening', icon: UserCheck, label: 'Screening' },
+                { value: 'documents', icon: FileText, label: 'Dokumen' },
+                { value: 'checkinout', icon: LogIn, label: 'Check-in' },
+                { value: 'visitors', icon: Users, label: 'Visitor' },
+              ],
+            },
+            {
+              group: 'Keuangan',
+              tabs: [
+                { value: 'invoices', icon: DollarSign, label: 'Invoice' },
+                { value: 'deposits', icon: Wallet, label: 'Deposit' },
+                { value: 'expenses', icon: TrendingDown, label: 'Biaya' },
+                { value: 'payout', icon: Wallet, label: 'Payout' },
+                { value: 'financial', icon: DollarSign, label: 'Keuangan' },
+                { value: 'smart-pricing', icon: Sparkles, label: 'Pricing' },
+              ],
+            },
+            {
+              group: 'Properti',
+              tabs: [
+                { value: 'maintenance', icon: Settings, label: 'Maint.' },
+                { value: 'inspection', icon: ClipboardCheck, label: 'Inspeksi' },
+                { value: 'contracts', icon: FileText, label: 'Kontrak' },
+                { value: 'cancellations', icon: Ban, label: 'Batal' },
+                { value: 'reviews', icon: Star, label: 'Review' },
+              ],
+            },
+            {
+              group: 'Analitik',
+              tabs: [
+                { value: 'prop-analytics', icon: BarChart3, label: 'Analitik' },
+                { value: 'forecast', icon: Target, label: 'Forecast' },
+                { value: 'insights', icon: TrendingUp, label: 'Insights' },
+              ],
+            },
+            {
+              group: 'Komunikasi',
+              tabs: [
+                { value: 'automation', icon: Zap, label: 'Automasi' },
+                { value: 'announcements', icon: Megaphone, label: 'Broadcast' },
+                { value: 'notifications', icon: Bell, label: 'Notif' },
+                { value: 'reminders', icon: BellRing, label: 'Reminder' },
+              ],
+            },
+          ].map((section) => (
+            <div key={section.group}>
+              <span className="text-[8px] sm:text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70 px-1 mb-0.5 block">
+                {section.group}
+              </span>
+              <TabsList className="flex flex-wrap w-full h-auto p-0 gap-0.5 bg-transparent">
+                {section.tabs.map((tab) => (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className="text-[9px] sm:text-[11px] h-6 sm:h-7 gap-1 px-2 sm:px-2.5 min-w-fit whitespace-nowrap bg-muted/40 hover:bg-muted data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm rounded-md"
+                  >
+                    <tab.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    <span className="hidden xs:inline sm:inline">{tab.label}</span>
+                    <span className="xs:hidden">{tab.label.slice(0, 4)}</span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
+          ))}
+        </Card>
 
         {/* Overview Tab — Properties List */}
         <TabsContent value="overview" className="space-y-2 sm:space-y-3 mt-2">
