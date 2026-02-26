@@ -15,6 +15,7 @@ import {
   Search, Globe, Image, Tags, FileText, ExternalLink, BarChart3, Shield,
   CheckCircle2, XCircle, AlertTriangle, Eye, Sparkles, Code, Gauge
 } from 'lucide-react';
+import SEOAuditReport from './SEOAuditReport';
 
 interface SEOSettingsHubProps {
   settings: any;
@@ -528,18 +529,19 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
 
         {/* SEO AUDIT */}
         <TabsContent value="audit" className="space-y-3">
+          {/* Settings-based score summary */}
           <Card className="bg-card/50 border-border/50">
             <CardHeader className="py-2 px-3">
               <CardTitle className="text-xs font-semibold text-foreground flex items-center gap-2">
                 <Sparkles className="h-3.5 w-3.5 text-chart-4" />
-                SEO Audit & Recommendations
+                Settings-Based SEO Score
               </CardTitle>
             </CardHeader>
             <CardContent className="px-3 pb-3 pt-0 space-y-3">
               <div className="flex items-center gap-3 p-3 bg-muted/20 rounded-lg border border-border/30">
                 <div className={`text-2xl font-bold ${getScoreColor(seoScore.score)}`}>{seoScore.score}</div>
                 <div>
-                  <p className="text-xs font-semibold text-foreground">Overall SEO Score</p>
+                  <p className="text-xs font-semibold text-foreground">Configuration Score</p>
                   <p className="text-[9px] text-muted-foreground">{seoScore.checks.filter(c => c.passed).length}/{seoScore.checks.length} checks passed</p>
                 </div>
                 <Badge variant={getScoreBadge(seoScore.score).variant} className="ml-auto text-[9px]">
@@ -547,17 +549,13 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
                 </Badge>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="grid grid-cols-2 gap-1">
                 {seoScore.checks.map((check, i) => (
-                  <div key={i} className={`flex items-start gap-2 p-2 rounded border ${check.passed ? 'bg-chart-3/5 border-chart-3/20' : 'bg-destructive/5 border-destructive/20'}`}>
-                    {check.passed ? (
-                      <CheckCircle2 className="h-3 w-3 text-chart-3 mt-0.5 shrink-0" />
-                    ) : (
-                      <AlertTriangle className="h-3 w-3 text-destructive mt-0.5 shrink-0" />
-                    )}
+                  <div key={i} className={`flex items-start gap-1.5 p-1.5 rounded border ${check.passed ? 'bg-chart-3/5 border-chart-3/20' : 'bg-destructive/5 border-destructive/20'}`}>
+                    {check.passed ? <CheckCircle2 className="h-2.5 w-2.5 text-chart-3 mt-0.5 shrink-0" /> : <AlertTriangle className="h-2.5 w-2.5 text-destructive mt-0.5 shrink-0" />}
                     <div>
-                      <p className="text-[10px] font-medium text-foreground">{check.label}</p>
-                      <p className="text-[8px] text-muted-foreground">{check.suggestion}</p>
+                      <p className="text-[9px] font-medium text-foreground">{check.label}</p>
+                      <p className="text-[7px] text-muted-foreground">{check.suggestion}</p>
                     </div>
                   </div>
                 ))}
@@ -572,6 +570,9 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
               </div>
             </CardContent>
           </Card>
+
+          {/* Real-time page scanner */}
+          <SEOAuditReport />
         </TabsContent>
 
         {/* PAGE-LEVEL SEO */}
