@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard, Wrench, Plus, Shield, Receipt, ClipboardCheck, Star, Wallet, Bell, Megaphone, CalendarPlus } from "lucide-react";
+import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard, Wrench, Plus, Shield, Receipt, ClipboardCheck, Star, Wallet, Bell, Megaphone, CalendarPlus, Upload } from "lucide-react";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,6 +28,7 @@ import TenantPaymentHistory from "@/components/rental/TenantPaymentHistory";
 import TenantReviewSystem from "@/components/rental/TenantReviewSystem";
 import TenantLeaseExtension from "@/components/rental/TenantLeaseExtension";
 import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
+import TenantDocumentUpload from "@/components/rental/TenantDocumentUpload";
 
 interface BookingRow {
   id: string;
@@ -266,6 +267,9 @@ const UserRentalDashboard = () => {
             <TabsTrigger value="reviews" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <Star className="h-3.5 w-3.5" /> Review
             </TabsTrigger>
+            <TabsTrigger value="documents" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
+              <Upload className="h-3.5 w-3.5" /> Dokumen
+            </TabsTrigger>
             <TabsTrigger value="settings" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <Settings className="h-3.5 w-3.5" /> Pengaturan
             </TabsTrigger>
@@ -388,6 +392,10 @@ const UserRentalDashboard = () => {
 
           <TabsContent value="reviews">
             <TenantReviewSystem />
+          </TabsContent>
+
+          <TabsContent value="documents">
+            <TenantDocumentUpload />
           </TabsContent>
 
           <TabsContent value="settings">
