@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard, Wrench, Plus, Shield, Receipt, ClipboardCheck, Star, Wallet, Bell } from "lucide-react";
+import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard, Wrench, Plus, Shield, Receipt, ClipboardCheck, Star, Wallet, Bell, Megaphone } from "lucide-react";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,6 +23,7 @@ import { useTenantMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 import TenantScoreWidget from "@/components/rental/TenantScoreWidget";
 import TenantDeposits from "@/components/rental/TenantDeposits";
 import TenantLeaseContracts from "@/components/rental/TenantLeaseContracts";
+import TenantCommunicationHub from "@/components/rental/TenantCommunicationHub";
 import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
 
 interface BookingRow {
@@ -247,6 +248,9 @@ const UserRentalDashboard = () => {
             <TabsTrigger value="contracts" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <FileText className="h-3.5 w-3.5" /> Kontrak
             </TabsTrigger>
+            <TabsTrigger value="communication" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
+              <Megaphone className="h-3.5 w-3.5" /> Komunikasi
+            </TabsTrigger>
             <TabsTrigger value="notifications" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <Bell className="h-3.5 w-3.5" /> Notifikasi
             </TabsTrigger>
@@ -352,6 +356,10 @@ const UserRentalDashboard = () => {
 
           <TabsContent value="contracts">
             <TenantLeaseContracts />
+          </TabsContent>
+
+          <TabsContent value="communication">
+            <TenantCommunicationHub />
           </TabsContent>
 
           <TabsContent value="notifications">

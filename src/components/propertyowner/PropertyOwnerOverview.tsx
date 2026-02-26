@@ -17,6 +17,7 @@ import OwnerTenantScreening from "./OwnerTenantScreening";
 import OwnerDepositManagement from "./OwnerDepositManagement";
 import OwnerLeaseContracts from "./OwnerLeaseContracts";
 import OwnerPaymentAutomation from "./OwnerPaymentAutomation";
+import OwnerAnnouncementHub from "./OwnerAnnouncementHub";
 import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
@@ -24,7 +25,7 @@ import {
   Building, Eye, Heart, MessageSquare, PlusCircle, Activity, Target, Home,
   TrendingUp, Clock, ChevronRight, Settings, ArrowLeft, Search, CalendarDays,
   User, Shield, Copy, BarChart3, MapPin, Zap, FileText, Bell, 
-  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet
+  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet, Megaphone
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -246,6 +247,9 @@ const PropertyOwnerOverview = () => {
           <TabsTrigger value="automation" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Zap className="h-2.5 w-2.5" /> Automasi
           </TabsTrigger>
+          <TabsTrigger value="announcements" className="text-[7px] h-5 gap-0.5 min-w-fit">
+            <Megaphone className="h-2.5 w-2.5" /> Broadcast
+          </TabsTrigger>
           <TabsTrigger value="notifications" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Bell className="h-2.5 w-2.5" /> Notif
           </TabsTrigger>
@@ -356,6 +360,11 @@ const PropertyOwnerOverview = () => {
         {/* Automation Tab */}
         <TabsContent value="automation" className="mt-1.5">
           <OwnerPaymentAutomation />
+        </TabsContent>
+
+        {/* Announcements Tab */}
+        <TabsContent value="announcements" className="mt-1.5">
+          <OwnerAnnouncementHub />
         </TabsContent>
 
         {/* Notifications Tab */}
