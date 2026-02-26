@@ -171,3 +171,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.lease-expiry-alerts]
     verify_jwt = false
+
+  [functions.rental-notifications]
+    verify_jwt = false
