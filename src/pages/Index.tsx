@@ -60,6 +60,7 @@ const SearchLoadingDialog = lazy(() => import("@/components/SearchLoadingDialog"
 const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppInquiryDialog"));
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
 const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
+const BehaviorPatternBanner = lazy(() => import("@/components/ai/BehaviorPatternBanner"));
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
 const PartnerLogosMarquee = lazy(() => import("@/components/home/PartnerLogosMarquee"));
@@ -966,6 +967,13 @@ const Index = () => {
               </section>
             ) : (
               <>
+                {/* AI Behavior Pattern Banner */}
+                <Suspense fallback={null}>
+                  <div className="mb-2 px-1">
+                    <BehaviorPatternBanner />
+                  </div>
+                </Suspense>
+
                 {/* AI Recommended Properties */}
                 <ScrollReveal direction="right" delay={0}>
                 <div className="mb-4">
