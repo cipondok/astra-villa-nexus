@@ -177,3 +177,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.smart-pricing]
     verify_jwt = false
+
+  [functions.seo-audit]
+    verify_jwt = false
