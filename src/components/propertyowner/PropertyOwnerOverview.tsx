@@ -71,58 +71,58 @@ const PropertyOwnerOverview = () => {
   ];
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-3 sm:space-y-4 md:space-y-5">
       {/* Profile Card with ID */}
       <Card className="overflow-hidden">
-        <div className="bg-gradient-to-r from-primary to-accent p-3">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              <div className="h-10 w-10 bg-primary-foreground/20 rounded-full flex items-center justify-center flex-shrink-0 ring-2 ring-primary-foreground/30">
+        <div className="bg-gradient-to-r from-primary to-accent p-3 sm:p-4 md:p-5">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="h-10 w-10 sm:h-12 sm:w-12 bg-primary-foreground/20 rounded-full flex items-center justify-center flex-shrink-0 ring-2 ring-primary-foreground/30">
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt="" className="h-full w-full rounded-full object-cover" />
                 ) : (
-                  <User className="h-5 w-5 text-primary-foreground" />
+                  <User className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
                 )}
               </div>
               <div className="min-w-0">
-                <h1 className="text-sm font-bold text-primary-foreground truncate">
+                <h1 className="text-sm sm:text-base md:text-lg font-bold text-primary-foreground truncate">
                   {profile?.full_name || 'Property Owner'}
                 </h1>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <Badge className="text-[7px] px-1 py-0 h-3.5 bg-primary-foreground/20 text-primary-foreground border-0 gap-0.5">
-                    <Shield className="h-2 w-2" /> Verified Owner
+                  <Badge className="text-[9px] sm:text-[10px] px-1.5 py-0.5 h-auto bg-primary-foreground/20 text-primary-foreground border-0 gap-0.5">
+                    <Shield className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> Verified Owner
                   </Badge>
-                  <div className="flex items-center gap-0.5">
+                  <div className="flex items-center gap-1">
                     <div className="w-1.5 h-1.5 bg-chart-1 rounded-full animate-pulse"></div>
-                    <span className="text-[7px] text-primary-foreground/70">Online</span>
+                    <span className="text-[9px] sm:text-[10px] text-primary-foreground/70">Online</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex gap-1">
-              <Button size="sm" variant="secondary" className="h-7 w-7 p-0" onClick={() => navigate('/dashboard/user')}>
-                <ArrowLeft className="h-3.5 w-3.5" />
+            <div className="flex gap-1.5">
+              <Button size="sm" variant="secondary" className="h-8 w-8 sm:h-9 sm:w-9 p-0" onClick={() => navigate('/dashboard/user')}>
+                <ArrowLeft className="h-4 w-4" />
               </Button>
-              <Button size="sm" className="h-7 px-2.5 text-[9px] bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground" onClick={() => navigate('/add-property')}>
-                <PlusCircle className="h-3 w-3 mr-1" /> Tambah
+              <Button size="sm" className="h-8 sm:h-9 px-3 text-[10px] sm:text-xs bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground" onClick={() => navigate('/add-property')}>
+                <PlusCircle className="h-3.5 w-3.5 mr-1" /> Tambah
               </Button>
             </div>
           </div>
         </div>
         {/* Owner ID Row */}
-        <div className="px-3 py-1.5 bg-muted/30 flex items-center justify-between border-t border-border">
+        <div className="px-3 sm:px-4 py-2 bg-muted/30 flex items-center justify-between border-t border-border">
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-[8px] text-muted-foreground">Owner ID:</span>
-            <code className="text-[8px] font-mono text-foreground bg-muted px-1 py-0.5 rounded truncate max-w-[140px]">
+            <span className="text-[10px] sm:text-xs text-muted-foreground">Owner ID:</span>
+            <code className="text-[10px] sm:text-xs font-mono text-foreground bg-muted px-1.5 py-0.5 rounded truncate max-w-[160px] sm:max-w-[200px]">
               {user?.id?.slice(0, 8)}...{user?.id?.slice(-4)}
             </code>
-            <Button variant="ghost" size="sm" className="h-4 w-4 p-0" onClick={copyId}>
-              <Copy className="h-2.5 w-2.5 text-muted-foreground" />
+            <Button variant="ghost" size="sm" className="h-5 w-5 p-0" onClick={copyId}>
+              <Copy className="h-3 w-3 text-muted-foreground" />
             </Button>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-[7px] text-muted-foreground">Bergabung:</span>
-            <span className="text-[8px] text-foreground font-medium">
+            <span className="text-[9px] sm:text-xs text-muted-foreground">Bergabung:</span>
+            <span className="text-[10px] sm:text-xs text-foreground font-medium">
               {user?.created_at ? new Date(user.created_at).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }) : '-'}
             </span>
           </div>
@@ -130,20 +130,20 @@ const PropertyOwnerOverview = () => {
       </Card>
 
       {/* Analytics Overview - Always Visible */}
-      <div className="grid grid-cols-3 gap-1.5">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
         {[
           { icon: Building, value: stats.totalProperties, label: 'Total', color: 'text-primary', bg: 'bg-primary/10' },
           { icon: Activity, value: stats.activeListings, label: 'Aktif', color: 'text-chart-1', bg: 'bg-chart-1/10' },
           { icon: Target, value: stats.pendingApprovals, label: 'Pending', color: 'text-chart-3', bg: 'bg-chart-3/10' },
         ].map((stat, i) => (
-          <Card key={i} className="p-1.5">
-            <div className="flex items-center gap-1.5">
-              <div className={`h-6 w-6 rounded flex items-center justify-center ${stat.bg}`}>
-                <stat.icon className={`h-3 w-3 ${stat.color}`} />
+          <Card key={i} className="p-2 sm:p-3">
+            <div className="flex items-center gap-2">
+              <div className={`h-8 w-8 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center ${stat.bg}`}>
+                <stat.icon className={`h-4 w-4 ${stat.color}`} />
               </div>
               <div className="min-w-0">
-                <span className="text-sm font-bold block leading-none">{stat.value}</span>
-                <span className="text-[8px] text-muted-foreground">{stat.label}</span>
+                <span className="text-base sm:text-lg font-bold block leading-none">{stat.value}</span>
+                <span className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</span>
               </div>
             </div>
           </Card>
@@ -151,63 +151,63 @@ const PropertyOwnerOverview = () => {
       </div>
 
       {/* Key Performance Metrics */}
-      <Card className="p-2">
-        <div className="flex items-center gap-1 mb-1.5">
-          <BarChart3 className="h-3 w-3 text-primary" />
-          <span className="text-[10px] font-semibold text-foreground">Performa Ringkas</span>
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center gap-1.5 mb-2 sm:mb-3">
+          <BarChart3 className="h-4 w-4 text-primary" />
+          <span className="text-xs sm:text-sm font-semibold text-foreground">Performa Ringkas</span>
         </div>
-        <div className="grid grid-cols-2 gap-1.5">
-          <div className="bg-muted/40 rounded-lg p-2">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[8px] text-muted-foreground">Tingkat Aktif</span>
-              <span className="text-[9px] font-bold text-chart-1">{activeRate}%</span>
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+          <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[10px] sm:text-xs text-muted-foreground">Tingkat Aktif</span>
+              <span className="text-xs sm:text-sm font-bold text-chart-1">{activeRate}%</span>
             </div>
-            <Progress value={activeRate} className="h-1" />
+            <Progress value={activeRate} className="h-1.5" />
           </div>
-          <div className="bg-muted/40 rounded-lg p-2">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[8px] text-muted-foreground">Konversi</span>
-              <span className="text-[9px] font-bold text-primary">{conversionRate}%</span>
+          <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[10px] sm:text-xs text-muted-foreground">Konversi</span>
+              <span className="text-xs sm:text-sm font-bold text-primary">{conversionRate}%</span>
             </div>
-            <Progress value={Number(conversionRate)} className="h-1" />
+            <Progress value={Number(conversionRate)} className="h-1.5" />
           </div>
-          <div className="bg-muted/40 rounded-lg p-2 flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <Eye className="h-2.5 w-2.5 text-chart-5" />
-              <span className="text-[8px] text-muted-foreground">Views</span>
+          <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3 flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <Eye className="h-3.5 w-3.5 text-chart-5" />
+              <span className="text-[10px] sm:text-xs text-muted-foreground">Views</span>
             </div>
-            <span className="text-[10px] font-bold text-foreground">{stats.totalViews}</span>
+            <span className="text-xs sm:text-sm font-bold text-foreground">{stats.totalViews}</span>
           </div>
-          <div className="bg-muted/40 rounded-lg p-2 flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <Heart className="h-2.5 w-2.5 text-destructive" />
-              <span className="text-[8px] text-muted-foreground">Disimpan</span>
+          <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3 flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <Heart className="h-3.5 w-3.5 text-destructive" />
+              <span className="text-[10px] sm:text-xs text-muted-foreground">Disimpan</span>
             </div>
-            <span className="text-[10px] font-bold text-foreground">{stats.savedCount}</span>
+            <span className="text-xs sm:text-sm font-bold text-foreground">{stats.savedCount}</span>
           </div>
         </div>
       </Card>
 
       {/* Smart Navigation Links */}
       <div>
-        <div className="flex items-center gap-1 mb-1.5 px-0.5">
-          <Zap className="h-3 w-3 text-chart-3" />
-          <span className="text-[10px] font-semibold text-foreground">Aksi Cepat</span>
+        <div className="flex items-center gap-1.5 mb-2 px-0.5">
+          <Zap className="h-4 w-4 text-chart-3" />
+          <span className="text-xs sm:text-sm font-semibold text-foreground">Aksi Cepat</span>
         </div>
-        <div className="grid grid-cols-3 gap-1.5">
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3">
           {smartLinks.map((link, i) => (
             <Card
               key={i}
-              className="p-2 cursor-pointer hover:shadow-md active:scale-[0.97] transition-all"
+              className="p-2.5 sm:p-3 cursor-pointer hover:shadow-md active:scale-[0.97] transition-all"
               onClick={link.action}
             >
-              <div className="flex flex-col items-center text-center gap-1">
-                <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${link.bg}`}>
-                  <link.icon className={`h-4 w-4 ${link.color}`} />
+              <div className="flex flex-col items-center text-center gap-1.5">
+                <div className={`h-9 w-9 sm:h-10 sm:w-10 rounded-lg flex items-center justify-center ${link.bg}`}>
+                  <link.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${link.color}`} />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-foreground leading-tight">{link.label}</p>
-                  <p className="text-[7px] text-muted-foreground leading-tight">{link.desc}</p>
+                  <p className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">{link.label}</p>
+                  <p className="text-[8px] sm:text-[10px] text-muted-foreground leading-tight mt-0.5">{link.desc}</p>
                 </div>
               </div>
             </Card>
@@ -216,73 +216,49 @@ const PropertyOwnerOverview = () => {
       </div>
 
       {/* Content Tabs */}
-      <Tabs defaultValue={defaultTab} className="space-y-2">
-        <TabsList className="flex w-full overflow-x-auto h-7 p-0.5">
-          <TabsTrigger value="overview" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <BarChart3 className="h-2.5 w-2.5" /> Overview
-          </TabsTrigger>
-          <TabsTrigger value="rentals" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <CalendarDays className="h-2.5 w-2.5" /> Rentals
-          </TabsTrigger>
-          <TabsTrigger value="renewal" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <Clock className="h-2.5 w-2.5" /> Renewal
-          </TabsTrigger>
-          <TabsTrigger value="verification" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <Shield className="h-2.5 w-2.5" /> KYC
-          </TabsTrigger>
-          <TabsTrigger value="invoices" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <DollarSign className="h-2.5 w-2.5" /> Invoice
-          </TabsTrigger>
-          <TabsTrigger value="maintenance" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <Settings className="h-2.5 w-2.5" /> Maint.
-          </TabsTrigger>
-          <TabsTrigger value="inspection" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <ClipboardCheck className="h-2.5 w-2.5" /> Inspeksi
-          </TabsTrigger>
-          <TabsTrigger value="screening" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <UserCheck className="h-2.5 w-2.5" /> Screening
-          </TabsTrigger>
-          <TabsTrigger value="deposits" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <Wallet className="h-2.5 w-2.5" /> Deposit
-          </TabsTrigger>
-          <TabsTrigger value="contracts" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <FileText className="h-2.5 w-2.5" /> Kontrak
-          </TabsTrigger>
-          <TabsTrigger value="expenses" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <TrendingDown className="h-2.5 w-2.5" /> Pengeluaran
-          </TabsTrigger>
-          <TabsTrigger value="automation" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <Zap className="h-2.5 w-2.5" /> Automasi
-          </TabsTrigger>
-          <TabsTrigger value="announcements" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <Megaphone className="h-2.5 w-2.5" /> Broadcast
-          </TabsTrigger>
-          <TabsTrigger value="notifications" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <Bell className="h-2.5 w-2.5" /> Notif
-          </TabsTrigger>
-          <TabsTrigger value="activity" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <Activity className="h-2.5 w-2.5" /> Activity
-          </TabsTrigger>
-          <TabsTrigger value="calendar" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <CalendarDays className="h-2.5 w-2.5" /> Kalender
-          </TabsTrigger>
-          <TabsTrigger value="financial" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <DollarSign className="h-2.5 w-2.5" /> Keuangan
-          </TabsTrigger>
-          <TabsTrigger value="reviews" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <Star className="h-2.5 w-2.5" /> Review
-          </TabsTrigger>
-          <TabsTrigger value="insights" className="text-[7px] h-5 gap-0.5 min-w-fit">
-            <TrendingUp className="h-2.5 w-2.5" /> Insights
-          </TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue={defaultTab} className="space-y-3">
+        <div className="overflow-x-auto scrollbar-hide -mx-3 px-3 sm:-mx-0 sm:px-0">
+          <TabsList className="inline-flex w-auto min-w-full sm:min-w-0 flex-nowrap h-9 sm:h-10 p-1 gap-0.5 bg-muted/50 border border-border">
+            {[
+              { value: 'overview', icon: BarChart3, label: 'Overview' },
+              { value: 'rentals', icon: CalendarDays, label: 'Rentals' },
+              { value: 'renewal', icon: Clock, label: 'Renewal' },
+              { value: 'verification', icon: Shield, label: 'KYC' },
+              { value: 'invoices', icon: DollarSign, label: 'Invoice' },
+              { value: 'maintenance', icon: Settings, label: 'Maint.' },
+              { value: 'inspection', icon: ClipboardCheck, label: 'Inspeksi' },
+              { value: 'screening', icon: UserCheck, label: 'Screening' },
+              { value: 'deposits', icon: Wallet, label: 'Deposit' },
+              { value: 'contracts', icon: FileText, label: 'Kontrak' },
+              { value: 'expenses', icon: TrendingDown, label: 'Biaya' },
+              { value: 'automation', icon: Zap, label: 'Automasi' },
+              { value: 'announcements', icon: Megaphone, label: 'Broadcast' },
+              { value: 'notifications', icon: Bell, label: 'Notif' },
+              { value: 'activity', icon: Activity, label: 'Activity' },
+              { value: 'calendar', icon: CalendarDays, label: 'Kalender' },
+              { value: 'financial', icon: DollarSign, label: 'Keuangan' },
+              { value: 'reviews', icon: Star, label: 'Review' },
+              { value: 'insights', icon: TrendingUp, label: 'Insights' },
+            ].map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="text-[9px] sm:text-[11px] h-6 sm:h-7 gap-1 px-2 sm:px-2.5 min-w-fit whitespace-nowrap data-[state=active]:bg-background data-[state=active]:shadow-sm"
+              >
+                <tab.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <span className="hidden xs:inline sm:inline">{tab.label}</span>
+                <span className="xs:hidden">{tab.label.slice(0, 4)}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
 
         {/* Overview Tab — Properties List */}
-        <TabsContent value="overview" className="space-y-1.5 mt-1.5">
-          <div className="flex items-center justify-between px-0.5 mb-1">
-            <span className="text-[10px] font-semibold text-foreground">Daftar Properti</span>
-            <Button variant="link" size="sm" className="h-4 text-[8px] px-0 text-primary" onClick={() => navigate('/my-properties')}>
-              Lihat Semua <ExternalLink className="h-2.5 w-2.5 ml-0.5" />
+        <TabsContent value="overview" className="space-y-2 sm:space-y-3 mt-2">
+          <div className="flex items-center justify-between px-0.5 mb-1.5">
+            <span className="text-xs sm:text-sm font-semibold text-foreground">Daftar Properti</span>
+            <Button variant="link" size="sm" className="h-5 text-[10px] sm:text-xs px-0 text-primary" onClick={() => navigate('/my-properties')}>
+              Lihat Semua <ExternalLink className="h-3 w-3 ml-0.5" />
             </Button>
           </div>
           {properties.length === 0 ? (
@@ -300,29 +276,29 @@ const PropertyOwnerOverview = () => {
             properties.slice(0, 5).map((property) => (
               <Card 
                 key={property.id} 
-                className="p-1.5 active:scale-[0.99] transition-transform cursor-pointer hover:bg-muted/50"
+                className="p-2 sm:p-3 active:scale-[0.99] transition-transform cursor-pointer hover:bg-muted/50"
                 onClick={() => navigate(`/property/${property.id}`)}
               >
-                <div className="flex gap-2">
-                  <div className="h-12 w-12 rounded bg-muted flex-shrink-0 overflow-hidden">
+                <div className="flex gap-2.5 sm:gap-3">
+                  <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
                     {property.thumbnail_url || property.images?.[0] ? (
                       <img src={property.thumbnail_url || property.images?.[0]} alt={property.title} className="h-full w-full object-cover" />
                     ) : (
-                      <div className="h-full w-full flex items-center justify-center"><Building className="h-4 w-4 text-muted-foreground" /></div>
+                      <div className="h-full w-full flex items-center justify-center"><Building className="h-5 w-5 text-muted-foreground" /></div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-1">
-                      <h3 className="text-[10px] font-medium truncate flex-1 leading-tight">{property.title || 'Untitled'}</h3>
-                      <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="text-[7px] px-1 py-0 h-3 flex-shrink-0">{property.status}</Badge>
+                    <div className="flex items-start justify-between gap-1.5">
+                      <h3 className="text-xs sm:text-sm font-medium truncate flex-1">{property.title || 'Untitled'}</h3>
+                      <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="text-[9px] sm:text-[10px] px-1.5 py-0.5 h-auto flex-shrink-0">{property.status}</Badge>
                     </div>
-                    <p className="text-[8px] text-muted-foreground truncate leading-tight">{property.city}, {property.state}</p>
-                    <div className="flex items-center justify-between mt-0.5">
-                      <span className="text-[10px] font-semibold text-primary">{formatIDR(property.price)}</span>
-                      <Badge variant="outline" className="text-[7px] px-1 py-0 h-3">{property.listing_type}</Badge>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate mt-0.5">{property.city}, {property.state}</p>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-xs sm:text-sm font-semibold text-primary">{formatIDR(property.price)}</span>
+                      <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 h-auto">{property.listing_type}</Badge>
                     </div>
                   </div>
-                  <ChevronRight className="h-3 w-3 text-muted-foreground self-center flex-shrink-0" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground self-center flex-shrink-0" />
                 </div>
               </Card>
             ))
@@ -394,27 +370,27 @@ const PropertyOwnerOverview = () => {
         </TabsContent>
 
         {/* Activity Tab */}
-        <TabsContent value="activity" className="space-y-1.5 mt-1.5">
+        <TabsContent value="activity" className="space-y-2 mt-2">
           {recentActivity.length === 0 ? (
-            <Card className="p-3">
-              <div className="text-center py-4">
-                <Activity className="h-8 w-8 mx-auto mb-2 text-muted-foreground/50" />
-                <p className="text-xs font-medium">Belum ada aktivitas</p>
-                <p className="text-[9px] text-muted-foreground">Aktivitas Anda akan muncul di sini</p>
+            <Card className="p-4">
+              <div className="text-center py-6">
+                <Activity className="h-10 w-10 mx-auto mb-3 text-muted-foreground/50" />
+                <p className="text-sm font-medium">Belum ada aktivitas</p>
+                <p className="text-xs text-muted-foreground">Aktivitas Anda akan muncul di sini</p>
               </div>
             </Card>
           ) : (
             recentActivity.map((activity: any) => (
-              <Card key={activity.id} className="p-1.5">
-                <div className="flex items-center gap-2">
-                  <div className="h-6 w-6 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Activity className="h-3 w-3 text-primary" />
+              <Card key={activity.id} className="p-2.5 sm:p-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Activity className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[9px] font-medium truncate leading-tight">{activity.activity_type?.replace(/_/g, ' ')}</p>
-                    <p className="text-[8px] text-muted-foreground truncate leading-tight">{activity.activity_description}</p>
+                    <p className="text-xs sm:text-sm font-medium truncate">{activity.activity_type?.replace(/_/g, ' ')}</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{activity.activity_description}</p>
                   </div>
-                  <span className="text-[7px] text-muted-foreground flex-shrink-0">
+                  <span className="text-[9px] sm:text-xs text-muted-foreground flex-shrink-0">
                     {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
                   </span>
                 </div>
