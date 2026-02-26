@@ -23,6 +23,7 @@ import OwnerPayoutManagement from "./OwnerPayoutManagement";
 import OwnerSmartPricing from "./OwnerSmartPricing";
 import OwnerBookingCancellation from "./OwnerBookingCancellation";
 import OwnerPropertyAnalytics from "./OwnerPropertyAnalytics";
+import OwnerCheckInOut from "./OwnerCheckInOut";
 import OwnerFinancialAnalytics from "./OwnerFinancialAnalytics";
 import OwnerCalendarView from "./OwnerCalendarView";
 import OwnerReviewsDashboard from "./OwnerReviewsDashboard";
@@ -33,7 +34,7 @@ import {
   Building, Eye, Heart, MessageSquare, PlusCircle, Activity, Target, Home,
   TrendingUp, Clock, ChevronRight, Settings, ArrowLeft, Search, CalendarDays,
   User, Shield, Copy, BarChart3, MapPin, Zap, FileText, Bell, Ban,
-  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet, Megaphone, TrendingDown, Sparkles
+  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet, Megaphone, TrendingDown, Sparkles, LogIn
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -246,6 +247,7 @@ const PropertyOwnerOverview = () => {
               { value: 'cancellations', icon: Ban, label: 'Batal' },
               { value: 'reviews', icon: Star, label: 'Review' },
               { value: 'prop-analytics', icon: BarChart3, label: 'Analitik' },
+              { value: 'checkinout', icon: LogIn, label: 'Check-in' },
               { value: 'insights', icon: TrendingUp, label: 'Insights' },
             ].map((tab) => (
               <TabsTrigger
@@ -440,6 +442,11 @@ const PropertyOwnerOverview = () => {
         {/* Property Analytics Tab */}
         <TabsContent value="prop-analytics" className="mt-1.5">
           <OwnerPropertyAnalytics />
+        </TabsContent>
+
+        {/* Check-in/out Tab */}
+        <TabsContent value="checkinout" className="mt-1.5">
+          <OwnerCheckInOut />
         </TabsContent>
 
         {/* Insights Tab */}
