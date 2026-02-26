@@ -1,48 +1,42 @@
 
 
-## Tenant Document Management
+## SEO Settings Hub - Complete Implementation Plan
 
-### Overview
-Build a document management system where tenants upload documents (KTP, contracts, payment proofs) and property owners can review, verify, and track expiry dates.
+### Current State
+SEO settings are scattered across the **General Settings** tab (SEO config, Open Graph, analytics, technical SEO, webmaster verification all mixed with site name/maintenance mode). There is no dedicated SEO hub.
 
-### Database Changes
+### Plan
 
-**New table: `tenant_documents`**
-- `id` (uuid, PK)
-- `tenant_id` (uuid, references auth.users, NOT NULL)
-- `property_id` (uuid, references properties, nullable)
-- `document_type` (text: 'ktp', 'kontrak', 'bukti_bayar', 'kk', 'npwp', 'other')
-- `file_url` (text, NOT NULL)
-- `file_name` (text)
-- `verification_status` (text: 'pending', 'verified', 'rejected', default 'pending')
-- `verified_by` (uuid, nullable)
-- `verified_at` (timestamptz, nullable)
-- `rejection_reason` (text, nullable)
-- `expires_at` (date, nullable) — for expiry tracking
-- `notes` (text, nullable)
-- `created_at` (timestamptz, default now())
+**1. Create dedicated `SEOSettingsHub.tsx` component** (`src/components/admin/settings/SEOSettingsHub.tsx`)
 
-**Storage bucket: `tenant-documents`** (private, with RLS policies for tenant upload + owner read)
+A comprehensive SEO management center with internal tabs/accordion sections:
 
-**RLS policies:**
-- Tenants can INSERT/SELECT their own documents
-- Property owners can SELECT documents for tenants on their properties
-- Property owners can UPDATE verification_status on tenant documents
+- **On-Page SEO**: Title templates, meta description, keywords, canonical URL settings, robots directives per page type
+- **Open Graph & Social**: OG title/description/image, Twitter card type/handle, social preview simulator (live preview of how links appear on Facebook/Twitter/Google)
+- **Schema Markup / Structured Data**: Organization type, name, logo, contact info; toggle JSON-LD types (RealEstateListing, BreadcrumbList, SearchAction, FAQPage); live JSON-LD preview
+- **Technical SEO**: Sitemap toggle, robots.txt editor, canonical URLs toggle, hreflang settings, page speed hints
+- **Analytics & Tracking**: Google Analytics ID, GTM ID, Facebook Pixel, Hotjar, cookie consent toggle
+- **Webmaster Verification**: Google, Bing, Yandex, Pinterest verification codes
+- **SEO Score / Audit**: Real-time SEO score algorithm that checks completeness of title (length 50-60), description (150-160 chars), keywords present, OG image set, schema enabled, sitemap enabled, analytics connected -- displays score out of 100 with color-coded badges and improvement suggestions
+- **Page-Level SEO Manager**: Table listing key pages (Home, Dijual, Disewa, Search, etc.) with per-page title/description override fields
 
-### New Components
+**2. Add new "SEO Hub" tab to `SystemSettings.tsx`**
 
-1. **`OwnerTenantDocuments.tsx`** — Owner-facing tab in PropertyOwnerOverview
-   - List all tenant documents grouped by tenant/property
-   - Filter by status (pending/verified/rejected) and document type
-   - Verify/reject actions with reason input
-   - Expiry warning badges (documents expiring within 30 days)
-   - Click to preview/download document
+Replace the current "General & SEO" combined tab with two separate tabs:
+- **General** (site name, maintenance, registration only)
+- **SEO Hub** (all SEO functionality consolidated)
 
-2. **Tab integration** — Add "Dokumen" tab with `FileText` icon to `PropertyOwnerOverview.tsx`
+**3. Extract SEO sections from `GeneralSettings.tsx`**
 
-### Implementation Steps
+Remove SEO Configuration, Social Media Integration, Analytics & Tracking, Technical SEO, and Webmaster Verification cards. Keep only: Maintenance Mode, Basic Site Configuration, and Save button.
 
-1. Run migration: create `tenant_documents` table, storage bucket, and RLS policies
-2. Create `OwnerTenantDocuments.tsx` with document list, filters, verify/reject dialogs, and expiry tracking
-3. Add "Dokumen" tab to `PropertyOwnerOverview.tsx`
+**4. Add SEO algorithm settings to `useSystemSettings.ts`**
+
+New keys: `seoTitleTemplate`, `seoDefaultRobots`, `seoHreflang`, `seoPageOverrides` (JSON string for per-page meta), `seoAuditAutoRun`.
+
+### Files to Create/Modify
+- **Create**: `src/components/admin/settings/SEOSettingsHub.tsx`
+- **Modify**: `src/components/admin/SystemSettings.tsx` (add SEO Hub tab)
+- **Modify**: `src/components/admin/settings/GeneralSettings.tsx` (remove SEO sections)
+- **Modify**: `src/hooks/useSystemSettings.ts` (add new SEO keys)
 
