@@ -22,6 +22,7 @@ import OwnerExpenseTracking from "./OwnerExpenseTracking";
 import OwnerPayoutManagement from "./OwnerPayoutManagement";
 import OwnerSmartPricing from "./OwnerSmartPricing";
 import OwnerBookingCancellation from "./OwnerBookingCancellation";
+import OwnerPropertyAnalytics from "./OwnerPropertyAnalytics";
 import OwnerFinancialAnalytics from "./OwnerFinancialAnalytics";
 import OwnerCalendarView from "./OwnerCalendarView";
 import OwnerReviewsDashboard from "./OwnerReviewsDashboard";
@@ -244,6 +245,7 @@ const PropertyOwnerOverview = () => {
               { value: 'smart-pricing', icon: Sparkles, label: 'Pricing' },
               { value: 'cancellations', icon: Ban, label: 'Batal' },
               { value: 'reviews', icon: Star, label: 'Review' },
+              { value: 'prop-analytics', icon: BarChart3, label: 'Analitik' },
               { value: 'insights', icon: TrendingUp, label: 'Insights' },
             ].map((tab) => (
               <TabsTrigger
@@ -433,6 +435,11 @@ const PropertyOwnerOverview = () => {
         {/* Reviews Tab */}
         <TabsContent value="reviews" className="mt-1.5">
           <OwnerReviewsDashboard />
+        </TabsContent>
+
+        {/* Property Analytics Tab */}
+        <TabsContent value="prop-analytics" className="mt-1.5">
+          <OwnerPropertyAnalytics />
         </TabsContent>
 
         {/* Insights Tab */}
