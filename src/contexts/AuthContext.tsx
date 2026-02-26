@@ -293,24 +293,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  // Simplified activity tracking - no aggressive session extension
+  // Comprehensive activity tracking for session monitor
   React.useEffect(() => {
     if (!user || !session) return;
 
+    let isOffline = false;
     const handleActivity = () => {
       localStorage.setItem('last_activity', Date.now().toString());
     };
 
-    // Only track activity, don't auto-extend sessions
-    const events = ['click', 'keypress'];
+    const events = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
     events.forEach(event => {
       document.addEventListener(event, handleActivity, { passive: true });
     });
 
+    // Ignore SIGNED_OUT during offline
+    const handleOffline = () => { isOffline = true; };
+    const handleOnline = async () => {
+      isOffline = false;
+      // Re-validate on reconnect
+      try {
+        const { data: { session: s } } = await supabase.auth.getSession();
+        if (s) {
+          localStorage.setItem('last_activity', Date.now().toString());
+        }
+      } catch { /* ignore */ }
+    };
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
+
     return () => {
-      events.forEach(event => {
-        document.removeEventListener(event, handleActivity);
-      });
+      events.forEach(event => document.removeEventListener(event, handleActivity));
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
     };
   }, [user, session]);
 
