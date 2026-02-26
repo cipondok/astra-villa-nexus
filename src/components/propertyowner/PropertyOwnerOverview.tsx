@@ -31,6 +31,7 @@ import OwnerReviewsDashboard from "./OwnerReviewsDashboard";
 import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
 import OwnerReminderDashboard from "./OwnerReminderDashboard";
 import OwnerOccupancyForecast from "./OwnerOccupancyForecast";
+import OwnerTenantDocuments from "./OwnerTenantDocuments";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
 import { 
@@ -254,6 +255,7 @@ const PropertyOwnerOverview = () => {
               { value: 'checkinout', icon: LogIn, label: 'Check-in' },
               { value: 'visitors', icon: Users, label: 'Visitor' },
               { value: 'forecast', icon: Target, label: 'Forecast' },
+              { value: 'documents', icon: FileText, label: 'Dokumen' },
               { value: 'insights', icon: TrendingUp, label: 'Insights' },
             ].map((tab) => (
               <TabsTrigger
@@ -468,6 +470,11 @@ const PropertyOwnerOverview = () => {
         {/* Forecast Tab */}
         <TabsContent value="forecast" className="mt-1.5">
           <OwnerOccupancyForecast />
+        </TabsContent>
+
+        {/* Tenant Documents Tab */}
+        <TabsContent value="documents" className="mt-1.5">
+          <OwnerTenantDocuments />
         </TabsContent>
 
         {/* Insights Tab */}
