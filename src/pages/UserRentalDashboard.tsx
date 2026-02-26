@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard, Wrench, Plus, Shield, Receipt, ClipboardCheck, Star, Wallet, Bell, Megaphone } from "lucide-react";
+import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard, Wrench, Plus, Shield, Receipt, ClipboardCheck, Star, Wallet, Bell, Megaphone, CalendarPlus } from "lucide-react";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +26,7 @@ import TenantLeaseContracts from "@/components/rental/TenantLeaseContracts";
 import TenantCommunicationHub from "@/components/rental/TenantCommunicationHub";
 import TenantPaymentHistory from "@/components/rental/TenantPaymentHistory";
 import TenantReviewSystem from "@/components/rental/TenantReviewSystem";
+import TenantLeaseExtension from "@/components/rental/TenantLeaseExtension";
 import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
 
 interface BookingRow {
@@ -232,6 +233,9 @@ const UserRentalDashboard = () => {
             <TabsTrigger value="renewal" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <RotateCcw className="h-3.5 w-3.5" /> Perpanjangan
             </TabsTrigger>
+            <TabsTrigger value="extension" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
+              <CalendarPlus className="h-3.5 w-3.5" /> Ajukan Perpanjangan
+            </TabsTrigger>
             <TabsTrigger value="verification" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <Shield className="h-3.5 w-3.5" /> Verifikasi
             </TabsTrigger>
@@ -340,6 +344,10 @@ const UserRentalDashboard = () => {
 
           <TabsContent value="renewal">
             <TenantRenewalRequests />
+          </TabsContent>
+
+          <TabsContent value="extension">
+            <TenantLeaseExtension />
           </TabsContent>
 
           <TabsContent value="verification">

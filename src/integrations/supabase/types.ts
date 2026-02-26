@@ -9387,6 +9387,88 @@ export type Database = {
           },
         ]
       }
+      lease_extension_requests: {
+        Row: {
+          booking_id: string
+          counter_end_date: string | null
+          counter_price: number | null
+          created_at: string
+          current_end_date: string
+          current_price: number
+          id: string
+          owner_id: string
+          owner_response_notes: string | null
+          property_id: string
+          proposed_price: number
+          requested_end_date: string
+          responded_at: string | null
+          status: string
+          tenant_id: string
+          tenant_notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          counter_end_date?: string | null
+          counter_price?: number | null
+          created_at?: string
+          current_end_date: string
+          current_price?: number
+          id?: string
+          owner_id: string
+          owner_response_notes?: string | null
+          property_id: string
+          proposed_price?: number
+          requested_end_date: string
+          responded_at?: string | null
+          status?: string
+          tenant_id: string
+          tenant_notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          counter_end_date?: string | null
+          counter_price?: number | null
+          created_at?: string
+          current_end_date?: string
+          current_price?: number
+          id?: string
+          owner_id?: string
+          owner_response_notes?: string | null
+          property_id?: string
+          proposed_price?: number
+          requested_end_date?: string
+          responded_at?: string | null
+          status?: string
+          tenant_id?: string
+          tenant_notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lease_extension_requests_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lease_extension_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lease_extension_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listing_automation_config: {
         Row: {
           ai_description_enhancement: boolean | null
