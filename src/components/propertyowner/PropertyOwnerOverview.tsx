@@ -18,6 +18,7 @@ import OwnerDepositManagement from "./OwnerDepositManagement";
 import OwnerLeaseContracts from "./OwnerLeaseContracts";
 import OwnerPaymentAutomation from "./OwnerPaymentAutomation";
 import OwnerAnnouncementHub from "./OwnerAnnouncementHub";
+import OwnerExpenseTracking from "./OwnerExpenseTracking";
 import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
@@ -25,7 +26,7 @@ import {
   Building, Eye, Heart, MessageSquare, PlusCircle, Activity, Target, Home,
   TrendingUp, Clock, ChevronRight, Settings, ArrowLeft, Search, CalendarDays,
   User, Shield, Copy, BarChart3, MapPin, Zap, FileText, Bell, 
-  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet, Megaphone
+  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet, Megaphone, TrendingDown
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -244,6 +245,9 @@ const PropertyOwnerOverview = () => {
           <TabsTrigger value="contracts" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <FileText className="h-2.5 w-2.5" /> Kontrak
           </TabsTrigger>
+          <TabsTrigger value="expenses" className="text-[7px] h-5 gap-0.5 min-w-fit">
+            <TrendingDown className="h-2.5 w-2.5" /> Pengeluaran
+          </TabsTrigger>
           <TabsTrigger value="automation" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Zap className="h-2.5 w-2.5" /> Automasi
           </TabsTrigger>
@@ -355,6 +359,11 @@ const PropertyOwnerOverview = () => {
         {/* Contracts Tab */}
         <TabsContent value="contracts" className="mt-1.5">
           <OwnerLeaseContracts />
+        </TabsContent>
+
+        {/* Expenses Tab */}
+        <TabsContent value="expenses" className="mt-1.5">
+          <OwnerExpenseTracking />
         </TabsContent>
 
         {/* Automation Tab */}

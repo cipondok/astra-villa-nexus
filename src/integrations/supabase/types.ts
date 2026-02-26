@@ -15735,6 +15735,89 @@ export type Database = {
           },
         ]
       }
+      property_expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string | null
+          description: string | null
+          expense_date: string
+          id: string
+          is_recurring: boolean | null
+          owner_id: string
+          property_id: string
+          receipt_url: string | null
+          recurring_interval: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+          vendor_name: string | null
+        }
+        Insert: {
+          amount?: number
+          category: string
+          created_at?: string | null
+          description?: string | null
+          expense_date?: string
+          id?: string
+          is_recurring?: boolean | null
+          owner_id: string
+          property_id: string
+          receipt_url?: string | null
+          recurring_interval?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          vendor_name?: string | null
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          expense_date?: string
+          id?: string
+          is_recurring?: boolean | null
+          owner_id?: string
+          property_id?: string
+          receipt_url?: string | null
+          recurring_interval?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          vendor_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_expenses_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_expenses_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_expenses_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_expenses_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_facilities: {
         Row: {
           additional_cost: number | null
