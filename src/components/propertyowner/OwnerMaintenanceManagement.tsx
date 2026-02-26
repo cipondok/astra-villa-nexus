@@ -4,7 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Wrench, Clock, CheckCircle, XCircle, Loader2, AlertTriangle } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Wrench, Clock, CheckCircle, XCircle, Loader2, AlertTriangle, ImageIcon } from "lucide-react";
 import { useOwnerMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -38,6 +40,8 @@ const OwnerMaintenanceManagement = () => {
   const { data: requests = [], isLoading } = useOwnerMaintenanceRequests();
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [resolutionNotes, setResolutionNotes] = useState<Record<string, string>>({});
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
+  const [filterTab, setFilterTab] = useState("active");
 
   const updateStatus = async (id: string, status: string) => {
     setUpdatingId(id);
@@ -80,9 +84,92 @@ const OwnerMaintenanceManagement = () => {
     );
   }
 
+  const activeRequests = requests.filter((r: any) => !["resolved", "rejected"].includes(r.status));
+  const closedRequests = requests.filter((r: any) => ["resolved", "rejected"].includes(r.status));
   const openCount = requests.filter((r: any) => r.status === "open").length;
   const inProgressCount = requests.filter((r: any) => r.status === "in_progress").length;
   const urgentCount = requests.filter((r: any) => ["high", "urgent"].includes(r.priority) && !["resolved", "rejected"].includes(r.status)).length;
+
+  const filteredRequests = filterTab === "active" ? activeRequests : closedRequests;
+
+  const renderCard = (req: any) => {
+    const st = statusMap[req.status] || statusMap.open;
+    const pr = priorityMap[req.priority] || priorityMap.medium;
+    const StatusIcon = st.icon;
+    const isActive = !["resolved", "rejected"].includes(req.status);
+    const hasImages = req.images && req.images.length > 0;
+
+    return (
+      <Card key={req.id} className="p-4 border-border">
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <div className="flex-1 min-w-0">
+            <h4 className="text-sm font-semibold text-foreground">{req.title}</h4>
+            <div className="flex items-center gap-2 mt-1 text-xs">
+              <span className="text-muted-foreground">{categoryMap[req.category] || req.category}</span>
+              <span className={`font-medium ${pr.color}`}>
+                {req.priority === "urgent" && <AlertTriangle className="h-3 w-3 inline mr-0.5" />}
+                {pr.label}
+              </span>
+            </div>
+          </div>
+          <Badge className={`${st.color} text-[10px] border`}>
+            <StatusIcon className="h-3 w-3 mr-0.5" /> {st.label}
+          </Badge>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3">{req.description}</p>
+
+        {/* Photo thumbnails */}
+        {hasImages && (
+          <div className="flex gap-2 mb-3">
+            {req.images.map((url: string, idx: number) => (
+              <button
+                key={idx}
+                onClick={() => setLightboxImg(url)}
+                className="w-16 h-16 rounded-md overflow-hidden border border-border hover:ring-2 hover:ring-primary/30 transition-all flex-shrink-0"
+              >
+                <img src={url} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
+
+        {isActive && (
+          <div className="space-y-2 border-t border-border pt-3">
+            <div className="flex items-center gap-2">
+              <Select value={req.status} onValueChange={(val) => updateStatus(req.id, val)} disabled={updatingId === req.id}>
+                <SelectTrigger className="h-8 text-xs w-36">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="open">Terbuka</SelectItem>
+                  <SelectItem value="in_progress">Dikerjakan</SelectItem>
+                  <SelectItem value="resolved">Selesai</SelectItem>
+                  <SelectItem value="rejected">Ditolak</SelectItem>
+                </SelectContent>
+              </Select>
+              {updatingId === req.id && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+            </div>
+            <Textarea
+              placeholder="Catatan penyelesaian..."
+              value={resolutionNotes[req.id] || ""}
+              onChange={e => setResolutionNotes(prev => ({ ...prev, [req.id]: e.target.value }))}
+              className="text-xs min-h-[60px]"
+            />
+          </div>
+        )}
+
+        {req.resolution_notes && (
+          <div className="bg-muted/50 rounded-md p-2 text-xs text-foreground mt-2">
+            <span className="font-medium">Catatan: </span>{req.resolution_notes}
+          </div>
+        )}
+        <p className="text-[10px] text-muted-foreground mt-2">
+          {new Date(req.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+          {req.resolved_at && ` • Selesai ${new Date(req.resolved_at).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}`}
+        </p>
+      </Card>
+    );
+  };
 
   return (
     <div className="space-y-4">
@@ -102,70 +189,32 @@ const OwnerMaintenanceManagement = () => {
         </Card>
       </div>
 
-      {/* Request list */}
-      <div className="space-y-3">
-        {requests.map((req: any) => {
-          const st = statusMap[req.status] || statusMap.open;
-          const pr = priorityMap[req.priority] || priorityMap.medium;
-          const StatusIcon = st.icon;
-          const isActive = !["resolved", "rejected"].includes(req.status);
+      {/* Tabs: Active / Closed */}
+      <Tabs value={filterTab} onValueChange={setFilterTab}>
+        <TabsList className="w-full">
+          <TabsTrigger value="active" className="flex-1">Aktif ({activeRequests.length})</TabsTrigger>
+          <TabsTrigger value="closed" className="flex-1">Selesai ({closedRequests.length})</TabsTrigger>
+        </TabsList>
+        <TabsContent value="active" className="space-y-3 mt-3">
+          {activeRequests.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">Tidak ada permintaan aktif</p>
+          ) : activeRequests.map(renderCard)}
+        </TabsContent>
+        <TabsContent value="closed" className="space-y-3 mt-3">
+          {closedRequests.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">Belum ada permintaan selesai</p>
+          ) : closedRequests.map(renderCard)}
+        </TabsContent>
+      </Tabs>
 
-          return (
-            <Card key={req.id} className="p-4 border-border">
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-semibold text-foreground">{req.title}</h4>
-                  <div className="flex items-center gap-2 mt-1 text-xs">
-                    <span className="text-muted-foreground">{categoryMap[req.category] || req.category}</span>
-                    <span className={`font-medium ${pr.color}`}>
-                      {req.priority === "urgent" && <AlertTriangle className="h-3 w-3 inline mr-0.5" />}
-                      {pr.label}
-                    </span>
-                  </div>
-                </div>
-                <Badge className={`${st.color} text-[10px] border`}>
-                  <StatusIcon className="h-3 w-3 mr-0.5" /> {st.label}
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground mb-3">{req.description}</p>
-
-              {isActive && (
-                <div className="space-y-2 border-t border-border pt-3">
-                  <div className="flex items-center gap-2">
-                    <Select value={req.status} onValueChange={(val) => updateStatus(req.id, val)} disabled={updatingId === req.id}>
-                      <SelectTrigger className="h-8 text-xs w-36">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="open">Terbuka</SelectItem>
-                        <SelectItem value="in_progress">Dikerjakan</SelectItem>
-                        <SelectItem value="resolved">Selesai</SelectItem>
-                        <SelectItem value="rejected">Ditolak</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {updatingId === req.id && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-                  </div>
-                  <Textarea
-                    placeholder="Catatan penyelesaian..."
-                    value={resolutionNotes[req.id] || ""}
-                    onChange={e => setResolutionNotes(prev => ({ ...prev, [req.id]: e.target.value }))}
-                    className="text-xs min-h-[60px]"
-                  />
-                </div>
-              )}
-
-              {req.resolution_notes && (
-                <div className="bg-muted/50 rounded-md p-2 text-xs text-foreground mt-2">
-                  <span className="font-medium">Catatan: </span>{req.resolution_notes}
-                </div>
-              )}
-              <p className="text-[10px] text-muted-foreground mt-2">
-                {new Date(req.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
-              </p>
-            </Card>
-          );
-        })}
-      </div>
+      {/* Lightbox */}
+      <Dialog open={!!lightboxImg} onOpenChange={() => setLightboxImg(null)}>
+        <DialogContent className="max-w-lg p-2">
+          {lightboxImg && (
+            <img src={lightboxImg} alt="Foto maintenance" className="w-full rounded-md" />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
