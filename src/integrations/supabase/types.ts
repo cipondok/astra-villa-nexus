@@ -23022,6 +23022,7 @@ export type Database = {
         Row: {
           browser: string | null
           created_at: string
+          device_fingerprint: string | null
           device_name: string | null
           device_type: string | null
           expires_at: string
@@ -23037,6 +23038,7 @@ export type Database = {
         Insert: {
           browser?: string | null
           created_at?: string
+          device_fingerprint?: string | null
           device_name?: string | null
           device_type?: string | null
           expires_at?: string
@@ -23052,6 +23054,7 @@ export type Database = {
         Update: {
           browser?: string | null
           created_at?: string
+          device_fingerprint?: string | null
           device_name?: string | null
           device_type?: string | null
           expires_at?: string
