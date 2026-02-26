@@ -20575,6 +20575,82 @@ export type Database = {
           },
         ]
       }
+      tenant_reviews: {
+        Row: {
+          booking_id: string
+          cleanliness_rating: number | null
+          comment: string | null
+          communication_rating: number | null
+          created_at: string
+          id: string
+          is_published: boolean
+          location_rating: number | null
+          overall_rating: number
+          owner_replied_at: string | null
+          owner_reply: string | null
+          property_id: string
+          tenant_id: string
+          updated_at: string
+          value_rating: number | null
+        }
+        Insert: {
+          booking_id: string
+          cleanliness_rating?: number | null
+          comment?: string | null
+          communication_rating?: number | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          location_rating?: number | null
+          overall_rating: number
+          owner_replied_at?: string | null
+          owner_reply?: string | null
+          property_id: string
+          tenant_id: string
+          updated_at?: string
+          value_rating?: number | null
+        }
+        Update: {
+          booking_id?: string
+          cleanliness_rating?: number | null
+          comment?: string | null
+          communication_rating?: number | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          location_rating?: number | null
+          overall_rating?: number
+          owner_replied_at?: string | null
+          owner_reply?: string | null
+          property_id?: string
+          tenant_id?: string
+          updated_at?: string
+          value_rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tenant_reviews_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tenant_reviews_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_scores: {
         Row: {
           created_at: string

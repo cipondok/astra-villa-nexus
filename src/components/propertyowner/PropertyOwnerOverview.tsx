@@ -21,6 +21,7 @@ import OwnerAnnouncementHub from "./OwnerAnnouncementHub";
 import OwnerExpenseTracking from "./OwnerExpenseTracking";
 import OwnerFinancialAnalytics from "./OwnerFinancialAnalytics";
 import OwnerCalendarView from "./OwnerCalendarView";
+import OwnerReviewsDashboard from "./OwnerReviewsDashboard";
 import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
@@ -268,6 +269,9 @@ const PropertyOwnerOverview = () => {
           <TabsTrigger value="financial" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <DollarSign className="h-2.5 w-2.5" /> Keuangan
           </TabsTrigger>
+          <TabsTrigger value="reviews" className="text-[7px] h-5 gap-0.5 min-w-fit">
+            <Star className="h-2.5 w-2.5" /> Review
+          </TabsTrigger>
           <TabsTrigger value="insights" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <TrendingUp className="h-2.5 w-2.5" /> Insights
           </TabsTrigger>
@@ -427,6 +431,11 @@ const PropertyOwnerOverview = () => {
         {/* Financial Tab */}
         <TabsContent value="financial" className="mt-1.5">
           <OwnerFinancialAnalytics />
+        </TabsContent>
+
+        {/* Reviews Tab */}
+        <TabsContent value="reviews" className="mt-1.5">
+          <OwnerReviewsDashboard />
         </TabsContent>
 
         {/* Insights Tab */}
