@@ -10282,51 +10282,72 @@ export type Database = {
       }
       maintenance_requests: {
         Row: {
+          actual_cost: number | null
+          assigned_vendor_id: string | null
+          assigned_vendor_name: string | null
           booking_id: string
           category: string
           created_at: string
           description: string
+          estimated_cost: number | null
           id: string
           images: string[] | null
+          owner_notes: string | null
           priority: string
+          progress_notes: Json | null
           property_id: string
           resolution_notes: string | null
           resolved_at: string | null
           resolved_by: string | null
+          scheduled_date: string | null
           status: string
           tenant_id: string
           title: string
           updated_at: string
         }
         Insert: {
+          actual_cost?: number | null
+          assigned_vendor_id?: string | null
+          assigned_vendor_name?: string | null
           booking_id: string
           category?: string
           created_at?: string
           description: string
+          estimated_cost?: number | null
           id?: string
           images?: string[] | null
+          owner_notes?: string | null
           priority?: string
+          progress_notes?: Json | null
           property_id: string
           resolution_notes?: string | null
           resolved_at?: string | null
           resolved_by?: string | null
+          scheduled_date?: string | null
           status?: string
           tenant_id: string
           title: string
           updated_at?: string
         }
         Update: {
+          actual_cost?: number | null
+          assigned_vendor_id?: string | null
+          assigned_vendor_name?: string | null
           booking_id?: string
           category?: string
           created_at?: string
           description?: string
+          estimated_cost?: number | null
           id?: string
           images?: string[] | null
+          owner_notes?: string | null
           priority?: string
+          progress_notes?: Json | null
           property_id?: string
           resolution_notes?: string | null
           resolved_at?: string | null
           resolved_by?: string | null
+          scheduled_date?: string | null
           status?: string
           tenant_id?: string
           title?: string
