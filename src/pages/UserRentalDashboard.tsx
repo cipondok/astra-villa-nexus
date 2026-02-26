@@ -22,6 +22,7 @@ import TenantInspections from "@/components/rental/TenantInspections";
 import { useTenantMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 import TenantScoreWidget from "@/components/rental/TenantScoreWidget";
 import TenantDeposits from "@/components/rental/TenantDeposits";
+import TenantLeaseContracts from "@/components/rental/TenantLeaseContracts";
 import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
 
 interface BookingRow {
@@ -243,6 +244,9 @@ const UserRentalDashboard = () => {
             <TabsTrigger value="deposits" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <Wallet className="h-3.5 w-3.5" /> Deposit
             </TabsTrigger>
+            <TabsTrigger value="contracts" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
+              <FileText className="h-3.5 w-3.5" /> Kontrak
+            </TabsTrigger>
             <TabsTrigger value="notifications" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <Bell className="h-3.5 w-3.5" /> Notifikasi
             </TabsTrigger>
@@ -344,6 +348,10 @@ const UserRentalDashboard = () => {
 
           <TabsContent value="deposits">
             <TenantDeposits />
+          </TabsContent>
+
+          <TabsContent value="contracts">
+            <TenantLeaseContracts />
           </TabsContent>
 
           <TabsContent value="notifications">

@@ -15,6 +15,7 @@ import OwnerInvoiceManagement from "./OwnerInvoiceManagement";
 import OwnerInspectionManagement from "./OwnerInspectionManagement";
 import OwnerTenantScreening from "./OwnerTenantScreening";
 import OwnerDepositManagement from "./OwnerDepositManagement";
+import OwnerLeaseContracts from "./OwnerLeaseContracts";
 import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
@@ -238,6 +239,9 @@ const PropertyOwnerOverview = () => {
           <TabsTrigger value="deposits" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Wallet className="h-2.5 w-2.5" /> Deposit
           </TabsTrigger>
+          <TabsTrigger value="contracts" className="text-[7px] h-5 gap-0.5 min-w-fit">
+            <FileText className="h-2.5 w-2.5" /> Kontrak
+          </TabsTrigger>
           <TabsTrigger value="notifications" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Bell className="h-2.5 w-2.5" /> Notif
           </TabsTrigger>
@@ -338,6 +342,11 @@ const PropertyOwnerOverview = () => {
         {/* Deposits Tab */}
         <TabsContent value="deposits" className="mt-1.5">
           <OwnerDepositManagement />
+        </TabsContent>
+
+        {/* Contracts Tab */}
+        <TabsContent value="contracts" className="mt-1.5">
+          <OwnerLeaseContracts />
         </TabsContent>
 
         {/* Notifications Tab */}

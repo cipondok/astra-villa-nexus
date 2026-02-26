@@ -9031,6 +9031,121 @@ export type Database = {
         }
         Relationships: []
       }
+      lease_contracts: {
+        Row: {
+          booking_id: string
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          contract_number: string
+          contract_title: string
+          contract_type: string
+          created_at: string
+          deposit_amount: number | null
+          end_date: string
+          expired_at: string | null
+          id: string
+          late_fee_percentage: number | null
+          monthly_rent: number
+          owner_id: string
+          owner_signature_ip: string | null
+          owner_signed_at: string | null
+          payment_due_day: number | null
+          property_condition_notes: string | null
+          property_id: string
+          sent_at: string | null
+          special_clauses: string | null
+          start_date: string
+          status: string
+          tenant_id: string
+          tenant_signature_ip: string | null
+          tenant_signed_at: string | null
+          terms_and_conditions: string | null
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          contract_number?: string
+          contract_title?: string
+          contract_type?: string
+          created_at?: string
+          deposit_amount?: number | null
+          end_date: string
+          expired_at?: string | null
+          id?: string
+          late_fee_percentage?: number | null
+          monthly_rent: number
+          owner_id: string
+          owner_signature_ip?: string | null
+          owner_signed_at?: string | null
+          payment_due_day?: number | null
+          property_condition_notes?: string | null
+          property_id: string
+          sent_at?: string | null
+          special_clauses?: string | null
+          start_date: string
+          status?: string
+          tenant_id: string
+          tenant_signature_ip?: string | null
+          tenant_signed_at?: string | null
+          terms_and_conditions?: string | null
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          contract_number?: string
+          contract_title?: string
+          contract_type?: string
+          created_at?: string
+          deposit_amount?: number | null
+          end_date?: string
+          expired_at?: string | null
+          id?: string
+          late_fee_percentage?: number | null
+          monthly_rent?: number
+          owner_id?: string
+          owner_signature_ip?: string | null
+          owner_signed_at?: string | null
+          payment_due_day?: number | null
+          property_condition_notes?: string | null
+          property_id?: string
+          sent_at?: string | null
+          special_clauses?: string | null
+          start_date?: string
+          status?: string
+          tenant_id?: string
+          tenant_signature_ip?: string | null
+          tenant_signed_at?: string | null
+          terms_and_conditions?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lease_contracts_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "rental_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lease_contracts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lease_contracts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listing_automation_config: {
         Row: {
           ai_description_enhancement: boolean | null
