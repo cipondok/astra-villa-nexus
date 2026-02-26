@@ -9,7 +9,7 @@ export const useTenantMaintenanceRequests = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("maintenance_requests" as any)
-        .select("id, title, description, category, priority, status, resolution_notes, created_at, resolved_at, booking_id, property_id")
+        .select("id, title, description, category, priority, status, resolution_notes, images, created_at, resolved_at, booking_id, property_id")
         .eq("tenant_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;

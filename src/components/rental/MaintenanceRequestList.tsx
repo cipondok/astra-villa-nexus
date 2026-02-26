@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Wrench, Clock, CheckCircle, AlertTriangle, XCircle, Loader2 } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Wrench, Clock, CheckCircle, AlertTriangle, XCircle, Loader2, ImageIcon } from "lucide-react";
 
 export interface MaintenanceRequest {
   id: string;
@@ -10,6 +12,7 @@ export interface MaintenanceRequest {
   priority: string;
   status: string;
   resolution_notes: string | null;
+  images?: string[] | null;
   created_at: string;
   resolved_at: string | null;
 }
@@ -45,6 +48,8 @@ interface Props {
 }
 
 const MaintenanceRequestList = ({ requests, isLoading }: Props) => {
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -68,40 +73,71 @@ const MaintenanceRequestList = ({ requests, isLoading }: Props) => {
   }
 
   return (
-    <div className="space-y-3">
-      {requests.map(req => {
-        const st = statusMap[req.status] || statusMap.open;
-        const pr = priorityMap[req.priority] || priorityMap.medium;
-        const StatusIcon = st.icon;
+    <>
+      <div className="space-y-3">
+        {requests.map(req => {
+          const st = statusMap[req.status] || statusMap.open;
+          const pr = priorityMap[req.priority] || priorityMap.medium;
+          const StatusIcon = st.icon;
+          const hasImages = req.images && req.images.length > 0;
 
-        return (
-          <Card key={req.id} className="p-4 border-border">
-            <div className="flex items-start justify-between gap-2 mb-2">
-              <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-semibold text-foreground line-clamp-1">{req.title}</h4>
-                <div className="flex items-center gap-2 mt-1 text-xs">
-                  <span className="text-muted-foreground">{categoryMap[req.category] || req.category}</span>
-                  <span className={`font-medium ${pr.color}`}>{pr.label}</span>
+          return (
+            <Card key={req.id} className="p-4 border-border">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-semibold text-foreground line-clamp-1">{req.title}</h4>
+                  <div className="flex items-center gap-2 mt-1 text-xs">
+                    <span className="text-muted-foreground">{categoryMap[req.category] || req.category}</span>
+                    <span className={`font-medium ${pr.color}`}>
+                      {req.priority === "urgent" && <AlertTriangle className="h-3 w-3 inline mr-0.5" />}
+                      {pr.label}
+                    </span>
+                  </div>
                 </div>
+                <Badge className={`${st.color} text-[10px] border flex-shrink-0`}>
+                  <StatusIcon className="h-3 w-3 mr-0.5" /> {st.label}
+                </Badge>
               </div>
-              <Badge className={`${st.color} text-[10px] border flex-shrink-0`}>
-                <StatusIcon className="h-3 w-3 mr-0.5" /> {st.label}
-              </Badge>
-            </div>
-            <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{req.description}</p>
-            {req.resolution_notes && (
-              <div className="bg-muted/50 rounded-md p-2 text-xs text-foreground">
-                <span className="font-medium">Catatan: </span>{req.resolution_notes}
-              </div>
-            )}
-            <p className="text-[10px] text-muted-foreground mt-2">
-              {new Date(req.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
-              {req.resolved_at && ` • Selesai ${new Date(req.resolved_at).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}`}
-            </p>
-          </Card>
-        );
-      })}
-    </div>
+              <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{req.description}</p>
+
+              {/* Image thumbnails */}
+              {hasImages && (
+                <div className="flex gap-2 mb-2">
+                  {req.images!.map((url, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setLightboxImg(url)}
+                      className="w-14 h-14 rounded-md overflow-hidden border border-border hover:ring-2 hover:ring-primary/30 transition-all flex-shrink-0"
+                    >
+                      <img src={url} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {req.resolution_notes && (
+                <div className="bg-muted/50 rounded-md p-2 text-xs text-foreground">
+                  <span className="font-medium">Catatan: </span>{req.resolution_notes}
+                </div>
+              )}
+              <p className="text-[10px] text-muted-foreground mt-2">
+                {new Date(req.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                {req.resolved_at && ` • Selesai ${new Date(req.resolved_at).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}`}
+              </p>
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Lightbox */}
+      <Dialog open={!!lightboxImg} onOpenChange={() => setLightboxImg(null)}>
+        <DialogContent className="max-w-lg p-2">
+          {lightboxImg && (
+            <img src={lightboxImg} alt="Foto maintenance" className="w-full rounded-md" />
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
