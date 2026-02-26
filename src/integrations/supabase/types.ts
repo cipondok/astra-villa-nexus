@@ -19965,6 +19965,51 @@ export type Database = {
           },
         ]
       }
+      tenant_scores: {
+        Row: {
+          created_at: string
+          id: string
+          last_calculated_at: string
+          overall_score: number
+          payment_score: number
+          profile_score: number
+          rental_history_score: number
+          risk_level: string
+          score_breakdown: Json | null
+          tenant_id: string
+          updated_at: string
+          verification_score: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_calculated_at?: string
+          overall_score?: number
+          payment_score?: number
+          profile_score?: number
+          rental_history_score?: number
+          risk_level?: string
+          score_breakdown?: Json | null
+          tenant_id: string
+          updated_at?: string
+          verification_score?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_calculated_at?: string
+          overall_score?: number
+          payment_score?: number
+          profile_score?: number
+          rental_history_score?: number
+          risk_level?: string
+          score_breakdown?: Json | null
+          tenant_id?: string
+          updated_at?: string
+          verification_score?: number
+        }
+        Relationships: []
+      }
       tenant_verifications: {
         Row: {
           created_at: string
@@ -26388,6 +26433,7 @@ export type Database = {
         Returns: Json
       }
       calculate_level_from_xp: { Args: { p_xp: number }; Returns: number }
+      calculate_tenant_score: { Args: { p_tenant_id: string }; Returns: Json }
       can_access_financial_reward_config_strict: {
         Args: { operation?: string }
         Returns: boolean
