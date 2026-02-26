@@ -20656,10 +20656,12 @@ export type Database = {
           created_at: string
           id: string
           last_calculated_at: string
+          maintenance_score: number
           overall_score: number
           payment_score: number
           profile_score: number
           rental_history_score: number
+          review_score: number
           risk_level: string
           score_breakdown: Json | null
           tenant_id: string
@@ -20670,10 +20672,12 @@ export type Database = {
           created_at?: string
           id?: string
           last_calculated_at?: string
+          maintenance_score?: number
           overall_score?: number
           payment_score?: number
           profile_score?: number
           rental_history_score?: number
+          review_score?: number
           risk_level?: string
           score_breakdown?: Json | null
           tenant_id: string
@@ -20684,10 +20688,12 @@ export type Database = {
           created_at?: string
           id?: string
           last_calculated_at?: string
+          maintenance_score?: number
           overall_score?: number
           payment_score?: number
           profile_score?: number
           rental_history_score?: number
+          review_score?: number
           risk_level?: string
           score_breakdown?: Json | null
           tenant_id?: string
