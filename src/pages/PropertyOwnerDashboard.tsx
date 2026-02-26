@@ -36,8 +36,8 @@ const PropertyOwnerDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="px-2 sm:px-4 py-2 sm:py-4">
+    <div className="min-h-stable md:min-h-screen bg-background">
+      <div className="px-3 py-3 sm:px-5 sm:py-5 md:px-6 md:py-6 lg:px-8 lg:py-8 max-w-7xl mx-auto">
         <PropertyOwnerOverview />
       </div>
     </div>
