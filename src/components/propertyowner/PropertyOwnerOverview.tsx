@@ -19,6 +19,7 @@ import OwnerLeaseContracts from "./OwnerLeaseContracts";
 import OwnerPaymentAutomation from "./OwnerPaymentAutomation";
 import OwnerAnnouncementHub from "./OwnerAnnouncementHub";
 import OwnerExpenseTracking from "./OwnerExpenseTracking";
+import OwnerPayoutManagement from "./OwnerPayoutManagement";
 import OwnerFinancialAnalytics from "./OwnerFinancialAnalytics";
 import OwnerCalendarView from "./OwnerCalendarView";
 import OwnerReviewsDashboard from "./OwnerReviewsDashboard";
@@ -237,6 +238,7 @@ const PropertyOwnerOverview = () => {
               { value: 'activity', icon: Activity, label: 'Activity' },
               { value: 'calendar', icon: CalendarDays, label: 'Kalender' },
               { value: 'financial', icon: DollarSign, label: 'Keuangan' },
+              { value: 'payout', icon: Wallet, label: 'Payout' },
               { value: 'reviews', icon: Star, label: 'Review' },
               { value: 'insights', icon: TrendingUp, label: 'Insights' },
             ].map((tab) => (
@@ -407,6 +409,11 @@ const PropertyOwnerOverview = () => {
         {/* Financial Tab */}
         <TabsContent value="financial" className="mt-1.5">
           <OwnerFinancialAnalytics />
+        </TabsContent>
+
+        {/* Payout Tab */}
+        <TabsContent value="payout" className="mt-1.5">
+          <OwnerPayoutManagement />
         </TabsContent>
 
         {/* Reviews Tab */}
