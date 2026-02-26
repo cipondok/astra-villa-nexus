@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard, Wrench, Plus, Shield, Receipt, ClipboardCheck, Star, Wallet } from "lucide-react";
+import { CalendarDays, History, Heart, RotateCcw, Settings, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, FileText, Loader2, CreditCard, Wrench, Plus, Shield, Receipt, ClipboardCheck, Star, Wallet, Bell } from "lucide-react";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,6 +22,7 @@ import TenantInspections from "@/components/rental/TenantInspections";
 import { useTenantMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 import TenantScoreWidget from "@/components/rental/TenantScoreWidget";
 import TenantDeposits from "@/components/rental/TenantDeposits";
+import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
 
 interface BookingRow {
   id: string;
@@ -242,6 +243,9 @@ const UserRentalDashboard = () => {
             <TabsTrigger value="deposits" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <Wallet className="h-3.5 w-3.5" /> Deposit
             </TabsTrigger>
+            <TabsTrigger value="notifications" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
+              <Bell className="h-3.5 w-3.5" /> Notifikasi
+            </TabsTrigger>
             <TabsTrigger value="settings" className="flex-1 min-w-fit gap-1.5 text-xs sm:text-sm">
               <Settings className="h-3.5 w-3.5" /> Pengaturan
             </TabsTrigger>
@@ -340,6 +344,10 @@ const UserRentalDashboard = () => {
 
           <TabsContent value="deposits">
             <TenantDeposits />
+          </TabsContent>
+
+          <TabsContent value="notifications">
+            <RentalNotificationCenter />
           </TabsContent>
 
           <TabsContent value="settings">

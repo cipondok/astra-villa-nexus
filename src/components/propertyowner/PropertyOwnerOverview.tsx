@@ -15,6 +15,7 @@ import OwnerInvoiceManagement from "./OwnerInvoiceManagement";
 import OwnerInspectionManagement from "./OwnerInspectionManagement";
 import OwnerTenantScreening from "./OwnerTenantScreening";
 import OwnerDepositManagement from "./OwnerDepositManagement";
+import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
 import { 
@@ -237,6 +238,9 @@ const PropertyOwnerOverview = () => {
           <TabsTrigger value="deposits" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Wallet className="h-2.5 w-2.5" /> Deposit
           </TabsTrigger>
+          <TabsTrigger value="notifications" className="text-[7px] h-5 gap-0.5 min-w-fit">
+            <Bell className="h-2.5 w-2.5" /> Notif
+          </TabsTrigger>
           <TabsTrigger value="activity" className="text-[7px] h-5 gap-0.5 min-w-fit">
             <Activity className="h-2.5 w-2.5" /> Activity
           </TabsTrigger>
@@ -334,6 +338,11 @@ const PropertyOwnerOverview = () => {
         {/* Deposits Tab */}
         <TabsContent value="deposits" className="mt-1.5">
           <OwnerDepositManagement />
+        </TabsContent>
+
+        {/* Notifications Tab */}
+        <TabsContent value="notifications" className="mt-1.5">
+          <RentalNotificationCenter />
         </TabsContent>
 
         {/* Activity Tab */}

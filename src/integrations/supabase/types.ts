@@ -17694,6 +17694,123 @@ export type Database = {
           },
         ]
       }
+      rental_notification_log: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          notification_type: string
+          read_at: string | null
+          reference_id: string | null
+          reference_type: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          notification_type: string
+          read_at?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          notification_type?: string
+          read_at?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      rental_notification_settings: {
+        Row: {
+          booking_status_change: boolean
+          chat_messages: boolean
+          created_at: string
+          deposit_status_change: boolean
+          document_uploads: boolean
+          id: string
+          inspection_days_before: number
+          inspection_scheduled: boolean
+          lease_expiry_days_before: number
+          lease_expiry_reminder: boolean
+          maintenance_new_request: boolean
+          maintenance_status_update: boolean
+          notify_email: boolean
+          notify_in_app: boolean
+          notify_push: boolean
+          payment_due_days_before: number
+          payment_due_reminder: boolean
+          payment_overdue_alert: boolean
+          quiet_hours_enabled: boolean
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          booking_status_change?: boolean
+          chat_messages?: boolean
+          created_at?: string
+          deposit_status_change?: boolean
+          document_uploads?: boolean
+          id?: string
+          inspection_days_before?: number
+          inspection_scheduled?: boolean
+          lease_expiry_days_before?: number
+          lease_expiry_reminder?: boolean
+          maintenance_new_request?: boolean
+          maintenance_status_update?: boolean
+          notify_email?: boolean
+          notify_in_app?: boolean
+          notify_push?: boolean
+          payment_due_days_before?: number
+          payment_due_reminder?: boolean
+          payment_overdue_alert?: boolean
+          quiet_hours_enabled?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          booking_status_change?: boolean
+          chat_messages?: boolean
+          created_at?: string
+          deposit_status_change?: boolean
+          document_uploads?: boolean
+          id?: string
+          inspection_days_before?: number
+          inspection_scheduled?: boolean
+          lease_expiry_days_before?: number
+          lease_expiry_reminder?: boolean
+          maintenance_new_request?: boolean
+          maintenance_status_update?: boolean
+          notify_email?: boolean
+          notify_in_app?: boolean
+          notify_push?: boolean
+          payment_due_days_before?: number
+          payment_due_reminder?: boolean
+          payment_overdue_alert?: boolean
+          quiet_hours_enabled?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       report_automation_config: {
         Row: {
           ai_insights_enabled: boolean | null
