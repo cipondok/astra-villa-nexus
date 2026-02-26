@@ -180,3 +180,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.seo-audit]
     verify_jwt = false
+
+  [functions.session-heartbeat]
+    verify_jwt = false
