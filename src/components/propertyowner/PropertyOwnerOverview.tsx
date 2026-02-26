@@ -29,13 +29,14 @@ import OwnerFinancialAnalytics from "./OwnerFinancialAnalytics";
 import OwnerCalendarView from "./OwnerCalendarView";
 import OwnerReviewsDashboard from "./OwnerReviewsDashboard";
 import RentalNotificationCenter from "@/components/rental/RentalNotificationCenter";
+import OwnerReminderDashboard from "./OwnerReminderDashboard";
 import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
 import { 
   Building, Eye, Heart, MessageSquare, PlusCircle, Activity, Target, Home,
   TrendingUp, Clock, ChevronRight, Settings, ArrowLeft, Search, CalendarDays,
   User, Shield, Copy, BarChart3, MapPin, Zap, FileText, Bell, Ban,
-  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet, Megaphone, TrendingDown, Sparkles, LogIn, Users
+  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet, Megaphone, TrendingDown, Sparkles, LogIn, Users, BellRing
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -240,6 +241,7 @@ const PropertyOwnerOverview = () => {
               { value: 'automation', icon: Zap, label: 'Automasi' },
               { value: 'announcements', icon: Megaphone, label: 'Broadcast' },
               { value: 'notifications', icon: Bell, label: 'Notif' },
+              { value: 'reminders', icon: BellRing, label: 'Reminder' },
               { value: 'activity', icon: Activity, label: 'Activity' },
               { value: 'calendar', icon: CalendarDays, label: 'Kalender' },
               { value: 'financial', icon: DollarSign, label: 'Keuangan' },
@@ -379,6 +381,11 @@ const PropertyOwnerOverview = () => {
         {/* Notifications Tab */}
         <TabsContent value="notifications" className="mt-1.5">
           <RentalNotificationCenter />
+        </TabsContent>
+
+        {/* Reminders Tab */}
+        <TabsContent value="reminders" className="mt-1.5">
+          <OwnerReminderDashboard />
         </TabsContent>
 
         {/* Activity Tab */}
