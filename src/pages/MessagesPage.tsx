@@ -307,6 +307,9 @@ const ConversationItem: React.FC<{
         {conversation.property_title && (
           <p className="text-[9px] text-primary/70 truncate flex items-center gap-0.5">
             <Home className="h-2.5 w-2.5" />
+            {conversation.source === 'rental' && (
+              <span className="text-[7px] px-1 py-0 rounded bg-chart-1/10 text-chart-1 font-medium mr-0.5">Rental</span>
+            )}
             {conversation.property_title}
           </p>
         )}

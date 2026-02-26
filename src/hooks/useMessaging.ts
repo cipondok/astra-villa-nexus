@@ -20,6 +20,9 @@ export interface Conversation {
   property_image?: string;
   other_user_name?: string;
   other_user_avatar?: string;
+  // Rental booking context
+  source?: 'property' | 'rental';
+  booking_id?: string;
 }
 
 export interface Message {
@@ -42,7 +45,9 @@ export const useConversations = () => {
     queryKey: ['conversations', user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
-      const { data, error } = await supabase
+
+      // Fetch property conversations
+      const { data: propConvs, error } = await supabase
         .from('conversations')
         .select('*')
         .or(`buyer_id.eq.${user.id},agent_id.eq.${user.id}`)
@@ -50,9 +55,84 @@ export const useConversations = () => {
         .order('last_message_at', { ascending: false });
       if (error) throw error;
 
-      // Enrich with property and user info
+      // Fetch rental booking conversations (from rental_messages)
+      const { data: rentalMsgs } = await supabase
+        .from('rental_messages')
+        .select('booking_id, sender_id, message, created_at, is_read')
+        .order('created_at', { ascending: false })
+        .limit(500);
+
+      // Group rental messages by booking
+      const rentalByBooking = new Map<string, typeof rentalMsgs>();
+      for (const m of rentalMsgs || []) {
+        if (!rentalByBooking.has(m.booking_id)) rentalByBooking.set(m.booking_id, []);
+        rentalByBooking.get(m.booking_id)!.push(m);
+      }
+
+      // Get booking info for rental conversations
+      const bookingIds = Array.from(rentalByBooking.keys());
+      let rentalConvs: Conversation[] = [];
+
+      if (bookingIds.length > 0) {
+        const { data: bookings } = await supabase
+          .from('rental_bookings')
+          .select('id, customer_id, property_id, properties(title, images, owner_id)')
+          .in('id', bookingIds);
+
+        for (const booking of bookings || []) {
+          const prop = booking.properties as any;
+          const ownerId = prop?.owner_id;
+          const tenantId = booking.customer_id;
+
+          // Only include if current user is tenant or owner
+          if (user.id !== tenantId && user.id !== ownerId) continue;
+
+          const msgs = rentalByBooking.get(booking.id) || [];
+          const lastMsg = msgs[0];
+          const unreadCount = msgs.filter(m => !m.is_read && m.sender_id !== user.id).length;
+          const otherId = user.id === tenantId ? ownerId : tenantId;
+
+          // Fetch other user profile
+          let otherName = 'User';
+          let otherAvatar: string | undefined;
+          if (otherId) {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('full_name, avatar_url')
+              .eq('id', otherId)
+              .single();
+            if (profile) {
+              otherName = profile.full_name || 'User';
+              otherAvatar = profile.avatar_url || undefined;
+            }
+          }
+
+          const imgs = prop?.images as string[] | null;
+
+          rentalConvs.push({
+            id: `rental-${booking.id}`,
+            property_id: booking.property_id,
+            buyer_id: tenantId || '',
+            agent_id: ownerId || '',
+            last_message_at: lastMsg?.created_at || '',
+            last_message_preview: lastMsg?.message?.substring(0, 100) || null,
+            buyer_unread_count: user.id === tenantId ? unreadCount : 0,
+            agent_unread_count: user.id === ownerId ? unreadCount : 0,
+            is_archived: false,
+            created_at: lastMsg?.created_at || '',
+            property_title: prop?.title,
+            property_image: imgs?.[0],
+            other_user_name: otherName,
+            other_user_avatar: otherAvatar,
+            source: 'rental',
+            booking_id: booking.id,
+          });
+        }
+      }
+
+      // Enrich property conversations
       const enriched: Conversation[] = [];
-      for (const conv of data || []) {
+      for (const conv of propConvs || []) {
         const otherId = conv.buyer_id === user.id ? conv.agent_id : conv.buyer_id;
         let otherName = 'User';
         let otherAvatar: string | undefined;
@@ -88,9 +168,16 @@ export const useConversations = () => {
           other_user_avatar: otherAvatar,
           property_title: propertyTitle,
           property_image: propertyImage,
+          source: 'property',
         });
       }
-      return enriched;
+
+      // Merge and sort by last_message_at
+      const all = [...enriched, ...rentalConvs].sort(
+        (a, b) => new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime()
+      );
+
+      return all;
     },
     enabled: !!user?.id,
   });
@@ -100,11 +187,10 @@ export const useConversations = () => {
     if (!user?.id) return;
     const channel = supabase
       .channel('conversations-changes')
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'conversations',
-      }, () => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversations' }, () => {
+        queryClient.invalidateQueries({ queryKey: ['conversations', user.id] });
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'rental_messages' }, () => {
         queryClient.invalidateQueries({ queryKey: ['conversations', user.id] });
       })
       .subscribe();
@@ -124,10 +210,38 @@ export const useMessages = (conversationId: string | null) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
+  // Check if this is a rental conversation
+  const isRental = conversationId?.startsWith('rental-');
+  const bookingId = isRental ? conversationId?.replace('rental-', '') : null;
+
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ['messages', conversationId],
     queryFn: async () => {
       if (!conversationId) return [];
+
+      if (isRental && bookingId) {
+        // Fetch from rental_messages
+        const { data, error } = await supabase
+          .from('rental_messages')
+          .select('id, booking_id, sender_id, message, is_read, created_at')
+          .eq('booking_id', bookingId)
+          .order('created_at', { ascending: true })
+          .limit(200);
+        if (error) throw error;
+        // Map to Message interface
+        return (data || []).map(m => ({
+          id: m.id,
+          conversation_id: conversationId,
+          sender_id: m.sender_id,
+          content: m.message,
+          message_type: 'text',
+          attachment_url: null,
+          is_read: m.is_read,
+          read_at: null,
+          created_at: m.created_at,
+        })) as Message[];
+      }
+
       const { data, error } = await supabase
         .from('messages')
         .select('*')
@@ -139,15 +253,27 @@ export const useMessages = (conversationId: string | null) => {
     enabled: !!conversationId,
   });
 
-  // Realtime subscription for new messages
+  // Realtime subscription
   useEffect(() => {
     if (!conversationId) return;
+
+    if (isRental && bookingId) {
+      const channel = supabase
+        .channel(`rental-inbox-${bookingId}`)
+        .on('postgres_changes', {
+          event: 'INSERT', schema: 'public', table: 'rental_messages',
+          filter: `booking_id=eq.${bookingId}`,
+        }, () => {
+          queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+        })
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    }
+
     const channel = supabase
       .channel(`messages-${conversationId}`)
       .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'messages',
+        event: 'INSERT', schema: 'public', table: 'messages',
         filter: `conversation_id=eq.${conversationId}`,
       }, (payload) => {
         queryClient.setQueryData(['messages', conversationId], (old: Message[] = []) => {
@@ -159,11 +285,24 @@ export const useMessages = (conversationId: string | null) => {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [conversationId, queryClient]);
+  }, [conversationId, queryClient, isRental, bookingId]);
 
   // Mark messages as read
   useEffect(() => {
     if (!conversationId || !user?.id) return;
+
+    if (isRental && bookingId) {
+      const unread = messages.filter(m => !m.is_read && m.sender_id !== user.id);
+      if (unread.length > 0) {
+        supabase
+          .from('rental_messages')
+          .update({ is_read: true })
+          .in('id', unread.map(m => m.id))
+          .then();
+      }
+      return;
+    }
+
     const markRead = async () => {
       await supabase
         .from('messages')
@@ -172,7 +311,6 @@ export const useMessages = (conversationId: string | null) => {
         .neq('sender_id', user.id)
         .eq('is_read', false);
 
-      // Reset unread count
       const { data: conv } = await supabase
         .from('conversations')
         .select('buyer_id')
@@ -187,11 +325,22 @@ export const useMessages = (conversationId: string | null) => {
       }
     };
     markRead();
-  }, [conversationId, user?.id, messages.length]);
+  }, [conversationId, user?.id, messages.length, isRental, bookingId]);
 
   const sendMessage = useMutation({
     mutationFn: async ({ content, messageType = 'text' }: { content: string; messageType?: string }) => {
       if (!conversationId || !user?.id) throw new Error('Not ready');
+
+      if (isRental && bookingId) {
+        const { error } = await supabase.from('rental_messages').insert({
+          booking_id: bookingId,
+          sender_id: user.id,
+          message: content,
+        });
+        if (error) throw error;
+        queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+        return null;
+      }
 
       const { data, error } = await supabase
         .from('messages')
@@ -219,7 +368,6 @@ export const useMessages = (conversationId: string | null) => {
           field_name: unreadField,
           row_id: conversationId,
         }).then(() => {}, async () => {
-          // Fallback: manual increment
           const { data: current } = await supabase
             .from('conversations')
             .select(unreadField)
@@ -237,7 +385,6 @@ export const useMessages = (conversationId: string | null) => {
           }
         });
 
-        // Always update last message
         await supabase
           .from('conversations')
           .update({
@@ -274,7 +421,6 @@ export const useStartConversation = () => {
     }) => {
       if (!user?.id) throw new Error('Must be logged in');
 
-      // Check for existing conversation
       let query = supabase
         .from('conversations')
         .select('id')
@@ -306,7 +452,6 @@ export const useStartConversation = () => {
         conversationId = newConv.id;
       }
 
-      // Send the initial message
       await supabase.from('messages').insert({
         conversation_id: conversationId,
         sender_id: user.id,
