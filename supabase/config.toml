@@ -174,3 +174,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.rental-notifications]
     verify_jwt = false
+
+  [functions.smart-pricing]
+    verify_jwt = false

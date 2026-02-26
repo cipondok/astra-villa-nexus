@@ -20,6 +20,7 @@ import OwnerPaymentAutomation from "./OwnerPaymentAutomation";
 import OwnerAnnouncementHub from "./OwnerAnnouncementHub";
 import OwnerExpenseTracking from "./OwnerExpenseTracking";
 import OwnerPayoutManagement from "./OwnerPayoutManagement";
+import OwnerSmartPricing from "./OwnerSmartPricing";
 import OwnerFinancialAnalytics from "./OwnerFinancialAnalytics";
 import OwnerCalendarView from "./OwnerCalendarView";
 import OwnerReviewsDashboard from "./OwnerReviewsDashboard";
@@ -30,7 +31,7 @@ import {
   Building, Eye, Heart, MessageSquare, PlusCircle, Activity, Target, Home,
   TrendingUp, Clock, ChevronRight, Settings, ArrowLeft, Search, CalendarDays,
   User, Shield, Copy, BarChart3, MapPin, Zap, FileText, Bell, 
-  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet, Megaphone, TrendingDown
+  DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet, Megaphone, TrendingDown, Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -239,6 +240,7 @@ const PropertyOwnerOverview = () => {
               { value: 'calendar', icon: CalendarDays, label: 'Kalender' },
               { value: 'financial', icon: DollarSign, label: 'Keuangan' },
               { value: 'payout', icon: Wallet, label: 'Payout' },
+              { value: 'smart-pricing', icon: Sparkles, label: 'Pricing' },
               { value: 'reviews', icon: Star, label: 'Review' },
               { value: 'insights', icon: TrendingUp, label: 'Insights' },
             ].map((tab) => (
@@ -414,6 +416,11 @@ const PropertyOwnerOverview = () => {
         {/* Payout Tab */}
         <TabsContent value="payout" className="mt-1.5">
           <OwnerPayoutManagement />
+        </TabsContent>
+
+        {/* Smart Pricing Tab */}
+        <TabsContent value="smart-pricing" className="mt-1.5">
+          <OwnerSmartPricing />
         </TabsContent>
 
         {/* Reviews Tab */}
