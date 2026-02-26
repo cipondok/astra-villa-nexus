@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +37,7 @@ import { formatDistanceToNow } from "date-fns";
 import { formatIDR } from "@/utils/currency";
 import { 
   Building, Eye, Heart, MessageSquare, PlusCircle, Activity, Target, Home,
-  TrendingUp, Clock, ChevronRight, Settings, ArrowLeft, Search, CalendarDays,
+  TrendingUp, Clock, ChevronRight, ChevronDown, Settings, ArrowLeft, Search, CalendarDays,
   User, Shield, Copy, BarChart3, MapPin, Zap, FileText, Bell, Ban,
   DollarSign, Star, Percent, ExternalLink, ClipboardCheck, UserCheck, Wallet, Megaphone, TrendingDown, Sparkles, LogIn, Users, BellRing
 } from "lucide-react";
@@ -55,6 +56,73 @@ const PropertyOwnerOverview = () => {
       toast.success("Owner ID disalin!");
     }
   };
+
+  const tabSections = useMemo(() => [
+    {
+      group: 'Utama', icon: BarChart3,
+      tabs: [
+        { value: 'overview', icon: BarChart3, label: 'Overview' },
+        { value: 'rentals', icon: CalendarDays, label: 'Rentals' },
+        { value: 'calendar', icon: CalendarDays, label: 'Kalender' },
+        { value: 'activity', icon: Activity, label: 'Activity' },
+      ],
+    },
+    {
+      group: 'Tenant', icon: Users,
+      tabs: [
+        { value: 'renewal', icon: Clock, label: 'Renewal' },
+        { value: 'verification', icon: Shield, label: 'KYC' },
+        { value: 'screening', icon: UserCheck, label: 'Screening' },
+        { value: 'documents', icon: FileText, label: 'Dokumen' },
+        { value: 'checkinout', icon: LogIn, label: 'Check-in' },
+        { value: 'visitors', icon: Users, label: 'Visitor' },
+      ],
+    },
+    {
+      group: 'Keuangan', icon: DollarSign,
+      tabs: [
+        { value: 'invoices', icon: DollarSign, label: 'Invoice' },
+        { value: 'deposits', icon: Wallet, label: 'Deposit' },
+        { value: 'expenses', icon: TrendingDown, label: 'Biaya' },
+        { value: 'payout', icon: Wallet, label: 'Payout' },
+        { value: 'financial', icon: DollarSign, label: 'Keuangan' },
+        { value: 'smart-pricing', icon: Sparkles, label: 'Pricing' },
+      ],
+    },
+    {
+      group: 'Properti', icon: Building,
+      tabs: [
+        { value: 'maintenance', icon: Settings, label: 'Maint.' },
+        { value: 'inspection', icon: ClipboardCheck, label: 'Inspeksi' },
+        { value: 'contracts', icon: FileText, label: 'Kontrak' },
+        { value: 'cancellations', icon: Ban, label: 'Batal' },
+        { value: 'reviews', icon: Star, label: 'Review' },
+      ],
+    },
+    {
+      group: 'Analitik', icon: TrendingUp,
+      tabs: [
+        { value: 'prop-analytics', icon: BarChart3, label: 'Analitik' },
+        { value: 'forecast', icon: Target, label: 'Forecast' },
+        { value: 'insights', icon: TrendingUp, label: 'Insights' },
+      ],
+    },
+    {
+      group: 'Komunikasi', icon: Megaphone,
+      tabs: [
+        { value: 'automation', icon: Zap, label: 'Automasi' },
+        { value: 'announcements', icon: Megaphone, label: 'Broadcast' },
+        { value: 'notifications', icon: Bell, label: 'Notif' },
+        { value: 'reminders', icon: BellRing, label: 'Reminder' },
+      ],
+    },
+  ], []);
+
+  const findGroupForTab = (tabValue: string) => {
+    return tabSections.find(s => s.tabs.some(t => t.value === tabValue))?.group || 'Utama';
+  };
+
+  const [openGroup, setOpenGroup] = useState<string>(() => findGroupForTab(defaultTab));
 
   if (isLoading) {
     return (
@@ -225,88 +293,46 @@ const PropertyOwnerOverview = () => {
       </div>
 
       {/* Content Tabs */}
-      <Tabs defaultValue={defaultTab} className="space-y-3">
-        <Card className="p-2 sm:p-2.5 space-y-1.5">
-          {[
-            {
-              group: 'Utama',
-              tabs: [
-                { value: 'overview', icon: BarChart3, label: 'Overview' },
-                { value: 'rentals', icon: CalendarDays, label: 'Rentals' },
-                { value: 'calendar', icon: CalendarDays, label: 'Kalender' },
-                { value: 'activity', icon: Activity, label: 'Activity' },
-              ],
-            },
-            {
-              group: 'Tenant',
-              tabs: [
-                { value: 'renewal', icon: Clock, label: 'Renewal' },
-                { value: 'verification', icon: Shield, label: 'KYC' },
-                { value: 'screening', icon: UserCheck, label: 'Screening' },
-                { value: 'documents', icon: FileText, label: 'Dokumen' },
-                { value: 'checkinout', icon: LogIn, label: 'Check-in' },
-                { value: 'visitors', icon: Users, label: 'Visitor' },
-              ],
-            },
-            {
-              group: 'Keuangan',
-              tabs: [
-                { value: 'invoices', icon: DollarSign, label: 'Invoice' },
-                { value: 'deposits', icon: Wallet, label: 'Deposit' },
-                { value: 'expenses', icon: TrendingDown, label: 'Biaya' },
-                { value: 'payout', icon: Wallet, label: 'Payout' },
-                { value: 'financial', icon: DollarSign, label: 'Keuangan' },
-                { value: 'smart-pricing', icon: Sparkles, label: 'Pricing' },
-              ],
-            },
-            {
-              group: 'Properti',
-              tabs: [
-                { value: 'maintenance', icon: Settings, label: 'Maint.' },
-                { value: 'inspection', icon: ClipboardCheck, label: 'Inspeksi' },
-                { value: 'contracts', icon: FileText, label: 'Kontrak' },
-                { value: 'cancellations', icon: Ban, label: 'Batal' },
-                { value: 'reviews', icon: Star, label: 'Review' },
-              ],
-            },
-            {
-              group: 'Analitik',
-              tabs: [
-                { value: 'prop-analytics', icon: BarChart3, label: 'Analitik' },
-                { value: 'forecast', icon: Target, label: 'Forecast' },
-                { value: 'insights', icon: TrendingUp, label: 'Insights' },
-              ],
-            },
-            {
-              group: 'Komunikasi',
-              tabs: [
-                { value: 'automation', icon: Zap, label: 'Automasi' },
-                { value: 'announcements', icon: Megaphone, label: 'Broadcast' },
-                { value: 'notifications', icon: Bell, label: 'Notif' },
-                { value: 'reminders', icon: BellRing, label: 'Reminder' },
-              ],
-            },
-          ].map((section) => (
-            <div key={section.group}>
-              <span className="text-[8px] sm:text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70 px-1 mb-0.5 block">
-                {section.group}
-              </span>
-              <TabsList className="flex flex-wrap w-full h-auto p-0 gap-0.5 bg-transparent">
-                {section.tabs.map((tab) => (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    className="text-[9px] sm:text-[11px] h-6 sm:h-7 gap-1 px-2 sm:px-2.5 min-w-fit whitespace-nowrap bg-muted/40 hover:bg-muted data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm rounded-md"
-                  >
-                    <tab.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                    <span className="hidden xs:inline sm:inline">{tab.label}</span>
-                    <span className="xs:hidden">{tab.label.slice(0, 4)}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </div>
-          ))}
-        </Card>
+      <Tabs defaultValue={defaultTab} className="space-y-3" onValueChange={(val) => setOpenGroup(findGroupForTab(val))}>
+        <div className="flex flex-wrap gap-1">
+          {tabSections.map((section) => {
+            const isOpen = openGroup === section.group;
+            const SectionIcon = section.icon;
+            return (
+              <div key={section.group} className="contents">
+                {/* Group header chip */}
+                <button
+                  onClick={() => setOpenGroup(isOpen ? '' : section.group)}
+                  className={`inline-flex items-center gap-1 h-7 sm:h-8 px-2.5 sm:px-3 rounded-md text-[10px] sm:text-xs font-medium transition-all border ${
+                    isOpen
+                      ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                      : 'bg-muted/50 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
+                  }`}
+                >
+                  <SectionIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                  {section.group}
+                  <ChevronDown className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Expanded tabs inline */}
+                {isOpen && (
+                  <TabsList className="inline-flex h-auto p-0 gap-0.5 bg-transparent">
+                    {section.tabs.map((tab) => (
+                      <TabsTrigger
+                        key={tab.value}
+                        value={tab.value}
+                        className="text-[9px] sm:text-[11px] h-6 sm:h-7 gap-1 px-2 sm:px-2.5 min-w-fit whitespace-nowrap bg-accent/50 hover:bg-accent data-[state=active]:bg-chart-1 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm rounded-md"
+                      >
+                        <tab.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                        {tab.label}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                )}
+              </div>
+            );
+          })}
+        </div>
 
         {/* Overview Tab — Properties List */}
         <TabsContent value="overview" className="space-y-2 sm:space-y-3 mt-2">
