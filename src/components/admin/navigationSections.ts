@@ -465,9 +465,9 @@ export const navigationSections = {
     },
     {
       key: "seo-settings",
-      label: "SEO Settings",
+      label: "SEO Hub",
       icon: Globe,
-      description: "Configure SEO settings for the website"
+      description: "Centralized website SEO hub"
     },
     {
       key: "design-system",

@@ -130,7 +130,7 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
     },
     { 
       id: "seo-settings", 
-      label: "SEO", 
+      label: "SEO Hub", 
       icon: Globe, 
       category: "settings" 
     },
