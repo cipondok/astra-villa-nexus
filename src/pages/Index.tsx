@@ -69,6 +69,7 @@ const InvestorPathSelector = lazy(() => import("@/components/home/InvestorPathSe
 const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
 const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/FeaturedPropertiesCarousel"));
 const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsShowcase"));
+const AIPriceEstimatorCTA = lazy(() => import("@/components/home/AIPriceEstimatorCTA"));
 
 
 type ViewMode = 'list' | 'grid' | 'map';
@@ -753,6 +754,13 @@ const Index = () => {
             <SmartCollectionsShowcase />
           </Suspense>
         </LazyRender>
+        </ScrollReveal>
+
+        {/* AI Price Estimator CTA */}
+        <ScrollReveal direction="up" delay={50}>
+          <Suspense fallback={<div className="animate-pulse h-48 bg-muted rounded-xl max-w-5xl mx-auto mx-3 sm:mx-4" />}>
+            <AIPriceEstimatorCTA />
+          </Suspense>
         </ScrollReveal>
 
         {/* Error Message - Using Design Tokens */}
