@@ -35,7 +35,7 @@ const SearchHistoryTab = () => {
     return (
       <div className="space-y-2">
         {[1, 2, 3].map(i => (
-          <Card key={i} className="backdrop-blur-xl bg-card/60 border-border/50">
+          <Card key={i} className="backdrop-blur-xl bg-card/60 border-gold-primary/10">
             <CardContent className="p-3">
               <Skeleton className="h-3 w-2/3 mb-2" />
               <Skeleton className="h-3 w-1/2" />
@@ -48,14 +48,14 @@ const SearchHistoryTab = () => {
 
   if (!savedSearches.length) {
     return (
-      <Card className="backdrop-blur-xl bg-card/60 border-border/50">
+      <Card className="backdrop-blur-xl bg-card/60 border-gold-primary/10">
         <CardContent className="p-6 text-center">
-          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-            <Search className="h-6 w-6 text-primary/50" />
+          <div className="h-12 w-12 rounded-full bg-gold-primary/10 flex items-center justify-center mx-auto mb-3">
+            <Search className="h-6 w-6 text-gold-primary/50" />
           </div>
           <h3 className="text-sm font-semibold mb-1">No saved searches</h3>
           <p className="text-xs text-muted-foreground mb-3">Save your searches to get notified about new matching properties</p>
-          <Button size="sm" onClick={() => navigate('/dijual')} className="h-7 text-xs">
+          <Button size="sm" onClick={() => navigate('/dijual')} className="h-7 text-xs bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background hover:from-gold-primary/90 hover:to-gold-primary/70">
             Start Searching
           </Button>
         </CardContent>
@@ -68,7 +68,7 @@ const SearchHistoryTab = () => {
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted-foreground">{savedSearches.length} saved searches</p>
         {unreadNotifications > 0 && (
-          <Button variant="outline" size="sm" className="h-6 text-[10px] gap-1" onClick={() => markNotificationsRead()}>
+          <Button variant="outline" size="sm" className="h-6 text-[10px] gap-1 border-gold-primary/20 text-gold-primary hover:bg-gold-primary/5" onClick={() => markNotificationsRead()}>
             <Bell className="h-2.5 w-2.5" />
             {unreadNotifications} new
           </Button>
@@ -87,12 +87,14 @@ const SearchHistoryTab = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
           >
-            <Card className="backdrop-blur-xl bg-card/60 border-border/50 hover:shadow-sm transition-shadow">
+            <Card className="backdrop-blur-xl bg-card/60 border-gold-primary/10 hover:shadow-md hover:shadow-gold-primary/5 hover:border-gold-primary/25 transition-all duration-300">
               <CardContent className="p-2.5">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5 mb-1">
-                      <Search className="h-3 w-3 text-primary flex-shrink-0" />
+                      <div className="h-5 w-5 rounded bg-gold-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Search className="h-3 w-3 text-gold-primary" />
+                      </div>
                       <h4 className="text-[11px] font-semibold truncate">{search.name}</h4>
                     </div>
                     {search.query && (
@@ -101,13 +103,13 @@ const SearchHistoryTab = () => {
                     {filterEntries.length > 0 && (
                       <div className="flex flex-wrap gap-0.5 mb-1.5">
                         {filterEntries.slice(0, 4).map(([key, val]) => (
-                          <Badge key={key} variant="secondary" className="text-[7px] px-1 py-0 h-3.5">
+                          <Badge key={key} variant="secondary" className="text-[7px] px-1 py-0 h-3.5 bg-gold-primary/8 text-gold-primary border-gold-primary/10">
                             <Filter className="h-2 w-2 mr-0.5" />
                             {String(val)}
                           </Badge>
                         ))}
                         {filterEntries.length > 4 && (
-                          <Badge variant="secondary" className="text-[7px] px-1 py-0 h-3.5">
+                          <Badge variant="secondary" className="text-[7px] px-1 py-0 h-3.5 bg-gold-primary/8 text-gold-primary">
                             +{filterEntries.length - 4}
                           </Badge>
                         )}
@@ -121,7 +123,7 @@ const SearchHistoryTab = () => {
                   <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                     <div className="flex items-center gap-1">
                       {search.email_notifications ? (
-                        <Bell className="h-3 w-3 text-primary" />
+                        <Bell className="h-3 w-3 text-gold-primary" />
                       ) : (
                         <BellOff className="h-3 w-3 text-muted-foreground" />
                       )}
@@ -135,7 +137,7 @@ const SearchHistoryTab = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-5 text-[8px] px-1.5"
+                        className="h-5 text-[8px] px-1.5 border-gold-primary/15 text-gold-primary hover:bg-gold-primary/5"
                         onClick={() => navigate(buildSearchUrl(search.filters, search.query))}
                       >
                         <ExternalLink className="h-2.5 w-2.5 mr-0.5" />Run
