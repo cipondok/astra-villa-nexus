@@ -1,4 +1,4 @@
-import jsPDF from "jspdf";
+// jsPDF is dynamically imported to reduce initial bundle size
 import { formatIDR } from "@/utils/currency";
 
 interface InvoiceData {
@@ -27,7 +27,8 @@ const PAYMENT_LABELS: Record<string, string> = {
   cash: "Tunai", qris: "QRIS",
 };
 
-export function generateInvoicePdf(invoice: InvoiceData, isReceipt = false) {
+export async function generateInvoicePdf(invoice: InvoiceData, isReceipt = false) {
+  const { default: jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
   const margin = 20;

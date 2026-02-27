@@ -18,7 +18,7 @@ import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, 
 import { useToast } from '@/hooks/use-toast';
 import { useSavedSearches } from '@/hooks/useSavedSearches';
 import SavedSearchesPanel from '@/components/search/SavedSearchesPanel';
-import html2pdf from 'html2pdf.js';
+// html2pdf is dynamically imported where used to reduce bundle size
 import DOMPurify from 'dompurify';
 
 interface OptimizedPropertySearchProps {
@@ -1258,7 +1258,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     });
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     if (results.length === 0) {
       toast({
         title: "No Data",
@@ -1447,6 +1447,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       ? `property-image-search-results-${new Date().toISOString().split('T')[0]}.pdf`
       : `property-search-results-${new Date().toISOString().split('T')[0]}.pdf`;
     
+    const html2pdfModule = await import('html2pdf.js');
+    const html2pdf = (html2pdfModule.default || html2pdfModule) as any;
     html2pdf()
       .from(element)
       .set({
