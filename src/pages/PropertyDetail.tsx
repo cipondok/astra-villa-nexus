@@ -13,6 +13,7 @@ import EnhancedImageGallery from '@/components/property/EnhancedImageGallery';
 import PropertyComparisonButton from '@/components/property/PropertyComparisonButton';
 import SimpleProperty3DViewer from '@/components/property/SimpleProperty3DViewer';
 import DroneVideoPlayer from '@/components/property/DroneVideoPlayer';
+import GLBModelViewer from '@/components/property/GLBModelViewer';
 import PropertyCard from '@/components/property/PropertyCard';
 import { useFavorites } from '@/hooks/useFavorites';
 import { shareProperty } from '@/utils/shareUtils';
@@ -1101,6 +1102,14 @@ const PropertyDetail: React.FC = () => {
               <DroneVideoPlayer
                 videoUrl={property.drone_video_url}
                 title="Drone Walkthrough Video"
+              />
+            )}
+
+            {/* GLB/GLTF 3D Model Viewer */}
+            {property.glb_model_url && (
+              <GLBModelViewer
+                modelUrl={property.glb_model_url}
+                title="3D Property Model"
               />
             )}
 
