@@ -75,6 +75,13 @@ interface PropertyFormData {
   has_360_view: boolean;
   has_drone_video: boolean;
   has_interactive_floorplan: boolean;
+  // VR/3D Media URLs
+  virtual_tour_url: string;
+  three_d_model_url: string;
+  glb_model_url: string;
+  drone_video_url: string;
+  panorama_360_urls: string[];
+  ai_staging_images: string[];
 }
 
 const RoleBasedPropertyForm = () => {
@@ -139,6 +146,13 @@ const RoleBasedPropertyForm = () => {
     has_360_view: false,
     has_drone_video: false,
     has_interactive_floorplan: false,
+    // VR/3D Media URLs
+    virtual_tour_url: "",
+    three_d_model_url: "",
+    glb_model_url: "",
+    drone_video_url: "",
+    panorama_360_urls: [],
+    ai_staging_images: [],
   });
 
   // Location selector state
@@ -229,6 +243,13 @@ const RoleBasedPropertyForm = () => {
         has_360_view: data.has_360_view,
         has_drone_video: data.has_drone_video,
         has_interactive_floorplan: data.has_interactive_floorplan,
+        // VR/3D Media URLs
+        virtual_tour_url: data.virtual_tour_url || null,
+        three_d_model_url: data.three_d_model_url || null,
+        glb_model_url: data.glb_model_url || null,
+        drone_video_url: data.drone_video_url || null,
+        panorama_360_urls: data.panorama_360_urls?.length ? data.panorama_360_urls : [],
+        ai_staging_images: data.ai_staging_images?.length ? data.ai_staging_images : [],
         // Rental-specific fields (only for rental properties)
         ...(data.listing_type === 'rent' && {
           rental_periods: data.rental_periods,
@@ -309,6 +330,12 @@ const RoleBasedPropertyForm = () => {
         has_360_view: false,
         has_drone_video: false,
         has_interactive_floorplan: false,
+        virtual_tour_url: "",
+        three_d_model_url: "",
+        glb_model_url: "",
+        drone_video_url: "",
+        panorama_360_urls: [],
+        ai_staging_images: [],
       });
 
       // Reset location selector
@@ -990,16 +1017,17 @@ const RoleBasedPropertyForm = () => {
             </CollapsibleContent>
           </Collapsible>
 
-          {/* Technology - Collapsible */}
+          {/* Technology & VR/3D Marketplace - Collapsible */}
           <Collapsible>
             <CollapsibleTrigger className="flex items-center justify-between w-full group">
               <h3 className="text-lg font-semibold flex items-center gap-2">
                 <Cpu className="h-5 w-5 text-primary" />
-                Teknologi & Media
+                Teknologi & 3D/VR Marketplace
               </h3>
               <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
             </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-4 pt-4">
+            <CollapsibleContent className="space-y-6 pt-4">
+              {/* Feature Toggles */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="flex items-center space-x-2">
                   <Switch id="has_vr" checked={formData.has_vr} onCheckedChange={(v) => handleInputChange('has_vr', v)} />
@@ -1017,6 +1045,35 @@ const RoleBasedPropertyForm = () => {
                   <Switch id="has_interactive_floorplan" checked={formData.has_interactive_floorplan} onCheckedChange={(v) => handleInputChange('has_interactive_floorplan', v)} />
                   <Label htmlFor="has_interactive_floorplan" className="text-sm">Floor Plan Interaktif</Label>
                 </div>
+              </div>
+
+              {/* Media URL Inputs */}
+              <div className="space-y-4 border-t border-border pt-4">
+                <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">🔗 Media Links</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="virtual_tour_url" className="text-sm">Virtual Tour URL (Matterport/Kuula)</Label>
+                    <Input id="virtual_tour_url" value={formData.virtual_tour_url} onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)} placeholder="https://my.matterport.com/show/?m=..." />
+                  </div>
+                  <div>
+                    <Label htmlFor="three_d_model_url" className="text-sm">3D Model URL (Sketchfab)</Label>
+                    <Input id="three_d_model_url" value={formData.three_d_model_url} onChange={(e) => handleInputChange('three_d_model_url', e.target.value)} placeholder="https://sketchfab.com/models/..." />
+                  </div>
+                  <div>
+                    <Label htmlFor="glb_model_url" className="text-sm">GLB/GLTF Model File URL</Label>
+                    <Input id="glb_model_url" value={formData.glb_model_url} onChange={(e) => handleInputChange('glb_model_url', e.target.value)} placeholder="https://storage.example.com/model.glb" />
+                  </div>
+                  <div>
+                    <Label htmlFor="drone_video_url" className="text-sm">Drone Walkthrough Video URL</Label>
+                    <Input id="drone_video_url" value={formData.drone_video_url} onChange={(e) => handleInputChange('drone_video_url', e.target.value)} placeholder="https://youtube.com/watch?v=..." />
+                  </div>
+                </div>
+              </div>
+
+              {/* Info callout */}
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-xs text-muted-foreground">
+                <p className="font-medium text-foreground mb-1">🏠 3D/VR Marketplace Advantage</p>
+                <p>Properties with virtual tours get <strong className="text-primary">3x more inquiries</strong>. Upload 360° images, GLB models, or drone videos to stand out. A "Virtual Tour Available" badge will appear on your listing.</p>
               </div>
             </CollapsibleContent>
           </Collapsible>

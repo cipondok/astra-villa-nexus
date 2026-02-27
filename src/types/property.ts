@@ -14,6 +14,13 @@ export interface BaseProperty {
   description?: string;
   three_d_model_url?: string;
   virtual_tour_url?: string;
+  drone_video_url?: string;
+  glb_model_url?: string;
+  panorama_360_urls?: string[];
+  ai_staging_images?: string[];
+  has_vr?: boolean;
+  has_360_view?: boolean;
+  has_drone_video?: boolean;
   state?: string;
   city?: string;
   property_features?: Record<string, any>;

@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Key, Percent } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Key, Percent, Glasses, Smartphone } from "lucide-react";
 import { useState } from "react";
 import PropertyDetailModal from "./PropertyDetailModal";
 import Property3DViewModal from "./Property3DViewModal";
@@ -32,6 +32,11 @@ interface PropertyCardProps {
   development_status?: string;
   three_d_model_url?: string;
   virtual_tour_url?: string;
+  drone_video_url?: string;
+  glb_model_url?: string;
+  has_vr?: boolean;
+  has_360_view?: boolean;
+  has_drone_video?: boolean;
   created_at?: string;
   posted_at?: string;
   owner_type?: string;
@@ -69,6 +74,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   development_status = 'completed',
   three_d_model_url,
   virtual_tour_url,
+  drone_video_url,
+  glb_model_url,
+  has_vr,
+  has_360_view,
+  has_drone_video,
   created_at,
   posted_at,
   owner_type,
@@ -215,10 +225,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 Pre-Launch
               </Badge>
             )}
-            {(three_d_model_url || virtual_tour_url) && (
-              <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1">
-                <Box className="h-3 w-3" />
-                3D
+            {(three_d_model_url || virtual_tour_url || glb_model_url || drone_video_url || has_vr || has_360_view || has_drone_video) && (
+              <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1 animate-pulse">
+                <Glasses className="h-3 w-3" />
+                Virtual Tour
               </Badge>
             )}
           </div>
@@ -287,7 +297,30 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             )}
           </div>
 
-          {/* Posted By - Compact */}
+          {/* VR/AR Quick Actions */}
+          {(three_d_model_url || virtual_tour_url || glb_model_url || has_vr) && (
+            <div className="flex items-center gap-2 mt-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-7 text-xs flex-1 border-primary/30 text-primary hover:bg-primary/10"
+                onClick={(e) => { e.stopPropagation(); handleView3D(e); }}
+              >
+                <Glasses className="h-3 w-3 mr-1" />
+                VR Mode
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-7 text-xs flex-1 border-muted-foreground/30 text-muted-foreground cursor-not-allowed opacity-60"
+                disabled
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Smartphone className="h-3 w-3 mr-1" />
+                AR Preview
+              </Button>
+            </div>
+          )}
           {posted_by && (
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
               {posted_by.avatar_url ? (
