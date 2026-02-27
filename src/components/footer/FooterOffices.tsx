@@ -62,8 +62,8 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 mb-2">
-        <div className="p-2 bg-primary/10 rounded-lg">
-          <Building className="h-5 w-5 text-primary" />
+        <div className="p-2 bg-gold-primary/10 rounded-lg">
+          <Building className="h-5 w-5 text-gold-primary" />
         </div>
         <h4 className="font-bold text-foreground text-lg">
           {t('footer.offices')}
@@ -78,7 +78,7 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
       ) : (
         <div className="space-y-4">
           <Select onValueChange={setSelectedOfficeId} value={selectedOfficeId}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full border-gold-primary/20 focus:ring-gold-primary/30">
               <SelectValue placeholder={t('footer.selectOffice')} />
             </SelectTrigger>
             <SelectContent>
@@ -95,14 +95,14 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
               key={selectedOffice.id}
               className={`p-4 rounded-lg border transition-all duration-200 ${
                 selectedOffice.is_main_office
-                  ? "bg-primary/5 border-primary/20 hover:border-primary/30"
-                  : "bg-muted/30 border-border/30 hover:border-border/50"
+                  ? "bg-gold-primary/5 border-gold-primary/20 hover:border-gold-primary/30"
+                  : "bg-muted/30 border-border/30 hover:border-gold-primary/20"
               }`}
             >
               <div className="space-y-3">
                 <div className="flex items-start gap-2 h-10">
                   {selectedOffice.is_main_office && (
-                    <div className="p-1 bg-primary/20 rounded text-primary mt-0.5">
+                    <div className="p-1 bg-gold-primary/20 rounded text-gold-primary mt-0.5">
                       <Building className="h-3 w-3" />
                     </div>
                   )}
@@ -114,7 +114,7 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
                 </div>
 
                 <div className="flex items-start gap-2">
-                  <MapPin className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
+                  <MapPin className="h-3 w-3 text-gold-primary mt-0.5 flex-shrink-0" />
                   <span className="text-muted-foreground text-xs leading-relaxed">
                     {language === "id"
                       ? selectedOffice.address_id
@@ -123,8 +123,8 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
                 </div>
 
                 {selectedOffice.phone && (
-                  <div className="flex items-center gap-2 pt-2 border-t border-border/20">
-                    <Phone className="h-3 w-3 text-primary flex-shrink-0" />
+                  <div className="flex items-center gap-2 pt-2 border-t border-gold-primary/10">
+                    <Phone className="h-3 w-3 text-gold-primary flex-shrink-0" />
                     <span className="text-foreground text-xs font-medium">
                       {selectedOffice.phone}
                     </span>
@@ -132,11 +132,11 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
                 )}
 
                 {selectedOffice.email && (
-                  <div className="flex items-center gap-2 pt-2 border-t border-border/20">
-                    <Mail className="h-3 w-3 text-primary flex-shrink-0" />
+                  <div className="flex items-center gap-2 pt-2 border-t border-gold-primary/10">
+                    <Mail className="h-3 w-3 text-gold-primary flex-shrink-0" />
                     <a
                       href={`mailto:${selectedOffice.email}`}
-                      className="text-foreground text-xs font-medium hover:underline"
+                      className="text-foreground text-xs font-medium hover:text-gold-primary transition-colors"
                     >
                       {selectedOffice.email}
                     </a>
@@ -150,8 +150,8 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
                       : selectedOffice.business_hours_en;
                   if (!businessHours) return null;
                   return (
-                    <div className="flex items-center gap-2 pt-2 border-t border-border/20">
-                      <Clock className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                    <div className="flex items-center gap-2 pt-2 border-t border-gold-primary/10">
+                      <Clock className="h-3 w-3 text-gold-primary/70 flex-shrink-0" />
                       <span className="text-muted-foreground text-xs">
                         {businessHours}
                       </span>
