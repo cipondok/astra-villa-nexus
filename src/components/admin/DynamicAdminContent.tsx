@@ -13,7 +13,7 @@ import CustomerServiceCenter from "./CustomerServiceCenter";
 import ToolsManagementDashboard from "./ToolsManagementDashboard";
 import SystemReports from "./SystemReports";
 import BillingManagement from "./BillingManagement";
-import SEOSettings from "./SEOSettings";
+import SystemSettings from "./SystemSettings";
 import AdminKYCReview from "./AdminKYCReview";
 import DatabaseTableManagement from "./DatabaseTableManagement";
 import SecurityMonitoringDashboard from "./SecurityMonitoringDashboard";
@@ -82,7 +82,7 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return <BillingManagement />;
       case "seo":
       case "seo-settings":
-        return <SEOSettings />;
+        return <SystemSettings defaultTab="seo-hub" />;
       case "kyc":
       case "admin-kyc-review":
         return <AdminKYCReview />;

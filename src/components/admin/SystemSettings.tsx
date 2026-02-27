@@ -26,7 +26,11 @@ import HeroSliderSettings from './settings/HeroSliderSettings';
 import SEOSettingsHub from './settings/SEOSettingsHub';
 import LoadingPage from '../LoadingPage';
 
-const SystemSettings = () => {
+interface SystemSettingsProps {
+  defaultTab?: string;
+}
+
+const SystemSettings = ({ defaultTab }: SystemSettingsProps) => {
   const { showSuccess, showError } = useAlert();
   const { connectionStatus } = useDatabaseConnection();
   const { settings, loading, saveSettings, handleInputChange } = useSystemSettings();
@@ -42,7 +46,7 @@ const SystemSettings = () => {
   
 
   // Handle URL tab parameter for direct token settings access
-  const [activeTab, setActiveTab] = React.useState('general');
+  const [activeTab, setActiveTab] = React.useState(defaultTab || 'general');
 
   React.useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);

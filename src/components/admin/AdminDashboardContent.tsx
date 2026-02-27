@@ -34,7 +34,6 @@ import {
   DailyCheckInManagement,
   ASTRATokenHub,
   ToolsManagementDashboard,
-  SEOSettings,
   SEOManagement,
   ProjectDiagnosticSystem,
   IndonesianPaymentMerchantConfig,
@@ -194,7 +193,7 @@ const renderSection = (
     case "tools-management":    return <ToolsManagementDashboard />;
     case "rate-limiting":       return <RateLimitingDashboard />;
     case "customer-service-control": return <CustomerServiceControlPanel />;
-    case "seo-settings":        return <SEOSettings />;
+    case "seo-settings":        return <SystemSettings defaultTab="seo-hub" />;
     case "seo-management":      return <SEOManagement />;
     case "vendor-agent-control": return <EnhancedVendorAgentControl />;
     case "authorization-monitoring": return <AuthorizationMonitoringSystem />;
