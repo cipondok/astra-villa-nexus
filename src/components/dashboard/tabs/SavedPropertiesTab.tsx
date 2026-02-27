@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -52,7 +52,7 @@ const SavedPropertiesTab = () => {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {[1, 2, 3, 4].map(i => (
-          <Card key={i} className="backdrop-blur-xl bg-card/60 border-border/50">
+          <Card key={i} className="backdrop-blur-xl bg-card/60 border-gold-primary/10">
             <CardContent className="p-2">
               <Skeleton className="h-24 w-full rounded-lg mb-2" />
               <Skeleton className="h-3 w-3/4 mb-1" />
@@ -66,14 +66,14 @@ const SavedPropertiesTab = () => {
 
   if (!favorites.length) {
     return (
-      <Card className="backdrop-blur-xl bg-card/60 border-border/50">
+      <Card className="backdrop-blur-xl bg-card/60 border-gold-primary/10">
         <CardContent className="p-6 text-center">
-          <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-3">
-            <Heart className="h-6 w-6 text-destructive/50" />
+          <div className="h-12 w-12 rounded-full bg-gold-primary/10 flex items-center justify-center mx-auto mb-3">
+            <Heart className="h-6 w-6 text-gold-primary/50" />
           </div>
           <h3 className="text-sm font-semibold mb-1">No saved properties</h3>
           <p className="text-xs text-muted-foreground mb-3">Save properties you like to compare them later</p>
-          <Button size="sm" onClick={() => navigate('/dijual')} className="h-7 text-xs">
+          <Button size="sm" onClick={() => navigate('/dijual')} className="h-7 text-xs bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background hover:from-gold-primary/90 hover:to-gold-primary/70">
             Browse Properties
           </Button>
         </CardContent>
@@ -85,7 +85,7 @@ const SavedPropertiesTab = () => {
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted-foreground">{favorites.length} saved properties</p>
-        <Button variant="outline" size="sm" className="h-6 text-[10px]" onClick={() => navigate('/favorites')}>
+        <Button variant="outline" size="sm" className="h-6 text-[10px] border-gold-primary/20 text-gold-primary hover:bg-gold-primary/5" onClick={() => navigate('/favorites')}>
           View All
         </Button>
       </div>
@@ -101,21 +101,21 @@ const SavedPropertiesTab = () => {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ delay: i * 0.05 }}
               >
-                <Card className="backdrop-blur-xl bg-card/60 border-border/50 overflow-hidden group hover:shadow-md transition-shadow">
+                <Card className="backdrop-blur-xl bg-card/60 border-gold-primary/10 overflow-hidden group hover:shadow-md hover:shadow-gold-primary/5 hover:border-gold-primary/25 transition-all duration-300">
                   <CardContent className="p-0">
                     <div className="flex gap-2">
-                      <div className="relative w-24 h-20 flex-shrink-0">
-                        <img src={getImg(p)} alt={p.title} className="w-full h-full object-cover" />
-                        <Badge className="absolute top-1 left-1 text-[7px] px-1 py-0 h-3.5" variant={p.listing_type === 'sale' ? 'default' : 'secondary'}>
+                      <div className="relative w-24 h-20 flex-shrink-0 overflow-hidden">
+                        <img src={getImg(p)} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <Badge className="absolute top-1 left-1 text-[7px] px-1 py-0 h-3.5 bg-gold-primary/90 text-background border-0">
                           {p.listing_type === 'sale' ? 'Sale' : 'Rent'}
                         </Badge>
                       </div>
                       <div className="flex-1 py-1.5 pr-2 min-w-0">
-                        <h4 className="text-[10px] font-semibold line-clamp-1 mb-0.5">{p.title}</h4>
+                        <h4 className="text-[10px] font-semibold line-clamp-1 mb-0.5 group-hover:text-gold-primary transition-colors">{p.title}</h4>
                         <p className="text-[9px] text-muted-foreground flex items-center gap-0.5 mb-1">
                           <MapPin className="h-2.5 w-2.5" />{p.city || p.state || '—'}
                         </p>
-                        <p className="text-xs font-bold text-primary">{formatIDR(p.price)}</p>
+                        <p className="text-xs font-bold text-gold-primary">{formatIDR(p.price)}</p>
                         <div className="flex items-center gap-2 mt-1 text-[8px] text-muted-foreground">
                           {p.bedrooms && <span className="flex items-center gap-0.5"><Bed className="h-2.5 w-2.5" />{p.bedrooms}</span>}
                           {p.bathrooms && <span className="flex items-center gap-0.5"><Bath className="h-2.5 w-2.5" />{p.bathrooms}</span>}
@@ -123,8 +123,8 @@ const SavedPropertiesTab = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-1 p-1.5 pt-0 border-t border-border/30 mt-1">
-                      <Button variant="outline" size="sm" className="h-5 text-[8px] flex-1" onClick={() => navigate(`/properties/${p.id}`)}>
+                    <div className="flex gap-1 p-1.5 pt-0 border-t border-gold-primary/10 mt-1">
+                      <Button variant="outline" size="sm" className="h-5 text-[8px] flex-1 border-gold-primary/15 hover:bg-gold-primary/5 hover:text-gold-primary" onClick={() => navigate(`/properties/${p.id}`)}>
                         <Eye className="h-2.5 w-2.5 mr-0.5" />View
                       </Button>
                       <Button variant="ghost" size="sm" className="h-5 text-[8px] text-destructive hover:text-destructive" onClick={() => handleRemove(fav.id)}>

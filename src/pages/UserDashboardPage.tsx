@@ -341,36 +341,36 @@ const UserDashboardPage = () => {
 
         {/* Dashboard Tabs - Slim */}
         <Tabs defaultValue="overview" className="space-y-2">
-          <TabsList className="grid w-full grid-cols-8 h-8 bg-primary-foreground/5 backdrop-blur-xl p-0.5 border border-border/30">
-             <TabsTrigger value="overview" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+          <TabsList className="grid w-full grid-cols-8 h-8 bg-gold-primary/5 backdrop-blur-xl p-0.5 border border-gold-primary/10">
+             <TabsTrigger value="overview" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                <Home className="h-3 w-3" />
                <span className="hidden sm:inline">Overview</span>
              </TabsTrigger>
-             <TabsTrigger value="saved" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+             <TabsTrigger value="saved" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                <Heart className="h-3 w-3" />
                <span className="hidden sm:inline">Saved</span>
              </TabsTrigger>
-             <TabsTrigger value="visits" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+             <TabsTrigger value="visits" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                <CalendarCheck className="h-3 w-3" />
                <span className="hidden sm:inline">Visits</span>
              </TabsTrigger>
-             <TabsTrigger value="searches" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+             <TabsTrigger value="searches" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                <Search className="h-3 w-3" />
                <span className="hidden sm:inline">Searches</span>
              </TabsTrigger>
-             <TabsTrigger value="kpr" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+             <TabsTrigger value="kpr" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                <Calculator className="h-3 w-3" />
                <span className="hidden sm:inline">KPR</span>
              </TabsTrigger>
-             <TabsTrigger value="applications" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+             <TabsTrigger value="applications" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                <FileCheck className="h-3 w-3" />
                <span className="hidden sm:inline">Apps</span>
              </TabsTrigger>
-             <TabsTrigger value="referrals" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+             <TabsTrigger value="referrals" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                <Share2 className="h-3 w-3" />
                <span className="hidden sm:inline">Referrals</span>
              </TabsTrigger>
-             <TabsTrigger value="insights" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-sm">
+             <TabsTrigger value="insights" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                <BarChart3 className="h-3 w-3" />
                <span className="hidden sm:inline">Insights</span>
              </TabsTrigger>
