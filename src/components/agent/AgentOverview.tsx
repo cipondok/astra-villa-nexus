@@ -304,8 +304,8 @@ const AgentOverview = () => {
 
       {/* Main Dashboard Tabs - Scrollable on mobile */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-2">
-        <div className="overflow-x-auto -mx-1 px-1 pb-1">
-          <TabsList className="inline-flex w-max min-w-full sm:w-full h-8 sm:h-9 md:h-10 p-0.5 bg-muted/30 border border-border/50 rounded-lg gap-0.5">
+        <div className="-mx-1 px-1 pb-1">
+          <TabsList className="flex flex-wrap w-full h-auto p-1 bg-muted/30 border border-border/50 rounded-lg gap-0.5">
             <TabsTrigger value="overview" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
             <TabsTrigger value="analytics" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex items-center gap-1">
               <Brain className="h-3 w-3" />
