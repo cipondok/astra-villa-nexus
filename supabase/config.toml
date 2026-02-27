@@ -183,3 +183,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.session-heartbeat]
     verify_jwt = false
+
+  [functions.price-estimator]
+    verify_jwt = false
