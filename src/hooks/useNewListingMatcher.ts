@@ -1,6 +1,6 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useContext } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { AuthContext } from '@/contexts/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -173,7 +173,8 @@ function extractFeatures(property: NewProperty): string[] {
 }
 
 export const useNewListingMatcher = () => {
-  const { user } = useAuth();
+  const authContext = useContext(AuthContext);
+  const user = authContext?.user ?? null;
   const queryClient = useQueryClient();
   const profileRef = useRef<UserPreferenceProfile | null>(null);
   const learnedRef = useRef<LearnedPref[]>([]);
