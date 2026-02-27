@@ -25,6 +25,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import PillToggleGroup from "@/components/ui/PillToggleGroup";
 import InvestorAuthSection from "@/components/auth/InvestorAuthSection";
+import InvestmentAnalysisTools from "@/components/investment/InvestmentAnalysisTools";
 
 // WNA components
 import WelcomingCountriesList from "@/components/wna/WelcomingCountriesList";
@@ -47,7 +48,7 @@ import KPRPaymentMethods from "@/components/wni/KPRPaymentMethods";
 
 import wnaHeroImage from "@/assets/wna-investment-hero.jpg";
 
-type ActiveSection = 'all' | 'wna' | 'wni' | 'dashboard';
+type ActiveSection = 'all' | 'wna' | 'wni' | 'dashboard' | 'analysis';
 
 const Investment = () => {
   const { language, t: translate } = useTranslation();
@@ -81,7 +82,8 @@ const Investment = () => {
     { value: 'all', label: language === 'en' ? '🏛️ All Investment' : '🏛️ Semua Investasi' },
     { value: 'wna', label: '🌍 WNA (Foreign)' },
     { value: 'wni', label: '🇮🇩 WNI (Overseas)' },
-    ...(user ? [{ value: 'dashboard', label: language === 'en' ? '📊 My Dashboard' : '📊 Dashboard Saya' }] : []),
+    { value: 'analysis', label: language === 'en' ? '📊 Analysis Tools' : '📊 Alat Analisis' },
+    ...(user ? [{ value: 'dashboard', label: language === 'en' ? '📋 My Dashboard' : '📋 Dashboard Saya' }] : []),
   ];
 
   const t = {
@@ -289,6 +291,11 @@ const Investment = () => {
         {/* ===================== WNI SECTION ===================== */}
         {activeSection === 'wni' && (
           <WNISection copy={copy} selectedCountry={selectedWniCountry} setSelectedCountry={setSelectedWniCountry} navigate={navigate} openChat={openChat} isAuthenticated={isAuthenticated} isAdmin={isAdmin} />
+        )}
+
+        {/* ===================== ANALYSIS TOOLS ===================== */}
+        {activeSection === 'analysis' && (
+          <InvestmentAnalysisTools />
         )}
 
         {/* ===================== DASHBOARD SECTION ===================== */}
