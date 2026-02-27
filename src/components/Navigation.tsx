@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones, Box, Settings2, Bell, Coins, ChevronDown, TrendingUp, Plus, List, MapPin, Search } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones, Box, Settings2, Bell, Coins, ChevronDown, TrendingUp, Plus, List, MapPin, Search, Calculator } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useTranslation } from "@/i18n/useTranslation";
@@ -200,6 +200,11 @@ const Navigation = () => {
                 <span className="hidden xl:inline text-foreground/80">{t('nav2.investment')}</span>
               </Button>
 
+              <Button variant="ghost" size="sm" className={`h-8 px-3 text-xs font-medium rounded-xl border ${navIconStyle}`} onClick={() => navigate('/ai-pricing')}>
+                <Calculator className={`h-4 w-4 xl:mr-1.5 ${navIconColor}`} />
+                <span className="hidden xl:inline text-foreground/80">AI Estimator</span>
+              </Button>
+
               {user && !isAdmin && !isAgent && (
                 <Button variant="ghost" size="sm" className="h-8 px-2.5 text-xs font-medium text-foreground/70 hover:text-foreground hover:bg-muted/50 rounded-xl transition-all duration-300" onClick={() => navigate('/dashboard/user')}>
                   <BarChart3 className="h-4 w-4 xl:mr-1" />
@@ -290,6 +295,7 @@ const Navigation = () => {
                       {t('nav2.investment')}
                     </div>
                     <MobileNavButton icon={Building} label={t('nav2.investment')} onClick={() => { navigate('/investment'); toggleMenu(); }} indent />
+                    <MobileNavButton icon={Calculator} label="AI Price Estimator" onClick={() => { navigate('/ai-pricing'); toggleMenu(); }} indent />
                   </div>
 
                   {user && !isAdmin && !isAgent && (
