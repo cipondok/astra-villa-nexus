@@ -1,5 +1,4 @@
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+// jsPDF and autoTable are dynamically imported to reduce initial bundle size
 
 export interface PreQualificationData {
   // Personal
@@ -40,7 +39,9 @@ export interface PreQualificationData {
 const formatIDR = (v: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
 
-export function generatePreQualificationPDF(data: PreQualificationData): void {
+export async function generatePreQualificationPDF(data: PreQualificationData): Promise<void> {
+  const { default: jsPDF } = await import('jspdf');
+  const { default: autoTable } = await import('jspdf-autotable');
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   

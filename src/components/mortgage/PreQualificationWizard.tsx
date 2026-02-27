@@ -125,9 +125,9 @@ const PreQualificationWizard: React.FC<{ className?: string }> = ({ className })
   const next = () => { if (validate() && step < STEPS.length - 1) setStep(s => s + 1); };
   const prev = () => { if (step > 0) setStep(s => s - 1); };
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     const pdfData: PreQualificationData = { ...form, ...calculations };
-    generatePreQualificationPDF(pdfData);
+    await generatePreQualificationPDF(pdfData);
     toast.success('PDF downloaded successfully!');
   };
 
