@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useInfiniteProperties } from "@/hooks/useInfiniteProperties";
@@ -15,7 +15,7 @@ import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import PropertyComparisonButton from "@/components/property/PropertyComparisonButton";
 import InlineFilterPanel from "@/components/property/InlineFilterPanel";
-import PropertyListingMapView from "@/components/property/PropertyListingMapView";
+const PropertyListingMapView = lazy(() => import("@/components/property/PropertyListingMapView"));
 import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
 import PropertyListView from "@/components/search/PropertyListView";
 import SearchPagination from "@/components/search/SearchPagination";
@@ -453,7 +453,9 @@ const Dijual = () => {
       {/* Properties Content */}
       <div id="properties-content" className="p-3 sm:p-4 md:p-6">
         {viewMode === 'map' ? (
-          <PropertyListingMapView properties={filteredProperties} formatPrice={formatPrice} />
+          <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
+            <PropertyListingMapView properties={filteredProperties} formatPrice={formatPrice} />
+          </Suspense>
         ) : loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {[...Array(8)].map((_, i) => (

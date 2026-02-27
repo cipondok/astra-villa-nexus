@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useInfiniteProperties } from '@/hooks/useInfiniteProperties';
 import { Loader2 } from 'lucide-react';
@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
 import PropertyViewModeToggle from '@/components/search/PropertyViewModeToggle';
 import PropertyListView from '@/components/search/PropertyListView';
-import PropertyListingMapView from '@/components/property/PropertyListingMapView';
+const PropertyListingMapView = lazy(() => import('@/components/property/PropertyListingMapView'));
 import SearchAlertSubscribeButton from '@/components/search/SearchAlertSubscribeButton';
 import PropertyCardSkeleton from '@/components/property/PropertyCardSkeleton';
 interface PropertyListingPageProps {
@@ -349,21 +349,23 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {/* View Mode Content */}
         {viewMode === 'map' ? (
-          <PropertyListingMapView
-            properties={(hasSearched ? searchResults : properties).map((p: any) => ({
-              id: p.id,
-              title: p.title,
-              price: p.price,
-              city: p.city || p.location,
-              images: p.images,
-              image_urls: p.image_urls,
-            }))}
-            formatPrice={(price: number) => {
-              if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}M`;
-              if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}Jt`;
-              return `Rp ${price.toLocaleString('id-ID')}`;
-            }}
-          />
+          <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
+            <PropertyListingMapView
+              properties={(hasSearched ? searchResults : properties).map((p: any) => ({
+                id: p.id,
+                title: p.title,
+                price: p.price,
+                city: p.city || p.location,
+                images: p.images,
+                image_urls: p.image_urls,
+              }))}
+              formatPrice={(price: number) => {
+                if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}M`;
+                if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}Jt`;
+                return `Rp ${price.toLocaleString('id-ID')}`;
+              }}
+            />
+          </Suspense>
         ) : isLoading || isSearching ? (
           <PropertyCardSkeleton count={8} className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4" />
         ) : (hasSearched ? searchResults : properties).length === 0 ? (

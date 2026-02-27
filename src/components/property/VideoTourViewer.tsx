@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { useVideoTours, TourScene, TourHotspot } from '@/hooks/useVideoTours';
-import Panorama360Viewer from './Panorama360Viewer';
+const Panorama360Viewer = lazy(() => import('./Panorama360Viewer'));
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -118,14 +118,16 @@ const VideoTourViewer: React.FC<VideoTourViewerProps> = ({
     <div className={cn("space-y-4", className)}>
       {/* Main viewer */}
       <div className="relative">
-        <Panorama360Viewer
-          scene={currentScene}
-          hotspots={currentHotspots}
-          onSceneChange={handleSceneChange}
-          settings={tour.settings}
-          isFullscreen={isFullscreen}
-          onToggleFullscreen={toggleFullscreen}
-        />
+        <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
+          <Panorama360Viewer
+            scene={currentScene}
+            hotspots={currentHotspots}
+            onSceneChange={handleSceneChange}
+            settings={tour.settings}
+            isFullscreen={isFullscreen}
+            onToggleFullscreen={toggleFullscreen}
+          />
+        </Suspense>
 
         {/* Navigation arrows */}
         {scenes.length > 1 && (

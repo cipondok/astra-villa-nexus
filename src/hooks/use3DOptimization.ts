@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import * as THREE from 'three';
 import { useUserBehaviorAnalytics } from './useUserBehaviorAnalytics';
 
 interface ModelOptimizationSettings {
@@ -21,12 +20,12 @@ interface ModelPerformanceMetrics {
 }
 
 interface OptimizedModel {
-  scene: THREE.Scene;
-  camera: THREE.Camera;
-  renderer: THREE.WebGLRenderer;
+  scene: any;
+  camera: any;
+  renderer: any;
   controls?: any;
   metrics: ModelPerformanceMetrics;
-  lodLevels?: THREE.LOD[];
+  lodLevels?: any[];
 }
 
 export function use3DOptimization() {
@@ -40,10 +39,9 @@ export function use3DOptimization() {
     enableOcclusion: true
   });
   const [performanceMetrics, setPerformanceMetrics] = useState<ModelPerformanceMetrics | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const rendererRef = useRef<any>(null);
   const { trackInteraction } = useUserBehaviorAnalytics();
 
-  // Step 1: Device-based optimization detection
   const detectOptimalSettings = useCallback((): ModelOptimizationSettings => {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
@@ -59,13 +57,11 @@ export function use3DOptimization() {
       };
     }
 
-    // Detect device capabilities
     const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
     const maxVertexAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
     const vendor = gl.getParameter(gl.VENDOR);
     const renderer = gl.getParameter(gl.RENDERER);
     
-    // Performance-based settings
     const isMobile = /Mobile|Android|iPhone|iPad/.test(navigator.userAgent);
     const isLowEnd = isMobile || maxTextureSize < 4096;
     
@@ -82,7 +78,6 @@ export function use3DOptimization() {
     return settings;
   }, []);
 
-  // Step 2: Model loading with optimization
   const loadOptimizedModel = useCallback(async (
     modelUrl: string,
     container: HTMLElement,
@@ -92,14 +87,13 @@ export function use3DOptimization() {
     const startTime = performance.now();
     
     try {
+      const THREE = await import('three');
       const settings = { ...detectOptimalSettings(), ...customSettings };
       setOptimizationSettings(settings);
 
-      // Initialize Three.js scene
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
       
-      // Create optimized renderer
       const renderer = new THREE.WebGLRenderer({ 
         antialias: !settings.enableOcclusion,
         alpha: true,
@@ -107,35 +101,29 @@ export function use3DOptimization() {
       });
       
       renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       
-      // Enable WebGL extensions for performance
       renderer.extensions.get('OES_element_index_uint');
       renderer.extensions.get('WEBGL_compressed_texture_s3tc');
       
       rendererRef.current = renderer;
       container.appendChild(renderer.domElement);
 
-      // Load and optimize model
       const optimizedScene = await loadAndOptimizeModel(modelUrl, settings);
       scene.add(optimizedScene);
 
-      // Setup lighting
       setupOptimizedLighting(scene, settings);
 
-      // Setup camera position
       camera.position.set(5, 5, 5);
       camera.lookAt(0, 0, 0);
 
       const loadTime = performance.now() - startTime;
       
-      // Create performance metrics
       const metrics = await calculatePerformanceMetrics(renderer, scene, loadTime);
       setPerformanceMetrics(metrics);
 
-      // Track 3D interaction
       trackInteraction({
         interaction_type: 'visit_3d',
         interaction_data: {
@@ -156,12 +144,12 @@ export function use3DOptimization() {
     }
   }, [detectOptimalSettings, trackInteraction]);
 
-  // Step 3: Real-time optimization during interaction
-  const optimizeForPerformance = useCallback((
-    scene: THREE.Scene,
-    camera: THREE.Camera,
-    renderer: THREE.WebGLRenderer
+  const optimizeForPerformance = useCallback(async (
+    scene: any,
+    camera: any,
+    renderer: any
   ) => {
+    const THREE = await import('three');
     let frameCount = 0;
     let lastTime = performance.now();
     let fps = 60;
@@ -175,17 +163,14 @@ export function use3DOptimization() {
         frameCount = 0;
         lastTime = currentTime;
         
-        // Dynamic optimization based on FPS
         if (fps < 30) {
-          // Reduce quality for better performance
           renderer.setPixelRatio(1);
-          scene.traverse((object) => {
+          scene.traverse((object: any) => {
             if (object instanceof THREE.Mesh) {
               optimizeMeshForPerformance(object);
             }
           });
         } else if (fps > 50) {
-          // Increase quality if performance allows
           renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         }
       }
@@ -197,20 +182,17 @@ export function use3DOptimization() {
     performanceMonitor();
   }, []);
 
-  // Step 4: LOD (Level of Detail) system
-  const createLODSystem = useCallback((geometry: THREE.BufferGeometry): THREE.LOD[] => {
+  const createLODSystem = useCallback(async (geometry: any): Promise<any[]> => {
+    const THREE = await import('three');
     const lod = new THREE.LOD();
     
-    // High detail (close)
     const highDetail = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial());
     lod.addLevel(highDetail, 0);
     
-    // Medium detail 
     const mediumGeometry = optimizeGeometry(geometry, 0.7);
     const mediumDetail = new THREE.Mesh(mediumGeometry, new THREE.MeshBasicMaterial());
     lod.addLevel(mediumDetail, 50);
     
-    // Low detail (far)
     const lowGeometry = optimizeGeometry(geometry, 0.3);
     const lowDetail = new THREE.Mesh(lowGeometry, new THREE.MeshBasicMaterial());
     lod.addLevel(lowDetail, 200);
@@ -218,7 +200,6 @@ export function use3DOptimization() {
     return [lod];
   }, []);
 
-  // Cleanup function
   const cleanup = useCallback(() => {
     if (rendererRef.current) {
       rendererRef.current.dispose();
@@ -243,16 +224,15 @@ export function use3DOptimization() {
   };
 }
 
-// Helper functions for 3D optimization
+// Helper functions
 
-async function loadAndOptimizeModel(url: string, settings: ModelOptimizationSettings): Promise<THREE.Group> {
-  // Dynamic import of GLTFLoader to reduce bundle size
+async function loadAndOptimizeModel(url: string, settings: ModelOptimizationSettings): Promise<any> {
+  const THREE = await import('three');
   const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
   const { DRACOLoader } = await import('three/examples/jsm/loaders/DRACOLoader.js');
   
   const loader = new GLTFLoader();
   
-  // Setup DRACO decoder for compressed models
   const dracoLoader = new DRACOLoader();
   dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.4.1/');
   loader.setDRACOLoader(dracoLoader);
@@ -260,19 +240,16 @@ async function loadAndOptimizeModel(url: string, settings: ModelOptimizationSett
   return new Promise((resolve, reject) => {
     loader.load(
       url,
-      (gltf) => {
+      (gltf: any) => {
         const scene = gltf.scene;
-        
-        // Optimize loaded model
-        scene.traverse((child) => {
+        scene.traverse((child: any) => {
           if (child instanceof THREE.Mesh) {
             optimizeMesh(child, settings);
           }
         });
-        
         resolve(scene);
       },
-      (progress) => {
+      (progress: any) => {
         console.log('Loading progress:', (progress.loaded / progress.total) * 100 + '%');
       },
       reject
@@ -280,96 +257,83 @@ async function loadAndOptimizeModel(url: string, settings: ModelOptimizationSett
   });
 }
 
-function optimizeMesh(mesh: THREE.Mesh, settings: ModelOptimizationSettings) {
-  // Optimize geometry
+async function optimizeMesh(mesh: any, settings: ModelOptimizationSettings) {
+  const THREE = await import('three');
   if (mesh.geometry instanceof THREE.BufferGeometry) {
     const geometry = mesh.geometry;
-    
-    // Reduce vertices if needed
     const vertexCount = geometry.getAttribute('position')?.count || 0;
     if (vertexCount > (settings.maxVertices || 50000)) {
       mesh.geometry = optimizeGeometry(geometry, 0.5);
     }
-    
-    // Remove duplicate vertices (manual implementation for newer Three.js)
     if (geometry.getAttribute('position')) {
       geometry.computeBoundingBox();
     }
-    
-    // Compute vertex normals if missing
     if (!geometry.getAttribute('normal')) {
       geometry.computeVertexNormals();
     }
   }
-  
-  // Optimize materials
   if (mesh.material instanceof THREE.MeshStandardMaterial) {
     optimizeMaterial(mesh.material, settings);
   }
-  
-  // Enable frustum culling
   mesh.frustumCulled = true;
 }
 
-function optimizeMeshForPerformance(mesh: THREE.Mesh) {
-  // Real-time performance optimizations
-  if (mesh.material instanceof THREE.MeshStandardMaterial) {
-    // Reduce material complexity during low performance
-    mesh.material.roughness = 1; // Simpler lighting
+function optimizeMeshForPerformance(mesh: any) {
+  if (mesh.material && typeof mesh.material === 'object') {
+    mesh.material.roughness = 1;
     mesh.material.metalness = 0;
   }
 }
 
-function optimizeGeometry(geometry: THREE.BufferGeometry, ratio: number): THREE.BufferGeometry {
-  // Simple vertex reduction by taking every nth vertex
+function optimizeGeometry(geometry: any, ratio: number): any {
   const positions = geometry.getAttribute('position');
   const normals = geometry.getAttribute('normal');
-  const uvs = geometry.getAttribute('uv');
   
   if (!positions) return geometry;
   
   const newVertexCount = Math.floor(positions.count * ratio);
   const stride = Math.floor(positions.count / newVertexCount);
   
-  const newGeometry = new THREE.BufferGeometry();
-  
-  // Reduce vertices
-  const newPositions = new Float32Array(newVertexCount * 3);
-  for (let i = 0; i < newVertexCount; i++) {
-    const sourceIndex = i * stride;
-    newPositions[i * 3] = positions.getX(sourceIndex);
-    newPositions[i * 3 + 1] = positions.getY(sourceIndex);
-    newPositions[i * 3 + 2] = positions.getZ(sourceIndex);
-  }
-  
-  newGeometry.setAttribute('position', new THREE.BufferAttribute(newPositions, 3));
-  
-  // Copy normals if they exist
-  if (normals) {
-    const newNormals = new Float32Array(newVertexCount * 3);
+  // We need THREE for BufferGeometry/BufferAttribute but this is a sync helper.
+  // Return original geometry if we can't optimize synchronously.
+  // The caller already has THREE loaded.
+  try {
+    const newPositions = new Float32Array(newVertexCount * 3);
     for (let i = 0; i < newVertexCount; i++) {
       const sourceIndex = i * stride;
-      newNormals[i * 3] = normals.getX(sourceIndex);
-      newNormals[i * 3 + 1] = normals.getY(sourceIndex);
-      newNormals[i * 3 + 2] = normals.getZ(sourceIndex);
+      newPositions[i * 3] = positions.getX(sourceIndex);
+      newPositions[i * 3 + 1] = positions.getY(sourceIndex);
+      newPositions[i * 3 + 2] = positions.getZ(sourceIndex);
     }
-    newGeometry.setAttribute('normal', new THREE.BufferAttribute(newNormals, 3));
+    
+    // Use geometry constructor from the same module
+    const newGeometry = geometry.clone();
+    newGeometry.setAttribute('position', new geometry.getAttribute('position').constructor(newPositions, 3));
+    
+    if (normals) {
+      const newNormals = new Float32Array(newVertexCount * 3);
+      for (let i = 0; i < newVertexCount; i++) {
+        const sourceIndex = i * stride;
+        newNormals[i * 3] = normals.getX(sourceIndex);
+        newNormals[i * 3 + 1] = normals.getY(sourceIndex);
+        newNormals[i * 3 + 2] = normals.getZ(sourceIndex);
+      }
+      newGeometry.setAttribute('normal', new geometry.getAttribute('normal').constructor(newNormals, 3));
+    }
+    
+    return newGeometry;
+  } catch {
+    return geometry;
   }
-  
-  return newGeometry;
 }
 
-function optimizeMaterial(material: THREE.MeshStandardMaterial, settings: ModelOptimizationSettings) {
-  // Compress and resize textures
+function optimizeMaterial(material: any, settings: ModelOptimizationSettings) {
   if (material.map) {
     optimizeTexture(material.map, settings.textureSize || 1024);
   }
-  
   if (material.normalMap) {
     optimizeTexture(material.normalMap, Math.floor((settings.textureSize || 1024) / 2));
   }
-  
-  // Adjust material properties based on compression level
   switch (settings.compressionLevel) {
     case 'high':
       material.roughness = 0.8;
@@ -381,28 +345,23 @@ function optimizeMaterial(material: THREE.MeshStandardMaterial, settings: ModelO
       break;
     case 'low':
     default:
-      // Keep original values
       break;
   }
 }
 
-function optimizeTexture(texture: THREE.Texture, maxSize: number) {
-  // Set texture filtering for performance
-  texture.minFilter = THREE.LinearFilter;
-  texture.magFilter = THREE.LinearFilter;
+function optimizeTexture(texture: any, maxSize: number) {
+  texture.minFilter = 1006; // THREE.LinearFilter
+  texture.magFilter = 1006;
   texture.generateMipmaps = false;
-  
-  // Note: Actual texture resizing would require canvas operations
-  // This is a placeholder for texture optimization logic
   texture.needsUpdate = true;
 }
 
-function setupOptimizedLighting(scene: THREE.Scene, settings: ModelOptimizationSettings) {
-  // Ambient light
+async function setupOptimizedLighting(scene: any, settings: ModelOptimizationSettings) {
+  const THREE = await import('three');
+  
   const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
   scene.add(ambientLight);
   
-  // Directional light with shadows (if performance allows)
   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
   directionalLight.position.set(10, 10, 5);
   
@@ -416,21 +375,21 @@ function setupOptimizedLighting(scene: THREE.Scene, settings: ModelOptimizationS
   
   scene.add(directionalLight);
   
-  // Add fill light for better visibility
   const fillLight = new THREE.DirectionalLight(0x8FCDFF, 0.3);
   fillLight.position.set(-10, 0, -10);
   scene.add(fillLight);
 }
 
 async function calculatePerformanceMetrics(
-  renderer: THREE.WebGLRenderer,
-  scene: THREE.Scene,
+  renderer: any,
+  scene: any,
   loadTime: number
 ): Promise<ModelPerformanceMetrics> {
+  const THREE = await import('three');
   let triangleCount = 0;
   let textureMemory = 0;
   
-  scene.traverse((object) => {
+  scene.traverse((object: any) => {
     if (object instanceof THREE.Mesh && object.geometry) {
       const geometry = object.geometry;
       if (geometry.index) {
@@ -441,15 +400,14 @@ async function calculatePerformanceMetrics(
     }
   });
   
-  // Estimate memory usage (simplified)
   const memoryUsage = renderer.info.memory.geometries * 1024 + renderer.info.memory.textures * 2048;
   
   return {
     loadTime,
-    renderTime: 0, // Will be updated during rendering
+    renderTime: 0,
     memoryUsage,
     triangleCount: Math.round(triangleCount),
     textureMemory,
-    fps: 60 // Will be updated during rendering
+    fps: 60
   };
 }
