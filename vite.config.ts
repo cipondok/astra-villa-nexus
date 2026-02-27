@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => ({
     dedupe: ['react', 'react-dom'],
   },
   optimizeDeps: {
-    include: ['@vladmandic/face-api', 'react', 'react-dom', 'zustand'],
+    include: ['react', 'react-dom', 'zustand'],
   },
   build: {
     // Use esbuild for minification - much lower memory than terser
@@ -91,12 +91,9 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/lucide-react/')) {
             return 'vendor-icons';
           }
-          // AI / ML - split
-          if (id.includes('node_modules/@tensorflow/')) {
-            return 'vendor-tensorflow';
-          }
-          if (id.includes('node_modules/@huggingface/') || id.includes('node_modules/@vladmandic/') || id.includes('node_modules/tesseract')) {
-            return 'vendor-ai-other';
+          // AI / ML
+          if (id.includes('node_modules/@huggingface/') || id.includes('node_modules/tesseract')) {
+            return 'vendor-ai';
           }
           // Mapbox
           if (id.includes('node_modules/mapbox-gl/') || id.includes('node_modules/@mapbox/')) {
@@ -113,10 +110,6 @@ export default defineConfig(({ mode }) => ({
           // Form libraries
           if (id.includes('node_modules/react-hook-form') || id.includes('node_modules/@hookform/') || id.includes('node_modules/zod/')) {
             return 'vendor-forms';
-          }
-          // Pannellum
-          if (id.includes('node_modules/pannellum')) {
-            return 'vendor-pannellum';
           }
           // Markdown
           if (id.includes('node_modules/react-markdown') || id.includes('node_modules/remark') || id.includes('node_modules/rehype') || id.includes('node_modules/unified') || id.includes('node_modules/mdast') || id.includes('node_modules/hast') || id.includes('node_modules/micromark')) {
