@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import EnhancedImageGallery from '@/components/property/EnhancedImageGallery';
 import PropertyComparisonButton from '@/components/property/PropertyComparisonButton';
 import SimpleProperty3DViewer from '@/components/property/SimpleProperty3DViewer';
+import DroneVideoPlayer from '@/components/property/DroneVideoPlayer';
 import PropertyCard from '@/components/property/PropertyCard';
 import { useFavorites } from '@/hooks/useFavorites';
 import { shareProperty } from '@/utils/shareUtils';
@@ -97,6 +98,13 @@ interface PropertyData {
   development_status: string;
   virtual_tour_url?: string;
   three_d_model_url?: string;
+  drone_video_url?: string;
+  panorama_360_urls?: string[];
+  glb_model_url?: string;
+  ai_staging_images?: string[];
+  has_vr?: boolean;
+  has_360_view?: boolean;
+  has_drone_video?: boolean;
   // Location details
   province?: string;
   city?: string;
@@ -1087,6 +1095,14 @@ const PropertyDetail: React.FC = () => {
               threeDModelUrl={property.three_d_model_url}
               virtualTourUrl={property.virtual_tour_url}
             />
+
+            {/* Drone Video Player */}
+            {property.drone_video_url && (
+              <DroneVideoPlayer
+                videoUrl={property.drone_video_url}
+                title="Drone Walkthrough Video"
+              />
+            )}
 
             {/* Virtual Tour & 3D Model - Slim */}
             {(property.virtual_tour_url || property.three_d_model_url) && (
