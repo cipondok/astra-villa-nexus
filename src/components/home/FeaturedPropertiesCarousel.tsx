@@ -136,13 +136,13 @@ export default function FeaturedPropertiesCarousel() {
         <ScrollReveal direction="up" distance={16} duration={500}>
           <div className="flex items-center justify-between mb-4 sm:mb-5">
             <div className="flex items-center gap-2">
-              <div className="h-px w-6 sm:w-10 bg-gradient-to-r from-transparent to-primary/40" />
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <div className="h-px w-6 sm:w-10 bg-gradient-to-r from-transparent to-gold-primary/40" />
+              <Sparkles className="h-3.5 w-3.5 text-gold-primary" />
               <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground tracking-tight">
                 {t("indexPage.featuredProperties")}
               </h2>
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <div className="h-px w-6 sm:w-10 bg-gradient-to-l from-transparent to-primary/40" />
+              <Sparkles className="h-3.5 w-3.5 text-gold-primary" />
+              <div className="h-px w-6 sm:w-10 bg-gradient-to-l from-transparent to-gold-primary/40" />
             </div>
 
             <div className="flex items-center gap-1.5">
@@ -150,7 +150,7 @@ export default function FeaturedPropertiesCarousel() {
                 variant="outline"
                 size="icon"
                 onClick={() => scroll("left")}
-                className="h-8 w-8 rounded-full border-border hover:border-primary/40 hover:bg-primary/5"
+                className="h-8 w-8 rounded-full border-gold-primary/20 hover:border-gold-primary/40 hover:bg-gold-primary/5"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -158,7 +158,7 @@ export default function FeaturedPropertiesCarousel() {
                 variant="outline"
                 size="icon"
                 onClick={() => scroll("right")}
-                className="h-8 w-8 rounded-full border-border hover:border-primary/40 hover:bg-primary/5"
+                className="h-8 w-8 rounded-full border-gold-primary/20 hover:border-gold-primary/40 hover:bg-gold-primary/5"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -166,7 +166,7 @@ export default function FeaturedPropertiesCarousel() {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate("/dijual")}
-                className="hidden sm:flex items-center gap-1 text-xs text-primary hover:text-primary/80 ml-1"
+                className="hidden sm:flex items-center gap-1 text-xs text-gold-primary hover:text-gold-primary/80 ml-1"
               >
                 View All <ArrowRight className="h-3.5 w-3.5" />
               </Button>
@@ -193,7 +193,7 @@ export default function FeaturedPropertiesCarousel() {
               onClick={() => !isDragging && navigate(`/properties/${p.id}`)}
               className="flex-shrink-0 w-[260px] sm:w-[290px] md:w-[310px] lg:w-[330px] snap-start group/card cursor-pointer"
             >
-              <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300">
+              <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm hover:shadow-xl hover:shadow-gold-primary/10 hover:border-gold-primary/40 hover:-translate-y-1 transition-all duration-300">
                 {/* Image */}
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <img
@@ -245,7 +245,7 @@ export default function FeaturedPropertiesCarousel() {
 
                 {/* Content */}
                 <div className="p-3 sm:p-3.5 space-y-2">
-                  <h3 className="text-sm sm:text-[15px] font-semibold text-foreground line-clamp-1 leading-snug group-hover/card:text-primary transition-colors">
+                  <h3 className="text-sm sm:text-[15px] font-semibold text-foreground line-clamp-1 leading-snug group-hover/card:text-gold-primary transition-colors">
                     {p.title}
                   </h3>
 
@@ -290,7 +290,7 @@ export default function FeaturedPropertiesCarousel() {
             variant="outline"
             size="sm"
             onClick={() => navigate("/dijual")}
-            className="text-xs border-primary/30 text-primary hover:bg-primary/5"
+            className="text-xs border-gold-primary/30 text-gold-primary hover:bg-gold-primary/5"
           >
             View All Properties <ArrowRight className="h-3.5 w-3.5 ml-1" />
           </Button>
