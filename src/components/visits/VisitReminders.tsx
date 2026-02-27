@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { PropertyVisit } from '@/hooks/usePropertyVisits';
 import { isToday, isTomorrow, parseISO, differenceInHours, differenceInMinutes } from 'date-fns';
-import { Bell, Clock } from 'lucide-react';
+import { Bell, Clock, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface VisitRemindersProps {
   visits: PropertyVisit[];
@@ -47,36 +48,44 @@ export default function VisitReminders({ visits }: VisitRemindersProps) {
 
   return (
     <div className="space-y-1.5">
-      {reminders.map(({ visit, countdown, isVisitToday }) => (
-        <Card
+      {reminders.map(({ visit, countdown, isVisitToday }, i) => (
+        <motion.div
           key={visit.id}
-          className={`border-border/30 backdrop-blur-xl ${
-            isVisitToday 
-              ? 'bg-primary/5 border-primary/20' 
-              : 'bg-card/60'
-          }`}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.05 }}
         >
-          <CardContent className="p-2.5 flex items-center gap-2.5">
-            <div className={`h-7 w-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
-              isVisitToday ? 'bg-primary/10' : 'bg-muted'
-            }`}>
-              {isVisitToday ? <Bell className="h-3.5 w-3.5 text-primary" /> : <Clock className="h-3.5 w-3.5 text-muted-foreground" />}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-medium text-foreground truncate">
-                Visit at {visit.start_time.slice(0, 5)}
-              </p>
-              <p className="text-[10px] text-muted-foreground">{countdown}</p>
-            </div>
-            <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${
-              isVisitToday
-                ? 'bg-primary/10 text-primary'
-                : 'bg-muted text-muted-foreground'
-            }`}>
-              {isVisitToday ? 'Today' : 'Tomorrow'}
-            </span>
-          </CardContent>
-        </Card>
+          <Card
+            className={`border-border/30 backdrop-blur-xl transition-all ${
+              isVisitToday 
+                ? 'bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border-amber-500/20 shadow-sm shadow-amber-500/5' 
+                : 'bg-card/60'
+            }`}
+          >
+            <CardContent className="p-2.5 flex items-center gap-2.5">
+              <div className={`h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                isVisitToday 
+                  ? 'bg-gradient-to-br from-amber-500/20 to-yellow-400/10 border border-amber-500/20' 
+                  : 'bg-muted'
+              }`}>
+                {isVisitToday ? <Bell className="h-3.5 w-3.5 text-amber-500" /> : <Clock className="h-3.5 w-3.5 text-muted-foreground" />}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-semibold text-foreground truncate">
+                  Visit at {visit.start_time.slice(0, 5)}
+                </p>
+                <p className="text-[10px] text-muted-foreground">{countdown}</p>
+              </div>
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
+                isVisitToday
+                  ? 'bg-gradient-to-r from-amber-500/15 to-yellow-400/10 text-amber-600 dark:text-amber-400'
+                  : 'bg-muted text-muted-foreground'
+              }`}>
+                {isVisitToday ? '⚡ Today' : 'Tomorrow'}
+              </span>
+            </CardContent>
+          </Card>
+        </motion.div>
       ))}
     </div>
   );
