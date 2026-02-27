@@ -324,7 +324,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
               <SelectValue placeholder="Select Province" />
             </SelectTrigger>
             <SelectContent>
-              {provinces.map((province) => (
+              {provinces.filter(p => p.code).map((province) => (
                 <SelectItem key={province.code} value={province.code}>
                   {province.name}
                 </SelectItem>
@@ -345,7 +345,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
               <SelectValue placeholder="Select City" />
             </SelectTrigger>
             <SelectContent>
-              {cities.map((city) => (
+              {cities.filter(c => c.code).map((city) => (
                 <SelectItem key={city.code} value={city.code}>
                   {city.type} {city.name}
                 </SelectItem>
@@ -366,7 +366,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
               <SelectValue placeholder="Select District" />
             </SelectTrigger>
             <SelectContent>
-              {districts.map((district) => (
+              {districts.filter(d => d.code).map((district) => (
                 <SelectItem key={district.code} value={district.code}>
                   {district.name}
                 </SelectItem>
@@ -399,7 +399,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
               <SelectValue placeholder={subdistricts.length > 0 ? `Select Kelurahan/Desa (${subdistricts.length})` : "Select Kelurahan/Desa"} />
             </SelectTrigger>
             <SelectContent>
-              {subdistricts.map((subdistrict) => (
+              {subdistricts.filter(s => s.code).map((subdistrict) => (
                 <SelectItem key={subdistrict.code} value={subdistrict.code}>
                   {subdistrict.name}
                 </SelectItem>
