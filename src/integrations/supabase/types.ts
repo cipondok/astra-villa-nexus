@@ -15368,6 +15368,7 @@ export type Database = {
         Row: {
           advance_booking_days: number | null
           agent_id: string | null
+          ai_staging_images: string[] | null
           approval_status: string | null
           area: string | null
           area_sqm: number | null
@@ -15382,9 +15383,11 @@ export type Database = {
           description: string | null
           development_status: string
           discount_percentage: number | null
+          drone_video_url: string | null
           floors: number | null
           furnishing: string | null
           garage_count: number | null
+          glb_model_url: string | null
           handover_year: number | null
           has_360_view: boolean | null
           has_drone_video: boolean | null
@@ -15405,6 +15408,7 @@ export type Database = {
           online_booking_enabled: boolean | null
           owner_id: string
           owner_type: string | null
+          panorama_360_urls: string[] | null
           payment_methods: Json | null
           payment_plan_available: boolean | null
           price: number | null
@@ -15429,6 +15433,7 @@ export type Database = {
         Insert: {
           advance_booking_days?: number | null
           agent_id?: string | null
+          ai_staging_images?: string[] | null
           approval_status?: string | null
           area?: string | null
           area_sqm?: number | null
@@ -15443,9 +15448,11 @@ export type Database = {
           description?: string | null
           development_status?: string
           discount_percentage?: number | null
+          drone_video_url?: string | null
           floors?: number | null
           furnishing?: string | null
           garage_count?: number | null
+          glb_model_url?: string | null
           handover_year?: number | null
           has_360_view?: boolean | null
           has_drone_video?: boolean | null
@@ -15466,6 +15473,7 @@ export type Database = {
           online_booking_enabled?: boolean | null
           owner_id: string
           owner_type?: string | null
+          panorama_360_urls?: string[] | null
           payment_methods?: Json | null
           payment_plan_available?: boolean | null
           price?: number | null
@@ -15490,6 +15498,7 @@ export type Database = {
         Update: {
           advance_booking_days?: number | null
           agent_id?: string | null
+          ai_staging_images?: string[] | null
           approval_status?: string | null
           area?: string | null
           area_sqm?: number | null
@@ -15504,9 +15513,11 @@ export type Database = {
           description?: string | null
           development_status?: string
           discount_percentage?: number | null
+          drone_video_url?: string | null
           floors?: number | null
           furnishing?: string | null
           garage_count?: number | null
+          glb_model_url?: string | null
           handover_year?: number | null
           has_360_view?: boolean | null
           has_drone_video?: boolean | null
@@ -15527,6 +15538,7 @@ export type Database = {
           online_booking_enabled?: boolean | null
           owner_id?: string
           owner_type?: string | null
+          panorama_360_urls?: string[] | null
           payment_methods?: Json | null
           payment_plan_available?: boolean | null
           price?: number | null
