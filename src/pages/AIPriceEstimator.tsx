@@ -18,8 +18,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { formatIDR } from '@/utils/currency';
 import { useLocationData } from '@/hooks/useLocationData';
-import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
-import ProfessionalFooter from '@/components/ProfessionalFooter';
 import { RadialBarChart, RadialBar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
 
 interface EstimationResult {
@@ -150,7 +148,7 @@ const AIPriceEstimator = () => {
         title="AI Price Estimator | Cek Estimasi Harga Properti"
         description="Dapatkan estimasi harga pasar properti Anda dengan AI. Analisis ROI, potensi sewa, dan skor investasi berdasarkan data pasar terkini."
       />
-      <EnhancedNavigation language="en" onLanguageToggle={() => {}} />
+      
       <div className="min-h-screen bg-background pt-20 pb-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           {/* Hero */}
@@ -634,7 +632,7 @@ const AIPriceEstimator = () => {
           </div>
         </div>
       </div>
-      <ProfessionalFooter language="en" />
+      
     </>
   );
 };
