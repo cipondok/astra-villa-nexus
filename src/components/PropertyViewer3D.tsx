@@ -1,4 +1,4 @@
-import React, { useState, useRef, Suspense, useEffect } from 'react';
+import React, { useState, useRef, Suspense, useEffect, lazy } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Environment, Html, useProgress } from '@react-three/drei';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -8,7 +8,7 @@ import { X, Maximize, Minimize, Ruler, Eye, Palette, Map, Webcam, Sun, LayoutGri
 import PropertyModel from './PropertyModel3D';
 import MeasurementTool from './MeasurementTool';
 import VirtualStagingPanel from './VirtualStagingPanel';
-import EmotionTracker from './EmotionTracker';
+const EmotionTracker = lazy(() => import('./EmotionTracker'));
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { Vector3, MathUtils } from 'three';
 import LightingPanel from './LightingPanel';

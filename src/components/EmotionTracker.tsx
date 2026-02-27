@@ -1,6 +1,5 @@
 
 import React, { useRef, useEffect, useState } from 'react';
-import * as faceapi from '@vladmandic/face-api';
 
 interface EmotionTrackerProps {
   onEmotionChange: (emotion: string) => void;
@@ -12,11 +11,15 @@ const EmotionTracker = ({ onEmotionChange, onReady, onError }: EmotionTrackerPro
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isModelsLoaded, setIsModelsLoaded] = useState(false);
 
+  const faceapiRef = useRef<any>(null);
+
   useEffect(() => {
     const loadModels = async () => {
       const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
       try {
         console.log("Loading face-api models...");
+        const faceapi = await import('@vladmandic/face-api');
+        faceapiRef.current = faceapi;
         await Promise.all([
           faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
           faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
@@ -68,6 +71,8 @@ const EmotionTracker = ({ onEmotionChange, onReady, onError }: EmotionTrackerPro
     const detectionInterval = setInterval(async () => {
       if (videoEl.paused || videoEl.ended) return;
 
+      const faceapi = faceapiRef.current;
+      if (!faceapi) return;
       const detections = await faceapi
         .detectAllFaces(videoEl, new faceapi.TinyFaceDetectorOptions())
         .withFaceLandmarks()

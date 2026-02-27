@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X, Maximize2, Minimize2 } from 'lucide-react';
-import Enhanced3DPropertyViewer from './Enhanced3DPropertyViewer';
+const Enhanced3DPropertyViewer = lazy(() => import('./Enhanced3DPropertyViewer'));
 import { BaseProperty } from '@/types/property';
 
 interface Property3DModalProps {
@@ -37,13 +37,15 @@ const Property3DModal: React.FC<Property3DModalProps> = ({
             <X className="h-4 w-4" />
           </Button>
         </div>
-        <Enhanced3DPropertyViewer
-          property={property}
-          threeDModelUrl={threeDModelUrl}
-          virtualTourUrl={virtualTourUrl}
-          isFullscreen={true}
-          onFullscreenToggle={toggleFullscreen}
-        />
+        <Suspense fallback={<div className="flex items-center justify-center h-full"><span className="text-muted-foreground">Loading 3D viewer...</span></div>}>
+          <Enhanced3DPropertyViewer
+            property={property}
+            threeDModelUrl={threeDModelUrl}
+            virtualTourUrl={virtualTourUrl}
+            isFullscreen={true}
+            onFullscreenToggle={toggleFullscreen}
+          />
+        </Suspense>
       </div>
     );
   }
@@ -61,12 +63,14 @@ const Property3DModal: React.FC<Property3DModalProps> = ({
         </DialogHeader>
         
         <div className="flex-1">
-          <Enhanced3DPropertyViewer
-            property={property}
-            threeDModelUrl={threeDModelUrl}
-            virtualTourUrl={virtualTourUrl}
-            onFullscreenToggle={toggleFullscreen}
-          />
+          <Suspense fallback={<div className="flex items-center justify-center h-64"><span className="text-muted-foreground">Loading 3D viewer...</span></div>}>
+            <Enhanced3DPropertyViewer
+              property={property}
+              threeDModelUrl={threeDModelUrl}
+              virtualTourUrl={virtualTourUrl}
+              onFullscreenToggle={toggleFullscreen}
+            />
+          </Suspense>
         </div>
       </DialogContent>
     </Dialog>
