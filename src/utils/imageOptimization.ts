@@ -1,9 +1,16 @@
 import imageCompression from 'browser-image-compression';
-import { pipeline, env } from '@huggingface/transformers';
 
-// Configure transformers.js
-env.allowLocalModels = false;
-env.useBrowserCache = false;
+// Dynamic import to avoid pulling @huggingface/transformers into main bundle
+let _pipeline: any = null;
+async function getTransformers() {
+  if (!_pipeline) {
+    const mod = await import('@huggingface/transformers');
+    mod.env.allowLocalModels = false;
+    mod.env.useBrowserCache = false;
+    _pipeline = mod.pipeline;
+  }
+  return _pipeline;
+}
 
 const MAX_IMAGE_DIMENSION = 1920; // Increased for better quality
 const THUMBNAIL_SIZE = 300;
@@ -161,7 +168,8 @@ export const removeBackground = async (imageFile: File): Promise<Blob> => {
     // Load image
     const image = await loadImageFromFile(imageFile);
     
-    const segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
+    const pipelineFn = await getTransformers();
+    const segmenter = await pipelineFn('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
       device: 'webgpu',
     });
     

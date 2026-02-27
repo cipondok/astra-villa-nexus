@@ -1,9 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Building2, RefreshCw, ArrowRight, Sparkles } from "lucide-react";
-import PropertyViewer3D from "@/components/PropertyViewer3D";
+const PropertyViewer3D = lazy(() => import("@/components/PropertyViewer3D"));
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 import AutoScrollCarousel from "@/components/property/AutoScrollCarousel";
 import MaintenanceMode from './MaintenanceMode';
@@ -185,12 +185,14 @@ const PropertyListingsSection = ({
 
 
       {propertyFor3DView && (
-        <PropertyViewer3D
-          isOpen={!!propertyFor3DView}
-          onClose={() => setPropertyFor3DView(null)}
-          propertyId={propertyFor3DView.id}
-          propertyTitle={propertyFor3DView.title}
-        />
+        <Suspense fallback={null}>
+          <PropertyViewer3D
+            isOpen={!!propertyFor3DView}
+            onClose={() => setPropertyFor3DView(null)}
+            propertyId={propertyFor3DView.id}
+            propertyTitle={propertyFor3DView.title}
+          />
+        </Suspense>
       )}
     </>
   );

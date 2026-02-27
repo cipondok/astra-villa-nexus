@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, FileText, Eye, CheckCircle, AlertTriangle, X, Scan } from 'lucide-react';
-import Tesseract from 'tesseract.js';
+// Tesseract loaded dynamically to reduce bundle size
 
 interface OCRResult {
   confidence: number;
@@ -150,7 +150,8 @@ export const DocumentOCR: React.FC<DocumentOCRProps> = ({
     setError(null);
 
     try {
-      const result = await Tesseract.recognize(selectedFile, 'ind+eng', {
+      const Tesseract = await import('tesseract.js');
+      const result = await Tesseract.default.recognize(selectedFile, 'ind+eng', {
         logger: (m) => {
           if (m.status === 'recognizing text') {
             setProgress(Math.round(m.progress * 100));
