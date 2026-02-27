@@ -127,6 +127,7 @@ const PropertyComparison = lazy(() => import('@/pages/PropertyComparison'));
 const PreQualificationPage = lazy(() => import('@/pages/PreQualificationPage'));
 const MessagesPage = lazy(() => import('@/pages/MessagesPage'));
 const UserRentalDashboard = lazy(() => import('@/pages/UserRentalDashboard'));
+const AIPriceEstimator = lazy(() => import('@/pages/AIPriceEstimator'));
 
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
@@ -298,6 +299,8 @@ const AppContent = () => {
                 <Route path="/mortgage-prequalification" element={<PreQualificationPage />} />
                 <Route path="/messages" element={<MessagesPage />} />
                 <Route path="/my-rentals" element={<UserRentalDashboard />} />
+                <Route path="/ai-pricing" element={<AIPriceEstimator />} />
+                <Route path="/price-estimator" element={<AIPriceEstimator />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
