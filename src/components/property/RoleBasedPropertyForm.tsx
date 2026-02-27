@@ -16,6 +16,7 @@ import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu } fro
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import PropertyImageUpload from "./PropertyImageUpload";
 import LocationSelector from "./LocationSelector";
+import VRMediaUploader from "./VRMediaUploader";
 
 interface PropertyFormData {
   title: string;
@@ -1047,28 +1048,48 @@ const RoleBasedPropertyForm = () => {
                 </div>
               </div>
 
-              {/* Media URL Inputs */}
-              <div className="space-y-4 border-t border-border pt-4">
-                <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">🔗 Media Links</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="virtual_tour_url" className="text-sm">Virtual Tour URL (Matterport/Kuula)</Label>
-                    <Input id="virtual_tour_url" value={formData.virtual_tour_url} onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)} placeholder="https://my.matterport.com/show/?m=..." />
-                  </div>
-                  <div>
-                    <Label htmlFor="three_d_model_url" className="text-sm">3D Model URL (Sketchfab)</Label>
-                    <Input id="three_d_model_url" value={formData.three_d_model_url} onChange={(e) => handleInputChange('three_d_model_url', e.target.value)} placeholder="https://sketchfab.com/models/..." />
-                  </div>
-                  <div>
-                    <Label htmlFor="glb_model_url" className="text-sm">GLB/GLTF Model File URL</Label>
-                    <Input id="glb_model_url" value={formData.glb_model_url} onChange={(e) => handleInputChange('glb_model_url', e.target.value)} placeholder="https://storage.example.com/model.glb" />
-                  </div>
-                  <div>
-                    <Label htmlFor="drone_video_url" className="text-sm">Drone Walkthrough Video URL</Label>
-                    <Input id="drone_video_url" value={formData.drone_video_url} onChange={(e) => handleInputChange('drone_video_url', e.target.value)} placeholder="https://youtube.com/watch?v=..." />
-                  </div>
-                </div>
+              {/* File Upload Section */}
+              <div className="space-y-2 border-t border-border pt-4">
+                <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">📁 Upload Media</h4>
+                <VRMediaUploader
+                  onPanoramasChange={(urls) => handleInputChange('panorama_360_urls', urls)}
+                  onModelChange={(url) => handleInputChange('glb_model_url', url)}
+                  onDroneVideoChange={(url) => handleInputChange('drone_video_url', url)}
+                  onStagingImagesChange={(urls) => handleInputChange('ai_staging_images', urls)}
+                  panoramaUrls={formData.panorama_360_urls}
+                  modelUrl={formData.glb_model_url}
+                  droneVideoUrl={formData.drone_video_url}
+                  stagingImageUrls={formData.ai_staging_images}
+                />
               </div>
+
+              {/* Manual URL Inputs (collapsible) */}
+              <Collapsible>
+                <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <ChevronDown className="h-3 w-3 transition-transform group-data-[state=open]:rotate-180" />
+                  Or paste media URLs manually
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-4 pt-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="virtual_tour_url" className="text-sm">Virtual Tour URL (Matterport/Kuula)</Label>
+                      <Input id="virtual_tour_url" value={formData.virtual_tour_url} onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)} placeholder="https://my.matterport.com/show/?m=..." />
+                    </div>
+                    <div>
+                      <Label htmlFor="three_d_model_url" className="text-sm">3D Model URL (Sketchfab)</Label>
+                      <Input id="three_d_model_url" value={formData.three_d_model_url} onChange={(e) => handleInputChange('three_d_model_url', e.target.value)} placeholder="https://sketchfab.com/models/..." />
+                    </div>
+                    <div>
+                      <Label htmlFor="glb_model_url" className="text-sm">GLB/GLTF Model File URL</Label>
+                      <Input id="glb_model_url" value={formData.glb_model_url} onChange={(e) => handleInputChange('glb_model_url', e.target.value)} placeholder="https://storage.example.com/model.glb" />
+                    </div>
+                    <div>
+                      <Label htmlFor="drone_video_url" className="text-sm">Drone Walkthrough Video URL</Label>
+                      <Input id="drone_video_url" value={formData.drone_video_url} onChange={(e) => handleInputChange('drone_video_url', e.target.value)} placeholder="https://youtube.com/watch?v=..." />
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
 
               {/* Info callout */}
               <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-xs text-muted-foreground">
