@@ -3,12 +3,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { PropertyVisit } from '@/hooks/usePropertyVisits';
-import { format } from 'date-fns';
-import { isPast, parseISO } from 'date-fns';
+import { format, isPast, parseISO } from 'date-fns';
 import { Clock, Calendar, Download, RefreshCw, XCircle, CheckCircle2, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-  pending: { label: 'Pending', color: 'bg-amber-500/10 text-amber-600 border-amber-200', icon: <AlertCircle className="h-3 w-3" /> },
+  pending: { label: 'Pending', color: 'bg-amber-500/10 text-amber-600 border-amber-500/30', icon: <AlertCircle className="h-3 w-3" /> },
   confirmed: { label: 'Confirmed', color: 'bg-chart-2/10 text-chart-2 border-chart-2/30', icon: <CheckCircle2 className="h-3 w-3" /> },
   cancelled: { label: 'Cancelled', color: 'bg-destructive/10 text-destructive border-destructive/30', icon: <XCircle className="h-3 w-3" /> },
   completed: { label: 'Completed', color: 'bg-primary/10 text-primary border-primary/30', icon: <CheckCircle2 className="h-3 w-3" /> },
@@ -57,7 +57,9 @@ export default function VisitDayDetail({ date, visits, onCancel, onReschedule }:
     return (
       <Card className="bg-card/60 backdrop-blur-xl border-border/30">
         <CardContent className="p-4 text-center">
-          <Calendar className="h-6 w-6 text-muted-foreground/40 mx-auto mb-1.5" />
+          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-amber-500/10 to-yellow-400/10 flex items-center justify-center mx-auto mb-1.5">
+            <Calendar className="h-4 w-4 text-amber-500/40" />
+          </div>
           <p className="text-xs text-muted-foreground">No visits on {format(date, 'MMM d, yyyy')}</p>
         </CardContent>
       </Card>
@@ -66,67 +68,79 @@ export default function VisitDayDetail({ date, visits, onCancel, onReschedule }:
 
   return (
     <div className="space-y-2">
-      <h4 className="text-xs font-semibold text-foreground px-0.5">
+      <h4 className="text-xs font-semibold text-foreground px-0.5 flex items-center gap-2">
+        <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
         {format(date, 'EEEE, MMM d, yyyy')} — {visits.length} visit{visits.length > 1 ? 's' : ''}
       </h4>
-      {visits.map(visit => {
-        const config = statusConfig[visit.status] || statusConfig.pending;
-        const canCancel = ['pending', 'confirmed'].includes(visit.status) && !isPast(parseISO(visit.visit_date));
-        const canReschedule = ['pending', 'confirmed'].includes(visit.status) && !isPast(parseISO(visit.visit_date));
+      <AnimatePresence>
+        {visits.map((visit, idx) => {
+          const config = statusConfig[visit.status] || statusConfig.pending;
+          const canCancel = ['pending', 'confirmed'].includes(visit.status) && !isPast(parseISO(visit.visit_date));
+          const canReschedule = ['pending', 'confirmed'].includes(visit.status) && !isPast(parseISO(visit.visit_date));
 
-        return (
-          <Card key={visit.id} className="bg-card/60 backdrop-blur-xl border-border/30">
-            <CardContent className="p-3 space-y-2">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <Clock className="h-3.5 w-3.5 text-primary" />
-                  <span className="text-xs font-medium text-foreground">
-                    {formatTime(visit.start_time)} – {formatTime(visit.end_time)}
-                  </span>
-                </div>
-                <Badge variant="outline" className={`text-[9px] px-1.5 py-0 ${config.color} flex items-center gap-0.5`}>
-                  {config.icon} {config.label}
-                </Badge>
-              </div>
+          return (
+            <motion.div
+              key={visit.id}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05 }}
+            >
+              <Card className="bg-card/60 backdrop-blur-xl border-border/30 hover:border-amber-500/20 transition-all">
+                <CardContent className="p-3 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="h-6 w-6 rounded-md bg-amber-500/10 flex items-center justify-center">
+                        <Clock className="h-3 w-3 text-amber-600 dark:text-amber-400" />
+                      </div>
+                      <span className="text-xs font-medium text-foreground">
+                        {formatTime(visit.start_time)} – {formatTime(visit.end_time)}
+                      </span>
+                    </div>
+                    <Badge variant="outline" className={`text-[9px] px-1.5 py-0 ${config.color} flex items-center gap-0.5`}>
+                      {config.icon} {config.label}
+                    </Badge>
+                  </div>
 
-              {visit.notes && (
-                <p className="text-[10px] text-muted-foreground bg-muted/50 rounded p-1.5 line-clamp-2">{visit.notes}</p>
-              )}
+                  {visit.notes && (
+                    <p className="text-[10px] text-muted-foreground bg-muted/50 rounded-lg p-1.5 line-clamp-2 border border-border/20">{visit.notes}</p>
+                  )}
 
-              <div className="flex items-center gap-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 text-[10px] text-muted-foreground hover:text-foreground gap-1"
-                  onClick={() => generateICS(visit)}
-                >
-                  <Download className="h-3 w-3" /> Add to Calendar
-                </Button>
-                {canReschedule && onReschedule && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 text-[10px] text-muted-foreground hover:text-foreground gap-1"
-                    onClick={() => onReschedule(visit)}
-                  >
-                    <RefreshCw className="h-3 w-3" /> Reschedule
-                  </Button>
-                )}
-                {canCancel && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 text-[10px] text-destructive hover:text-destructive gap-1"
-                    onClick={() => onCancel(visit.id)}
-                  >
-                    <XCircle className="h-3 w-3" /> Cancel
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 text-[10px] text-muted-foreground hover:text-amber-600 dark:hover:text-amber-400 gap-1"
+                      onClick={() => generateICS(visit)}
+                    >
+                      <Download className="h-3 w-3" /> Add to Calendar
+                    </Button>
+                    {canReschedule && onReschedule && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 text-[10px] text-muted-foreground hover:text-amber-600 dark:hover:text-amber-400 gap-1"
+                        onClick={() => onReschedule(visit)}
+                      >
+                        <RefreshCw className="h-3 w-3" /> Reschedule
+                      </Button>
+                    )}
+                    {canCancel && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 text-[10px] text-destructive hover:text-destructive gap-1"
+                        onClick={() => onCancel(visit.id)}
+                      >
+                        <XCircle className="h-3 w-3" /> Cancel
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
     </div>
   );
 }
