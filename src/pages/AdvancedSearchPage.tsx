@@ -2,7 +2,7 @@
  * Advanced Search Page - Full-featured property search with facets and autocomplete
  */
 
-import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef, lazy, Suspense } from "react";
 import { useUserBehaviorAnalytics } from "@/hooks/useUserBehaviorAnalytics";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -28,7 +28,7 @@ import FacetedFilterPanel, { FacetedFilters, defaultFacetedFilters } from "@/com
 import SearchResultsHeader from "@/components/search/SearchResultsHeader";
 import PropertyGridView from "@/components/search/PropertyGridView";
 import PropertyListView from "@/components/search/PropertyListView";
-import PropertyMapView from "@/components/search/PropertyMapView";
+const PropertyMapView = lazy(() => import("@/components/search/PropertyMapView"));
 import SearchPagination from "@/components/search/SearchPagination";
 import PropertyDetailModal from "@/components/property/PropertyDetailModal";
 import WhatsAppInquiryDialog from "@/components/property/WhatsAppInquiryDialog";
@@ -442,10 +442,12 @@ const AdvancedSearchPage = () => {
                   />
                 )}
                 {viewMode === 'map' && (
-                  <PropertyMapView
-                    properties={properties}
-                    onPropertyClick={handlePropertyClick}
-                  />
+                  <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
+                    <PropertyMapView
+                      properties={properties}
+                      onPropertyClick={handlePropertyClick}
+                    />
+                  </Suspense>
                 )}
 
                 {/* Pagination */}

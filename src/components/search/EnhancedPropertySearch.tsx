@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import PropertyViewModeToggle from "./PropertyViewModeToggle";
 import AdvancedPropertyFilters, { PropertyFilters } from "./AdvancedPropertyFilters";
 import PropertyListView from "./PropertyListView";
 import PropertyGridView from "./PropertyGridView";
-import PropertyMapView from "./PropertyMapView";
+const PropertyMapView = lazy(() => import("./PropertyMapView"));
 import PropertyDetailModal from "../property/PropertyDetailModal";
 import Property3DViewModal from "../property/Property3DViewModal";
 import SearchPagination from "./SearchPagination";
@@ -264,7 +264,7 @@ const EnhancedPropertySearch = ({
       case 'list':
         return <PropertyListView {...commonProps} />;
       case 'map':
-        return <PropertyMapView properties={properties} onPropertyClick={handlePropertyClick} />;
+        return <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}><PropertyMapView properties={properties} onPropertyClick={handlePropertyClick} /></Suspense>;
       case 'grid':
       default:
         return <PropertyGridView {...commonProps} />;

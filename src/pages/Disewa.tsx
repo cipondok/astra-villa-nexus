@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from "react-router-dom";
@@ -13,12 +13,12 @@ import { useAdvancedPropertyFilters } from "@/hooks/useAdvancedPropertyFilters";
 import RentalSidebarFilters from "@/components/rental/RentalSidebarFilters";
 import type { AdvancedRentalFilters } from "@/components/rental/RentalSidebarFilters";
 import RentalMobileFilterSheet from "@/components/rental/RentalMobileFilterSheet";
-import PropertyListingMapView from "@/components/property/PropertyListingMapView";
+const PropertyListingMapView = lazy(() => import("@/components/property/PropertyListingMapView"));
 import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
 import PropertyListView from "@/components/search/PropertyListView";
 import SearchPagination from "@/components/search/SearchPagination";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
-import { MapPin, Home, Bed, Bath, Square, Heart, Zap, Calendar, User, Star, TrendingUp, ShieldCheck, Box, Globe } from "lucide-react";
+import { MapPin, Home, Bed, Bath, Square, Heart, Zap, Calendar, User, Star, TrendingUp, ShieldCheck, Box, Globe, Loader2 } from "lucide-react";
 
 const RESULTS_PER_PAGE = 15;
 
@@ -198,7 +198,9 @@ const Disewa = () => {
           {/* Main content */}
           <main className="flex-1 min-w-0" id="properties-content">
             {viewMode === 'map' ? (
-              <PropertyListingMapView properties={properties as any} formatPrice={formatPrice} />
+              <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
+                <PropertyListingMapView properties={properties as any} formatPrice={formatPrice} />
+              </Suspense>
             ) : loading ? (
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {[...Array(9)].map((_, i) => (

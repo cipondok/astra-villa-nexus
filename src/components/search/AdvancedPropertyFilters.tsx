@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +19,7 @@ import { useFilterPresets } from "@/hooks/useFilterPresets";
 import { useSmartFilterSuggestions } from "@/hooks/useSmartFilterSuggestions";
 import { useCollaborativeRecommendations } from "@/hooks/useCollaborativeRecommendations";
 import { SavePresetDialog } from "./SavePresetDialog";
-import { FilterMapView } from "./FilterMapView";
+const FilterMapView = lazy(() => import("./FilterMapView"));
 
 export interface PropertyFilters {
   searchQuery: string;
@@ -792,7 +792,9 @@ const AdvancedPropertyFilters = ({
 
             <TabsContent value="map" className="m-0 h-[calc(90vh-180px)]">
               <div className="w-full h-full p-3">
-                <FilterMapView filters={localFilters} />
+                <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
+                  <FilterMapView filters={localFilters} />
+                </Suspense>
               </div>
             </TabsContent>
           </Tabs>

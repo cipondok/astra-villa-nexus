@@ -1,5 +1,5 @@
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, lazy, Suspense } from 'react';
 import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import StickySearchPanel from '@/components/search/StickySearchPanel';
 import AdvancedPropertyFilters, { PropertyFilters } from '@/components/search/AdvancedPropertyFilters';
 import PropertySearchResults from '@/components/search/PropertySearchResults';
-import PropertyMapView from '@/components/search/PropertyMapView';
+const PropertyMapView = lazy(() => import('@/components/search/PropertyMapView'));
 import { usePropertySearch } from '@/hooks/usePropertySearch';
 import { useImageSearch } from '@/hooks/useImageSearch';
 import { BaseProperty } from '@/types/property';
@@ -564,11 +564,13 @@ const PropertySearch = () => {
 
         {/* Search Results */}
         {viewMode === 'map' ? (
-          <PropertyMapView
-            properties={searchResults || []}
-            onPropertyClick={handlePropertyClick}
-            onFilterByArea={handleFilterByArea}
-          />
+          <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
+            <PropertyMapView
+              properties={searchResults || []}
+              onPropertyClick={handlePropertyClick}
+              onFilterByArea={handleFilterByArea}
+            />
+          </Suspense>
         ) : (
           <PropertySearchResults
             properties={

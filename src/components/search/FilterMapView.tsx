@@ -147,3 +147,5 @@ export const FilterMapView = ({ filters }: FilterMapViewProps) => {
     </div>
   );
 };
+
+export default FilterMapView;
