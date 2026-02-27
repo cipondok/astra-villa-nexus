@@ -25,7 +25,8 @@ const sampleAgents = [
     total_rented: 15,
     rating: 4.9,
     response_rate: 98,
-    level_name: 'Platinum VIP'
+    level_name: 'Platinum VIP',
+    latest_review: 'Sangat profesional dan membantu saya menemukan villa impian di Bali!'
   },
   {
     id: 'sample-2',
@@ -40,7 +41,8 @@ const sampleAgents = [
     total_rented: 12,
     rating: 4.8,
     response_rate: 95,
-    level_name: 'Gold VIP'
+    level_name: 'Gold VIP',
+    latest_review: 'Respon cepat dan sangat mengerti kebutuhan klien.'
   },
   {
     id: 'sample-3',
@@ -55,7 +57,8 @@ const sampleAgents = [
     total_rented: 8,
     rating: 4.7,
     response_rate: 92,
-    level_name: 'Gold VIP'
+    level_name: 'Gold VIP',
+    latest_review: 'Proses transaksi sangat lancar berkat bantuan Bu Siti.'
   },
   {
     id: 'sample-4',
@@ -70,7 +73,8 @@ const sampleAgents = [
     total_rented: 22,
     rating: 4.9,
     response_rate: 99,
-    level_name: 'Platinum VIP'
+    level_name: 'Platinum VIP',
+    latest_review: 'Best agent in Bali! Helped me find the perfect investment property.'
   },
   {
     id: 'sample-5',
@@ -115,7 +119,8 @@ const sampleAgents = [
     total_rented: 9,
     rating: 4.7,
     response_rate: 91,
-    level_name: 'Silver VIP'
+    level_name: 'Silver VIP',
+    latest_review: 'Agen yang sangat sabar dan teliti dalam setiap proses.'
   },
   {
     id: 'sample-8',
@@ -315,8 +320,8 @@ const AgentSearchResults = ({ searchQuery, filter }: AgentSearchResultsProps) =>
 
       {/* Agent Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {agents.map((agent) => (
-          <AgentCard key={agent.id} agent={agent} />
+        {agents.map((agent, i) => (
+          <AgentCard key={agent.id} agent={agent} index={i} />
         ))}
       </div>
     </div>
