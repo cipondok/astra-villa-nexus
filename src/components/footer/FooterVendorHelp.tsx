@@ -16,7 +16,7 @@ const FooterVendorHelp = ({ onLinkClick }: FooterVendorHelpProps) => {
       <AccordionItem value="vendor-help" className="border-b-0">
         <AccordionTrigger className="py-2 font-semibold text-foreground text-sm hover:no-underline">
           <div className="flex items-center gap-2">
-            <HelpCircle className="h-4 w-4 text-primary" />
+            <HelpCircle className="h-4 w-4 text-gold-primary" />
             {t('footerVendor.vendorHelp')}
           </div>
         </AccordionTrigger>
@@ -24,43 +24,43 @@ const FooterVendorHelp = ({ onLinkClick }: FooterVendorHelpProps) => {
           <div className="space-y-4 pl-1">
             <ul className="space-y-2">
               <li>
-                <button onClick={() => onLinkClick('/technical-support', t('footerVendor.technicalSupport'))} className="text-muted-foreground hover:text-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
+                <button onClick={() => onLinkClick('/technical-support', t('footerVendor.technicalSupport'))} className="text-muted-foreground hover:text-gold-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
                   <Zap className="h-3 w-3" />
                   {t('footerVendor.technicalSupport')}
                 </button>
               </li>
               <li>
-                <button onClick={() => onLinkClick('/account-help', t('footerVendor.accountHelp'))} className="text-muted-foreground hover:text-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
+                <button onClick={() => onLinkClick('/account-help', t('footerVendor.accountHelp'))} className="text-muted-foreground hover:text-gold-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
                   <HelpCircle className="h-3 w-3" />
                   {t('footerVendor.accountHelp')}
                 </button>
               </li>
               <li>
-                <button onClick={() => onLinkClick('/billing-support', t('footerVendor.billingSupport'))} className="text-muted-foreground hover:text-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
+                <button onClick={() => onLinkClick('/billing-support', t('footerVendor.billingSupport'))} className="text-muted-foreground hover:text-gold-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
                   <CreditCard className="h-3 w-3" />
                   {t('footerVendor.billingSupport')}
                 </button>
               </li>
               <li>
-                <button onClick={() => onLinkClick('/service-issues', t('footerVendor.serviceIssues'))} className="text-muted-foreground hover:text-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
+                <button onClick={() => onLinkClick('/service-issues', t('footerVendor.serviceIssues'))} className="text-muted-foreground hover:text-gold-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
                   <AlertTriangle className="h-3 w-3" />
                   {t('footerVendor.serviceIssues')}
                 </button>
               </li>
               <li>
-                <button onClick={() => onLinkClick('/customer-disputes', t('footerVendor.customerDisputes'))} className="text-muted-foreground hover:text-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
+                <button onClick={() => onLinkClick('/customer-disputes', t('footerVendor.customerDisputes'))} className="text-muted-foreground hover:text-gold-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
                   <AlertTriangle className="h-3 w-3" />
                   {t('footerVendor.customerDisputes')}
                 </button>
               </li>
               <li>
-                <button onClick={() => onLinkClick('/vendor-policies', t('footerVendor.vendorPolicies'))} className="text-muted-foreground hover:text-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
+                <button onClick={() => onLinkClick('/vendor-policies', t('footerVendor.vendorPolicies'))} className="text-muted-foreground hover:text-gold-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
                   <FileText className="h-3 w-3" />
                   {t('footerVendor.vendorPolicies')}
                 </button>
               </li>
               <li>
-                <button onClick={() => onLinkClick('/compliance-help', t('footerVendor.complianceHelp'))} className="text-muted-foreground hover:text-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
+                <button onClick={() => onLinkClick('/compliance-help', t('footerVendor.complianceHelp'))} className="text-muted-foreground hover:text-gold-primary transition-colors text-sm text-left flex items-center gap-2 w-full">
                   <FileText className="h-3 w-3" />
                   {t('footerVendor.complianceHelp')}
                 </button>
@@ -73,13 +73,13 @@ const FooterVendorHelp = ({ onLinkClick }: FooterVendorHelpProps) => {
               </h5>
               <ul className="space-y-1">
                 <li>
-                  <button onClick={() => onLinkClick('/phone-support', t('footerVendor.phoneSupport'))} className="text-muted-foreground hover:text-primary transition-colors text-xs text-left flex items-center gap-2 w-full">
+                  <button onClick={() => onLinkClick('/phone-support', t('footerVendor.phoneSupport'))} className="text-muted-foreground hover:text-gold-primary transition-colors text-xs text-left flex items-center gap-2 w-full">
                     <Phone className="h-3 w-3" />
                     {t('footerVendor.phoneSupport')}
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => onLinkClick('/live-chat', t('footerVendor.liveChat'))} className="text-muted-foreground hover:text-primary transition-colors text-xs text-left flex items-center gap-2 w-full">
+                  <button onClick={() => onLinkClick('/live-chat', t('footerVendor.liveChat'))} className="text-muted-foreground hover:text-gold-primary transition-colors text-xs text-left flex items-center gap-2 w-full">
                     <MessageCircle className="h-3 w-3" />
                     {t('footerVendor.liveChat')}
                   </button>

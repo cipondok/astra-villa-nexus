@@ -27,7 +27,7 @@ const FooterInnovationHub = ({ onLinkClick }: FooterInnovationHubProps) => {
       <AccordionItem value="innovation-hub" className="border-b-0">
         <AccordionTrigger className="py-2 font-semibold text-foreground text-sm hover:no-underline">
           <div className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-primary" />
+            <Zap className="h-4 w-4 text-gold-primary" />
             {t('footerInnovationHub.innovationHub')}
           </div>
         </AccordionTrigger>
@@ -37,7 +37,7 @@ const FooterInnovationHub = ({ onLinkClick }: FooterInnovationHubProps) => {
               <li key={link.path}>
                 <button
                   onClick={() => onLinkClick(link.path, t(`footerInnovationHub.${link.key}`))}
-                  className="text-muted-foreground hover:text-primary transition-colors text-sm text-left flex items-center gap-2 w-full"
+                  className="text-muted-foreground hover:text-gold-primary transition-colors text-sm text-left flex items-center gap-2 w-full"
                 >
                   <link.Icon className="h-3 w-3" />
                   {t(`footerInnovationHub.${link.key}`)}
