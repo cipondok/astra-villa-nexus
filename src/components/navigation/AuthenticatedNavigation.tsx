@@ -35,7 +35,8 @@ import {
   Plus,
   List,
   MessageSquare,
-  Bell
+  Bell,
+  Calculator
 } from "lucide-react";
 import NotificationCenter from "@/components/notifications/NotificationCenter";
 
@@ -227,6 +228,17 @@ const AuthenticatedNavigation = ({
                     </NavigationMenuLink>
                   </NavigationMenuItem>
                 )}
+
+                {/* AI Price Estimator */}
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    className="flex items-center space-x-1 px-2 lg:px-2.5 py-1.5 rounded-md text-xs lg:text-xs font-medium text-foreground/70 hover:text-gold-primary hover:bg-gold-primary/10 transition-colors cursor-pointer"
+                    onClick={() => navigate('/ai-pricing')}
+                  >
+                    <Calculator className="h-3.5 w-3.5 lg:h-3.5 lg:w-3.5" />
+                    <span className="whitespace-nowrap">AI Estimator</span>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>
