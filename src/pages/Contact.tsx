@@ -116,10 +116,10 @@ const Contact = () => {
           <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {/* Contact Form */}
             <div className="lg:col-span-2">
-              <Card className="border-border/50">
+              <Card className="border-gold-primary/20 hover:border-gold-primary/30 transition-all duration-300">
                 <CardHeader className="p-3 sm:p-4 md:p-6">
                   <CardTitle className="flex items-center gap-2 text-sm sm:text-base md:text-lg">
-                    <Send className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                    <Send className="h-4 w-4 sm:h-5 sm:w-5 text-gold-primary" />
                     {t('contact.sendUsMessage')}
                   </CardTitle>
                   <CardDescription className="text-[10px] sm:text-xs md:text-sm">
@@ -129,8 +129,8 @@ const Contact = () => {
                 <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
                   {isSubmitted ? (
                     <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-chart-1/10 flex items-center justify-center mb-4">
-                        <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-chart-1" />
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gold-primary/10 flex items-center justify-center mb-4">
+                        <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-gold-primary" />
                       </div>
                       <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">{t('contact.successTitle')}</h3>
                       <p className="text-xs sm:text-sm text-muted-foreground">{t('contact.successDescription')}</p>
@@ -212,7 +212,7 @@ const Contact = () => {
 
                       <Button 
                         type="submit" 
-                        className="w-full h-9 sm:h-10 text-xs sm:text-sm"
+                        className="w-full h-9 sm:h-10 text-xs sm:text-sm bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-background"
                         disabled={isSubmitting}
                       >
                         {isSubmitting ? (
@@ -235,11 +235,11 @@ const Contact = () => {
 
             {/* Contact Info */}
             <div className="space-y-3 sm:space-y-4">
-              <Card className="border-border/50">
+              <Card className="border-gold-primary/20 hover:border-gold-primary/30 transition-all duration-300">
                 <CardContent className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gold-primary/10 flex items-center justify-center shrink-0">
+                      <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-gold-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-xs sm:text-sm text-foreground">{t('contact.office')}</h3>
@@ -248,8 +248,8 @@ const Contact = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gold-primary/10 flex items-center justify-center shrink-0">
+                      <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-gold-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-xs sm:text-sm text-foreground">{t('contact.phone')}</h3>
@@ -258,8 +258,8 @@ const Contact = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gold-primary/10 flex items-center justify-center shrink-0">
+                      <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-gold-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-xs sm:text-sm text-foreground">{t('contact.email')}</h3>
@@ -268,8 +268,8 @@ const Contact = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gold-primary/10 flex items-center justify-center shrink-0">
+                      <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-gold-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-xs sm:text-sm text-foreground">{t('contact.hours')}</h3>
@@ -280,14 +280,14 @@ const Contact = () => {
               </Card>
 
               {/* Quick Actions */}
-              <Card className="border-border/50">
+              <Card className="border-gold-primary/20 hover:border-gold-primary/30 transition-all duration-300">
                 <CardContent className="p-3 sm:p-4 md:p-6 space-y-2 sm:space-y-3">
                   <h3 className="font-semibold text-xs sm:text-sm text-foreground mb-2">
                     {t('contact.quickActions')}
                   </h3>
                   <Button 
                     variant="outline" 
-                    className="w-full justify-start h-9 sm:h-10 text-xs sm:text-sm"
+                    className="w-full justify-start h-9 sm:h-10 text-xs sm:text-sm border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary"
                     onClick={() => {
                       toast({
                         title: 'Live Chat',
@@ -295,17 +295,17 @@ const Contact = () => {
                       });
                     }}
                   >
-                    <MessageCircle className="h-4 w-4 mr-2" />
+                    <MessageCircle className="h-4 w-4 mr-2 text-gold-primary" />
                     {t('contact.startLiveChat')}
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="w-full justify-start h-9 sm:h-10 text-xs sm:text-sm"
+                    className="w-full justify-start h-9 sm:h-10 text-xs sm:text-sm border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary"
                     onClick={() => {
                       window.location.href = 'tel:+622112345678';
                     }}
                   >
-                    <Phone className="h-4 w-4 mr-2" />
+                    <Phone className="h-4 w-4 mr-2 text-gold-primary" />
                     {t('contact.callSupport')}
                   </Button>
                 </CardContent>

@@ -185,13 +185,13 @@ const Help = () => {
             
             {/* Search */}
             <div className="relative max-w-md mx-auto">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gold-primary/60" />
               <Input
                 type="text"
                 placeholder={currentText.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 glass-ios border-border/30"
+                className="pl-10 glass-ios border-gold-primary/20 focus:ring-gold-primary/30"
               />
             </div>
           </div>
@@ -199,7 +199,7 @@ const Help = () => {
           {/* FAQ Sections */}
           <div className="space-y-8 mb-12">
             {filteredFAQ.map((category, categoryIndex) => (
-              <Card key={categoryIndex} className="glass-ios border-border/30">
+              <Card key={categoryIndex} className="glass-ios border-gold-primary/15 hover:border-gold-primary/30 transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="text-foreground">{category.category}</CardTitle>
                 </CardHeader>
@@ -207,7 +207,7 @@ const Help = () => {
                   <Accordion type="single" collapsible className="w-full">
                     {category.items.map((item, itemIndex) => (
                       <AccordionItem key={itemIndex} value={`item-${categoryIndex}-${itemIndex}`}>
-                        <AccordionTrigger className="text-left text-foreground hover:text-primary">
+                        <AccordionTrigger className="text-left text-foreground hover:text-gold-primary">
                           {item.question}
                         </AccordionTrigger>
                         <AccordionContent className="text-muted-foreground">
@@ -222,7 +222,7 @@ const Help = () => {
           </div>
 
           {/* Contact Support */}
-          <Card className="glass-ios border-border/30">
+          <Card className="glass-ios border-gold-primary/20 hover:border-gold-primary/30 transition-all duration-300">
             <CardHeader className="text-center">
               <CardTitle className="text-foreground">{currentText.stillNeedHelp}</CardTitle>
               <CardDescription className="text-muted-foreground">
@@ -233,33 +233,39 @@ const Help = () => {
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center">
                   <div className="flex justify-center mb-4">
-                    <MessageCircle className="h-12 w-12 text-primary" />
+                    <div className="p-3 bg-gold-primary/10 rounded-full">
+                      <MessageCircle className="h-8 w-8 text-gold-primary" />
+                    </div>
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Live Chat</h3>
                   <p className="text-sm text-muted-foreground mb-4">Chat with our support team</p>
-                  <Button variant="outline" className="w-full glass-ios">
+                  <Button variant="outline" className="w-full border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary">
                     Start Chat
                   </Button>
                 </div>
                 
                 <div className="text-center">
                   <div className="flex justify-center mb-4">
-                    <Mail className="h-12 w-12 text-primary" />
+                    <div className="p-3 bg-gold-primary/10 rounded-full">
+                      <Mail className="h-8 w-8 text-gold-primary" />
+                    </div>
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Email Support</h3>
                   <p className="text-sm text-muted-foreground mb-4">support@astravilla.com</p>
-                  <Button variant="outline" className="w-full glass-ios">
+                  <Button variant="outline" className="w-full border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary">
                     Send Email
                   </Button>
                 </div>
                 
                 <div className="text-center">
                   <div className="flex justify-center mb-4">
-                    <Phone className="h-12 w-12 text-primary" />
+                    <div className="p-3 bg-gold-primary/10 rounded-full">
+                      <Phone className="h-8 w-8 text-gold-primary" />
+                    </div>
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Phone Support</h3>
                   <p className="text-sm text-muted-foreground mb-4">+1 (555) 123-4567</p>
-                  <Button variant="outline" className="w-full glass-ios">
+                  <Button variant="outline" className="w-full border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary">
                     Call Now
                   </Button>
                 </div>
