@@ -55,7 +55,7 @@ export const SystemReports = lazyRetry(() => import("./SystemReports"));
 export const DailyCheckInManagement = lazyRetry(() => import("./DailyCheckInManagement"));
 export const ASTRATokenHub = lazyRetry(() => import("./ASTRATokenHub"));
 export const ToolsManagementDashboard = lazyRetry(() => import("./ToolsManagementDashboard"));
-export const SEOSettings = lazyRetry(() => import("./SEOSettings"));
+// SEOSettings removed – use SystemSettings with defaultTab="seo-hub" instead
 export const SEOManagement = lazyRetry(() => import("./SEOManagement"));
 export const ProjectDiagnosticSystem = lazyRetry(() => import("./ProjectDiagnosticSystem"));
 export const IndonesianPaymentMerchantConfig = lazyRetry(() => import("./IndonesianPaymentMerchantConfig"));
