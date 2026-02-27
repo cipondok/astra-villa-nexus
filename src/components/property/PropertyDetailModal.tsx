@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X, MapPin, Bed, Bath, Square, Car, Home, Eye, Share2, Heart, Phone, MessageSquare, User, Calendar, Tag, Key } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { X, MapPin, Bed, Bath, Square, Car, Home, Eye, Share2, Heart, Phone, MessageSquare, User, Calendar, Tag, Key, Image as ImageIcon, Video, Sparkles, ChevronLeft, ChevronRight, Play, Pause, Maximize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BaseProperty } from "@/types/property";
 import ScheduleSurveyModal from "@/components/ScheduleSurveyModal";
@@ -9,6 +10,162 @@ import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import SharePropertyButton from "./SharePropertyButton";
 import { useTranslation } from "@/i18n/useTranslation";
 
+// ─── VR Media Gallery Sub-Component ──────────────────────────────────────────
+const VRMediaGallery = ({ property }: { property: BaseProperty }) => {
+  const panoramas = property.panorama_360_urls || [];
+  const stagingImages = property.ai_staging_images || [];
+  const droneVideoUrl = property.drone_video_url;
+  const hasAnyMedia = panoramas.length > 0 || stagingImages.length > 0 || !!droneVideoUrl;
+
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    if (panoramas.length > 0) return "panoramas";
+    if (droneVideoUrl) return "drone";
+    if (stagingImages.length > 0) return "staging";
+    return "panoramas";
+  });
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  if (!hasAnyMedia) return null;
+
+  const currentImages = activeTab === "panoramas" ? panoramas : activeTab === "staging" ? stagingImages : [];
+
+  const nav = (dir: "prev" | "next") => {
+    if (currentImages.length === 0) return;
+    setCarouselIndex((prev) =>
+      dir === "next"
+        ? prev === currentImages.length - 1 ? 0 : prev + 1
+        : prev === 0 ? currentImages.length - 1 : prev - 1
+    );
+  };
+
+  const toggleVideo = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) { v.play(); setIsVideoPlaying(true); }
+    else { v.pause(); setIsVideoPlaying(false); }
+  };
+
+  const tabs: { value: string; label: string; icon: typeof ImageIcon; count: number }[] = [];
+  if (panoramas.length > 0) tabs.push({ value: "panoramas", label: "360° Panorama", icon: ImageIcon, count: panoramas.length });
+  if (droneVideoUrl) tabs.push({ value: "drone", label: "Drone Video", icon: Video, count: 1 });
+  if (stagingImages.length > 0) tabs.push({ value: "staging", label: "AI Staging", icon: Sparkles, count: stagingImages.length });
+
+  const isYouTube = droneVideoUrl?.includes("youtube.com") || droneVideoUrl?.includes("youtu.be");
+  const getYTEmbed = (url: string) => {
+    const m = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    return m ? `https://www.youtube.com/embed/${m[1]}?rel=0` : url;
+  };
+
+  return (
+    <div className="bg-muted/30 border border-border rounded-xl overflow-hidden">
+      <div className="flex items-center justify-between px-6 pt-5 pb-3">
+        <h2 className="font-bold text-xl flex items-center gap-2">
+          <Eye className="h-5 w-5 text-primary" />
+          VR Media Gallery
+        </h2>
+        <Badge variant="outline" className="text-xs border-primary/30 text-primary">
+          {tabs.reduce((s, t) => s + t.count, 0)} items
+        </Badge>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); setCarouselIndex(0); }}>
+        <div className="px-6 pb-3">
+          <TabsList className="grid w-full bg-muted/50 rounded-lg h-9 p-0.5" style={{ gridTemplateColumns: `repeat(${tabs.length}, 1fr)` }}>
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-1.5 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">
+                  <Icon className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="text-[10px] opacity-70">({tab.count})</span>
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
+        </div>
+
+        {panoramas.length > 0 && (
+          <TabsContent value="panoramas" className="m-0">
+            <div className="relative aspect-[16/9]">
+              <img src={panoramas[carouselIndex]} alt={`360° Panorama ${carouselIndex + 1}`} className="w-full h-full object-cover" />
+              {panoramas.length > 1 && (
+                <>
+                  <button onClick={() => nav("prev")} className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 backdrop-blur-md text-white p-2 rounded-full hover:bg-black/70"><ChevronLeft className="h-5 w-5" /></button>
+                  <button onClick={() => nav("next")} className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 backdrop-blur-md text-white p-2 rounded-full hover:bg-black/70"><ChevronRight className="h-5 w-5" /></button>
+                  <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-xs">{carouselIndex + 1} / {panoramas.length}</div>
+                </>
+              )}
+              <Badge className="absolute top-3 left-3 bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs border-0"><ImageIcon className="h-3 w-3 mr-1" />360° View</Badge>
+            </div>
+            {panoramas.length > 1 && (
+              <div className="flex gap-1.5 p-3 overflow-x-auto">
+                {panoramas.map((url, i) => (
+                  <button key={i} onClick={() => setCarouselIndex(i)} className={`flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all ${i === carouselIndex ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"}`}>
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        )}
+
+        {droneVideoUrl && (
+          <TabsContent value="drone" className="m-0">
+            <div className="relative aspect-video bg-black">
+              {isYouTube ? (
+                <iframe src={getYTEmbed(droneVideoUrl)} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowFullScreen title="Drone walkthrough" />
+              ) : (
+                <>
+                  <video ref={videoRef} src={droneVideoUrl} className="w-full h-full object-contain" playsInline muted preload="metadata" onEnded={() => setIsVideoPlaying(false)} />
+                  {!isVideoPlaying && (
+                    <button onClick={toggleVideo} className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center shadow-lg"><Play className="h-7 w-7 text-primary-foreground ml-1" /></div>
+                    </button>
+                  )}
+                  <div className="absolute bottom-3 left-3">
+                    <button onClick={toggleVideo} className="bg-black/50 backdrop-blur-md text-white p-2 rounded-full hover:bg-black/70">
+                      {isVideoPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </>
+              )}
+              <Badge className="absolute top-3 left-3 bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs border-0"><Video className="h-3 w-3 mr-1" />🚁 Drone</Badge>
+            </div>
+          </TabsContent>
+        )}
+
+        {stagingImages.length > 0 && (
+          <TabsContent value="staging" className="m-0">
+            <div className="relative aspect-[16/9]">
+              <img src={stagingImages[carouselIndex]} alt={`AI Staging ${carouselIndex + 1}`} className="w-full h-full object-cover" />
+              {stagingImages.length > 1 && (
+                <>
+                  <button onClick={() => nav("prev")} className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 backdrop-blur-md text-white p-2 rounded-full hover:bg-black/70"><ChevronLeft className="h-5 w-5" /></button>
+                  <button onClick={() => nav("next")} className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 backdrop-blur-md text-white p-2 rounded-full hover:bg-black/70"><ChevronRight className="h-5 w-5" /></button>
+                  <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-xs">{carouselIndex + 1} / {stagingImages.length}</div>
+                </>
+              )}
+              <Badge className="absolute top-3 left-3 bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs border-0"><Sparkles className="h-3 w-3 mr-1" />AI Staged</Badge>
+            </div>
+            {stagingImages.length > 1 && (
+              <div className="flex gap-1.5 p-3 overflow-x-auto">
+                {stagingImages.map((url, i) => (
+                  <button key={i} onClick={() => setCarouselIndex(i)} className={`flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all ${i === carouselIndex ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"}`}>
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        )}
+      </Tabs>
+    </div>
+  );
+};
+
+// ─── Main Modal ──────────────────────────────────────────────────────────────
 interface PropertyDetailModalProps {
   property: BaseProperty;
   isOpen: boolean;
@@ -222,6 +379,9 @@ const PropertyDetailModal = ({
                   </div>
                 </div>
               )}
+
+              {/* VR Media Gallery */}
+              <VRMediaGallery property={property} />
             </div>
 
             {/* Sidebar */}
