@@ -1,4 +1,6 @@
-import { Users, Shield, Home, ThumbsUp } from 'lucide-react';
+import { Users, Shield, Home, ThumbsUp, Search } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface AgentStats {
   totalAgents: number;
@@ -13,83 +15,68 @@ interface AgentHeroBannerProps {
 
 const AgentHeroBanner = ({ stats }: AgentHeroBannerProps) => {
   const statItems = [
-    {
-      icon: Users,
-      value: stats?.totalAgents || 0,
-      label: 'Total Agen',
-      suffix: '+'
-    },
-    {
-      icon: Shield,
-      value: stats?.verifiedAgents || 0,
-      label: 'Agen Terverifikasi',
-      suffix: ''
-    },
-    {
-      icon: Home,
-      value: stats?.propertiesSold || 0,
-      label: 'Properti Terjual',
-      suffix: '+'
-    },
-    {
-      icon: ThumbsUp,
-      value: stats?.satisfactionRate || 0,
-      label: 'Kepuasan',
-      suffix: '%'
-    }
+    { icon: Users, value: stats?.totalAgents || 0, label: 'Total Agen', suffix: '+' },
+    { icon: Shield, value: stats?.verifiedAgents || 0, label: 'Terverifikasi', suffix: '' },
+    { icon: Home, value: stats?.propertiesSold || 0, label: 'Terjual', suffix: '+' },
+    { icon: ThumbsUp, value: stats?.satisfactionRate || 0, label: 'Kepuasan', suffix: '%' },
   ];
 
   return (
-    <div className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/80 overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-10 left-10 w-32 h-32 border-2 border-primary-foreground rounded-full" />
-        <div className="absolute top-20 right-20 w-24 h-24 border-2 border-primary-foreground rounded-full" />
-        <div className="absolute bottom-10 left-1/4 w-16 h-16 border-2 border-primary-foreground rounded-full" />
-        <div className="absolute bottom-20 right-1/3 w-20 h-20 border-2 border-primary-foreground rounded-full" />
+    <div className="relative overflow-hidden bg-gradient-to-br from-background via-background to-gold-primary/5">
+      {/* Gold glow effects */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-gold-primary/8 rounded-full blur-[120px]" />
+      <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-gold-primary/5 rounded-full blur-[100px]" />
+      
+      {/* Decorative lines */}
+      <div className="absolute inset-0 opacity-[0.03]">
+        <div className="absolute top-20 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-primary to-transparent" />
+        <div className="absolute top-40 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-primary to-transparent" />
       </div>
 
-      {/* Floating Icons */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 right-[10%] animate-bounce" style={{ animationDuration: '3s' }}>
-          <div className="w-12 h-12 bg-primary-foreground/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-            <Users className="h-6 w-6 text-primary-foreground" />
-          </div>
-        </div>
-        <div className="absolute top-1/3 right-[20%] animate-bounce" style={{ animationDuration: '4s', animationDelay: '0.5s' }}>
-          <div className="w-10 h-10 bg-primary-foreground/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-            <Shield className="h-5 w-5 text-primary-foreground" />
-          </div>
-        </div>
-        <div className="absolute bottom-1/4 right-[15%] animate-bounce" style={{ animationDuration: '3.5s', animationDelay: '1s' }}>
-          <div className="w-14 h-14 bg-primary-foreground/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-            <Home className="h-7 w-7 text-primary-foreground" />
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-12 sm:py-16 lg:py-20 relative z-10">
+      <div className="container mx-auto px-4 py-14 sm:py-20 relative z-10">
         <div className="max-w-3xl">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-foreground mb-4">
-            Cari Agen Properti
-          </h1>
-          <p className="text-lg sm:text-xl text-primary-foreground/90 mb-8">
-            Temukan agen properti terpercaya dan berpengalaman untuk membantu Anda menemukan properti impian
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <div className="h-8 w-8 rounded-lg bg-gold-primary/15 flex items-center justify-center">
+                <Search className="h-4 w-4 text-gold-primary" />
+              </div>
+              <span className="text-sm font-medium text-gold-primary tracking-wide uppercase">Find Your Agent</span>
+            </div>
+            
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
+              Cari Agen Properti{' '}
+              <span className="text-gold-primary">Terpercaya</span>
+            </h1>
+            <p className="text-base sm:text-lg text-muted-foreground mb-8 max-w-xl">
+              Temukan agen properti berpengalaman dan terverifikasi untuk membantu Anda menemukan properti impian
+            </p>
+          </motion.div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {statItems.map((item, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="bg-primary-foreground/10 backdrop-blur-sm rounded-lg p-4 text-center border border-primary-foreground/20"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+                className={cn(
+                  "backdrop-blur-sm rounded-xl p-4 text-center border transition-all duration-300",
+                  "bg-card/60 border-gold-primary/10 hover:border-gold-primary/30 hover:shadow-md hover:shadow-gold-primary/5"
+                )}
               >
-                <item.icon className="h-6 w-6 text-primary-foreground mx-auto mb-2" />
-                <div className="text-2xl sm:text-3xl font-bold text-primary-foreground">
+                <div className="w-9 h-9 mx-auto mb-2 rounded-lg bg-gold-primary/10 flex items-center justify-center">
+                  <item.icon className="h-4 w-4 text-gold-primary" />
+                </div>
+                <div className="text-2xl sm:text-3xl font-bold text-foreground">
                   {item.value.toLocaleString()}{item.suffix}
                 </div>
-                <div className="text-sm text-primary-foreground/80">{item.label}</div>
-              </div>
+                <div className="text-xs text-muted-foreground mt-0.5">{item.label}</div>
+              </motion.div>
             ))}
           </div>
         </div>
