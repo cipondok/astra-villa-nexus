@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { PropertyVisit } from '@/hooks/usePropertyVisits';
-import { format, parseISO, isSameDay } from 'date-fns';
+import { parseISO, isSameDay } from 'date-fns';
 import { cn } from '@/lib/utils';
 import VisitDayDetail from './VisitDayDetail';
+import { motion } from 'framer-motion';
 
 interface VisitCalendarProps {
   visits: PropertyVisit[];
@@ -41,19 +42,12 @@ export default function VisitCalendar({ visits, onCancelVisit, onRescheduleVisit
   };
 
   const modifiersStyles = {
-    confirmed: {
-      position: 'relative' as const,
-    },
-    pending: {
-      position: 'relative' as const,
-    },
-    cancelled: {
-      position: 'relative' as const,
-    },
+    confirmed: { position: 'relative' as const },
+    pending: { position: 'relative' as const },
+    cancelled: { position: 'relative' as const },
   };
 
-  // Custom day content to show colored dots
-  const DayContent = ({ date, ...props }: { date: Date; displayMonth: Date }) => {
+  const DayContent = ({ date }: { date: Date; displayMonth: Date }) => {
     const dayVisits = visits.filter(v => isSameDay(parseISO(v.visit_date), date));
     const hasConfirmed = dayVisits.some(v => v.status === 'confirmed');
     const hasPending = dayVisits.some(v => v.status === 'pending');
@@ -74,18 +68,26 @@ export default function VisitCalendar({ visits, onCancelVisit, onRescheduleVisit
   };
 
   return (
-    <div className="space-y-3">
-      <Calendar
-        mode="single"
-        selected={selectedDate}
-        onSelect={setSelectedDate}
-        modifiers={modifiers}
-        modifiersStyles={modifiersStyles}
-        components={{
-          DayContent: DayContent as any,
-        }}
-        className={cn("p-3 pointer-events-auto rounded-md border border-border/30 bg-card/60 backdrop-blur-xl")}
-      />
+    <motion.div
+      className="space-y-3"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <div className="rounded-xl border border-amber-500/20 overflow-hidden">
+        <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+        <Calendar
+          mode="single"
+          selected={selectedDate}
+          onSelect={setSelectedDate}
+          modifiers={modifiers}
+          modifiersStyles={modifiersStyles}
+          components={{
+            DayContent: DayContent as any,
+          }}
+          className={cn("p-3 pointer-events-auto bg-card/60 backdrop-blur-xl")}
+        />
+      </div>
 
       {/* Legend */}
       <div className="flex items-center justify-center gap-4 text-[10px] text-muted-foreground">
@@ -95,13 +97,20 @@ export default function VisitCalendar({ visits, onCancelVisit, onRescheduleVisit
       </div>
 
       {selectedDate && (
-        <VisitDayDetail
-          date={selectedDate}
-          visits={selectedDayVisits}
-          onCancel={onCancelVisit}
-          onReschedule={onRescheduleVisit}
-        />
+        <motion.div
+          key={selectedDate.toISOString()}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+        >
+          <VisitDayDetail
+            date={selectedDate}
+            visits={selectedDayVisits}
+            onCancel={onCancelVisit}
+            onReschedule={onRescheduleVisit}
+          />
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
