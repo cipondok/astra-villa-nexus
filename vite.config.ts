@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => ({
     minify: 'esbuild',
     // Limit parallel file ops to reduce peak memory usage
     rollupOptions: {
-      maxParallelFileOps: 2,
+      maxParallelFileOps: 1,
       output: {
         // More granular chunks reduce peak memory during bundling
         manualChunks(id) {
@@ -49,21 +49,39 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/recharts/')) {
             return 'vendor-charts';
           }
-          // 3D (heavy - isolate completely)
-          if (id.includes('node_modules/three/') || id.includes('node_modules/@react-three/')) {
-            return 'vendor-3d';
+          // 3D - split into sub-chunks
+          if (id.includes('node_modules/three/')) {
+            return 'vendor-three';
+          }
+          if (id.includes('node_modules/@react-three/')) {
+            return 'vendor-r3f';
           }
           // Animation
           if (id.includes('node_modules/framer-motion/')) {
             return 'vendor-motion';
           }
           // State & query
-          if (id.includes('node_modules/@tanstack/') || id.includes('node_modules/zustand/')) {
+          if (id.includes('node_modules/@tanstack/')) {
             return 'vendor-query';
           }
-          // Web3 / blockchain (very heavy - isolate)
-          if (id.includes('node_modules/wagmi/') || id.includes('node_modules/@wagmi/') || id.includes('node_modules/viem/') || id.includes('node_modules/@reown/') || id.includes('node_modules/@web3modal/') || id.includes('node_modules/@coinbase/') || id.includes('node_modules/porto/')) {
-            return 'vendor-web3';
+          if (id.includes('node_modules/zustand/')) {
+            return 'vendor-zustand';
+          }
+          // Web3 / blockchain - split into smaller chunks
+          if (id.includes('node_modules/wagmi/') || id.includes('node_modules/@wagmi/')) {
+            return 'vendor-wagmi';
+          }
+          if (id.includes('node_modules/viem/')) {
+            return 'vendor-viem';
+          }
+          if (id.includes('node_modules/@reown/') || id.includes('node_modules/@web3modal/')) {
+            return 'vendor-web3modal';
+          }
+          if (id.includes('node_modules/@coinbase/') || id.includes('node_modules/porto/') || id.includes('node_modules/@walletconnect/')) {
+            return 'vendor-web3-utils';
+          }
+          if (id.includes('node_modules/@base-org/') || id.includes('node_modules/ox/')) {
+            return 'vendor-web3-base';
           }
           // Radix UI
           if (id.includes('node_modules/@radix-ui/')) {
@@ -73,9 +91,12 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/lucide-react/')) {
             return 'vendor-icons';
           }
-          // AI / ML (very heavy)
-          if (id.includes('node_modules/@tensorflow/') || id.includes('node_modules/@huggingface/') || id.includes('node_modules/@vladmandic/') || id.includes('node_modules/tesseract')) {
-            return 'vendor-ai';
+          // AI / ML - split
+          if (id.includes('node_modules/@tensorflow/')) {
+            return 'vendor-tensorflow';
+          }
+          if (id.includes('node_modules/@huggingface/') || id.includes('node_modules/@vladmandic/') || id.includes('node_modules/tesseract')) {
+            return 'vendor-ai-other';
           }
           // Mapbox
           if (id.includes('node_modules/mapbox-gl/') || id.includes('node_modules/@mapbox/')) {
@@ -85,13 +106,21 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/date-fns/')) {
             return 'vendor-dates';
           }
-          // PDF / export utilities (heavy, rarely needed)
+          // PDF / export utilities
           if (id.includes('node_modules/jspdf') || id.includes('node_modules/html2pdf') || id.includes('node_modules/jspdf-autotable')) {
             return 'vendor-pdf';
           }
           // Form libraries
           if (id.includes('node_modules/react-hook-form') || id.includes('node_modules/@hookform/') || id.includes('node_modules/zod/')) {
             return 'vendor-forms';
+          }
+          // Pannellum
+          if (id.includes('node_modules/pannellum')) {
+            return 'vendor-pannellum';
+          }
+          // Markdown
+          if (id.includes('node_modules/react-markdown') || id.includes('node_modules/remark') || id.includes('node_modules/rehype') || id.includes('node_modules/unified') || id.includes('node_modules/mdast') || id.includes('node_modules/hast') || id.includes('node_modules/micromark')) {
+            return 'vendor-markdown';
           }
         },
       },
