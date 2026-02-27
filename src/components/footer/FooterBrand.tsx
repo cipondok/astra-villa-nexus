@@ -33,26 +33,26 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
     <div className="space-y-6">
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-gradient-to-br from-primary to-primary/80 rounded-lg">
-            <Sparkles className="h-6 w-6 text-primary-foreground" />
+          <div className="p-2 bg-gradient-to-br from-gold-primary to-gold-primary/80 rounded-lg">
+            <Sparkles className="h-6 w-6 text-background" />
           </div>
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-primary via-primary to-primary/80 bg-clip-text text-transparent">
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-gold-primary via-gold-primary to-gold-primary/80 bg-clip-text text-transparent">
             {t('footerBrand.company')}
           </h3>
         </div>
         <p className="text-muted-foreground text-sm leading-relaxed">{t('footerBrand.description')}</p>
-        <p className="text-primary font-medium text-sm">{t('footerBrand.tagline')}</p>
+        <p className="text-gold-primary font-medium text-sm">{t('footerBrand.tagline')}</p>
       </div>
 
       <div className="space-y-4">
         <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border/30">
-          <Shield className="h-5 w-5 text-chart-1 flex-shrink-0" />
+          <Shield className="h-5 w-5 text-gold-primary flex-shrink-0" />
           <span className="text-xs text-foreground font-medium">{t('footerBrand.trustedBy')}</span>
         </div>
         <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-border/30">
           <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => (
-              <Star className="h-4 w-4 fill-chart-3 text-chart-3" key={i} />
+              <Star className="h-4 w-4 fill-gold-primary text-gold-primary" key={i} />
             ))}
           </div>
           <span className="text-sm text-foreground font-medium">4.9/5</span>
