@@ -33,49 +33,39 @@ interface CollectionProperty {
   };
 }
 
-async function fetchCollection(type: CollectionType, limit = 8): Promise<CollectionProperty[]> {
+async function fetchAllCollections(limit = 8): Promise<Record<CollectionType, CollectionProperty[]>> {
   const { data, error } = await supabase.functions.invoke("ai-smart-collections", {
-    body: { action: "get_collection", collection_type: type, limit },
+    body: { action: "get_all_collections", limit },
   });
   if (error) throw error;
   throwIfEdgeFunctionReturnedError(data);
-  return data?.properties || [];
+  return data?.collections || {};
 }
 
 export function useSmartCollections(limit = 8) {
-  const bestInvestment = useQuery({
-    queryKey: ["smart-collection", "best_investment", limit],
-    queryFn: () => fetchCollection("best_investment", limit),
+  const allCollections = useQuery({
+    queryKey: ["smart-collections-all", limit],
+    queryFn: () => fetchAllCollections(limit),
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     retry: 1,
   });
 
-  const bestForLiving = useQuery({
-    queryKey: ["smart-collection", "best_for_living", limit],
-    queryFn: () => fetchCollection("best_for_living", limit),
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-    retry: 1,
+  // Derive individual collection queries from the batch result for backwards compatibility
+  const makeResult = (type: CollectionType) => ({
+    data: allCollections.data?.[type] || [],
+    isLoading: allCollections.isLoading,
+    isError: allCollections.isError,
+    error: allCollections.error,
+    refetch: allCollections.refetch,
   });
 
-  const luxuryCollection = useQuery({
-    queryKey: ["smart-collection", "luxury_collection", limit],
-    queryFn: () => fetchCollection("luxury_collection", limit),
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-    retry: 1,
-  });
-
-  const trending = useQuery({
-    queryKey: ["smart-collection", "trending", limit],
-    queryFn: () => fetchCollection("trending", limit),
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-    retry: 1,
-  });
-
-  return { bestInvestment, bestForLiving, luxuryCollection, trending };
+  return {
+    bestInvestment: makeResult("best_investment"),
+    bestForLiving: makeResult("best_for_living"),
+    luxuryCollection: makeResult("luxury_collection"),
+    trending: makeResult("trending"),
+  };
 }
 
 export function usePropertyROIPrediction(propertyId: string | null) {

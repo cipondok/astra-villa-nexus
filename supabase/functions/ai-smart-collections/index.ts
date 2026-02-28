@@ -187,6 +187,64 @@ serve(async (req) => {
       });
     }
 
+    // ─── GET ALL COLLECTIONS (batch) ───
+    if (action === "get_all_collections") {
+      const limit = reqLimit || 8;
+      const collectionTypes = ["best_investment", "best_for_living", "luxury_collection", "trending"];
+      const scoreColumns: Record<string, string> = {
+        best_investment: "investment_score",
+        best_for_living: "livability_score",
+        luxury_collection: "luxury_score",
+        trending: "engagement_score",
+      };
+
+      // Fetch top scores for each collection type in parallel
+      const scoreResults = await Promise.all(
+        collectionTypes.map(async (type) => {
+          const col = scoreColumns[type];
+          const { data, error } = await supabase
+            .from("property_engagement_scores")
+            .select("property_id, engagement_score, investment_score, livability_score, luxury_score, predicted_roi, roi_confidence")
+            .order(col, { ascending: false })
+            .limit(limit);
+          if (error) console.error(`Score fetch error for ${type}:`, error);
+          return { type, scores: data || [] };
+        })
+      );
+
+      // Collect all unique property IDs
+      const allPropertyIds = new Set<string>();
+      for (const { scores } of scoreResults) {
+        for (const s of scores) allPropertyIds.add(s.property_id);
+      }
+
+      // Single properties query for all collections
+      let propertiesMap = new Map<string, any>();
+      if (allPropertyIds.size > 0) {
+        const { data: properties } = await supabase
+          .from("properties")
+          .select("id, title, price, location, city, state, bedrooms, bathrooms, area_sqm, property_type, listing_type, images, thumbnail_url, roi_percentage, rental_yield_percentage, legal_status, wna_eligible, view_type")
+          .in("id", Array.from(allPropertyIds))
+          .eq("status", "active");
+        for (const p of properties || []) propertiesMap.set(p.id, p);
+      }
+
+      // Build response
+      const collections: Record<string, any[]> = {};
+      for (const { type, scores } of scoreResults) {
+        const col = scoreColumns[type];
+        const scoreMap = new Map(scores.map((s: any) => [s.property_id, s]));
+        collections[type] = scores
+          .filter((s: any) => propertiesMap.has(s.property_id))
+          .map((s: any) => ({ ...propertiesMap.get(s.property_id), scores: s }))
+          .sort((a: any, b: any) => ((b.scores?.[col] || 0) - (a.scores?.[col] || 0)));
+      }
+
+      return new Response(JSON.stringify({ collections }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // ─── PREDICT ROI ───
     if (action === "predict_roi") {
       if (!property_id) throw new Error("property_id required");
