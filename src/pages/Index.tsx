@@ -658,8 +658,8 @@ const Index = () => {
                   "rounded-full border border-gold-primary/25",
                 )}>
                   <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
-                  <span className="text-[10px] sm:text-xs font-semibold text-white uppercase tracking-[0.2em]">
-                    AI-Powered Search
+                   <span className="text-[10px] sm:text-xs font-semibold text-white uppercase tracking-[0.2em]">
+                    {t('indexPage.aiPoweredSearch')}
                   </span>
                   <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
                 </div>
@@ -699,7 +699,7 @@ const Index = () => {
             style={{ animationDelay: '1.2s', opacity: 0, animationFillMode: 'forwards' }}
             aria-label="Scroll to content"
           >
-            <span className="text-[9px] uppercase tracking-[0.3em] font-medium">Explore</span>
+            <span className="text-[9px] uppercase tracking-[0.3em] font-medium">{t('indexPage.explore')}</span>
             <ChevronDown className="h-5 w-5 animate-bounce" />
           </button>
         </section>
@@ -709,7 +709,7 @@ const Index = () => {
         {isRetrying && (
           <div className="mt-2 bg-gold-primary text-foreground px-3 py-1.5 rounded-lg shadow-lg flex items-center justify-center gap-2 animate-in slide-in-from-bottom-2">
             <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-            <span className="text-xs font-bold">Retrying... ({retryCount}/3)</span>
+            <span className="text-xs font-bold">{t('indexPage.retrying')} ({retryCount}/3)</span>
           </div>
         )}
 
@@ -773,7 +773,7 @@ const Index = () => {
                 </p>
                 {retryCount > 0 && (
                   <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-                    Attempted {retryCount} {retryCount === 1 ? 'retry' : 'retries'}
+                    {t('indexPage.attempted')} {retryCount} {retryCount === 1 ? t('indexPage.retryWord') : t('indexPage.retriesWord')}
                   </p>
                 )}
                 <div className="flex gap-2 justify-center mt-2">
@@ -786,7 +786,7 @@ const Index = () => {
                     className="h-7 px-3 text-xs bg-primary hover:bg-primary/90"
                   >
                     <RefreshCw className="h-3 w-3 mr-1" />
-                    Retry
+                    {t('indexPage.retry')}
                   </Button>
                   <Button 
                     onClick={() => {

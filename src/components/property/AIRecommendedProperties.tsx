@@ -6,6 +6,7 @@ import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye,
 import BrandedStatusBadge from "@/components/ui/BrandedStatusBadge";
 import { useBadgeSettings } from "@/hooks/useBadgeSettings";
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from '@/i18n/useTranslation';
 
 // Helper to capitalize first letter
 const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
@@ -51,6 +52,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isGenerating, setIsGenerating] = useState(false);
   const [recommendations, setRecommendations] = useState<ScoredProperty[]>([]);
   const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
@@ -99,10 +101,10 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
         const hasPersonalization = engineResponse?.meta?.hasPersonalization;
         toast({
-          title: hasPersonalization ? "✨ AI Picks for You" : "✨ Trending Properties",
+          title: hasPersonalization ? t('indexPage.aiPicksForYou') : t('indexPage.trendingProperties'),
           description: hasPersonalization
-            ? `${scored.length} properties matched to your preferences`
-            : "Showing popular properties",
+            ? `${scored.length} ${t('indexPage.matchedToPrefs')}`
+            : t('indexPage.showingPopular'),
         });
       } else {
         throw new Error('No recommendations returned');
@@ -130,8 +132,8 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       setRecommendations(transformed);
 
       toast({
-        title: "Trending Properties",
-        description: "Showing popular properties",
+        title: t('indexPage.trendingProperties'),
+        description: t('indexPage.showingPopular'),
         variant: "default",
       });
     } finally {
@@ -210,7 +212,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
                 isRent ? "bg-gradient-to-r from-chart-4 to-chart-4/80 shadow-chart-4/40" : "bg-gradient-to-r from-chart-1 to-chart-4/80 shadow-chart-1/40"
               )}>
                 <ListingIcon className="h-2 w-2" />
-                {isRent ? 'Sewa' : 'Jual'}
+                {isRent ? t('indexPage.forRent') : t('indexPage.forSale')}
               </span>
               {matchScore !== undefined ? (
                 <span className={cn(
@@ -224,7 +226,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
                         : "bg-gradient-to-r from-muted-foreground to-muted-foreground/80"
                 )}>
                   {isDiscovery ? <Compass className="h-2 w-2" /> : <Brain className="h-2 w-2" />}
-                  {isDiscovery ? 'Discover' : `${matchScore}%`}
+                  {isDiscovery ? t('indexPage.discover') : `${matchScore}%`}
                 </span>
               ) : (
                 <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-gradient-to-r from-accent to-primary text-primary-foreground shadow-lg shadow-accent/40 ring-1 ring-background/30">
@@ -317,8 +319,8 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-primary-foreground/20 flex items-center justify-center mb-2 group-hover/card:scale-110 transition-transform duration-300">
         <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
       </div>
-      <h3 className="text-xs sm:text-sm font-bold text-primary-foreground">View All</h3>
-      <p className="text-[9px] sm:text-[10px] text-primary-foreground/80 mt-0.5">Explore more</p>
+      <h3 className="text-xs sm:text-sm font-bold text-primary-foreground">{t('indexPage.viewAll')}</h3>
+      <p className="text-[9px] sm:text-[10px] text-primary-foreground/80 mt-0.5">{t('indexPage.exploreMore')}</p>
     </div>
   );
 
@@ -329,7 +331,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       <div className="flex items-center justify-between mb-1 sm:mb-1.5 md:mb-2 px-0.5 sm:px-1">
         <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2">
           <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 text-accent-foreground dark:text-accent" />
-          <h3 className="text-[7px] sm:text-[10px] md:text-xs font-semibold text-foreground">AI Recommended</h3>
+          <h3 className="text-[7px] sm:text-[10px] md:text-xs font-semibold text-foreground">{t('indexPage.aiRecommended')}</h3>
         </div>
         <div className="flex items-center gap-1">
           <Button
