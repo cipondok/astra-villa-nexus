@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -130,6 +131,7 @@ const PropertyOwnerOverview = () => {
   };
 
   const [openGroup, setOpenGroup] = useState<string>(() => findGroupForTab(defaultTab));
+  const [perfExpanded, setPerfExpanded] = useState(false);
 
   if (isLoading) {
     return (
@@ -237,42 +239,70 @@ const PropertyOwnerOverview = () => {
         ))}
       </div>
 
-      {/* Key Performance Metrics */}
-      <Card className="p-3 sm:p-4">
-        <div className="flex items-center gap-1.5 mb-2 sm:mb-3">
-          <BarChart3 className="h-4 w-4 text-primary" />
-          <span className="text-xs sm:text-sm font-semibold text-foreground">Performa Ringkas</span>
-        </div>
-        <div className="grid grid-cols-2 gap-2 sm:gap-3">
-          <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] sm:text-xs text-muted-foreground">Tingkat Aktif</span>
-              <span className="text-xs sm:text-sm font-bold text-chart-1">{activeRate}%</span>
-            </div>
-            <Progress value={activeRate} className="h-1.5" />
+      {/* Key Performance Metrics - Smart Collapsible */}
+      <Card className="overflow-hidden">
+        <div
+          onClick={() => setPerfExpanded(!perfExpanded)}
+          className="flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 cursor-pointer hover:bg-muted/30 transition-colors"
+        >
+          <div className="flex items-center gap-1.5">
+            <BarChart3 className="h-4 w-4 text-primary" />
+            <span className="text-xs sm:text-sm font-semibold text-foreground">Performa Ringkas</span>
           </div>
-          <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] sm:text-xs text-muted-foreground">Konversi</span>
-              <span className="text-xs sm:text-sm font-bold text-primary">{conversionRate}%</span>
-            </div>
-            <Progress value={Number(conversionRate)} className="h-1.5" />
-          </div>
-          <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3 flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <Eye className="h-3.5 w-3.5 text-chart-5" />
-              <span className="text-[10px] sm:text-xs text-muted-foreground">Views</span>
-            </div>
-            <span className="text-xs sm:text-sm font-bold text-foreground">{stats.totalViews}</span>
-          </div>
-          <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3 flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <Heart className="h-3.5 w-3.5 text-destructive" />
-              <span className="text-[10px] sm:text-xs text-muted-foreground">Disimpan</span>
-            </div>
-            <span className="text-xs sm:text-sm font-bold text-foreground">{stats.savedCount}</span>
+          <div className="flex items-center gap-1.5">
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 font-mono">{activeRate}%</Badge>
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 font-mono">{conversionRate}%</Badge>
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 gap-0.5">
+              <Eye className="h-2.5 w-2.5" />{stats.totalViews}
+            </Badge>
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 gap-0.5">
+              <Heart className="h-2.5 w-2.5" />{stats.savedCount}
+            </Badge>
+            <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${perfExpanded ? 'rotate-180' : ''}`} />
           </div>
         </div>
+        <AnimatePresence>
+          {perfExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 px-3 pb-3 sm:px-4 sm:pb-4">
+                <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[10px] sm:text-xs text-muted-foreground">Tingkat Aktif</span>
+                    <span className="text-xs sm:text-sm font-bold text-chart-1">{activeRate}%</span>
+                  </div>
+                  <Progress value={activeRate} className="h-1.5" />
+                </div>
+                <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[10px] sm:text-xs text-muted-foreground">Konversi</span>
+                    <span className="text-xs sm:text-sm font-bold text-primary">{conversionRate}%</span>
+                  </div>
+                  <Progress value={Number(conversionRate)} className="h-1.5" />
+                </div>
+                <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Eye className="h-3.5 w-3.5 text-chart-5" />
+                    <span className="text-[10px] sm:text-xs text-muted-foreground">Views</span>
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-foreground">{stats.totalViews}</span>
+                </div>
+                <div className="bg-muted/40 rounded-lg p-2.5 sm:p-3 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Heart className="h-3.5 w-3.5 text-destructive" />
+                    <span className="text-[10px] sm:text-xs text-muted-foreground">Disimpan</span>
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-foreground">{stats.savedCount}</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Card>
 
       {/* (ASTRA wallet moved to top) */}
