@@ -4,6 +4,7 @@ import { BaseProperty } from "@/types/property";
 import { useState } from "react";
 import WhatsAppInquiryDialog from "./WhatsAppInquiryDialog";
 import { Eye, Home, Tag, Building, Bed, Bath, Maximize, Plus, MapPin, Camera } from "lucide-react";
+import Price from "@/components/ui/Price";
 import { useNavigate } from "react-router-dom";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { Badge } from "@/components/ui/badge";
@@ -67,23 +68,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
     gcTime: 10 * 60 * 1000,
   });
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) {
-      return { main: `Rp ${(price / 1000000000).toFixed(1)}`, suffix: 'Miliar' };
-    }
-    if (price >= 1000000) {
-      return { main: `Rp ${(price / 1000000).toFixed(0)}`, suffix: 'Juta' };
-    }
-    return { main: `Rp ${price.toLocaleString('id-ID')}`, suffix: '' };
-  };
-
-  const formatMonthly = (price: number) => {
-    const monthly = price * 0.006;
-    if (monthly >= 1000000) {
-      return `Rp ${(monthly / 1000000).toFixed(1)} Juta/PB`;
-    }
-    return `Rp ${(monthly / 1000).toFixed(0)} Ribu/PB`;
-  };
+  // formatPrice and formatMonthly replaced by <Price /> component
 
   const getLocation = (property: any) => {
     if (property.area && property.city) return `${property.area}, ${property.city}`;
@@ -117,7 +102,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
       
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-1.5 sm:gap-3">
         {saleProperties.slice(0, maxItems).map((property) => {
-          const priceInfo = formatPrice(property.price);
+          // price rendered via <Price /> component
           const imageCount = property.images?.length || 1;
 
           return (
@@ -177,11 +162,9 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
               <div className="p-2 sm:p-2.5 space-y-1.5 relative">
                 {/* Price */}
                 <div className="flex items-baseline gap-1 bg-primary/5 border border-primary/15 rounded-lg px-2 py-1.5 sm:px-2.5 sm:py-2 flex-wrap">
-                  <span className="text-sm sm:text-base font-black text-primary leading-none tracking-tight">{priceInfo.main}</span>
-                  {priceInfo.suffix && (
-                    <span className="text-[11px] font-extrabold text-primary/60">{priceInfo.suffix}</span>
-                  )}
-                  <span className="hidden sm:inline text-[9px] text-muted-foreground/50 font-medium bg-muted/50 rounded-full px-1.5 ml-auto">≈ {formatMonthly(property.price)}</span>
+                  <span className="text-sm sm:text-base font-black text-primary leading-none tracking-tight">
+                    <Price amount={property.price} short showFlag />
+                  </span>
                 </div>
 
                 {/* Title */}
