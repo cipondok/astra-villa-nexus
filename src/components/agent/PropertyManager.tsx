@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { 
   Building2, 
   Plus, 
@@ -282,9 +283,7 @@ const PropertyManager = () => {
     }
   };
 
-  const formatPrice = (price: number) => {
-    return `Rp ${price.toLocaleString('id-ID')}`;
-  };
+  const formatPrice = getCurrencyFormatter();
 
   const getStatusColor = (status: string) => {
     switch (status) {

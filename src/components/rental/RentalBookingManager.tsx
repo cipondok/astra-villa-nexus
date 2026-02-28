@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { id } from "date-fns/locale";
 import { 
   Calendar,
@@ -177,9 +178,7 @@ const RentalBookingManager = () => {
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return `Rp ${amount.toLocaleString('id-ID')}`;
-  };
+  const formatCurrency = getCurrencyFormatter();
 
   const handleWhatsAppContact = (booking: RentalBooking) => {
     const phoneNumber = booking.customer?.phone;

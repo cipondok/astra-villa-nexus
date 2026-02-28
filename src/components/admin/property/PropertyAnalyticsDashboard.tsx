@@ -23,6 +23,7 @@ import {
   Filter,
   Download
 } from 'lucide-react';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
 
 const PropertyAnalyticsDashboard = () => {
@@ -96,14 +97,7 @@ const PropertyAnalyticsDashboard = () => {
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    if (amount >= 1000000000) {
-      return `Rp ${(amount / 1000000000).toFixed(1)}B`;
-    } else if (amount >= 1000000) {
-      return `Rp ${(amount / 1000000).toFixed(0)}M`;
-    }
-    return `Rp ${amount.toLocaleString()}`;
-  };
+  const formatCurrency = getCurrencyFormatterShort();
 
   const exportData = (type: string) => {
     // In real implementation, this would generate and download the report

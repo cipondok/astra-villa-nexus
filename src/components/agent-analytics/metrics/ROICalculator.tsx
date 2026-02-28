@@ -4,6 +4,7 @@ import { DollarSign, TrendingUp, Calculator, PiggyBank, Receipt, ArrowUpRight } 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell, ComposedChart, Line, Area } from 'recharts';
 import { cn } from '@/lib/utils';
 import { ROIData } from '@/hooks/useAgentAnalytics';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 interface ROICalculatorProps {
   data: ROIData;
@@ -12,11 +13,7 @@ interface ROICalculatorProps {
 
 const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', 'hsl(var(--secondary))', 'hsl(var(--muted))', 'hsl(var(--destructive))'];
 
-const formatCurrency = (value: number): string => {
-  if (value >= 1_000_000_000) return `Rp ${(value / 1_000_000_000).toFixed(1)}B`;
-  if (value >= 1_000_000) return `Rp ${(value / 1_000_000).toFixed(0)}M`;
-  return `Rp ${value.toLocaleString()}`;
-};
+const formatCurrency = getCurrencyFormatterShort();
 
 const ROICalculator: React.FC<ROICalculatorProps> = ({ data, className }) => {
   const profitMargin = ((data.netProfit / data.totalRevenue) * 100).toFixed(1);

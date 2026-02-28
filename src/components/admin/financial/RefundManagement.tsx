@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import {
   Dialog,
   DialogContent,
@@ -91,8 +92,7 @@ export const RefundManagement: React.FC = () => {
     }
   };
 
-  const formatCurrency = (amount: number) => 
-    `Rp ${amount.toLocaleString('id-ID')}`;
+  const formatCurrency = getCurrencyFormatter();
 
   const stats = {
     total: refunds.length,

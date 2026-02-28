@@ -5,6 +5,7 @@ import {
   Clock, Brain, FileText, Calendar, RefreshCw, Download
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAgentAnalytics } from '@/hooks/useAgentAnalytics';
@@ -144,7 +145,7 @@ const AgentAnalyticsDashboard: React.FC<AgentAnalyticsDashboardProps> = ({ class
         >
           <p className="text-[10px] text-muted-foreground">ROI</p>
           <p className="text-xl font-bold text-chart-1">{analytics.roi?.roi.toFixed(1)}%</p>
-          <p className="text-[10px] text-muted-foreground">Rp {((analytics.roi?.netProfit || 0) / 1_000_000_000).toFixed(1)}B profit</p>
+          <p className="text-[10px] text-muted-foreground">{getCurrencyFormatterShort()((analytics.roi?.netProfit || 0))} profit</p>
         </motion.div>
       </div>
 

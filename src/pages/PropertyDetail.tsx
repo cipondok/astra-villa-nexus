@@ -28,6 +28,7 @@ import PropertyRecommendations from '@/components/property/PropertyRecommendatio
 import { KPRCalculator } from '@/components/property/KPRCalculator';
 import PropertyMortgageWidget from '@/components/mortgage/PropertyMortgageWidget';
 import { PropertyPosterInfo } from '@/components/property/PropertyPosterInfo';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { 
   MapPin, 
   Bed, 
@@ -1371,11 +1372,7 @@ const PropertyDetail: React.FC = () => {
               <div ref={moreFromAgentRef} className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-2 px-2">
                 {userMoreProperties.map((userProperty) => {
                   const upPrice = userProperty.price;
-                  const upPriceFormatted = upPrice >= 1000000000
-                    ? { main: `Rp ${(upPrice / 1000000000).toFixed(1)}`, suffix: 'Miliar' }
-                    : upPrice >= 1000000
-                    ? { main: `Rp ${(upPrice / 1000000).toFixed(0)}`, suffix: 'Juta' }
-                    : { main: `Rp ${upPrice.toLocaleString('id-ID')}`, suffix: '' };
+                  const upPriceFormatted = { main: getCurrencyFormatterShort()(upPrice), suffix: '' };
 
                   return (
                     <Card 

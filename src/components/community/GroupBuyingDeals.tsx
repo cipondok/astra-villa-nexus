@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -219,16 +220,16 @@ const GroupBuyingDeals: React.FC<GroupBuyingDealsProps> = ({ city, className }) 
             {/* Pricing */}
             <div className="flex items-baseline gap-2 mb-3">
               <span className="text-2xl font-bold text-primary">
-                Rp {(deal.group_price || 0).toLocaleString()}
+                {getCurrencyFormatter()(deal.group_price || 0)}
               </span>
               <span className="text-sm text-muted-foreground line-through">
-                Rp {(deal.original_price || 0).toLocaleString()}
+                {getCurrencyFormatter()(deal.original_price || 0)}
               </span>
             </div>
 
             <div className="flex items-center gap-1 text-sm text-chart-1 mb-4">
               <Gift className="h-4 w-4" />
-              <span>Save Rp {savings.toLocaleString()}</span>
+              <span>Save {getCurrencyFormatter()(savings)}</span>
             </div>
 
             {/* Progress */}

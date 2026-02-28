@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Dialog,
@@ -128,8 +129,7 @@ export const DisputeManagement: React.FC = () => {
     }
   };
 
-  const formatCurrency = (amount: number) => 
-    `Rp ${amount.toLocaleString('id-ID')}`;
+  const formatCurrency = getCurrencyFormatter();
 
   const getSenderIcon = (type: DisputeMessage['sender_type']) => {
     switch (type) {

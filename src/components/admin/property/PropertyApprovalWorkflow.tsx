@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { 
   CheckCircle, 
   XCircle, 
@@ -359,7 +360,7 @@ const PropertyApprovalWorkflow = () => {
                             <div>
                               <div className="font-medium">{approval.property.title}</div>
                               <div className="text-sm text-muted-foreground">
-                                {approval.property.location} • Rp {approval.property.price.toLocaleString()}
+                                {approval.property.location} • {getCurrencyFormatter()(approval.property.price)}
                               </div>
                               <div className="text-xs text-muted-foreground capitalize">
                                 {approval.property.property_type} • {approval.property.listing_type}
@@ -457,7 +458,7 @@ const PropertyApprovalWorkflow = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label>Price</Label>
-                      <div className="font-medium">Rp {selectedApproval.property.price.toLocaleString()}</div>
+                      <div className="font-medium">{getCurrencyFormatter()(selectedApproval.property.price)}</div>
                     </div>
                     <div>
                       <Label>Type</Label>

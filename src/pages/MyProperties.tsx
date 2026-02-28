@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Eye, Edit, Plus, MapPin, ArrowLeft, ChevronRight } from "lucide-react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 const MyProperties = () => {
   const { isAuthenticated, profile, user } = useAuth();
@@ -45,11 +46,7 @@ const MyProperties = () => {
     }
   };
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}B`;
-    if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}M`;
-    return `Rp ${price?.toLocaleString()}`;
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   if (!isAuthenticated) return null;
 

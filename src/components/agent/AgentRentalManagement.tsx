@@ -9,6 +9,7 @@ import RentalPropertyCard from "@/components/rental/RentalPropertyCard";
 import RentalFinancialSummary from "@/components/rental/RentalFinancialSummary";
 import RentalSpecialRequests from "@/components/rental/RentalSpecialRequests";
 import { useAgentRentalData } from "@/hooks/useAgentRentalData";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 interface AgentRentalManagementProps {
   agentId?: string;
@@ -33,7 +34,7 @@ const AgentRentalManagement = ({ agentId }: AgentRentalManagementProps) => {
           { icon: Home, label: "Rental Listings", value: `${rentals.length}`, color: "text-primary", bg: "bg-primary/10" },
           { icon: CheckCircle, label: "Active Rentals", value: `${stats.activeCount}`, color: "text-chart-1", bg: "bg-chart-1/10" },
           { icon: CalendarDays, label: "Upcoming", value: `${stats.upcomingCount}`, color: "text-chart-3", bg: "bg-chart-3/10" },
-          { icon: DollarSign, label: "Revenue", value: `Rp ${(stats.totalRevenue / 1000000).toFixed(0)}Jt`, color: "text-primary", bg: "bg-primary/10" },
+          { icon: DollarSign, label: "Revenue", value: getCurrencyFormatterShort()(stats.totalRevenue), color: "text-primary", bg: "bg-primary/10" },
         ].map((stat, i) => (
           <Card key={i} className="p-2">
             <div className="flex items-center gap-2">

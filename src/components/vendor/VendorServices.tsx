@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Plus, Edit, Trash2, Star, MapPin, Clock, TrendingUp, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import VendorServiceForm from "./VendorServiceForm";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 interface Service {
   id: string;
@@ -247,7 +248,7 @@ const VendorServices = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Monthly Revenue</p>
-                <p className="text-2xl font-bold">Rp {(services.reduce((sum, s) => sum + (s.monthly_revenue || 0), 0)).toLocaleString()}</p>
+                <p className="text-2xl font-bold">{getCurrencyFormatter()(services.reduce((sum, s) => sum + (s.monthly_revenue || 0), 0))}</p>
               </div>
               <div className="p-2 bg-chart-3/10 rounded-lg">
                 <Star className="h-5 w-5 text-chart-3" />
