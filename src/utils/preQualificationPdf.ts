@@ -1,5 +1,5 @@
 // jsPDF and autoTable are dynamically imported to reduce initial bundle size
-
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 export interface PreQualificationData {
   // Personal
   fullName: string;
@@ -36,8 +36,7 @@ export interface PreQualificationData {
   qualificationStatus: 'qualified' | 'conditional' | 'not_qualified';
 }
 
-const formatIDR = (v: number) =>
-  new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
+const formatIDR = (v: number) => getCurrencyFormatter()(v);
 
 export async function generatePreQualificationPDF(data: PreQualificationData): Promise<void> {
   const { default: jsPDF } = await import('jspdf');
