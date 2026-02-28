@@ -149,7 +149,7 @@ const AIPriceEstimator = () => {
         description="Dapatkan estimasi harga pasar properti Anda dengan AI. Analisis ROI, potensi sewa, dan skor investasi berdasarkan data pasar terkini."
       />
       
-      <div className="min-h-screen bg-background pt-20 pb-12">
+      <div className="min-h-[100dvh] bg-background pt-16 sm:pt-20 pb-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           {/* Hero */}
           <motion.div
@@ -161,7 +161,7 @@ const AIPriceEstimator = () => {
               <Sparkles className="h-4 w-4" />
               AI-Powered Valuation
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-3">
+            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-foreground mb-3">
               Estimasi Harga{' '}
               <span className="bg-gradient-to-r from-gold-primary to-gold-primary/60 bg-clip-text text-transparent">
                 Properti
@@ -172,7 +172,7 @@ const AIPriceEstimator = () => {
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-5 gap-6">
+          <div className="grid lg:grid-cols-5 gap-4 lg:gap-6">
             {/* Input Form */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -180,7 +180,7 @@ const AIPriceEstimator = () => {
               transition={{ delay: 0.1 }}
               className="lg:col-span-2"
             >
-              <Card className="border-gold-primary/15 shadow-lg shadow-gold-primary/5 sticky top-24 overflow-hidden">
+              <Card className="border-gold-primary/15 shadow-lg shadow-gold-primary/5 lg:sticky lg:top-24 h-fit overflow-hidden">
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-gold-primary via-gold-primary/80 to-gold-primary/40" />
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center gap-2 text-lg">
@@ -303,14 +303,14 @@ const AIPriceEstimator = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="flex flex-col items-center justify-center min-h-[400px] text-center"
+                    className="flex flex-col items-center justify-center min-h-[300px] sm:min-h-[400px] text-center"
                   >
                     <motion.div
                       animate={{ y: [0, -8, 0] }}
                       transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                      className="w-24 h-24 rounded-2xl bg-gradient-to-br from-gold-primary/10 to-gold-primary/5 border border-gold-primary/15 flex items-center justify-center mb-5"
+                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-gold-primary/10 to-gold-primary/5 border border-gold-primary/15 flex items-center justify-center mb-5"
                     >
-                      <BarChart3 className="h-12 w-12 text-gold-primary/50" />
+                      <BarChart3 className="h-10 w-10 sm:h-12 sm:w-12 text-gold-primary/50" />
                     </motion.div>
                     <h3 className="text-xl font-bold text-foreground mb-2">Siap Mengestimasi</h3>
                     <p className="text-muted-foreground text-sm max-w-sm">
@@ -330,7 +330,7 @@ const AIPriceEstimator = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    className="flex flex-col items-center justify-center min-h-[400px] text-center"
+                    className="flex flex-col items-center justify-center min-h-[300px] sm:min-h-[400px] text-center"
                   >
                     <div className="relative w-24 h-24 mb-6">
                       <div className="absolute inset-0 rounded-full border-4 border-gold-primary/15" />
@@ -367,7 +367,7 @@ const AIPriceEstimator = () => {
                     {/* Price Range Card */}
                     <motion.div variants={fadeUp}>
                       <Card className="border-gold-primary/20 shadow-xl shadow-gold-primary/5 overflow-hidden">
-                        <div className="relative bg-gradient-to-br from-gold-primary/5 via-card to-gold-primary/[0.03] p-6 sm:p-8">
+                        <div className="relative bg-gradient-to-br from-gold-primary/5 via-card to-gold-primary/[0.03] p-4 sm:p-6 lg:p-8">
                           {/* Decorative glow */}
                           <div className="absolute -top-20 -right-20 w-40 h-40 bg-gold-primary/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -391,7 +391,7 @@ const AIPriceEstimator = () => {
                                 initial={{ scale: 0.8, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                                className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-gold-primary via-gold-primary to-gold-primary/70 bg-clip-text text-transparent"
+                                className="text-2xl sm:text-3xl lg:text-5xl font-black bg-gradient-to-r from-gold-primary via-gold-primary to-gold-primary/70 bg-clip-text text-transparent"
                               >
                                 {formatIDR(result.price_mid)}
                               </motion.p>
@@ -464,7 +464,7 @@ const AIPriceEstimator = () => {
                     <div className="grid sm:grid-cols-2 gap-4">
                       <motion.div variants={fadeUp}>
                         <Card className="border-gold-primary/10 hover:border-gold-primary/25 transition-colors h-full">
-                          <CardContent className="p-5">
+                          <CardContent className="p-4 sm:p-5">
                             <div className="flex items-center gap-2 mb-2">
                               <div className="p-1.5 rounded-lg bg-gold-primary/10">
                                 <Target className="h-4 w-4 text-gold-primary" />
@@ -473,7 +473,7 @@ const AIPriceEstimator = () => {
                             </div>
 
                             {/* Gauge Chart */}
-                            <div className="h-36 -mt-2 -mb-4">
+                            <div className="h-28 sm:h-36 -mt-2 -mb-4">
                               <ResponsiveContainer width="100%" height="100%">
                                 <RadialBarChart
                                   cx="50%" cy="50%" innerRadius="60%" outerRadius="90%"
@@ -516,7 +516,7 @@ const AIPriceEstimator = () => {
 
                       <motion.div variants={fadeUp}>
                         <Card className="border-gold-primary/10 hover:border-gold-primary/25 transition-colors h-full">
-                          <CardContent className="p-5">
+                          <CardContent className="p-4 sm:p-5">
                             <div className="flex items-center gap-2 mb-4">
                               <div className="p-1.5 rounded-lg bg-gold-primary/10">
                                 <PiggyBank className="h-4 w-4 text-gold-primary" />
@@ -525,7 +525,7 @@ const AIPriceEstimator = () => {
                             </div>
 
                             {/* ROI Bar Chart */}
-                            <div className="h-32 mb-3">
+                            <div className="h-28 sm:h-32 mb-3">
                               <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={roiChartData} barCategoryGap="25%">
                                   <XAxis dataKey="name" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
@@ -571,7 +571,7 @@ const AIPriceEstimator = () => {
                     <div className="grid sm:grid-cols-2 gap-4">
                       <motion.div variants={fadeUp}>
                         <Card className="border-border/60 hover:border-gold-primary/20 transition-colors h-full">
-                          <CardContent className="p-5">
+                          <CardContent className="p-4 sm:p-5">
                             <h4 className="font-bold text-foreground mb-3 flex items-center gap-2">
                               <TrendingUp className="h-4 w-4 text-gold-primary" />
                               Faktor Valuasi
@@ -596,7 +596,7 @@ const AIPriceEstimator = () => {
 
                       <motion.div variants={fadeUp}>
                         <Card className="border-border/60 hover:border-destructive/20 transition-colors h-full">
-                          <CardContent className="p-5">
+                          <CardContent className="p-4 sm:p-5">
                             <h4 className="font-bold text-foreground mb-3 flex items-center gap-2">
                               <AlertTriangle className="h-4 w-4 text-yellow-500" />
                               Faktor Risiko

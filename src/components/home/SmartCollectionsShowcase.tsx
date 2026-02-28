@@ -48,20 +48,22 @@ export default function SmartCollectionsShowcase() {
     <section className="py-6 sm:py-10">
       <div className="max-w-7xl mx-auto px-3 sm:px-4">
         {/* Header */}
-        <div className="flex items-center gap-2 mb-4 sm:mb-6">
-          <Sparkles className="h-5 w-5 text-primary" />
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
+          <div className="hidden sm:block h-px w-8 bg-gradient-to-r from-transparent to-gold-primary/40" />
+          <Sparkles className="h-5 w-5 text-gold-primary" />
           <h2 className="text-lg sm:text-2xl font-bold text-foreground">
             AI Smart Collections
           </h2>
-          <Badge variant="secondary" className="text-[10px] uppercase tracking-wider">
+          <Badge className="bg-gold-primary/10 text-gold-primary border border-gold-primary/20 text-[10px] uppercase tracking-wider">
             AI Powered
           </Badge>
+          <div className="hidden sm:block h-px flex-1 bg-gradient-to-r from-gold-primary/40 to-transparent" />
         </div>
 
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as CollectionType)}>
           <TabsList className="mb-4 flex-wrap h-auto gap-1">
             {tabs.map((tab) => (
-              <TabsTrigger key={tab.value} value={tab.value} className="gap-1.5 text-xs sm:text-sm">
+              <TabsTrigger key={tab.value} value={tab.value} className="gap-1.5 text-xs sm:text-sm data-[state=active]:text-gold-primary">
                 {tab.icon}
                 {tab.label}
               </TabsTrigger>
@@ -82,7 +84,7 @@ export default function SmartCollectionsShowcase() {
                 </div>
               ) : properties.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
-                  <Sparkles className="h-8 w-8 mx-auto mb-2 opacity-40" />
+                  <Sparkles className="h-8 w-8 mx-auto mb-2 text-gold-primary/40" />
                   <p className="text-sm">No properties scored yet. Collections update automatically as engagement grows.</p>
                 </div>
               ) : (
@@ -98,7 +100,7 @@ export default function SmartCollectionsShowcase() {
                         transition={{ delay: i * 0.05, duration: 0.3 }}
                       >
                         <Card
-                          className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow border-border/50 group"
+                          className="overflow-hidden cursor-pointer hover:shadow-lg hover:shadow-gold-primary/10 hover:border-gold-primary/40 hover:-translate-y-1 transition-all duration-300 border-border/50 group"
                           onClick={() => navigate(`/property/${p.id}`)}
                         >
                           <div className="relative h-40 sm:h-48 overflow-hidden">
@@ -128,7 +130,7 @@ export default function SmartCollectionsShowcase() {
                               <span className="text-[10px] sm:text-xs line-clamp-1">{p.city || p.location}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                              <span className="text-xs sm:text-sm font-bold text-primary">
+                              <span className="text-xs sm:text-sm font-bold text-gold-primary">
                                 {formatIDR(p.price || 0)}
                               </span>
                               {p.bedrooms && (
