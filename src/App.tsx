@@ -128,6 +128,7 @@ const PreQualificationPage = lazy(() => import('@/pages/PreQualificationPage'));
 const MessagesPage = lazy(() => import('@/pages/MessagesPage'));
 const UserRentalDashboard = lazy(() => import('@/pages/UserRentalDashboard'));
 const AIPriceEstimator = lazy(() => import('@/pages/AIPriceEstimator'));
+const KprCalculatorPage = lazy(() => import('@/pages/KprCalculatorPage'));
 
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
@@ -256,6 +257,8 @@ const AppContent = () => {
                 <Route path="/areas" element={<AreaGuides />} />
                 <Route path="/investment" element={<Investment />} />
                 <Route path="/foreign-investment" element={<Navigate to="/investment" replace />} />
+                <Route path="/kpr-calculator" element={<KprCalculatorPage />} />
+                <Route path="/simulasi-kpr" element={<Navigate to="/kpr-calculator" replace />} />
                 <Route path="/offers" element={<Offers />} />
                 <Route path="/partners/network" element={<PartnerNetwork />} />
                 <Route path="/partners/become" element={<BecomePartner />} />
