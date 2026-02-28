@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, X, User, Settings, LogOut, Moon, Sun, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Box, Settings2, Bell, TrendingUp, Plus, MapPin, Search, Calculator, Heart, MessageSquare, Layers, Users, BookOpen, Shield, ChevronDown, Compass, Scale } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useHasRole } from "@/hooks/useUserRoles";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useTheme } from "@/components/ThemeProvider";
@@ -105,6 +106,7 @@ const Navigation = () => {
   ];
 
   const isAgent = profile?.role === 'agent';
+  const { hasRole: isPropertyOwner } = useHasRole('property_owner');
   const isHomePage = location.pathname === '/';
 
   const handleHeaderSearch = (e: React.FormEvent) => {
@@ -279,7 +281,10 @@ const Navigation = () => {
               )}
 
               {/* Dashboard links */}
-              {user && !isAdmin && !isAgent && (
+              {user && !isAdmin && !isAgent && isPropertyOwner && (
+                <NavIconButton icon={BarChart3} label={t('nav.dashboard')} isActive={isActive('/dashboard/property-owner')} onClick={() => navigate('/dashboard/property-owner')} showLabel />
+              )}
+              {user && !isAdmin && !isAgent && !isPropertyOwner && (
                 <NavIconButton icon={BarChart3} label={t('nav.dashboard')} isActive={isActive('/dashboard/user')} onClick={() => navigate('/dashboard/user')} showLabel />
               )}
 
@@ -383,7 +388,10 @@ const Navigation = () => {
                   {user && (
                     <>
                       <MobileSectionLabel>Account</MobileSectionLabel>
-                      {user && !isAdmin && !isAgent && (
+                      {user && !isAdmin && !isAgent && isPropertyOwner && (
+                        <MobileNavButton icon={BarChart3} label={t('nav.dashboard')} active={isActive('/dashboard/property-owner')} onClick={() => { navigate('/dashboard/property-owner'); toggleMenu(); }} indent />
+                      )}
+                      {user && !isAdmin && !isAgent && !isPropertyOwner && (
                         <MobileNavButton icon={BarChart3} label={t('nav.dashboard')} active={isActive('/dashboard/user')} onClick={() => { navigate('/dashboard/user'); toggleMenu(); }} indent />
                       )}
                       <MobileNavButton icon={Heart} label="Saved Properties" active={isActive('/saved')} onClick={() => { navigate('/saved'); toggleMenu(); }} indent />

@@ -52,7 +52,7 @@ const RoleBasedNavigation = ({
   const getDashboardRoute = () => {
     if (!profile) return '/dashboard';
     switch (profile.role) {
-      case 'property_owner': return '/dashboard/user';
+      case 'property_owner': return '/dashboard/property-owner';
       case 'agent': return '/dashboard/agent';
       case 'vendor': return '/vendor';
       case 'admin': return '/dashboard/admin';

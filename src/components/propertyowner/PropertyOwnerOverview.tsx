@@ -183,7 +183,7 @@ const PropertyOwnerOverview = () => {
               </div>
             </div>
             <div className="flex gap-1.5">
-              <Button size="sm" variant="secondary" className="h-8 w-8 sm:h-9 sm:w-9 p-0" onClick={() => navigate('/dashboard/user')}>
+              <Button size="sm" variant="secondary" className="h-8 w-8 sm:h-9 sm:w-9 p-0" onClick={() => navigate('/dashboard/property-owner')}>
                 <ArrowLeft className="h-4 w-4" />
               </Button>
               <Button size="sm" className="h-8 sm:h-9 px-3 text-[10px] sm:text-xs bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground" onClick={() => navigate('/add-property')}>
