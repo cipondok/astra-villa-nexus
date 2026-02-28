@@ -11,7 +11,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { formatCurrency } from "@/utils/formatters";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
+const formatCurrency = (v: number) => getCurrencyFormatter()(v);
 import { 
   MapPin, Search, Eye, FileText, Banknote, Key, 
   CheckCircle, Circle, Plus, Calendar, Target, Home

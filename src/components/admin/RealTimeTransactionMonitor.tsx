@@ -8,7 +8,8 @@ import {
   Activity, TrendingUp, TrendingDown, DollarSign, 
   Clock, CheckCircle, AlertTriangle, Users, Zap
 } from "lucide-react";
-import { formatIDR } from "@/utils/formatters";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
+const formatIDR = (v: number) => getCurrencyFormatter()(v);
 
 interface LiveStats {
   activeTransactions: number;

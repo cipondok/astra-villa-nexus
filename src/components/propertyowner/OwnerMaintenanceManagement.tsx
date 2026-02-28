@@ -14,7 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlert } from "@/contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 
@@ -243,9 +244,9 @@ const OwnerMaintenanceManagement = () => {
               <div className="flex items-center gap-1 text-[10px]">
                 <DollarSign className="h-2.5 w-2.5 text-chart-3" />
                 <span className="text-muted-foreground">Estimasi:</span>
-                <span className="font-medium text-foreground">{formatIDR(req.estimated_cost)}</span>
+                <span className="font-medium text-foreground"><Price amount={req.estimated_cost} /></span>
                 {req.actual_cost && (
-                  <span className="text-chart-1 font-medium ml-1">• Aktual: {formatIDR(req.actual_cost)}</span>
+                  <span className="text-chart-1 font-medium ml-1">• Aktual: <Price amount={req.actual_cost} /></span>
                 )}
               </div>
             )}
@@ -379,7 +380,7 @@ const OwnerMaintenanceManagement = () => {
         </Card>
         <Card className="p-2.5 border-border">
           <p className="text-[9px] text-muted-foreground">Total Biaya</p>
-          <p className="text-sm font-bold text-foreground">{formatIDR(totalCost)}</p>
+          <p className="text-sm font-bold text-foreground"><Price amount={totalCost} /></p>
         </Card>
       </div>
 

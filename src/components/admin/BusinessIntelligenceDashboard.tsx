@@ -5,7 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { 
   DollarSign, 
   TrendingUp, 
@@ -116,7 +117,7 @@ const BusinessIntelligenceDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
-                    <p className="text-2xl font-bold">{formatIDR(328000000)}</p>
+                    <p className="text-2xl font-bold"><Price amount={328000000} /></p>
                     <div className="flex items-center gap-1 mt-1">
                       <TrendingUp className="h-3 w-3 text-chart-1" />
                       <span className="text-xs text-chart-1">+23.5%</span>
@@ -131,7 +132,7 @@ const BusinessIntelligenceDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Total Profit</p>
-                    <p className="text-2xl font-bold">{formatIDR(96000000)}</p>
+                    <p className="text-2xl font-bold"><Price amount={96000000} /></p>
                     <div className="flex items-center gap-1 mt-1">
                       <TrendingUp className="h-3 w-3 text-chart-1" />
                       <span className="text-xs text-chart-1">+18.2%</span>
@@ -168,7 +169,7 @@ const BusinessIntelligenceDashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Tooltip formatter={(value) => [formatIDR(Number(value) * 1000000), '']} />
+                  <Tooltip formatter={(value) => [getCurrencyFormatter()(Number(value) * 1000000), '']} />
                   <Area type="monotone" dataKey="revenue" stackId="1" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2))" fillOpacity={0.6} name="Revenue" />
                   <Area type="monotone" dataKey="profit" stackId="2" stroke="hsl(var(--chart-1))" fill="hsl(var(--chart-1))" fillOpacity={0.6} name="Profit" />
                 </AreaChart>
@@ -192,7 +193,7 @@ const BusinessIntelligenceDashboard = () => {
                       <p className="text-sm text-muted-foreground">{area.volume} properties</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold">{formatIDR(area.avgPrice * 15000)}</p>
+                      <p className="font-bold"><Price amount={area.avgPrice * 15000} /></p>
                       <div className="flex items-center gap-1">
                         <TrendingUp className="h-3 w-3 text-chart-1" />
                         <span className="text-xs text-chart-1">+{area.growth}%</span>
@@ -228,7 +229,7 @@ const BusinessIntelligenceDashboard = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold">{formatIDR(vendor.revenue)}</p>
+                      <p className="font-bold"><Price amount={vendor.revenue} /></p>
                       <p className="text-sm text-muted-foreground">Revenue</p>
                     </div>
                   </div>

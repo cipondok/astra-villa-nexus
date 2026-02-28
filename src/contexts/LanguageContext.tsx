@@ -42,7 +42,11 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     document.documentElement.lang = language;
   }, [language]);
 
-  const setLanguage = (lang: Language) => setLanguageState(lang);
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    // Trigger currency auto-switch via storage event listener in CurrencyContext
+    safeLocalStorage.setItem("language", lang);
+  };
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>

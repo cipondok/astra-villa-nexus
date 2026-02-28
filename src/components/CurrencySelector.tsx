@@ -1,17 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useCurrency, type CurrencyCode } from "@/contexts/CurrencyContext";
-import { ChevronDown, Check, DollarSign } from "lucide-react";
+import { CURRENCY_META } from "@/stores/currencyStore";
+import { ChevronDown, Check, Coins } from "lucide-react";
 
 interface CurrencySelectorProps {
   className?: string;
 }
 
-const CURRENCIES: { code: CurrencyCode; label: string; flag: string; symbol: string }[] = [
-  { code: "IDR", label: "IDR", flag: "🇮🇩", symbol: "Rp" },
-  { code: "USD", label: "USD", flag: "🇺🇸", symbol: "$" },
-  { code: "SGD", label: "SGD", flag: "🇸🇬", symbol: "S$" },
-  { code: "AUD", label: "AUD", flag: "🇦🇺", symbol: "A$" },
-];
+const CURRENCIES = (Object.keys(CURRENCY_META) as CurrencyCode[]).map((code) => ({
+  code,
+  ...CURRENCY_META[code],
+}));
 
 const CurrencySelector: React.FC<CurrencySelectorProps> = ({ className = "" }) => {
   const { currency, setCurrency } = useCurrency();
@@ -37,15 +36,15 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ className = "" }) =
         aria-expanded={open}
         aria-haspopup="listbox"
       >
-        <DollarSign className="h-3.5 w-3.5 text-muted-foreground" />
+        <Coins className="h-3.5 w-3.5 text-muted-foreground" />
         <span>{current.flag}</span>
-        <span className="hidden sm:inline">{current.code}</span>
+        <span>{current.code}</span>
         <ChevronDown className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
         <div
-          className="absolute right-0 bottom-full z-[10002] mb-1 min-w-[140px] overflow-hidden rounded-xl border border-border bg-popover p-1 shadow-xl animate-in fade-in-0 zoom-in-95 lg:bottom-auto lg:top-full lg:mb-0 lg:mt-1"
+          className="absolute right-0 bottom-full z-[10002] mb-1 min-w-[160px] overflow-hidden rounded-xl border border-border bg-popover p-1 shadow-xl animate-in fade-in-0 zoom-in-95 lg:bottom-auto lg:top-full lg:mb-0 lg:mt-1"
           role="listbox"
           aria-label="Currency options"
         >
@@ -62,7 +61,7 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ className = "" }) =
               }}
             >
               <span className="text-base">{cur.flag}</span>
-              <span className="flex-1 text-left">{cur.code}</span>
+              <span className="flex-1 text-left font-medium">{cur.code}</span>
               <span className="text-xs text-muted-foreground">{cur.symbol}</span>
               {currency === cur.code && <Check className="h-4 w-4 text-primary" />}
             </button>

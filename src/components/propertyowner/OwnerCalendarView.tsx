@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { formatIDR } from "@/utils/currency";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import {
   format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth,
   isSameDay, addMonths, subMonths, getDay, isToday
@@ -95,7 +95,7 @@ const OwnerCalendarView = () => {
           type: "booking",
           status: b.booking_status || "confirmed",
           propertyName: pMap[b.property_id || ""] || "",
-          detail: formatIDR(b.total_amount),
+          detail: getCurrencyFormatter()(b.total_amount),
         });
         result.push({
           id: `b-out-${b.id}`,
@@ -129,7 +129,7 @@ const OwnerCalendarView = () => {
           type: "payment",
           status: inv.status,
           propertyName: pMap[inv.property_id] || "",
-          detail: formatIDR(inv.total_amount),
+          detail: getCurrencyFormatter()(inv.total_amount),
         });
       });
 
