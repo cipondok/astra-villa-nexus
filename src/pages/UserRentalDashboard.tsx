@@ -10,7 +10,7 @@ import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import RentalChatDialog from "@/components/rental/RentalChatDialog";
 import RentalDocumentsDialog from "@/components/rental/RentalDocumentsDialog";
 import MaintenanceRequestForm from "@/components/rental/MaintenanceRequestForm";
@@ -99,7 +99,7 @@ const BookingCard = ({ booking, onChat, onDocs, onMaintenance }: { booking: Book
             </span>
           </div>
           <div className="flex items-center justify-between mt-2">
-            <p className="text-sm font-semibold text-primary">{formatIDR(booking.total_amount)}</p>
+            <p className="text-sm font-semibold text-primary"><Price amount={booking.total_amount} /></p>
             <div className="flex gap-1">
               <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={onChat}>
                 <MessageSquare className="h-3.5 w-3.5 mr-1" /> Chat

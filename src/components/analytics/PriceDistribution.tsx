@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { BarChart3 } from 'lucide-react';
-import { formatIDR } from '@/utils/currency';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { useTranslation } from '@/i18n/useTranslation';
 
 interface PropertyRecord {
@@ -127,7 +127,7 @@ const PriceDistribution = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1e6).toFixed(1)}M`} />
                 <YAxis type="category" dataKey="city" tick={{ fontSize: 10 }} width={80} />
-                <Tooltip formatter={(value: number) => formatIDR(value)} />
+                <Tooltip formatter={(value: number) => getCurrencyFormatter()(value)} />
                 <Bar dataKey="pricePerSqm" name="Price/m²" fill="hsl(var(--chart-1))" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>

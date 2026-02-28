@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { DollarSign, TrendingUp, Receipt, Landmark, Percent, ArrowUpRight } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 
 interface FinancialSummaryProps {
   totalRentCollected: number;
@@ -15,12 +15,12 @@ const RentalFinancialSummary = ({
   totalRentCollected, totalServiceCharges, totalTax, totalDues, totalRevenue, occupancyRate
 }: FinancialSummaryProps) => {
   const items = [
-    { icon: DollarSign, label: "Rent Collected", value: formatIDR(totalRentCollected), color: "text-chart-1", bg: "bg-chart-1/10" },
-    { icon: Receipt, label: "Service Charges", value: formatIDR(totalServiceCharges), color: "text-chart-3", bg: "bg-chart-3/10" },
-    { icon: Landmark, label: "Pajak (Tax)", value: formatIDR(totalTax), color: "text-destructive", bg: "bg-destructive/10" },
-    { icon: ArrowUpRight, label: "Tunggakan (Dues)", value: formatIDR(totalDues), color: "text-chart-3", bg: "bg-chart-3/10" },
-    { icon: TrendingUp, label: "Total Revenue", value: formatIDR(totalRevenue), color: "text-primary", bg: "bg-primary/10" },
-    { icon: Percent, label: "Okupansi", value: `${occupancyRate}%`, color: "text-chart-1", bg: "bg-chart-1/10" },
+    { icon: DollarSign, label: "Rent Collected", value: totalRentCollected, color: "text-chart-1", bg: "bg-chart-1/10" },
+    { icon: Receipt, label: "Service Charges", value: totalServiceCharges, color: "text-chart-3", bg: "bg-chart-3/10" },
+    { icon: Landmark, label: "Pajak (Tax)", value: totalTax, color: "text-destructive", bg: "bg-destructive/10" },
+    { icon: ArrowUpRight, label: "Tunggakan (Dues)", value: totalDues, color: "text-chart-3", bg: "bg-chart-3/10" },
+    { icon: TrendingUp, label: "Total Revenue", value: totalRevenue, color: "text-primary", bg: "bg-primary/10" },
+    { icon: Percent, label: "Okupansi", value: null, color: "text-chart-1", bg: "bg-chart-1/10" },
   ];
 
   return (
@@ -33,7 +33,9 @@ const RentalFinancialSummary = ({
             </div>
             <div className="min-w-0">
               <p className="text-[8px] text-muted-foreground truncate">{item.label}</p>
-              <p className="text-[10px] font-bold text-foreground truncate">{item.value}</p>
+              <p className="text-[10px] font-bold text-foreground truncate">
+                {item.value !== null ? <Price amount={item.value} short /> : `${occupancyRate}%`}
+              </p>
             </div>
           </div>
         </Card>

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { safeLocalStorage } from "@/lib/safeStorage";
+import { useCurrencyStore } from "@/stores/currencyStore";
 
 export type CurrencyCode = "IDR" | "USD" | "SGD" | "AUD";
 
@@ -86,6 +87,12 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     
     return `${config.symbol} ${value}`;
   };
+
+  // Sync to zustand store for non-React contexts
+  const syncStore = useCurrencyStore.getState();
+  useEffect(() => {
+    useCurrencyStore.setState({ currency, rates });
+  }, [currency, rates]);
 
   return (
     <CurrencyContext.Provider value={{ currency, setCurrency, convert, formatPrice, formatPriceShort, rates }}>

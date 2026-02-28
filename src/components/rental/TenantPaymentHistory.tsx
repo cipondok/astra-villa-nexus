@@ -11,7 +11,8 @@ import {
   Receipt, CheckCircle, Clock, XCircle, Loader2, Download, Filter,
   Calendar, CreditCard, FileText, Eye
 } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 
@@ -107,15 +108,15 @@ const TenantPaymentHistory = () => {
       <div className="grid grid-cols-3 gap-1.5">
         <Card className="p-2">
           <p className="text-[8px] text-muted-foreground">Total Dibayar</p>
-          <p className="text-xs font-bold text-chart-1">{formatIDR(totalPaid)}</p>
+          <p className="text-xs font-bold text-chart-1"><Price amount={totalPaid} short /></p>
         </Card>
         <Card className="p-2">
           <p className="text-[8px] text-muted-foreground">Belum Dibayar</p>
-          <p className="text-xs font-bold text-destructive">{formatIDR(totalUnpaid)}</p>
+          <p className="text-xs font-bold text-destructive"><Price amount={totalUnpaid} short /></p>
         </Card>
         <Card className="p-2">
           <p className="text-[8px] text-muted-foreground">Bulan Ini</p>
-          <p className="text-xs font-bold text-primary">{formatIDR(thisMonth)}</p>
+          <p className="text-xs font-bold text-primary"><Price amount={thisMonth} short /></p>
         </Card>
       </div>
 
@@ -184,7 +185,7 @@ const TenantPaymentHistory = () => {
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-xs font-bold text-foreground">{formatIDR(inv.total_amount)}</p>
+                    <p className="text-xs font-bold text-foreground"><Price amount={inv.total_amount} /></p>
                     <Badge className={`text-[7px] px-1 py-0 ${st.color}`}>{st.label}</Badge>
                   </div>
                   {inv.status === "paid" && (
@@ -223,10 +224,10 @@ const TenantPaymentHistory = () => {
                     { label: "Deskripsi", value: receiptDialog.description },
                     { label: "Tipe", value: typeLabels[receiptDialog.invoice_type] || receiptDialog.invoice_type },
                     { label: "Properti", value: receiptDialog.properties?.title || "-" },
-                    { label: "Subtotal", value: formatIDR(receiptDialog.base_amount || receiptDialog.total_amount) },
-                    ...(receiptDialog.tax_amount > 0 ? [{ label: "Pajak", value: formatIDR(receiptDialog.tax_amount) }] : []),
-                    ...(receiptDialog.service_charge_amount > 0 ? [{ label: "Service Charge", value: formatIDR(receiptDialog.service_charge_amount) }] : []),
-                    { label: "Total", value: formatIDR(receiptDialog.total_amount) },
+                    { label: "Subtotal", value: getCurrencyFormatter()(receiptDialog.base_amount || receiptDialog.total_amount) },
+                    ...(receiptDialog.tax_amount > 0 ? [{ label: "Pajak", value: getCurrencyFormatter()(receiptDialog.tax_amount) }] : []),
+                    ...(receiptDialog.service_charge_amount > 0 ? [{ label: "Service Charge", value: getCurrencyFormatter()(receiptDialog.service_charge_amount) }] : []),
+                    { label: "Total", value: getCurrencyFormatter()(receiptDialog.total_amount) },
                     { label: "Metode", value: methodLabels[receiptDialog.payment_method] || receiptDialog.payment_method || "-" },
                     ...(receiptDialog.payment_reference ? [{ label: "Referensi", value: receiptDialog.payment_reference }] : []),
                     { label: "Tanggal Bayar", value: receiptDialog.paid_at ? format(new Date(receiptDialog.paid_at), "dd MMMM yyyy, HH:mm", { locale: idLocale }) : "-" },

@@ -4,7 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useRentalAnalytics } from "@/hooks/useRentalAnalytics";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { Loader2, TrendingUp, Home, DollarSign, CalendarDays, BarChart3, Users, Percent, ArrowUpRight, ArrowDownRight, Target, Zap } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Area, AreaChart, Legend } from "recharts";
 
@@ -49,8 +50,8 @@ const OwnerRentalAnalytics = () => {
   const statCards = [
     { icon: CalendarDays, label: "Total Booking", value: analytics.totalBookings.toString(), trend: bookingGrowth, color: "text-primary", bg: "bg-primary/10" },
     { icon: Home, label: "Tingkat Hunian", value: `${analytics.occupancyRate}%`, trend: null, color: "text-chart-1", bg: "bg-chart-1/10" },
-    { icon: DollarSign, label: "Total Pendapatan", value: formatIDR(analytics.totalRevenue), trend: revenueGrowth, color: "text-chart-1", bg: "bg-chart-1/10" },
-    { icon: TrendingUp, label: "Rata-rata/Booking", value: formatIDR(analytics.avgBookingValue), trend: null, color: "text-primary", bg: "bg-primary/10" },
+    { icon: DollarSign, label: "Total Pendapatan", value: null, amount: analytics.totalRevenue, trend: revenueGrowth, color: "text-chart-1", bg: "bg-chart-1/10" },
+    { icon: TrendingUp, label: "Rata-rata/Booking", value: null, amount: analytics.avgBookingValue, trend: null, color: "text-primary", bg: "bg-primary/10" },
     { icon: Percent, label: "Collection Rate", value: `${collectionRate}%`, trend: null, color: collectionRate >= 80 ? "text-chart-1" : "text-destructive", bg: collectionRate >= 80 ? "bg-chart-1/10" : "bg-destructive/10" },
     { icon: Users, label: "Durasi Rata-rata", value: `${analytics.avgBookingDuration} hari`, trend: null, color: "text-chart-3", bg: "bg-chart-3/10" },
   ];
@@ -70,7 +71,7 @@ const OwnerRentalAnalytics = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] text-muted-foreground font-medium">Total Pendapatan</p>
-              <p className="text-lg font-bold text-foreground">{formatIDR(analytics.totalRevenue)}</p>
+              <p className="text-lg font-bold text-foreground"><Price amount={analytics.totalRevenue} /></p>
             </div>
             <div className="text-right">
               <div className="flex items-center gap-1 justify-end">
@@ -89,11 +90,11 @@ const OwnerRentalAnalytics = () => {
           <div className="grid grid-cols-3 gap-2 mt-2">
             <div className="text-center">
               <p className="text-[9px] text-muted-foreground">Lunas</p>
-              <p className="text-xs font-semibold text-chart-1">{formatIDR(analytics.paidRevenue)}</p>
+              <p className="text-xs font-semibold text-chart-1"><Price amount={analytics.paidRevenue} short /></p>
             </div>
             <div className="text-center">
               <p className="text-[9px] text-muted-foreground">Belum Bayar</p>
-              <p className="text-xs font-semibold text-destructive">{formatIDR(analytics.unpaidRevenue)}</p>
+              <p className="text-xs font-semibold text-destructive"><Price amount={analytics.unpaidRevenue} short /></p>
             </div>
             <div className="text-center">
               <p className="text-[9px] text-muted-foreground">Collection</p>
@@ -131,7 +132,7 @@ const OwnerRentalAnalytics = () => {
                   <span className="text-[9px] text-muted-foreground">{s.label}</span>
                 </div>
                 <div className="flex items-end justify-between">
-                  <p className={`text-xs font-bold ${s.color}`}>{s.value}</p>
+                  <p className={`text-xs font-bold ${s.color}`}>{s.amount !== undefined ? <Price amount={s.amount} short /> : s.value}</p>
                   {s.trend !== null && (
                     <span className={`text-[8px] font-medium ${s.trend >= 0 ? 'text-chart-1' : 'text-destructive'}`}>
                       {s.trend >= 0 ? '↑' : '↓'}{Math.abs(s.trend)}%
@@ -221,7 +222,7 @@ const OwnerRentalAnalytics = () => {
                       </p>
                     </div>
                     <div className="text-right flex-shrink-0 ml-2">
-                      <p className="text-[9px] font-semibold text-foreground">{formatIDR(b.total_amount)}</p>
+                      <p className="text-[9px] font-semibold text-foreground"><Price amount={b.total_amount} short /></p>
                       <Badge variant="outline" className="text-[7px] h-3.5 px-1">
                         {b.booking_status}
                       </Badge>
@@ -250,7 +251,7 @@ const OwnerRentalAnalytics = () => {
                   <YAxis tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" tickFormatter={v => `${(v / 1000000).toFixed(0)}jt`} />
                   <Tooltip
                     contentStyle={{ fontSize: 11, background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, color: "hsl(var(--foreground))" }}
-                    formatter={(value: number) => [formatIDR(value), "Pendapatan"]}
+                    formatter={(value: number) => [getCurrencyFormatter()(value), "Pendapatan"]}
                   />
                   <Bar dataKey="revenue" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                 </BarChart>
@@ -273,7 +274,7 @@ const OwnerRentalAnalytics = () => {
                   <YAxis tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" tickFormatter={v => `${(v / 1000000).toFixed(0)}jt`} />
                   <Tooltip
                     contentStyle={{ fontSize: 11, background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, color: "hsl(var(--foreground))" }}
-                    formatter={(value: number) => [formatIDR(value), "Kumulatif"]}
+                    formatter={(value: number) => [getCurrencyFormatter()(value), "Kumulatif"]}
                   />
                   <Area type="monotone" dataKey="cumulative" fill="hsl(var(--primary) / 0.15)" stroke="hsl(var(--primary))" strokeWidth={2} />
                 </AreaChart>
@@ -285,12 +286,12 @@ const OwnerRentalAnalytics = () => {
           <div className="grid grid-cols-2 gap-2">
             <Card className="p-2.5 border-border">
               <p className="text-[9px] text-muted-foreground mb-1">Sudah Dibayar</p>
-              <p className="text-sm font-bold text-chart-1">{formatIDR(analytics.paidRevenue)}</p>
+              <p className="text-sm font-bold text-chart-1"><Price amount={analytics.paidRevenue} /></p>
               <Progress value={collectionRate} className="h-1 mt-1.5" />
             </Card>
             <Card className="p-2.5 border-border">
               <p className="text-[9px] text-muted-foreground mb-1">Belum Dibayar</p>
-              <p className="text-sm font-bold text-destructive">{formatIDR(analytics.unpaidRevenue)}</p>
+              <p className="text-sm font-bold text-destructive"><Price amount={analytics.unpaidRevenue} /></p>
               <Progress value={100 - collectionRate} className="h-1 mt-1.5" />
             </Card>
           </div>

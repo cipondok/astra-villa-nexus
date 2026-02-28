@@ -5,7 +5,8 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import {
   Loader2, Building, Eye, Heart, MessageSquare, CalendarDays,
   DollarSign, TrendingUp, Users, BarChart3, Target, Home
@@ -219,16 +220,16 @@ const OwnerPropertyAnalytics = () => {
             <DollarSign className="h-4 w-4 text-chart-1" />
             <span className="text-xs font-semibold">Pendapatan</span>
           </div>
-          <span className="text-sm font-bold text-chart-1">{formatIDR(aggregated.revenue)}</span>
+          <span className="text-sm font-bold text-chart-1"><Price amount={aggregated.revenue} short /></span>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-chart-1/10 rounded-lg p-2">
             <p className="text-[9px] text-muted-foreground">Lunas</p>
-            <p className="text-xs font-bold text-chart-1">{formatIDR(aggregated.paidRevenue)}</p>
+            <p className="text-xs font-bold text-chart-1"><Price amount={aggregated.paidRevenue} short /></p>
           </div>
           <div className="bg-destructive/10 rounded-lg p-2">
             <p className="text-[9px] text-muted-foreground">Belum Bayar</p>
-            <p className="text-xs font-bold text-destructive">{formatIDR(aggregated.revenue - aggregated.paidRevenue)}</p>
+            <p className="text-xs font-bold text-destructive"><Price amount={aggregated.revenue - aggregated.paidRevenue} short /></p>
           </div>
         </div>
       </Card>
@@ -252,7 +253,7 @@ const OwnerPropertyAnalytics = () => {
                     <YAxis type="category" dataKey="name" tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" width={90} />
                     <Tooltip
                       contentStyle={{ fontSize: 11, background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, color: "hsl(var(--foreground))" }}
-                      formatter={(value: number) => [formatIDR(value), "Pendapatan"]}
+                      formatter={(value: number) => [getCurrencyFormatter()(value), "Pendapatan"]}
                     />
                     <Bar dataKey="revenue" fill="hsl(var(--chart-1))" radius={[0, 4, 4, 0]} />
                   </BarChart>
@@ -329,7 +330,7 @@ const OwnerPropertyAnalytics = () => {
                     <p className="text-[7px] text-muted-foreground">Booking</p>
                   </div>
                   <div className="text-center">
-                    <p className="font-bold text-chart-1">{formatIDR(p.revenue)}</p>
+                    <p className="font-bold text-chart-1"><Price amount={p.revenue} short /></p>
                     <p className="text-[7px] text-muted-foreground">Revenue</p>
                   </div>
                 </div>

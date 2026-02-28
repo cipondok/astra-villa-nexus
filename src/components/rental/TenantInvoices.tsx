@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Receipt, CheckCircle, Clock, XCircle, Loader2, CreditCard, DollarSign, Download, FileText } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import { generateInvoicePdf } from "@/utils/invoicePdfGenerator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -95,7 +95,7 @@ const TenantInvoices = () => {
         </Card>
         <Card className="p-3 border-border">
           <p className="text-xs text-muted-foreground">Belum Bayar</p>
-          <p className="text-sm font-bold text-destructive">{formatIDR(unpaidTotal)}</p>
+          <p className="text-sm font-bold text-destructive"><Price amount={unpaidTotal} /></p>
         </Card>
         <Card className="p-3 border-border">
           <p className="text-xs text-muted-foreground">Lunas</p>
@@ -131,8 +131,8 @@ const TenantInvoices = () => {
                   </div>
                   <div className="flex items-center justify-between mt-2">
                     <div>
-                      <p className="text-sm font-bold text-primary">{formatIDR(inv.total_amount)}</p>
-                      {inv.tax_amount > 0 && <p className="text-[10px] text-muted-foreground">Termasuk pajak {formatIDR(inv.tax_amount)}</p>}
+                     <p className="text-sm font-bold text-primary"><Price amount={inv.total_amount} /></p>
+                      {inv.tax_amount > 0 && <p className="text-[10px] text-muted-foreground">Termasuk pajak <Price amount={inv.tax_amount} /></p>}
                       <p className="text-[10px] text-destructive">Jatuh tempo: {inv.due_date}</p>
                     </div>
                     <div className="flex gap-1.5">
@@ -164,7 +164,7 @@ const TenantInvoices = () => {
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <div className="text-right">
-                        <p className="text-xs font-semibold text-chart-1">{formatIDR(inv.total_amount)}</p>
+                        <p className="text-xs font-semibold text-chart-1"><Price amount={inv.total_amount} /></p>
                         <p className="text-[10px] text-muted-foreground">{new Date(inv.paid_at).toLocaleDateString("id-ID")}</p>
                       </div>
                       <Button size="sm" variant="outline" className="h-7 text-[10px] px-2" onClick={() => generateInvoicePdf(inv, true)}>
@@ -190,7 +190,7 @@ const TenantInvoices = () => {
               <div className="bg-muted/50 rounded-lg p-3 space-y-1">
                 <p className="text-xs text-muted-foreground">{payDialog.invoice_number}</p>
                 <p className="text-sm font-medium text-foreground">{payDialog.description}</p>
-                <p className="text-lg font-bold text-primary">{formatIDR(payDialog.total_amount)}</p>
+                <p className="text-lg font-bold text-primary"><Price amount={payDialog.total_amount} /></p>
               </div>
               <div>
                 <Label className="text-xs">Metode Pembayaran</Label>

@@ -6,7 +6,7 @@ import { Check, Zap, Crown, Building2, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useMidtransPayment } from '@/hooks/useMidtransPayment';
-import { formatIDR } from '@/utils/currency';
+import Price from "@/components/ui/Price";
 
 const PLAN_ICONS: Record<string, React.ElementType> = {
   free: Zap,
@@ -85,7 +85,7 @@ export const SubscriptionPlans: React.FC = () => {
                       {plan.price_monthly === 0 ? (
                         'Free'
                       ) : (
-                        formatIDR(plan.price_monthly)
+                        <Price amount={plan.price_monthly} />
                       )}
                     </div>
                     {plan.price_monthly > 0 && (

@@ -28,7 +28,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 
 interface Property {
   id: string;
@@ -547,7 +547,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                       <div className="flex items-center justify-between gap-1.5">
                         <div className="min-w-0 flex-1">
                           <div className="font-bold text-xs text-primary truncate">
-                            {property.price ? formatIDR(property.price) : 'No price'}
+                            {property.price ? <Price amount={property.price} short /> : 'No price'}
                           </div>
                           <div className="text-[9px] text-muted-foreground capitalize">
                             {property.listing_type}
