@@ -40,6 +40,7 @@ const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingI
 
 const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAIChatWidget'));
 const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
+const FloatingThemeToggle = lazy(() => import('@/components/FloatingThemeToggle'));
 
 // Lazy load shell handlers — none are needed for first paint
 const SessionExpirationHandler = lazy(() => import('@/components/SessionExpirationHandler'));
@@ -315,6 +316,7 @@ const AppContent = () => {
           {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
         </Suspense>
       )}
+      <Suspense fallback={null}><FloatingThemeToggle /></Suspense>
     </div>
   );
 };
