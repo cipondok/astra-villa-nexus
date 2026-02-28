@@ -530,10 +530,10 @@ export const EligibilityChecker = () => {
                   const numericValue = parseIDR(e.target.value).toString();
                   setFormData({ ...formData, monthlyIncome: numericValue });
                 }}
-                placeholder="Rp 50.000.000"
+                placeholder={getCurrencyFormatter()(50_000_000)}
               />
               <p className="text-xs text-muted-foreground">
-                {language === "id" ? "Minimal Rp 30.000.000/bulan untuk KPR" : "Minimum Rp 30,000,000/month for mortgage"}
+                {language === "id" ? `Minimal ${getCurrencyFormatter()(30_000_000)}/bulan untuk KPR` : `Minimum ${getCurrencyFormatter()(30_000_000)}/month for mortgage`}
               </p>
             </div>
 
@@ -571,7 +571,7 @@ export const EligibilityChecker = () => {
                   const numericValue = parseIDR(e.target.value).toString();
                   setFormData({ ...formData, savings: numericValue });
                 }}
-                placeholder="Rp 2.000.000.000"
+                placeholder={getCurrencyFormatter()(2_000_000_000)}
               />
             </div>
           </div>
@@ -608,12 +608,12 @@ export const EligibilityChecker = () => {
                   const numericValue = parseIDR(e.target.value).toString();
                   setFormData({ ...formData, investmentAmount: numericValue });
                 }}
-                placeholder="Rp 3.000.000.000"
+                placeholder={getCurrencyFormatter()(3_000_000_000)}
               />
               <p className="text-xs text-muted-foreground">
                 {language === "id" 
-                  ? "Minimal Rp 3.000.000.000 untuk apartemen, Rp 5.000.000.000 untuk rumah"
-                  : "Minimum Rp 3,000,000,000 for apartments, Rp 5,000,000,000 for houses"}
+                  ? `Minimal ${getCurrencyFormatter()(3_000_000_000)} untuk apartemen, ${getCurrencyFormatter()(5_000_000_000)} untuk rumah`
+                  : `Minimum ${getCurrencyFormatter()(3_000_000_000)} for apartments, ${getCurrencyFormatter()(5_000_000_000)} for houses`}
               </p>
             </div>
 

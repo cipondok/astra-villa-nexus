@@ -583,7 +583,7 @@ const ViralGrowthCampaigns = () => {
           </Card>
         </TabsContent>
 
-        {/* Rp 750K Bonus Tab */}
+        {/* Bonus Tab */}
         <TabsContent value="bonus" className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
@@ -591,7 +591,7 @@ const ViralGrowthCampaigns = () => {
                 <div>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Gift className="h-5 w-5 text-chart-1" />
-                    Welcome Bonus - Rp 750.000 Credit
+                    Welcome Bonus - {getCurrencyFormatterShort()(750_000)} Credit
                   </CardTitle>
                   <CardDescription>Track first-time user bonus distribution</CardDescription>
                 </div>

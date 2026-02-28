@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { motion } from 'framer-motion';
 import { Calculator, TrendingUp, ShieldCheck, BadgePercent, ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -110,7 +111,7 @@ const KprCalculatorPage: React.FC = () => {
                 Jadwal Amortisasi (Default)
               </CardTitle>
               <p className="text-xs text-muted-foreground">
-                Berdasarkan harga Rp 1M, DP 20%, tenor 15 tahun, bunga 7%
+                Berdasarkan harga {getCurrencyFormatterShort()(1_000_000_000)}, DP 20%, tenor 15 tahun, bunga 7%
               </p>
             </CardHeader>
             <CardContent>

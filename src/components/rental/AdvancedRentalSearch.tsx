@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -265,11 +266,11 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
                   </SelectTrigger>
                   <SelectContent className="bg-popover border-border z-50">
                     <SelectItem value="all">Semua Harga</SelectItem>
-                    <SelectItem value="under-1m">&lt; Rp 1 Jt</SelectItem>
-                    <SelectItem value="1m-5m">Rp 1-5 Jt</SelectItem>
-                    <SelectItem value="5m-10m">Rp 5-10 Jt</SelectItem>
-                    <SelectItem value="10m-20m">Rp 10-20 Jt</SelectItem>
-                    <SelectItem value="over-20m">&gt; Rp 20 Jt</SelectItem>
+                    <SelectItem value="under-1m">&lt; {getCurrencyFormatterShort()(1_000_000)}</SelectItem>
+                    <SelectItem value="1m-5m">{getCurrencyFormatterShort()(1_000_000)} - {getCurrencyFormatterShort()(5_000_000)}</SelectItem>
+                    <SelectItem value="5m-10m">{getCurrencyFormatterShort()(5_000_000)} - {getCurrencyFormatterShort()(10_000_000)}</SelectItem>
+                    <SelectItem value="10m-20m">{getCurrencyFormatterShort()(10_000_000)} - {getCurrencyFormatterShort()(20_000_000)}</SelectItem>
+                    <SelectItem value="over-20m">&gt; {getCurrencyFormatterShort()(20_000_000)}</SelectItem>
                   </SelectContent>
                 </Select>
 

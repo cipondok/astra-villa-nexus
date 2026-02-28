@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -189,7 +190,7 @@ const HomeownerOnboarding = ({
                 <div className="grid grid-cols-2 gap-2">
                   <div className="p-2 rounded-lg bg-background/50">
                     <div className="text-[10px] text-muted-foreground">Avg. Price/m²</div>
-                    <div className="text-sm font-bold">Rp 15-20M</div>
+                    <div className="text-sm font-bold">{getCurrencyFormatterShort()(15_000_000)} - {getCurrencyFormatterShort()(20_000_000)}</div>
                   </div>
                   <div className="p-2 rounded-lg bg-background/50">
                     <div className="text-[10px] text-muted-foreground">Similar Listings</div>

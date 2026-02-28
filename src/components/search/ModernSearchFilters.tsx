@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -376,9 +377,9 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
                         <SelectValue placeholder={currentText.anyPrice} />
                       </SelectTrigger>
                       <SelectContent className="bg-background border border-border shadow-lg z-50">
-                        <SelectItem value="0-1b" className="hover:bg-primary/10">Under Rp 1B</SelectItem>
-                        <SelectItem value="1b-5b" className="hover:bg-primary/10">Rp 1B - 5B</SelectItem>
-                        <SelectItem value="5b+" className="hover:bg-primary/10">Rp 5B+</SelectItem>
+                        <SelectItem value="0-1b" className="hover:bg-primary/10">Under {getCurrencyFormatterShort()(1_000_000_000)}</SelectItem>
+                        <SelectItem value="1b-5b" className="hover:bg-primary/10">{getCurrencyFormatterShort()(1_000_000_000)} - {getCurrencyFormatterShort()(5_000_000_000)}</SelectItem>
+                        <SelectItem value="5b+" className="hover:bg-primary/10">{getCurrencyFormatterShort()(5_000_000_000)}+</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

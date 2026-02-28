@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -109,7 +110,7 @@ const ServiceForm = () => {
                     name="price"
                     value={formData.price}
                     onChange={handleInputChange}
-                    placeholder="e.g., Rp 150,000 - Rp 400,000"
+                    placeholder={`e.g., ${getCurrencyFormatter()(150_000)} - ${getCurrencyFormatter()(400_000)}`}
                     required
                   />
                 </div>

@@ -612,7 +612,7 @@ const Dijual = () => {
                 <p className="text-xl sm:text-2xl font-bold text-foreground">
                   {properties.length > 0 
                     ? formatPrice(properties.reduce((sum, p) => sum + (p.price || 0), 0) / properties.length)
-                    : 'Rp 0'
+                    : formatPrice(0)
                   }
                 </p>
                 <p className="text-xs sm:text-sm text-muted-foreground">Harga Rata-rata</p>
