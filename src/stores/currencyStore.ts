@@ -74,3 +74,15 @@ export const getCurrencyFormatterShort = () => {
     return `${config.symbol} ${value}`;
   };
 };
+
+/** Format a price range like "Rp 8-20M" → "$ 500-1.2K" */
+export const formatPriceRange = (minIDR: number, maxIDR: number): string => {
+  const fmt = getCurrencyFormatterShort();
+  return `${fmt(minIDR)} - ${fmt(maxIDR)}`;
+};
+
+/** Get current currency symbol */
+export const getCurrencySymbol = (): string => {
+  const { currency } = useCurrencyStore.getState();
+  return CURRENCY_META[currency].symbol;
+};

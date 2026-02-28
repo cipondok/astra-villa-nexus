@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from '@/i18n/useTranslation';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -123,7 +124,7 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
         "Sumber dana harus dapat dilacak dengan jelas",
         "Gunakan saluran bank resmi - hindari transfer informal",
         "Simpan semua bukti transaksi dan rekening koran",
-        "Untuk jumlah di atas Rp 1 miliar, dokumentasi tambahan diperlukan"
+        `Untuk jumlah di atas ${getCurrencyFormatterShort()(1_000_000_000)}, dokumentasi tambahan diperlukan`
       ],
       dpPayment: "Uang Muka (DP)",
       dpDesc: "Minimal 20% untuk KPR WNI luar negeri. DP lebih tinggi = suku bunga lebih baik.",

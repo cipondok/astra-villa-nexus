@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { MapPin, School, Hospital, ShoppingCart, Trees, Map, DollarSign, TrendingUp, Building2, Compass, Home, Globe, Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -167,38 +168,39 @@ const AreaGuides = () => {
   ];
 
 
+  const fmt = getCurrencyFormatterShort();
   const popularSocieties = {
     jakarta: [
-      { name: 'BSD City', location: 'Tangerang Selatan', avgPrice: 'Rp 8-20M', type: 'Modern Township' },
-      { name: 'Alam Sutera', location: 'Tangerang', avgPrice: 'Rp 15-35M', type: 'Luxury Complex' },
-      { name: 'Summarecon Bekasi', location: 'Bekasi', avgPrice: 'Rp 5-15M', type: 'Residential' },
-      { name: 'PIK (Pantai Indah Kapuk)', location: 'North Jakarta', avgPrice: 'Rp 25-80M', type: 'Waterfront' },
-      { name: 'Gading Serpong', location: 'Tangerang', avgPrice: 'Rp 7-18M', type: 'Integrated City' }
+      { name: 'BSD City', location: 'Tangerang Selatan', avgPrice: `${fmt(8_000_000)}-${fmt(20_000_000)}`, type: 'Modern Township' },
+      { name: 'Alam Sutera', location: 'Tangerang', avgPrice: `${fmt(15_000_000)}-${fmt(35_000_000)}`, type: 'Luxury Complex' },
+      { name: 'Summarecon Bekasi', location: 'Bekasi', avgPrice: `${fmt(5_000_000)}-${fmt(15_000_000)}`, type: 'Residential' },
+      { name: 'PIK (Pantai Indah Kapuk)', location: 'North Jakarta', avgPrice: `${fmt(25_000_000)}-${fmt(80_000_000)}`, type: 'Waterfront' },
+      { name: 'Gading Serpong', location: 'Tangerang', avgPrice: `${fmt(7_000_000)}-${fmt(18_000_000)}`, type: 'Integrated City' }
     ],
     surabaya: [
-      { name: 'Citraland Surabaya', location: 'West Surabaya', avgPrice: 'Rp 5-15M', type: 'Premium' },
-      { name: 'Pakuwon City', location: 'West Surabaya', avgPrice: 'Rp 8-25M', type: 'Modern City' },
-      { name: 'Graha Famili', location: 'East Surabaya', avgPrice: 'Rp 4-12M', type: 'Family Living' }
+      { name: 'Citraland Surabaya', location: 'West Surabaya', avgPrice: `${fmt(5_000_000)}-${fmt(15_000_000)}`, type: 'Premium' },
+      { name: 'Pakuwon City', location: 'West Surabaya', avgPrice: `${fmt(8_000_000)}-${fmt(25_000_000)}`, type: 'Modern City' },
+      { name: 'Graha Famili', location: 'East Surabaya', avgPrice: `${fmt(4_000_000)}-${fmt(12_000_000)}`, type: 'Family Living' }
     ],
     bandung: [
-      { name: 'Dago Village', location: 'North Bandung', avgPrice: 'Rp 10-30M', type: 'Highland' },
-      { name: 'Kota Baru Parahyangan', location: 'West Bandung', avgPrice: 'Rp 6-18M', type: 'New Town' },
-      { name: 'Cihanjuang Regency', location: 'Cimahi', avgPrice: 'Rp 3-10M', type: 'Affordable' }
+      { name: 'Dago Village', location: 'North Bandung', avgPrice: `${fmt(10_000_000)}-${fmt(30_000_000)}`, type: 'Highland' },
+      { name: 'Kota Baru Parahyangan', location: 'West Bandung', avgPrice: `${fmt(6_000_000)}-${fmt(18_000_000)}`, type: 'New Town' },
+      { name: 'Cihanjuang Regency', location: 'Cimahi', avgPrice: `${fmt(3_000_000)}-${fmt(10_000_000)}`, type: 'Affordable' }
     ],
     medan: [
-      { name: 'The Mansion', location: 'Medan Johor', avgPrice: 'Rp 8-20M', type: 'Luxury' },
-      { name: 'Taman Setia Budi', location: 'Medan Selayang', avgPrice: 'Rp 5-15M', type: 'Residential' },
-      { name: 'Polonia', location: 'Medan Polonia', avgPrice: 'Rp 6-18M', type: 'Central' }
+      { name: 'The Mansion', location: 'Medan Johor', avgPrice: `${fmt(8_000_000)}-${fmt(20_000_000)}`, type: 'Luxury' },
+      { name: 'Taman Setia Budi', location: 'Medan Selayang', avgPrice: `${fmt(5_000_000)}-${fmt(15_000_000)}`, type: 'Residential' },
+      { name: 'Polonia', location: 'Medan Polonia', avgPrice: `${fmt(6_000_000)}-${fmt(18_000_000)}`, type: 'Central' }
     ],
     semarang: [
-      { name: 'Semarang City', location: 'Central Semarang', avgPrice: 'Rp 4-12M', type: 'Urban Living' },
-      { name: 'Bukit Semarang Baru', location: 'West Semarang', avgPrice: 'Rp 5-15M', type: 'Highland' },
-      { name: 'Graha Padma', location: 'South Semarang', avgPrice: 'Rp 3-10M', type: 'Residential' }
+      { name: 'Semarang City', location: 'Central Semarang', avgPrice: `${fmt(4_000_000)}-${fmt(12_000_000)}`, type: 'Urban Living' },
+      { name: 'Bukit Semarang Baru', location: 'West Semarang', avgPrice: `${fmt(5_000_000)}-${fmt(15_000_000)}`, type: 'Highland' },
+      { name: 'Graha Padma', location: 'South Semarang', avgPrice: `${fmt(3_000_000)}-${fmt(10_000_000)}`, type: 'Residential' }
     ],
     bali: [
-      { name: 'Nusa Dua Residence', location: 'Nusa Dua', avgPrice: 'Rp 30-100M', type: 'Beachfront' },
-      { name: 'Canggu Complex', location: 'Canggu', avgPrice: 'Rp 25-80M', type: 'Villa Complex' },
-      { name: 'Ubud Green Valley', location: 'Ubud', avgPrice: 'Rp 15-50M', type: 'Nature Living' }
+      { name: 'Nusa Dua Residence', location: 'Nusa Dua', avgPrice: `${fmt(30_000_000)}-${fmt(100_000_000)}`, type: 'Beachfront' },
+      { name: 'Canggu Complex', location: 'Canggu', avgPrice: `${fmt(25_000_000)}-${fmt(80_000_000)}`, type: 'Villa Complex' },
+      { name: 'Ubud Green Valley', location: 'Ubud', avgPrice: `${fmt(15_000_000)}-${fmt(50_000_000)}`, type: 'Nature Living' }
     ]
   };
 

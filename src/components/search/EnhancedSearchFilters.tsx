@@ -1,5 +1,6 @@
 
 import { Button } from "@/components/ui/button";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -288,9 +289,9 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="">{currentText.anyPrice}</SelectItem>
-                          <SelectItem value="0-1000000000">Under Rp 1B</SelectItem>
-                          <SelectItem value="1000000000-5000000000">Rp 1B - 5B</SelectItem>
-                          <SelectItem value="5000000000-999999999999">Rp 5B+</SelectItem>
+                          <SelectItem value="0-1000000000">Under {getCurrencyFormatterShort()(1_000_000_000)}</SelectItem>
+                          <SelectItem value="1000000000-5000000000">{getCurrencyFormatterShort()(1_000_000_000)} - {getCurrencyFormatterShort()(5_000_000_000)}</SelectItem>
+                          <SelectItem value="5000000000-999999999999">{getCurrencyFormatterShort()(5_000_000_000)}+</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

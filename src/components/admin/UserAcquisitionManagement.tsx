@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,7 +35,6 @@ import {
 import { toast } from "sonner";
 import { format } from "date-fns";
 import SEOManagement from "./marketing/SEOManagement";
-import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 const UserAcquisitionManagement = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -304,7 +304,7 @@ const UserAcquisitionManagement = () => {
                     <Gift className="h-4 w-4 text-accent-foreground" />
                     Referral Program 2.0
                   </CardTitle>
-                  <Badge variant="outline" className="text-xs border-primary/30 text-primary">Give Rp 1.5jt, Get Rp 1.5jt</Badge>
+                  <Badge variant="outline" className="text-xs border-primary/30 text-primary">Give {getCurrencyFormatter()(1_500_000)}, Get {getCurrencyFormatter()(1_500_000)}</Badge>
                 </div>
               </CardHeader>
               <CardContent>
@@ -439,7 +439,7 @@ const UserAcquisitionManagement = () => {
                     <Gift className="h-5 w-5 text-accent-foreground" />
                     Referral Program 2.0
                   </CardTitle>
-                  <CardDescription>Give Rp 1,500,000, Get Rp 1,500,000</CardDescription>
+                  <CardDescription>Give {getCurrencyFormatter()(1_500_000)}, Get {getCurrencyFormatter()(1_500_000)}</CardDescription>
                 </div>
               </div>
             </CardHeader>
