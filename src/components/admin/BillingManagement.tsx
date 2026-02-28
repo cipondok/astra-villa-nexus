@@ -7,21 +7,24 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CreditCard, DollarSign, Receipt, Users, TrendingUp, Calendar, Save, Search } from 'lucide-react';
+import { getCurrencyFormatter, getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 const BillingManagement = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const fmt = getCurrencyFormatter();
+  const fmtShort = getCurrencyFormatterShort();
 
   const billingData = {
-    monthlyRevenue: 'Rp 725.000.000',
+    monthlyRevenue: fmt(725_000_000),
     totalUsers: 1247,
     activeSubscriptions: 892,
     pendingPayments: 23
   };
 
   const recentTransactions = [
-    { id: '1', user: 'John Doe', amount: 'Rp 4.500.000', status: 'completed', date: '2024-01-15' },
-    { id: '2', user: 'Jane Smith', amount: 'Rp 3.000.000', status: 'pending', date: '2024-01-14' },
-    { id: '3', user: 'Mike Johnson', amount: 'Rp 6.000.000', status: 'completed', date: '2024-01-13' },
+    { id: '1', user: 'John Doe', amount: fmt(4_500_000), status: 'completed', date: '2024-01-15' },
+    { id: '2', user: 'Jane Smith', amount: fmt(3_000_000), status: 'pending', date: '2024-01-14' },
+    { id: '3', user: 'Mike Johnson', amount: fmt(6_000_000), status: 'completed', date: '2024-01-13' },
   ];
 
   const stats = [
@@ -83,7 +86,7 @@ const BillingManagement = () => {
                     <div key={period} className="flex justify-between items-center py-1 border-b border-border/30 last:border-0">
                       <span className="text-[10px] text-foreground">{period}</span>
                       <span className="text-xs font-medium text-foreground">
-                        Rp {((725000000 - idx * 75000000) / 1000000).toLocaleString()}jt
+                        {fmtShort(725_000_000 - idx * 75_000_000)}
                       </span>
                     </div>
                   ))}
@@ -146,9 +149,9 @@ const BillingManagement = () => {
 
               <div className="space-y-2">
                 {[
-                  { plan: 'Basic Plan', price: 'Rp 150.000/bln', subs: 247 },
-                  { plan: 'Premium Plan', price: 'Rp 300.000/bln', subs: 385 },
-                  { plan: 'Enterprise Plan', price: 'Rp 750.000/bln', subs: 260 }
+                  { plan: 'Basic Plan', price: `${fmt(150_000)}/bln`, subs: 247 },
+                  { plan: 'Premium Plan', price: `${fmt(300_000)}/bln`, subs: 385 },
+                  { plan: 'Enterprise Plan', price: `${fmt(750_000)}/bln`, subs: 260 }
                 ].map((item) => (
                   <div key={item.plan} className="flex items-center justify-between p-2 border border-border/50 rounded-md bg-background/30">
                     <div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -137,9 +138,9 @@ const BuyerOnboarding = ({
             {/* Sample Property Cards */}
             <div className="space-y-2">
               {[
-                { title: "Modern Villa in Seminyak", price: "Rp 3.5B", beds: 4 },
-                { title: "Cozy Apartment in Menteng", price: "Rp 1.2B", beds: 2 },
-                { title: "Family Home in Kemang", price: "Rp 4.8B", beds: 5 }
+                { title: "Modern Villa in Seminyak", price: getCurrencyFormatterShort()(3_500_000_000), beds: 4 },
+                { title: "Cozy Apartment in Menteng", price: getCurrencyFormatterShort()(1_200_000_000), beds: 2 },
+                { title: "Family Home in Kemang", price: getCurrencyFormatterShort()(4_800_000_000), beds: 5 }
               ].map((prop, i) => (
                 <Card key={i} className="hover:shadow-sm transition-shadow cursor-pointer">
                   <CardContent className="p-3 flex items-center gap-3">

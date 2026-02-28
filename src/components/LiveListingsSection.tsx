@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Zap, Clock, Users, TrendingUp, Gavel, Filter, SortAsc } from "lucide-react";
 import LiveAuctionCard from "./LiveAuctionCard";
+import { getCurrencyFormatter, getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 interface LiveListingsSectionProps {
   language: "en" | "id" | "zh" | "ja" | "ko";
@@ -52,13 +53,14 @@ const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {
 
   // Mock live auction data
   useEffect(() => {
+    const fmt = getCurrencyFormatter();
     const mockAuctions = [
       {
         id: 1,
         title: "Luxury Villa Seminyak",
         location: "Seminyak, Bali",
-        currentBid: "Rp 2,500,000,000",
-        nextMinBid: "Rp 2,600,000,000",
+        currentBid: fmt(2_500_000_000),
+        nextMinBid: fmt(2_600_000_000),
         timeLeft: "2h 45m",
         bidders: 12,
         image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=300&fit=crop",
@@ -70,8 +72,8 @@ const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {
         id: 2,
         title: "Modern Apartment Jakarta",
         location: "SCBD, Jakarta",
-        currentBid: "Rp 1,800,000,000",
-        nextMinBid: "Rp 1,900,000,000",
+        currentBid: fmt(1_800_000_000),
+        nextMinBid: fmt(1_900_000_000),
         timeLeft: "45m",
         bidders: 8,
         image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop",
@@ -83,8 +85,8 @@ const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {
         id: 3,
         title: "Beachfront House Canggu",
         location: "Canggu, Bali",
-        currentBid: "Rp 3,200,000,000",
-        nextMinBid: "Rp 3,300,000,000",
+        currentBid: fmt(3_200_000_000),
+        nextMinBid: fmt(3_300_000_000),
         timeLeft: "1h 20m",
         bidders: 15,
         image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=400&h=300&fit=crop",
@@ -96,8 +98,8 @@ const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {
         id: 4,
         title: "City Center Office Space",
         location: "Kuningan, Jakarta",
-        currentBid: "Rp 4,500,000,000",
-        nextMinBid: "Rp 4,600,000,000",
+        currentBid: fmt(4_500_000_000),
+        nextMinBid: fmt(4_600_000_000),
         timeLeft: "3h 15m",
         bidders: 6,
         image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop",
@@ -109,8 +111,8 @@ const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {
         id: 5,
         title: "Mountain View Villa",
         location: "Ubud, Bali",
-        currentBid: "Rp 2,800,000,000",
-        nextMinBid: "Rp 2,900,000,000",
+        currentBid: fmt(2_800_000_000),
+        nextMinBid: fmt(2_900_000_000),
         timeLeft: "5h 30m",
         bidders: 9,
         image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop",

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -115,8 +116,8 @@ export const AdvancedSearchPanel = ({
   };
 
   const formatPrice = (price: number) => {
-    if (price >= 1000) return `${price / 1000} M`;
-    return `${price} Jt`;
+    const fmtShort = getCurrencyFormatterShort();
+    return fmtShort(price * 1_000_000);
   };
 
   const activeFiltersCount = [
@@ -216,7 +217,7 @@ export const AdvancedSearchPanel = ({
             <div>
               <Label className="text-sm font-medium text-foreground flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
-                Kisaran Harga: Rp {formatPrice(priceRange[0])} - Rp {formatPrice(priceRange[1])}
+                Kisaran Harga: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
               </Label>
               <div className="mt-3">
                 <Slider
@@ -232,8 +233,8 @@ export const AdvancedSearchPanel = ({
                   className="w-full"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                  <span>Rp 0</span>
-                  <span>Rp 10+ M</span>
+                  <span>{getCurrencyFormatterShort()(0)}</span>
+                  <span>{getCurrencyFormatterShort()(10_000_000_000)}+</span>
                 </div>
               </div>
             </div>

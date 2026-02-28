@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useInfiniteProperties } from "@/hooks/useInfiniteProperties";
@@ -314,9 +315,7 @@ const Dijual = () => {
   };
 
   const formatPrice = (price: number) => {
-    if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}M`;
-    if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}Jt`;
-    return `Rp ${price.toLocaleString('id-ID')}`;
+    return getCurrencyFormatterShort()(price);
   };
 
   const handleSaveProperty = (propertyId: string) => {
