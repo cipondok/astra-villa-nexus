@@ -4,6 +4,7 @@ import { Facebook, Twitter, Linkedin, MessageCircle, Send, Link, Share2 } from "
 import { toast } from "@/hooks/use-toast";
 import { BaseProperty } from "@/types/property";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 interface SocialShareDialogProps {
   open: boolean;
@@ -17,11 +18,7 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
   const shareDescription = `Check out this property: ${property.title} in ${property.city || property.location}`;
   const { getPropertyImage } = useDefaultPropertyImage();
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) return `IDR ${(price / 1000000000).toFixed(1)}B`;
-    if (price >= 1000000) return `IDR ${(price / 1000000).toFixed(1)}M`;
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price);
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   const shareMessage = `${shareTitle}\n${formatPrice(property.price)}\n${property.bedrooms}BR | ${property.bathrooms}BA | ${property.area_sqm}m²\n${shareUrl}`;
 

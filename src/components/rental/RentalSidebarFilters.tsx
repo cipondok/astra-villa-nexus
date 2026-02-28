@@ -24,6 +24,7 @@ import {
   Navigation
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 export interface AdvancedRentalFilters {
   searchTerm: string;
@@ -182,12 +183,7 @@ const HANDOVER_YEARS = [
   { value: "2028", label: "2028+" },
 ];
 
-const formatPriceLabel = (val: number) => {
-  if (val >= 1_000_000_000) return `${(val / 1_000_000_000).toFixed(1)}M`;
-  if (val >= 1_000_000) return `${(val / 1_000_000).toFixed(0)}Jt`;
-  if (val >= 1_000) return `${(val / 1_000).toFixed(0)}Rb`;
-  return String(val);
-};
+const formatPriceLabel = getCurrencyFormatterShort();
 
 const FilterSection = ({ title, icon: Icon, children, defaultOpen = false }: {
   title: string; icon: any; children: React.ReactNode; defaultOpen?: boolean;
@@ -510,8 +506,8 @@ const RentalSidebarFilters = ({
               onValueChange={([min, max]) => onFiltersChange({ minPrice: min, maxPrice: max })}
             />
             <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Rp {formatPriceLabel(filters.minPrice)}</span>
-              <span>Rp {formatPriceLabel(filters.maxPrice)}</span>
+              <span>{formatPriceLabel(filters.minPrice)}</span>
+              <span>{formatPriceLabel(filters.maxPrice)}</span>
             </div>
           </FilterSection>
 

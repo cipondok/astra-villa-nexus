@@ -9,6 +9,7 @@ import { SlidersHorizontal, X, AlertTriangle, CheckCircle2, ChevronDown, Chevron
 import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from "framer-motion";
 import { toast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 interface AdvancedFiltersDialogProps {
   language: "en" | "id" | "zh" | "ja" | "ko";
@@ -143,14 +144,7 @@ const AdvancedFiltersDialog = ({
     { value: "4+", label: "4+" },
   ];
 
-  const formatPrice = (value: number) => {
-    if (value >= 1000000000) {
-      return `Rp ${(value / 1000000000).toFixed(1)}B`;
-    } else if (value >= 1000000) {
-      return `Rp ${(value / 1000000).toFixed(0)}M`;
-    }
-    return `Rp ${value.toLocaleString()}`;
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   // Validation logic
   const validateFilters = () => {

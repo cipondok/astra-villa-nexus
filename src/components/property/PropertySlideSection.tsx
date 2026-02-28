@@ -10,6 +10,7 @@ import CompactPropertyCard from "./CompactPropertyCard";
 import PropertyDetailModal from "./PropertyDetailModal";
 import Property3DViewModal from "./Property3DViewModal";
 import { BaseProperty } from "@/types/property";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 interface PropertySlideSectionProps {
   title: string;
@@ -111,18 +112,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
     staleTime: 30000,
   });
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) {
-      return `${(price / 1000000000).toFixed(1)}B`;
-    }
-    if (price >= 1000000) {
-      return `${(price / 1000000).toFixed(1)}M`;
-    }
-    if (price >= 1000) {
-      return `${(price / 1000).toFixed(0)}K`;
-    }
-    return price.toString();
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   const itemsPerSlide = 3; // Optimized for better responsive display
   const maxSlides = Math.ceil(properties.length / itemsPerSlide);

@@ -4,17 +4,14 @@ import { TrendingUp, TrendingDown, Building2, Users, PieChart, MapPin } from 'lu
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, RadarChart, PolarGrid, PolarAngleAxis, Radar } from 'recharts';
 import { cn } from '@/lib/utils';
 import { MarketData } from '@/hooks/useAgentAnalytics';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 interface MarketComparisonProps {
   data: MarketData;
   className?: string;
 }
 
-const formatPrice = (price: number): string => {
-  if (price >= 1_000_000_000) return `${(price / 1_000_000_000).toFixed(1)}B`;
-  if (price >= 1_000_000) return `${(price / 1_000_000).toFixed(0)}M`;
-  return price.toLocaleString();
-};
+const formatPrice = getCurrencyFormatterShort();
 
 const MarketComparison: React.FC<MarketComparisonProps> = ({ data, className }) => {
   const priceDiff = ((data.yourAvgPrice - data.avgMarketPrice) / data.avgMarketPrice) * 100;

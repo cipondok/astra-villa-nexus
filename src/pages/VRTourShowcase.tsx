@@ -6,6 +6,7 @@ import { ArrowLeft, Glasses, Sparkles, Info, Eye, Box } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { VRPropertyTourManager, VRTourScene } from '@/components/vr-tours';
 import { BaseProperty } from '@/types/property';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 // Demo property data
 const demoProperty: any = {
@@ -89,12 +90,7 @@ const VRTourShowcase: React.FC = () => {
     console.log('Saved staged image for scene:', sceneId);
   };
 
-  const formatPrice = (price: number) => {
-    if (price >= 1_000_000_000) {
-      return `Rp ${(price / 1_000_000_000).toFixed(1)} M`;
-    }
-    return `Rp ${(price / 1_000_000).toFixed(0)} Jt`;
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   return (
     <div className="min-h-screen bg-background text-foreground">

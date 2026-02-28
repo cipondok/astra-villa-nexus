@@ -42,6 +42,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 interface MatchReason {
   factor: string;
@@ -122,11 +123,7 @@ const AIPropertyRecommendations = ({
     setShowExplanation(true);
   };
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}B`;
-    if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}M`;
-    return `Rp ${price.toLocaleString()}`;
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   const getMatchColor = (score: number) => {
     if (score >= 80) return 'text-chart-1';

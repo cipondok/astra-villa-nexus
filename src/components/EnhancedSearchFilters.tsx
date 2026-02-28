@@ -22,6 +22,7 @@ import {
   Plus,
   Settings
 } from 'lucide-react';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 interface FilterOptions {
   priceRange: [number, number];
@@ -77,15 +78,7 @@ const EnhancedSearchFilters = () => {
     'Pet Friendly', 'New Construction', 'Renovated', 'Smart Home'
   ];
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) {
-      return `${(price / 1000000000).toFixed(1)}B IDR`;
-    }
-    if (price >= 1000000) {
-      return `${(price / 1000000).toFixed(1)}M IDR`;
-    }
-    return `${(price / 1000).toFixed(0)}K IDR`;
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   const updateFilter = (key: keyof FilterOptions, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));

@@ -22,6 +22,7 @@ import {
   ChevronRight,
   Sparkles
 } from 'lucide-react';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 interface PropertyCardProps {
   property: InvestorProperty;
@@ -29,15 +30,7 @@ interface PropertyCardProps {
 }
 
 const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) {
-      return `Rp ${(price / 1000000000).toFixed(1)}M`;
-    }
-    if (price >= 1000000) {
-      return `Rp ${(price / 1000000).toFixed(0)}Jt`;
-    }
-    return `Rp ${price.toLocaleString()}`;
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   const getImageUrl = () => {
     if (property.thumbnail_url) return property.thumbnail_url;

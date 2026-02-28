@@ -6,6 +6,7 @@ import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Tag, Percent, Key
 // Helper to capitalize first letter
 const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
 import { BaseProperty } from "@/types/property";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 interface PropertyListViewProps {
@@ -28,17 +29,8 @@ const PropertyListView = ({
   const { getPropertyImage } = useDefaultPropertyImage();
 
   const formatPrice = (price: number) => {
-    if (price >= 1000000000) {
-      const value = price / 1000000000;
-      const numStr = value % 1 === 0 ? value.toFixed(0) : value.toFixed(1);
-      return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{numStr}<span className="text-[0.7em] font-medium opacity-90">M</span></>;
-    }
-    if (price >= 1000000) {
-      const value = price / 1000000;
-      const numStr = value % 1 === 0 ? value.toFixed(0) : value.toFixed(1);
-      return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{numStr}<span className="text-[0.7em] font-medium opacity-90">Jt</span></>;
-    }
-    return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{price.toLocaleString('id-ID')}</>;
+    const formatted = getCurrencyFormatterShort()(price);
+    return <span className="font-bold">{formatted}</span>;
   };
 
   const getImageUrl = (property: BaseProperty) => {

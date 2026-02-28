@@ -22,7 +22,7 @@ import {
   X, Home, Bed, Bath, Maximize2, Circle, Pentagon, Trash2, 
   Layers, Save, BookmarkPlus, Flame 
 } from 'lucide-react';
-import { getCurrencyFormatter } from '@/stores/currencyStore';
+import { getCurrencyFormatter, getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { useToast } from '@/hooks/use-toast';
 import { useCentralLocation } from '@/hooks/useCentralLocation';
 
@@ -563,14 +563,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
     ];
   };
 
-  const formatPrice = (price: number): string => {
-    if (price >= 1000000000) {
-      return `${(price / 1000000000).toFixed(1)}B`;
-    } else if (price >= 1000000) {
-      return `${(price / 1000000).toFixed(1)}M`;
-    }
-    return `${(price / 1000).toFixed(0)}K`;
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   // Check if point is inside polygon
   const isPointInPolygon = (point: [number, number], polygon: number[][][]): boolean => {

@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTranslation } from '@/i18n/useTranslation';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 const Services = () => {
   const { profile } = useAuth();
   const navigate = useNavigate();
@@ -117,11 +118,12 @@ const Services = () => {
 
   const formatPrice = (priceRange: any) => {
     if (!priceRange) return 'Contact for pricing';
+    const fmt = getCurrencyFormatter();
     if (priceRange.min && priceRange.max) {
-      return `Rp ${priceRange.min.toLocaleString()} - Rp ${priceRange.max.toLocaleString()}`;
+      return `${fmt(priceRange.min)} - ${fmt(priceRange.max)}`;
     }
     if (priceRange.fixed) {
-      return `Rp ${priceRange.fixed.toLocaleString()}`;
+      return fmt(priceRange.fixed);
     }
     return 'Contact for pricing';
   };

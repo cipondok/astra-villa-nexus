@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 
 /**
  * Smart Payment Flow
@@ -66,13 +67,7 @@ const SmartPaymentFlow: React.FC<SmartPaymentFlowProps> = ({
     onSuccess?.(`PAY-${Date.now()}`);
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
+  const formatPrice = getCurrencyFormatter();
 
   const groupedMethods = {
     ewallet: paymentMethods.filter(m => m.category === 'ewallet'),

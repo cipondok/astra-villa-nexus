@@ -35,6 +35,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { useSavedSearches, SavedSearch } from '@/hooks/useSavedSearches';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { formatDistanceToNow } from 'date-fns';
 
 interface SavedSearchesPanelProps {
@@ -57,11 +58,7 @@ const SavedSearchesPanel = ({ onApplySearch }: SavedSearchesPanelProps) => {
     setOpen(false);
   };
 
-  const formatPrice = (price: number) => {
-    if (price >= 1_000_000_000) return `Rp ${(price / 1_000_000_000).toFixed(1)}B`;
-    if (price >= 1_000_000) return `Rp ${(price / 1_000_000).toFixed(0)}M`;
-    return `Rp ${price.toLocaleString('id-ID')}`;
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   const renderFilterSummary = (filters: Record<string, any>) => {
     const badges: string[] = [];

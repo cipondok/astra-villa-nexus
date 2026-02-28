@@ -20,6 +20,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 interface AutocompleteSuggestion {
   type: 'property' | 'location' | 'recent' | 'trending';
@@ -214,11 +215,7 @@ const LiveSearchAutocomplete = ({
   const hasSuggestions = propertySuggestions.length > 0 || locationSuggestions.length > 0;
   const showDropdown = isOpen && (hasQuery ? hasSuggestions : (recentSearches.length > 0 || trendingSuggestions.length > 0));
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}B`;
-    if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}M`;
-    return `Rp ${price.toLocaleString()}`;
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   return (
     <div ref={containerRef} className={cn("relative", className)}>

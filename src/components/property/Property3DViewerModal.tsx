@@ -5,6 +5,7 @@ import { BaseProperty } from '@/types/property';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 interface Property3DViewerModalProps {
   property: BaseProperty;
@@ -27,11 +28,7 @@ const Property3DViewerModal: React.FC<Property3DViewerModalProps> = ({
 
   const toggleFullscreen = () => setIsFullscreen(!isFullscreen);
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)} M`;
-    if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)} Jt`;
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price);
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   const tourUrl = virtualTourUrl || property.virtual_tour_url;
   const modelUrl = threeDModelUrl || property.three_d_model_url;

@@ -19,6 +19,7 @@ import PropertyListView from "@/components/search/PropertyListView";
 import SearchPagination from "@/components/search/SearchPagination";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { MapPin, Home, Bed, Bath, Square, Heart, Zap, Calendar, User, Star, TrendingUp, ShieldCheck, Box, Globe, Loader2 } from "lucide-react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 const RESULTS_PER_PAGE = 15;
 
@@ -67,11 +68,7 @@ const Disewa = () => {
     document.getElementById('properties-content')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const formatPrice = (price: number) => {
-    if (price >= 1_000_000_000) return `Rp ${(price / 1_000_000_000).toFixed(1)} M`;
-    if (price >= 1_000_000) return `Rp ${(price / 1_000_000).toFixed(1)} Jt`;
-    return `Rp ${price.toLocaleString('id-ID')}`;
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   const handleSaveProperty = (propertyId: string) => {
     const newSaved = new Set(savedProperties);

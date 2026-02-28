@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Json } from '@/integrations/supabase/types';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 // ─── Types ───────────────────────────────────────────────────────────
 interface LearnedPref {
@@ -89,12 +90,7 @@ function usePreferenceDashboardData() {
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────
-function formatPrice(n: number): string {
-  if (n >= 1_000_000_000) return `Rp ${(n / 1_000_000_000).toFixed(1)}B`;
-  if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(0)}M`;
-  if (n >= 1_000) return `Rp ${(n / 1_000).toFixed(0)}K`;
-  return `Rp ${n}`;
-}
+const formatPrice = getCurrencyFormatterShort();
 
 function getPatternIcon(type: string) {
   switch (type) {

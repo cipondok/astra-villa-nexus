@@ -10,9 +10,9 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Trash2, GitCompareArrows, X, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 
-const fmt = (v: number) =>
-  new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
+const fmt = getCurrencyFormatter();
 
 interface Props {
   scenarios: SavedScenario[];
