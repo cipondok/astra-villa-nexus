@@ -7,13 +7,7 @@ import Price from "@/components/ui/Price";
 import { useNavigate } from "react-router-dom";
 import { TrendingUp, Home, Crown, Flame, MapPin, BedDouble, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-
-const tabs: { value: CollectionType; label: string; icon: React.ReactNode }[] = [
-  { value: "best_investment", label: "Best Investment", icon: <TrendingUp className="h-3.5 w-3.5" /> },
-  { value: "best_for_living", label: "Best Living", icon: <Home className="h-3.5 w-3.5" /> },
-  { value: "luxury_collection", label: "Luxury", icon: <Crown className="h-3.5 w-3.5" /> },
-  { value: "trending", label: "Trending", icon: <Flame className="h-3.5 w-3.5" /> },
-];
+import { useTranslation } from "@/i18n/useTranslation";
 
 function getScoreBadge(type: CollectionType, scores: any) {
   switch (type) {
@@ -32,6 +26,14 @@ export default function SmartCollectionsShowcase() {
   const [activeTab, setActiveTab] = useState<CollectionType>("best_investment");
   const { bestInvestment, bestForLiving, luxuryCollection, trending } = useSmartCollections(8);
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const tabs: { value: CollectionType; label: string; icon: React.ReactNode }[] = [
+    { value: "best_investment", label: t('indexPage.bestInvestment'), icon: <TrendingUp className="h-3.5 w-3.5" /> },
+    { value: "best_for_living", label: t('indexPage.bestLiving'), icon: <Home className="h-3.5 w-3.5" /> },
+    { value: "luxury_collection", label: t('indexPage.luxury'), icon: <Crown className="h-3.5 w-3.5" /> },
+    { value: "trending", label: t('indexPage.trending'), icon: <Flame className="h-3.5 w-3.5" /> },
+  ];
 
   const dataMap: Record<CollectionType, any> = {
     best_investment: bestInvestment,
@@ -52,10 +54,10 @@ export default function SmartCollectionsShowcase() {
           <div className="hidden sm:block h-px w-8 bg-gradient-to-r from-transparent to-gold-primary/40" />
           <Sparkles className="h-5 w-5 text-gold-primary" />
           <h2 className="text-lg sm:text-2xl font-bold text-foreground">
-            AI Smart Collections
+            {t('indexPage.aiSmartCollections')}
           </h2>
           <Badge className="bg-gold-primary/10 text-gold-primary border border-gold-primary/20 text-[10px] uppercase tracking-wider">
-            AI Powered
+            {t('indexPage.aiPowered')}
           </Badge>
           <div className="hidden sm:block h-px flex-1 bg-gradient-to-r from-gold-primary/40 to-transparent" />
         </div>
@@ -85,7 +87,7 @@ export default function SmartCollectionsShowcase() {
               ) : properties.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <Sparkles className="h-8 w-8 mx-auto mb-2 text-gold-primary/40" />
-                  <p className="text-sm">No properties scored yet. Collections update automatically as engagement grows.</p>
+                  <p className="text-sm">{t('indexPage.noCollections')}</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -110,11 +112,9 @@ export default function SmartCollectionsShowcase() {
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               loading="lazy"
                             />
-                            {/* Score badge */}
                             <span className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold ${badge.color}`}>
                               {badge.label}
                             </span>
-                            {/* Predicted ROI for investment tab */}
                             {activeTab === "best_investment" && p.scores?.predicted_roi > 0 && (
                               <span className="absolute bottom-2 left-2 bg-background/80 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-semibold text-foreground">
                                 AI: {p.scores.predicted_roi.toFixed(1)}% ROI

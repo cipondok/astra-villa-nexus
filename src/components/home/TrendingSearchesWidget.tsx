@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { PropertyFilters } from '../search/AdvancedPropertyFilters';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface TrendingSearch {
   id: string;
@@ -23,6 +24,7 @@ interface TrendingSearchesWidgetProps {
 export const TrendingSearchesWidget = ({ onSearchClick }: TrendingSearchesWidgetProps) => {
   const [trends, setTrends] = useState<TrendingSearch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchTrends = async () => {
@@ -88,17 +90,17 @@ export const TrendingSearchesWidget = ({ onSearchClick }: TrendingSearchesWidget
           <TrendingUp className="h-3.5 w-3.5 md:h-5 md:w-5 text-primary" />
         </div>
         <div className="flex-1">
-          <h3 className="text-xs md:text-base font-bold">Trending Searches</h3>
-          <p className="text-[9px] md:text-xs text-muted-foreground">Popular in the last 7 days</p>
+          <h3 className="text-xs md:text-base font-bold">{t('indexPage.trendingSearches')}</h3>
+          <p className="text-[9px] md:text-xs text-muted-foreground">{t('indexPage.popularLast7Days')}</p>
         </div>
         <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-[8px] md:text-xs px-1.5 py-0.5">
           <Sparkles className="h-2.5 w-2.5 md:h-3 md:w-3 mr-0.5" />
-          Live
+          {t('indexPage.live')}
         </Badge>
       </div>
 
       <div className="space-y-1.5 md:space-y-2">
-        {trends.map((trend, index) => (
+        {trends.map((trend) => (
           <button
             key={trend.id}
             onClick={() => onSearchClick?.(trend.filters)}
@@ -130,7 +132,7 @@ export const TrendingSearchesWidget = ({ onSearchClick }: TrendingSearchesWidget
               <div className="hidden md:flex flex-col items-end gap-1">
                 <div className="text-primary">{renderSparkline(trend.sparkline)}</div>
                 <span className="text-[9px] md:text-xs font-medium text-muted-foreground">
-                  {trend.totalSearches} searches
+                  {trend.totalSearches} {t('indexPage.searches')}
                 </span>
               </div>
             </div>

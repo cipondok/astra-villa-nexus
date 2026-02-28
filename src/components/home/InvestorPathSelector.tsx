@@ -230,7 +230,7 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
 
             <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[6px] text-background font-bold shadow-lg">
               <Globe className="w-2 h-2" />
-              Guide
+              {t('investor.guide')}
             </div>
           </motion.button>
         </div>

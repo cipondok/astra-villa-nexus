@@ -27,15 +27,8 @@ interface FeaturedProperty {
   area_sqm: number | null;
 }
 
-const formatPrice = (price: number) => {
-  if (price >= 1_000_000_000) {
-    return `Rp ${(price / 1_000_000_000).toFixed(1)}M`;
-  }
-  if (price >= 1_000_000) {
-    return `Rp ${(price / 1_000_000).toFixed(0)}Jt`;
-  }
-  return `Rp ${price.toLocaleString("id-ID")}`;
-};
+import Price from "@/components/ui/Price";
+
 
 export default function FeaturedPropertiesCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -168,7 +161,7 @@ export default function FeaturedPropertiesCarousel() {
                 onClick={() => navigate("/dijual")}
                 className="hidden sm:flex items-center gap-1 text-xs text-gold-primary hover:text-gold-primary/80 ml-1"
               >
-                View All <ArrowRight className="h-3.5 w-3.5" />
+                {t("indexPage.viewAll")} <ArrowRight className="h-3.5 w-3.5" />
               </Button>
             </div>
           </div>
@@ -218,7 +211,7 @@ export default function FeaturedPropertiesCarousel() {
                           : "bg-emerald-500/90"
                       )}
                     >
-                      {p.listing_type === "rent" ? "Sewa" : "Dijual"}
+                      {p.listing_type === "rent" ? t("indexPage.forRent") : t("indexPage.forSale")}
                     </Badge>
                     {p.property_type && (
                       <Badge
@@ -233,7 +226,7 @@ export default function FeaturedPropertiesCarousel() {
                   {/* Price on image */}
                   <div className="absolute bottom-2 left-2">
                     <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-white font-black text-sm sm:text-base shadow-xl border border-white/10">
-                      {formatPrice(p.price)}
+                      <Price amount={p.price} short showFlag={false} />
                       {p.listing_type === "rent" && (
                         <span className="text-white/70 text-[10px] font-medium ml-0.5">
                           /bln
@@ -292,7 +285,7 @@ export default function FeaturedPropertiesCarousel() {
             onClick={() => navigate("/dijual")}
             className="text-xs border-gold-primary/30 text-gold-primary hover:bg-gold-primary/5"
           >
-            View All Properties <ArrowRight className="h-3.5 w-3.5 ml-1" />
+            {t("indexPage.viewAllProperties")} <ArrowRight className="h-3.5 w-3.5 ml-1" />
           </Button>
         </div>
       </div>
