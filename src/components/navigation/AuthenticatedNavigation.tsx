@@ -23,6 +23,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import LanguageToggleSwitch from "@/components/LanguageToggleSwitch";
+import CurrencySelector from "@/components/CurrencySelector";
 import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 import { 
   User, 
@@ -250,8 +251,9 @@ const AuthenticatedNavigation = ({
               <ThemeToggleSwitch />
             </div>
             
-            {/* Language Toggle */}
-            <div className="hidden sm:block">
+            {/* Currency & Language Toggle */}
+            <div className="hidden sm:flex items-center gap-1.5">
+              <CurrencySelector />
               <LanguageToggleSwitch />
             </div>
 
@@ -411,6 +413,7 @@ const AuthenticatedNavigation = ({
               )}
               <div className="border-t border-gold-primary/10 pt-2 mt-2 flex gap-2 px-3">
                 <ThemeToggleSwitch />
+                <CurrencySelector />
                 <LanguageToggleSwitch />
               </div>
             </div>

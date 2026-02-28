@@ -16,6 +16,7 @@ import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useTheme } from "@/components/ThemeProvider";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
+import CurrencySelector from "./CurrencySelector";
 import EnhancedAuthModal from "./auth/EnhancedAuthModal";
 import { useNavigate, useLocation } from "react-router-dom";
 import NotificationDropdown from "./NotificationDropdown";
@@ -314,7 +315,8 @@ const Navigation = () => {
                 {theme === "light" ? <Moon className="h-4 w-4 text-foreground/70" /> : <Sun className="h-4 w-4 text-gold-primary" />}
               </Button>
 
-              <div className="hidden lg:block">
+              <div className="hidden lg:flex items-center gap-1.5">
+                <CurrencySelector />
                 <LanguageToggleSwitch />
               </div>
 
@@ -395,11 +397,12 @@ const Navigation = () => {
                     </>
                   )}
                   
-                  <div className="flex items-center justify-between pt-1.5 border-t border-gold-primary/10">
+                  <div className="flex items-center justify-between pt-1.5 border-t border-gold-primary/10 gap-1">
                     <Button variant="ghost" size="sm" onClick={toggleTheme} className="h-7 text-[11px] text-foreground/70 hover:text-foreground hover:bg-muted/50 rounded-lg">
                       {theme === "light" ? <Moon className="h-3 w-3 mr-1" /> : <Sun className="h-3 w-3 mr-1" />}
                       {theme === "light" ? "Dark" : "Light"}
                     </Button>
+                    <CurrencySelector />
                     <LanguageToggleSwitch />
                   </div>
                   {user && (

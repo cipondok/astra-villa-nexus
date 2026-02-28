@@ -10,6 +10,7 @@ import { formatDistanceToNow } from '@/utils/dateUtils';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
 import { useTranslation } from '@/i18n/useTranslation';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface Property {
   id: string;
@@ -77,14 +78,8 @@ const EnhancedPropertyCard = ({
     view3D: t('enhancedPropertyCard.view3D'),
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  const { formatPrice: formatCurrency } = useCurrency();
+  const formatPrice = (price: number) => formatCurrency(price);
 
   const getListingTypeLabel = (type: string) => {
     switch (type) {
