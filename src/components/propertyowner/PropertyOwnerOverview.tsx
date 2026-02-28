@@ -132,6 +132,9 @@ const PropertyOwnerOverview = () => {
 
   const [openGroup, setOpenGroup] = useState<string>(() => findGroupForTab(defaultTab));
   const [perfExpanded, setPerfExpanded] = useState(false);
+  const [statsExpanded, setStatsExpanded] = useState(false);
+  const [aksiExpanded, setAksiExpanded] = useState(false);
+  const [propsExpanded, setPropsExpanded] = useState(true);
 
   if (isLoading) {
     return (
@@ -218,26 +221,61 @@ const PropertyOwnerOverview = () => {
       {/* ASTRA Token Wallet — Top Position */}
       <OwnerAstraTokenCard />
 
-      {/* Analytics Overview - Always Visible */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-3">
-        {[
-          { icon: Building, value: stats.totalProperties, label: 'Total', color: 'text-primary', bg: 'bg-primary/10' },
-          { icon: Activity, value: stats.activeListings, label: 'Aktif', color: 'text-chart-1', bg: 'bg-chart-1/10' },
-          { icon: Target, value: stats.pendingApprovals, label: 'Pending', color: 'text-chart-3', bg: 'bg-chart-3/10' },
-        ].map((stat, i) => (
-          <Card key={i} className="p-2 sm:p-3">
-            <div className="flex items-center gap-2">
-              <div className={`h-8 w-8 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center ${stat.bg}`}>
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+      {/* Analytics Overview - Smart Collapsible */}
+      <Card className="overflow-hidden">
+        <div
+          onClick={() => setStatsExpanded(!statsExpanded)}
+          className="flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 cursor-pointer hover:bg-muted/30 transition-colors"
+        >
+          <div className="flex items-center gap-1.5">
+            <Building className="h-4 w-4 text-primary" />
+            <span className="text-xs sm:text-sm font-semibold text-foreground">Ringkasan Properti</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 gap-0.5">
+              <Building className="h-2.5 w-2.5" />{stats.totalProperties}
+            </Badge>
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 gap-0.5">
+              <Activity className="h-2.5 w-2.5" />{stats.activeListings}
+            </Badge>
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 gap-0.5">
+              <Target className="h-2.5 w-2.5" />{stats.pendingApprovals}
+            </Badge>
+            <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${statsExpanded ? 'rotate-180' : ''}`} />
+          </div>
+        </div>
+        <AnimatePresence>
+          {statsExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 px-3 pb-3 sm:px-4 sm:pb-4">
+                {[
+                  { icon: Building, value: stats.totalProperties, label: 'Total', color: 'text-primary', bg: 'bg-primary/10' },
+                  { icon: Activity, value: stats.activeListings, label: 'Aktif', color: 'text-chart-1', bg: 'bg-chart-1/10' },
+                  { icon: Target, value: stats.pendingApprovals, label: 'Pending', color: 'text-chart-3', bg: 'bg-chart-3/10' },
+                ].map((stat, i) => (
+                  <div key={i} className="bg-muted/40 rounded-lg p-2 sm:p-3">
+                    <div className="flex items-center gap-2">
+                      <div className={`h-8 w-8 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center ${stat.bg}`}>
+                        <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-base sm:text-lg font-bold block leading-none">{stat.value}</span>
+                        <span className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="min-w-0">
-                <span className="text-base sm:text-lg font-bold block leading-none">{stat.value}</span>
-                <span className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</span>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Card>
 
       {/* Key Performance Metrics - Smart Collapsible */}
       <Card className="overflow-hidden">
@@ -307,32 +345,53 @@ const PropertyOwnerOverview = () => {
 
       {/* (ASTRA wallet moved to top) */}
 
-      {/* Smart Navigation Links */}
-      <div>
-        <div className="flex items-center gap-1.5 mb-2 px-0.5">
-          <Zap className="h-4 w-4 text-chart-3" />
-          <span className="text-xs sm:text-sm font-semibold text-foreground">Aksi Cepat</span>
+      {/* Smart Navigation Links - Collapsible */}
+      <Card className="overflow-hidden">
+        <div
+          onClick={() => setAksiExpanded(!aksiExpanded)}
+          className="flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 cursor-pointer hover:bg-muted/30 transition-colors"
+        >
+          <div className="flex items-center gap-1.5">
+            <Zap className="h-4 w-4 text-chart-3" />
+            <span className="text-xs sm:text-sm font-semibold text-foreground">Aksi Cepat</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">{smartLinks.length} menu</Badge>
+            <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${aksiExpanded ? 'rotate-180' : ''}`} />
+          </div>
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3">
-          {smartLinks.map((link, i) => (
-            <Card
-              key={i}
-              className="p-2.5 sm:p-3 cursor-pointer hover:shadow-md active:scale-[0.97] transition-all"
-              onClick={link.action}
+        <AnimatePresence>
+          {aksiExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              className="overflow-hidden"
             >
-              <div className="flex flex-col items-center text-center gap-1.5">
-                <div className={`h-9 w-9 sm:h-10 sm:w-10 rounded-lg flex items-center justify-center ${link.bg}`}>
-                  <link.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${link.color}`} />
-                </div>
-                <div>
-                  <p className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">{link.label}</p>
-                  <p className="text-[8px] sm:text-[10px] text-muted-foreground leading-tight mt-0.5">{link.desc}</p>
-                </div>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3 px-3 pb-3 sm:px-4 sm:pb-4">
+                {smartLinks.map((link, i) => (
+                  <div
+                    key={i}
+                    className="bg-muted/40 rounded-lg p-2.5 sm:p-3 cursor-pointer hover:bg-muted/60 active:scale-[0.97] transition-all"
+                    onClick={(e) => { e.stopPropagation(); link.action(); }}
+                  >
+                    <div className="flex flex-col items-center text-center gap-1.5">
+                      <div className={`h-9 w-9 sm:h-10 sm:w-10 rounded-lg flex items-center justify-center ${link.bg}`}>
+                        <link.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${link.color}`} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">{link.label}</p>
+                        <p className="text-[8px] sm:text-[10px] text-muted-foreground leading-tight mt-0.5">{link.desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </Card>
-          ))}
-        </div>
-      </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Card>
 
       {/* Content Tabs */}
       <Tabs defaultValue={defaultTab} className="space-y-3" onValueChange={(val) => setOpenGroup(findGroupForTab(val))}>
@@ -377,55 +436,79 @@ const PropertyOwnerOverview = () => {
         </div>
 
         {/* Overview Tab — Properties List */}
-        <TabsContent value="overview" className="space-y-2 sm:space-y-3 mt-2">
-          <div className="flex items-center justify-between px-0.5 mb-1.5">
-            <span className="text-xs sm:text-sm font-semibold text-foreground">Daftar Properti</span>
-            <Button variant="link" size="sm" className="h-5 text-[10px] sm:text-xs px-0 text-primary" onClick={() => navigate('/my-properties')}>
-              Lihat Semua <ExternalLink className="h-3 w-3 ml-0.5" />
-            </Button>
-          </div>
-          {properties.length === 0 ? (
-            <Card className="p-3">
-              <div className="text-center py-4">
-                <Building className="h-8 w-8 mx-auto mb-2 text-muted-foreground/50" />
-                <p className="text-xs font-medium">Belum ada properti</p>
-                <p className="text-[9px] text-muted-foreground mb-2">Tambahkan properti pertama Anda</p>
-                <Button size="sm" className="h-6 text-[9px]" onClick={() => navigate('/add-property')}>
-                  <PlusCircle className="h-3 w-3 mr-1" /> Tambah Properti
-                </Button>
+        <TabsContent value="overview" className="mt-2">
+          <Card className="overflow-hidden">
+            <div
+              onClick={() => setPropsExpanded(!propsExpanded)}
+              className="flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 cursor-pointer hover:bg-muted/30 transition-colors"
+            >
+              <div className="flex items-center gap-1.5">
+                <Home className="h-4 w-4 text-chart-1" />
+                <span className="text-xs sm:text-sm font-semibold text-foreground">Daftar Properti</span>
               </div>
-            </Card>
-          ) : (
-            properties.slice(0, 5).map((property) => (
-              <Card 
-                key={property.id} 
-                className="p-2 sm:p-3 active:scale-[0.99] transition-transform cursor-pointer hover:bg-muted/50"
-                onClick={() => navigate(`/property/${property.id}`)}
-              >
-                <div className="flex gap-2.5 sm:gap-3">
-                  <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
-                    {property.thumbnail_url || property.images?.[0] ? (
-                      <img src={property.thumbnail_url || property.images?.[0]} alt={property.title} className="h-full w-full object-cover" />
+              <div className="flex items-center gap-1.5">
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">{properties.length} properti</Badge>
+                <Button variant="link" size="sm" className="h-5 text-[10px] sm:text-xs px-0 text-primary" onClick={(e) => { e.stopPropagation(); navigate('/my-properties'); }}>
+                  Semua <ExternalLink className="h-3 w-3 ml-0.5" />
+                </Button>
+                <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${propsExpanded ? 'rotate-180' : ''}`} />
+              </div>
+            </div>
+            <AnimatePresence>
+              {propsExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  className="overflow-hidden"
+                >
+                  <div className="space-y-2 px-3 pb-3 sm:px-4 sm:pb-4">
+                    {properties.length === 0 ? (
+                      <div className="text-center py-4">
+                        <Building className="h-8 w-8 mx-auto mb-2 text-muted-foreground/50" />
+                        <p className="text-xs font-medium">Belum ada properti</p>
+                        <p className="text-[9px] text-muted-foreground mb-2">Tambahkan properti pertama Anda</p>
+                        <Button size="sm" className="h-6 text-[9px]" onClick={() => navigate('/add-property')}>
+                          <PlusCircle className="h-3 w-3 mr-1" /> Tambah Properti
+                        </Button>
+                      </div>
                     ) : (
-                      <div className="h-full w-full flex items-center justify-center"><Building className="h-5 w-5 text-muted-foreground" /></div>
+                      properties.slice(0, 5).map((property) => (
+                        <div
+                          key={property.id}
+                          className="bg-muted/40 rounded-lg p-2 sm:p-3 active:scale-[0.99] transition-transform cursor-pointer hover:bg-muted/60"
+                          onClick={(e) => { e.stopPropagation(); navigate(`/property/${property.id}`); }}
+                        >
+                          <div className="flex gap-2.5 sm:gap-3">
+                            <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+                              {property.thumbnail_url || property.images?.[0] ? (
+                                <img src={property.thumbnail_url || property.images?.[0]} alt={property.title} className="h-full w-full object-cover" />
+                              ) : (
+                                <div className="h-full w-full flex items-center justify-center"><Building className="h-5 w-5 text-muted-foreground" /></div>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-1.5">
+                                <h3 className="text-xs sm:text-sm font-medium truncate flex-1">{property.title || 'Untitled'}</h3>
+                                <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="text-[9px] sm:text-[10px] px-1.5 py-0.5 h-auto flex-shrink-0">{property.status}</Badge>
+                              </div>
+                              <p className="text-[10px] sm:text-xs text-muted-foreground truncate mt-0.5">{property.city}, {property.state}</p>
+                              <div className="flex items-center justify-between mt-1">
+                                <span className="text-xs sm:text-sm font-semibold text-primary">{formatIDR(property.price)}</span>
+                                <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 h-auto">{property.listing_type}</Badge>
+                              </div>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-muted-foreground self-center flex-shrink-0" />
+                          </div>
+                        </div>
+                      ))
                     )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-1.5">
-                      <h3 className="text-xs sm:text-sm font-medium truncate flex-1">{property.title || 'Untitled'}</h3>
-                      <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="text-[9px] sm:text-[10px] px-1.5 py-0.5 h-auto flex-shrink-0">{property.status}</Badge>
-                    </div>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate mt-0.5">{property.city}, {property.state}</p>
-                    <div className="flex items-center justify-between mt-1">
-                      <span className="text-xs sm:text-sm font-semibold text-primary">{formatIDR(property.price)}</span>
-                      <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 h-auto">{property.listing_type}</Badge>
-                    </div>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground self-center flex-shrink-0" />
-                </div>
-              </Card>
-            ))
-          )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </Card>
         </TabsContent>
 
         {/* Rentals Tab */}
