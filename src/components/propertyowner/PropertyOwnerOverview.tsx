@@ -24,6 +24,9 @@ import OwnerPayoutManagement from "./OwnerPayoutManagement";
 import OwnerSmartPricing from "./OwnerSmartPricing";
 import OwnerBookingCancellation from "./OwnerBookingCancellation";
 import OwnerPropertyAnalytics from "./OwnerPropertyAnalytics";
+import OwnerConversionTracking from "./OwnerConversionTracking";
+import LeadScoringPanel from "@/components/agent-analytics/LeadScoringPanel";
+import ListingTipsPanel from "@/components/agent-analytics/ListingTipsPanel";
 import OwnerCheckInOut from "./OwnerCheckInOut";
 import OwnerVisitorTracking from "./OwnerVisitorTracking";
 import OwnerFinancialAnalytics from "./OwnerFinancialAnalytics";
@@ -103,6 +106,9 @@ const PropertyOwnerOverview = () => {
       group: 'Analitik', icon: TrendingUp,
       tabs: [
         { value: 'prop-analytics', icon: BarChart3, label: 'Analitik' },
+        { value: 'conversion', icon: Target, label: 'Konversi' },
+        { value: 'leads', icon: Users, label: 'Leads' },
+        { value: 'tips', icon: Sparkles, label: 'AI Tips' },
         { value: 'forecast', icon: Target, label: 'Forecast' },
         { value: 'insights', icon: TrendingUp, label: 'Insights' },
       ],
@@ -518,6 +524,21 @@ const PropertyOwnerOverview = () => {
         {/* Property Analytics Tab */}
         <TabsContent value="prop-analytics" className="mt-1.5">
           <OwnerPropertyAnalytics />
+        </TabsContent>
+
+        {/* Conversion Tracking Tab */}
+        <TabsContent value="conversion" className="mt-1.5">
+          <OwnerConversionTracking />
+        </TabsContent>
+
+        {/* Lead Scoring Tab */}
+        <TabsContent value="leads" className="mt-1.5">
+          <LeadScoringPanel />
+        </TabsContent>
+
+        {/* AI Tips Tab */}
+        <TabsContent value="tips" className="mt-1.5">
+          <ListingTipsPanel />
         </TabsContent>
 
         {/* Check-in/out Tab */}
