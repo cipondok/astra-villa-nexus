@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { format, differenceInDays } from "date-fns";
 import { id } from "date-fns/locale";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { 
   Calendar as CalendarIcon,
   MessageCircle,
@@ -264,16 +265,16 @@ const PropertyBooking: React.FC<PropertyBookingProps> = ({
               </div>
               <div className="flex justify-between">
                 <span>Harga per hari:</span>
-                <span className="font-medium">Rp {property.price?.toLocaleString('id-ID')}</span>
+                <span className="font-medium">{getCurrencyFormatter()(property.price || 0)}</span>
               </div>
               <div className="flex justify-between text-base font-semibold text-accent-foreground border-t pt-2">
                 <span>Total:</span>
-                <span>Rp {totalAmount.toLocaleString('id-ID')}</span>
+                <span>{getCurrencyFormatter()(totalAmount)}</span>
               </div>
               {canBookOnline && (
                 <div className="flex justify-between text-sm text-chart-3">
                   <span>Deposit (30%):</span>
-                  <span className="font-medium">Rp {depositAmount.toLocaleString('id-ID')}</span>
+                  <span className="font-medium">{getCurrencyFormatter()(depositAmount)}</span>
                 </div>
               )}
             </div>

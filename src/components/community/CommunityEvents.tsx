@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import {
   Calendar,
   MapPin,
@@ -194,7 +195,7 @@ const CommunityEvents: React.FC<CommunityEventsProps> = ({ city, className }) =>
             </div>
             <div className="absolute top-2 right-2">
               <Badge variant={event.is_free ? 'secondary' : 'default'}>
-                {event.is_free ? 'Free' : `Rp ${(event.ticket_price || 0).toLocaleString()}`}
+                {event.is_free ? 'Free' : getCurrencyFormatter()(event.ticket_price || 0)}
               </Badge>
             </div>
           </div>

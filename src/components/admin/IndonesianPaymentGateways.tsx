@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CreditCard, Smartphone, Building, CheckCircle, Save } from 'lucide-react';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 const IndonesianPaymentGateways = () => {
   const [activeGateways, setActiveGateways] = useState({
@@ -76,7 +77,7 @@ const IndonesianPaymentGateways = () => {
     { label: 'Active Gateways', value: Object.values(activeGateways).filter(Boolean).length, icon: CheckCircle, color: 'text-chart-1' },
     { label: 'Monthly Txns', value: '65.6K', icon: CreditCard, color: 'text-chart-2' },
     { label: 'Success Rate', value: '98.5%', icon: CheckCircle, color: 'text-primary' },
-    { label: 'Revenue', value: 'Rp 2.3B', icon: Building, color: 'text-chart-4' }
+    { label: 'Revenue', value: getCurrencyFormatterShort()(2_300_000_000), icon: Building, color: 'text-chart-4' }
   ];
 
   return (

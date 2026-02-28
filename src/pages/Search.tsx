@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import PropertyCard from '@/components/PropertyCard';
 import { supabase } from '@/integrations/supabase/client';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import AIToolsTabBar from '@/components/common/AIToolsTabBar';
@@ -78,7 +79,7 @@ const Search = () => {
     id: prop.id,
     title: prop.title,
     location: prop.location,
-    price: `Rp ${prop.price?.toLocaleString('id-ID') || '0'}`,
+    price: getCurrencyFormatter()(prop.price || 0),
     type: prop.property_type || 'unknown',
     bedrooms: prop.bedrooms || 0,
     bathrooms: prop.bathrooms || 0,

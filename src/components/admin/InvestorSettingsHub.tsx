@@ -13,6 +13,7 @@ import {
   BarChart3, ArrowUpRight, ArrowDownRight, Calendar, Target, UserCheck
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
 
 interface Country {
@@ -246,7 +247,7 @@ const InvestorSettingsHub = ({ initialTab = 'wna' }: InvestorSettingsHubProps) =
                     className="h-8 text-xs"
                   />
                   <p className="text-[10px] text-muted-foreground">
-                    Current: Rp {wnaSettings.minInvestment.toLocaleString('id-ID')}
+                    Current: {getCurrencyFormatter()(wnaSettings.minInvestment)}
                   </p>
                 </div>
               </CardContent>

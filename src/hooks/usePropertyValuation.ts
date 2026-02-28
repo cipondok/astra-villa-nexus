@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 export interface PropertyValuationInput {
   propertyId?: string;
@@ -111,16 +112,8 @@ export function usePropertyValuation() {
     }
   }, []);
 
-  const formatCurrency = useCallback((value: number, currency: string = 'IDR'): string => {
-    if (currency === 'IDR') {
-      if (value >= 1000000000) {
-        return `Rp ${(value / 1000000000).toFixed(1)}M`;
-      } else if (value >= 1000000) {
-        return `Rp ${(value / 1000000).toFixed(0)} Jt`;
-      }
-      return `Rp ${value.toLocaleString('id-ID')}`;
-    }
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(value);
+  const formatCurrency = useCallback((value: number, _currency: string = 'IDR'): string => {
+    return getCurrencyFormatterShort()(value);
   }, []);
 
   return {

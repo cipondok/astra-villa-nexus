@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 export interface FacetedFilters {
   listingType?: string;
@@ -407,8 +408,8 @@ const FacetedFilterPanel = ({
                   className="w-full"
                 />
                 <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <span>Rp {formatPrice(filters.priceRange[0])}</span>
-                  <span>Rp {formatPrice(filters.priceRange[1])}</span>
+                  <span>{getCurrencyFormatterShort()(filters.priceRange[0])}</span>
+                  <span>{getCurrencyFormatterShort()(filters.priceRange[1])}</span>
                 </div>
               </CollapsibleContent>
             </Collapsible>

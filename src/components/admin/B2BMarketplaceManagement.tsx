@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { toast } from 'sonner';
 import { 
   Building2, 
@@ -40,7 +41,7 @@ import {
   Filter,
   MoreHorizontal
 } from "lucide-react";
-import { getCurrencyFormatterShort } from "@/stores/currencyStore";
+
 
 const B2BMarketplaceManagement = () => {
   const [activeTab, setActiveTab] = useState("clients");
@@ -527,7 +528,7 @@ const B2BMarketplaceManagement = () => {
                         <TableCell className="text-xs">{lead.property_type || 'Any'}</TableCell>
                         <TableCell className="text-xs">{lead.property_location || 'N/A'}</TableCell>
                         <TableCell className="text-xs">
-                          {lead.lead_budget ? `Rp ${(lead.lead_budget / 1000000000).toFixed(1)}B` : 'N/A'}
+                          {lead.lead_budget ? getCurrencyFormatterShort()(lead.lead_budget) : 'N/A'}
                         </TableCell>
                         <TableCell>
                           <Badge variant={lead.lead_score >= 70 ? 'default' : 'outline'} className="text-[10px]">

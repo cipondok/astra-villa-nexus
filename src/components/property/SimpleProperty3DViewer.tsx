@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Box, Eye, Maximize2, Minimize2, VolumeX, Volume2, Share2, Heart, MapPin, Loader2, X } from 'lucide-react';
 import { BaseProperty } from '@/types/property';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 interface SimpleProperty3DViewerProps {
   property: BaseProperty;
@@ -36,11 +37,7 @@ const SimpleProperty3DViewer: React.FC<SimpleProperty3DViewerProps> = ({
     return 'generic';
   };
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)} M`;
-    if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)} Jt`;
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price);
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   const buildEmbedUrl = (url: string, platform: Platform): string => {
     if (platform === 'matterport') {

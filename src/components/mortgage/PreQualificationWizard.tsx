@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
+import { getCurrencySymbol } from '@/stores/currencyStore';
 import { Progress } from '@/components/ui/progress';
 import {
   Select,
@@ -257,8 +258,8 @@ const PreQualificationWizard: React.FC<{ className?: string }> = ({ className })
               {/* Step 2: Income */}
               {step === 2 && (
                 <>
-                  {inputField('Monthly Salary / Income', 'monthlyIncome', { type: 'number', prefix: 'Rp' })}
-                  {inputField('Other Monthly Income', 'otherIncome', { type: 'number', prefix: 'Rp', placeholder: 'Side business, rental, etc.' })}
+                  {inputField('Monthly Salary / Income', 'monthlyIncome', { type: 'number', prefix: getCurrencySymbol() })}
+                  {inputField('Other Monthly Income', 'otherIncome', { type: 'number', prefix: getCurrencySymbol(), placeholder: 'Side business, rental, etc.' })}
                   <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Total Monthly Income</span>
@@ -271,8 +272,8 @@ const PreQualificationWizard: React.FC<{ className?: string }> = ({ className })
               {/* Step 3: Expenses */}
               {step === 3 && (
                 <>
-                  {inputField('Monthly Living Expenses', 'monthlyExpenses', { type: 'number', prefix: 'Rp', placeholder: 'Rent, utilities, food...' })}
-                  {inputField('Existing Debt Payments', 'existingDebt', { type: 'number', prefix: 'Rp', placeholder: 'Car loan, credit card...' })}
+                  {inputField('Monthly Living Expenses', 'monthlyExpenses', { type: 'number', prefix: getCurrencySymbol(), placeholder: 'Rent, utilities, food...' })}
+                  {inputField('Existing Debt Payments', 'existingDebt', { type: 'number', prefix: getCurrencySymbol(), placeholder: 'Car loan, credit card...' })}
                   <div className="p-3 rounded-xl bg-muted/50 border border-border/50">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Net Disposable Income</span>
@@ -287,7 +288,7 @@ const PreQualificationWizard: React.FC<{ className?: string }> = ({ className })
               {/* Step 4: Property */}
               {step === 4 && (
                 <>
-                  {inputField('Property Price', 'propertyPrice', { type: 'number', prefix: 'Rp' })}
+                  {inputField('Property Price', 'propertyPrice', { type: 'number', prefix: getCurrencySymbol() })}
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <Label className="text-sm">Down Payment</Label>

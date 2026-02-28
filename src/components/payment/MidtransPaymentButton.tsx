@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 
 interface MidtransPaymentButtonProps {
   orderId: string;
@@ -147,7 +148,7 @@ export default function MidtransPaymentButton({
           ) : (
             <CreditCard className="h-4 w-4" />
           )}
-          Bayar Rp {amount.toLocaleString('id-ID')}
+          Bayar {getCurrencyFormatter()(amount)}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
