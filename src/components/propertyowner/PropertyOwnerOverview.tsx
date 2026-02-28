@@ -213,6 +213,9 @@ const PropertyOwnerOverview = () => {
         </div>
       </Card>
 
+      {/* ASTRA Token Wallet — Top Position */}
+      <OwnerAstraTokenCard />
+
       {/* Analytics Overview - Always Visible */}
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         {[
@@ -272,8 +275,7 @@ const PropertyOwnerOverview = () => {
         </div>
       </Card>
 
-      {/* ASTRA Token Wallet & Daily Check-in */}
-      <OwnerAstraTokenCard />
+      {/* (ASTRA wallet moved to top) */}
 
       {/* Smart Navigation Links */}
       <div>
