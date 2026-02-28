@@ -1,27 +1,38 @@
 
 
-## Plan: Add ASTRA Token Wallet & Daily Check-in Widget to Property Owner Dashboard
+## Plan: Make "Performa Ringkas" Card Collapsible (Smart Minimum Style)
 
-### What will be added
-A smart, compact ASTRA Token section on the property owner overview page — placed between the "Key Performance Metrics" card and "Aksi Cepat" section. It will show:
-- Token balance (available + lifetime)
-- Daily check-in button with streak info
-- Streak progress bar
-- Quick link to full ASTRA hub
+### Changes to `src/components/propertyowner/PropertyOwnerOverview.tsx`
 
-### Implementation Steps
+**Lines 241-276** — Replace the static card with a collapsible version:
 
-1. **Import `AstraTokenWidget`** into `PropertyOwnerOverview.tsx` and add it between the performance metrics card (line ~272) and the smart navigation links section (line ~274).
+1. Add `useState` for `perfExpanded` (default `false`)
+2. **Collapsed state**: Single row showing key stats inline (Tingkat Aktif %, Konversi %, Views count, Saved count) as compact badges
+3. **Expanded state** (on click): Reveal the full grid with progress bars and details using `framer-motion` `AnimatePresence` for smooth expand/collapse
+4. Add `ChevronDown` icon that rotates when expanded
+5. Follow same pattern as `OwnerAstraTokenCard` — clickable header bar toggles content
 
-2. **Use the existing full-mode widget** (`<AstraTokenWidget />`) — it already contains:
-   - Balance display (available + lifetime)
-   - Daily check-in button with streak tracking
-   - Streak progress bar with milestone info
-   - Transaction bonus info
-   - Quick action links to the ASTRA hub
+### Layout
+```text
+COLLAPSED (default):
+┌─────────────────────────────────────────────┐
+│ 📊 Performa Ringkas  [68% | 3.2% | 👁124 | ♥12]  ▼ │
+└─────────────────────────────────────────────┘
 
-No new components, hooks, or database changes required — the existing `AstraTokenWidget` handles everything via the `astra-token-hub` edge function.
+EXPANDED (on click):
+┌─────────────────────────────────────────────┐
+│ 📊 Performa Ringkas  [68% | 3.2% | 👁124 | ♥12]  ▲ │
+│ ┌──────────────┐ ┌──────────────┐           │
+│ │ Tingkat Aktif │ │  Konversi    │           │
+│ │ 68%  ████░░  │ │  3.2% ██░░░  │           │
+│ └──────────────┘ └──────────────┘           │
+│ ┌──────────────┐ ┌──────────────┐           │
+│ │ 👁 Views 124 │ │ ♥ Saved 12   │           │
+│ └──────────────┘ └──────────────┘           │
+└─────────────────────────────────────────────┘
+```
 
-### File Changes
-- `src/components/propertyowner/PropertyOwnerOverview.tsx` — add import + render `<AstraTokenWidget />` in the overview layout
+### File: `PropertyOwnerOverview.tsx`
+- Add `perfExpanded` state
+- Replace lines 241-276 with collapsible card using `motion.div` + `AnimatePresence`
 
