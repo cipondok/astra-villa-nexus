@@ -19,7 +19,31 @@ import { formatIDR } from '@/utils/formatters';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+  LineChart, Line, Legend,
 } from 'recharts';
+
+// ─── Investment Rate Constants ───────────────────────────────────────
+const CITY_RATES: Record<string, number> = {
+  'bali': 10, 'seminyak': 12, 'canggu': 14, 'ubud': 9, 'jakarta': 6,
+  'bandung': 8, 'surabaya': 7, 'yogyakarta': 9, 'lombok': 12, 'default': 7,
+};
+
+const TYPE_YIELDS: Record<string, number> = {
+  villa: 8.5, apartment: 6.2, house: 5.5, townhouse: 5.8, land: 0, commercial: 7.5, default: 6,
+};
+
+function getInvestmentMetrics(property: any) {
+  const cityKey = Object.keys(CITY_RATES).find(k => property.city?.toLowerCase().includes(k)) || 'default';
+  const appreciation = CITY_RATES[cityKey];
+  const typeKey = property.property_type?.toLowerCase() || 'default';
+  const rentalYield = TYPE_YIELDS[typeKey] || TYPE_YIELDS.default;
+  const price = property.price || 0;
+  const monthlyRental = Math.round(price * (rentalYield / 100) / 12);
+  const fiveYearValue = Math.round(price * Math.pow(1 + appreciation / 100, 5));
+  const tenYearValue = Math.round(price * Math.pow(1 + appreciation / 100, 10));
+  const breakEvenYears = rentalYield > 0 ? Math.round(price / (monthlyRental * 12) * 10) / 10 : 0;
+  return { appreciation, rentalYield, monthlyRental, fiveYearValue, tenYearValue, breakEvenYears, price };
+}
 import { motion, AnimatePresence } from 'framer-motion';
 
 // ─── KPR Calculator Logic ────────────────────────────────────────────
@@ -309,7 +333,7 @@ const PropertyComparison = () => {
         {/* Tabs */}
         <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
           <Tabs defaultValue="specs" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid bg-muted/50 backdrop-blur-sm border border-border/50">
+            <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid bg-muted/50 backdrop-blur-sm border border-border/50">
               <TabsTrigger value="specs" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <Building className="h-4 w-4" />Specs
               </TabsTrigger>
@@ -318,6 +342,9 @@ const PropertyComparison = () => {
               </TabsTrigger>
               <TabsTrigger value="neighborhood" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <MapPin className="h-4 w-4" />Area
+              </TabsTrigger>
+              <TabsTrigger value="investment" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+                <TrendingUp className="h-4 w-4" />Invest
               </TabsTrigger>
               <TabsTrigger value="charts" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <BarChart3 className="h-4 w-4" />Charts
@@ -662,6 +689,147 @@ const PropertyComparison = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* ═══ INVESTMENT TAB ═══ */}
+            <TabsContent value="investment" className="space-y-6">
+              {(() => {
+                const investmentData = selectedProperties.map(p => ({
+                  property: p,
+                  metrics: getInvestmentMetrics(p),
+                }));
+                const bestYield = Math.max(...investmentData.map(d => d.metrics.rentalYield));
+                const bestGrowth = Math.max(...investmentData.map(d => d.metrics.appreciation));
+                const fastestBreakEven = Math.min(...investmentData.filter(d => d.metrics.breakEvenYears > 0).map(d => d.metrics.breakEvenYears));
+
+                // 10-year projection data
+                const projectionData = Array.from({ length: 11 }, (_, year) => {
+                  const row: Record<string, any> = { year: `Year ${year}` };
+                  investmentData.forEach((d, i) => {
+                    row[`prop_${i}`] = Math.round(d.metrics.price * Math.pow(1 + d.metrics.appreciation / 100, year)) / 1_000_000;
+                  });
+                  return row;
+                });
+
+                // Bar chart data for yields & appreciation
+                const yieldBarData = investmentData.map((d, i) => ({
+                  name: String.fromCharCode(65 + i),
+                  'Rental Yield': d.metrics.rentalYield,
+                  'Annual Growth': d.metrics.appreciation,
+                }));
+
+                return (
+                  <>
+                    {/* Investment Metric Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {investmentData.map((d, i) => {
+                        const isbestYield = d.metrics.rentalYield === bestYield && investmentData.length > 1;
+                        const isBestGrowth = d.metrics.appreciation === bestGrowth && investmentData.length > 1;
+                        const isFastestBE = d.metrics.breakEvenYears === fastestBreakEven && d.metrics.breakEvenYears > 0 && investmentData.length > 1;
+                        return (
+                          <motion.div key={d.property.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
+                            <Card className={`border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden ${(isbestYield || isBestGrowth) ? 'ring-2 ring-amber-500/30 shadow-lg shadow-amber-500/10' : ''}`}>
+                              <div className="h-1.5 w-full" style={{ background: `linear-gradient(90deg, ${CHART_COLORS[i % CHART_COLORS.length]}, ${CHART_COLORS[i % CHART_COLORS.length]}80)` }} />
+                              <CardContent className="p-4 space-y-3">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }}>
+                                    {String.fromCharCode(65 + i)}
+                                  </div>
+                                  <h4 className="text-sm font-semibold line-clamp-1 flex-1">{d.property.title}</h4>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2 text-xs">
+                                  <div className="p-2 rounded-lg bg-gradient-to-r from-amber-500/10 to-yellow-400/5 border border-amber-500/10">
+                                    <p className="text-muted-foreground text-[10px]">Annual Growth</p>
+                                    <p className="font-bold text-amber-600 dark:text-amber-400">{d.metrics.appreciation}%{isBestGrowth && <WinnerBadge label="Best" />}</p>
+                                  </div>
+                                  <div className="p-2 rounded-lg bg-gradient-to-r from-amber-500/10 to-yellow-400/5 border border-amber-500/10">
+                                    <p className="text-muted-foreground text-[10px]">Rental Yield</p>
+                                    <p className="font-bold text-amber-600 dark:text-amber-400">{d.metrics.rentalYield}%{isbestYield && <WinnerBadge label="Best" />}</p>
+                                  </div>
+                                  <div className="p-2 bg-muted/30 rounded-lg">
+                                    <p className="text-muted-foreground text-[10px]">Monthly Rent</p>
+                                    <p className="font-semibold">{formatIDR(d.metrics.monthlyRental)}</p>
+                                  </div>
+                                  <div className="p-2 bg-muted/30 rounded-lg">
+                                    <p className="text-muted-foreground text-[10px]">Break Even</p>
+                                    <p className="font-semibold">{d.metrics.breakEvenYears > 0 ? `${d.metrics.breakEvenYears} yrs` : '—'}{isFastestBE && <WinnerBadge label="Fastest" />}</p>
+                                  </div>
+                                </div>
+                                <div className="p-2.5 rounded-lg bg-gradient-to-r from-amber-500/[0.06] to-transparent border border-amber-500/10 text-center">
+                                  <p className="text-[10px] text-muted-foreground">5-Year Value</p>
+                                  <p className="text-lg font-bold text-foreground">{formatIDR(d.metrics.fiveYearValue)}</p>
+                                  <p className="text-[10px] font-bold text-emerald-500">+{formatIDR(d.metrics.fiveYearValue - d.metrics.price)}</p>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Yield & Growth Bar Chart */}
+                    <Card className="border-border/50 bg-card/80 backdrop-blur-xl">
+                      <CardHeader><CardTitle className="text-lg flex items-center gap-2"><BarChart3 className="h-5 w-5 text-amber-500" />Yield & Appreciation Comparison</CardTitle></CardHeader>
+                      <CardContent>
+                        <div className="flex flex-wrap gap-4 mb-4">
+                          {selectedProperties.map((p, i) => (
+                            <div key={p.id} className="flex items-center gap-2 text-sm">
+                              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
+                              <span className="font-medium">{String.fromCharCode(65 + i)}: {p.title?.slice(0, 20)}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="h-[280px]">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={yieldBarData}>
+                              <CartesianGrid strokeDasharray="3 3" className="opacity-20" />
+                              <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} />
+                              <YAxis tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} unit="%" />
+                              <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--background))', color: 'hsl(var(--foreground))' }} />
+                              <Legend />
+                              <Bar dataKey="Rental Yield" fill="hsl(45, 93%, 47%)" radius={[6, 6, 0, 0]} />
+                              <Bar dataKey="Annual Growth" fill="hsl(142, 71%, 45%)" radius={[6, 6, 0, 0]} />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* 10-Year Projection Line Chart */}
+                    <Card className="border-border/50 bg-card/80 backdrop-blur-xl">
+                      <CardHeader><CardTitle className="text-lg flex items-center gap-2"><TrendingUp className="h-5 w-5 text-amber-500" />10-Year Value Projection</CardTitle></CardHeader>
+                      <CardContent>
+                        <div className="flex flex-wrap gap-4 mb-4">
+                          {selectedProperties.map((p, i) => (
+                            <div key={p.id} className="flex items-center gap-2 text-sm">
+                              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
+                              <span className="font-medium">{String.fromCharCode(65 + i)}: {p.title?.slice(0, 20)}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="h-[320px]">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={projectionData}>
+                              <CartesianGrid strokeDasharray="3 3" className="opacity-20" />
+                              <XAxis dataKey="year" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
+                              <YAxis tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} tickFormatter={(v) => `${v.toFixed(0)}M`} />
+                              <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--background))', color: 'hsl(var(--foreground))' }}
+                                formatter={(v: number) => [`Rp ${v.toFixed(0)}M`, '']}
+                              />
+                              {selectedProperties.map((_, i) => (
+                                <Line key={i} type="monotone" dataKey={`prop_${i}`} stroke={CHART_COLORS[i % CHART_COLORS.length]} strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+                              ))}
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground text-center mt-3 italic">
+                          AI estimates based on historical area trends. Values in millions IDR. Not financial advice.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </>
+                );
+              })()}
             </TabsContent>
 
             {/* ═══ CHARTS TAB ═══ */}
