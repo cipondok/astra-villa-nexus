@@ -3,6 +3,7 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import { CurrencyProvider } from '@/contexts/CurrencyContext';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AlertProvider } from '@/contexts/AlertContext';
@@ -434,6 +435,7 @@ function App() {
               <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
                 <DesignSystemProvider>
                   <LanguageProvider>
+                    <CurrencyProvider>
                     <AlertProvider>
                       <AuthProvider>
                         <NotificationProvider>
@@ -456,6 +458,7 @@ function App() {
                         </NotificationProvider>
                       </AuthProvider>
                     </AlertProvider>
+                    </CurrencyProvider>
                   </LanguageProvider>
                 </DesignSystemProvider>
               </ThemeProvider>

@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, Clock, Calendar, TrendingUp, MessageSquare, ScanEye, Tag, Percent } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
+import { useCurrency } from '@/contexts/CurrencyContext';
 import PropertyDetailModal from './PropertyDetailModal';
 import PropertyComparisonButton from './PropertyComparisonButton';
 import PropertyImageCarousel from './PropertyImageCarousel';
@@ -97,15 +98,9 @@ const CompactPropertyCard = ({
   const { getPropertyImage } = useDefaultPropertyImage();
 
   const { t, language } = useTranslation();
+  const { formatPrice: formatCurrency } = useCurrency();
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  const formatPrice = (price: number) => formatCurrency(price);
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);

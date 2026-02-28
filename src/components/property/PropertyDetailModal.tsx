@@ -10,6 +10,7 @@ import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import SharePropertyButton from "./SharePropertyButton";
 import { useTranslation } from "@/i18n/useTranslation";
 import { supabase } from "@/integrations/supabase/client";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 // ─── VR Media Gallery Sub-Component ──────────────────────────────────────────
 const VRMediaGallery = ({ property }: { property: BaseProperty }) => {
@@ -197,14 +198,8 @@ const PropertyDetailModal = ({
 
   if (!isOpen) return null;
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  const { formatPrice: formatCurrency } = useCurrency();
+  const formatPrice = (price: number) => formatCurrency(price);
 
   const getListingTypeLabel = (type: string) => {
     switch (type) {
