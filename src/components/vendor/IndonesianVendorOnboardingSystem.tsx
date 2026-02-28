@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -256,13 +257,7 @@ const IndonesianVendorOnboardingSystem = () => {
     }
   }, [existingApplication]);
 
-  const formatIDR = (amount: number): string => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0
-    }).format(amount);
-  };
+  const formatIDR = (amount: number) => getCurrencyFormatter()(amount);
 
   const renderStepIndicator = () => (
     <div className="mb-8">

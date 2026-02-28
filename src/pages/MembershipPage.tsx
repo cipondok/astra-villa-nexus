@@ -37,14 +37,10 @@ const TIER_PRICING: Record<MembershipLevel, { monthly: number; yearly: number }>
   diamond: { monthly: 999000, yearly: 9990000 }
 };
 
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 const formatIDR = (amount: number) => {
   if (amount === 0) return 'Gratis';
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(amount);
+  return getCurrencyFormatter()(amount);
 };
 
 const MembershipPage: React.FC = () => {

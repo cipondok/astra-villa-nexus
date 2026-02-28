@@ -27,7 +27,8 @@ import {
   Loader2
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { formatIDR } from '@/utils/currency';
+import Price from '@/components/ui/Price';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { format } from 'date-fns';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 
@@ -273,7 +274,7 @@ export const FinancialDashboard: React.FC = () => {
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Revenue</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatIDR(metrics.totalRevenue)}</div>
+            <div className="text-2xl font-bold"><Price amount={metrics.totalRevenue} /></div>
             <div className="flex items-center text-xs text-chart-1 mt-1">
               <ArrowUpRight className="h-3 w-3 mr-1" />
               +{metrics.revenueGrowth}% from last month
@@ -286,7 +287,7 @@ export const FinancialDashboard: React.FC = () => {
             <CardTitle className="text-sm font-medium text-muted-foreground">Monthly Revenue</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatIDR(metrics.monthlyRevenue)}</div>
+            <div className="text-2xl font-bold"><Price amount={metrics.monthlyRevenue} /></div>
             <p className="text-xs text-muted-foreground mt-1">This month</p>
           </CardContent>
         </Card>
@@ -296,7 +297,7 @@ export const FinancialDashboard: React.FC = () => {
             <CardTitle className="text-sm font-medium text-muted-foreground">Platform Commissions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatIDR(metrics.totalCommissions)}</div>
+            <div className="text-2xl font-bold"><Price amount={metrics.totalCommissions} /></div>
             <p className="text-xs text-muted-foreground mt-1">3-5% per transaction</p>
           </CardContent>
         </Card>
@@ -326,7 +327,7 @@ export const FinancialDashboard: React.FC = () => {
                   <XAxis dataKey="date" className="text-xs" />
                   <YAxis className="text-xs" tickFormatter={(v) => `${(v / 1000000).toFixed(0)}M`} />
                   <Tooltip 
-                    formatter={(value: number) => [formatIDR(value), 'Revenue']}
+                    formatter={(value: number) => [getCurrencyFormatter()(value), 'Revenue']}
                     labelStyle={{ color: 'var(--foreground)' }}
                     contentStyle={{ 
                       backgroundColor: 'var(--background)', 
@@ -357,14 +358,14 @@ export const FinancialDashboard: React.FC = () => {
                   <Clock className="h-5 w-5 text-chart-3" />
                   <span className="font-medium">Pending Payouts</span>
                 </div>
-                <span className="font-bold">{formatIDR(metrics.pendingPayouts)}</span>
+                <span className="font-bold"><Price amount={metrics.pendingPayouts} /></span>
               </div>
               <div className="flex items-center justify-between p-3 bg-chart-1/10 rounded-lg">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-5 w-5 text-chart-1" />
                   <span className="font-medium">Completed Payouts</span>
                 </div>
-                <span className="font-bold">{formatIDR(metrics.completedPayouts)}</span>
+                <span className="font-bold"><Price amount={metrics.completedPayouts} /></span>
               </div>
               <div className="flex items-center justify-between p-3 bg-destructive/10 rounded-lg">
                 <div className="flex items-center gap-2">
@@ -453,7 +454,7 @@ export const FinancialDashboard: React.FC = () => {
                       <TableRow key={tx.id}>
                         <TableCell className="font-mono text-sm">{tx.order_id}</TableCell>
                         <TableCell>{tx.customer_email || '-'}</TableCell>
-                        <TableCell className="font-medium">{formatIDR(tx.amount)}</TableCell>
+                        <TableCell className="font-medium"><Price amount={tx.amount} /></TableCell>
                         <TableCell className="capitalize">{tx.payment_method?.replace('_', ' ') || '-'}</TableCell>
                         <TableCell>
                           <Badge className={`${STATUS_COLORS[tx.status]} text-primary-foreground`}>
@@ -492,7 +493,7 @@ export const FinancialDashboard: React.FC = () => {
                     <TableRow key={payout.id}>
                       <TableCell className="font-mono text-sm">{payout.payout_reference}</TableCell>
                       <TableCell>{payout.vendor_id.substring(0, 8)}...</TableCell>
-                      <TableCell className="font-medium">{formatIDR(payout.net_amount)}</TableCell>
+                      <TableCell className="font-medium"><Price amount={payout.net_amount} /></TableCell>
                       <TableCell>
                         <div className="text-sm">
                           <p>{payout.bank_name}</p>
@@ -548,7 +549,7 @@ export const FinancialDashboard: React.FC = () => {
                       <TableCell className="font-mono text-sm">{dispute.dispute_reference}</TableCell>
                       <TableCell className="font-mono text-sm">{dispute.transaction_id}</TableCell>
                       <TableCell className="capitalize">{dispute.dispute_type.replace('_', ' ')}</TableCell>
-                      <TableCell className="font-medium">{formatIDR(dispute.amount)}</TableCell>
+                      <TableCell className="font-medium"><Price amount={dispute.amount} /></TableCell>
                       <TableCell>
                         <Badge className={`${STATUS_COLORS[dispute.status]} text-primary-foreground`}>
                           {dispute.status.replace('_', ' ')}

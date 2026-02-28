@@ -7,7 +7,7 @@ import VendorPerformanceDashboard from "./VendorPerformanceDashboard";
 import VendorInsightsPanel from "./VendorInsightsPanel";
 import PerformanceMetricsCard from "./PerformanceMetricsCard";
 import { TrendingUp, Calendar, Star, DollarSign, Users, BarChart3, Clock, Target } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 const VendorAnalytics = () => {
   const { user } = useAuth();
@@ -169,7 +169,7 @@ const VendorAnalytics = () => {
             
             <PerformanceMetricsCard
               title="Total Revenue"
-              value={formatIDR(analytics.totalRevenue)}
+              value={getCurrencyFormatter()(analytics.totalRevenue)}
               icon={DollarSign}
               color="green"
               description="All time earnings"
@@ -229,7 +229,7 @@ const VendorAnalytics = () => {
                       <span className="text-sm font-medium">Revenue</span>
                     </div>
                     <span className="text-sm font-semibold">
-                      {formatIDR(analytics.monthlyRevenue)}
+                      {getCurrencyFormatter()(analytics.monthlyRevenue)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
@@ -238,7 +238,7 @@ const VendorAnalytics = () => {
                       <span className="text-sm font-medium">Avg per Booking</span>
                     </div>
                     <span className="text-sm font-semibold">
-                      {formatIDR(analytics.monthlyBookings > 0 ? analytics.monthlyRevenue / analytics.monthlyBookings : 0)}
+                      {getCurrencyFormatter()(analytics.monthlyBookings > 0 ? analytics.monthlyRevenue / analytics.monthlyBookings : 0)}
                     </span>
                   </div>
                 </div>

@@ -7,7 +7,7 @@ import { Eye, MapPin, Home, DollarSign, User, Building, Calendar, Ruler, X, Key,
 
 // Helper to capitalize first letter
 const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import { useNavigate } from 'react-router-dom';
 
 interface PropertyPreviewProps {
@@ -79,7 +79,7 @@ const PropertyPreview = ({ isOpen, onClose, onConfirm, propertyData, isSubmittin
               {propertyData.price && (
                 <div className="flex items-center gap-2 text-chart-1 font-semibold text-xl bg-chart-1/10 p-3 rounded-lg">
                   <DollarSign className="h-6 w-6 text-chart-1" />
-                  <span>{formatIDR(Number(propertyData.price))}</span>
+                  <span><Price amount={Number(propertyData.price)} /></span>
                 </div>
               )}
 

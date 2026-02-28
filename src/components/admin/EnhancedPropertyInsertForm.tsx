@@ -15,7 +15,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { formatIDR } from "@/utils/currency";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { useCentralLocation } from "@/hooks/useCentralLocation";
 
 interface PropertyFormData {
@@ -680,7 +680,7 @@ const EnhancedPropertyInsertForm = () => {
                     <Input
                       id="price"
                       type="text"
-                      value={formData.price ? formatIDR(parseInt(formData.price)) : ''}
+                      value={formData.price ? getCurrencyFormatter()(parseInt(formData.price)) : ''}
                       onChange={(e) => handlePriceChange(e.target.value)}
                       placeholder="Enter price"
                       className="h-7 text-[10px] bg-background/50 border-border/50 pr-10"

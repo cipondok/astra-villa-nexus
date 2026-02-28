@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -254,14 +255,7 @@ const AdvancedSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "bu
   const bedroomOptions = [1, 2, 3, 4, 5, 6];
   const bathroomOptions = [1, 2, 3, 4, 5];
 
-  const formatIDR = (amount: number): string => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+  const formatIDR = (amount: number) => getCurrencyFormatter()(amount);
 
   const parseIDRInput = (value: string): number => {
     return parseInt(value.replace(/[^\d]/g, '')) || 0;

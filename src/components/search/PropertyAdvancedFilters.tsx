@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { X, Filter, Search, MapPin, Home, DollarSign, Bed, Bath, Square } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { formatIDR } from '@/utils/currency';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 
 interface PropertyAdvancedFiltersProps {
   language: "en" | "id" | "zh" | "ja" | "ko";
@@ -519,8 +519,8 @@ const PropertyAdvancedFilters = ({
                   className="w-full"
                 />
                 <div className="flex justify-between text-sm text-muted-foreground mt-2">
-                  <span>{formatIDR(filters.priceRange[0])}</span>
-                  <span>{formatIDR(filters.priceRange[1])}</span>
+                  <span>{getCurrencyFormatter()(filters.priceRange[0])}</span>
+                  <span>{getCurrencyFormatter()(filters.priceRange[1])}</span>
                 </div>
               </div>
             </div>

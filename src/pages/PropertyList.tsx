@@ -26,7 +26,7 @@ import {
   Clock
 } from "lucide-react";
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 
 const PropertyList = () => {
   const { user, profile, isAuthenticated } = useAuth();
@@ -302,7 +302,7 @@ const PropertyList = () => {
                           <TableCell className="capitalize">{property.property_type}</TableCell>
                           <TableCell>{property.location}</TableCell>
                           <TableCell>
-                            {property.price ? formatIDR(property.price) : 'N/A'}
+                            {property.price ? <Price amount={property.price} /> : 'N/A'}
                             <div className="text-xs text-muted-foreground capitalize">{property.listing_type}</div>
                           </TableCell>
                           <TableCell>{getStatusBadge(property.status)}</TableCell>
