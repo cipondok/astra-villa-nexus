@@ -28,6 +28,7 @@ import OwnerConversionTracking from "./OwnerConversionTracking";
 import LeadScoringPanel from "@/components/agent-analytics/LeadScoringPanel";
 import ListingTipsPanel from "@/components/agent-analytics/ListingTipsPanel";
 import OwnerCheckInOut from "./OwnerCheckInOut";
+import AstraTokenWidget from "@/components/astra/AstraTokenWidget";
 import OwnerVisitorTracking from "./OwnerVisitorTracking";
 import OwnerFinancialAnalytics from "./OwnerFinancialAnalytics";
 import OwnerCalendarView from "./OwnerCalendarView";
@@ -270,6 +271,9 @@ const PropertyOwnerOverview = () => {
           </div>
         </div>
       </Card>
+
+      {/* ASTRA Token Wallet & Daily Check-in */}
+      <AstraTokenWidget />
 
       {/* Smart Navigation Links */}
       <div>
