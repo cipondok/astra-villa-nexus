@@ -129,13 +129,14 @@ export const useListingTips = () => {
   const { user } = useAuth();
 
   const { data: properties, isLoading } = useQuery({
-    queryKey: ['agent-properties-for-tips', user?.id],
+    queryKey: ['properties-for-tips', user?.id],
     queryFn: async () => {
       if (!user) return [];
+      // Match both agent_id and owner_id so tips work for agents AND owners
       const { data, error } = await supabase
         .from('properties')
         .select('id, title, description, price, images, image_urls, property_features, virtual_tour_url, three_d_model_url, status')
-        .eq('agent_id', user.id)
+        .or(`agent_id.eq.${user.id},owner_id.eq.${user.id}`)
         .eq('status', 'active');
       if (error) throw error;
       return data || [];

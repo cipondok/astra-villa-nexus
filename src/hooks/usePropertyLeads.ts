@@ -45,6 +45,8 @@ export const usePropertyLeads = () => {
     queryKey: ['property-leads', user?.id],
     queryFn: async () => {
       if (!user) throw new Error('Not authenticated');
+      // Query leads where agent_id matches (covers both agents and owners, since
+      // the on_inquiry_created trigger sets agent_id = COALESCE(agent_id, owner_id))
       const { data, error } = await supabase
         .from('property_leads')
         .select('*')
