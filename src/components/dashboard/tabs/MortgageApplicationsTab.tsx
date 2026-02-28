@@ -23,8 +23,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-const formatIDR = (v: number) =>
-  new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
+import { getCurrencyFormatter } from '@/stores/currencyStore';
+const formatIDR = (v: number) => getCurrencyFormatter()(v);
 
 interface MortgageApplication {
   id: string;

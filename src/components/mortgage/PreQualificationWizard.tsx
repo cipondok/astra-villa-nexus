@@ -27,8 +27,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-const formatIDR = (v: number) =>
-  new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
+import { getCurrencyFormatter } from '@/stores/currencyStore';
+const formatIDR = (v: number) => getCurrencyFormatter()(v);
 
 const STEPS = [
   { id: 'personal', title: 'Personal Info', icon: User, description: 'Tell us about yourself' },

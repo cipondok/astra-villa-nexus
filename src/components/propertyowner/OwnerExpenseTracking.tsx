@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import { 
   Receipt, Plus, Trash2, X, Send, Calendar, TrendingDown, 
   DollarSign, Wrench, Shield, Zap, Paintbrush, Scale, Building, MoreHorizontal,
@@ -155,15 +155,15 @@ const OwnerExpenseTracking = () => {
       <div className="grid grid-cols-3 gap-1.5">
         <Card className="p-2">
           <p className="text-[8px] text-muted-foreground">Total Pengeluaran</p>
-          <p className="text-xs font-bold text-destructive">{formatIDR(totalExpenses)}</p>
+          <p className="text-xs font-bold text-destructive"><Price amount={totalExpenses} /></p>
         </Card>
         <Card className="p-2">
           <p className="text-[8px] text-muted-foreground">Sudah Bayar</p>
-          <p className="text-xs font-bold text-chart-1">{formatIDR(paidTotal)}</p>
+          <p className="text-xs font-bold text-chart-1"><Price amount={paidTotal} /></p>
         </Card>
         <Card className="p-2">
           <p className="text-[8px] text-muted-foreground">Belum Bayar</p>
-          <p className="text-xs font-bold text-chart-3">{formatIDR(pendingTotal)}</p>
+          <p className="text-xs font-bold text-chart-3"><Price amount={pendingTotal} /></p>
         </Card>
       </div>
 
@@ -188,7 +188,7 @@ const OwnerExpenseTracking = () => {
                       <div className={`h-full rounded-full ${config.bg.replace('/10', '/40')}`} style={{ width: `${pct}%` }} />
                     </div>
                     <span className="text-[9px] font-medium text-foreground w-12 text-right">{pct}%</span>
-                    <span className="text-[9px] font-semibold text-foreground">{formatIDR(amount as number)}</span>
+                    <span className="text-[9px] font-semibold text-foreground"><Price amount={amount as number} /></span>
                   </div>
                 );
               })}
@@ -300,7 +300,7 @@ const OwnerExpenseTracking = () => {
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-xs font-bold text-destructive">{formatIDR(Number(e.amount))}</p>
+                    <p className="text-xs font-bold text-destructive"><Price amount={Number(e.amount)} /></p>
                     {e.vendor_name && <p className="text-[8px] text-muted-foreground">{e.vendor_name}</p>}
                   </div>
                   <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-destructive flex-shrink-0" onClick={() => deleteMutation.mutate(e.id)}>

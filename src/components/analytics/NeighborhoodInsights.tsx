@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, TrendingUp, TrendingDown, Home, Ruler, BedDouble } from 'lucide-react';
-import { formatIDR } from '@/utils/currency';
+import Price from '@/components/ui/Price';
 import { useTranslation } from '@/i18n/useTranslation';
 
 const formatNumber = (num: number) => new Intl.NumberFormat('id-ID').format(num);
@@ -116,7 +116,7 @@ const NeighborhoodInsights = () => {
                     <Home className="h-3 w-3 text-muted-foreground" />
                     <span className="text-muted-foreground">{t('analytics.avgPrice')}:</span>
                   </div>
-                  <span className="font-semibold text-right">{formatIDR(city.avgPrice)}</span>
+                  <span className="font-semibold text-right"><Price amount={city.avgPrice} short /></span>
 
                   {city.avgSize > 0 && (
                     <>
@@ -172,7 +172,7 @@ const NeighborhoodInsights = () => {
                 </div>
                 <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
                   <span>{city.listings} {t('analytics.listings').toLowerCase()}</span>
-                  <span className="font-semibold text-foreground">{formatIDR(city.avgPrice)}</span>
+                  <span className="font-semibold text-foreground"><Price amount={city.avgPrice} short /></span>
                 </div>
               </div>
             ))}

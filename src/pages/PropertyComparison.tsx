@@ -15,7 +15,8 @@ import {
   Trophy, Sparkles, BarChart3, Scale
 } from 'lucide-react';
 import ShareComparisonButton from '@/components/property/ShareComparisonButton';
-import { formatIDR } from '@/utils/formatters';
+import Price from '@/components/ui/Price';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
@@ -180,7 +181,7 @@ const PropertyComparison = () => {
         const isLowest = p.price === minPrice && prices.length > 1;
         return (
           <div className="space-y-0.5">
-            <span className={`font-bold ${isLowest ? 'text-amber-600 dark:text-amber-400' : ''}`}>{formatIDR(p.price)}</span>
+            <span className={`font-bold ${isLowest ? 'text-amber-600 dark:text-amber-400' : ''}`}><Price amount={p.price} /></span>
             {p.listing_type === 'rent' && <span className="text-xs text-muted-foreground">/month</span>}
             {isLowest && <WinnerBadge label="Lowest" />}
           </div>
@@ -220,7 +221,7 @@ const PropertyComparison = () => {
         const isBest = v === minPricePerSqm && allPricePerSqm.length > 1;
         return (
           <div className="space-y-0.5">
-            <span className={isBest ? 'font-bold text-amber-600 dark:text-amber-400' : ''}>{formatIDR(Math.round(v))}</span>
+            <span className={isBest ? 'font-bold text-amber-600 dark:text-amber-400' : ''}><Price amount={Math.round(v)} /></span>
             {isBest && <WinnerBadge />}
           </div>
         );
@@ -495,24 +496,24 @@ const PropertyComparison = () => {
                           </div>
                           <div className="p-3 rounded-xl bg-gradient-to-r from-amber-500/10 to-yellow-400/5 border border-amber-500/10 text-center">
                             <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">Monthly Payment</p>
-                            <p className="text-xl font-bold text-amber-600 dark:text-amber-400">{formatIDR(r.kpr.monthlyPayment)}</p>
+                            <p className="text-xl font-bold text-amber-600 dark:text-amber-400"><Price amount={r.kpr.monthlyPayment} /></p>
                           </div>
                           <div className="grid grid-cols-2 gap-2 text-xs">
                             <div className="p-2 bg-muted/30 rounded-lg">
                               <p className="text-muted-foreground text-[10px]">DP ({kprParams.downPaymentPercent}%)</p>
-                              <p className="font-semibold">{formatIDR(r.kpr.downPayment)}</p>
+                              <p className="font-semibold"><Price amount={r.kpr.downPayment} short /></p>
                             </div>
                             <div className="p-2 bg-muted/30 rounded-lg">
                               <p className="text-muted-foreground text-[10px]">Loan</p>
-                              <p className="font-semibold">{formatIDR(r.kpr.loanAmount)}</p>
+                              <p className="font-semibold"><Price amount={r.kpr.loanAmount} short /></p>
                             </div>
                             <div className="p-2 bg-muted/30 rounded-lg">
                               <p className="text-muted-foreground text-[10px]">Total Payment</p>
-                              <p className="font-semibold">{formatIDR(r.kpr.totalPayment)}</p>
+                              <p className="font-semibold"><Price amount={r.kpr.totalPayment} short /></p>
                             </div>
                             <div className="p-2 bg-destructive/5 rounded-lg">
                               <p className="text-muted-foreground text-[10px]">Total Interest</p>
-                              <p className="font-semibold text-destructive">{formatIDR(r.kpr.totalInterest)}</p>
+                              <p className="font-semibold text-destructive"><Price amount={r.kpr.totalInterest} short /></p>
                             </div>
                           </div>
                         </CardContent>
@@ -535,7 +536,7 @@ const PropertyComparison = () => {
                         <CartesianGrid strokeDasharray="3 3" className="opacity-20" />
                         <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
                         <YAxis tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} tickFormatter={(v) => `${(v / 1_000_000).toFixed(0)}M`} />
-                        <Tooltip formatter={(v: number) => formatIDR(v)} contentStyle={{ borderRadius: 12, border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--background))', color: 'hsl(var(--foreground))' }} />
+                        <Tooltip formatter={(v: number) => getCurrencyFormatter()(v)} contentStyle={{ borderRadius: 12, border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--background))', color: 'hsl(var(--foreground))' }} />
                         {kprResults.map((_, i) => (
                           <Bar key={i} dataKey="monthly" fill={CHART_COLORS[i % CHART_COLORS.length]} radius={[6, 6, 0, 0]} />
                         ))}
@@ -641,7 +642,7 @@ const PropertyComparison = () => {
                           <TableCell className="font-medium text-muted-foreground sticky left-0 bg-card z-10 text-sm">Avg. Rent Nearby</TableCell>
                           {neighborhoods.map(n => (
                             <TableCell key={n.property.id}>
-                              <span className="text-sm font-semibold">{formatIDR(n.data.avgRentNearby)}<span className="text-xs text-muted-foreground font-normal">/mo</span></span>
+                              <span className="text-sm font-semibold"><Price amount={n.data.avgRentNearby} /><span className="text-xs text-muted-foreground font-normal">/mo</span></span>
                             </TableCell>
                           ))}
                         </TableRow>
@@ -748,7 +749,7 @@ const PropertyComparison = () => {
                                   </div>
                                   <div className="p-2 bg-muted/30 rounded-lg">
                                     <p className="text-muted-foreground text-[10px]">Monthly Rent</p>
-                                    <p className="font-semibold">{formatIDR(d.metrics.monthlyRental)}</p>
+                                    <p className="font-semibold"><Price amount={d.metrics.monthlyRental} short /></p>
                                   </div>
                                   <div className="p-2 bg-muted/30 rounded-lg">
                                     <p className="text-muted-foreground text-[10px]">Break Even</p>
@@ -757,8 +758,8 @@ const PropertyComparison = () => {
                                 </div>
                                 <div className="p-2.5 rounded-lg bg-gradient-to-r from-amber-500/[0.06] to-transparent border border-amber-500/10 text-center">
                                   <p className="text-[10px] text-muted-foreground">5-Year Value</p>
-                                  <p className="text-lg font-bold text-foreground">{formatIDR(d.metrics.fiveYearValue)}</p>
-                                  <p className="text-[10px] font-bold text-emerald-500">+{formatIDR(d.metrics.fiveYearValue - d.metrics.price)}</p>
+                                  <p className="text-lg font-bold text-foreground"><Price amount={d.metrics.fiveYearValue} /></p>
+                                  <p className="text-[10px] font-bold text-emerald-500">+<Price amount={d.metrics.fiveYearValue - d.metrics.price} /></p>
                                 </div>
                               </CardContent>
                             </Card>
@@ -848,7 +849,7 @@ const PropertyComparison = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
                         <h4 className="font-semibold mb-1 text-sm">Price Range</h4>
-                        <p className="text-sm text-muted-foreground">{formatIDR(Math.min(...prices))} — {formatIDR(Math.max(...prices))}</p>
+                        <p className="text-sm text-muted-foreground"><Price amount={Math.min(...prices)} /> — <Price amount={Math.max(...prices)} /></p>
                       </div>
                       {areas.length > 0 && (
                         <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
@@ -862,7 +863,7 @@ const PropertyComparison = () => {
                           <p className="text-sm font-medium">
                             {selectedProperties.find(p => pricePerSqm(p) === minPricePerSqm)?.title?.slice(0, 30)}…
                           </p>
-                          <p className="text-xs text-muted-foreground">{formatIDR(Math.round(minPricePerSqm!))}/m²</p>
+                          <p className="text-xs text-muted-foreground"><Price amount={Math.round(minPricePerSqm!)} />/m²</p>
                         </div>
                       )}
                     </div>

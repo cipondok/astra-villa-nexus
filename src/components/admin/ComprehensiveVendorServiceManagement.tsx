@@ -33,7 +33,7 @@ import {
   Clock,
   Verified
 } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import VendorVerificationPanel from "./VendorVerificationPanel";
 import VendorKYCManagement from "./VendorKYCManagement";
 import VendorServiceForm from "./VendorServiceForm";
@@ -440,7 +440,7 @@ const ComprehensiveVendorServiceManagement = () => {
                           <div className="text-sm">
                             {service.vendor_service_items.slice(0, 2).map((item: any, idx: number) => (
                               <div key={idx}>
-                                {formatIDR(item.price || 0)}
+                                <Price amount={item.price || 0} />
                               </div>
                             ))}
                             {service.vendor_service_items.length > 2 && (

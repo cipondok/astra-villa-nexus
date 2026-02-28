@@ -12,7 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAlert } from "@/contexts/AlertContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ElementType }> = {
   pending: { label: "Menunggu Bayar", color: "bg-chart-3/10 text-chart-3 border-chart-3/20", icon: Clock },
@@ -122,11 +122,11 @@ const TenantDeposits = () => {
       <div className="grid grid-cols-2 gap-3">
         <Card className="p-3 border-border">
           <p className="text-xs text-muted-foreground">Ditahan Escrow</p>
-          <p className="text-sm font-bold text-primary">{formatIDR(totalHeld)}</p>
+          <p className="text-sm font-bold text-primary"><Price amount={totalHeld} /></p>
         </Card>
         <Card className="p-3 border-border">
           <p className="text-xs text-muted-foreground">Total Refund</p>
-          <p className="text-sm font-bold text-chart-1">{formatIDR(totalRefund)}</p>
+          <p className="text-sm font-bold text-chart-1"><Price amount={totalRefund} /></p>
         </Card>
       </div>
 
@@ -142,7 +142,7 @@ const TenantDeposits = () => {
             <Card key={dep.id} className="p-4 border-border">
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div>
-                  <p className="text-sm font-semibold text-foreground">{formatIDR(dep.deposit_amount)}</p>
+                  <p className="text-sm font-semibold text-foreground"><Price amount={dep.deposit_amount} /></p>
                   <p className="text-[10px] text-muted-foreground">Booking: {dep.booking_id.slice(0, 8)}...</p>
                 </div>
                 <Badge className={`${st.color} text-[10px] border`}>
@@ -159,14 +159,14 @@ const TenantDeposits = () => {
 
               {dep.deduction_amount > 0 && (
                 <div className="bg-destructive/5 rounded-md p-2 text-xs mb-2">
-                  <span className="font-medium text-destructive">Potongan: {formatIDR(dep.deduction_amount)}</span>
+                  <span className="font-medium text-destructive">Potongan: <Price amount={dep.deduction_amount} /></span>
                   {dep.deduction_reason && <p className="text-muted-foreground text-[10px] mt-0.5">{dep.deduction_reason}</p>}
                 </div>
               )}
 
               {dep.refund_amount > 0 && (
                 <div className="bg-chart-1/5 rounded-md p-2 text-xs mb-2">
-                  <span className="font-medium text-chart-1">Refund: {formatIDR(dep.refund_amount)}</span>
+                  <span className="font-medium text-chart-1">Refund: <Price amount={dep.refund_amount} /></span>
                 </div>
               )}
 
@@ -206,7 +206,7 @@ const TenantDeposits = () => {
             <div className="space-y-3">
               <div className="bg-muted/40 rounded-lg p-3 text-center">
                 <p className="text-xs text-muted-foreground">Jumlah Deposit</p>
-                <p className="text-lg font-bold text-foreground">{formatIDR(payDialog.deposit_amount)}</p>
+                <p className="text-lg font-bold text-foreground"><Price amount={payDialog.deposit_amount} /></p>
               </div>
               <div>
                 <Label>Metode Pembayaran</Label>
@@ -240,7 +240,7 @@ const TenantDeposits = () => {
             <div className="space-y-3">
               <div className="bg-destructive/5 rounded-lg p-3">
                 <p className="text-xs text-muted-foreground">Potongan yang disengketakan</p>
-                <p className="text-lg font-bold text-destructive">{formatIDR(disputeDialog.deduction_amount)}</p>
+                <p className="text-lg font-bold text-destructive"><Price amount={disputeDialog.deduction_amount} /></p>
                 {disputeDialog.deduction_reason && <p className="text-xs text-muted-foreground mt-1">{disputeDialog.deduction_reason}</p>}
               </div>
               <div>

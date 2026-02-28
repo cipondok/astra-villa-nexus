@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ResponsiveContainer, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { TrendingUp, Filter } from 'lucide-react';
-import { formatIDR } from '@/utils/currency';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { useTranslation } from '@/i18n/useTranslation';
 
 interface PropertyRecord {
@@ -130,7 +130,7 @@ const MarketTrendsChart = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                 <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1e6).toFixed(0)}M`} />
-                <Tooltip formatter={(value: number) => formatIDR(value)} />
+                <Tooltip formatter={(value: number) => getCurrencyFormatter()(value)} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Line type="monotone" dataKey="avgPrice" name={t('analytics.average')} stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
                 <Line type="monotone" dataKey="medianPrice" name={t('analytics.median')} stroke="hsl(var(--chart-1))" strokeWidth={2} dot={false} />

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -179,15 +180,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
   const bedroomOptions = [1, 2, 3, 4, 5, 6];
   const bathroomOptions = [1, 2, 3, 4, 5];
 
-  // Format Indonesian currency
-  const formatIDR = (amount: number): string => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+  const formatIDR = (amount: number) => getCurrencyFormatter()(amount);
 
   // Parse Indonesian currency input
   const parseIDRInput = (value: string): number => {

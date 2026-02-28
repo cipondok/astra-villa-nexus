@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { BaseProperty } from '@/types/property';
-import { formatIDR } from '@/utils/currency';
+import Price from '@/components/ui/Price';
 import { formatDistanceToNow } from '@/utils/dateUtils';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import { 
@@ -206,7 +206,7 @@ const PropertySearchResults = ({
               <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-gold-primary via-gold-primary/90 to-gold-primary/80 text-background px-3 py-1.5 rounded-lg shadow-md shadow-gold-primary/20">
                 <Tag className="h-4 w-4" />
                 <span className="text-lg font-bold">
-                  {property.price ? formatIDR(property.price) : currentText.priceOnRequest}
+                  {property.price ? <Price amount={property.price} /> : currentText.priceOnRequest}
                 </span>
               </div>
               {/* Discount Badge */}

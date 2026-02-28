@@ -1,4 +1,5 @@
 import React from 'react';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
@@ -18,13 +19,7 @@ interface ReviewStepProps {
 }
 
 const ReviewStep: React.FC<ReviewStepProps> = ({ formData }) => {
-  const formatIDR = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
+  const formatIDR = (amount: number) => getCurrencyFormatter()(amount);
 
   const updateFormData = (data: any) => {
     // This will be handled by the parent component

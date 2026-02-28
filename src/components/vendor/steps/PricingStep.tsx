@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -23,13 +24,7 @@ const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData, cat
     duration: 1
   });
 
-  const formatIDR = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
+  const formatIDR = (amount: number) => getCurrencyFormatter()(amount);
 
   const addPackage = () => {
     if (newPackage.name && newPackage.price > 0) {

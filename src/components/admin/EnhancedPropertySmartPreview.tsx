@@ -49,7 +49,7 @@ import {
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { formatIDR } from '@/utils/currency';
+import Price from '@/components/ui/Price';
 import { useAlert } from '@/contexts/AlertContext';
 
 interface PreviewProperty {
@@ -494,7 +494,7 @@ const EnhancedPropertySmartPreview = () => {
               
               {previewSettings.pricePosition === 'overlay' && previewSettings.showPrice && (
                 <div className="absolute top-2 right-2 bg-background/75 text-foreground px-2 py-1 rounded">
-                  {property.price ? formatIDR(property.price) : 'Price on request'}
+                  {property.price ? <Price amount={property.price} showFlag={false} /> : 'Price on request'}
                 </div>
               )}
             </div>
@@ -516,7 +516,7 @@ const EnhancedPropertySmartPreview = () => {
             
             {previewSettings.pricePosition === 'top' && previewSettings.showPrice && (
               <div style={priceStyle}>
-                {property.price ? formatIDR(property.price) : 'Price on request'}
+                {property.price ? <Price amount={property.price} showFlag={false} /> : 'Price on request'}
               </div>
             )}
             
@@ -566,7 +566,7 @@ const EnhancedPropertySmartPreview = () => {
             
             {previewSettings.pricePosition === 'bottom' && previewSettings.showPrice && (
               <div style={priceStyle}>
-                {property.price ? formatIDR(property.price) : 'Price on request'}
+                {property.price ? <Price amount={property.price} showFlag={false} /> : 'Price on request'}
               </div>
             )}
             

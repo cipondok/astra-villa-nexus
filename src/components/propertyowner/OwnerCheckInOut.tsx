@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import browserImageCompression from "browser-image-compression";
@@ -332,7 +332,7 @@ const OwnerCheckInOut = () => {
                         <AlertTriangle className="h-3 w-3" /> Kerusakan ditemukan
                       </p>
                       {r.damage_description && <p className="text-[9px] text-muted-foreground mt-0.5">{r.damage_description}</p>}
-                      {r.estimated_repair_cost > 0 && <p className="text-[9px] font-medium mt-0.5">Estimasi: {formatIDR(r.estimated_repair_cost)}</p>}
+                      {r.estimated_repair_cost > 0 && <p className="text-[9px] font-medium mt-0.5">Estimasi: <Price amount={r.estimated_repair_cost} /></p>}
                     </div>
                   )}
 
@@ -614,7 +614,7 @@ const OwnerCheckInOut = () => {
                   <p className="text-xs font-medium text-destructive mb-1">Kerusakan</p>
                   <p className="text-[10px]">{viewRecord.damage_description}</p>
                   {viewRecord.estimated_repair_cost > 0 && (
-                    <p className="text-[10px] font-medium mt-1">Estimasi: {formatIDR(viewRecord.estimated_repair_cost)}</p>
+                    <p className="text-[10px] font-medium mt-1">Estimasi: <Price amount={viewRecord.estimated_repair_cost} /></p>
                   )}
                   {viewRecord.damage_photos?.length > 0 && (
                     <div className="grid grid-cols-4 gap-1 mt-1.5">

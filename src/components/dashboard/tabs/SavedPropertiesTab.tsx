@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Heart, Eye, Trash2, MapPin, Bed, Bath, Maximize } from 'lucide-react';
-import { formatIDR } from '@/utils/formatters';
+import Price from '@/components/ui/Price';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SavedPropertiesTab = () => {
@@ -115,7 +115,7 @@ const SavedPropertiesTab = () => {
                         <p className="text-[9px] text-muted-foreground flex items-center gap-0.5 mb-1">
                           <MapPin className="h-2.5 w-2.5" />{p.city || p.state || '—'}
                         </p>
-                        <p className="text-xs font-bold text-gold-primary">{formatIDR(p.price)}</p>
+                        <p className="text-xs font-bold text-gold-primary"><Price amount={p.price} /></p>
                         <div className="flex items-center gap-2 mt-1 text-[8px] text-muted-foreground">
                           {p.bedrooms && <span className="flex items-center gap-0.5"><Bed className="h-2.5 w-2.5" />{p.bedrooms}</span>}
                           {p.bathrooms && <span className="flex items-center gap-0.5"><Bath className="h-2.5 w-2.5" />{p.bathrooms}</span>}

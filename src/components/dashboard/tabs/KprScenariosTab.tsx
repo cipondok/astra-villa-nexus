@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Banknote, Trash2, Calculator, TrendingDown, TrendingUp, Clock } from 'lucide-react';
-import { formatIDR } from '@/utils/formatters';
+import Price from '@/components/ui/Price';
 import { motion } from 'framer-motion';
 
 const KprScenariosTab = () => {
@@ -105,15 +105,15 @@ const KprScenariosTab = () => {
               <div className="grid grid-cols-2 gap-1.5">
                 <div className="bg-muted/30 rounded p-1.5">
                   <p className="text-[7px] text-muted-foreground uppercase tracking-wide">Property</p>
-                  <p className="text-[10px] font-bold">{formatIDR(scenario.propertyPrice)}</p>
+                  <p className="text-[10px] font-bold"><Price amount={scenario.propertyPrice} short /></p>
                 </div>
                 <div className="bg-gold-primary/5 rounded p-1.5 border border-gold-primary/10">
                   <p className="text-[7px] text-muted-foreground uppercase tracking-wide">Monthly</p>
-                  <p className="text-[10px] font-bold text-gold-primary">{formatIDR(scenario.monthlyPayment)}</p>
+                  <p className="text-[10px] font-bold text-gold-primary"><Price amount={scenario.monthlyPayment} short /></p>
                 </div>
                 <div className="bg-muted/30 rounded p-1.5">
                   <p className="text-[7px] text-muted-foreground uppercase tracking-wide">DP ({scenario.downPaymentPercent}%)</p>
-                  <p className="text-[10px] font-semibold">{formatIDR(scenario.downPayment)}</p>
+                  <p className="text-[10px] font-semibold"><Price amount={scenario.downPayment} short /></p>
                 </div>
                 <div className="bg-muted/30 rounded p-1.5">
                   <p className="text-[7px] text-muted-foreground uppercase tracking-wide">Rate / Term</p>
@@ -137,7 +137,7 @@ const KprScenariosTab = () => {
               <div className="flex items-center justify-between mt-1.5">
                 <span className="text-[7px] text-muted-foreground flex items-center gap-0.5">
                   <Clock className="h-2 w-2" />
-                  Total interest: {formatIDR(scenario.totalInterest)}
+                  Total interest: <Price amount={scenario.totalInterest} short />
                 </span>
               </div>
             </CardContent>
