@@ -26,6 +26,7 @@ import {
   Image,
   FileText
 } from 'lucide-react';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 const PropertyManagementAdvanced = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -132,10 +133,11 @@ const PropertyManagementAdvanced = () => {
   };
 
   const formatPrice = (price: number, type: string) => {
+    const fmt = getCurrencyFormatterShort();
     if (type === 'Rent') {
-      return `Rp ${(price / 1000000).toFixed(1)}M/month`;
+      return `${fmt(price)}/month`;
     }
-    return `Rp ${(price / 1000000000).toFixed(1)}B`;
+    return fmt(price);
   };
 
   const handleApproveProperty = (propertyId: string) => {

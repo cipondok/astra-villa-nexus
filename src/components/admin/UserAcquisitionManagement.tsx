@@ -34,6 +34,7 @@ import {
 import { toast } from "sonner";
 import { format } from "date-fns";
 import SEOManagement from "./marketing/SEOManagement";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 const UserAcquisitionManagement = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -138,9 +139,7 @@ const UserAcquisitionManagement = () => {
   const totalAcquisitions = convertedReferrals + bankConversions + influencerConversions;
   const actualCPA = totalAcquisitions > 0 ? totalSpend / totalAcquisitions : 0;
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount);
-  };
+  const formatCurrency = getCurrencyFormatter();
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;

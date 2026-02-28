@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { id } from "date-fns/locale";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 interface Property {
   id: string;
@@ -229,9 +230,7 @@ const BookingPage = () => {
     }
   };
 
-  const formatPrice = (price: number) => {
-    return `Rp ${price.toLocaleString('id-ID')}`;
-  };
+  const formatPrice = getCurrencyFormatter();
 
   const getRentalPeriodLabel = (period: string) => {
     switch(period) {

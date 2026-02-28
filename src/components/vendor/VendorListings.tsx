@@ -27,6 +27,7 @@ import {
   Heart,
   Camera
 } from "lucide-react";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 interface PropertyListing {
   id: string;
@@ -209,13 +210,8 @@ const VendorListings = () => {
   };
 
   const formatPrice = (price: number, type: string) => {
-    const formatted = new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-    }).format(price);
-    
-    return `${formatted}/${type === 'monthly' ? 'month' : type === 'yearly' ? 'year' : 'sale'}`;
+    const fmt = getCurrencyFormatter();
+    return `${fmt(price)}/${type === 'monthly' ? 'month' : type === 'yearly' ? 'year' : 'sale'}`;
   };
 
   const filteredListings = listings?.filter((listing) => {

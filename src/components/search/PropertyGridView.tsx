@@ -8,6 +8,7 @@ import SocialShareDialog from "@/components/property/SocialShareDialog";
 import { BaseProperty } from "@/types/property";
 import { useState } from "react";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
+import { getCurrencyFormatterShort, getCurrencyFormatter } from "@/stores/currencyStore";
 
 interface PropertyGridViewProps {
   properties: BaseProperty[];
@@ -32,23 +33,14 @@ const PropertyGridView = ({
   const { getPropertyImage } = useDefaultPropertyImage();
 
   const formatPrice = (price: number) => {
-    if (price >= 1000000000) {
-      const value = (price / 1000000000).toFixed(1);
-      return { main: `Rp ${value}`, suffix: 'Miliar' };
-    }
-    if (price >= 1000000) {
-      const value = (price / 1000000).toFixed(0);
-      return { main: `Rp ${value}`, suffix: 'Juta' };
-    }
-    return { main: `Rp ${price.toLocaleString('id-ID')}`, suffix: '' };
+    const formatted = getCurrencyFormatterShort()(price);
+    // Split into main + suffix for styling
+    return { main: formatted, suffix: '' };
   };
 
   const formatMonthlyPayment = (price: number) => {
     const monthlyEstimate = price * 0.006;
-    if (monthlyEstimate >= 1000000) {
-      return `Rp ${(monthlyEstimate / 1000000).toFixed(1)} Juta/PB`;
-    }
-    return `Rp ${(monthlyEstimate / 1000).toFixed(0)} Ribu/PB`;
+    return getCurrencyFormatterShort()(monthlyEstimate) + '/PB';
   };
 
   const getImageUrl = (property: BaseProperty) => {

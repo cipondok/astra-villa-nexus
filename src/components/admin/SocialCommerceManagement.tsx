@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 
 interface Platform {
   id: string;
@@ -146,13 +147,7 @@ const SocialCommerceManagement: React.FC = () => {
     return num.toString();
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0
-    }).format(value);
-  };
+  const formatCurrency = getCurrencyFormatter();
 
   const totalStats = {
     impressions: platforms.reduce((sum, p) => sum + p.impressions, 0),

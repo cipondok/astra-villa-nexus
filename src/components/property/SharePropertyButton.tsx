@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 interface SharePropertyButtonProps {
   propertyId: string;
@@ -57,11 +58,7 @@ const SharePropertyButton = ({
     return qs ? `${base}?${qs}` : base;
   };
 
-  const formatPrice = (price: number) => {
-    if (price >= 1e9) return `IDR ${(price / 1e9).toFixed(1)}B`;
-    if (price >= 1e6) return `IDR ${(price / 1e6).toFixed(1)}M`;
-    return `IDR ${price.toLocaleString()}`;
-  };
+  const formatPrice = getCurrencyFormatterShort();
 
   const shareText = `${propertyTitle}${propertyPrice ? ` - ${formatPrice(propertyPrice)}` : ''}${propertyLocation ? ` | ${propertyLocation}` : ''}`;
 
