@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useTranslation } from '@/i18n/useTranslation';
-import { formatIDR } from '@/utils/currency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 import { 
   CreditCard, 
   Smartphone, 
@@ -101,6 +101,7 @@ const UnifiedPaymentSelector = ({
   paypalEnabled = false
 }: UnifiedPaymentSelectorProps) => {
   const { language } = useTranslation();
+  const { formatPrice } = useCurrency();
   const t = text[language] || text.en;
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethodType | null>(null);
 
@@ -121,8 +122,7 @@ const UnifiedPaymentSelector = ({
   };
 
   const formatAmount = () => {
-    // Always format as IDR for Indonesian market
-    return formatIDR(amount);
+    return formatPrice(amount);
   };
 
   const renderMethodGroup = (category: PaymentMethod['category'], title: string) => {

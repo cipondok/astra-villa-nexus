@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ResponsiveContainer, ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Calculator, TrendingUp, DollarSign, Clock } from 'lucide-react';
-import { formatIDR } from '@/utils/currency';
+import Price from '@/components/ui/Price';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { useTranslation } from '@/i18n/useTranslation';
 
 const InvestmentROICalculator = () => {
@@ -104,7 +105,7 @@ const InvestmentROICalculator = () => {
                 <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{t('analytics.manualInput')}</SelectItem>
-                  {cityAverages?.map(c => <SelectItem key={c.city} value={c.city}>{c.city} ({formatIDR(c.avgPrice)})</SelectItem>)}
+                  {cityAverages?.map(c => <SelectItem key={c.city} value={c.city}>{c.city} (<Price amount={c.avgPrice} short />)</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -145,14 +146,14 @@ const InvestmentROICalculator = () => {
           <CardContent className="p-2 md:p-3 text-center">
             <DollarSign className="h-4 w-4 mx-auto text-primary mb-1" />
             <div className="text-[10px] text-muted-foreground">{t('analytics.monthlyMortgage')}</div>
-            <div className="text-xs md:text-sm font-bold">{formatIDR(Math.round(calculations.monthlyMortgage))}</div>
+            <div className="text-xs md:text-sm font-bold"><Price amount={Math.round(calculations.monthlyMortgage)} /></div>
           </CardContent>
         </Card>
         <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
           <CardContent className="p-2 md:p-3 text-center">
             <TrendingUp className="h-4 w-4 mx-auto text-chart-1 mb-1" />
             <div className="text-[10px] text-muted-foreground">{t('analytics.annualRentalIncome')}</div>
-            <div className="text-xs md:text-sm font-bold">{formatIDR(Math.round(calculations.annualRental))}</div>
+            <div className="text-xs md:text-sm font-bold"><Price amount={Math.round(calculations.annualRental)} /></div>
           </CardContent>
         </Card>
         <Card className="bg-transparent dark:bg-muted/10 border-border/30 backdrop-blur-sm">
@@ -185,7 +186,7 @@ const InvestmentROICalculator = () => {
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis dataKey="year" tick={{ fontSize: 10 }} />
               <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1e9).toFixed(1)}B`} />
-              <Tooltip formatter={(value: number) => formatIDR(value)} />
+              <Tooltip formatter={(value: number) => getCurrencyFormatter()(value)} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar dataKey="equity" name={t('analytics.equityBuilt')} fill="hsl(var(--primary) / 0.3)" />
               <Line type="monotone" dataKey="cumulativeCashFlow" name={t('analytics.cumulativeCashFlow')} stroke="hsl(var(--chart-1))" strokeWidth={2} dot={false} />

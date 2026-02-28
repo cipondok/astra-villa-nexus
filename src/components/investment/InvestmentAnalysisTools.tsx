@@ -14,13 +14,9 @@ import {
   Calendar, MapPin, Sparkles, ChevronRight, Info, Globe, Activity
 } from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPie, Pie, Cell, Legend } from 'recharts';
+import { getCurrencyFormatterShort, getCurrencyFormatter } from '@/stores/currencyStore';
 
-const formatIDR = (v: number) => {
-  if (v >= 1e12) return `Rp ${(v / 1e12).toFixed(1)}T`;
-  if (v >= 1e9) return `Rp ${(v / 1e9).toFixed(1)}M`;
-  if (v >= 1e6) return `Rp ${(v / 1e6).toFixed(0)}Jt`;
-  return `Rp ${v.toLocaleString('id-ID')}`;
-};
+const formatIDR = (v: number) => getCurrencyFormatterShort()(v);
 
 const GOLD_COLORS = ['hsl(45, 93%, 47%)', 'hsl(38, 92%, 50%)', 'hsl(43, 96%, 56%)', 'hsl(48, 96%, 53%)', 'hsl(36, 100%, 40%)'];
 

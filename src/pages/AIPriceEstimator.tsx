@@ -16,7 +16,8 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { formatIDR } from '@/utils/currency';
+import Price from '@/components/ui/Price';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { useLocationData } from '@/hooks/useLocationData';
 import { RadialBarChart, RadialBar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
 
@@ -393,7 +394,7 @@ const AIPriceEstimator = () => {
                                 transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
                                 className="text-2xl sm:text-3xl lg:text-5xl font-black bg-gradient-to-r from-gold-primary via-gold-primary to-gold-primary/70 bg-clip-text text-transparent"
                               >
-                                {formatIDR(result.price_mid)}
+                                {getCurrencyFormatter()(result.price_mid)}
                               </motion.p>
                             </div>
 
@@ -417,19 +418,19 @@ const AIPriceEstimator = () => {
                               />
                             </div>
                             <div className="flex justify-between text-xs text-muted-foreground font-medium">
-                              <span>Low: {formatIDR(result.price_low)}</span>
-                              <span>High: {formatIDR(result.price_high)}</span>
+                              <span>Low: {getCurrencyFormatter()(result.price_low)}</span>
+                              <span>High: {getCurrencyFormatter()(result.price_high)}</span>
                             </div>
 
                             {/* Per sqm */}
                             <div className="grid grid-cols-2 gap-3 mt-5">
                               <div className="bg-background/80 backdrop-blur-sm rounded-xl p-3.5 text-center border border-border/40">
                                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1">Harga / m² (Tanah)</p>
-                                <p className="text-sm font-bold text-foreground">{formatIDR(result.price_per_sqm_land)}</p>
+                                <p className="text-sm font-bold text-foreground">{getCurrencyFormatter()(result.price_per_sqm_land)}</p>
                               </div>
                               <div className="bg-background/80 backdrop-blur-sm rounded-xl p-3.5 text-center border border-border/40">
                                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1">Harga / m² (Bangunan)</p>
-                                <p className="text-sm font-bold text-foreground">{formatIDR(result.price_per_sqm_building)}</p>
+                                <p className="text-sm font-bold text-foreground">{getCurrencyFormatter()(result.price_per_sqm_building)}</p>
                               </div>
                             </div>
 
@@ -548,7 +549,7 @@ const AIPriceEstimator = () => {
                             <div className="space-y-2.5">
                               <div className="flex justify-between items-center">
                                 <span className="text-sm text-muted-foreground">Estimasi Sewa / Bulan</span>
-                                <span className="font-bold text-foreground">{formatIDR(result.monthly_rental_estimate)}</span>
+                                <span className="font-bold text-foreground">{getCurrencyFormatter()(result.monthly_rental_estimate)}</span>
                               </div>
                               <div className="flex justify-between items-center">
                                 <span className="text-sm text-muted-foreground">ROI 5 Tahun</span>

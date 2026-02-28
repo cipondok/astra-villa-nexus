@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import { format, differenceInDays } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import {
@@ -378,15 +378,15 @@ const OwnerBookingCancellation = () => {
               <div className="grid grid-cols-3 gap-2 mb-2">
                 <div className="bg-muted/30 rounded p-1.5 text-center">
                   <p className="text-[8px] text-muted-foreground">Total</p>
-                  <p className="text-[10px] font-semibold">{formatIDR(c.original_amount)}</p>
+                  <p className="text-[10px] font-semibold"><Price amount={c.original_amount} short /></p>
                 </div>
                 <div className="bg-chart-1/10 rounded p-1.5 text-center">
                   <p className="text-[8px] text-muted-foreground">Refund ({c.refund_percentage}%)</p>
-                  <p className="text-[10px] font-semibold text-chart-1">{formatIDR(c.refund_amount)}</p>
+                  <p className="text-[10px] font-semibold text-chart-1"><Price amount={c.refund_amount} short /></p>
                 </div>
                 <div className="bg-destructive/10 rounded p-1.5 text-center">
                   <p className="text-[8px] text-muted-foreground">Penalti</p>
-                  <p className="text-[10px] font-semibold text-destructive">{formatIDR(c.penalty_amount)}</p>
+                  <p className="text-[10px] font-semibold text-destructive"><Price amount={c.penalty_amount} short /></p>
                 </div>
               </div>
 
@@ -443,11 +443,11 @@ const OwnerBookingCancellation = () => {
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-muted-foreground">Refund</span>
-                  <span className="font-semibold text-chart-1">{formatIDR(reviewDialog.refund_amount)} ({reviewDialog.refund_percentage}%)</span>
+                  <span className="font-semibold text-chart-1"><Price amount={reviewDialog.refund_amount} /> ({reviewDialog.refund_percentage}%)</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-muted-foreground">Penalti</span>
-                  <span className="font-semibold text-destructive">{formatIDR(reviewDialog.penalty_amount)}</span>
+                  <span className="font-semibold text-destructive"><Price amount={reviewDialog.penalty_amount} /></span>
                 </div>
               </div>
               <div className="bg-muted/30 rounded-lg p-2">

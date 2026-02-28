@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TrendingUp, TrendingDown, BarChart3, MapPin, Home, Eye, Sparkles } from 'lucide-react';
-import { formatIDR } from '@/utils/formatters';
+import Price from '@/components/ui/Price';
 import { motion } from 'framer-motion';
 
 interface CityInsight {
@@ -223,7 +223,7 @@ const MarketInsightsTab = () => {
                     <BarChart3 className="h-2.5 w-2.5" />Your price range
                   </p>
                   <p className="text-[10px] font-semibold">
-                    {formatIDR(userInsight.avgPriceRange.min)} — {formatIDR(userInsight.avgPriceRange.max)}
+                    <Price amount={userInsight.avgPriceRange.min} short /> — <Price amount={userInsight.avgPriceRange.max} short />
                   </p>
                 </div>
               )}
@@ -267,7 +267,7 @@ const MarketInsightsTab = () => {
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-[10px] font-bold">{formatIDR(city.avgPrice)}</p>
+                    <p className="text-[10px] font-bold"><Price amount={city.avgPrice} short /></p>
                     <div className="flex items-center gap-0.5 justify-end">
                       {city.trend === 'up' ? (
                         <TrendingUp className="h-2.5 w-2.5 text-chart-1" />

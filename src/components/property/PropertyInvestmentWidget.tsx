@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, PiggyBank, Calendar, BarChart3, ArrowRight, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { formatIDR } from '@/utils/currency';
+import Price from '@/components/ui/Price';
 import { motion } from 'framer-motion';
 
 interface PropertyInvestmentWidgetProps {
@@ -86,7 +86,7 @@ export default function PropertyInvestmentWidget({ price, city, propertyType, la
               <BarChart3 className="h-3 w-3 text-muted-foreground" />
               <span className="text-[9px] text-muted-foreground">Monthly Rent</span>
             </div>
-            <p className="text-xs font-bold text-foreground">{formatIDR(metrics.monthlyRental)}</p>
+            <p className="text-xs font-bold text-foreground"><Price amount={metrics.monthlyRental} short /></p>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
@@ -104,8 +104,8 @@ export default function PropertyInvestmentWidget({ price, city, propertyType, la
         <div className="p-2.5 rounded-lg bg-gradient-to-r from-gold-primary/[0.06] to-transparent border border-gold-primary/10">
           <p className="text-[9px] text-muted-foreground mb-0.5">5-Year Projected Value</p>
           <div className="flex items-baseline gap-2">
-            <span className="text-sm font-black text-foreground">{formatIDR(metrics.fiveYearValue)}</span>
-            <span className="text-[10px] font-bold text-emerald-500">+{formatIDR(metrics.fiveYearGain)}</span>
+            <span className="text-sm font-black text-foreground"><Price amount={metrics.fiveYearValue} short /></span>
+            <span className="text-[10px] font-bold text-emerald-500">+<Price amount={metrics.fiveYearGain} short /></span>
           </div>
         </div>
 

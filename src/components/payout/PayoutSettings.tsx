@@ -17,7 +17,7 @@ import {
   Wallet
 } from 'lucide-react';
 import { usePayoutSystem, INDONESIAN_BANKS } from '@/hooks/usePayoutSystem';
-import { formatIDR } from '@/utils/currency';
+import Price from '@/components/ui/Price';
 import { toast } from 'sonner';
 
 export const PayoutSettings: React.FC = () => {
@@ -96,7 +96,7 @@ export const PayoutSettings: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary">
-              {formatIDR(availableBalance)}
+              <Price amount={availableBalance} />
             </div>
             <p className="text-xs text-muted-foreground mt-1">Ready for withdrawal</p>
             <Button 
@@ -126,7 +126,7 @@ export const PayoutSettings: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-chart-5">
-              {formatIDR(pendingBalance)}
+              <Price amount={pendingBalance} />
             </div>
             <p className="text-xs text-muted-foreground mt-1">Processing or held</p>
           </CardContent>
