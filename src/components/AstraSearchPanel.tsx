@@ -475,7 +475,7 @@ const AstraSearchPanel = ({
     try {
       const {
         data: typeData
-      } = await supabase.from('properties').select('property_type').not('property_type', 'is', null);
+      } = await supabase.from('properties').select('property_type').not('property_type', 'is', null).limit(200);
       if (typeData) {
         const uniqueTypes = [...new Set(typeData.map(item => item.property_type))].filter(Boolean).map(type => ({
           value: type,
