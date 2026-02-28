@@ -74,7 +74,7 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/viem/')) {
             return 'vendor-viem';
           }
-          if (id.includes('node_modules/@reown/') || id.includes('node_modules/@web3modal/')) {
+          if (id.includes('node_modules/@reown/')) {
             return 'vendor-web3modal';
           }
           if (id.includes('node_modules/@coinbase/') || id.includes('node_modules/porto/') || id.includes('node_modules/@walletconnect/')) {
