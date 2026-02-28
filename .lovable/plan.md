@@ -1,32 +1,42 @@
 
 
-## Two Pending Change Sets
+## KPR Calculator Page
 
-### 1. SmartCollectionsShowcase Gold Theme (7 edits in `src/components/home/SmartCollectionsShowcase.tsx`)
+A dedicated `/kpr-calculator` page that serves as a full-featured mortgage calculator for Indonesian property buyers, wrapping the existing `MortgageCalculator` component and adding a hero section with gold theming.
 
-| Line | Change |
-|------|--------|
-| 51-56 | Add gold decorative lines flanking icon+title, Sparkles → `text-gold-primary`, Badge → `className="bg-gold-primary/10 text-gold-primary border border-gold-primary/20 text-[10px] uppercase tracking-wider"` |
-| 64 | TabsTrigger: add `data-[state=active]:text-gold-primary` |
-| 85 | Empty Sparkles: `opacity-40` → `text-gold-primary/40` |
-| 101 | Card: add `hover:shadow-gold-primary/10 hover:border-gold-primary/40 hover:-translate-y-1`, change `transition-shadow` → `transition-all duration-300` |
-| 131 | Price: `text-primary` → `text-gold-primary` |
+### What already exists
+- `MortgageCalculator` component — full calculator with bank selection, rate comparison table, scenario saving, and inquiry dialog
+- `KPRAmortizationChart` — yearly amortization chart/table (used in property-level `KPRCalculator`)
+- `KPRAffordability` — DTI analysis with income input (used in property-level `KPRCalculator`)
+- `useMortgageCalculator` hook — Supabase-powered bank/rate data, PMT formula, amortization schedule generation
+- `useSavedScenarios` — localStorage-based scenario management
+- `KprScenariosTab` already links to `/kpr-calculator`
 
-### 2. AIPriceEstimator Mobile Responsiveness (10 edits in `src/pages/AIPriceEstimator.tsx`)
+### Implementation Steps
 
-| Line | Current | Updated |
-|------|---------|---------|
-| 152 | `min-h-screen bg-background pt-20` | `min-h-[100dvh] bg-background pt-16 sm:pt-20` |
-| 164 | `text-3xl sm:text-4xl lg:text-5xl` | `text-2xl sm:text-3xl lg:text-5xl` |
-| 175 | `gap-6` | `gap-4 lg:gap-6` |
-| 183 | `sticky top-24` | `lg:sticky lg:top-24 h-fit` |
-| 306 & 333 | `min-h-[400px]` | `min-h-[300px] sm:min-h-[400px]` |
-| 370 | `p-6 sm:p-8` | `p-4 sm:p-6 lg:p-8` |
-| 394 | `text-3xl sm:text-4xl lg:text-5xl` | `text-2xl sm:text-3xl lg:text-5xl` |
-| 467 & 519 | `p-5` | `p-4 sm:p-5` |
-| 476 | `h-36` | `h-28 sm:h-36` |
-| 528 | `h-32` | `h-28 sm:h-32` |
-| 574 & 599 | `p-5` | `p-4 sm:p-5` |
+**1. Create `src/pages/KprCalculatorPage.tsx`**
+- Hero section with gold-themed header ("Simulasi KPR", "Smart Property Investment Platform" badge)
+- Two-column layout (lg breakpoint): left = `MortgageCalculator` (full mode, not compact), right = sidebar with `KPRAffordability` and `KPRAmortizationChart` that sync with the calculator's state
+- Actually, since `MortgageCalculator` already contains bank comparison + scenario saving + inquiry, the page just needs to wrap it with a hero and add the amortization chart + affordability sections below
+- Layout: hero → `MortgageCalculator` (with `propertyPrice` defaulting to 1B IDR) → amortization chart section → affordability section
+- Since `MortgageCalculator` manages its own state internally, the simplest approach is to render it as the main content and add supplementary content around it
+- Mobile responsive with gold theme consistent with other pages
 
-All changes are Tailwind class-only. No logic or structural modifications.
+**2. Add route in `src/App.tsx`**
+- Add lazy import for `KprCalculatorPage`
+- Add `<Route path="/kpr-calculator" element={<KprCalculatorPage />} />`
+- Add alias `/simulasi-kpr` for Indonesian URL
+
+### Technical Details
+
+The page will:
+- Lazy-load via `React.lazy` matching the existing pattern in App.tsx
+- Use the existing `MortgageCalculator` component in non-compact mode (already has bank comparison table, scenario saving, inquiry dialog)
+- Add a standalone amortization + affordability section below the main calculator using shared state via a wrapper that lifts the calculation values
+- Gold-themed hero matching the `SmartCollectionsShowcase` styling (`text-gold-primary`, `border-gold-primary/20`, etc.)
+- Framer-motion entrance animations
+
+**Files to create/edit:**
+1. **Create** `src/pages/KprCalculatorPage.tsx` — page component
+2. **Edit** `src/App.tsx` — add route + lazy import
 
