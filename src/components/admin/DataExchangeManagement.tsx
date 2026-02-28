@@ -15,6 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 const DataExchangeManagement: React.FC = () => {
   const { toast } = useToast();
@@ -51,11 +52,7 @@ const DataExchangeManagement: React.FC = () => {
     successRate: 99.7
   };
 
-  const formatCurrency = (value: number) => {
-    if (value >= 1000000000) return `Rp ${(value / 1000000000).toFixed(1)}B`;
-    if (value >= 1000000) return `Rp ${(value / 1000000).toFixed(0)}M`;
-    return `Rp ${value.toLocaleString()}`;
-  };
+  const formatCurrency = getCurrencyFormatterShort();
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;

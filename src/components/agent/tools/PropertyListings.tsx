@@ -13,6 +13,7 @@ import RentalBookingManager from "../../rental/RentalBookingManager";
 import { useVIPFeatureGate } from "@/hooks/useVIPFeatureGate";
 import { VIPUpgradePrompt } from "@/components/vip/VIPUpgradePrompt";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 const PropertyListings = () => {
   const { user } = useAuth();
@@ -136,7 +137,7 @@ const PropertyListings = () => {
                       <span className="text-muted-foreground">Price:</span>
                       <p className="font-medium flex items-center gap-1">
                         <DollarSign className="h-3 w-3" />
-                        {property.price ? `Rp ${property.price.toLocaleString()}` : 'N/A'}
+                        {property.price ? getCurrencyFormatter()(property.price) : 'N/A'}
                       </p>
                     </div>
                     <div>

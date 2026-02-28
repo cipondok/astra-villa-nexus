@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 /**
  * Push Notification Strategy Hook
@@ -459,13 +460,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 }
 
 function formatPrice(price: number): string {
-  if (price >= 1_000_000_000) {
-    return `Rp ${(price / 1_000_000_000).toFixed(1)}M`;
-  }
-  if (price >= 1_000_000) {
-    return `Rp ${(price / 1_000_000).toFixed(0)}jt`;
-  }
-  return `Rp ${price.toLocaleString('id-ID')}`;
+  return getCurrencyFormatterShort()(price);
 }
 
 export default usePushNotifications;

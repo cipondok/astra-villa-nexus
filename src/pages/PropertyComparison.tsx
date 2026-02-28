@@ -9,6 +9,7 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { usePropertyComparison } from '@/contexts/PropertyComparisonContext';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import {
   ArrowLeft, X, Eye, Trash2, Check, Minus,
   Banknote, MapPin, Building, TrendingUp, School, ShoppingBag, HeartPulse, Train,
@@ -815,7 +816,7 @@ const PropertyComparison = () => {
                               <XAxis dataKey="year" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
                               <YAxis tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} tickFormatter={(v) => `${v.toFixed(0)}M`} />
                               <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--background))', color: 'hsl(var(--foreground))' }}
-                                formatter={(v: number) => [`Rp ${v.toFixed(0)}M`, '']}
+                                formatter={(v: number) => [getCurrencyFormatterShort()(v * 1_000_000), '']}
                               />
                               {selectedProperties.map((_, i) => (
                                 <Line key={i} type="monotone" dataKey={`prop_${i}`} stroke={CHART_COLORS[i % CHART_COLORS.length]} strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />

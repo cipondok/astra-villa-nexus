@@ -44,7 +44,7 @@ const RenterOnboarding = ({
     updateFormData("budgetMax", values[1]);
   };
 
-  const formatBudget = (value: number) => `Rp ${value}M`;
+  const formatBudget = (value: number) => getCurrencyFormatterShort()(value * 1_000_000);
   
   const renderStep = () => {
     switch (step) {

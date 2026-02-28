@@ -26,6 +26,7 @@ import { RecentImageSearches, addRecentSearch } from "@/components/search/Recent
 import { useImageSearch } from "@/hooks/useImageSearch";
 import { toast } from "sonner";
 import AdvancedFilters from "@/components/search/AdvancedFilters";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import { useTranslation } from "@/i18n/useTranslation";
 import {
   calculateTimeWeightedScore,
@@ -2699,7 +2700,7 @@ const AstraSearchPanel = ({
                                 <MapPin className="h-2 w-2" />
                                 <span className="truncate">{result.location}</span>
                                 <span className="ml-auto font-semibold text-primary">
-                                  Rp {(result.price / 1000000).toFixed(0)} Jt
+                                  {getCurrencyFormatterShort()(result.price)}
                                 </span>
                               </div>
                             </div>

@@ -45,10 +45,8 @@ const BuyerOnboarding = ({
   };
 
   const formatBudget = (value: number) => {
-    if (value >= 1000) {
-      return `Rp ${(value / 1000).toFixed(1)}B`;
-    }
-    return `Rp ${value}M`;
+    // value is in millions
+    return getCurrencyFormatterShort()(value * 1_000_000);
   };
   
   const renderStep = () => {

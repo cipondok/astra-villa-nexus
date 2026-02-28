@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import SimpleImageUpload from "./SimpleImageUpload";
 import EnhancedLocationSelector from "./EnhancedLocationSelector";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 const steps = [
   { id: 1, label: 'Basic Info', icon: FileText, description: 'Title, type & description' },
@@ -371,7 +372,7 @@ const QuickPropertyForm = ({ onComplete }: QuickPropertyFormProps) => {
                 />
                 {formData.price && (
                   <p className="text-xs text-muted-foreground mt-1">
-                    Rp {parseInt(formData.price).toLocaleString('id-ID')}
+                    {getCurrencyFormatter()(parseInt(formData.price))}
                     {formData.listing_type === 'rent' && '/month'}
                   </p>
                 )}
@@ -431,7 +432,7 @@ const QuickPropertyForm = ({ onComplete }: QuickPropertyFormProps) => {
                       <p className="text-sm font-medium truncate">{formData.title || 'Untitled Property'}</p>
                       <p className="text-xs text-muted-foreground">{formData.location || 'No location'}</p>
                       <p className="text-sm font-bold text-primary mt-1">
-                        {formData.price ? `Rp ${parseInt(formData.price).toLocaleString('id-ID')}` : 'No price'}
+                        {formData.price ? getCurrencyFormatter()(parseInt(formData.price)) : 'No price'}
                       </p>
                     </div>
                   </div>

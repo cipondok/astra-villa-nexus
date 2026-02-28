@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 
 export interface PayoutSettings {
   id: string;
@@ -225,7 +226,7 @@ export function usePayoutSystem() {
     const payoutAmount = amount || availableBalance;
     
     if (payoutAmount < payoutSettings.minimum_payout) {
-      toast.error(`Minimum payout is Rp ${payoutSettings.minimum_payout.toLocaleString()}`);
+      toast.error(`Minimum payout is ${getCurrencyFormatter()(payoutSettings.minimum_payout)}`);
       return { success: false, error: 'Below minimum payout' };
     }
 

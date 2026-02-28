@@ -8,6 +8,7 @@ import { useState } from "react";
 import { BaseProperty } from "@/types/property";
 import { MessageCircle, Phone, User } from "lucide-react";
 import { WHATSAPP_BUSINESS_NUMBER } from "@/utils/whatsappUtils";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 interface WhatsAppInquiryDialogProps {
   open: boolean;
@@ -27,7 +28,7 @@ const WhatsAppInquiryDialog = ({ open, onOpenChange, property }: WhatsAppInquiry
 
 *Property Details:*
 - Title: ${property.title}
-- Price: Rp ${property.price?.toLocaleString('id-ID')}
+- Price: ${getCurrencyFormatter()(property.price || 0)}
 - Location: ${property.location || property.city}
 - Type: ${property.property_type}
 - Link: ${window.location.origin}/property/${property.id}
@@ -91,7 +92,7 @@ ${message}`;
             </div>
             <div className="pt-2 border-t border-border/50">
               <p className="text-lg font-extrabold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                Rp {property.price?.toLocaleString('id-ID')}
+                {getCurrencyFormatter()(property.price || 0)}
               </p>
             </div>
           </div>

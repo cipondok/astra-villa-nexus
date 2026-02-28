@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import {
   Dialog,
   DialogContent,
@@ -94,8 +95,7 @@ export const InvoiceManagement: React.FC = () => {
     }
   };
 
-  const formatCurrency = (amount: number) => 
-    `Rp ${amount.toLocaleString('id-ID')}`;
+  const formatCurrency = getCurrencyFormatter();
 
   const stats = {
     total: invoices.length,

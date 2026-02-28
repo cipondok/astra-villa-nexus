@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 interface Property {
   id: number | string;
@@ -85,23 +86,13 @@ const PropertySlideshow = () => {
   };
 
   const formatPrice = (price: number) => {
-    if (price >= 1000000000) {
-      const value = (price / 1000000000).toFixed(1);
-      return { main: `Rp ${value}`, suffix: 'Miliar' };
-    } else if (price >= 1000000) {
-      const value = (price / 1000000).toFixed(0);
-      return { main: `Rp ${value}`, suffix: 'Juta' };
-    } else {
-      return { main: `Rp ${price.toLocaleString('id-ID')}`, suffix: '' };
-    }
+    const formatted = getCurrencyFormatterShort()(price);
+    return { main: formatted, suffix: '' };
   };
 
   const formatMonthly = (price: number) => {
     const monthly = price * 0.006;
-    if (monthly >= 1000000) {
-      return `Rp ${(monthly / 1000000).toFixed(1)} Juta/PB`;
-    }
-    return `Rp ${(monthly / 1000).toFixed(0)} Ribu/PB`;
+    return getCurrencyFormatterShort()(monthly) + '/PB';
   };
 
   const getLocation = (property: Property) => {

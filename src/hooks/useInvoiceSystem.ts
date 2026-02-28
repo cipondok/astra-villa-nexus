@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 
 export interface Invoice {
   id: string;
@@ -238,8 +239,7 @@ export const useInvoiceSystem = () => {
 
   // Generate PDF invoice (returns HTML for PDF generation)
   const generateInvoicePDF = useCallback((invoice: Invoice): string => {
-    const formatCurrency = (amount: number) => 
-      `Rp ${amount.toLocaleString('id-ID')}`;
+    const formatCurrency = getCurrencyFormatter();
 
     return `
 <!DOCTYPE html>

@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Brain, TrendingUp, MapPin, Home, DollarSign, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 const BehaviorPatternBanner = () => {
   const { user } = useAuth();
@@ -54,9 +55,7 @@ const BehaviorPatternBanner = () => {
 
   if (profile.implicit.viewedPriceRange.max !== Infinity && profile.implicit.viewedPriceRange.max > 0) {
     const maxB = profile.implicit.viewedPriceRange.max;
-    const label = maxB >= 1e9
-      ? `< Rp ${(maxB / 1e9).toFixed(1)}M`
-      : `< Rp ${(maxB / 1e6).toFixed(0)}Jt`;
+    const label = `< ${getCurrencyFormatterShort()(maxB)}`;
     patterns.push({
       icon: DollarSign,
       label,

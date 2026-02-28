@@ -9,7 +9,8 @@ import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
+import {
   Rocket, 
   Users, 
   Gift, 
@@ -233,7 +234,7 @@ const ViralGrowthCampaigns = () => {
               <DollarSign className="h-5 w-5 text-chart-4" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">Rp {(totalBudget / 1000000).toFixed(0)}jt</p>
+              <p className="text-2xl font-bold text-foreground">{getCurrencyFormatterShort()(totalBudget)}</p>
               <p className="text-xs text-muted-foreground">Total Budget</p>
             </div>
           </div>
@@ -245,7 +246,7 @@ const ViralGrowthCampaigns = () => {
               <TrendingUp className="h-5 w-5 text-chart-3" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">Rp {(totalSpent / 1000000).toFixed(1)}jt</p>
+              <p className="text-2xl font-bold text-foreground">{getCurrencyFormatterShort()(totalSpent)}</p>
               <p className="text-xs text-muted-foreground">Spent</p>
             </div>
           </div>
@@ -329,7 +330,7 @@ const ViralGrowthCampaigns = () => {
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
                       <span>Budget Used</span>
-                      <span>Rp {(campaign.spent_budget / 1000000)?.toLocaleString() || 0}jt / Rp {(campaign.budget / 1000000)?.toLocaleString() || 0}jt</span>
+                      <span>{getCurrencyFormatterShort()(campaign.spent_budget || 0)} / {getCurrencyFormatterShort()(campaign.budget || 0)}</span>
                     </div>
                     <Progress value={(campaign.spent_budget || 0) / (campaign.budget || 1) * 100} className="h-1.5" />
                   </div>

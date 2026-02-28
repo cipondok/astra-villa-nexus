@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search, SlidersHorizontal, MapPin, Home, X, Eye, Heart, Bed, Bath, Maximize, Key, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import PropertyViewModeToggle from '@/components/search/PropertyViewModeToggle';
 import PropertyListView from '@/components/search/PropertyListView';
 const PropertyListingMapView = lazy(() => import('@/components/property/PropertyListingMapView'));
@@ -359,11 +360,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                 images: p.images,
                 image_urls: p.image_urls,
               }))}
-              formatPrice={(price: number) => {
-                if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}M`;
-                if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}Jt`;
-                return `Rp ${price.toLocaleString('id-ID')}`;
-              }}
+              formatPrice={(price: number) => getCurrencyFormatterShort()(price)}
             />
           </Suspense>
         ) : isLoading || isSearching ? (
@@ -395,11 +392,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {(hasSearched ? searchResults : properties).map((property: any) => {
               const imageUrl = property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800';
-              const formatPrice = (price: number) => {
-                if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}M`;
-                if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}Jt`;
-                return `Rp ${price.toLocaleString('id-ID')}`;
-              };
+              const formatPrice = getCurrencyFormatterShort();
 
               return (
               <div
