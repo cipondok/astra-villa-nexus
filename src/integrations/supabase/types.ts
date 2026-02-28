@@ -9646,6 +9646,57 @@ export type Database = {
           },
         ]
       }
+      listing_improvement_tips: {
+        Row: {
+          agent_id: string
+          created_at: string
+          id: string
+          is_dismissed: boolean
+          priority: string
+          property_id: string
+          tip_description: string
+          tip_title: string
+          tip_type: string
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string
+          id?: string
+          is_dismissed?: boolean
+          priority?: string
+          property_id: string
+          tip_description: string
+          tip_title: string
+          tip_type: string
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string
+          id?: string
+          is_dismissed?: boolean
+          priority?: string
+          property_id?: string
+          tip_description?: string
+          tip_title?: string
+          tip_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_improvement_tips_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_improvement_tips_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listing_syndication_networks: {
         Row: {
           api_endpoint: string | null
@@ -15634,6 +15685,63 @@ export type Database = {
           },
         ]
       }
+      property_analytics: {
+        Row: {
+          agent_id: string
+          clicks: number
+          contacts: number
+          created_at: string
+          date: string
+          id: string
+          property_id: string
+          saves: number
+          shares: number
+          updated_at: string
+          views: number
+        }
+        Insert: {
+          agent_id: string
+          clicks?: number
+          contacts?: number
+          created_at?: string
+          date?: string
+          id?: string
+          property_id: string
+          saves?: number
+          shares?: number
+          updated_at?: string
+          views?: number
+        }
+        Update: {
+          agent_id?: string
+          clicks?: number
+          contacts?: number
+          created_at?: string
+          date?: string
+          id?: string
+          property_id?: string
+          saves?: number
+          shares?: number
+          updated_at?: string
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_analytics_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_analytics_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_announcements: {
         Row: {
           category: string | null
@@ -16353,6 +16461,72 @@ export type Database = {
           },
           {
             foreignKeyName: "property_inspections_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_leads: {
+        Row: {
+          agent_id: string
+          converted_at: string | null
+          created_at: string
+          id: string
+          last_contacted_at: string | null
+          lead_email: string | null
+          lead_name: string
+          lead_phone: string | null
+          lead_score: number
+          lead_source: string
+          notes: string | null
+          property_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agent_id: string
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          last_contacted_at?: string | null
+          lead_email?: string | null
+          lead_name: string
+          lead_phone?: string | null
+          lead_score?: number
+          lead_source?: string
+          notes?: string | null
+          property_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          last_contacted_at?: string | null
+          lead_email?: string | null
+          lead_name?: string
+          lead_phone?: string | null
+          lead_score?: number
+          lead_source?: string
+          notes?: string | null
+          property_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_leads_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_leads_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"

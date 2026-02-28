@@ -25,6 +25,9 @@ import BookingPaymentManager from "./BookingPaymentManager";
 import PayoutManagement from "./PayoutManagement";
 import { AgentAnalyticsDashboard } from "@/components/agent-analytics";
 import { ListingSuccessPredictor } from "@/components/ai/listing";
+import LeadScoringPanel from "@/components/agent-analytics/LeadScoringPanel";
+import ListingTipsPanel from "@/components/agent-analytics/ListingTipsPanel";
+import PropertyAnalyticsOverview from "@/components/agent-analytics/PropertyAnalyticsOverview";
 import { 
   Building,
   Home,
@@ -313,7 +316,15 @@ const AgentOverview = () => {
             </TabsTrigger>
             <TabsTrigger value="predictor" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex items-center gap-1">
               <Sparkles className="h-3 w-3" />
-              AI Predictor
+              AI Tips
+            </TabsTrigger>
+            <TabsTrigger value="lead-scoring" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex items-center gap-1">
+              <Target className="h-3 w-3" />
+              Leads
+            </TabsTrigger>
+            <TabsTrigger value="performance" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex items-center gap-1">
+              <Eye className="h-3 w-3" />
+              Performance
             </TabsTrigger>
             <TabsTrigger value="quick-add" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Quick Add</TabsTrigger>
             <TabsTrigger value="add-property" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Full Form</TabsTrigger>
@@ -403,9 +414,19 @@ const AgentOverview = () => {
           <AgentAnalyticsDashboard />
         </TabsContent>
 
-        {/* AI Listing Success Predictor */}
+        {/* AI Listing Tips */}
         <TabsContent value="predictor" className="space-y-2">
-          <ListingSuccessPredictor />
+          <ListingTipsPanel />
+        </TabsContent>
+
+        {/* Lead Scoring */}
+        <TabsContent value="lead-scoring" className="space-y-2">
+          <LeadScoringPanel />
+        </TabsContent>
+
+        {/* Property Performance Analytics */}
+        <TabsContent value="performance" className="space-y-2">
+          <PropertyAnalyticsOverview />
         </TabsContent>
 
         {/* Quick Add - Simplified 3-Step Form */}
