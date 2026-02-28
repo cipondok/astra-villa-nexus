@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -450,15 +451,15 @@ const PaymentSettings = () => {
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between">
                     <span>Transaction Amount:</span>
-                    <span>Rp 1,000,000</span>
+                    <span>{getCurrencyFormatter()(1000000)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Platform Commission ({config.commission_rate}%):</span>
-                    <span>Rp {(1000000 * (config.commission_rate / 100)).toLocaleString()}</span>
+                    <span>{getCurrencyFormatter()(1000000 * (config.commission_rate / 100))}</span>
                   </div>
                   <div className="flex justify-between font-medium border-t pt-1">
                     <span>Vendor Receives:</span>
-                    <span>Rp {(1000000 - (1000000 * (config.commission_rate / 100))).toLocaleString()}</span>
+                    <span>{getCurrencyFormatter()(1000000 - (1000000 * (config.commission_rate / 100)))}</span>
                   </div>
                 </div>
               </div>

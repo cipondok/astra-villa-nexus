@@ -260,7 +260,7 @@ const MembershipPage: React.FC = () => {
                         {config.shortLabel}
                       </h3>
                       <p className="text-[10px] text-muted-foreground mt-0.5">
-                        {pricing.monthly === 0 ? 'Gratis' : `${formatIDR(pricing.monthly).replace('Rp', 'Rp ')}/bln`}
+                        {pricing.monthly === 0 ? 'Gratis' : `${formatIDR(pricing.monthly)}/bln`}
                       </p>
                     </div>
 

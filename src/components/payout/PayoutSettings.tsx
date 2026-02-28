@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -243,11 +244,11 @@ export const PayoutSettings: React.FC = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="50000">Rp 50,000</SelectItem>
-                <SelectItem value="100000">Rp 100,000</SelectItem>
-                <SelectItem value="250000">Rp 250,000</SelectItem>
-                <SelectItem value="500000">Rp 500,000</SelectItem>
-                <SelectItem value="1000000">Rp 1,000,000</SelectItem>
+                <SelectItem value="50000">{getCurrencyFormatter()(50000)}</SelectItem>
+                <SelectItem value="100000">{getCurrencyFormatter()(100000)}</SelectItem>
+                <SelectItem value="250000">{getCurrencyFormatter()(250000)}</SelectItem>
+                <SelectItem value="500000">{getCurrencyFormatter()(500000)}</SelectItem>
+                <SelectItem value="1000000">{getCurrencyFormatter()(1000000)}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -255,7 +256,7 @@ export const PayoutSettings: React.FC = () => {
           <div className="p-3 bg-muted rounded-lg text-sm">
             <p className="font-medium mb-1">Transfer Fee</p>
             <p className="text-muted-foreground">
-              Rp 6,500 per transfer (deducted from payout amount)
+              {getCurrencyFormatter()(6500)} per transfer (deducted from payout amount)
             </p>
           </div>
         </CardContent>

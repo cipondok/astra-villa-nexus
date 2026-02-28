@@ -13,6 +13,7 @@ import {
   Monitor,
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 const AnalyticsDashboard = () => {
   const [activeAnalyticsTab, setActiveAnalyticsTab] = useState('overview');
@@ -49,7 +50,7 @@ const AnalyticsDashboard = () => {
   const analyticsOverviewStats = [
     { title: "Total Users", value: "12,547", change: "+18.5% from last month", icon: Users },
     { title: "Active Users", value: "8,234", change: "Currently online", icon: Activity },
-    { title: "Revenue", value: "Rp 725jt", change: "+12.3% this week", icon: DollarSign },
+    { title: "Revenue", value: getCurrencyFormatterShort()(725_000_000_000), change: "+12.3% this week", icon: DollarSign },
     { title: "Conversion Rate", value: "15.8%", change: "+2.1% improvement", icon: TrendingUp },
   ];
 
