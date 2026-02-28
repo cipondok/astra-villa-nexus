@@ -89,6 +89,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
   const isAdmin = roles.includes('admin') || roles.includes('super_admin');
   const isAgent = roles.includes('agent');
   const isVendor = roles.includes('vendor');
+  const isPropertyOwner = roles.includes('property_owner');
 
   const getUserInitials = () => {
     if (profile?.full_name) {
@@ -292,7 +293,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
 
             {!isAdmin && !isAgent && !isVendor && (
               <>
-                <button onClick={() => { navigate('/dashboard/user'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                <button onClick={() => { navigate(isPropertyOwner ? '/dashboard/property-owner' : '/dashboard/user'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 sm:py-2 lg:py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
                   <BarChart3 className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-3.5 lg:w-3.5 text-primary shrink-0" />
                   <span className="text-[10px] sm:text-xs lg:text-xs font-medium">Dashboard</span>
                 </button>
