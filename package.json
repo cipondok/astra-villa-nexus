@@ -59,8 +59,7 @@
     "@types/qrcode.react": "^3.0.0",
     "@vitest/coverage-v8": "^4.0.8",
     "@vladmandic/face-api": "^1.7.15",
-    "@web3modal/siwe": "^5.1.11",
-    "@web3modal/wagmi": "^5.1.11",
+    
     "browser-image-compression": "^2.0.2",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
@@ -82,7 +81,7 @@
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
-    "react-google-recaptcha-v3": "^1.11.0",
+    
     "react-hook-form": "^7.57.0",
     "react-image-crop": "^11.0.10",
     "react-markdown": "^10.1.0",

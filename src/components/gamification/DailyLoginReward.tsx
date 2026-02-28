@@ -9,7 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { usePopupQueue } from '@/hooks/usePopupQueue';
 import { supabase } from '@/integrations/supabase/client';
-import confetti from 'canvas-confetti';
+// canvas-confetti loaded dynamically to reduce bundle size
 import { getLocalDayKey, safeLocalStorage, safeSessionStorage, storageSupport } from '@/lib/safeStorage';
 
 interface DailyLoginRewardProps {
@@ -158,12 +158,15 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
       setClaimed(true);
       setAlreadyClaimed(true); // Prevent re-showing
 
-      // Confetti effect
-      confetti({
-        particleCount: 80,
-        spread: 60,
-        origin: { y: 0.6 },
-        colors: ['#FFD700', '#FFA500', '#FF6347', '#9370DB'],
+      // Confetti effect — dynamically imported
+      import('canvas-confetti').then((mod) => {
+        const confetti = mod.default;
+        confetti({
+          particleCount: 80,
+          spread: 60,
+          origin: { y: 0.6 },
+          colors: ['#FFD700', '#FFA500', '#FF6347', '#9370DB'],
+        });
       });
     } catch (error) {
       console.error('Failed to claim daily login:', error);
