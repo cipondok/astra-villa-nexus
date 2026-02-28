@@ -98,7 +98,7 @@ const MarketComparison: React.FC<MarketComparisonProps> = ({ data, className }) 
                   borderRadius: '8px',
                   fontSize: '11px'
                 }}
-                formatter={(value: number) => [`Rp ${value}M/m²`, '']}
+                formatter={(value: number) => [formatPrice(value * 1_000_000) + '/m²', '']}
               />
               <Legend wrapperStyle={{ fontSize: '10px' }} />
               <Bar dataKey="yourPrice" name="Your Price" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
