@@ -1,13 +1,8 @@
 // Centralized translations aggregator
-// Usage: import { useTranslation } from '@/i18n/useTranslation';
-//        const { t } = useTranslation();
-//        <p>{t('common.loading')}</p>
+// Primary locales (en, id) loaded eagerly; others lazy-loaded on demand
 
 import en from './locales/en';
 import id from './locales/id';
-import zh from './locales/zh';
-import ja from './locales/ja';
-import ko from './locales/ko';
 
 export type Language = 'en' | 'id' | 'zh' | 'ja' | 'ko';
 
@@ -15,12 +10,31 @@ export interface TranslationMap {
   [key: string]: string | string[] | TranslationMap;
 }
 
-const translations: Record<Language, TranslationMap> = {
-  en,
-  id,
-  zh,
-  ja,
-  ko,
+const eagerTranslations: Partial<Record<Language, TranslationMap>> = { en, id };
+
+const lazyLoaders: Partial<Record<Language, () => Promise<{ default: TranslationMap }>>> = {
+  zh: () => import('./locales/zh'),
+  ja: () => import('./locales/ja'),
+  ko: () => import('./locales/ko'),
 };
 
-export default translations;
+const cache: Partial<Record<Language, TranslationMap>> = { ...eagerTranslations };
+
+/** Get translations for a language, loading lazily if needed */
+export async function loadTranslations(lang: Language): Promise<TranslationMap> {
+  if (cache[lang]) return cache[lang]!;
+  const loader = lazyLoaders[lang];
+  if (loader) {
+    const mod = await loader();
+    cache[lang] = mod.default;
+    return mod.default;
+  }
+  return en; // fallback
+}
+
+/** Synchronous access — returns cached translations or English fallback */
+export function getTranslations(lang: Language): TranslationMap {
+  return cache[lang] || en;
+}
+
+export default { en, id } as Record<Language, TranslationMap>;
