@@ -132,7 +132,6 @@ const CompactPropertyCard = ({
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log('CompactPropertyCard - Opening detail modal for property:', property.id);
     setShowDetailModal(true);
   };
 
@@ -141,7 +140,6 @@ const CompactPropertyCard = ({
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log('CompactPropertyCard - Opening 3D modal for property:', property.id);
     setShow3DModal(true);
   };
 
@@ -169,9 +167,6 @@ const CompactPropertyCard = ({
       ? property.listing_type as 'sale' | 'rent' | 'lease'
       : 'sale'
   };
-
-  console.log('CompactPropertyCard - Rendering with showDetailModal:', showDetailModal);
-  console.log('CompactPropertyCard - Rendering with show3DModal:', show3DModal);
 
   return (
     <>
@@ -340,6 +335,8 @@ const CompactPropertyCard = ({
                   src={property.posted_by.avatar_url} 
                   alt={property.posted_by.name}
                   className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover flex-shrink-0"
+                  loading="lazy"
+                  decoding="async"
                 />
               ) : (
                 <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[9px] sm:text-xs font-bold flex-shrink-0">
