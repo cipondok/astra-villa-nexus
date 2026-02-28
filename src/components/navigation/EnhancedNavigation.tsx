@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useHeaderLogo } from "@/hooks/useBrandingLogo";
 import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 import AnimatedLogo from "@/components/AnimatedLogo";
 import { useTranslation } from "@/i18n/useTranslation";
@@ -50,22 +51,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
     };
   }, [isOpen]);
 
-  const { data: headerLogoUrl } = useQuery({
-    queryKey: ["system-setting", "headerLogo"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("system_settings")
-        .select("value")
-        .eq("category", "general")
-        .eq("key", "headerLogo")
-        .maybeSingle();
-      if (error) return null;
-      return (data?.value as string) || null;
-    },
-    staleTime: 5_000,
-    refetchOnMount: "always",
-    refetchOnWindowFocus: true,
-  });
+  const { logoUrl: headerLogoUrl } = useHeaderLogo();
 
   const { data: adminData } = useQuery({
     queryKey: ["admin-status", user?.id],

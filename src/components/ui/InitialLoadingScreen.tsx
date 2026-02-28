@@ -1,71 +1,25 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LOGO_PLACEHOLDER } from '@/hooks/useBrandingLogo';
-import { supabase } from '@/integrations/supabase/client';
+import { LOGO_PLACEHOLDER, useWelcomeScreenLogo } from '@/hooks/useBrandingLogo';
 
 const InitialLoadingScreen = () => {
   const [progress, setProgress] = useState(0);
   const [loadingText, setLoadingText] = useState('Initializing...');
+  const { logoUrl: batchedLogoUrl, isLoading: isLogoLoading } = useWelcomeScreenLogo();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
-  // Fetch dynamic logo from system settings (check both "general" and "branding" categories)
+  // Use batched logo when available
   useEffect(() => {
-    const fetchLogo = async () => {
-      try {
-        // Helper to get logo value from either category
-        const getLogoValue = async (key: string): Promise<string | null> => {
-          // Try "general" category first (where BrandingSettings saves)
-          const { data: generalData } = await supabase
-            .from('system_settings')
-            .select('value')
-            .eq('category', 'general')
-            .eq('key', key)
-            .maybeSingle();
+    if (!isLogoLoading && batchedLogoUrl) {
+      setLogoUrl(batchedLogoUrl);
+    }
+  }, [batchedLogoUrl, isLogoLoading]);
 
-          if (generalData?.value && typeof generalData.value === 'string' && generalData.value.trim() !== '') {
-            return generalData.value;
-          }
-
-          // Fallback to "branding" category
-          const { data: brandingData } = await supabase
-            .from('system_settings')
-            .select('value')
-            .eq('category', 'branding')
-            .eq('key', key)
-            .maybeSingle();
-
-          if (brandingData?.value && typeof brandingData.value === 'string' && brandingData.value.trim() !== '') {
-            return brandingData.value;
-          }
-
-          return null;
-        };
-
-        // Try welcomeScreenLogo first
-        const welcomeLogo = await getLogoValue('welcomeScreenLogo');
-        if (welcomeLogo) {
-          setLogoUrl(welcomeLogo);
-          return;
-        }
-
-        // Fallback to headerLogo
-        const headerLogo = await getLogoValue('headerLogo');
-        if (headerLogo) {
-          setLogoUrl(headerLogo);
-        }
-      } catch (error) {
-        console.error('Error fetching logo:', error);
-        setLogoUrl(LOGO_PLACEHOLDER);
-      }
-    };
-
-    // Small delay to allow DB fetch before falling back
+  // Fallback timeout if logo takes too long
+  useEffect(() => {
     const timeout = setTimeout(() => {
       setLogoUrl((prev) => prev ?? LOGO_PLACEHOLDER);
     }, 1500);
-
-    fetchLogo();
-
     return () => clearTimeout(timeout);
   }, []);
 

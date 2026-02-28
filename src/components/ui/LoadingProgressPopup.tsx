@@ -2,9 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, X } from 'lucide-react';
 import { useGlobalLoading } from '@/hooks/useGlobalLoading';
 import { cn } from '@/lib/utils';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { LOGO_PLACEHOLDER } from '@/hooks/useBrandingLogo';
+import { LOGO_PLACEHOLDER, useLoadingPageLogo } from '@/hooks/useBrandingLogo';
 
 interface LoadingProgressPopupProps {
   className?: string;
@@ -12,33 +10,7 @@ interface LoadingProgressPopupProps {
 
 const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
   const { isLoading, progress, message, showPopup, setShowPopup } = useGlobalLoading();
-
-  const { data: loadingLogoUrl } = useQuery({
-    queryKey: ['branding', 'loadingPageLogo'],
-    queryFn: async () => {
-      const { data: loadingData } = await supabase
-        .from('system_settings')
-        .select('value')
-        .eq('category', 'branding')
-        .eq('key', 'loadingPageLogo')
-        .maybeSingle();
-      
-      if (typeof loadingData?.value === 'string' && loadingData.value) {
-        return loadingData.value;
-      }
-      
-      const { data: welcomeData } = await supabase
-        .from('system_settings')
-        .select('value')
-        .eq('category', 'branding')
-        .eq('key', 'welcomeScreenLogo')
-        .maybeSingle();
-      
-      return typeof welcomeData?.value === 'string' ? welcomeData.value : null;
-    },
-    staleTime: 60_000,
-    refetchOnWindowFocus: false,
-  });
+  const { logoUrl: loadingLogoUrl } = useLoadingPageLogo();
 
   const logoUrl = loadingLogoUrl || LOGO_PLACEHOLDER;
 
