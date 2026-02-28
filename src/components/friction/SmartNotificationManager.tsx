@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { 
   Bell, BellOff, TrendingDown, Home, MessageCircle, 
   BarChart3, Volume2, VolumeX, Clock, Moon,
@@ -46,7 +47,7 @@ const SmartNotificationManager: React.FC = () => {
       description: 'When saved properties reduce in price',
       enabled: true,
       frequency: 'instant',
-      sample: '🔻 Villa Sunset dropped 15%! Now Rp 1.8M/month',
+      sample: `🔻 Villa Sunset dropped 15%! Now ${getCurrencyFormatterShort()(1_800_000)}/month`,
       color: 'text-chart-1',
     },
     {

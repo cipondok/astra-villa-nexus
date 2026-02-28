@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -169,7 +170,7 @@ const VendorsHubContent = () => {
                 <TrendingUp className="h-3 w-3 text-chart-5" />
               </div>
               <div>
-                <div className="text-[10px] font-bold text-chart-5">Rp {(vendorStats.monthlyRevenue / 1000000).toFixed(1)}M</div>
+                <div className="text-[10px] font-bold text-chart-5">{getCurrencyFormatterShort()(vendorStats.monthlyRevenue)}</div>
                 <div className="text-[9px] text-muted-foreground">Revenue</div>
               </div>
             </div>
