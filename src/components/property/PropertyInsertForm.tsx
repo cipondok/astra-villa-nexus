@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
 import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft, Heart, Leaf, TrendingUp, Volume2, Building2, Filter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { formatIDR } from "@/utils/currency";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import LocationSelector from "./LocationSelector";
 import OptimizedImageUpload from "./OptimizedImageUpload";
 import PropertySpecifications from "./PropertySpecifications";
@@ -273,7 +273,7 @@ const PropertyInsertForm = () => {
   const generateAiSuggestion = () => {
     setShowAiHelp(true);
     const suggestions = [
-      "Berdasarkan lokasi yang dipilih, harga rata-rata properti serupa adalah " + formatIDR(2500000000),
+      "Berdasarkan lokasi yang dipilih, harga rata-rata properti serupa adalah " + getCurrencyFormatter()(2500000000),
       "Tambahkan foto eksterior, interior, dan fasilitas untuk meningkatkan daya tarik properti",
       "Sertakan informasi tentang akses transportasi umum dan fasilitas terdekat",
       "Untuk properti di area ini, tambahkan informasi tentang keamanan 24 jam",
@@ -603,7 +603,7 @@ const PropertyInsertForm = () => {
                     />
                     {formData.price && (
                       <p className="text-sm text-chart-1 mt-1 font-medium">
-                        {formatIDR(Number(formData.price))}
+                        {getCurrencyFormatter()(Number(formData.price))}
                       </p>
                     )}
                   </div>

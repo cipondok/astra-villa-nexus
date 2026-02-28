@@ -12,7 +12,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { usePropertyOwnerData } from '@/hooks/usePropertyOwnerData';
 import { supabase } from '@/integrations/supabase/client';
-import { formatIDR } from '@/utils/currency';
+import Price from '@/components/ui/Price';
 import { toast } from 'sonner';
 
 interface PricingAnalysis {
@@ -109,7 +109,7 @@ const OwnerSmartPricing: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <Building className="h-3.5 w-3.5 text-muted-foreground" />
                     <span className="truncate">{p.title || 'Untitled'}</span>
-                    <span className="text-muted-foreground ml-1">— {formatIDR(p.price)}</span>
+                    <span className="text-muted-foreground ml-1">— <Price amount={p.price} short /></span>
                   </div>
                 </SelectItem>
               ))}
@@ -162,10 +162,10 @@ const OwnerSmartPricing: React.FC = () => {
                 </Badge>
               </div>
               <p className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
-                {formatIDR(analysis.recommended_price)}
+                <Price amount={analysis.recommended_price} />
               </p>
               <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-                Range: {formatIDR(analysis.price_range_low)} — {formatIDR(analysis.price_range_high)}
+                Range: <Price amount={analysis.price_range_low} short /> — <Price amount={analysis.price_range_high} short />
               </p>
             </div>
 
@@ -174,11 +174,11 @@ const OwnerSmartPricing: React.FC = () => {
               <div className="grid grid-cols-2 gap-2">
                 <div className="bg-muted/40 rounded-lg p-2.5">
                   <span className="text-[10px] sm:text-xs text-muted-foreground block">Harga Saat Ini</span>
-                  <span className="text-xs sm:text-sm font-bold">{formatIDR(currentPrice)}</span>
+                  <span className="text-xs sm:text-sm font-bold"><Price amount={currentPrice} short /></span>
                 </div>
                 <div className="bg-muted/40 rounded-lg p-2.5">
                   <span className="text-[10px] sm:text-xs text-muted-foreground block">Rata-rata Pasar</span>
-                  <span className="text-xs sm:text-sm font-bold">{formatIDR(analysis.comparable_avg_price)}</span>
+                  <span className="text-xs sm:text-sm font-bold"><Price amount={analysis.comparable_avg_price} short /></span>
                 </div>
               </div>
 
@@ -212,7 +212,7 @@ const OwnerSmartPricing: React.FC = () => {
               {analysis.price_per_sqm && (
                 <div className="bg-muted/40 rounded-lg p-2.5 flex items-center justify-between">
                   <span className="text-[10px] sm:text-xs text-muted-foreground">Harga per m²</span>
-                  <span className="text-xs sm:text-sm font-bold">{formatIDR(analysis.price_per_sqm)}/m²</span>
+                  <span className="text-xs sm:text-sm font-bold"><Price amount={analysis.price_per_sqm} />/m²</span>
                 </div>
               )}
 

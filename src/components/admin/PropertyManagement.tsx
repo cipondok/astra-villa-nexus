@@ -31,7 +31,7 @@ import { Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter, Dropl
          Settings, BarChart3, FileCheck, MapPin as Location, Building2, Workflow, 
          Image, Heart, MessageSquare, Star, Shield, TrendingUp, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAlert } from "@/contexts/AlertContext";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 
 interface PropertyOwner {
   full_name: string;
@@ -721,7 +721,7 @@ const PropertyManagement = () => {
                                 {property.development_status?.replace('_', ' ') || 'Completed'}
                               </div>
                               <div className="text-sm font-medium text-chart-1">
-                                {property.price ? formatIDR(property.price) : 'Price not set'}
+                                {property.price ? <Price amount={property.price} short /> : 'Price not set'}
                               </div>
                               <div className="text-xs text-muted-foreground capitalize">
                                 {property.listing_type}

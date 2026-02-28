@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2, XCircle, AlertCircle, TrendingUp } from "lucide-react";
 import { useTranslation } from "@/i18n/useTranslation";
-import { formatIDR, parseIDR } from "@/utils/currency";
+import { parseIDR } from "@/utils/currency";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Countries allowed to invest in Indonesia based on BKPM regulations
@@ -524,7 +525,7 @@ export const EligibilityChecker = () => {
               <Label>{language === "id" ? "Pendapatan Bulanan" : "Monthly Income"}</Label>
               <Input
                 type="text"
-                value={formData.monthlyIncome ? formatIDR(parseFloat(formData.monthlyIncome)) : ""}
+                value={formData.monthlyIncome ? getCurrencyFormatter()(parseFloat(formData.monthlyIncome)) : ""}
                 onChange={(e) => {
                   const numericValue = parseIDR(e.target.value).toString();
                   setFormData({ ...formData, monthlyIncome: numericValue });
@@ -565,7 +566,7 @@ export const EligibilityChecker = () => {
               <Label>{language === "id" ? "Total Tabungan/Dana Tersedia" : "Total Savings/Available Funds"}</Label>
               <Input
                 type="text"
-                value={formData.savings ? formatIDR(parseFloat(formData.savings)) : ""}
+                value={formData.savings ? getCurrencyFormatter()(parseFloat(formData.savings)) : ""}
                 onChange={(e) => {
                   const numericValue = parseIDR(e.target.value).toString();
                   setFormData({ ...formData, savings: numericValue });
@@ -602,7 +603,7 @@ export const EligibilityChecker = () => {
               <Label>{language === "id" ? "Nilai Investasi yang Direncanakan" : "Planned Investment Amount"}</Label>
               <Input
                 type="text"
-                value={formData.investmentAmount ? formatIDR(parseFloat(formData.investmentAmount)) : ""}
+                value={formData.investmentAmount ? getCurrencyFormatter()(parseFloat(formData.investmentAmount)) : ""}
                 onChange={(e) => {
                   const numericValue = parseIDR(e.target.value).toString();
                   setFormData({ ...formData, investmentAmount: numericValue });

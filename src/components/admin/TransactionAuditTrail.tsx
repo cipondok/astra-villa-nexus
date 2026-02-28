@@ -11,7 +11,7 @@ import {
   History, Search, Filter, Download, RefreshCw,
   ArrowRight, User, Calendar, Clock
 } from "lucide-react";
-import { formatIDR } from "@/utils/formatters";
+// formatIDR removed — not used in this component
 
 interface AuditLog {
   id: string;

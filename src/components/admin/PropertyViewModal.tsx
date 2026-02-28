@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Home, User, UserCheck, Calendar, DollarSign, Edit2, Image as ImageIcon, Wand2, Eye } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import { useAlert } from "@/contexts/AlertContext";
 
 interface PropertyViewModalProps {
@@ -232,7 +232,7 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Price</p>
                       <p className="text-2xl font-bold bg-gradient-to-r from-chart-1 to-chart-1/70 bg-clip-text text-transparent">
-                        {property.price ? formatIDR(property.price) : 'Price not set'}
+                        {property.price ? <Price amount={property.price} /> : 'Price not set'}
                       </p>
                     </div>
                   </div>

@@ -11,7 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CalendarPlus, Clock, CheckCircle, XCircle, Loader2, Send, MessageSquare, ArrowRight } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { format, addDays, differenceInDays } from "date-fns";
 
 interface ActiveBooking {
@@ -165,7 +166,7 @@ const TenantLeaseExtension = () => {
                           {daysLeft} hari lagi
                         </Badge>
                       </div>
-                      <p className="text-[10px] text-primary font-medium mt-0.5">{formatIDR(b.total_amount)}</p>
+                      <p className="text-[10px] text-primary font-medium mt-0.5"><Price amount={b.total_amount} short /></p>
                     </div>
                     {hasPending ? (
                       <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/20 text-[9px] border">
@@ -206,9 +207,9 @@ const TenantLeaseExtension = () => {
                         <span className="text-primary">{r.requested_end_date}</span>
                       </div>
                       <p className="text-[10px] text-muted-foreground mt-0.5">
-                        Harga diajukan: {formatIDR(r.proposed_price)}
+                        Harga diajukan: <Price amount={r.proposed_price} short />
                         {r.current_price !== r.proposed_price && (
-                          <span className="line-through ml-1">{formatIDR(r.current_price)}</span>
+                          <span className="line-through ml-1"><Price amount={r.current_price} short /></span>
                         )}
                       </p>
                     </div>
@@ -229,7 +230,7 @@ const TenantLeaseExtension = () => {
                       <div className="text-[10px] text-foreground">
                         <span className="font-medium">Counter: </span>
                         {r.counter_end_date && <span>sampai {r.counter_end_date}, </span>}
-                        {r.counter_price && <span className="text-primary font-semibold">{formatIDR(r.counter_price)}</span>}
+                        {r.counter_price && <span className="text-primary font-semibold"><Price amount={r.counter_price} short /></span>}
                       </div>
                       <div className="flex gap-2">
                         <Button size="sm" className="flex-1 h-7 text-[10px]" onClick={() => respondToCounter.mutate({ id: r.id, accepted: true })} disabled={respondToCounter.isPending}>

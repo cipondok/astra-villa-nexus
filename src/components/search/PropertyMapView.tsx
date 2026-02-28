@@ -22,7 +22,7 @@ import {
   X, Home, Bed, Bath, Maximize2, Circle, Pentagon, Trash2, 
   Layers, Save, BookmarkPlus, Flame 
 } from 'lucide-react';
-import { formatIDR } from '@/utils/currency';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import { useToast } from '@/hooks/use-toast';
 import { useCentralLocation } from '@/hooks/useCentralLocation';
 
@@ -444,7 +444,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
 
       toast({
         title: `${zone.name} Price Zone`,
-        description: `Showing ${filtered.length} properties between ${formatIDR(zone.min)} - ${formatIDR(zone.max)}`,
+        description: `Showing ${filtered.length} properties between ${getCurrencyFormatter()(zone.min)} - ${getCurrencyFormatter()(zone.max)}`,
       });
     });
 
@@ -1150,7 +1150,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
           onClick={clearHeatmapFilter}
         >
           <Flame className="h-3 w-3 mr-2" />
-          {heatmapFilter.zone}: {formatIDR(heatmapFilter.min)} - {formatIDR(heatmapFilter.max)}
+          {heatmapFilter.zone}: {getCurrencyFormatter()(heatmapFilter.min)} - {getCurrencyFormatter()(heatmapFilter.max)}
           <X className="h-3 w-3 ml-2" />
         </Badge>
       )}
@@ -1177,7 +1177,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
                   {selectedProperty.title}
                 </h3>
                 <p className="text-lg font-bold text-primary">
-                  {formatIDR(selectedProperty.price)}
+                  {getCurrencyFormatter()(selectedProperty.price)}
                 </p>
               </div>
             </div>

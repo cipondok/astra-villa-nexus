@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 
 const statusMap: Record<string, { label: string; color: string; icon: React.ElementType }> = {
   draft: { label: "Draft", color: "bg-muted text-muted-foreground border-border", icon: FileText },
@@ -402,11 +402,11 @@ const OwnerLeaseContracts = () => {
                   </div>
                   <div>
                     <p className="text-[10px] text-muted-foreground">Sewa Bulanan</p>
-                    <p className="text-xs font-medium text-primary">{formatIDR(viewContract.monthly_rent)}</p>
+                    <p className="text-xs font-medium text-primary"><Price amount={viewContract.monthly_rent} /></p>
                   </div>
                   <div>
                     <p className="text-[10px] text-muted-foreground">Deposit</p>
-                    <p className="text-xs text-foreground">{formatIDR(viewContract.deposit_amount)}</p>
+                    <p className="text-xs text-foreground"><Price amount={viewContract.deposit_amount} /></p>
                   </div>
                   <div>
                     <p className="text-[10px] text-muted-foreground">Jatuh Tempo</p>
@@ -515,7 +515,7 @@ const ContractCard = ({ contract, onView }: { contract: LeaseContract; onView: (
             <span className="text-muted-foreground flex items-center gap-0.5">
               <Calendar className="h-2.5 w-2.5" /> {contract.start_date} → {contract.end_date}
             </span>
-            <span className="text-primary font-medium">{formatIDR(contract.monthly_rent)}/bln</span>
+            <span className="text-primary font-medium"><Price amount={contract.monthly_rent} short />/bln</span>
           </div>
         </div>
         <Eye className="h-4 w-4 text-muted-foreground flex-shrink-0" />
