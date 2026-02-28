@@ -1,37 +1,19 @@
 
 
-## Neighborhood Insights on Property Detail Page
+## Add Investment Tab to Property Comparison
 
-### Current State
-- `NeighborhoodInsights` component exists but is NOT used on the property detail page — only on the Analytics page
-- The component uses hardcoded demo data (scores, nearby places) and has no interactive map
-- Property detail page has `city`, `location`, `coordinates` fields available
+The property comparison tool already exists at `/property-comparison` with 4 tabs (Specs, KPR, Neighborhood, Charts). It supports up to 4 properties. The request is essentially fulfilled, but it's missing **investment metrics** (ROI, rental yield, appreciation) for side-by-side comparison.
 
-### Plan
+### Changes
 
-**1. Create `src/components/property/PropertyNeighborhoodMap.tsx`**
-- New component that combines an interactive Mapbox map with neighborhood POI markers
-- Uses the property's city/coordinates to center the map
-- Generates simulated nearby POIs (schools, hospitals, transit, malls, restaurants) with markers using category-specific colors/icons
-- Clickable markers with popup showing name, type, and distance
-- Category filter buttons (All, Schools, Hospitals, Transit, Shopping) to toggle marker visibility
-- Compact card layout with gold theming matching the rest of the detail page
+**Edit `src/pages/PropertyComparison.tsx`**
 
-**2. Create `src/components/property/PropertyNeighborhoodInsights.tsx`**
-- Wrapper component that combines the map + analytics cards
-- Generates city-aware mock data for mobility scores (walk/transit/bike) and nearby places based on property city
-- Three stat cards in a row: Education, Transportation, Safety (reusing the pattern from existing `NeighborhoodInsights` but slimmed down for the detail page)
-- Mobility score badges below the map
-- Nearby places list with distance and type badges
+1. Add a 5th tab "Investment" (with `TrendingUp` icon) to the `TabsList` — change grid-cols-4 to grid-cols-5
+2. Reuse the `CITY_RATES` and `TYPE_YIELDS` maps from `PropertyInvestmentWidget` to compute per-property investment metrics (annual growth, rental yield, monthly rent estimate, 5-year projected value, break-even years)
+3. Add `TabsContent value="investment"` containing:
+   - Investment metrics comparison cards (one per property, similar to KPR cards) showing annual growth %, rental yield %, monthly rental income, 5-year value projection, and break-even period — with winner badges for best yield/growth/fastest break-even
+   - A bar chart comparing rental yields and appreciation rates side by side
+   - A 10-year appreciation projection line chart showing property value growth over time for each property
 
-**3. Edit `src/pages/PropertyDetail.tsx`**
-- Import and place `PropertyNeighborhoodInsights` in the main content column (after the description/features tabs card, before the 3D viewer section)
-- Pass `city`, `coordinates`, and `propertyType` props
-
-### Technical Details
-- Reuses existing Mapbox token (`MAPBOX_TOKEN`) and `cityCoordinates` map from `PropertyListingMapView`
-- POI data is generated deterministically from city name (seeded pseudo-random offsets from city center)
-- Map height constrained to 300px for the detail page context
-- Lazy-loaded to avoid blocking initial render
-- Mobile responsive: stat cards stack vertically, map takes full width
+### No new files needed — single file edit to `PropertyComparison.tsx`
 
