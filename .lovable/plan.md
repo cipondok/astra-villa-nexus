@@ -1,42 +1,37 @@
 
 
-## KPR Calculator Page
+## Neighborhood Insights on Property Detail Page
 
-A dedicated `/kpr-calculator` page that serves as a full-featured mortgage calculator for Indonesian property buyers, wrapping the existing `MortgageCalculator` component and adding a hero section with gold theming.
+### Current State
+- `NeighborhoodInsights` component exists but is NOT used on the property detail page — only on the Analytics page
+- The component uses hardcoded demo data (scores, nearby places) and has no interactive map
+- Property detail page has `city`, `location`, `coordinates` fields available
 
-### What already exists
-- `MortgageCalculator` component — full calculator with bank selection, rate comparison table, scenario saving, and inquiry dialog
-- `KPRAmortizationChart` — yearly amortization chart/table (used in property-level `KPRCalculator`)
-- `KPRAffordability` — DTI analysis with income input (used in property-level `KPRCalculator`)
-- `useMortgageCalculator` hook — Supabase-powered bank/rate data, PMT formula, amortization schedule generation
-- `useSavedScenarios` — localStorage-based scenario management
-- `KprScenariosTab` already links to `/kpr-calculator`
+### Plan
 
-### Implementation Steps
+**1. Create `src/components/property/PropertyNeighborhoodMap.tsx`**
+- New component that combines an interactive Mapbox map with neighborhood POI markers
+- Uses the property's city/coordinates to center the map
+- Generates simulated nearby POIs (schools, hospitals, transit, malls, restaurants) with markers using category-specific colors/icons
+- Clickable markers with popup showing name, type, and distance
+- Category filter buttons (All, Schools, Hospitals, Transit, Shopping) to toggle marker visibility
+- Compact card layout with gold theming matching the rest of the detail page
 
-**1. Create `src/pages/KprCalculatorPage.tsx`**
-- Hero section with gold-themed header ("Simulasi KPR", "Smart Property Investment Platform" badge)
-- Two-column layout (lg breakpoint): left = `MortgageCalculator` (full mode, not compact), right = sidebar with `KPRAffordability` and `KPRAmortizationChart` that sync with the calculator's state
-- Actually, since `MortgageCalculator` already contains bank comparison + scenario saving + inquiry, the page just needs to wrap it with a hero and add the amortization chart + affordability sections below
-- Layout: hero → `MortgageCalculator` (with `propertyPrice` defaulting to 1B IDR) → amortization chart section → affordability section
-- Since `MortgageCalculator` manages its own state internally, the simplest approach is to render it as the main content and add supplementary content around it
-- Mobile responsive with gold theme consistent with other pages
+**2. Create `src/components/property/PropertyNeighborhoodInsights.tsx`**
+- Wrapper component that combines the map + analytics cards
+- Generates city-aware mock data for mobility scores (walk/transit/bike) and nearby places based on property city
+- Three stat cards in a row: Education, Transportation, Safety (reusing the pattern from existing `NeighborhoodInsights` but slimmed down for the detail page)
+- Mobility score badges below the map
+- Nearby places list with distance and type badges
 
-**2. Add route in `src/App.tsx`**
-- Add lazy import for `KprCalculatorPage`
-- Add `<Route path="/kpr-calculator" element={<KprCalculatorPage />} />`
-- Add alias `/simulasi-kpr` for Indonesian URL
+**3. Edit `src/pages/PropertyDetail.tsx`**
+- Import and place `PropertyNeighborhoodInsights` in the main content column (after the description/features tabs card, before the 3D viewer section)
+- Pass `city`, `coordinates`, and `propertyType` props
 
 ### Technical Details
-
-The page will:
-- Lazy-load via `React.lazy` matching the existing pattern in App.tsx
-- Use the existing `MortgageCalculator` component in non-compact mode (already has bank comparison table, scenario saving, inquiry dialog)
-- Add a standalone amortization + affordability section below the main calculator using shared state via a wrapper that lifts the calculation values
-- Gold-themed hero matching the `SmartCollectionsShowcase` styling (`text-gold-primary`, `border-gold-primary/20`, etc.)
-- Framer-motion entrance animations
-
-**Files to create/edit:**
-1. **Create** `src/pages/KprCalculatorPage.tsx` — page component
-2. **Edit** `src/App.tsx` — add route + lazy import
+- Reuses existing Mapbox token (`MAPBOX_TOKEN`) and `cityCoordinates` map from `PropertyListingMapView`
+- POI data is generated deterministically from city name (seeded pseudo-random offsets from city center)
+- Map height constrained to 300px for the detail page context
+- Lazy-loaded to avoid blocking initial render
+- Mobile responsive: stat cards stack vertically, map takes full width
 
