@@ -11,6 +11,7 @@ import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
+import { useTranslation } from "@/i18n/useTranslation";
 
 // Get icon for property type
 const getPropertyIcon = (type: string) => {
@@ -31,13 +32,11 @@ const capitalizeFirst = (str: string) => {
 };
 
 // Get listing type label
-const getListingLabel = (type: string | null) => {
-  switch (type) {
-    case 'rent': return 'Sewa';
-    case 'sale': return 'Jual';
-    case 'lease': return 'Sewa';
-    default: return 'Jual';
-  }
+// Listing label keys mapped to i18n
+const LISTING_LABEL_KEY: Record<string, string> = {
+  rent: 'indexPage.rentLabel',
+  sale: 'indexPage.saleLabel',
+  lease: 'indexPage.leaseLabel',
 };
 
 interface FeaturedAd {
@@ -108,7 +107,7 @@ export default function FeaturedAdsCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { getPropertyImage } = useDefaultPropertyImage();
-
+  const { t } = useTranslation();
   // Fetch carousel settings from admin
   const { data: carouselSettings } = useQuery({
     queryKey: ['carousel-settings-featured'],
@@ -228,7 +227,7 @@ export default function FeaturedAdsCarousel() {
       <ScrollReveal direction="up" distance={16} duration={500}>
         <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
           <Star className="h-3 w-3 md:h-4 md:w-4 text-gold-primary" />
-          <h2 className="text-[10px] md:text-xs font-semibold text-foreground">Featured Properties</h2>
+          <h2 className="text-[10px] md:text-xs font-semibold text-foreground">{t('indexPage.featuredProperties')}</h2>
         </div>
       </ScrollReveal>
 
@@ -291,9 +290,9 @@ export default function FeaturedAdsCarousel() {
                   {/* Featured Badge - Compact icon with glow, text on hover */}
                   <span className="group/badge flex items-center gap-0.5 font-bold px-1.5 py-0.5 rounded-full bg-gradient-to-r from-gold-primary via-gold-primary to-chart-5 text-primary-foreground shadow-[0_0_10px_hsl(var(--gold-primary)/0.5)] transition-all duration-300 hover:shadow-[0_0_16px_hsl(var(--gold-primary)/0.7)]">
                     <Star className="h-3 w-3 md:h-3.5 md:w-3.5 fill-white stroke-white drop-shadow-[0_0_3px_rgba(255,255,255,0.7)]" />
-                    <span className="text-[9px] sm:text-[10px] md:text-xs max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[60px] font-semibold">
-                      Featured
-                    </span>
+                     <span className="text-[9px] sm:text-[10px] md:text-xs max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[60px] font-semibold">
+                       {t('indexPage.featuredLabel')}
+                     </span>
                   </span>
                   {/* Listing Type Badge - Jual/Sewa with icon */}
                   <span className={`flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-bold px-2 py-1 rounded-full text-primary-foreground shadow-md border ${
@@ -301,8 +300,8 @@ export default function FeaturedAdsCarousel() {
                       ? 'bg-chart-4 border-chart-4/50' 
                       : 'bg-chart-1 border-chart-1/50'
                   }`}>
-                    {p.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
-                    {getListingLabel(p.listing_type)}
+                     {p.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
+                     {t(LISTING_LABEL_KEY[p.listing_type || 'sale'] || 'indexPage.saleLabel')}
                   </span>
                 </div>
                 {/* Property Type with Icon */}
@@ -418,9 +417,9 @@ export default function FeaturedAdsCarousel() {
               <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2 z-10">
                 <span className="group/badge flex items-center gap-1 font-bold px-2 py-1 rounded-full bg-gradient-to-r from-gold-primary via-gold-primary to-chart-5 text-primary-foreground shadow-[0_0_12px_hsl(var(--gold-primary)/0.6)] transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--gold-primary)/0.8)]">
                   <Star className="h-3.5 w-3.5 md:h-4 md:w-4 fill-white stroke-white drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
-                  <span className="text-[8px] md:text-[10px] max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[70px] font-semibold">
-                    Featured
-                  </span>
+                   <span className="text-[8px] md:text-[10px] max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[70px] font-semibold">
+                     {t('indexPage.featuredLabel')}
+                   </span>
                 </span>
               </div>
               
