@@ -14,7 +14,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
 import { Settings, Eye, CheckCircle, XCircle, Pause, Edit, Plus, Trash2, Filter, Search, BarChart3 } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 const EnhancedVendorServiceManagement = () => {
   const [selectedService, setSelectedService] = useState<any>(null);
@@ -345,7 +346,7 @@ const EnhancedVendorServiceManagement = () => {
                           <div className="text-sm">
                             {service.vendor_service_items.map((item: any, idx: number) => (
                               <div key={idx}>
-                                {formatIDR(item.price || 0)}
+                                <Price amount={item.price || 0} />
                               </div>
                             ))}
                           </div>

@@ -14,7 +14,7 @@ import {
   Tag,
   Key
 } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 
 const DemoPropertyList = () => {
   const navigate = useNavigate();
@@ -171,10 +171,8 @@ const DemoPropertyList = () => {
                       </div>
                       <div className="text-right">
                         <div className="text-2xl font-bold text-chart-1">
-                          {property.listing_type === 'rent' 
-                            ? `${formatIDR(property.price)}/bulan`
-                            : formatIDR(property.price)
-                          }
+                          <Price amount={property.price} />
+                          {property.listing_type === 'rent' && '/bulan'}
                         </div>
                       </div>
                     </div>

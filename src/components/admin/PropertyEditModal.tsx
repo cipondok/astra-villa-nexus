@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
-import { formatIDR } from "@/utils/currency";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { Edit, Save, X, Image as ImageIcon, Upload, Trash2, Wand2, AlertTriangle, Box, Filter, BarChart3, MapPin, Calendar, Star, Home, Tag, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
@@ -609,7 +609,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   const formatPriceDisplay = (price: string) => {
     if (!price) return '';
     const numPrice = parseFloat(price);
-    return isNaN(numPrice) ? price : `${formatIDR(numPrice)}`;
+    return isNaN(numPrice) ? price : `${getCurrencyFormatter()(numPrice)}`;
   };
 
   if (!property) {

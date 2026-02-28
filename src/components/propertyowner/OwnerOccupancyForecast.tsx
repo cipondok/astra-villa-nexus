@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { format, startOfMonth, subMonths, addMonths, differenceInDays } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import {
@@ -255,7 +256,7 @@ const OwnerOccupancyForecast = () => {
           },
           {
             icon: DollarSign, label: "Revenue Bulan Ini",
-            value: formatIDR(analytics.currentRevenue),
+            value: getCurrencyFormatter()(analytics.currentRevenue),
             change: analytics.revChange,
             color: "text-primary", bg: "bg-primary/10",
           },
@@ -267,7 +268,7 @@ const OwnerOccupancyForecast = () => {
           },
           {
             icon: Zap, label: "Forecast Revenue (3bln)",
-            value: formatIDR(analytics.forecastRevenue),
+            value: getCurrencyFormatter()(analytics.forecastRevenue),
             change: null,
             color: "text-chart-1", bg: "bg-chart-1/10",
           },
@@ -367,7 +368,7 @@ const OwnerOccupancyForecast = () => {
                     contentStyle={TOOLTIP_STYLE}
                     formatter={(v: number, name: string) => {
                       if (name === "occupancyRate") return [`${v}%`, "Occupancy"];
-                      return [formatIDR(v), "Revenue"];
+                      return [getCurrencyFormatter()(v), "Revenue"];
                     }}
                   />
                   <Legend wrapperStyle={{ fontSize: 10 }} />
@@ -419,7 +420,7 @@ const OwnerOccupancyForecast = () => {
                       <p className="text-[9px] text-muted-foreground">Occupancy</p>
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-chart-1">{formatIDR(f.revenue)}</p>
+                      <p className="text-xs font-bold text-chart-1"><Price amount={f.revenue} /></p>
                       <p className="text-[9px] text-muted-foreground">Revenue</p>
                     </div>
                   </div>
@@ -489,7 +490,7 @@ const OwnerOccupancyForecast = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
                   <YAxis tick={{ fontSize: 8 }} stroke="hsl(var(--muted-foreground))" tickFormatter={v => `${(v / 1000000).toFixed(0)}jt`} />
-                  <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v: number) => [formatIDR(v), "Avg Revenue"]} />
+                  <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v: number) => [getCurrencyFormatter()(v), "Avg Revenue"]} />
                   <Area type="monotone" dataKey="avgRevenue" fill="hsl(var(--chart-1) / 0.15)" stroke="hsl(var(--chart-1))" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
@@ -516,7 +517,7 @@ const OwnerOccupancyForecast = () => {
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-xs font-bold text-chart-1">{formatIDR(p.revenue)}</p>
+                  <p className="text-xs font-bold text-chart-1"><Price amount={p.revenue} /></p>
                   <p className="text-[9px] text-muted-foreground">{p.totalDays} hari terpakai</p>
                 </div>
               </div>

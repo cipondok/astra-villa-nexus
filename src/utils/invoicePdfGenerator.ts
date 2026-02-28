@@ -1,5 +1,5 @@
 // jsPDF is dynamically imported to reduce initial bundle size
-import { formatIDR } from "@/utils/currency";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 interface InvoiceData {
   invoice_number: string;
@@ -102,12 +102,12 @@ export async function generateInvoicePdf(invoice: InvoiceData, isReceipt = false
 
   doc.setFont("helvetica", "normal");
   doc.text("Subtotal", margin + 3, y);
-  doc.text(formatIDR(invoice.amount), pageW - margin - 3, y, { align: "right" });
+  doc.text(getCurrencyFormatter()(invoice.amount), pageW - margin - 3, y, { align: "right" });
   y += 7;
 
   if (invoice.tax_amount > 0) {
     doc.text("Pajak (10%)", margin + 3, y);
-    doc.text(formatIDR(invoice.tax_amount), pageW - margin - 3, y, { align: "right" });
+    doc.text(getCurrencyFormatter()(invoice.tax_amount), pageW - margin - 3, y, { align: "right" });
     y += 7;
   }
 
@@ -117,7 +117,7 @@ export async function generateInvoicePdf(invoice: InvoiceData, isReceipt = false
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
   doc.text("TOTAL", margin + 3, y);
-  doc.text(formatIDR(invoice.total_amount), pageW - margin - 3, y, { align: "right" });
+  doc.text(getCurrencyFormatter()(invoice.total_amount), pageW - margin - 3, y, { align: "right" });
   y += 12;
 
   if (invoice.notes) {

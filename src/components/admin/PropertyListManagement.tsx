@@ -38,7 +38,7 @@ import {
   SortAsc,
   SortDesc
 } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 
 interface PropertyListManagementProps {
   onAddProperty?: () => void;
@@ -806,7 +806,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                         <TableCell className="py-4">
                           <div className="space-y-1">
                             <div className="font-bold text-lg text-foreground">
-                              {property.price ? formatIDR(property.price) : (
+                              {property.price ? <Price amount={property.price} /> : (
                                 <span className="text-muted-foreground text-sm">Price not set</span>
                               )}
                             </div>

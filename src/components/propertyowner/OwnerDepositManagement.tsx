@@ -12,7 +12,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAlert } from "@/contexts/AlertContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ElementType }> = {
   pending: { label: "Menunggu Bayar", color: "bg-chart-3/10 text-chart-3 border-chart-3/20", icon: Clock },
@@ -131,7 +132,7 @@ const OwnerDepositManagement = () => {
         })
         .eq("id", releaseDialog.id);
       if (error) throw error;
-      showSuccess("Berhasil", `Deposit dirilis. Refund: ${formatIDR(refund)}`);
+      showSuccess("Berhasil", `Deposit dirilis. Refund: ${getCurrencyFormatter()(refund)}`);
       setReleaseDialog(null);
       setDeductionAmount("");
       setDeductionReason("");
@@ -157,7 +158,7 @@ const OwnerDepositManagement = () => {
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3 border-border">
           <p className="text-xs text-muted-foreground">Ditahan</p>
-          <p className="text-sm font-bold text-primary">{formatIDR(heldTotal)}</p>
+          <p className="text-sm font-bold text-primary"><Price amount={heldTotal} /></p>
         </Card>
         <Card className="p-3 border-border">
           <p className="text-xs text-muted-foreground">Menunggu</p>
@@ -199,7 +200,7 @@ const OwnerDepositManagement = () => {
               <Card key={dep.id} className="p-4 border-border">
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{formatIDR(dep.deposit_amount)}</p>
+                    <p className="text-sm font-semibold text-foreground"><Price amount={dep.deposit_amount} /></p>
                     <p className="text-[10px] text-muted-foreground">Booking: {dep.booking_id.slice(0, 8)}...</p>
                   </div>
                   <Badge className={`${st.color} text-[10px] border`}>
@@ -209,14 +210,14 @@ const OwnerDepositManagement = () => {
 
                 {dep.deduction_amount > 0 && (
                   <div className="bg-destructive/5 rounded-md p-2 text-xs mb-2">
-                    <span className="font-medium text-destructive">Potongan: {formatIDR(dep.deduction_amount)}</span>
+                    <span className="font-medium text-destructive">Potongan: <Price amount={dep.deduction_amount} /></span>
                     {dep.deduction_reason && <p className="text-muted-foreground text-[10px] mt-0.5">{dep.deduction_reason}</p>}
                   </div>
                 )}
 
                 {dep.refund_amount > 0 && (
                   <div className="bg-chart-1/5 rounded-md p-2 text-xs mb-2">
-                    <span className="font-medium text-chart-1">Refund: {formatIDR(dep.refund_amount)}</span>
+                    <span className="font-medium text-chart-1">Refund: <Price amount={dep.refund_amount} /></span>
                   </div>
                 )}
 
@@ -260,7 +261,7 @@ const OwnerDepositManagement = () => {
                 <SelectTrigger><SelectValue placeholder="Pilih booking" /></SelectTrigger>
                 <SelectContent>
                   {bookingsWithoutDeposit.map((b: any) => (
-                    <SelectItem key={b.id} value={b.id}>{b.id.slice(0, 8)}... — {formatIDR(b.deposit_amount)}</SelectItem>
+                    <SelectItem key={b.id} value={b.id}>{b.id.slice(0, 8)}... — {getCurrencyFormatter()(b.deposit_amount)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -284,7 +285,7 @@ const OwnerDepositManagement = () => {
             <div className="space-y-3">
               <div className="bg-muted/40 rounded-lg p-3 text-center">
                 <p className="text-xs text-muted-foreground">Total Deposit</p>
-                <p className="text-lg font-bold text-foreground">{formatIDR(releaseDialog.deposit_amount)}</p>
+                <p className="text-lg font-bold text-foreground"><Price amount={releaseDialog.deposit_amount} /></p>
               </div>
               <div>
                 <Label>Potongan (kerusakan, dll)</Label>
@@ -298,7 +299,7 @@ const OwnerDepositManagement = () => {
               )}
               <div className="bg-chart-1/5 rounded-lg p-3 text-center">
                 <p className="text-xs text-muted-foreground">Refund ke Tenant</p>
-                <p className="text-lg font-bold text-chart-1">{formatIDR(releaseDialog.deposit_amount - (Number(deductionAmount) || 0))}</p>
+                <p className="text-lg font-bold text-chart-1"><Price amount={releaseDialog.deposit_amount - (Number(deductionAmount) || 0)} /></p>
               </div>
               <Button className="w-full" onClick={handleRelease} disabled={processing}>
                 {processing && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Konfirmasi Rilis

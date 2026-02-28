@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { RotateCcw, Clock, CheckCircle, XCircle, Loader2 } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import { useState } from "react";
 
 const statusColors: Record<string, { label: string; color: string; icon: React.ElementType }> = {
@@ -89,9 +89,9 @@ const TenantRenewalRequests = () => {
                 <p className="text-xs font-medium text-foreground">
                   {r.proposed_start_date} → {r.proposed_end_date}
                 </p>
-                <p className="text-sm font-semibold text-primary mt-0.5">{formatIDR(r.proposed_price)}</p>
+                <p className="text-sm font-semibold text-primary mt-0.5"><Price amount={r.proposed_price} /></p>
                 {r.original_price && r.proposed_price !== r.original_price && (
-                  <p className="text-[10px] text-muted-foreground line-through">{formatIDR(r.original_price)}</p>
+                  <p className="text-[10px] text-muted-foreground line-through"><Price amount={r.original_price} /></p>
                 )}
               </div>
               <Badge className={`${st.color} text-[9px] border`}>

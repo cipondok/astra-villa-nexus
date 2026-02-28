@@ -10,7 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { formatIDR } from "@/utils/formatters";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
+const formatIDR = (v: number) => getCurrencyFormatter()(v);
 import { 
   Building2, Users, DollarSign, TrendingUp, Search, Plus,
   CheckCircle, XCircle, Wallet, FileText, Package, Activity,

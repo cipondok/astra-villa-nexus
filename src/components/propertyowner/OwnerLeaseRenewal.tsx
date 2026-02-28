@@ -12,7 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarDays, Clock, CheckCircle, XCircle, Send, Loader2, RotateCcw, AlertTriangle, CalendarPlus, MessageSquare, ArrowRight } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { differenceInDays, format, addDays } from "date-fns";
 
 interface ExpiringBooking {
@@ -241,7 +242,7 @@ const OwnerLeaseRenewal = () => {
                               {daysLeft} hari lagi
                             </Badge>
                           </div>
-                          <p className="text-[10px] text-primary font-medium mt-0.5">{formatIDR(b.total_amount)}</p>
+                          <p className="text-[10px] text-primary font-medium mt-0.5"><Price amount={b.total_amount} /></p>
                         </div>
                         {hasRenewal ? (
                           <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px] border">
@@ -278,7 +279,7 @@ const OwnerLeaseRenewal = () => {
                           <p className="text-xs text-foreground font-medium">
                             {r.proposed_start_date} → {r.proposed_end_date}
                           </p>
-                          <p className="text-[10px] text-muted-foreground">{formatIDR(r.proposed_price)}</p>
+                          <p className="text-[10px] text-muted-foreground"><Price amount={r.proposed_price} /></p>
                           {r.tenant_response && <p className="text-[10px] text-muted-foreground mt-0.5">"{r.tenant_response}"</p>}
                         </div>
                         <Badge className={`${st.color} text-[9px] border`}>
@@ -319,9 +320,9 @@ const OwnerLeaseRenewal = () => {
                           <span className="text-primary">{r.requested_end_date}</span>
                         </div>
                         <p className="text-[10px] text-muted-foreground mt-0.5">
-                          Harga diajukan: <span className="font-medium text-foreground">{formatIDR(r.proposed_price)}</span>
+                          Harga diajukan: <span className="font-medium text-foreground"><Price amount={r.proposed_price} /></span>
                           {r.current_price !== r.proposed_price && (
-                            <span className="line-through ml-1">{formatIDR(r.current_price)}</span>
+                            <span className="line-through ml-1"><Price amount={r.current_price} /></span>
                           )}
                         </p>
                       </div>
@@ -397,7 +398,7 @@ const OwnerLeaseRenewal = () => {
           <div className="space-y-3">
             <div className="bg-muted/50 rounded-md p-2.5 text-xs">
               <p className="text-foreground font-medium">Permintaan tenant:</p>
-              <p className="text-muted-foreground mt-0.5">Sampai {responseDialog?.requested_end_date} • {formatIDR(responseDialog?.proposed_price || 0)}</p>
+              <p className="text-muted-foreground mt-0.5">Sampai {responseDialog?.requested_end_date} • {getCurrencyFormatter()(responseDialog?.proposed_price || 0)}</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>

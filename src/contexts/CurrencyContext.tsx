@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { safeLocalStorage } from "@/lib/safeStorage";
-import { useCurrencyStore } from "@/stores/currencyStore";
+import { useCurrencyStore, CURRENCY_META } from "@/stores/currencyStore";
 
 export type CurrencyCode = "IDR" | "USD" | "SGD" | "AUD";
 
@@ -14,16 +14,12 @@ interface ExchangeRates {
 interface CurrencyContextProps {
   currency: CurrencyCode;
   setCurrency: (c: CurrencyCode) => void;
-  /** Convert an IDR amount to the selected currency */
   convert: (amountIDR: number) => number;
-  /** Format an IDR amount in the selected currency */
   formatPrice: (amountIDR: number) => string;
-  /** Short format for compact display (e.g., 1.2B, 850M) */
   formatPriceShort: (amountIDR: number) => string;
   rates: ExchangeRates;
 }
 
-// Approximate exchange rates (IDR base) — updated periodically
 const DEFAULT_RATES: ExchangeRates = {
   IDR: 1,
   USD: 1 / 16_200,
@@ -31,14 +27,16 @@ const DEFAULT_RATES: ExchangeRates = {
   AUD: 1 / 10_500,
 };
 
-const CURRENCY_CONFIG: Record<CurrencyCode, { locale: string; symbol: string; decimals: number }> = {
-  IDR: { locale: "id-ID", symbol: "Rp", decimals: 0 },
-  USD: { locale: "en-US", symbol: "$", decimals: 0 },
-  SGD: { locale: "en-SG", symbol: "S$", decimals: 0 },
-  AUD: { locale: "en-AU", symbol: "A$", decimals: 0 },
-};
-
 const CurrencyContext = createContext<CurrencyContextProps | undefined>(undefined);
+
+/** Map language → default currency */
+const LANG_CURRENCY_MAP: Record<string, CurrencyCode> = {
+  id: "IDR",
+  en: "USD",
+  zh: "SGD",
+  ja: "USD",
+  ko: "USD",
+};
 
 export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   const [currency, setCurrencyState] = useState<CurrencyCode>(() => {
@@ -53,15 +51,16 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     safeLocalStorage.setItem("currency", currency);
   }, [currency]);
 
-  const setCurrency = (c: CurrencyCode) => setCurrencyState(c);
-
-  const convert = (amountIDR: number): number => {
-    return amountIDR * rates[currency];
+  const setCurrency = (c: CurrencyCode) => {
+    setCurrencyState(c);
+    useCurrencyStore.setState({ currency: c, manuallySet: true });
   };
+
+  const convert = (amountIDR: number): number => amountIDR * rates[currency];
 
   const formatPrice = (amountIDR: number): string => {
     const converted = convert(amountIDR);
-    const config = CURRENCY_CONFIG[currency];
+    const config = CURRENCY_META[currency];
     return new Intl.NumberFormat(config.locale, {
       style: "currency",
       currency,
@@ -72,8 +71,7 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
 
   const formatPriceShort = (amountIDR: number): string => {
     const converted = convert(amountIDR);
-    const config = CURRENCY_CONFIG[currency];
-    
+    const config = CURRENCY_META[currency];
     let value: string;
     if (currency === "IDR") {
       if (converted >= 1_000_000_000) value = `${(converted / 1_000_000_000).toFixed(1)}B`;
@@ -84,15 +82,28 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
       else if (converted >= 1_000) value = `${(converted / 1_000).toFixed(0)}K`;
       else value = converted.toFixed(config.decimals);
     }
-    
     return `${config.symbol} ${value}`;
   };
 
-  // Sync to zustand store for non-React contexts
-  const syncStore = useCurrencyStore.getState();
+  // Sync to zustand store
   useEffect(() => {
     useCurrencyStore.setState({ currency, rates });
   }, [currency, rates]);
+
+  // Listen for language changes and auto-switch currency if not manually set
+  useEffect(() => {
+    const handleStorage = () => {
+      const lang = safeLocalStorage.getItem("language") || "en";
+      const { manuallySet } = useCurrencyStore.getState();
+      if (!manuallySet && LANG_CURRENCY_MAP[lang]) {
+        setCurrencyState(LANG_CURRENCY_MAP[lang]);
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    // Also check on mount
+    handleStorage();
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   return (
     <CurrencyContext.Provider value={{ currency, setCurrency, convert, formatPrice, formatPriceShort, rates }}>

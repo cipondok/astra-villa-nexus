@@ -13,7 +13,8 @@ import {
   CheckCircle, XCircle, AlertTriangle, RefreshCw, Eye,
   Download, Filter, Search, ArrowUpDown, Bell
 } from "lucide-react";
-import { formatIDR } from "@/utils/formatters";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
+const formatIDR = (v: number) => getCurrencyFormatter()(v);
 import { toast } from "sonner";
 
 interface Transaction {

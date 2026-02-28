@@ -14,7 +14,7 @@ import {
   Zap, Receipt, Clock, AlertTriangle, Bell, Loader2, Save,
   CalendarDays, Percent, DollarSign, RefreshCw, CheckCircle
 } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 interface AutomationSettings {
   id?: string;
@@ -308,14 +308,14 @@ const OwnerPaymentAutomation = () => {
               </div>
               {current.late_fee_type === "fixed" && current.late_fee_amount > 0 && (
                 <p className="text-[9px] text-muted-foreground bg-muted/50 rounded p-1.5">
-                  💡 Denda {formatIDR(current.late_fee_amount)}/hari setelah {current.grace_period_days} hari masa tenggang
-                  {current.max_late_fee_amount > 0 && `, maks ${formatIDR(current.max_late_fee_amount)}`}
+                  💡 Denda {getCurrencyFormatter()(current.late_fee_amount)}/hari setelah {current.grace_period_days} hari masa tenggang
+                  {current.max_late_fee_amount > 0 && `, maks ${getCurrencyFormatter()(current.max_late_fee_amount)}`}
                 </p>
               )}
               {current.late_fee_type === "percentage" && current.late_fee_percentage > 0 && (
                 <p className="text-[9px] text-muted-foreground bg-muted/50 rounded p-1.5">
                   💡 Denda {current.late_fee_percentage}% dari total invoice setelah {current.grace_period_days} hari masa tenggang
-                  {current.max_late_fee_amount > 0 && `, maks ${formatIDR(current.max_late_fee_amount)}`}
+                  {current.max_late_fee_amount > 0 && `, maks ${getCurrencyFormatter()(current.max_late_fee_amount)}`}
                 </p>
               )}
             </>
