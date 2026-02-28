@@ -29,7 +29,7 @@ const AgentAnalyticsDashboard: React.FC<AgentAnalyticsDashboardProps> = ({ class
   const [activeTab, setActiveTab] = useState('overview');
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
   
-  const analytics = useAgentAnalytics();
+  const analytics = useAgentAnalytics(dateRange);
 
   if (analytics.isLoading) {
     return (

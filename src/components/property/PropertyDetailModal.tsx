@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,6 +9,7 @@ import ScheduleSurveyModal from "@/components/ScheduleSurveyModal";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import SharePropertyButton from "./SharePropertyButton";
 import { useTranslation } from "@/i18n/useTranslation";
+import { supabase } from "@/integrations/supabase/client";
 
 // ─── VR Media Gallery Sub-Component ──────────────────────────────────────────
 const VRMediaGallery = ({ property }: { property: BaseProperty }) => {
@@ -186,6 +187,13 @@ const PropertyDetailModal = ({
   const navigate = useNavigate();
   const { getPropertyImage } = useDefaultPropertyImage();
   const { t } = useTranslation();
+
+  // Track property view
+  useEffect(() => {
+    if (isOpen && property?.id) {
+      supabase.rpc('track_property_view', { p_property_id: property.id }).then(() => {});
+    }
+  }, [isOpen, property?.id]);
 
   if (!isOpen) return null;
 
