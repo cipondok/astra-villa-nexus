@@ -313,7 +313,7 @@ const AppContent = () => {
         </AnimatePresence>
       </main>
       {!isAdminRoute && (
-        <Suspense fallback={null}>
+        <Suspense fallback={<div style={{ minHeight: isMobile ? '60px' : '120px' }} />}>
           {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
         </Suspense>
       )}
