@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calculator, TrendingUp, MapPin, Clock } from "lucide-react";
 import IndonesianValidator, { PROVINCE_MINIMUM_WAGES } from "@/utils/indonesianValidation";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
+const formatCurrency = (v: number) => getCurrencyFormatter()(v);
 
 interface PricingInput {
   name: string;
@@ -251,14 +253,14 @@ const AutoPricingCalculator = ({
     if (finalPrice < minimumPrice) {
       finalPrice = minimumPrice;
       breakdown['Minimum Charge'] = minimumPrice - Object.values(breakdown).reduce((a, b) => a + b, 0);
-      newRecommendations.push(`Harga minimum ${IndonesianValidator.formatIDR(minimumPrice)} diterapkan`);
+      newRecommendations.push(`Harga minimum ${formatCurrency(minimumPrice)} diterapkan`);
     }
 
     // Location-based adjustments
     if (location?.province) {
       const minWage = IndonesianValidator.getMinimumWage(location.province);
       if (minWage && finalPrice < minWage.minimumWage) {
-        newRecommendations.push(`Pertimbangkan UMP ${location.province}: ${IndonesianValidator.formatIDR(minWage.minimumWage)}`);
+        newRecommendations.push(`Pertimbangkan UMP ${location.province}: ${formatCurrency(minWage.minimumWage)}`);
       }
     }
 
@@ -364,7 +366,7 @@ const AutoPricingCalculator = ({
               </div>
               <div className="text-right">
                 <div className="text-3xl font-bold text-chart-1">
-                  {IndonesianValidator.formatIDR(calculatedPrice)}
+                  {formatCurrency(calculatedPrice)}
                 </div>
                 <div className="text-sm text-muted-foreground">
                   {formula.unit}
@@ -379,7 +381,7 @@ const AutoPricingCalculator = ({
                 {Object.entries(priceBreakdown).map(([key, value]) => (
                   <div key={key} className="flex justify-between text-sm">
                     <span>{key}</span>
-                    <span>{IndonesianValidator.formatIDR(value)}</span>
+                    <span>{formatCurrency(value)}</span>
                   </div>
                 ))}
               </div>
@@ -411,7 +413,7 @@ const AutoPricingCalculator = ({
                 <span>Location: {location.city}, {location.province}</span>
                 {PROVINCE_MINIMUM_WAGES.find(p => p.code === location.province) && (
                   <Badge variant="outline" className="ml-2">
-                    UMP: {IndonesianValidator.formatIDR(
+                    UMP: {formatCurrency(
                       PROVINCE_MINIMUM_WAGES.find(p => p.code === location.province)!.minimumWage
                     )}
                   </Badge>
