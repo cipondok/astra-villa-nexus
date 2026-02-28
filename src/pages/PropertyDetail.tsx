@@ -63,7 +63,8 @@ import {
   Landmark,
   Navigation,
   CheckCircle2,
-  ClipboardCheck
+  ClipboardCheck,
+  Loader2
 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -76,6 +77,7 @@ import { SurveyBookingDialog } from '@/components/property/SurveyBookingDialog';
 import SocialShareDialog from '@/components/property/SocialShareDialog';
 import SmartCollectionBadges from '@/components/property/SmartCollectionBadges';
 import PropertyInvestmentWidget from '@/components/property/PropertyInvestmentWidget';
+const PropertyNeighborhoodInsights = lazy(() => import('@/components/property/PropertyNeighborhoodInsights'));
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
@@ -1084,6 +1086,15 @@ const PropertyDetail: React.FC = () => {
                 </Tabs>
               </CardContent>
             </Card>
+
+            {/* Neighborhood Insights */}
+            <Suspense fallback={<div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-gold-primary" /></div>}>
+              <PropertyNeighborhoodInsights
+                city={property.city}
+                coordinates={property.coordinates}
+                propertyType={property.property_type}
+              />
+            </Suspense>
 
             {/* 3D Viewer */}
             <SimpleProperty3DViewer
