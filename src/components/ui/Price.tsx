@@ -3,6 +3,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
@@ -31,16 +32,18 @@ export const Price: React.FC<PriceProps> = ({ amount, short = false, className }
   }
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span className={className} style={{ cursor: "default" }}>
-          {formatted}
-        </span>
-      </TooltipTrigger>
-      <TooltipContent side="top" className="text-xs">
-        ≈ {formatIDRStatic(amount)}
-      </TooltipContent>
-    </Tooltip>
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className={className} style={{ cursor: "default" }}>
+            {formatted}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent side="top" className="text-xs">
+          ≈ {formatIDRStatic(amount)}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 
