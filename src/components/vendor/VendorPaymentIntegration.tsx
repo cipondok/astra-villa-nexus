@@ -23,7 +23,7 @@ import {
   Building
 } from 'lucide-react';
 import { toast } from 'sonner';
-
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 interface BankDetails {
   bank_name: string;
   account_number: string;
@@ -124,7 +124,7 @@ const VendorPaymentIntegration = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       if (amount < 100000) {
-        throw new Error('Minimum payout amount is Rp 100,000');
+        throw new Error(`Minimum payout amount is ${getCurrencyFormatter()(100_000)}`);
       }
     },
     onSuccess: () => {
@@ -145,12 +145,8 @@ const VendorPaymentIntegration = () => {
     return earnings.filter(e => e.status === 'pending').reduce((total, earning) => total + earning.net_amount, 0) || 0;
   };
 
-  const formatCurrency = (amount: number, currency = 'IDR') => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: currency,
-      minimumFractionDigits: 0
-    }).format(amount);
+  const formatCurrency = (amount: number, _currency = 'IDR') => {
+    return getCurrencyFormatter()(amount);
   };
 
   const getStatusBadge = (status: string) => {
@@ -393,7 +389,7 @@ const VendorPaymentIntegration = () => {
                   if (amount >= 100000) {
                     requestPayoutMutation.mutate(amount);
                   } else {
-                    toast.error('Minimum payout amount is Rp 100,000');
+                    toast.error(`Minimum payout amount is ${getCurrencyFormatter()(100_000)}`);
                   }
                 }}
                 disabled={requestPayoutMutation.isPending}

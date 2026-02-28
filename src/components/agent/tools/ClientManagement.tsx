@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Users, Phone, Mail, Search, Plus, MessageSquare } from "lucide-react";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 const ClientManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,7 +17,7 @@ const ClientManagement = () => {
       status: "active",
       interestedIn: "Villa in Seminyak",
       lastContact: "2024-02-15",
-      budget: "Rp 15,000,000,000",
+      budget: getCurrencyFormatter()(15_000_000_000),
       notes: "Looking for ocean view villa"
     },
     {
@@ -27,7 +28,7 @@ const ClientManagement = () => {
       status: "lead",
       interestedIn: "Apartment in SCBD",
       lastContact: "2024-02-14",
-      budget: "Rp 5,000,000,000",
+      budget: getCurrencyFormatter()(5_000_000_000),
       notes: "First-time buyer, needs guidance"
     },
     {
@@ -38,7 +39,7 @@ const ClientManagement = () => {
       status: "prospect",
       interestedIn: "Townhouse in Pondok Indah",
       lastContact: "2024-02-12",
-      budget: "Rp 8,000,000,000",
+      budget: getCurrencyFormatter()(8_000_000_000),
       notes: "Investment property"
     }
   ]);

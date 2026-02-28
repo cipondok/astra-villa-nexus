@@ -40,6 +40,7 @@ import {
   Filter,
   MoreHorizontal
 } from "lucide-react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 const B2BMarketplaceManagement = () => {
   const [activeTab, setActiveTab] = useState("clients");
@@ -366,7 +367,7 @@ const B2BMarketplaceManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] text-muted-foreground">Revenue (MTD)</p>
-                <p className="text-xl font-bold text-foreground">Rp 45M</p>
+                <p className="text-xl font-bold text-foreground">{getCurrencyFormatterShort()(45_000_000)}</p>
               </div>
               <DollarSign className="h-5 w-5 text-chart-1" />
             </div>

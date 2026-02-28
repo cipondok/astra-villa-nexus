@@ -6,6 +6,7 @@ import {
   Home, CalendarDays, DollarSign, CheckCircle, Clock, Users,
   BarChart3, MapPin, TrendingUp, XCircle, RotateCcw, AlertCircle, Search
 } from "lucide-react";
+import { getCurrencyFormatter, getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 const AdminRentalManagement = () => {
   return (
@@ -23,7 +24,7 @@ const AdminRentalManagement = () => {
           { icon: CalendarDays, label: "Total Bookings", value: "0", color: "text-primary", bg: "bg-primary/10" },
           { icon: CheckCircle, label: "Active Rentals", value: "0", color: "text-chart-1", bg: "bg-chart-1/10" },
           { icon: RotateCcw, label: "Refund Requests", value: "0", color: "text-destructive", bg: "bg-destructive/10" },
-          { icon: DollarSign, label: "Rental Revenue", value: "Rp 0", color: "text-primary", bg: "bg-primary/10" },
+          { icon: DollarSign, label: "Rental Revenue", value: getCurrencyFormatter()(0), color: "text-primary", bg: "bg-primary/10" },
         ].map((stat, i) => (
           <Card key={i} className="p-3">
             <div className="flex items-center gap-2.5">
@@ -62,8 +63,8 @@ const AdminRentalManagement = () => {
           {/* Example booking row */}
           <div className="mt-3 space-y-2">
             {[
-              { id: "BK-001", guest: "John D.", property: "Villa Bali Paradise", status: "confirmed", amount: "Rp 4.5 Jt", statusColor: "text-chart-1 bg-chart-1/10" },
-              { id: "BK-002", guest: "Sarah M.", property: "Apartment Jakarta", status: "pending", amount: "Rp 8.0 Jt", statusColor: "text-chart-3 bg-chart-3/10" },
+              { id: "BK-001", guest: "John D.", property: "Villa Bali Paradise", status: "confirmed", amount: getCurrencyFormatterShort()(4_500_000), statusColor: "text-chart-1 bg-chart-1/10" },
+              { id: "BK-002", guest: "Sarah M.", property: "Apartment Jakarta", status: "pending", amount: getCurrencyFormatterShort()(8_000_000), statusColor: "text-chart-3 bg-chart-3/10" },
             ].map((booking, i) => (
               <Card key={i} className="p-3 border-border opacity-60">
                 <div className="flex items-center justify-between">
@@ -109,7 +110,7 @@ const AdminRentalManagement = () => {
                 <div>
                   <p className="text-xs font-medium">Refund #RF-001</p>
                   <p className="text-[10px] text-muted-foreground">Booking BK-003 — Alasan: Perubahan rencana</p>
-                  <p className="text-xs font-semibold text-foreground mt-1">Rp 2.500.000</p>
+                  <p className="text-xs font-semibold text-foreground mt-1">{getCurrencyFormatter()(2_500_000)}</p>
                 </div>
               </div>
               <div className="flex gap-1.5">
@@ -156,9 +157,9 @@ const AdminRentalManagement = () => {
               </CardHeader>
               <div className="space-y-2">
                 {[
-                  { label: "Harian", value: "Rp 0", pct: "0%" },
-                  { label: "Bulanan", value: "Rp 0", pct: "0%" },
-                  { label: "Tahunan", value: "Rp 0", pct: "0%" },
+                  { label: "Harian", value: getCurrencyFormatter()(0), pct: "0%" },
+                  { label: "Bulanan", value: getCurrencyFormatter()(0), pct: "0%" },
+                  { label: "Tahunan", value: getCurrencyFormatter()(0), pct: "0%" },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
                     <span className="text-xs text-muted-foreground">{item.label}</span>

@@ -276,7 +276,7 @@ const OwnerPayoutManagement: React.FC = () => {
                   className="h-9 sm:h-10 text-xs sm:text-sm"
                 />
                 <p className="text-[9px] sm:text-[10px] text-muted-foreground">
-                  Min. {getCurrencyFormatter()(settings.minimum_payout_amount)} · Biaya transfer Rp 6.500
+                  Min. {getCurrencyFormatter()(settings.minimum_payout_amount)} · Biaya transfer {getCurrencyFormatter()(6500)}
                 </p>
               </div>
 
@@ -465,11 +465,11 @@ const OwnerPayoutManagement: React.FC = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="50000" className="text-xs">Rp 50.000</SelectItem>
-                    <SelectItem value="100000" className="text-xs">Rp 100.000</SelectItem>
-                    <SelectItem value="250000" className="text-xs">Rp 250.000</SelectItem>
-                    <SelectItem value="500000" className="text-xs">Rp 500.000</SelectItem>
-                    <SelectItem value="1000000" className="text-xs">Rp 1.000.000</SelectItem>
+                    <SelectItem value="50000" className="text-xs">{getCurrencyFormatter()(50_000)}</SelectItem>
+                    <SelectItem value="100000" className="text-xs">{getCurrencyFormatter()(100_000)}</SelectItem>
+                    <SelectItem value="250000" className="text-xs">{getCurrencyFormatter()(250_000)}</SelectItem>
+                    <SelectItem value="500000" className="text-xs">{getCurrencyFormatter()(500_000)}</SelectItem>
+                    <SelectItem value="1000000" className="text-xs">{getCurrencyFormatter()(1_000_000)}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -485,7 +485,7 @@ const OwnerPayoutManagement: React.FC = () => {
 
               <div className="bg-muted/40 rounded-lg p-2.5 text-[10px] sm:text-xs">
                 <p className="font-medium mb-0.5">Biaya Transfer</p>
-                <p className="text-muted-foreground">Rp 6.500 per transaksi (dipotong dari jumlah pencairan)</p>
+                <p className="text-muted-foreground">{getCurrencyFormatter()(6500)} per transaksi (dipotong dari jumlah pencairan)</p>
               </div>
 
               <Button className="w-full h-9 sm:h-10 text-xs sm:text-sm" onClick={handleSaveSettings} disabled={isSaving}>

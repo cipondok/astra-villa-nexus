@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
 import AIToolsTabBar from '@/components/common/AIToolsTabBar';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 interface EligibilityCheck {
   eligible: boolean;
@@ -155,9 +156,7 @@ const HomeLoanCalculator = () => {
   };
 
   const formatShort = (value: number) => {
-    if (value >= 1e9) return `Rp ${(value / 1e9).toFixed(1)}M`;
-    if (value >= 1e6) return `Rp ${(value / 1e6).toFixed(0)} Jt`;
-    return formatCurrency(value);
+    return getCurrencyFormatterShort()(value);
   };
 
   // Chart data
@@ -370,7 +369,7 @@ const HomeLoanCalculator = () => {
                   value={monthlyIncome}
                   onChange={setMonthlyIncome}
                   min={5000000} max={100000000} step={1000000}
-                  minLabel="Rp 5jt" maxLabel="Rp 100jt"
+                  minLabel={formatShort(5_000_000)} maxLabel={formatShort(100_000_000)}
                   format={(v) => formatShort(parseFloat(v) || 0)}
                   inputClass={inputClass}
                 />
@@ -384,7 +383,7 @@ const HomeLoanCalculator = () => {
                     if (maxLoan > 0) setLoanAmount(maxLoan.toFixed(0));
                   }}
                   min={100000000} max={10000000000} step={50000000}
-                  minLabel="Rp 100jt" maxLabel="Rp 10M"
+                  minLabel={formatShort(100_000_000)} maxLabel={formatShort(10_000_000_000)}
                   format={(v) => formatShort(parseFloat(v) || 0)}
                   inputClass={inputClass}
                 />
@@ -394,7 +393,7 @@ const HomeLoanCalculator = () => {
                   value={loanAmount}
                   onChange={setLoanAmount}
                   min={50000000} max={parseFloat(propertyValue) || 5000000000} step={10000000}
-                  minLabel="Rp 50jt" maxLabel={propertyValue ? formatShort(parseFloat(propertyValue)) : 'Rp 5M'}
+                  minLabel={formatShort(50_000_000)} maxLabel={propertyValue ? formatShort(parseFloat(propertyValue)) : formatShort(5_000_000_000)}
                   format={(v) => formatShort(parseFloat(v) || 0)}
                   disabled={!propertyValue}
                   inputClass={inputClass}

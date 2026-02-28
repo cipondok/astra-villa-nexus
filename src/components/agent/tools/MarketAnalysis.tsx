@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { BarChart3, TrendingUp, TrendingDown, MapPin, Download, RefreshCw } from "lucide-react";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 const MarketAnalysis = () => {
+  const fmt = getCurrencyFormatter();
   const [marketData, setMarketData] = useState([
     {
       id: 1,
       area: "Seminyak, Bali",
-      avgPrice: "Rp 15,000,000,000",
+      avgPrice: fmt(15_000_000_000),
       trend: "up",
       change: "+12%",
       demand: 85,
@@ -22,7 +24,7 @@ const MarketAnalysis = () => {
     {
       id: 2,
       area: "SCBD, Jakarta",
-      avgPrice: "Rp 350,000,000/month",
+      avgPrice: `${fmt(350_000_000)}/month`,
       trend: "up",
       change: "+8%",
       demand: 92,
@@ -33,7 +35,7 @@ const MarketAnalysis = () => {
     {
       id: 3,
       area: "Pondok Indah, Jakarta",
-      avgPrice: "Rp 8,500,000,000",
+      avgPrice: fmt(8_500_000_000),
       trend: "down",
       change: "-3%",
       demand: 70,
@@ -44,7 +46,7 @@ const MarketAnalysis = () => {
     {
       id: 4,
       area: "Canggu, Bali",
-      avgPrice: "Rp 12,000,000,000",
+      avgPrice: fmt(12_000_000_000),
       trend: "up",
       change: "+15%",
       demand: 88,

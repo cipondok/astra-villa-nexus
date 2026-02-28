@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
@@ -156,9 +157,9 @@ const RenterOnboarding = ({
             {/* Sample Rental Cards */}
             <div className="space-y-2">
               {[
-                { title: "Studio in Sudirman", price: "Rp 8M/mo", features: ["Furnished", "AC"] },
-                { title: "2BR Apartment in BSD", price: "Rp 12M/mo", features: ["Parking", "Pool"] },
-                { title: "Cozy Room in Menteng", price: "Rp 6M/mo", features: ["Near MRT"] }
+                { title: "Studio in Sudirman", price: `${getCurrencyFormatterShort()(8_000_000)}/mo`, features: ["Furnished", "AC"] },
+                { title: "2BR Apartment in BSD", price: `${getCurrencyFormatterShort()(12_000_000)}/mo`, features: ["Parking", "Pool"] },
+                { title: "Cozy Room in Menteng", price: `${getCurrencyFormatterShort()(6_000_000)}/mo`, features: ["Near MRT"] }
               ].map((prop, i) => (
                 <Card key={i} className="hover:shadow-sm transition-shadow cursor-pointer">
                   <CardContent className="p-3 flex items-center gap-3">

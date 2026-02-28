@@ -28,6 +28,7 @@ import { ListingSuccessPredictor } from "@/components/ai/listing";
 import LeadScoringPanel from "@/components/agent-analytics/LeadScoringPanel";
 import ListingTipsPanel from "@/components/agent-analytics/ListingTipsPanel";
 import PropertyAnalyticsOverview from "@/components/agent-analytics/PropertyAnalyticsOverview";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import { 
   Building,
   Home,
@@ -130,11 +131,11 @@ const AgentOverview = () => {
     totalClients: 12,
   };
 
-  const formatPrice = (price: number, listingType: string) => {
-    if (listingType === "rent") {
-      return `Rp ${price.toLocaleString()}/month`;
-    }
-    return `Rp ${price.toLocaleString()}`;
+  const agentFormatPrice = (price: number, listingType: string) => {
+    const fmt = getCurrencyFormatterShort();
+    const formatted = fmt(price);
+    if (listingType === "rent") return `${formatted}/month`;
+    return formatted;
   };
 
   const handleViewProperty = (propertyId: string) => {
@@ -366,7 +367,7 @@ const AgentOverview = () => {
                   <div className="text-center p-1.5 bg-muted/30 rounded-md">
                     <TrendingUp className="h-3 w-3 mx-auto mb-0.5 text-chart-1" />
                     <div className="text-[8px] text-muted-foreground">Sales</div>
-                    <div className="text-[10px] font-bold">Rp 2.5B</div>
+                    <div className="text-[10px] font-bold">{getCurrencyFormatterShort()(2_500_000_000)}</div>
                   </div>
                   <div className="text-center p-1.5 bg-muted/30 rounded-md">
                     <Star className="h-3 w-3 mx-auto mb-0.5 text-primary" />
@@ -540,7 +541,7 @@ const AgentOverview = () => {
                       </div>
                       
                       <div className="text-xs font-bold text-primary">
-                        {formatPrice(property.price, property.listing_type)}
+                        {agentFormatPrice(property.price, property.listing_type)}
                       </div>
                       
                       <div className="flex justify-between text-[8px] text-muted-foreground bg-muted/30 rounded px-1 py-0.5">
@@ -594,7 +595,7 @@ const AgentOverview = () => {
                 <div className="flex items-center justify-between gap-1">
                   <div>
                     <p className="text-[9px] text-muted-foreground">Revenue</p>
-                    <p className="text-xs font-bold">Rp 2.5B</p>
+                    <p className="text-xs font-bold">{getCurrencyFormatterShort()(2_500_000_000)}</p>
                     <p className="text-[8px] text-chart-1">+12%</p>
                   </div>
                   <DollarSign className="h-4 w-4 text-primary" />
