@@ -32,7 +32,7 @@ import {
   Bath,
   Square
 } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 
 interface Property {
   id: string;
@@ -594,7 +594,7 @@ const EnhancedPropertyManagement = () => {
                         <div className="space-y-1">
                           <div className="font-bold text-chart-1 flex items-center gap-1">
                             <DollarSign className="h-3 w-3" />
-                            {property.price ? formatIDR(property.price) : 'Not set'}
+                            {property.price ? <Price amount={property.price} short /> : 'Not set'}
                           </div>
                           <div className="flex items-center gap-3 text-xs text-muted-foreground">
                             {property.bedrooms && (

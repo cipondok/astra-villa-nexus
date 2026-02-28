@@ -15,7 +15,8 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { formatIDR } from '@/utils/currency';
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
@@ -160,7 +161,7 @@ const OwnerPayoutManagement: React.FC = () => {
     if (!user) return;
     const amount = parseFloat(requestAmount);
     if (!amount || amount < settings.minimum_payout_amount) {
-      toast.error(`Minimum payout ${formatIDR(settings.minimum_payout_amount)}`);
+      toast.error(`Minimum payout ${getCurrencyFormatter()(settings.minimum_payout_amount)}`);
       return;
     }
     if (amount > availableBalance) {
@@ -232,7 +233,7 @@ const OwnerPayoutManagement: React.FC = () => {
               </div>
               <span className="text-[10px] sm:text-xs text-muted-foreground">{item.label}</span>
             </div>
-            <p className="text-sm sm:text-base font-bold text-foreground pl-0.5">{formatIDR(item.value)}</p>
+            <p className="text-sm sm:text-base font-bold text-foreground pl-0.5"><Price amount={item.value} short /></p>
           </Card>
         ))}
       </div>
@@ -262,7 +263,7 @@ const OwnerPayoutManagement: React.FC = () => {
             <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
               <div className="bg-muted/40 rounded-lg p-3">
                 <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">Saldo tersedia</p>
-                <p className="text-lg sm:text-xl font-bold text-chart-1">{formatIDR(availableBalance)}</p>
+                <p className="text-lg sm:text-xl font-bold text-chart-1"><Price amount={availableBalance} /></p>
               </div>
 
               <div className="space-y-1.5">
@@ -275,7 +276,7 @@ const OwnerPayoutManagement: React.FC = () => {
                   className="h-9 sm:h-10 text-xs sm:text-sm"
                 />
                 <p className="text-[9px] sm:text-[10px] text-muted-foreground">
-                  Min. {formatIDR(settings.minimum_payout_amount)} · Biaya transfer Rp 6.500
+                  Min. {getCurrencyFormatter()(settings.minimum_payout_amount)} · Biaya transfer Rp 6.500
                 </p>
               </div>
 
@@ -315,7 +316,7 @@ const OwnerPayoutManagement: React.FC = () => {
                         <ArrowUpRight className="h-4 w-4 text-primary" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs sm:text-sm font-medium">{formatIDR(req.amount)}</p>
+                        <p className="text-xs sm:text-sm font-medium"><Price amount={req.amount} /></p>
                         <p className="text-[9px] sm:text-[10px] text-muted-foreground">
                           {format(new Date(req.created_at), 'dd MMM yyyy', { locale: idLocale })}
                         </p>
@@ -350,7 +351,7 @@ const OwnerPayoutManagement: React.FC = () => {
                         <ArrowUpRight className="h-4 w-4 text-chart-3" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs sm:text-sm font-medium">{formatIDR(req.amount)}</p>
+                        <p className="text-xs sm:text-sm font-medium"><Price amount={req.amount} /></p>
                         <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">
                           {req.reference_number || req.payout_method} · {formatDistanceToNow(new Date(req.created_at), { addSuffix: true, locale: idLocale })}
                         </p>
@@ -375,7 +376,7 @@ const OwnerPayoutManagement: React.FC = () => {
                         <ArrowDownLeft className="h-4 w-4 text-chart-1" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs sm:text-sm font-medium">{formatIDR(tx.amount)}</p>
+                        <p className="text-xs sm:text-sm font-medium"><Price amount={tx.amount} /></p>
                         <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">
                           {tx.description || tx.booking_type} · {formatDistanceToNow(new Date(tx.created_at), { addSuffix: true, locale: idLocale })}
                         </p>

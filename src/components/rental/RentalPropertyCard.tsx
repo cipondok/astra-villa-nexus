@@ -7,7 +7,7 @@ import {
   Home, Clock, CalendarDays, MapPin, Users, Star,
   TrendingUp, AlertCircle, CheckCircle, MessageSquare, FileText
 } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import RentalChatDialog from "./RentalChatDialog";
 import RentalDocumentsDialog from "./RentalDocumentsDialog";
 
@@ -111,15 +111,15 @@ const RentalPropertyCard = ({ rental, onClick }: RentalPropertyCardProps) => {
       <div className="grid grid-cols-3 gap-1 mb-2">
         <div className="bg-muted/30 rounded p-1.5 text-center">
           <p className="text-[7px] text-muted-foreground">Rent/bln</p>
-          <p className="text-[9px] font-bold text-foreground">{formatIDR(rental.monthlyRent)}</p>
+          <p className="text-[9px] font-bold text-foreground"><Price amount={rental.monthlyRent} short /></p>
         </div>
         <div className="bg-chart-1/5 rounded p-1.5 text-center">
           <p className="text-[7px] text-muted-foreground">Dibayar</p>
-          <p className="text-[9px] font-bold text-chart-1">{formatIDR(rental.paidAmount)}</p>
+          <p className="text-[9px] font-bold text-chart-1"><Price amount={rental.paidAmount} short /></p>
         </div>
         <div className={`rounded p-1.5 text-center ${rental.dueAmount > 0 ? 'bg-destructive/5' : 'bg-muted/30'}`}>
           <p className="text-[7px] text-muted-foreground">Tunggakan</p>
-          <p className={`text-[9px] font-bold ${rental.dueAmount > 0 ? 'text-destructive' : 'text-foreground'}`}>{formatIDR(rental.dueAmount)}</p>
+          <p className={`text-[9px] font-bold ${rental.dueAmount > 0 ? 'text-destructive' : 'text-foreground'}`}><Price amount={rental.dueAmount} short /></p>
         </div>
       </div>
 

@@ -39,7 +39,7 @@ import OwnerReminderDashboard from "./OwnerReminderDashboard";
 import OwnerOccupancyForecast from "./OwnerOccupancyForecast";
 import OwnerTenantDocuments from "./OwnerTenantDocuments";
 import { formatDistanceToNow } from "date-fns";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import { 
   Building, Eye, Heart, MessageSquare, PlusCircle, Activity, Target, Home,
   TrendingUp, Clock, ChevronRight, ChevronDown, Settings, ArrowLeft, Search, CalendarDays,
@@ -495,7 +495,7 @@ const PropertyOwnerOverview = () => {
                               </div>
                               <p className="text-[10px] sm:text-xs text-muted-foreground truncate mt-0.5">{property.city}, {property.state}</p>
                               <div className="flex items-center justify-between mt-1">
-                                <span className="text-xs sm:text-sm font-semibold text-primary">{formatIDR(property.price)}</span>
+                                <span className="text-xs sm:text-sm font-semibold text-primary"><Price amount={property.price} short /></span>
                                 <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 h-auto">{property.listing_type}</Badge>
                               </div>
                             </div>

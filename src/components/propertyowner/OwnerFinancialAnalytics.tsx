@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { format, startOfMonth, subMonths } from "date-fns";
 import {
   DollarSign, TrendingUp, TrendingDown, Percent, Building, Loader2
@@ -142,10 +143,10 @@ const OwnerFinancialAnalytics = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-1.5">
         {[
-          { icon: DollarSign, label: "Pendapatan", value: formatIDR(totalRevenue), color: "text-chart-1", bg: "bg-chart-1/10" },
-          { icon: TrendingDown, label: "Pengeluaran", value: formatIDR(totalExpenses), color: "text-destructive", bg: "bg-destructive/10" },
-          { icon: TrendingUp, label: "Laba Bersih", value: formatIDR(netProfit), color: netProfit >= 0 ? "text-chart-1" : "text-destructive", bg: netProfit >= 0 ? "bg-chart-1/10" : "bg-destructive/10" },
-          { icon: Percent, label: "Margin", value: `${profitMargin.toFixed(1)}%`, color: "text-primary", bg: "bg-primary/10" },
+          { icon: DollarSign, label: "Pendapatan", amount: totalRevenue, color: "text-chart-1", bg: "bg-chart-1/10" },
+          { icon: TrendingDown, label: "Pengeluaran", amount: totalExpenses, color: "text-destructive", bg: "bg-destructive/10" },
+          { icon: TrendingUp, label: "Laba Bersih", amount: netProfit, color: netProfit >= 0 ? "text-chart-1" : "text-destructive", bg: netProfit >= 0 ? "bg-chart-1/10" : "bg-destructive/10" },
+          { icon: Percent, label: "Margin", amount: null, displayValue: `${profitMargin.toFixed(1)}%`, color: "text-primary", bg: "bg-primary/10" },
         ].map((card, i) => (
           <Card key={i} className="p-2">
             <div className="flex items-center gap-1.5">
@@ -154,7 +155,7 @@ const OwnerFinancialAnalytics = () => {
               </div>
               <div className="min-w-0">
                 <p className="text-[8px] text-muted-foreground">{card.label}</p>
-                <p className="text-[11px] font-bold truncate">{card.value}</p>
+                <p className="text-[11px] font-bold truncate">{'amount' in card && card.amount !== null ? <Price amount={card.amount} short /> : card.displayValue}</p>
               </div>
             </div>
           </Card>
@@ -173,7 +174,7 @@ const OwnerFinancialAnalytics = () => {
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis dataKey="month" tick={{ fontSize: 9 }} />
               <YAxis tick={{ fontSize: 9 }} tickFormatter={(v) => `${(v / 1000000).toFixed(0)}jt`} />
-              <Tooltip formatter={(value: number) => formatIDR(value)} labelStyle={{ fontSize: 10 }} />
+              <Tooltip formatter={(value: number) => getCurrencyFormatter()(value)} labelStyle={{ fontSize: 10 }} />
               <Bar dataKey="revenue" fill="hsl(var(--chart-1))" name="Pendapatan" radius={[2, 2, 0, 0]} />
               <Bar dataKey="expenses" fill="hsl(var(--destructive))" name="Pengeluaran" radius={[2, 2, 0, 0]} />
             </BarChart>
@@ -194,7 +195,7 @@ const OwnerFinancialAnalytics = () => {
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                 <XAxis dataKey="month" tick={{ fontSize: 9 }} />
                 <YAxis tick={{ fontSize: 9 }} tickFormatter={(v) => `${(v / 1000000).toFixed(0)}jt`} />
-                <Tooltip formatter={(value: number) => formatIDR(value)} labelStyle={{ fontSize: 10 }} />
+                <Tooltip formatter={(value: number) => getCurrencyFormatter()(value)} labelStyle={{ fontSize: 10 }} />
                 <Line type="monotone" dataKey="profit" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} name="Laba" />
               </LineChart>
             </ResponsiveContainer>
@@ -226,7 +227,7 @@ const OwnerFinancialAnalytics = () => {
                       <Cell key={index} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: number) => formatIDR(value)} />
+                  <Tooltip formatter={(value: number) => getCurrencyFormatter()(value)} />
                 </PieChart>
               </ResponsiveContainer>
             )}
@@ -256,10 +257,10 @@ const OwnerFinancialAnalytics = () => {
                 {propertyPnL.map((row, i) => (
                   <TableRow key={i}>
                     <TableCell className="text-[9px] px-2 py-1.5 max-w-[120px] truncate">{row.name}</TableCell>
-                    <TableCell className="text-[9px] px-2 py-1.5 text-right text-chart-1">{formatIDR(row.revenue)}</TableCell>
-                    <TableCell className="text-[9px] px-2 py-1.5 text-right text-destructive">{formatIDR(row.expenses)}</TableCell>
+                    <TableCell className="text-[9px] px-2 py-1.5 text-right text-chart-1"><Price amount={row.revenue} short /></TableCell>
+                    <TableCell className="text-[9px] px-2 py-1.5 text-right text-destructive"><Price amount={row.expenses} short /></TableCell>
                     <TableCell className={`text-[9px] px-2 py-1.5 text-right font-semibold ${row.profit >= 0 ? "text-chart-1" : "text-destructive"}`}>
-                      {formatIDR(row.profit)}
+                      <Price amount={row.profit} short />
                     </TableCell>
                   </TableRow>
                 ))}

@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Receipt, Plus, Loader2, CheckCircle, Clock, XCircle, DollarSign, Send } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import { format, addDays } from "date-fns";
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ElementType }> = {
@@ -163,11 +163,11 @@ const OwnerInvoiceManagement = () => {
         </Card>
         <Card className="p-3 border-border">
           <p className="text-xs text-muted-foreground">Belum Bayar</p>
-          <p className="text-sm font-bold text-destructive">{formatIDR(unpaidTotal)}</p>
+          <p className="text-sm font-bold text-destructive"><Price amount={unpaidTotal} /></p>
         </Card>
         <Card className="p-3 border-border">
           <p className="text-xs text-muted-foreground">Terbayar</p>
-          <p className="text-sm font-bold text-chart-1">{formatIDR(paidTotal)}</p>
+          <p className="text-sm font-bold text-chart-1"><Price amount={paidTotal} /></p>
         </Card>
       </div>
 
@@ -203,7 +203,7 @@ const OwnerInvoiceManagement = () => {
                 </div>
                 <div className="flex items-center justify-between mt-2">
                   <div>
-                    <p className="text-sm font-bold text-primary">{formatIDR(inv.total_amount)}</p>
+                    <p className="text-sm font-bold text-primary"><Price amount={inv.total_amount} /></p>
                     <p className="text-[10px] text-muted-foreground">Jatuh tempo: {inv.due_date}</p>
                   </div>
                   {inv.status === "unpaid" && (

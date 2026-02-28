@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Key, Percent, Glasses, Smartphone } from "lucide-react";
+import Price from "@/components/ui/Price";
 import { useState } from "react";
 import PropertyDetailModal from "./PropertyDetailModal";
 import Property3DViewModal from "./Property3DViewModal";
@@ -95,14 +96,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   const { aggregate } = usePropertyRatings(id);
   const { getPropertyImage } = useDefaultPropertyImage();
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  // formatPrice removed — using <Price /> component instead
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
@@ -252,7 +246,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           {/* Price */}
           <div className="flex items-center gap-2 mb-2">
             <p className="text-lg sm:text-xl font-bold text-primary">
-              {formatPrice(price)}
+              <Price amount={price} />
               {listing_type === 'rent' && (
                 <span className="text-sm font-normal text-muted-foreground ml-1">/bln</span>
               )}
