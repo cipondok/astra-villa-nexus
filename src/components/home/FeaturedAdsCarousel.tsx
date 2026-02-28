@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store, Bed, Bath, Maximize, Key, Tag, Clock, BadgeCheck, ShieldCheck, Crown, ShieldAlert, Gem, Award, Medal } from "lucide-react";
+import Price from "@/components/ui/Price";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import ScrollReveal from "@/components/ui/ScrollReveal";
@@ -341,18 +342,7 @@ export default function FeaturedAdsCarousel() {
               {/* Price Badge - Prominent positioning */}
                 <div className="mb-1.5">
                   <span className="inline-flex items-baseline text-xs sm:text-sm md:text-base font-bold px-2.5 py-1 rounded-lg bg-gradient-to-r from-gold-primary to-chart-5 text-primary-foreground shadow-xl">
-                    <span className="text-[0.7em] font-medium opacity-90">Rp</span>
-                    {p.price >= 1000000000 ? (
-                      <>
-                        <span>{(p.price / 1000000000).toFixed(1)}</span>
-                        <span className="text-[0.7em] font-medium opacity-90">M</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>{(p.price / 1000000).toFixed(0)}</span>
-                        <span className="text-[0.7em] font-medium opacity-90">Jt</span>
-                      </>
-                    )}
+                    <Price amount={p.price} short showFlag={false} />
                   </span>
                 </div>
                 

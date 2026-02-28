@@ -18,6 +18,7 @@ import WhatsAppInquiryDialog from './WhatsAppInquiryDialog';
 import ProgressPopup from '@/components/ui/ProgressPopup';
 import { useNavigate } from 'react-router-dom';
 import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
+import Price from '@/components/ui/Price';
 
 interface ScoredProperty extends BaseProperty {
   matchScore?: number;
@@ -181,11 +182,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     const matchReason = property.topMatchReason;
     const isRent = property.listing_type === 'rent';
     const ListingIcon = isRent ? Key : Tag;
-    const formatPriceClean = (price: number) => {
-      if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}M`;
-      if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}Jt`;
-      return `Rp ${price.toLocaleString('id-ID')}`;
-    };
+    // formatPriceClean replaced by <Price /> component
 
     return (
       <div
@@ -260,8 +257,8 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         <div className="p-2 sm:p-2.5 space-y-1.5 relative">
           {/* Price */}
           <div className="bg-gradient-to-r from-accent/15 via-primary/10 to-chart-4/15 border border-accent/25 dark:border-accent/20 rounded-lg px-2 py-1 backdrop-blur-sm">
-            <p className="text-xs sm:text-sm font-black bg-gradient-to-r from-accent via-primary to-chart-4 dark:from-accent dark:via-primary dark:to-chart-4 bg-clip-text text-transparent leading-tight">
-              {formatPriceClean(property.price || 0)}
+            <p className="text-xs sm:text-sm font-black text-primary leading-tight">
+              <Price amount={property.price || 0} short showFlag />
               {isRent && <span className="text-[9px] font-bold text-accent/60 dark:text-accent/60">/bln</span>}
             </p>
           </div>

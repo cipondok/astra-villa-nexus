@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart, MapPin, Bed, Bath, Maximize, Key, Tag, Building, Eye } from "lucide-react";
+import Price from "@/components/ui/Price";
 import PropertyImageCarousel from "./PropertyImageCarousel";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -47,27 +48,7 @@ const ASTRAVillaPropertyCard = ({
   const navigate = useNavigate();
   const { getPropertyImage } = useDefaultPropertyImage();
 
-  const formatPrice = (price: number | string) => {
-    const numPrice = typeof price === "string" ? parseFloat(price) : price;
-    if (numPrice >= 1000000000) {
-      const value = (numPrice / 1000000000).toFixed(1);
-      return { main: `Rp ${value}`, suffix: "Miliar" };
-    }
-    if (numPrice >= 1000000) {
-      const value = (numPrice / 1000000).toFixed(0);
-      return { main: `Rp ${value}`, suffix: "Juta" };
-    }
-    return { main: `Rp ${numPrice.toLocaleString("id-ID")}`, suffix: "" };
-  };
-
-  const formatMonthlyPayment = (price: number | string) => {
-    const numPrice = typeof price === "string" ? parseFloat(price) : price;
-    const monthlyEstimate = numPrice * 0.006;
-    if (monthlyEstimate >= 1000000) {
-      return `Rp ${(monthlyEstimate / 1000000).toFixed(1)} Juta/PB`;
-    }
-    return `Rp ${(monthlyEstimate / 1000).toFixed(0)} Ribu/PB`;
-  };
+  const numPrice = typeof property.price === "string" ? parseFloat(property.price) : property.price;
 
   const getListingLabel = (type?: string) => {
     switch (type) {
@@ -102,7 +83,7 @@ const ASTRAVillaPropertyCard = ({
     onSave?.();
   };
 
-  const priceInfo = formatPrice(property.price);
+  // priceInfo removed - using <Price /> component
   const ListingIcon = getListingIcon(property.listing_type);
   const allImages = property.images?.length ? property.images : [getImageUrl()];
   const isRent = property.listing_type === "rent";
@@ -202,20 +183,10 @@ const ASTRAVillaPropertyCard = ({
               "bg-primary/5 border-primary/15"
             )}>
               <span className="text-sm sm:text-base font-black leading-none tracking-tight text-primary">
-                {priceInfo.main}
+                <Price amount={numPrice} short showFlag />
               </span>
-              {priceInfo.suffix && (
-                <span className="text-xs font-extrabold text-primary/60">
-                  {priceInfo.suffix}
-                </span>
-              )}
               {isRent && (
                 <span className="text-[10px] text-muted-foreground font-bold ml-auto">/{language === "id" ? "bln" : "mo"}</span>
-              )}
-              {!isRent && (
-                <span className="hidden sm:inline text-[10px] text-muted-foreground/50 font-medium bg-muted/50 rounded-full px-1.5 ml-auto">
-                  ≈ {formatMonthlyPayment(property.price)}
-                </span>
               )}
             </div>
 

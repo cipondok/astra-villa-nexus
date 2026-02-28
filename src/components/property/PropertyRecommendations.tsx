@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { MapPin, Bed, Bath, Sparkles, User, ChevronDown, HelpCircle } from 'lucide-react';
+import Price from '@/components/ui/Price';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -44,11 +45,7 @@ const getPropertyImage = (images?: string[], thumbnailUrl?: string, imageUrls?: 
   return '/placeholder.svg';
 };
 
-const formatPrice = (price: number) => {
-  if (price >= 1000000000) return { main: `Rp ${(price / 1000000000).toFixed(1)}`, suffix: 'Miliar' };
-  if (price >= 1000000) return { main: `Rp ${(price / 1000000).toFixed(0)}`, suffix: 'Juta' };
-  return { main: `Rp ${price.toLocaleString('id-ID')}`, suffix: '' };
-};
+// formatPrice replaced by <Price /> component
 
 const MatchBadge = ({ percentage }: { percentage: number }) => {
   const color = percentage >= 80 ? 'bg-chart-1/90' : percentage >= 60 ? 'bg-chart-2/90' : 'bg-muted';
@@ -206,7 +203,7 @@ const PropertyRecommendations = ({ propertyId, propertyType }: PropertyRecommend
       <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-2 px-2">
         {recommendations.map((rec, index) => {
           const p = rec.property;
-          const priceFormatted = formatPrice(p.price);
+          // price rendered via <Price /> component
           const isExpanded = expandedId === p.id;
 
           return (
@@ -235,12 +232,9 @@ const PropertyRecommendations = ({ propertyId, propertyType }: PropertyRecommend
 
                   <div className="p-2.5 space-y-1.5">
                     <div className="border border-border/40 bg-primary/5 dark:bg-primary/10 rounded-lg px-2 py-1.5">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-sm sm:text-base font-black text-primary tracking-tight leading-none">{priceFormatted.main}</span>
-                        {priceFormatted.suffix && (
-                          <span className="text-[10px] sm:text-xs font-extrabold text-primary/70">{priceFormatted.suffix}</span>
-                        )}
-                      </div>
+                      <span className="text-sm sm:text-base font-black text-primary tracking-tight leading-none">
+                        <Price amount={p.price} short showFlag />
+                      </span>
                     </div>
 
                     <h4 className="font-semibold text-[11px] sm:text-xs line-clamp-2 leading-snug group-hover:text-primary transition-colors">{p.title}</h4>
