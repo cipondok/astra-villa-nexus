@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 import { safeLocalStorage } from "@/lib/safeStorage";
 import { useCurrencyStore, CURRENCY_META } from "@/stores/currencyStore";
+import { supabase } from "@/integrations/supabase/client";
 
 export type CurrencyCode = "IDR" | "USD" | "SGD" | "AUD";
 
@@ -18,6 +19,8 @@ interface CurrencyContextProps {
   formatPrice: (amountIDR: number) => string;
   formatPriceShort: (amountIDR: number) => string;
   rates: ExchangeRates;
+  ratesSource: string;
+  ratesLoading: boolean;
 }
 
 const DEFAULT_RATES: ExchangeRates = {
@@ -26,6 +29,9 @@ const DEFAULT_RATES: ExchangeRates = {
   SGD: 1 / 11_900,
   AUD: 1 / 10_500,
 };
+
+const RATES_CACHE_KEY = "exchange_rates_cache";
+const RATES_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 const CurrencyContext = createContext<CurrencyContextProps | undefined>(undefined);
 
@@ -45,7 +51,63 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     return "IDR";
   });
 
-  const [rates] = useState<ExchangeRates>(DEFAULT_RATES);
+  const [rates, setRates] = useState<ExchangeRates>(() => {
+    // Try loading cached rates from localStorage
+    try {
+      const cached = safeLocalStorage.getItem(RATES_CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed.fetchedAt && Date.now() - parsed.fetchedAt < RATES_CACHE_TTL) {
+          return parsed.rates as ExchangeRates;
+        }
+      }
+    } catch {}
+    return DEFAULT_RATES;
+  });
+
+  const [ratesSource, setRatesSource] = useState<string>("default");
+  const [ratesLoading, setRatesLoading] = useState(false);
+
+  // Fetch live exchange rates
+  const fetchLiveRates = useCallback(async () => {
+    setRatesLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("exchange-rates");
+
+      if (error) {
+        console.warn("Exchange rate fetch error:", error);
+        return;
+      }
+
+      if (data?.rates) {
+        const liveRates: ExchangeRates = {
+          IDR: data.rates.IDR ?? 1,
+          USD: data.rates.USD ?? DEFAULT_RATES.USD,
+          SGD: data.rates.SGD ?? DEFAULT_RATES.SGD,
+          AUD: data.rates.AUD ?? DEFAULT_RATES.AUD,
+        };
+        setRates(liveRates);
+        setRatesSource(data.fallback ? "fallback" : data.cached ? "cached" : "live");
+
+        // Cache in localStorage
+        safeLocalStorage.setItem(RATES_CACHE_KEY, JSON.stringify({
+          rates: liveRates,
+          fetchedAt: Date.now(),
+        }));
+      }
+    } catch (err) {
+      console.warn("Failed to fetch live rates, using defaults:", err);
+    } finally {
+      setRatesLoading(false);
+    }
+  }, []);
+
+  // Fetch rates on mount & every hour
+  useEffect(() => {
+    fetchLiveRates();
+    const interval = setInterval(fetchLiveRates, RATES_CACHE_TTL);
+    return () => clearInterval(interval);
+  }, [fetchLiveRates]);
 
   useEffect(() => {
     safeLocalStorage.setItem("currency", currency);
@@ -100,13 +162,12 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
       }
     };
     window.addEventListener("storage", handleStorage);
-    // Also check on mount
     handleStorage();
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
   return (
-    <CurrencyContext.Provider value={{ currency, setCurrency, convert, formatPrice, formatPriceShort, rates }}>
+    <CurrencyContext.Provider value={{ currency, setCurrency, convert, formatPrice, formatPriceShort, rates, ratesSource, ratesLoading }}>
       {children}
     </CurrencyContext.Provider>
   );

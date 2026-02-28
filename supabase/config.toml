@@ -186,3 +186,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.price-estimator]
     verify_jwt = false
+
+  [functions.exchange-rates]
+    verify_jwt = false
