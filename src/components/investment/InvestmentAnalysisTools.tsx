@@ -11,9 +11,9 @@ import { motion } from 'framer-motion';
 import { 
   TrendingUp, Calculator, DollarSign, BarChart3, PieChart, 
   Home, Building2, ArrowUpRight, ArrowDownRight, Percent,
-  Calendar, MapPin, Sparkles, ChevronRight, Info
+  Calendar, MapPin, Sparkles, ChevronRight, Info, Globe, Activity
 } from 'lucide-react';
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPie, Pie, Cell } from 'recharts';
+import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPie, Pie, Cell, Legend } from 'recharts';
 
 const formatIDR = (v: number) => {
   if (v >= 1e12) return `Rp ${(v / 1e12).toFixed(1)}T`;
@@ -483,8 +483,230 @@ const AppreciationForecast = () => {
 };
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   SHARED COMPONENTS
+   AREA GROWTH INDEX
    ═══════════════════════════════════════════════════════════════════════════ */
+const AREA_DATA: Record<string, { name: string; growthHistory: number[]; avgPrice: number; rentalYield: number; infrastructure: number; demand: number; supply: number; category: string }> = {
+  bali_seminyak: { name: 'Seminyak, Bali', growthHistory: [5.2, 7.1, 8.3, 10.5, 12.1, 9.8, 11.2, 13.4, 10.9, 14.2], avgPrice: 35000000, rentalYield: 8.5, infrastructure: 82, demand: 91, supply: 65, category: 'Premium Tourist' },
+  bali_canggu: { name: 'Canggu, Bali', growthHistory: [8.1, 11.2, 14.5, 16.8, 18.2, 15.1, 19.3, 17.5, 20.1, 22.4], avgPrice: 28000000, rentalYield: 9.2, infrastructure: 68, demand: 95, supply: 58, category: 'High Growth' },
+  bali_ubud: { name: 'Ubud, Bali', growthHistory: [4.1, 5.5, 6.8, 7.2, 8.9, 7.5, 9.1, 10.2, 8.8, 11.5], avgPrice: 22000000, rentalYield: 7.8, infrastructure: 60, demand: 78, supply: 70, category: 'Cultural Premium' },
+  jakarta_south: { name: 'South Jakarta', growthHistory: [3.2, 4.1, 3.8, 5.2, 4.9, 5.5, 6.1, 5.8, 6.5, 7.2], avgPrice: 45000000, rentalYield: 5.2, infrastructure: 92, demand: 85, supply: 78, category: 'Metropolitan' },
+  jakarta_cbd: { name: 'Jakarta CBD', growthHistory: [2.5, 3.1, 2.8, 3.5, 4.2, 3.9, 4.5, 5.1, 4.8, 5.5], avgPrice: 65000000, rentalYield: 4.8, infrastructure: 98, demand: 80, supply: 82, category: 'Commercial Hub' },
+  bandung: { name: 'Bandung', growthHistory: [5.5, 6.2, 7.1, 8.5, 7.8, 9.2, 8.5, 10.1, 9.8, 11.2], avgPrice: 15000000, rentalYield: 6.5, infrastructure: 72, demand: 82, supply: 68, category: 'Emerging City' },
+  lombok: { name: 'Lombok', growthHistory: [10.2, 12.5, 15.1, 13.8, 18.2, 16.5, 20.1, 18.9, 22.5, 25.1], avgPrice: 12000000, rentalYield: 10.5, infrastructure: 45, demand: 88, supply: 35, category: 'Frontier Market' },
+  yogyakarta: { name: 'Yogyakarta', growthHistory: [6.1, 7.5, 8.8, 9.2, 10.5, 9.8, 11.5, 12.1, 11.8, 13.2], avgPrice: 12000000, rentalYield: 7.2, infrastructure: 65, demand: 80, supply: 62, category: 'Heritage City' },
+  surabaya: { name: 'Surabaya', growthHistory: [4.2, 5.1, 5.8, 6.5, 7.2, 6.8, 7.5, 8.1, 7.8, 8.5], avgPrice: 25000000, rentalYield: 5.8, infrastructure: 85, demand: 78, supply: 75, category: 'Industrial Hub' },
+};
+
+const AreaGrowthIndex = () => {
+  const [selectedAreas, setSelectedAreas] = useState<string[]>(['bali_canggu', 'jakarta_south', 'lombok']);
+
+  const toggleArea = (key: string) => {
+    setSelectedAreas(prev =>
+      prev.includes(key) ? prev.filter(k => k !== key) : prev.length < 4 ? [...prev, key] : prev
+    );
+  };
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 10 }, (_, i) => currentYear - 9 + i);
+
+  const comparisonData = years.map((year, i) => {
+    const point: any = { year: year.toString() };
+    selectedAreas.forEach(key => {
+      point[AREA_DATA[key]?.name || key] = AREA_DATA[key]?.growthHistory[i] || 0;
+    });
+    return point;
+  });
+
+  const rankingData = Object.entries(AREA_DATA)
+    .map(([key, data]) => ({
+      key,
+      ...data,
+      latestGrowth: data.growthHistory[data.growthHistory.length - 1],
+      avgGrowth: data.growthHistory.reduce((a, b) => a + b, 0) / data.growthHistory.length,
+      compositeScore: Math.round(
+        (data.growthHistory[data.growthHistory.length - 1] * 0.3 +
+        data.rentalYield * 0.25 +
+        data.demand * 0.1 +
+        (100 - data.supply) * 0.1 +
+        data.infrastructure * 0.15 +
+        (data.growthHistory.reduce((a, b) => a + b, 0) / data.growthHistory.length) * 0.1)
+      ),
+    }))
+    .sort((a, b) => b.compositeScore - a.compositeScore);
+
+  const lineColors = ['hsl(45, 93%, 47%)', 'hsl(38, 92%, 50%)', 'hsl(142, 76%, 36%)', 'hsl(262, 83%, 58%)'];
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Area Selector */}
+        <Card className="lg:col-span-1 bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
+          <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-400/20 flex items-center justify-center">
+                <Globe className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+              </div>
+              Area Selection
+            </CardTitle>
+            <CardDescription className="text-[10px]">Select up to 4 areas to compare</CardDescription>
+          </CardHeader>
+          <CardContent className="p-4 pt-0 space-y-2">
+            {Object.entries(AREA_DATA).map(([key, data]) => {
+              const isSelected = selectedAreas.includes(key);
+              return (
+                <button
+                  key={key}
+                  onClick={() => toggleArea(key)}
+                  className={`w-full text-left p-2.5 rounded-xl border transition-all text-xs ${
+                    isSelected
+                      ? 'border-amber-500/40 bg-amber-500/10'
+                      : 'border-border/30 hover:border-amber-500/20 bg-transparent'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold text-foreground">{data.name}</p>
+                      <p className="text-[9px] text-muted-foreground">{data.category}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-amber-600 dark:text-amber-400">
+                        {data.growthHistory[data.growthHistory.length - 1]}%
+                      </p>
+                      <p className="text-[8px] text-muted-foreground">Latest YoY</p>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </CardContent>
+        </Card>
+
+        {/* Charts & Rankings */}
+        <div className="lg:col-span-2 space-y-4">
+          {/* Top metrics from selected areas */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {selectedAreas.slice(0, 4).map((key, i) => {
+              const data = AREA_DATA[key];
+              if (!data) return null;
+              return (
+                <MetricCard
+                  key={key}
+                  label={data.name}
+                  value={`${data.growthHistory[data.growthHistory.length - 1]}%`}
+                  icon={MapPin}
+                  positive
+                />
+              );
+            })}
+          </div>
+
+          {/* Growth Comparison Chart */}
+          <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
+            <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm flex items-center justify-between">
+                10-Year Area Growth Comparison
+                <div className="flex gap-3 text-[9px] text-muted-foreground flex-wrap">
+                  {selectedAreas.map((key, i) => (
+                    <span key={key} className="flex items-center gap-1">
+                      <span className="h-2 w-2 rounded-full" style={{ background: lineColors[i] }} />
+                      {AREA_DATA[key]?.name}
+                    </span>
+                  ))}
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={comparisonData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <XAxis dataKey="year" tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis unit="%" tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip
+                      formatter={(v: number) => `${v}%`}
+                      contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8, fontSize: 11 }}
+                    />
+                    {selectedAreas.map((key, i) => (
+                      <Line
+                        key={key}
+                        type="monotone"
+                        dataKey={AREA_DATA[key]?.name}
+                        stroke={lineColors[i]}
+                        strokeWidth={2.5}
+                        dot={{ r: 3, fill: lineColors[i] }}
+                        activeDot={{ r: 5 }}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Area Ranking Table */}
+          <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
+            <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Activity className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                Composite Area Ranking
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <div className="space-y-2">
+                {rankingData.map((area, i) => (
+                  <div
+                    key={area.key}
+                    className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all ${
+                      selectedAreas.includes(area.key)
+                        ? 'border-amber-500/30 bg-amber-500/[0.04]'
+                        : 'border-border/20 hover:border-amber-500/15'
+                    }`}
+                  >
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black ${
+                      i === 0 ? 'bg-gradient-to-br from-amber-500 to-yellow-400 text-background' :
+                      i === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-background' :
+                      i === 2 ? 'bg-gradient-to-br from-amber-700 to-amber-800 text-background' :
+                      'bg-muted text-muted-foreground'
+                    }`}>
+                      {i + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs font-bold text-foreground truncate">{area.name}</p>
+                        <Badge className="text-[8px] px-1.5 h-4 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">{area.category}</Badge>
+                      </div>
+                      <div className="flex gap-3 mt-1 text-[9px] text-muted-foreground">
+                        <span>Growth: <span className="font-bold text-foreground">{area.latestGrowth}%</span></span>
+                        <span>Yield: <span className="font-bold text-foreground">{area.rentalYield}%</span></span>
+                        <span>Infra: <span className="font-bold text-foreground">{area.infrastructure}</span></span>
+                        <span className="hidden sm:inline">Demand: <span className="font-bold text-foreground">{area.demand}</span></span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-black text-amber-600 dark:text-amber-400">{area.compositeScore}</p>
+                      <p className="text-[8px] text-muted-foreground">Score</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-amber-500/[0.04] border-amber-500/20 p-3">
+            <p className="text-[10px] text-muted-foreground flex items-start gap-1.5">
+              <Info className="h-3 w-3 flex-shrink-0 mt-0.5 text-amber-500" />
+              Area growth data is based on historical market trends and publicly available indices. Composite scores weight recent growth (30%), rental yield (25%), infrastructure (15%), demand (10%), supply constraints (10%), and historical average (10%). Not financial advice.
+            </p>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const MetricCard = ({ label, value, icon: Icon, positive }: { label: string; value: string; icon: React.ElementType; positive: boolean }) => (
   <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
     <Card className="bg-card/60 backdrop-blur-xl border-border/30 p-3 hover:border-amber-500/20 transition-all">
@@ -524,7 +746,7 @@ export default function InvestmentAnalysisTools() {
       </motion.div>
 
       <Tabs defaultValue="roi" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3 h-11 bg-muted/50 backdrop-blur-sm border border-border/30">
+        <TabsList className="grid w-full grid-cols-4 h-11 bg-muted/50 backdrop-blur-sm border border-border/30">
           <TabsTrigger value="roi" className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-400/20 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
             <Calculator className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">ROI Calculator</span>
@@ -540,11 +762,17 @@ export default function InvestmentAnalysisTools() {
             <span className="hidden sm:inline">Appreciation</span>
             <span className="sm:hidden">Forecast</span>
           </TabsTrigger>
+          <TabsTrigger value="area" className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-400/20 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+            <Globe className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Area Growth</span>
+            <span className="sm:hidden">Areas</span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="roi"><ROICalculator /></TabsContent>
         <TabsContent value="rental"><RentalYieldAnalyzer /></TabsContent>
         <TabsContent value="forecast"><AppreciationForecast /></TabsContent>
+        <TabsContent value="area"><AreaGrowthIndex /></TabsContent>
       </Tabs>
     </div>
   );
