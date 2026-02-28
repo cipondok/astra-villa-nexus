@@ -3,7 +3,7 @@ import { useSmartCollections, CollectionType } from "@/hooks/useSmartCollections
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatIDR } from "@/utils/currency";
+import Price from "@/components/ui/Price";
 import { useNavigate } from "react-router-dom";
 import { TrendingUp, Home, Crown, Flame, MapPin, BedDouble, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
@@ -131,7 +131,7 @@ export default function SmartCollectionsShowcase() {
                             </div>
                             <div className="flex items-center justify-between">
                               <span className="text-xs sm:text-sm font-bold text-gold-primary">
-                                {formatIDR(p.price || 0)}
+                                <Price amount={p.price || 0} short />
                               </span>
                               {p.bedrooms && (
                                 <span className="flex items-center gap-0.5 text-muted-foreground text-[10px]">
