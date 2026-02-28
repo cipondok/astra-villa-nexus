@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Building2, Landmark, GraduationCap } from "lucide-react";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface Partner {
   name: string;
@@ -41,7 +42,8 @@ const FALLBACK_PARTNERS: Partner[] = [
 ];
 
 export default function PartnerLogosMarquee() {
-  
+  const { t } = useTranslation();
+
 
   const { data: partners = [] } = useQuery<Partner[]>({
     queryKey: ["partner-logos-marquee"],
@@ -88,7 +90,7 @@ export default function PartnerLogosMarquee() {
   return (
     <section className="w-full py-6 mt-4 overflow-hidden">
       <p className="text-center text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
-        Trusted Partners
+        {t('indexPage.trustedPartners')}
       </p>
 
       <div className="relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
