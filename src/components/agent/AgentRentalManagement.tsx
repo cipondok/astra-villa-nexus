@@ -58,7 +58,7 @@ const AgentRentalManagement = ({ agentId }: AgentRentalManagementProps) => {
             <div>
               <p className="text-[10px] font-medium text-destructive">Tunggakan Aktif</p>
               <p className="text-[8px] text-destructive/80">
-                Rp {(stats.totalDues / 1000000).toFixed(1)} Jt dari {rentals.filter(r => r.dueAmount > 0).length} properti
+                {getCurrencyFormatterShort()(stats.totalDues)} dari {rentals.filter(r => r.dueAmount > 0).length} properti
               </p>
             </div>
           </div>
@@ -110,9 +110,9 @@ const AgentRentalManagement = ({ agentId }: AgentRentalManagementProps) => {
                       <p className="text-[7px] text-muted-foreground">{r.tenantName}</p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="text-[9px] font-bold text-foreground">Rp {(r.totalRevenue / 1000000).toFixed(1)}Jt</p>
+                      <p className="text-[9px] font-bold text-foreground">{getCurrencyFormatterShort()(r.totalRevenue)}</p>
                       <p className="text-[7px] text-muted-foreground">
-                        {r.dueAmount > 0 ? <span className="text-destructive">-Rp {(r.dueAmount / 1000000).toFixed(1)}Jt</span> : <span className="text-chart-1">Lunas</span>}
+                        {r.dueAmount > 0 ? <span className="text-destructive">-{getCurrencyFormatterShort()(r.dueAmount)}</span> : <span className="text-chart-1">Lunas</span>}
                       </p>
                     </div>
                   </div>

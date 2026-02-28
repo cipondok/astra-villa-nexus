@@ -36,7 +36,7 @@ const MarketComparison: React.FC<MarketComparisonProps> = ({ data, className }) 
             <Building2 className="h-4 w-4 text-primary" />
             <span className="text-[10px] text-muted-foreground">Your Avg. Price</span>
           </div>
-          <p className="text-lg font-bold text-foreground">Rp {formatPrice(data.yourAvgPrice)}</p>
+          <p className="text-lg font-bold text-foreground">{formatPrice(data.yourAvgPrice)}</p>
           <div className={cn(
             "flex items-center gap-1 text-[10px]",
             priceDiff < 0 ? "text-chart-1" : "text-destructive"
@@ -56,7 +56,7 @@ const MarketComparison: React.FC<MarketComparisonProps> = ({ data, className }) 
             <MapPin className="h-4 w-4 text-accent" />
             <span className="text-[10px] text-muted-foreground">Price per m²</span>
           </div>
-          <p className="text-lg font-bold text-foreground">Rp {formatPrice(data.pricePerSqm)}</p>
+          <p className="text-lg font-bold text-foreground">{formatPrice(data.pricePerSqm)}</p>
           <div className={cn(
             "flex items-center gap-1 text-[10px]",
             sqmDiff < 0 ? "text-chart-1" : "text-destructive"

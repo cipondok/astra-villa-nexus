@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { 
   Wallet, 
   CreditCard, 
@@ -197,7 +198,7 @@ const PayoutManagement = () => {
     if (!amount || amount < payoutSettings.minimum_payout_amount) {
       toast({
         title: "Invalid Amount",
-        description: `Minimum payout amount is Rp ${payoutSettings.minimum_payout_amount.toLocaleString()}`,
+        description: `Minimum payout amount is ${getCurrencyFormatter()(payoutSettings.minimum_payout_amount)}`,
         variant: "destructive"
       });
       return;

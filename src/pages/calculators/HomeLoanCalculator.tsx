@@ -13,6 +13,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 import AIToolsTabBar from '@/components/common/AIToolsTabBar';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
 import { getCurrencyFormatterShort } from "@/stores/currencyStore";
@@ -70,8 +71,8 @@ const HomeLoanCalculator = () => {
 
     if (income < regulations.minIncome) {
       issues.push(language === 'id' 
-        ? `Pendapatan minimum Rp ${regulations.minIncome.toLocaleString('id-ID')} diperlukan`
-        : `Minimum income of Rp ${regulations.minIncome.toLocaleString('id-ID')} required`);
+        ? `Pendapatan minimum ${getCurrencyFormatter()(regulations.minIncome)} diperlukan`
+        : `Minimum income of ${getCurrencyFormatter()(regulations.minIncome)} required`);
     }
 
     const ltv = loan / value;

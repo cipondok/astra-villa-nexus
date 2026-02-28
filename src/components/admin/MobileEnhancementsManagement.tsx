@@ -13,6 +13,7 @@ import {
   WifiOff, CreditCard, Users, TrendingUp, Settings,
   Play, Eye, Download, ShoppingCart
 } from "lucide-react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 const MobileEnhancementsManagement = () => {
   const { toast } = useToast();
@@ -224,7 +225,7 @@ const MobileEnhancementsManagement = () => {
               <CreditCard className="h-5 w-5 text-chart-3" />
               <div>
                 <p className="text-xs text-muted-foreground">IAP Revenue</p>
-                <p className="text-xl font-bold">Rp {(totalIAPRevenue / 1000000).toFixed(1)}M</p>
+                <p className="text-xl font-bold">{getCurrencyFormatterShort()(totalIAPRevenue)}</p>
               </div>
             </div>
           </CardContent>

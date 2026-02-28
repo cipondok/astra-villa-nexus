@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -517,7 +518,7 @@ const TeamManagement = () => {
                           <div className="flex justify-between text-muted-foreground mb-1">
                             <span>Commission Earned</span>
                             <span className="font-medium text-foreground">
-                              Rp {(expert.total_commission_earned || 0).toLocaleString()}
+                              {getCurrencyFormatter()(expert.total_commission_earned || 0)}
                             </span>
                           </div>
                           <Progress value={Math.min(100, (expert.total_deals_closed || 0) * 10)} className="h-1" />
@@ -658,7 +659,7 @@ const TeamManagement = () => {
                         <div className="mt-3 flex items-center justify-between text-xs">
                           <span className="text-muted-foreground">Revenue Generated</span>
                           <span className="font-medium text-chart-1">
-                            Rp {(manager.revenue_generated || 0).toLocaleString()}
+                            {getCurrencyFormatter()(manager.revenue_generated || 0)}
                           </span>
                         </div>
                       </CardContent>

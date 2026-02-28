@@ -375,7 +375,7 @@ const VendorServices = () => {
                   <div className="pt-3 border-t">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm font-medium">Monthly Revenue</span>
-                      <span className="text-sm font-bold">Rp {(service.monthly_revenue || 0).toLocaleString()}</span>
+                      <span className="text-sm font-bold">{getCurrencyFormatter()(service.monthly_revenue || 0)}</span>
                     </div>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-muted-foreground">Growth Rate</span>
@@ -393,7 +393,7 @@ const VendorServices = () => {
                   {service.price_range && (
                     <div className="pt-2 border-t">
                       <span className="text-sm font-medium">
-                        Rp {service.price_range.min?.toLocaleString()} - Rp {service.price_range.max?.toLocaleString()}
+                        {getCurrencyFormatter()(service.price_range.min || 0)} - {getCurrencyFormatter()(service.price_range.max || 0)}
                       </span>
                     </div>
                   )}

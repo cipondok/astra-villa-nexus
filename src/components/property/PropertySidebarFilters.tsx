@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -423,8 +424,8 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
                       />
                     </div>
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <span>Rp {formatPrice(filters.minPrice)}</span>
-                      <span>Rp {formatPrice(filters.maxPrice)}</span>
+                      <span>{getCurrencyFormatterShort()(filters.minPrice)}</span>
+                      <span>{getCurrencyFormatterShort()(filters.maxPrice)}</span>
                     </div>
                   </div>
                 </CollapsibleContent>

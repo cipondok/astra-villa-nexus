@@ -3,6 +3,7 @@
  * Handles FCM/Web Push notifications with subscription management
  */
 
+import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 export interface NotificationPayload {
   title: string;
   body: string;
@@ -283,13 +284,7 @@ class PushNotificationService {
   }
 
   private formatPrice(price: number): string {
-    if (price >= 1_000_000_000) {
-      return `Rp ${(price / 1_000_000_000).toFixed(1)}M`;
-    }
-    if (price >= 1_000_000) {
-      return `Rp ${Math.round(price / 1_000_000)}jt`;
-    }
-    return `Rp ${price.toLocaleString('id-ID')}`;
+    return getCurrencyFormatterShort()(price);
   }
 }
 

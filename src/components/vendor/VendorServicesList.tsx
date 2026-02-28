@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Plus, Edit, Trash2, Star, MapPin, Clock, TrendingUp, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 
 interface Service {
   id: string;
@@ -315,7 +316,7 @@ const VendorServicesList = ({ onAddService, onEditService }: VendorServicesListP
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Monthly Revenue</p>
-                <p className="text-2xl font-bold text-chart-3">Rp {(services.reduce((sum, s) => sum + (s.monthly_revenue || 0), 0)).toLocaleString()}</p>
+                <p className="text-2xl font-bold text-chart-3">{getCurrencyFormatter()(services.reduce((sum, s) => sum + (s.monthly_revenue || 0), 0))}</p>
               </div>
               <div className="p-2 bg-chart-3/10 rounded-lg">
                 <Star className="h-5 w-5 text-chart-3" />
@@ -432,7 +433,7 @@ const VendorServicesList = ({ onAddService, onEditService }: VendorServicesListP
                   <div className="pt-3 border-t">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm font-medium">Monthly Revenue</span>
-                      <span className="text-sm font-bold">Rp {(service.monthly_revenue || 0).toLocaleString()}</span>
+                      <span className="text-sm font-bold">{getCurrencyFormatter()(service.monthly_revenue || 0)}</span>
                     </div>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-muted-foreground">Growth Rate</span>
@@ -450,7 +451,7 @@ const VendorServicesList = ({ onAddService, onEditService }: VendorServicesListP
                   {service.price_range && (
                     <div className="pt-2 border-t">
                       <span className="text-sm font-medium">
-                        Rp {service.price_range.min?.toLocaleString()} - Rp {service.price_range.max?.toLocaleString()}
+                        {getCurrencyFormatter()(service.price_range.min || 0)} - {getCurrencyFormatter()(service.price_range.max || 0)}
                       </span>
                     </div>
                   )}

@@ -192,9 +192,9 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ data, className }) => {
 
             <div className="pt-2 border-t border-border/50">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Return per Rp invested</span>
+                <span className="text-xs text-muted-foreground">Return per unit invested</span>
                 <span className="text-sm font-bold text-foreground">
-                  Rp {(data.totalRevenue / data.totalInvestment).toFixed(2)}
+                  {getCurrencyFormatterShort()(data.totalRevenue / data.totalInvestment)}
                 </span>
               </div>
             </div>

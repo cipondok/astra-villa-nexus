@@ -1,4 +1,5 @@
 import React from "react";
+import { getCurrencyFormatter } from "@/stores/currencyStore";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -159,7 +160,7 @@ const PropertyFacilities: React.FC<PropertyFacilitiesProps> = ({
                           )}
                           {facility.additional_cost && facility.additional_cost > 0 && (
                             <p className="text-sm text-chart-3 font-medium">
-                              +Rp {facility.additional_cost.toLocaleString('id-ID')}
+                              +{getCurrencyFormatter()(facility.additional_cost)}
                             </p>
                           )}
                         </div>

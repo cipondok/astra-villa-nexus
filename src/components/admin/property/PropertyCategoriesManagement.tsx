@@ -14,6 +14,7 @@ import { Building, Home, TreePine, Factory, Store, Plus, Edit, Trash2, Tag } fro
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getCurrencyFormatter } from '@/stores/currencyStore';
 
 interface PropertyCategory {
   id: string;
@@ -504,8 +505,8 @@ const PropertyCategoriesManagement = () => {
                           <TableCell>
                             {category.meta_data?.min_price && category.meta_data?.max_price ? (
                               <div className="text-sm">
-                                <div>Min: Rp {category.meta_data.min_price.toLocaleString()}</div>
-                                <div>Max: Rp {category.meta_data.max_price.toLocaleString()}</div>
+                                <div>Min: {getCurrencyFormatter()(category.meta_data.min_price)}</div>
+                                <div>Max: {getCurrencyFormatter()(category.meta_data.max_price)}</div>
                               </div>
                             ) : '-'}
                           </TableCell>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, DollarSign, Clock, Square } from "lucide-react";
+import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 import { CategoryLoader, CategoryNode } from "@/utils/categoryLoader";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -55,15 +56,9 @@ const DynamicSubcategorySelector = ({
   const formatPriceRange = (pricing: any) => {
     if (!pricing?.priceRange) return '';
     
-    const { min, max, currency } = pricing.priceRange;
-    const formatPrice = (price: number) => {
-      if (currency === 'IDR') {
-        return `Rp ${(price / 1000).toFixed(0)}k`;
-      }
-      return `${currency} ${price}`;
-    };
-    
-    return `${formatPrice(min)} - ${formatPrice(max)}`;
+    const { min, max } = pricing.priceRange;
+    const fmt = getCurrencyFormatterShort();
+    return `${fmt(min)} - ${fmt(max)}`;
   };
 
   const getPricingIcon = (model: string) => {
