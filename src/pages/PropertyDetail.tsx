@@ -75,6 +75,7 @@ import { BookingDialog } from '@/components/property/BookingDialog';
 import { SurveyBookingDialog } from '@/components/property/SurveyBookingDialog';
 import SocialShareDialog from '@/components/property/SocialShareDialog';
 import SmartCollectionBadges from '@/components/property/SmartCollectionBadges';
+import PropertyInvestmentWidget from '@/components/property/PropertyInvestmentWidget';
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
@@ -1155,6 +1156,14 @@ const PropertyDetail: React.FC = () => {
                 />
               </div>
             )}
+
+            {/* Investment Snapshot Widget */}
+            <PropertyInvestmentWidget
+              price={property.price}
+              city={property.city || property.location}
+              propertyType={property.property_type}
+              landArea={property.area_sqm}
+            />
             
             {/* Contact Information - Slim Agent Card */}
             <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
