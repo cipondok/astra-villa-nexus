@@ -1,8 +1,7 @@
 // Centralized translations aggregator
-// Primary locales (en, id) loaded eagerly; others lazy-loaded on demand
+// English loaded eagerly (fallback); all others lazy-loaded on demand
 
 import en from './locales/en';
-import id from './locales/id';
 
 export type Language = 'en' | 'id' | 'zh' | 'ja' | 'ko';
 
@@ -10,15 +9,14 @@ export interface TranslationMap {
   [key: string]: string | string[] | TranslationMap;
 }
 
-const eagerTranslations: Partial<Record<Language, TranslationMap>> = { en, id };
-
 const lazyLoaders: Partial<Record<Language, () => Promise<{ default: TranslationMap }>>> = {
+  id: () => import('./locales/id'),
   zh: () => import('./locales/zh'),
   ja: () => import('./locales/ja'),
   ko: () => import('./locales/ko'),
 };
 
-const cache: Partial<Record<Language, TranslationMap>> = { ...eagerTranslations };
+const cache: Partial<Record<Language, TranslationMap>> = { en };
 
 /** Get translations for a language, loading lazily if needed */
 export async function loadTranslations(lang: Language): Promise<TranslationMap> {
@@ -37,4 +35,4 @@ export function getTranslations(lang: Language): TranslationMap {
   return cache[lang] || en;
 }
 
-export default { en, id } as Record<Language, TranslationMap>;
+export default { en } as Record<Language, TranslationMap>;

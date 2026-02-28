@@ -22,10 +22,9 @@ import { useTranslation } from '@/i18n/useTranslation';
 import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useVIPNotifications } from '@/hooks/useVIPNotifications';
-import { usePropertyAlerts } from '@/hooks/usePropertyAlerts';
 import { useReferralTracking } from '@/hooks/useReferralTracking';
-import { useNewListingMatcher } from '@/hooks/useNewListingMatcher';
+
+const AuthenticatedHooks = lazy(() => import('@/components/AuthenticatedHooks'));
 
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import MaintenancePage from '@/pages/MaintenancePage';
@@ -169,11 +168,7 @@ const useMaintenanceMode = () => {
 const AppContent = () => {
   useCLSMonitor(process.env.NODE_ENV === 'development');
   useScrollRestore(true);
-  useVIPNotifications();
-  usePropertyAlerts();
   useReferralTracking();
-  useNewListingMatcher();
-  
   
   const location = useLocation();
   const { language } = useTranslation();
@@ -190,6 +185,7 @@ const AppContent = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <NetworkStatusIndicator />
+      <Suspense fallback={null}><AuthenticatedHooks /></Suspense>
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
       {!isAdminRoute && <Suspense fallback={null}><Navigation /></Suspense>}
       <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
