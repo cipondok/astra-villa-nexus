@@ -10,7 +10,7 @@ export interface SystemSettingRow {
 }
 
 const QUERY_KEY = ['all-system-settings'] as const;
-const STALE_TIME = 5 * 60 * 1000; // 5 minutes
+const STALE_TIME = 15 * 60 * 1000; // 15 minutes — settings rarely change
 
 /**
  * Single cached query for ALL system_settings rows.

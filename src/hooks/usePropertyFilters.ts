@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -22,14 +23,45 @@ export interface FilterCategory {
   options: FilterOption[];
 }
 
-export const usePropertyFilters = () => {
-  const [filters, setFilters] = useState<FilterCategory[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+const QUERY_KEY = ['property-filter-configurations'] as const;
 
-  const fetchFilters = async () => {
-    try {
-      setLoading(true);
+function categorizeFilters(data: any[]): FilterCategory[] {
+  return data.reduce((acc: FilterCategory[], filter: any) => {
+    const existing = acc.find(cat => cat.name === filter.filter_category);
+    const option: FilterOption = {
+      id: filter.id,
+      filter_name: filter.filter_name,
+      filter_category: filter.filter_category,
+      filter_type: filter.filter_type,
+      filter_options: filter.filter_options,
+      listing_type: filter.listing_type,
+      is_active: filter.is_active,
+      display_order: filter.display_order,
+      created_at: filter.created_at,
+      updated_at: filter.updated_at,
+    };
+
+    if (existing) {
+      existing.options.push(option);
+    } else {
+      acc.push({
+        id: filter.filter_category,
+        name: filter.filter_category,
+        enabled: true,
+        options: [option],
+      });
+    }
+    return acc;
+  }, []);
+}
+
+export const usePropertyFilters = () => {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: filters = [], isLoading: loading } = useQuery({
+    queryKey: QUERY_KEY,
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('property_filter_configurations')
         .select('*')
@@ -37,58 +69,16 @@ export const usePropertyFilters = () => {
         .order('display_order', { ascending: true });
 
       if (error) throw error;
+      return categorizeFilters(data ?? []);
+    },
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 
-      // Group filters by category
-      const categorizedFilters = data.reduce((acc: FilterCategory[], filter: any) => {
-        const existingCategory = acc.find(cat => cat.name === filter.filter_category);
-        
-        if (existingCategory) {
-          existingCategory.options.push({
-            id: filter.id,
-            filter_name: filter.filter_name,
-            filter_category: filter.filter_category,
-            filter_type: filter.filter_type,
-            filter_options: filter.filter_options,
-            listing_type: filter.listing_type,
-            is_active: filter.is_active,
-            display_order: filter.display_order,
-            created_at: filter.created_at,
-            updated_at: filter.updated_at,
-          });
-        } else {
-          acc.push({
-            id: filter.filter_category,
-            name: filter.filter_category,
-            enabled: true,
-            options: [{
-              id: filter.id,
-              filter_name: filter.filter_name,
-              filter_category: filter.filter_category,
-              filter_type: filter.filter_type,
-              filter_options: filter.filter_options,
-              listing_type: filter.listing_type,
-              is_active: filter.is_active,
-              display_order: filter.display_order,
-              created_at: filter.created_at,
-              updated_at: filter.updated_at,
-            }]
-          });
-        }
-        return acc;
-      }, []);
-
-      setFilters(categorizedFilters);
-    } catch (error) {
-      console.error('Error fetching filters:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load property filters",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const invalidate = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+  }, [queryClient]);
 
   const addFilter = async (filter: Omit<FilterOption, 'id'>) => {
     try {
@@ -107,21 +97,12 @@ export const usePropertyFilters = () => {
         .single();
 
       if (error) throw error;
-
-      await fetchFilters();
-      toast({
-        title: "Success",
-        description: "Filter added successfully",
-      });
-
+      invalidate();
+      toast({ title: "Success", description: "Filter added successfully" });
       return data;
     } catch (error) {
       console.error('Error adding filter:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add filter",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to add filter", variant: "destructive" });
       throw error;
     }
   };
@@ -136,21 +117,12 @@ export const usePropertyFilters = () => {
         .single();
 
       if (error) throw error;
-
-      await fetchFilters();
-      toast({
-        title: "Success",
-        description: "Filter updated successfully",
-      });
-
+      invalidate();
+      toast({ title: "Success", description: "Filter updated successfully" });
       return data;
     } catch (error) {
       console.error('Error updating filter:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update filter",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to update filter", variant: "destructive" });
       throw error;
     }
   };
@@ -163,42 +135,29 @@ export const usePropertyFilters = () => {
         .eq('id', id);
 
       if (error) throw error;
-
-      await fetchFilters();
-      toast({
-        title: "Success",
-        description: "Filter deleted successfully",
-      });
+      invalidate();
+      toast({ title: "Success", description: "Filter deleted successfully" });
     } catch (error) {
       console.error('Error deleting filter:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete filter",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to delete filter", variant: "destructive" });
       throw error;
     }
   };
 
-  const getFiltersByCategory = (category: string): FilterOption[] => {
-    const categoryData = filters.find(cat => cat.name === category);
-    return categoryData?.options || [];
-  };
+  const getFiltersByCategory = useCallback((category: string): FilterOption[] => {
+    return filters.find(cat => cat.name === category)?.options || [];
+  }, [filters]);
 
-  const getPropertyTypes = () => getFiltersByCategory('search');
-  const getAmenities = () => getFiltersByCategory('facilities');
-  const getFacilities = () => getFiltersByCategory('specifications');
-  const getLocations = () => getFiltersByCategory('location');
-  const getPriceRanges = () => getFiltersByCategory('price');
-
-  useEffect(() => {
-    fetchFilters();
-  }, []);
+  const getPropertyTypes = useCallback(() => getFiltersByCategory('search'), [getFiltersByCategory]);
+  const getAmenities = useCallback(() => getFiltersByCategory('facilities'), [getFiltersByCategory]);
+  const getFacilities = useCallback(() => getFiltersByCategory('specifications'), [getFiltersByCategory]);
+  const getLocations = useCallback(() => getFiltersByCategory('location'), [getFiltersByCategory]);
+  const getPriceRanges = useCallback(() => getFiltersByCategory('price'), [getFiltersByCategory]);
 
   return {
     filters,
     loading,
-    fetchFilters,
+    fetchFilters: invalidate,
     addFilter,
     updateFilter,
     deleteFilter,

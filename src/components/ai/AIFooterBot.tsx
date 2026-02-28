@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { useAllSystemSettings, selectSettingByKey } from "@/hooks/useAllSystemSettings";
+import { useChatbotLogo } from "@/hooks/useChatbotLogo";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { getEdgeFunctionUserMessage, throwIfEdgeFunctionReturnedError } from "@/lib/supabaseFunctionErrors";
@@ -61,14 +61,8 @@ const AIFooterBot = () => {
     }
   }, [isOpen, shouldShowWelcome]);
 
-  // Derive chatbot logo from cached system settings
-  const { data: allSettings } = useAllSystemSettings();
-  const chatbotLogoUrl = (() => {
-    const raw = selectSettingByKey(allSettings, 'chatbotLogo');
-    if (!raw) return null;
-    const value = typeof raw === 'string' ? raw : null;
-    return value && value.trim() !== '' ? value : null;
-  })();
+  // Derive chatbot logo from batched branding query
+  const { logoUrl: chatbotLogoUrl } = useChatbotLogo();
 
   const aiChatMutation = useMutation({
     mutationFn: async (userMessage: string) => {
