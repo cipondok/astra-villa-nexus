@@ -28854,6 +28854,11 @@ export type Database = {
           total_reviews: number
         }[]
       }
+      seed_agent_analytics: { Args: never; Returns: undefined }
+      track_property_view: {
+        Args: { p_property_id: string }
+        Returns: undefined
+      }
       unlock_vendor_main_category: {
         Args: { p_reason?: string; p_vendor_id: string }
         Returns: boolean
