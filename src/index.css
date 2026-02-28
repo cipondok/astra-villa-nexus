@@ -247,7 +247,7 @@ body[data-scroll-locked] {
     --secondary: 210 35% 18%;
     --secondary-foreground: 200 12% 88%;
     --muted: 210 30% 16%;
-    --muted-foreground: 200 15% 65%; /* Boosted from 60% for WCAG AA contrast */
+    --muted-foreground: 200 15% 70%; /* Boosted to 70% for WCAG AA+ contrast on dark */
     --accent: 90 75% 50%; /* Lime green */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
@@ -257,14 +257,14 @@ body[data-scroll-locked] {
     --ring: 200 100% 55%;
     
     /* ASTRA Brand Colors - Dark Mode (boosted for contrast on dark backgrounds) */
-    --gold-primary: 45 100% 60%; /* Brighter gold for dark bg contrast */
-    --gold-secondary: 40 95% 52%;
+    --gold-primary: 45 100% 62%; /* Brighter gold for WCAG AA on dark bg */
+    --gold-secondary: 40 95% 55%;
     --navy-primary: 200 100% 55%;
     --navy-secondary: 205 80% 48%;
     --dark-bg: 210 55% 5%;
     --dark-card: 210 45% 10%;
     --text-light: 0 0% 100%;
-    --text-muted: 200 15% 65%;
+    --text-muted: 200 15% 70%;
     
     /* Hero & Search Section Gradients - Dark Mode */
     --hero-from: 210 55% 8%;
@@ -1589,7 +1589,54 @@ body[data-scroll-locked] {
   }
 }
 
-/* Scrollbar Styling */
+/*
+ * Dark mode contrast boosters for gold-themed Tailwind utility classes.
+ * Low-opacity gold backgrounds (3-6%) and borders (10-15%) are nearly
+ * invisible on dark backgrounds (~8-13% lightness). These overrides
+ * boost effective opacity so subtle gold tints remain perceptible.
+ */
+.dark .bg-gold-primary\/5,
+.dark .bg-gold-primary\/\[0\.04\],
+.dark .bg-gold-primary\/\[0\.03\] {
+  background-color: hsl(var(--gold-primary) / 0.12) !important;
+}
+
+.dark .bg-gold-primary\/\[0\.06\] {
+  background-color: hsl(var(--gold-primary) / 0.14) !important;
+}
+
+.dark .border-gold-primary\/10 {
+  border-color: hsl(var(--gold-primary) / 0.22) !important;
+}
+
+.dark .border-gold-primary\/15 {
+  border-color: hsl(var(--gold-primary) / 0.28) !important;
+}
+
+.dark .border-gold-primary\/20 {
+  border-color: hsl(var(--gold-primary) / 0.32) !important;
+}
+
+.dark .text-gold-primary\/30 {
+  color: hsl(var(--gold-primary) / 0.55) !important;
+}
+
+.dark .text-gold-primary\/40 {
+  color: hsl(var(--gold-primary) / 0.6) !important;
+}
+
+.dark .text-gold-primary\/50 {
+  color: hsl(var(--gold-primary) / 0.7) !important;
+}
+
+.dark .text-gold-primary\/60 {
+  color: hsl(var(--gold-primary) / 0.75) !important;
+}
+
+.dark .text-gold-primary\/70 {
+  color: hsl(var(--gold-primary) / 0.85) !important;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
