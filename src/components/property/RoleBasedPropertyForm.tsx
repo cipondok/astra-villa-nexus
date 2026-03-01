@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check, PenLine } from "lucide-react";
+import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check, PenLine, Activity, ShieldCheck, AlertTriangle, ArrowUp } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import PropertyImageUpload from "./PropertyImageUpload";
 import LocationSelector from "./LocationSelector";
@@ -180,6 +180,15 @@ const RoleBasedPropertyForm = () => {
     comparable_count: number;
   } | null>(null);
 
+  // Listing Health state
+  const [healthLoading, setHealthLoading] = useState(false);
+  const [healthData, setHealthData] = useState<{
+    health_score: number;
+    grade: string;
+    issues: string[];
+    strengths: string[];
+    improvement_priority: string[];
+  } | null>(null);
   // AI usage tracking
   const subscriptionType = (profile as any)?.subscription_type || 'free';
   const isProOrAdmin = ['pro', 'admin'].includes(subscriptionType);
@@ -343,6 +352,43 @@ const RoleBasedPropertyForm = () => {
       showError('Analysis Failed', err.message || 'Could not analyze price.');
     } finally {
       setPriceLoading(false);
+    }
+  };
+
+  const analyzeListingHealth = async () => {
+    setHealthLoading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      if (!token) throw new Error('Not authenticated');
+
+      const id = draftPropertyId;
+      if (!id) {
+        showError('Save Required', 'Please save the property first to analyze listing health.');
+        return;
+      }
+
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/property-intelligence-engine`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ property_id: id, mode: 'listing_health' }),
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Failed to analyze listing health');
+
+      setHealthData(result.data || result);
+    } catch (err: any) {
+      console.error('Listing health error:', err);
+      showError('Analysis Failed', err.message || 'Could not analyze listing health.');
+    } finally {
+      setHealthLoading(false);
     }
   };
 
@@ -774,6 +820,140 @@ const RoleBasedPropertyForm = () => {
                       <p className="text-xs text-green-600 bg-green-500/5 border border-green-500/10 rounded-lg p-3">
                         🔥 High interest potential — priced below market.
                       </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Listing Health Panel */}
+            <div className="relative rounded-xl overflow-hidden shadow-lg">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/20 via-accent/10 to-primary/20 p-[1px]" />
+              <div className="relative rounded-xl backdrop-blur-md bg-background/80 border border-primary/10 p-5 space-y-4">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20">
+                      <Activity className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="font-semibold text-sm">Listing Health</span>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={healthLoading || !draftPropertyId}
+                    onClick={analyzeListingHealth}
+                    className="border-primary/20 hover:bg-primary/5"
+                  >
+                    {healthLoading ? (
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    ) : (
+                      <Activity className="h-3.5 w-3.5 mr-1.5" />
+                    )}
+                    {healthLoading ? 'Analyzing...' : 'Analyze Listing Health'}
+                  </Button>
+                </div>
+
+                {!draftPropertyId && (
+                  <p className="text-[11px] text-muted-foreground">Save property first to enable listing health analysis.</p>
+                )}
+
+                {healthData && !healthLoading && (
+                  <div className="space-y-5 animate-[ai-reveal_0.4s_ease-out_both]">
+                    {/* Score + Grade row */}
+                    <div className="flex items-center gap-6">
+                      {/* Circular progress */}
+                      <div className="relative flex-shrink-0">
+                        <svg width="96" height="96" viewBox="0 0 96 96" className="transform -rotate-90">
+                          <circle cx="48" cy="48" r="40" fill="none" strokeWidth="7" className="stroke-muted/30" />
+                          <circle
+                            cx="48" cy="48" r="40" fill="none" strokeWidth="7"
+                            strokeLinecap="round"
+                            strokeDasharray={`${(healthData.health_score / 100) * 251.3} 251.3`}
+                            className={
+                              healthData.health_score >= 75 ? 'stroke-green-500'
+                              : healthData.health_score >= 60 ? 'stroke-amber-500'
+                              : 'stroke-destructive'
+                            }
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className="text-xl font-bold">{healthData.health_score}</span>
+                          <span className="text-[9px] text-muted-foreground uppercase tracking-wider">Score</span>
+                        </div>
+                      </div>
+
+                      {/* Grade badge */}
+                      <div className="space-y-1.5">
+                        <span className={`inline-flex items-center justify-center w-12 h-12 rounded-xl text-xl font-bold shadow-sm ${
+                          healthData.grade === 'A' ? 'bg-green-500/10 text-green-600 border border-green-500/20'
+                          : healthData.grade === 'B' ? 'bg-primary/10 text-primary border border-primary/20'
+                          : healthData.grade === 'C' ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                          : 'bg-destructive/10 text-destructive border border-destructive/20'
+                        }`}>
+                          {healthData.grade}
+                        </span>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Grade</p>
+                      </div>
+                    </div>
+
+                    {/* Strengths */}
+                    {healthData.strengths.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium flex items-center gap-1.5">
+                          <ShieldCheck className="h-3.5 w-3.5 text-green-500" /> Strengths
+                        </p>
+                        <ul className="space-y-1.5">
+                          {healthData.strengths.map((s, i) => (
+                            <li key={i} className="flex items-start gap-2 text-xs text-green-600">
+                              <Check className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                              <span>{s}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Issues */}
+                    {healthData.issues.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium flex items-center gap-1.5">
+                          <AlertTriangle className="h-3.5 w-3.5 text-destructive" /> Issues
+                        </p>
+                        <ul className="space-y-1.5">
+                          {healthData.issues.map((s, i) => (
+                            <li key={i} className="flex items-start gap-2 text-xs text-destructive">
+                              <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                              <span>{s}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Improvement Priority */}
+                    {healthData.improvement_priority.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium flex items-center gap-1.5">
+                          <ArrowUp className="h-3.5 w-3.5 text-primary" /> Improvement Priority
+                        </p>
+                        <ol className="space-y-1.5 list-decimal list-inside">
+                          {healthData.improvement_priority.map((s, i) => (
+                            <li key={i} className="text-xs text-foreground/80">{s}</li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+
+                    {/* CTA for low scores */}
+                    {healthData.health_score < 70 && (
+                      <div className="p-3 rounded-lg bg-amber-500/5 border border-amber-500/15 flex items-start gap-2.5">
+                        <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-xs font-medium text-amber-600">Improve this listing to increase visibility.</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">Listings with a health score above 75 get 3× more views on average.</p>
+                        </div>
+                      </div>
                     )}
                   </div>
                 )}
