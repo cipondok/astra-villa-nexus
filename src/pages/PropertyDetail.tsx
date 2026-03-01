@@ -28,6 +28,7 @@ import PropertyRecommendations from '@/components/property/PropertyRecommendatio
 import { KPRCalculator } from '@/components/property/KPRCalculator';
 import PropertyMortgageWidget from '@/components/mortgage/PropertyMortgageWidget';
 import { PropertyPosterInfo } from '@/components/property/PropertyPosterInfo';
+import PropertyTrustBadges from '@/components/property/PropertyTrustBadges';
 import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { 
   MapPin, 
@@ -938,6 +939,9 @@ const PropertyDetail: React.FC = () => {
                         </Badge>
                       )}
                     </div>
+                    
+                    {/* Trust Verification Badges */}
+                    <PropertyTrustBadges property={{ id: property.id, ...property }} size="sm" maxBadges={6} />
                   </div>
                   
                   {/* Price Display - Slim */}
