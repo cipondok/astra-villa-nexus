@@ -27,7 +27,7 @@ interface ASTRAVillaPropertyCardProps {
     area?: string;
     created_at?: string;
   };
-  language?: "en" | "id" | "zh" | "ja" | "ko";
+  language?: string;
   isSaved?: boolean;
   onSave?: () => void;
   onView?: () => void;

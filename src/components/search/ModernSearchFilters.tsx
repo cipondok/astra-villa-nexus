@@ -12,7 +12,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface SearchFiltersProps {
-  language?: "en" | "id" | "zh" | "ja" | "ko";
+  language?: string;
   onSearch: (filters: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
 }

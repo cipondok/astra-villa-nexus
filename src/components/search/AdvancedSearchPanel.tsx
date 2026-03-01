@@ -29,7 +29,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 interface AdvancedSearchPanelProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onSearch: (searchData: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
   activeTab?: "buy" | "rent";

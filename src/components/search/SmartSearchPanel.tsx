@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface SmartSearchPanelProps {
-  language: "en" | "id";
+  language: string;
   onSearch: (searchData: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
   activeTab?: "buy" | "rent";
