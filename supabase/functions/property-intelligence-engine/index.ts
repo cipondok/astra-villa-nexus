@@ -806,6 +806,22 @@ Deno.serve(async (req) => {
       else if (recentPrices.length >= 10) confidence = 70;
       else if (recentPrices.length >= 5) confidence = 60;
 
+      // ── Year-by-year projection ──
+      const projection: { year: number; property_value: number; cumulative_rent: number; equity_position: number }[] = [];
+      let currentValue = price;
+      let cumulativeRent = 0;
+      for (let y = 1; y <= holdYears; y++) {
+        currentValue = currentValue * (1 + appreciationRate);
+        cumulativeRent += annualRent;
+        const equityPosition = (currentValue - price) + cumulativeRent;
+        projection.push({
+          year: y,
+          property_value: Math.round(currentValue),
+          cumulative_rent: Math.round(cumulativeRent),
+          equity_position: Math.round(equityPosition),
+        });
+      }
+
       console.log(`ROI simulation for ${property_id}: ${roiPercent.toFixed(1)}% over ${holdYears}yr`);
 
       return new Response(JSON.stringify({
@@ -830,6 +846,7 @@ Deno.serve(async (req) => {
           net_profit: Math.round(netProfit),
           roi_percent: Math.round(roiPercent * 100) / 100,
           annualized_return_percent: Math.round(annualizedReturn * 100) / 100,
+          projection,
           market_context: {
             heat_level: heatLevel,
             heat_score: heatScore,
