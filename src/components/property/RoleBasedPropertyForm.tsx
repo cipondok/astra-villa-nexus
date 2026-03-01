@@ -158,12 +158,55 @@ const RoleBasedPropertyForm = () => {
 
   // AI Description Generator state
   const [aiLoading, setAiLoading] = useState(false);
+  const [draftPropertyId, setDraftPropertyId] = useState<string | null>(null);
   const [aiContent, setAiContent] = useState<{
     long_description: string;
     seo_description: string;
     social_caption: string;
     highlights: string[];
   } | null>(null);
+
+  const saveDraftAndGetId = async (): Promise<string> => {
+    if (draftPropertyId) return draftPropertyId;
+
+    // Minimal validation
+    if (!formData.title?.trim()) throw new Error('Title is required to generate AI content.');
+    if (!formData.price?.trim()) throw new Error('Price is required to generate AI content.');
+    if (!formData.city?.trim() && !locationState.selectedCity) throw new Error('City is required to generate AI content.');
+
+    if (!user) throw new Error('Not authenticated');
+
+    const draftData: Record<string, unknown> = {
+      title: formData.title,
+      price: parseFloat(formData.price),
+      city: formData.city || locationState.selectedCity,
+      district: locationState.selectedDistrict || null,
+      property_type: formData.property_type || 'house',
+      listing_type: formData.listing_type || 'sale',
+      status: 'draft',
+      approval_status: 'pending',
+      owner_id: user.id,
+      agent_id: isAgent ? user.id : null,
+      land_area_sqm: formData.land_area_sqm ? parseFloat(formData.land_area_sqm) : null,
+      building_area_sqm: formData.building_area_sqm ? parseFloat(formData.building_area_sqm) : null,
+      bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
+      bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
+      floors: formData.floors ? parseInt(formData.floors) : null,
+      has_pool: formData.has_pool,
+      garage_count: formData.garage_count ? parseInt(formData.garage_count) : null,
+      investment_score: 0,
+    };
+
+    const { data, error } = await supabase
+      .from('properties')
+      .insert(draftData as any)
+      .select('id')
+      .single();
+
+    if (error) throw new Error('Failed to save draft: ' + error.message);
+    setDraftPropertyId(data.id);
+    return data.id;
+  };
 
   const generateAiDescription = async (propertyId?: string) => {
     setAiLoading(true);
@@ -172,13 +215,8 @@ const RoleBasedPropertyForm = () => {
       const token = sessionData?.session?.access_token;
       if (!token) throw new Error('Not authenticated');
 
-      // If no propertyId, we need to create/save first or use a temp approach
-      // For existing properties, pass the ID; for new ones, show error
-      if (!propertyId) {
-        showError('Save First', 'Please save the property first before generating AI content.');
-        setAiLoading(false);
-        return;
-      }
+      // Auto-save as draft if no property ID
+      const id = propertyId || await saveDraftAndGetId();
 
       const res = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-description-generator`,
@@ -188,7 +226,7 @@ const RoleBasedPropertyForm = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify({ property_id: propertyId, save_results: false }),
+          body: JSON.stringify({ property_id: id, save_results: false }),
         }
       );
 
