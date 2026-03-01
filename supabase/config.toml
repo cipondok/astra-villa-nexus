@@ -195,3 +195,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.predictive-pricing]
     verify_jwt = false
+
+  [functions.ai-match-engine]
+    verify_jwt = false
