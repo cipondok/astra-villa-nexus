@@ -157,6 +157,7 @@ Deno.serve(async (req) => {
         .from('activity_logs')
         .select('id', { count: 'exact', head: true })
         .eq('activity_type', 'view')
+        .eq('property_id', property_id)
         .gte('created_at', thirtyDaysAgo);
 
       const { count: saveCount } = await supabase
