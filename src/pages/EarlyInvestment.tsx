@@ -1,16 +1,15 @@
 import { useState, useMemo } from 'react';
 import { SEOHead } from '@/components/SEOHead';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Building2, TrendingUp, BarChart3, Search, HardHat } from 'lucide-react';
+import { Building2, TrendingUp, BarChart3, Search, HardHat, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import OffPlanProjectCard from '@/components/investment/OffPlanProjectCard';
 import DeveloperProfileCard from '@/components/investment/DeveloperProfileCard';
 import OffPlanROICalculator from '@/components/investment/OffPlanROICalculator';
-import { DEMO_PROJECTS, DEMO_DEVELOPERS } from '@/data/demoOffPlanProjects';
+import { useOffPlanProjects, DEMO_DEVELOPERS } from '@/hooks/useOffPlanProjects';
 import { useNavigate } from 'react-router-dom';
 
 const EarlyInvestment = () => {
@@ -19,27 +18,32 @@ const EarlyInvestment = () => {
   const [typeFilter, setTypeFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const cities = useMemo(() => ['all', ...new Set(DEMO_PROJECTS.map(p => p.city))], []);
-  const types = useMemo(() => ['all', ...new Set(DEMO_PROJECTS.map(p => p.propertyType))], []);
+  const { data, isLoading } = useOffPlanProjects();
+  const projects = data?.projects ?? [];
+
+  const cities = useMemo(() => ['all', ...new Set(projects.map(p => p.city))], [projects]);
+  const types = useMemo(() => ['all', ...new Set(projects.map(p => p.propertyType))], [projects]);
 
   const filteredProjects = useMemo(() => {
-    return DEMO_PROJECTS.filter(p => {
+    return projects.filter(p => {
       if (cityFilter !== 'all' && p.city !== cityFilter) return false;
       if (typeFilter !== 'all' && p.propertyType !== typeFilter) return false;
       if (searchQuery && !p.title.toLowerCase().includes(searchQuery.toLowerCase()) && !p.location.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     });
-  }, [cityFilter, typeFilter, searchQuery]);
+  }, [projects, cityFilter, typeFilter, searchQuery]);
 
   const avgROI = useMemo(() => {
-    const total = DEMO_PROJECTS.reduce((s, p) => s + p.appreciationPct, 0);
-    return (total / DEMO_PROJECTS.length).toFixed(0);
-  }, []);
+    if (projects.length === 0) return '0';
+    const total = projects.reduce((s, p) => s + p.appreciationPct, 0);
+    return (total / projects.length).toFixed(0);
+  }, [projects]);
 
   const avgCompletion = useMemo(() => {
-    const total = DEMO_PROJECTS.reduce((s, p) => s + p.completionPct, 0);
-    return (total / DEMO_PROJECTS.length).toFixed(0);
-  }, []);
+    if (projects.length === 0) return '0';
+    const total = projects.reduce((s, p) => s + p.completionPct, 0);
+    return (total / projects.length).toFixed(0);
+  }, [projects]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -65,7 +69,7 @@ const EarlyInvestment = () => {
             {/* Stats */}
             <div className="flex items-center justify-center gap-6 sm:gap-10">
               <div className="text-center">
-                <p className="text-2xl sm:text-3xl font-black text-primary">{DEMO_PROJECTS.length}</p>
+                <p className="text-2xl sm:text-3xl font-black text-primary">{projects.length}</p>
                 <p className="text-[10px] sm:text-xs text-muted-foreground">Active Projects</p>
               </div>
               <div className="h-8 w-px bg-border" />
@@ -79,6 +83,10 @@ const EarlyInvestment = () => {
                 <p className="text-[10px] sm:text-xs text-muted-foreground">Avg. Completion</p>
               </div>
             </div>
+
+            {data?.isDemo && (
+              <p className="mt-3 text-[10px] text-muted-foreground/60">Showing demo data — add off-plan projects via admin to see real listings</p>
+            )}
           </motion.div>
         </div>
       </section>
@@ -127,17 +135,23 @@ const EarlyInvestment = () => {
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredProjects.map(project => (
-                <OffPlanProjectCard
-                  key={project.id}
-                  project={project}
-                  onClick={(id) => navigate(`/properties/${id}`)}
-                />
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-16">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredProjects.map(project => (
+                  <OffPlanProjectCard
+                    key={project.id}
+                    project={project}
+                    onClick={(id) => navigate(`/properties/${id}`)}
+                  />
+                ))}
+              </div>
+            )}
 
-            {filteredProjects.length === 0 && (
+            {!isLoading && filteredProjects.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
                 <Building2 className="h-10 w-10 mx-auto mb-2 opacity-30" />
                 <p className="text-sm">No projects match your filters.</p>
