@@ -317,20 +317,21 @@ const RoleBasedPropertyForm = () => {
       }
 
       const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-price-suggestion-engine`,
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/property-intelligence-engine`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify({ property_id: id }),
+          body: JSON.stringify({ property_id: id, mode: 'price_suggestion' }),
         }
       );
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to analyze price');
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Failed to analyze price');
 
+      const data = result.data || result;
       if (data.comparable_count === 0) {
         showError('No Comparables', 'Not enough comparable listings in this area to estimate price.');
         return;
