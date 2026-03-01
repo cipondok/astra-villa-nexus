@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, lazy } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -106,6 +106,8 @@ import {
   AuthRegistrationSettings,
   NearbyFacilitiesSettings,
 } from "./adminSectionRegistry";
+
+const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -260,6 +262,7 @@ const renderSection = (
     case "verification-system-settings": return <VerificationSystemSettings />;
     case "ahu-company-checker": return <AHUCompanyChecker />;
     case "auth-registration-settings": return <AuthRegistrationSettings />;
+    case "off-plan-manager":        return <OffPlanProjectManager />;
     default:                    return <AdminOverview />;
   }
 };

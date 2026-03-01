@@ -255,6 +255,13 @@ export const navigationSections = {
       icon: Sparkles,
       description: "Generate sample properties with AI images for each kelurahan/desa",
       badge: "New"
+    },
+    {
+      key: "off-plan-manager",
+      label: "Off-Plan Project Manager",
+      icon: Building2,
+      description: "Manage construction milestones, completion %, and off-plan project progress",
+      badge: "New"
     }
   ],
 
