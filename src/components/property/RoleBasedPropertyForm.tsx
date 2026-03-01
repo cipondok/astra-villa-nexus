@@ -161,6 +161,7 @@ const RoleBasedPropertyForm = () => {
   const [draftPropertyId, setDraftPropertyId] = useState<string | null>(null);
   const [aiTone, setAiTone] = useState<string>('luxury');
   const [aiRewrite, setAiRewrite] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [aiContent, setAiContent] = useState<{
     long_description: string;
     seo_description: string;
@@ -238,8 +239,12 @@ const RoleBasedPropertyForm = () => {
       );
 
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'Failed to generate');
+        const errData = await res.json();
+        if (errData.upgrade_required) {
+          setShowUpgradeModal(true);
+          return;
+        }
+        throw new Error(errData.error || 'Failed to generate');
       }
 
       const data = await res.json();
@@ -529,6 +534,7 @@ const RoleBasedPropertyForm = () => {
   }
 
   return (
+    <>
     <Card className="max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -1509,6 +1515,42 @@ const RoleBasedPropertyForm = () => {
         </form>
       </CardContent>
     </Card>
+
+    {/* Upgrade Modal */}
+    {showUpgradeModal && (
+      <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
+        <div className="bg-background border border-border rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6 space-y-4 animate-scale-in">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-primary/10">
+              <Sparkles className="h-6 w-6 text-primary" />
+            </div>
+            <h2 className="text-lg font-semibold">Upgrade Required</h2>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            You have reached your monthly AI generation limit (5). Upgrade to Pro for unlimited AI content.
+          </p>
+          <div className="flex gap-3 pt-2">
+            <Button
+              className="flex-1"
+              onClick={() => {
+                setShowUpgradeModal(false);
+                navigate('/membership');
+              }}
+            >
+              Upgrade Now
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => setShowUpgradeModal(false)}
+            >
+              Maybe Later
+            </Button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 
