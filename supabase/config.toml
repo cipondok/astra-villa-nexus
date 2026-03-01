@@ -201,3 +201,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.ai-description-generator]
     verify_jwt = false
+
+  [functions.ai-price-suggestion-engine]
+    verify_jwt = false
