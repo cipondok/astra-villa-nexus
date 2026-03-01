@@ -15430,12 +15430,18 @@ export type Database = {
           booking_type: string | null
           building_area_sqm: number | null
           city: string | null
+          completion_percentage: number | null
+          construction_phase: string | null
+          construction_phases: Json | null
           created_at: string | null
           description: string | null
           developer_certified: boolean
+          developer_id: string | null
           development_status: string
           discount_percentage: number | null
           drone_video_url: string | null
+          estimated_completion_date: string | null
+          estimated_completion_value: number | null
           floors: number | null
           furnishing: string | null
           garage_count: number | null
@@ -15450,8 +15456,11 @@ export type Database = {
           image_urls: string[] | null
           images: string[] | null
           investor_highlight: boolean | null
+          is_early_bird: boolean | null
           is_featured: boolean | null
+          is_pre_launch: boolean | null
           land_area_sqm: number | null
+          launch_date: string | null
           legal_checked: boolean
           legal_status: string | null
           listing_type: string
@@ -15480,6 +15489,8 @@ export type Database = {
           three_d_model_url: string | null
           thumbnail_url: string | null
           title: string
+          total_units: number | null
+          units_sold: number | null
           updated_at: string | null
           view_type: string | null
           virtual_tour_url: string | null
@@ -15499,12 +15510,18 @@ export type Database = {
           booking_type?: string | null
           building_area_sqm?: number | null
           city?: string | null
+          completion_percentage?: number | null
+          construction_phase?: string | null
+          construction_phases?: Json | null
           created_at?: string | null
           description?: string | null
           developer_certified?: boolean
+          developer_id?: string | null
           development_status?: string
           discount_percentage?: number | null
           drone_video_url?: string | null
+          estimated_completion_date?: string | null
+          estimated_completion_value?: number | null
           floors?: number | null
           furnishing?: string | null
           garage_count?: number | null
@@ -15519,8 +15536,11 @@ export type Database = {
           image_urls?: string[] | null
           images?: string[] | null
           investor_highlight?: boolean | null
+          is_early_bird?: boolean | null
           is_featured?: boolean | null
+          is_pre_launch?: boolean | null
           land_area_sqm?: number | null
+          launch_date?: string | null
           legal_checked?: boolean
           legal_status?: string | null
           listing_type: string
@@ -15549,6 +15569,8 @@ export type Database = {
           three_d_model_url?: string | null
           thumbnail_url?: string | null
           title: string
+          total_units?: number | null
+          units_sold?: number | null
           updated_at?: string | null
           view_type?: string | null
           virtual_tour_url?: string | null
@@ -15568,12 +15590,18 @@ export type Database = {
           booking_type?: string | null
           building_area_sqm?: number | null
           city?: string | null
+          completion_percentage?: number | null
+          construction_phase?: string | null
+          construction_phases?: Json | null
           created_at?: string | null
           description?: string | null
           developer_certified?: boolean
+          developer_id?: string | null
           development_status?: string
           discount_percentage?: number | null
           drone_video_url?: string | null
+          estimated_completion_date?: string | null
+          estimated_completion_value?: number | null
           floors?: number | null
           furnishing?: string | null
           garage_count?: number | null
@@ -15588,8 +15616,11 @@ export type Database = {
           image_urls?: string[] | null
           images?: string[] | null
           investor_highlight?: boolean | null
+          is_early_bird?: boolean | null
           is_featured?: boolean | null
+          is_pre_launch?: boolean | null
           land_area_sqm?: number | null
+          launch_date?: string | null
           legal_checked?: boolean
           legal_status?: string | null
           listing_type?: string
@@ -15618,6 +15649,8 @@ export type Database = {
           three_d_model_url?: string | null
           thumbnail_url?: string | null
           title?: string
+          total_units?: number | null
+          units_sold?: number | null
           updated_at?: string | null
           view_type?: string | null
           virtual_tour_url?: string | null
