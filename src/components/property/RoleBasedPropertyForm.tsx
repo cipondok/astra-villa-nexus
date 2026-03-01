@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check, PenLine, Activity, ShieldCheck, AlertTriangle, ArrowUp, Clock, Zap, BarChart3, Users, Award, Flame, Eye, Bookmark, PlusCircle, TrendingDown, ArrowRight } from "lucide-react";
+import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check, PenLine, Activity, ShieldCheck, AlertTriangle, ArrowUp, Clock, Zap, BarChart3, Users, Award, Flame, Eye, Bookmark, PlusCircle, TrendingDown, ArrowRight, DollarSign, Target, Calculator } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import PropertyImageUpload from "./PropertyImageUpload";
 import LocationSelector from "./LocationSelector";
@@ -248,6 +248,24 @@ const RoleBasedPropertyForm = () => {
     impact_prediction: string;
     confidence_score?: number;
     reasoning: string[];
+  } | null>(null);
+
+  // ROI Simulation state
+  const [roiLoading, setRoiLoading] = useState(false);
+  const [roiHoldYears, setRoiHoldYears] = useState(5);
+  const [roiData, setRoiData] = useState<{
+    hold_years: number;
+    current_price: number;
+    future_value: number;
+    capital_gain: number;
+    annual_appreciation_percent: number;
+    rental: { annual_rent: number; total_rental_income: number; adjusted_yield_percent: number };
+    expenses: { maintenance: number; management: number; exit_cost: number; total: number };
+    net_profit: number;
+    roi_percent: number;
+    annualized_return_percent: number;
+    market_context: { heat_level: string; heat_score: number; price_trend_percent: number; investment_score: number };
+    confidence_score: number;
   } | null>(null);
 
   // AI usage tracking
@@ -557,6 +575,40 @@ const RoleBasedPropertyForm = () => {
       showError('Analysis Failed', err.message || 'Could not analyze price strategy.');
     } finally {
       setStrategyLoading(false);
+    }
+  };
+
+  const simulateROI = async () => {
+    setRoiLoading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      if (!token) throw new Error('Not authenticated');
+
+      const id = draftPropertyId;
+      if (!id) {
+        showError('Save Required', 'Please save the property first.');
+        return;
+      }
+
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/property-intelligence-engine`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ property_id: id, mode: 'roi_simulation', hold_years: roiHoldYears }),
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Failed to simulate ROI');
+
+      setRoiData(result.data || result);
+    } catch (err: any) {
+      console.error('ROI simulation error:', err);
+      showError('Simulation Failed', err.message || 'Could not simulate ROI.');
+    } finally {
+      setRoiLoading(false);
     }
   };
 
@@ -1530,6 +1582,140 @@ const RoleBasedPropertyForm = () => {
                           <p className="text-sm font-medium text-green-600">Your pricing is well positioned for current market conditions.</p>
                           <p className="text-[10px] text-muted-foreground mt-1">No adjustment recommended at this time.</p>
                         </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ═══ Investor ROI Simulator ═══ */}
+            <div className="relative rounded-xl overflow-hidden shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/10 pointer-events-none" />
+              <div className="relative p-5 space-y-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Calculator className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground tracking-tight">Investor ROI Simulator</h3>
+                    <p className="text-[10px] text-muted-foreground">Project returns based on market signals</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Select value={String(roiHoldYears)} onValueChange={(v) => setRoiHoldYears(Number(v))}>
+                    <SelectTrigger className="w-[130px] h-9 text-xs border-primary/20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="3">3 Years</SelectItem>
+                      <SelectItem value="5">5 Years</SelectItem>
+                      <SelectItem value="10">10 Years</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={roiLoading || !draftPropertyId}
+                    onClick={simulateROI}
+                    className="flex-1 border-primary/20 hover:bg-primary/5"
+                  >
+                    {roiLoading ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <Target className="h-3.5 w-3.5 mr-1.5" />}
+                    Simulate Investment Return
+                  </Button>
+                </div>
+
+                {roiData && (
+                  <div className="space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+                    {/* Performance indicator */}
+                    {(() => {
+                      const roi = roiData.roi_percent;
+                      const tier = roi > 40
+                        ? { label: 'Excellent Investment', color: 'text-green-500', bg: 'bg-green-500/10 border-green-500/20', icon: '🟢' }
+                        : roi > 20
+                        ? { label: 'Strong', color: 'text-emerald-500', bg: 'bg-emerald-500/10 border-emerald-500/20', icon: '🟢' }
+                        : roi > 10
+                        ? { label: 'Moderate', color: 'text-yellow-500', bg: 'bg-yellow-500/10 border-yellow-500/20', icon: '🟡' }
+                        : { label: 'Conservative', color: 'text-muted-foreground', bg: 'bg-muted/50 border-border/50', icon: '⚪' };
+                      return (
+                        <div className={`p-3 rounded-lg border ${tier.bg} flex items-center justify-between`}>
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">{tier.icon}</span>
+                            <span className={`text-sm font-semibold ${tier.color}`}>{tier.label}</span>
+                          </div>
+                          <span className={`text-xl font-bold ${tier.color}`}>{roiData.roi_percent}%</span>
+                        </div>
+                      );
+                    })()}
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-3 rounded-lg bg-card border border-border/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium mb-0.5">Future Value</p>
+                        <p className="text-sm font-bold text-foreground">Rp {roiData.future_value.toLocaleString('id-ID')}</p>
+                        <p className="text-[10px] text-green-500 mt-0.5">+{roiData.annual_appreciation_percent}%/yr</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-card border border-border/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium mb-0.5">Capital Gain</p>
+                        <p className="text-sm font-bold text-foreground">Rp {roiData.capital_gain.toLocaleString('id-ID')}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-card border border-border/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium mb-0.5">Total Rental Income</p>
+                        <p className="text-sm font-bold text-foreground">Rp {roiData.rental.total_rental_income.toLocaleString('id-ID')}</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">Yield: {roiData.rental.adjusted_yield_percent}%</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-card border border-border/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium mb-0.5">Est. Expenses</p>
+                        <p className="text-sm font-bold text-destructive">Rp {roiData.expenses.total.toLocaleString('id-ID')}</p>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-lg bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/15 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-muted-foreground">Net Profit</span>
+                        <span className={`text-sm font-bold ${roiData.net_profit >= 0 ? 'text-green-500' : 'text-destructive'}`}>
+                          Rp {roiData.net_profit.toLocaleString('id-ID')}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-muted-foreground">Annualized Return</span>
+                        <span className={`text-sm font-bold ${roiData.annualized_return_percent >= 0 ? 'text-green-500' : 'text-destructive'}`}>
+                          {roiData.annualized_return_percent}%
+                        </span>
+                      </div>
+                    </div>
+
+                    <details className="group">
+                      <summary className="text-[10px] text-muted-foreground cursor-pointer hover:text-foreground transition-colors uppercase tracking-wide font-medium">
+                        Expense Breakdown
+                      </summary>
+                      <div className="mt-2 space-y-1.5 pl-2 border-l-2 border-border/50">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Maintenance</span>
+                          <span className="text-foreground">Rp {roiData.expenses.maintenance.toLocaleString('id-ID')}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Management (10%)</span>
+                          <span className="text-foreground">Rp {roiData.expenses.management.toLocaleString('id-ID')}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Exit Cost (5%)</span>
+                          <span className="text-foreground">Rp {roiData.expenses.exit_cost.toLocaleString('id-ID')}</span>
+                        </div>
+                      </div>
+                    </details>
+
+                    {roiData.confidence_score != null && (
+                      <div className="flex items-center justify-between pt-1 border-t border-border/30">
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">Confidence</span>
+                        <span className={`text-xs font-semibold ${
+                          roiData.confidence_score > 80 ? 'text-green-500'
+                          : roiData.confidence_score >= 60 ? 'text-yellow-500'
+                          : 'text-muted-foreground'
+                        }`}>
+                          {roiData.confidence_score}%
+                        </span>
                       </div>
                     )}
                   </div>
