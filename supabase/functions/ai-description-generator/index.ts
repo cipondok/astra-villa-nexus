@@ -247,6 +247,11 @@ Return ONLY the JSON object, no other text.`;
       if (saveErr) console.error('Failed to save AI content:', saveErr);
     }
 
+    // ── Log usage (non-blocking) ──
+    supabase.from('ai_usage_logs').insert({ user_id: userId, property_id }).then(({ error: logErr }) => {
+      if (logErr) console.error('Failed to log AI usage:', logErr);
+    });
+
     console.log(`AI description generated for property ${property_id}`);
 
     return new Response(JSON.stringify({
