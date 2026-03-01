@@ -47,8 +47,8 @@ Deno.serve(async (req) => {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    if (!mode || !['investment_score', 'price_suggestion'].includes(mode)) {
-      return new Response(JSON.stringify({ error: 'mode must be "investment_score" or "price_suggestion"' }), {
+    if (!mode || !['investment_score', 'price_suggestion', 'listing_health'].includes(mode)) {
+      return new Response(JSON.stringify({ error: 'mode must be "investment_score", "price_suggestion", or "listing_health"' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
     // ── Fetch property (superset of fields needed by both modes) ──
     const { data: property, error: pErr } = await supabase
       .from('properties')
-      .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, user_id, agent_id')
+      .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, user_id, agent_id, description, kt, km')
       .eq('id', property_id)
       .maybeSingle();
 
@@ -227,96 +227,183 @@ Deno.serve(async (req) => {
     }
 
     // ═══════════════════════════════════════════
-    // MODE: price_suggestion
+    // MODE: price_suggestion (also reused by listing_health)
     // ═══════════════════════════════════════════
-    const buildingArea = Number(property.building_area_sqm) || 0;
-    if (buildingArea <= 0) {
-      return new Response(JSON.stringify({ error: 'Property must have building_area_sqm to estimate price' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    const computePricePosition = async (prop: typeof property, propId: string) => {
+      const ba = Number(prop.building_area_sqm) || 0;
+      if (ba <= 0) return { price_position: 'unknown' as string, comparable_count: 0 };
+
+      const minA = ba * 0.7;
+      const maxA = ba * 1.3;
+
+      const { data: comps } = await supabase
+        .from('properties')
+        .select('price, building_area_sqm')
+        .eq('city', prop.city)
+        .eq('property_type', prop.property_type)
+        .eq('status', 'published')
+        .not('price', 'is', null)
+        .gte('building_area_sqm', minA)
+        .lte('building_area_sqm', maxA)
+        .neq('id', propId)
+        .limit(50);
+
+      const valid = (comps || []).filter(
+        (c) => Number(c.price) > 0 && Number(c.building_area_sqm) > 0
+      );
+      if (valid.length === 0) return { price_position: 'unknown', comparable_count: 0 };
+
+      const ppm2 = valid.map((c) => Number(c.price) / Number(c.building_area_sqm)).sort((a, b) => a - b);
+      const mid = Math.floor(ppm2.length / 2);
+      const median = ppm2.length % 2 !== 0 ? ppm2[mid] : (ppm2[mid - 1] + ppm2[mid]) / 2;
+
+      let tp = median * ba;
+      const is2 = Number(prop.investment_score) || 0;
+      if (is2 >= 80) tp *= 1.05;
+      else if (is2 >= 65) tp *= 1.03;
+      else if (is2 < 50) tp *= 0.95;
+
+      const rMin = Math.round(tp * 0.95);
+      const rMax = Math.round(tp * 1.05);
+      const suggested = Math.round(tp);
+      const cur = Number(prop.price) || 0;
+
+      let pos: string;
+      if (cur > rMax) pos = 'overpriced';
+      else if (cur < rMin) pos = 'underpriced';
+      else pos = 'market-aligned';
+
+      const cc = valid.length;
+      let conf: number;
+      if (cc >= 20) conf = 95;
+      else if (cc >= 10) conf = 80;
+      else if (cc >= 5) conf = 65;
+      else conf = 40;
+
+      return {
+        recommended_min_price: rMin,
+        recommended_max_price: rMax,
+        suggested_price: suggested,
+        confidence_score: conf,
+        price_position: pos,
+        comparable_count: cc,
+      };
+    };
+
+    if (mode === 'price_suggestion') {
+      const buildingArea = Number(property.building_area_sqm) || 0;
+      if (buildingArea <= 0) {
+        return new Response(JSON.stringify({ error: 'Property must have building_area_sqm to estimate price' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const result = await computePricePosition(property, property_id);
+      if (result.comparable_count === 0) {
+        return new Response(JSON.stringify({
+          mode: 'price_suggestion',
+          data: { error: 'Not enough comparable listings', comparable_count: 0 },
+        }), {
+          status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      console.log(`Price suggestion for ${property_id}: ${result.suggested_price} (${result.comparable_count} comps)`);
+
+      return new Response(JSON.stringify({ mode: 'price_suggestion', data: result }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const minArea = buildingArea * 0.7;
-    const maxArea = buildingArea * 1.3;
+    // ═══════════════════════════════════════════
+    // MODE: listing_health
+    // ═══════════════════════════════════════════
+    const issues: string[] = [];
+    const strengths: string[] = [];
+    const improvementPriority: string[] = [];
 
-    const { data: comparables, error: cErr } = await supabase
-      .from('properties')
-      .select('price, building_area_sqm')
-      .eq('city', property.city)
-      .eq('property_type', property.property_type)
-      .eq('status', 'published')
-      .not('price', 'is', null)
-      .gte('building_area_sqm', minArea)
-      .lte('building_area_sqm', maxArea)
-      .neq('id', property_id)
-      .limit(50);
+    // ── Parallel data fetches ──
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-    if (cErr) {
-      console.error('Comparables query error:', cErr);
-      return new Response(JSON.stringify({ error: 'Failed to fetch comparables' }), {
-        status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    const [photoRes, tour3dRes, viewRes, saveRes, pricePos] = await Promise.all([
+      supabase.from('property_media').select('id', { count: 'exact', head: true })
+        .eq('property_id', property_id).eq('media_type', 'image'),
+      supabase.from('property_media').select('id', { count: 'exact', head: true })
+        .eq('property_id', property_id).eq('media_type', '3d'),
+      supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+        .eq('activity_type', 'view').eq('property_id', property_id).gte('created_at', thirtyDaysAgo),
+      supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+        .eq('property_id', property_id).gte('saved_at', thirtyDaysAgo),
+      computePricePosition(property, property_id),
+    ]);
 
-    const validComps = (comparables || []).filter(
-      (c) => Number(c.price) > 0 && Number(c.building_area_sqm) > 0
-    );
+    const photoCount = photoRes.count || 0;
+    const has3dTour = (tour3dRes.count || 0) > 0;
+    const engagementTotal = (viewRes.count || 0) + (saveRes.count || 0) * 3;
 
-    if (validComps.length === 0) {
-      return new Response(JSON.stringify({
-        mode: 'price_suggestion',
-        data: { error: 'Not enough comparable listings', comparable_count: 0 },
-      }), {
-        status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    // ── PRICE (0–25) ──
+    let priceHealthScore = 10;
+    if (pricePos.price_position === 'market-aligned') { priceHealthScore = 25; strengths.push('Price is market-aligned'); }
+    else if (pricePos.price_position === 'underpriced') { priceHealthScore = 22; strengths.push('Competitive pricing — below market'); }
+    else if (pricePos.price_position === 'overpriced') { priceHealthScore = 10; issues.push('Property appears overpriced'); improvementPriority.push('Adjust price to market range'); }
+    else { priceHealthScore = 15; } // unknown
 
-    const pricesPerM2 = validComps
-      .map((c) => Number(c.price) / Number(c.building_area_sqm))
-      .sort((a, b) => a - b);
+    // ── INVESTMENT SCORE (0–15) ──
+    const invS = Number(property.investment_score) || 0;
+    let investmentHealthScore = 5;
+    if (invS >= 80) { investmentHealthScore = 15; strengths.push('Strong investment score (≥80)'); }
+    else if (invS >= 65) { investmentHealthScore = 10; }
+    else { issues.push('Low investment score'); improvementPriority.push('Improve property features or pricing to boost investment score'); }
 
-    const medianPricePerM2 = (() => {
-      const mid = Math.floor(pricesPerM2.length / 2);
-      return pricesPerM2.length % 2 !== 0
-        ? pricesPerM2[mid]
-        : (pricesPerM2[mid - 1] + pricesPerM2[mid]) / 2;
-    })();
+    // ── DESCRIPTION (0–15) ──
+    const descLen = (property.description || '').length;
+    let descScore = 5;
+    if (descLen > 400) { descScore = 15; strengths.push('Detailed description'); }
+    else if (descLen >= 200) { descScore = 10; }
+    else { issues.push('Description is too short (< 200 chars)'); improvementPriority.push('Write a detailed property description (400+ characters)'); }
 
-    let targetPrice = medianPricePerM2 * buildingArea;
+    // ── PHOTOS (0–15) ──
+    let photoScore = 5;
+    if (photoCount >= 10) { photoScore = 15; strengths.push(`${photoCount} photos uploaded`); }
+    else if (photoCount >= 5) { photoScore = 10; }
+    else { issues.push(`Only ${photoCount} photo(s) uploaded`); improvementPriority.push('Upload at least 10 high-quality photos'); }
 
-    const invScore = Number(property.investment_score) || 0;
-    if (invScore >= 80) targetPrice *= 1.05;
-    else if (invScore >= 65) targetPrice *= 1.03;
-    else if (invScore < 50) targetPrice *= 0.95;
+    // ── 3D TOUR (0–10) ──
+    let tourScore = 0;
+    if (has3dTour) { tourScore = 10; strengths.push('3D tour available'); }
+    else { issues.push('No 3D tour'); improvementPriority.push('Add a 3D virtual tour'); }
 
-    const recommendedMin = Math.round(targetPrice * 0.95);
-    const recommendedMax = Math.round(targetPrice * 1.05);
-    const suggestedPrice = Math.round(targetPrice);
+    // ── ENGAGEMENT (0–10) ──
+    let engScore = 3;
+    if (engagementTotal >= 50) { engScore = 10; strengths.push('High engagement in last 30 days'); }
+    else if (engagementTotal >= 20) { engScore = 6; }
+    else { issues.push('Low engagement in last 30 days'); }
 
-    const currentPrice = Number(property.price) || 0;
-    let pricePosition: string;
-    if (currentPrice > recommendedMax) pricePosition = 'overpriced';
-    else if (currentPrice < recommendedMin) pricePosition = 'underpriced';
-    else pricePosition = 'market-aligned';
+    // ── COMPLETENESS (0–10) ──
+    const majorFields = [property.price, property.description, property.city, property.property_type, property.building_area_sqm, property.land_area_sqm, property.kt, property.km];
+    const missingCount = majorFields.filter(f => f === null || f === undefined || f === '' || f === 0).length;
+    let completenessScore = 10;
+    if (missingCount > 2) { completenessScore = 5; issues.push(`${missingCount} major fields are incomplete`); improvementPriority.push('Fill in all property details (area, bedrooms, bathrooms, etc.)'); }
+    else { strengths.push('Property details are complete'); }
 
-    const compCount = validComps.length;
-    let confidenceScore: number;
-    if (compCount >= 20) confidenceScore = 95;
-    else if (compCount >= 10) confidenceScore = 80;
-    else if (compCount >= 5) confidenceScore = 65;
-    else confidenceScore = 40;
+    // ── FINAL SCORE & GRADE ──
+    const healthScore = Math.max(0, Math.min(100, priceHealthScore + investmentHealthScore + descScore + photoScore + tourScore + engScore + completenessScore));
+    let grade: string;
+    if (healthScore >= 90) grade = 'A';
+    else if (healthScore >= 75) grade = 'B';
+    else if (healthScore >= 60) grade = 'C';
+    else grade = 'D';
 
-    console.log(`Price suggestion for ${property_id}: ${suggestedPrice} (${compCount} comps)`);
+    console.log(`Listing health for ${property_id}: ${healthScore} (${grade})`);
 
     return new Response(JSON.stringify({
-      mode: 'price_suggestion',
+      mode: 'listing_health',
       data: {
-        recommended_min_price: recommendedMin,
-        recommended_max_price: recommendedMax,
-        suggested_price: suggestedPrice,
-        confidence_score: confidenceScore,
-        price_position: pricePosition,
-        comparable_count: compCount,
+        health_score: healthScore,
+        grade,
+        issues,
+        strengths,
+        improvement_priority: improvementPriority,
       },
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
