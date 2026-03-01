@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface RoleBasedNavigationProps {
   onLoginClick: () => void;
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onLanguageToggle: () => void;
   theme: string;
   onThemeToggle: () => void;

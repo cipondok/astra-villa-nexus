@@ -83,7 +83,7 @@ export interface LegacyProperty {
 // Common props for property card components
 export interface PropertyCardProps {
   property: BaseProperty;
-  language?: "en" | "id" | "zh" | "ja" | "ko";
+  language?: string;
   onView?: (id: string) => void;
   isSaved?: boolean;
   onSave?: (id: string) => void;

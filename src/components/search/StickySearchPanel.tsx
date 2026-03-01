@@ -49,7 +49,7 @@ interface RecentSearch {
 }
 
 interface StickySearchPanelProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onFiltersChange: (filters: any) => void;
   onSearch: (searchData: any) => void;
   initialFilters?: any;

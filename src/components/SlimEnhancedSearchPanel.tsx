@@ -8,7 +8,7 @@ import { Search, MapPin, Home, Filter, ChevronDown, X } from "lucide-react";
 import SearchSuggestions from "@/components/search/SearchSuggestions";
 
 interface SlimEnhancedSearchPanelProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onSearch: (searchData: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
   resultsCount?: number;

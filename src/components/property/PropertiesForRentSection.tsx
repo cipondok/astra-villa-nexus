@@ -14,7 +14,7 @@ import PropertyCardSkeleton from "./PropertyCardSkeleton";
 import OptimizedPropertyImage from "./OptimizedPropertyImage";
 
 interface PropertiesForRentSectionProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onPropertyClick: (property: BaseProperty) => void;
 }
 

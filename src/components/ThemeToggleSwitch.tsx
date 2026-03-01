@@ -5,7 +5,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface ThemeToggleSwitchProps {
-  language?: "en" | "id" | "zh" | "ja" | "ko";
+  language?: string;
   className?: string;
   showLabel?: boolean;
 }

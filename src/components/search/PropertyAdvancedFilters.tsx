@@ -13,7 +13,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { getCurrencyFormatter } from '@/stores/currencyStore';
 
 interface PropertyAdvancedFiltersProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onFiltersChange: (filters: any) => void;
   onSearch: (searchData: any) => void;
   initialFilters?: any;

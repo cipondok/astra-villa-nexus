@@ -23,7 +23,7 @@ import {
 interface EnhancedAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
 }
 
 const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps) => {

@@ -5,7 +5,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface ThemeToggleBarProps {
-  language?: "en" | "id" | "zh" | "ja" | "ko";
+  language?: string;
 }
 
 const ThemeToggleBar = ({ language }: ThemeToggleBarProps) => {

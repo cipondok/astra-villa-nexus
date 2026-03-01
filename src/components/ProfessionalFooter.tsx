@@ -6,7 +6,7 @@ import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import { useSocialMediaSettings } from "@/hooks/useSocialMediaSettings";
 
 interface ProfessionalFooterProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
 }
 
 interface DockItem {

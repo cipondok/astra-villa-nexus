@@ -9,7 +9,7 @@ import LiveAuctionCard from "./LiveAuctionCard";
 import { getCurrencyFormatter, getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 interface LiveListingsSectionProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
 }
 
 const LiveListingsSection = ({ language }: LiveListingsSectionProps) => {

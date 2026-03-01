@@ -8,7 +8,7 @@ import AdvancedFilters from './AdvancedFilters';
 import { useTranslation } from '@/i18n/useTranslation';
 
 interface CollapsibleSearchPanelProps {
-  language?: "en" | "id" | "zh" | "ja" | "ko";
+  language?: string;
   onSearch?: (searchData: any) => void;
 }
 

@@ -53,7 +53,7 @@ const useSearchUIState = () => {
   };
 };
 
-const AdditionalFilters = ({ language }: { language: "en" | "id" | "zh" | "ja" | "ko" }) => {
+const AdditionalFilters = ({ language }: { language: string }) => {
   const { t } = useTranslation();
   return (
     <div className="flex items-center space-x-2">
@@ -73,7 +73,7 @@ const AdditionalFilters = ({ language }: { language: "en" | "id" | "zh" | "ja" |
 };
 
 interface ModernSearchPanelProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onSearch: (filters: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
   // (Optionally accept isSearching and searchCount as props)

@@ -14,7 +14,7 @@ import { useBadgeSettings } from "@/hooks/useBadgeSettings";
 import PropertyCardSkeleton from "./PropertyCardSkeleton";
 
 interface PropertiesForSaleSectionProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onPropertyClick: (property: BaseProperty) => void;
 }
 
