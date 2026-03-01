@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Loader2 } from 'lucide-react';
-import DOMPurify from 'dompurify';
+import { sanitizeSync, preloadSanitizer } from '@/utils/sanitize';
 import { useLocationSettings } from '@/stores/locationSettingsStore';
 
 interface PropertyForMap {
@@ -108,11 +108,11 @@ const PropertyListingMapView = ({ properties, formatPrice }: PropertyListingMapV
 
       const itemsHtml = shown.map(p => {
         const img = p.image_urls?.[0] || p.images?.[0] || '/placeholder.svg';
-        const safeTitle = DOMPurify.sanitize(p.title, { ALLOWED_TAGS: [] });
-        const safePrice = DOMPurify.sanitize(formatPrice(p.price), { ALLOWED_TAGS: [] });
+        const safeTitle = sanitizeSync(p.title, { ALLOWED_TAGS: [] });
+        const safePrice = sanitizeSync(formatPrice(p.price), { ALLOWED_TAGS: [] });
         return `
           <a href="/properties/${p.id}" class="flex gap-2 p-2 hover:bg-gray-50 rounded transition-colors no-underline" style="text-decoration:none;color:inherit;">
-            <img src="${DOMPurify.sanitize(img, { ALLOWED_TAGS: [] })}" alt="" class="w-14 h-14 object-cover rounded flex-shrink-0" />
+            <img src="${sanitizeSync(img, { ALLOWED_TAGS: [] })}" alt="" class="w-14 h-14 object-cover rounded flex-shrink-0" />
             <div class="min-w-0">
               <p class="text-sm font-semibold truncate">${safeTitle}</p>
               <p class="text-xs font-bold" style="color:hsl(var(--primary))">${safePrice}</p>
@@ -127,7 +127,7 @@ const PropertyListingMapView = ({ properties, formatPrice }: PropertyListingMapV
 
       const popupHtml = `
         <div style="max-width:260px;max-height:280px;overflow-y:auto;">
-          <p class="font-bold text-sm px-2 pt-2 pb-1">${DOMPurify.sanitize(city, { ALLOWED_TAGS: [] })}</p>
+          <p class="font-bold text-sm px-2 pt-2 pb-1">${sanitizeSync(city, { ALLOWED_TAGS: [] })}</p>
           <div class="divide-y">${itemsHtml}</div>
           ${moreHtml}
         </div>

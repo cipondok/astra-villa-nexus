@@ -18,8 +18,8 @@ import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, 
 import { useToast } from '@/hooks/use-toast';
 import { useSavedSearches } from '@/hooks/useSavedSearches';
 import SavedSearchesPanel from '@/components/search/SavedSearchesPanel';
-// html2pdf is dynamically imported where used to reduce bundle size
-import DOMPurify from 'dompurify';
+// DOMPurify is dynamically imported where used to reduce bundle size
+import { sanitizeSync, preloadSanitizer } from '@/utils/sanitize';
 
 interface OptimizedPropertySearchProps {
   onResultSelect?: (propertyId: string) => void;
@@ -1397,7 +1397,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 const similarityClass = similarity >= 70 ? 'similarity-high' : similarity >= 50 ? 'similarity-medium' : 'similarity-low';
                 
                 // Sanitize all user-controlled data to prevent XSS
-                const sanitize = (text: any) => DOMPurify.sanitize(String(text || ''), { ALLOWED_TAGS: [] });
+                const sanitize = (text: any) => sanitizeSync(String(text || ''), { ALLOWED_TAGS: [] });
                 
                 return `
                 <tr>
@@ -1438,7 +1438,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
     const element = document.createElement('div');
     // Sanitize HTML content to prevent XSS while allowing PDF structure tags
-    element.innerHTML = DOMPurify.sanitize(htmlContent, {
+    element.innerHTML = sanitizeSync(htmlContent, {
       ALLOWED_TAGS: ['html', 'head', 'style', 'body', 'h1', 'div', 'p', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'span', 'strong'],
       ALLOWED_ATTR: ['class', 'style']
     });

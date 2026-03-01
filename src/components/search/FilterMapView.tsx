@@ -4,7 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { supabase } from "@/integrations/supabase/client";
 import { PropertyFilters } from "./AdvancedPropertyFilters";
 import { Loader2 } from 'lucide-react';
-import DOMPurify from 'dompurify';
+import { sanitizeSync, preloadSanitizer } from '@/utils/sanitize';
 import { useLocationSettings } from '@/stores/locationSettingsStore';
 
 interface FilterMapViewProps {
@@ -117,7 +117,7 @@ export const FilterMapView = ({ filters }: FilterMapViewProps) => {
                   new mapboxgl.Popup({ offset: 25 })
                     .setHTML(`
                       <div class="p-2">
-                        <p class="font-bold text-sm">${DOMPurify.sanitize(city, { ALLOWED_TAGS: [] })}</p>
+                        <p class="font-bold text-sm">${sanitizeSync(city, { ALLOWED_TAGS: [] })}</p>
                         <p class="text-xs text-primary">${count} properties</p>
                       </div>
                     `)

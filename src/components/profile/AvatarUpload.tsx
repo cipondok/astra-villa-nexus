@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import imageCompression from 'browser-image-compression';
-import ImageCropper from './ImageCropper';
+import React, { Suspense } from 'react';
+const ImageCropper = React.lazy(() => import('./ImageCropper'));
 import AvatarUploadGuard from './AvatarUploadGuard';
 
 interface AvatarUploadProps {
@@ -365,13 +366,15 @@ export const AvatarUpload = ({
 
       {/* Image Cropper Modal */}
       {showCropper && selectedFile && (
-        <ImageCropper
-          imageFile={selectedFile}
-          onCropComplete={handleCropComplete}
-          onCancel={handleCropCancel}
-          aspectRatio={1}
-          circularCrop={true}
-        />
+        <Suspense fallback={null}>
+          <ImageCropper
+            imageFile={selectedFile}
+            onCropComplete={handleCropComplete}
+            onCancel={handleCropCancel}
+            aspectRatio={1}
+            circularCrop={true}
+          />
+        </Suspense>
       )}
     </div>
   );
