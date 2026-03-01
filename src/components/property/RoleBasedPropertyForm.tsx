@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu } from "lucide-react";
+import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import PropertyImageUpload from "./PropertyImageUpload";
 import LocationSelector from "./LocationSelector";
@@ -155,6 +155,71 @@ const RoleBasedPropertyForm = () => {
     panorama_360_urls: [],
     ai_staging_images: [],
   });
+
+  // AI Description Generator state
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiContent, setAiContent] = useState<{
+    long_description: string;
+    seo_description: string;
+    social_caption: string;
+    highlights: string[];
+  } | null>(null);
+
+  const generateAiDescription = async (propertyId?: string) => {
+    setAiLoading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      if (!token) throw new Error('Not authenticated');
+
+      // If no propertyId, we need to create/save first or use a temp approach
+      // For existing properties, pass the ID; for new ones, show error
+      if (!propertyId) {
+        showError('Save First', 'Please save the property first before generating AI content.');
+        setAiLoading(false);
+        return;
+      }
+
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-description-generator`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ property_id: propertyId, save_results: false }),
+        }
+      );
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to generate');
+      }
+
+      const data = await res.json();
+      setAiContent({
+        long_description: data.long_description,
+        seo_description: data.seo_description,
+        social_caption: data.social_caption,
+        highlights: data.highlights || [],
+      });
+
+      // Auto-populate description and seo_description
+      setFormData(prev => ({
+        ...prev,
+        description: data.long_description,
+        seo_description: data.seo_description,
+      }));
+
+      showSuccess('AI Content Generated', 'Description, SEO, and social content are ready.');
+    } catch (err: any) {
+      console.error('AI generation error:', err);
+      showError('Generation Failed', err.message || 'Could not generate AI content.');
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   // Location selector state
   const [locationState, setLocationState] = useState({
@@ -515,8 +580,105 @@ const RoleBasedPropertyForm = () => {
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 placeholder="Describe your property..."
-                rows={4}
+                rows={6}
               />
+            </div>
+
+            {/* AI Description Generator */}
+            <div className="p-4 border border-dashed border-primary/30 rounded-lg bg-primary/5 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  <span className="font-semibold text-sm">AI Content Generator</span>
+                </div>
+                <div className="flex gap-2">
+                  {aiContent && (
+                    <>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={aiLoading}
+                        onClick={() => generateAiDescription(undefined)}
+                      >
+                        <RefreshCw className="h-3 w-3 mr-1" />
+                        Regenerate
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="default"
+                        size="sm"
+                        disabled={aiLoading}
+                        onClick={() => {
+                          if (aiContent) {
+                            setFormData(prev => ({
+                              ...prev,
+                              description: aiContent.long_description,
+                              seo_description: aiContent.seo_description,
+                            }));
+                            showSuccess('Applied', 'AI content saved to form fields.');
+                          }
+                        }}
+                      >
+                        <Save className="h-3 w-3 mr-1" />
+                        Save to Property
+                      </Button>
+                    </>
+                  )}
+                  {!aiContent && (
+                    <Button
+                      type="button"
+                      variant="default"
+                      size="sm"
+                      disabled={aiLoading}
+                      onClick={() => generateAiDescription(undefined)}
+                    >
+                      {aiLoading ? (
+                        <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                      ) : (
+                        <Sparkles className="h-3 w-3 mr-1" />
+                      )}
+                      {aiLoading ? 'Generating...' : '✨ Generate AI Description'}
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {aiLoading && (
+                <div className="flex items-center justify-center py-6 text-muted-foreground">
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                  <span className="text-sm">Generating premium content with AI...</span>
+                </div>
+              )}
+
+              {aiContent && !aiLoading && (
+                <div className="space-y-4">
+                  {/* SEO Description Preview */}
+                  <div>
+                    <Label className="text-xs text-muted-foreground">SEO Description ({aiContent.seo_description.length}/160)</Label>
+                    <p className="text-sm p-2 bg-background rounded border">{aiContent.seo_description}</p>
+                  </div>
+
+                  {/* Social Caption Preview */}
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Instagram Caption</Label>
+                    <p className="text-sm p-2 bg-background rounded border whitespace-pre-wrap">{aiContent.social_caption}</p>
+                  </div>
+
+                  {/* Highlights Preview */}
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Property Highlights</Label>
+                    <ul className="text-sm p-2 bg-background rounded border space-y-1">
+                      {aiContent.highlights.map((h, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-primary mt-0.5">•</span>
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
