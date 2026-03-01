@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check } from "lucide-react";
+import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check, PenLine } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import PropertyImageUpload from "./PropertyImageUpload";
 import LocationSelector from "./LocationSelector";
@@ -160,6 +160,7 @@ const RoleBasedPropertyForm = () => {
   const [aiLoading, setAiLoading] = useState(false);
   const [draftPropertyId, setDraftPropertyId] = useState<string | null>(null);
   const [aiTone, setAiTone] = useState<string>('luxury');
+  const [aiRewrite, setAiRewrite] = useState(false);
   const [aiContent, setAiContent] = useState<{
     long_description: string;
     seo_description: string;
@@ -227,7 +228,12 @@ const RoleBasedPropertyForm = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify({ property_id: id, tone: aiTone, save_results: false }),
+          body: JSON.stringify({
+            property_id: id,
+            tone: aiTone,
+            save_results: false,
+            ...(aiRewrite && formData.description.trim() ? { rewrite_text: formData.description } : {}),
+          }),
         }
       );
 
@@ -686,6 +692,19 @@ const RoleBasedPropertyForm = () => {
                     </SelectContent>
                   </Select>
                 </div>
+                {/* Rewrite checkbox */}
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={aiRewrite}
+                    onChange={(e) => setAiRewrite(e.target.checked)}
+                    className="rounded border-border accent-primary h-3.5 w-3.5"
+                  />
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <PenLine className="h-3 w-3" />
+                    Rewrite existing description instead of generating new
+                  </span>
+                </label>
 
                 {/* Buttons */}
                 <div className="flex flex-wrap gap-2">

@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     const userId = claimsData.claims.sub as string;
 
     // ── Parse request ──
-    const { property_id, save_results, tone } = await req.json();
+    const { property_id, save_results, tone, rewrite_text } = await req.json();
     if (!property_id) {
       return new Response(JSON.stringify({ error: 'property_id is required' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -101,9 +101,35 @@ Deno.serve(async (req) => {
     };
     const toneInstruction = toneGuides[tone as string] || toneGuides.luxury;
 
-    const systemPrompt = `You are a real estate marketing expert writing for an AI-powered property platform called ASTRA Villa. ${toneInstruction} Never use markdown symbols like #, *, or **. Use clean plain text only.`;
+    const isRewrite = typeof rewrite_text === 'string' && rewrite_text.trim().length > 0;
 
-    const userPrompt = `Generate premium marketing content for this property:
+    const systemPrompt = isRewrite
+      ? `You are a real estate copywriting editor for ASTRA Villa. Your job is to rewrite and enhance an existing property description. ${toneInstruction} Improve clarity, flow, and persuasiveness while preserving all factual details. Never use markdown symbols like #, *, or **. Use clean plain text only.`
+      : `You are a real estate marketing expert writing for an AI-powered property platform called ASTRA Villa. ${toneInstruction} Never use markdown symbols like #, *, or **. Use clean plain text only.`;
+
+    const userPrompt = isRewrite
+      ? `Rewrite and enhance this existing property description with the selected tone. Preserve all facts but improve the writing quality, flow, and persuasiveness.
+
+Original Description:
+"""
+${rewrite_text}
+"""
+
+Property Context:
+- Title: ${property.title || 'Untitled Property'}
+- Type: ${property.property_type || 'Residential'}
+- Price: Rp ${Number(property.price || 0).toLocaleString('id-ID')}
+- City: ${property.city || 'Unknown'}
+- Investment Score: ${invScore}/100
+
+Return a JSON object with exactly these keys:
+- "long_description": The rewritten description, improved for tone, clarity, and persuasion (400-600 words, plain text, no markdown)
+- "seo_description": Under 160 characters, optimized for search engines
+- "social_caption": An engaging Instagram caption with relevant emojis and hashtags
+- "highlights": An array of exactly 5 short bullet points (plain text strings, no bullet symbols)
+
+Return ONLY the JSON object, no other text.`
+      : `Generate premium marketing content for this property:
 
 Property Details:
 - Title: ${property.title || 'Untitled Property'}
