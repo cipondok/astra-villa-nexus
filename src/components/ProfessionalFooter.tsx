@@ -184,7 +184,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     <footer
       className="w-full border-t border-gold-primary/15 backdrop-blur-xl px-4 md:px-8 py-6 transition-colors duration-200
         bg-card/95 shadow-[0_-4px_20px_hsl(var(--gold-primary)/0.05)]"
-      style={{ contain: 'layout', minHeight: '120px' }}
+      style={{ contain: 'layout style', minHeight: '180px' }}
     >
       {/* Logo + Dock */}
       <div className="flex flex-col md:flex-row items-center md:items-end gap-4 mb-5">
