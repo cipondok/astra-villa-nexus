@@ -17432,6 +17432,60 @@ export type Database = {
           },
         ]
       }
+      property_verification_badges: {
+        Row: {
+          badge_type: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          notes: string | null
+          property_id: string
+          updated_at: string
+          verified_at: string
+          verified_by: string | null
+        }
+        Insert: {
+          badge_type: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          property_id: string
+          updated_at?: string
+          verified_at?: string
+          verified_by?: string | null
+        }
+        Update: {
+          badge_type?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          property_id?: string
+          updated_at?: string
+          verified_at?: string
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_verification_badges_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_verification_badges_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_visits: {
         Row: {
           agent_id: string

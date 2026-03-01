@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter, Link2, Image as ImageIcon } from "lucide-react";
+import { Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter, Link2, Image as ImageIcon, Shield } from "lucide-react";
 import SimplePropertyManagement from "./SimplePropertyManagement";
 import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
@@ -18,6 +18,7 @@ import PropertyFilterSettings from "./settings/PropertyFilterSettings";
 import IndonesianLocationManager from "./property/IndonesianLocationManager";
 import CentralLocationSettings from "./location/CentralLocationSettings";
 import PropertyImageManager from "./PropertyImageManager";
+import PropertyVerificationBadges from "./PropertyVerificationBadges";
 
 const AdminPropertyManagement = () => {
   const [activeTab, setActiveTab] = useState("properties");
@@ -147,6 +148,13 @@ const AdminPropertyManagement = () => {
               <Filter className="h-3 w-3" />
               <span className="hidden sm:inline">Filters</span>
             </TabsTrigger>
+            <TabsTrigger 
+              value="badges" 
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              <Shield className="h-3 w-3" />
+              <span className="hidden sm:inline">Badges</span>
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -199,6 +207,9 @@ const AdminPropertyManagement = () => {
 
         <TabsContent value="filters" className="mt-3">
           <PropertyFilterSettings />
+        </TabsContent>
+        <TabsContent value="badges" className="mt-3">
+          <PropertyVerificationBadges />
         </TabsContent>
       </Tabs>
     </div>
