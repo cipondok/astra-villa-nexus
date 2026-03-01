@@ -16636,6 +16636,48 @@ export type Database = {
         }
         Relationships: []
       }
+      property_price_history: {
+        Row: {
+          change_percentage: number | null
+          changed_at: string
+          id: string
+          new_price: number
+          old_price: number
+          property_id: string
+        }
+        Insert: {
+          change_percentage?: number | null
+          changed_at?: string
+          id?: string
+          new_price: number
+          old_price: number
+          property_id: string
+        }
+        Update: {
+          change_percentage?: number | null
+          changed_at?: string
+          id?: string
+          new_price?: number
+          old_price?: number
+          property_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_price_history_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_price_history_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_questions: {
         Row: {
           answer_count: number | null
@@ -19256,6 +19298,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      saved_search_alerts: {
+        Row: {
+          created_at: string
+          frequency: string
+          id: string
+          is_active: boolean
+          last_triggered_at: string | null
+          match_count: number
+          name: string
+          search_criteria: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          last_triggered_at?: string | null
+          match_count?: number
+          name: string
+          search_criteria?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          last_triggered_at?: string | null
+          match_count?: number
+          name?: string
+          search_criteria?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       search_analytics: {
         Row: {
