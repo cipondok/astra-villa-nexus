@@ -28,6 +28,7 @@ import { useVIPLimits } from '@/hooks/useVIPLimits';
 import { MEMBERSHIP_LEVELS, MembershipLevel, getMembershipConfig } from '@/types/membership';
 import { cn } from '@/lib/utils';
 import MembershipUpgradeFlow from '@/components/membership/MembershipUpgradeFlow';
+import MembershipBenefitComparison from '@/components/membership/MembershipBenefitComparison';
 
 const TIER_ORDER: MembershipLevel[] = ['free', 'pro_agent', 'developer', 'vip_investor'];
 
@@ -44,21 +45,6 @@ const formatIDR = (amount: number) => {
   return getCurrencyFormatter()(amount);
 };
 
-// Feature comparison data
-const COMPARISON_FEATURES = [
-  { name: 'Listing Exposure', free: '1x', pro_agent: '2x', developer: '5x', vip_investor: '10x' },
-  { name: 'Max Images', free: '5', pro_agent: '10', developer: '30', vip_investor: 'Unlimited' },
-  { name: 'Priority Placement', free: false, pro_agent: true, developer: true, vip_investor: true },
-  { name: 'Agent Badge', free: false, pro_agent: true, developer: true, vip_investor: true },
-  { name: 'SEO Tools', free: false, pro_agent: true, developer: true, vip_investor: true },
-  { name: 'AI Analytics', free: false, pro_agent: false, developer: true, vip_investor: true },
-  { name: 'Virtual Tour / 3D', free: false, pro_agent: false, developer: true, vip_investor: true },
-  { name: 'Featured Badge', free: false, pro_agent: false, developer: true, vip_investor: true },
-  { name: 'Homepage Spotlight', free: false, pro_agent: false, developer: false, vip_investor: true },
-  { name: '3D Featured Badge', free: false, pro_agent: false, developer: false, vip_investor: true },
-  { name: 'Personal Concierge', free: false, pro_agent: false, developer: false, vip_investor: true },
-  { name: 'Priority Support', free: false, pro_agent: true, developer: true, vip_investor: true },
-];
 
 const MembershipPage: React.FC = () => {
   const navigate = useNavigate();
@@ -290,61 +276,12 @@ const MembershipPage: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Feature Comparison Table */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-          <div className="flex items-center gap-1.5 mb-2">
-            <BarChart3 className="h-3.5 w-3.5 text-primary" />
-            <span className="text-xs font-medium text-muted-foreground">Feature Comparison</span>
-          </div>
-
-          <Card>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <table className="w-full text-[10px]">
-                  <thead>
-                    <tr className="border-b bg-muted/30">
-                      <th className="text-left p-2 font-medium text-muted-foreground">Feature</th>
-                      {TIER_ORDER.map(tier => {
-                        const config = MEMBERSHIP_LEVELS[tier];
-                        return (
-                          <th key={tier} className={cn("p-2 text-center font-semibold", config.color)}>
-                            <div className="flex flex-col items-center gap-0.5">
-                              <span>{config.icon}</span>
-                              <span>{config.shortLabel}</span>
-                            </div>
-                          </th>
-                        );
-                      })}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {COMPARISON_FEATURES.map((feature, i) => (
-                      <tr key={feature.name} className={cn("border-b last:border-0", i % 2 === 0 && "bg-muted/10")}>
-                        <td className="p-2 font-medium">{feature.name}</td>
-                        {TIER_ORDER.map(tier => {
-                          const value = feature[tier];
-                          return (
-                            <td key={tier} className="p-2 text-center">
-                              {typeof value === 'boolean' ? (
-                                value ? (
-                                  <Check className="h-3 w-3 text-primary mx-auto" />
-                                ) : (
-                                  <span className="text-muted-foreground/40">—</span>
-                                )
-                              ) : (
-                                <span className="font-medium">{value}</span>
-                              )}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+        {/* Feature Comparison & Payment Methods */}
+        <MembershipBenefitComparison
+          currentLevel={membershipLevel}
+          billingCycle={billingCycle}
+          onUpgrade={handleUpgrade}
+        />
 
         {/* Recurring Income Note */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
