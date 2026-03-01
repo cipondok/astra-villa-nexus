@@ -1899,6 +1899,45 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_generated_content: {
+        Row: {
+          content: string | null
+          content_type: string | null
+          created_at: string | null
+          id: string
+          property_id: string | null
+        }
+        Insert: {
+          content?: string | null
+          content_type?: string | null
+          created_at?: string | null
+          id?: string
+          property_id?: string | null
+        }
+        Update: {
+          content?: string | null
+          content_type?: string | null
+          created_at?: string | null
+          id?: string
+          property_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_generated_content_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_generated_content_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_message_reactions: {
         Row: {
           conversation_id: string | null
