@@ -44,22 +44,18 @@ interface UserIconWithBadgeProps {
 }
 
 const MEMBERSHIP_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  basic: Shield,
-  verified: CheckCircle2,
-  vip: Star,
-  gold: Award,
-  platinum: Gem,
-  diamond: Gem, // Using Gem for diamond
+  free: Shield,
+  pro_agent: Star,
+  developer: Award,
+  vip_investor: Gem,
 };
 
 // Special gradient colors for each membership level
 const MEMBERSHIP_GRADIENTS: Record<string, string> = {
-  basic: 'linear-gradient(135deg, #6b7280, #9ca3af)',
-  verified: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
-  vip: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
-  gold: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
-  platinum: 'linear-gradient(135deg, #64748b, #94a3b8)',
-  diamond: 'linear-gradient(135deg, #06b6d4, #8b5cf6, #ec4899)', // Rainbow gradient for diamond
+  free: 'linear-gradient(135deg, #6b7280, #9ca3af)',
+  pro_agent: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
+  developer: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+  vip_investor: 'linear-gradient(135deg, #06b6d4, #8b5cf6, #ec4899)',
 };
 
 const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate: undefined }) => {
@@ -105,7 +101,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
 
   const membershipConfig = getMembershipConfig(membershipLevel);
   const MembershipIcon = MEMBERSHIP_ICONS[membershipLevel] || Shield;
-  const membershipGradient = MEMBERSHIP_GRADIENTS[membershipLevel] || MEMBERSHIP_GRADIENTS.basic;
+  const membershipGradient = MEMBERSHIP_GRADIENTS[membershipLevel] || MEMBERSHIP_GRADIENTS.free;
   const hasAvatar = profile?.avatar_url;
 
   return (
@@ -124,11 +120,11 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                 <div 
                   className={
                     `w-full h-full rounded-full flex items-center justify-center shadow-md border border-primary-foreground/50 ` +
-                    (membershipLevel === 'diamond' ? 'animate-pulse' : '')
+                    (membershipLevel === 'vip_investor' ? 'animate-pulse' : '')
                   }
                   style={{ 
                     background: membershipGradient,
-                    boxShadow: membershipLevel === 'diamond' 
+                    boxShadow: membershipLevel === 'vip_investor' 
                       ? '0 1px 8px rgba(139, 92, 246, 0.5), 0 0 12px rgba(6, 182, 212, 0.4)' 
                       : `0 1px 6px ${membershipConfig.color}40`
                   }}
@@ -136,7 +132,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                   <MembershipIcon
                     className={
                       `h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary-foreground drop-shadow-sm ` +
-                      (membershipLevel === 'diamond' ? 'animate-[spin_6s_linear_infinite]' : '')
+                      (membershipLevel === 'vip_investor' ? 'animate-[spin_6s_linear_infinite]' : '')
                     }
                   />
                 </div>
@@ -202,11 +198,11 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
             <div 
               className={
                 `w-10 h-10 rounded-full flex items-center justify-center shadow-lg border-2 border-background flex-shrink-0 ` +
-                (membershipLevel === 'diamond' ? 'animate-pulse' : '')
+                (membershipLevel === 'vip_investor' ? 'animate-pulse' : '')
               }
               style={{ 
                 background: membershipGradient,
-                boxShadow: membershipLevel === 'diamond' 
+                boxShadow: membershipLevel === 'vip_investor' 
                   ? '0 2px 14px rgba(139, 92, 246, 0.65), 0 0 24px rgba(6, 182, 212, 0.5)' 
                   : `0 2px 8px ${membershipConfig.color}60`
               }}
@@ -214,7 +210,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
               <MembershipIcon
                 className={
                   `h-5 w-5 text-primary-foreground drop-shadow-md ` +
-                  (membershipLevel === 'diamond' ? 'animate-[spin_6s_linear_infinite]' : '')
+                  (membershipLevel === 'vip_investor' ? 'animate-[spin_6s_linear_infinite]' : '')
                 }
               />
             </div>
@@ -228,7 +224,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                   style={{ 
                     background: membershipGradient,
                     color: 'white',
-                    boxShadow: membershipLevel === 'diamond' ? '0 1px 6px rgba(139, 92, 246, 0.4)' : 'none'
+                    boxShadow: membershipLevel === 'vip_investor' ? '0 1px 6px rgba(139, 92, 246, 0.4)' : 'none'
                   }}
                 >
                   {membershipConfig.label}

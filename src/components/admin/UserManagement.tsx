@@ -62,11 +62,9 @@ const roleConfig: Record<UserRole, { label: string; color: string; icon: React.R
 const getLevelIcon = (levelName: string) => {
   const membership = getMembershipFromUserLevel(levelName);
   switch (membership) {
-    case 'diamond': return <Gem className="h-3.5 w-3.5 text-chart-2" />;
-    case 'platinum': return <Sparkles className="h-3.5 w-3.5 text-primary" />;
-    case 'gold': return <Crown className="h-3.5 w-3.5 text-chart-3" />;
-    case 'vip': return <Star className="h-3.5 w-3.5 text-chart-4" />;
-    case 'verified': return <Shield className="h-3.5 w-3.5 text-chart-1" />;
+    case 'vip_investor': return <Gem className="h-3.5 w-3.5 text-chart-2" />;
+    case 'developer': return <Crown className="h-3.5 w-3.5 text-chart-3" />;
+    case 'pro_agent': return <Star className="h-3.5 w-3.5 text-chart-4" />;
     default: return <Users className="h-3.5 w-3.5 text-muted-foreground" />;
   }
 };

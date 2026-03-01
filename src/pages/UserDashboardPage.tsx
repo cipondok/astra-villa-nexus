@@ -180,17 +180,15 @@ const UserDashboardPage = () => {
               </div>
               {/* Next Level Progress */}
               {(() => {
-                const levels: MembershipLevel[] = ['basic', 'verified', 'vip', 'gold', 'platinum', 'diamond'];
-                const currentIdx = levels.indexOf(membershipLevel || 'basic');
+                const levels: MembershipLevel[] = ['free', 'pro_agent', 'developer', 'vip_investor'];
+                const currentIdx = levels.indexOf(membershipLevel || 'free');
                 const nextLevel = currentIdx < levels.length - 1 ? levels[currentIdx + 1] : null;
                 const nextConfig = nextLevel ? getMembershipConfig(nextLevel) : null;
                 const progressPercent = nextLevel ? Math.min(((currentIdx + 1) / levels.length) * 100, 90) : 100;
                 const tips: Record<string, string> = {
-                  verified: '💡 Complete profile & verify identity',
-                  vip: '💡 Get verified + activate subscription',
-                  gold: '💡 List 5+ properties & maintain ratings',
-                  platinum: '💡 Reach Gold + 20 transactions',
-                  diamond: '💡 Platinum + top performer status',
+                  pro_agent: '💡 Upgrade to Pro Agent for more exposure',
+                  developer: '💡 Upgrade to Developer for AI analytics',
+                  vip_investor: '💡 Upgrade to VIP for homepage spotlight',
                 };
                 return (
                   <div className="mt-2 space-y-1 max-w-[260px]">

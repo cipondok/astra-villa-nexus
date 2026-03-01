@@ -104,9 +104,9 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
   const getLevelIcon = (levelName: string) => {
     const level = getMembershipFromUserLevel(levelName);
     switch (level) {
-      case 'diamond': return <Gem className="h-4 w-4 text-chart-2" />;
-      case 'platinum': return <Crown className="h-4 w-4 text-chart-4" />;
-      case 'gold': return <Award className="h-4 w-4 text-chart-3" />;
+      case 'vip_investor': return <Gem className="h-4 w-4 text-chart-2" />;
+      case 'developer': return <Crown className="h-4 w-4 text-chart-4" />;
+      case 'pro_agent': return <Award className="h-4 w-4 text-chart-3" />;
       default: return <Award className="h-4 w-4 text-muted-foreground" />;
     }
   };
@@ -158,9 +158,9 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
             </div>
             <div>
               <div className="text-lg font-bold">
-                {distribution?.find(d => getMembershipFromUserLevel(d.level_name) === 'diamond')?.count || 0}
+                {distribution?.find(d => getMembershipFromUserLevel(d.level_name) === 'vip_investor')?.count || 0}
               </div>
-              <div className="text-[9px] text-muted-foreground">Diamond Members</div>
+              <div className="text-[9px] text-muted-foreground">VIP Investor Members</div>
             </div>
           </div>
         </div>
@@ -172,9 +172,9 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
             </div>
             <div>
               <div className="text-lg font-bold">
-                {distribution?.find(d => getMembershipFromUserLevel(d.level_name) === 'platinum')?.count || 0}
+                {distribution?.find(d => getMembershipFromUserLevel(d.level_name) === 'developer')?.count || 0}
               </div>
-              <div className="text-[9px] text-muted-foreground">Platinum Members</div>
+              <div className="text-[9px] text-muted-foreground">Developer Members</div>
             </div>
           </div>
         </div>
@@ -202,9 +202,9 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
                   const percentage = totalVIPUsers ? (item.count / totalVIPUsers) * 100 : 0;
                   const membership = getMembershipFromUserLevel(item.level_name);
                   
-                  const barColor = membership === 'diamond' ? 'hsl(var(--chart-2))' :
-                    membership === 'platinum' ? 'hsl(var(--chart-4))' :
-                    membership === 'gold' ? 'hsl(var(--chart-3))' : 'hsl(var(--muted-foreground))';
+                  const barColor = membership === 'vip_investor' ? 'hsl(var(--chart-2))' :
+                    membership === 'developer' ? 'hsl(var(--chart-4))' :
+                    membership === 'pro_agent' ? 'hsl(var(--chart-3))' : 'hsl(var(--muted-foreground))';
                   
                   return (
                     <div key={item.level_name} className="space-y-1">

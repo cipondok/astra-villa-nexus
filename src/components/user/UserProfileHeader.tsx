@@ -28,7 +28,7 @@ export const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
   if (!user) return null;
 
-  const isHighTier = ['gold', 'platinum', 'diamond'].includes(membershipLevel);
+  const isHighTier = ['developer', 'vip_investor'].includes(membershipLevel);
   const config = MEMBERSHIP_LEVELS[membershipLevel];
 
   if (isLoading) {
@@ -209,7 +209,7 @@ export const MembershipLevelShowcase: React.FC<{
   currentLevel?: MembershipLevel;
   size?: 'sm' | 'md';
 }> = ({ currentLevel = 'basic', size = 'sm' }) => {
-  const levels: MembershipLevel[] = ['basic', 'verified', 'vip', 'gold', 'platinum', 'diamond'];
+  const levels: MembershipLevel[] = ['free', 'pro_agent', 'developer', 'vip_investor'];
   
   return (
     <div className="flex items-center gap-1 flex-wrap">

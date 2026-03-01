@@ -20,42 +20,42 @@ interface FeatureConfig {
 
 export const VIP_FEATURES: Record<FeatureKey, FeatureConfig> = {
   featured_listings: {
-    requiredLevel: 'gold',
+    requiredLevel: 'developer',
     name: 'Featured Listings',
     description: 'Highlight your properties at the top of search results'
   },
   priority_support: {
-    requiredLevel: 'vip',
+    requiredLevel: 'pro_agent',
     name: 'Priority Support',
     description: 'Get faster responses from our support team'
   },
   concierge_service: {
-    requiredLevel: 'platinum',
+    requiredLevel: 'vip_investor',
     name: 'Concierge Service',
     description: 'Personal assistance for property transactions'
   },
   investment_advisory: {
-    requiredLevel: 'platinum',
+    requiredLevel: 'vip_investor',
     name: 'Investment Advisory',
     description: 'Expert advice on property investments'
   },
   exclusive_events: {
-    requiredLevel: 'platinum',
+    requiredLevel: 'developer',
     name: 'Exclusive Events',
     description: 'Access to VIP property showcases and networking events'
   },
   personal_advisor: {
-    requiredLevel: 'diamond',
+    requiredLevel: 'vip_investor',
     name: 'Personal Advisor',
     description: 'Dedicated property advisor assigned to you'
   },
   early_access: {
-    requiredLevel: 'diamond',
+    requiredLevel: 'vip_investor',
     name: 'Early Access',
     description: 'First access to new listings before public release'
   },
   market_insights: {
-    requiredLevel: 'gold',
+    requiredLevel: 'developer',
     name: 'Market Insights',
     description: 'Detailed market analysis and trends reports'
   }

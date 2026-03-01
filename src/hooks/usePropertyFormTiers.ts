@@ -23,7 +23,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Info Properti Dasar',
     description: 'Title, description, price, and basic details',
     descriptionId: 'Judul, deskripsi, harga, dan detail dasar',
-    requiredLevel: 'basic',
+    requiredLevel: 'free',
     icon: '📝'
   },
   {
@@ -32,7 +32,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Pilih Lokasi',
     description: 'Province, city, district, and address',
     descriptionId: 'Provinsi, kota, kecamatan, dan alamat',
-    requiredLevel: 'basic',
+    requiredLevel: 'free',
     icon: '📍'
   },
   {
@@ -41,7 +41,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Gambar Dasar (maks 5)',
     description: 'Upload up to 5 property images',
     descriptionId: 'Unggah hingga 5 gambar properti',
-    requiredLevel: 'basic',
+    requiredLevel: 'free',
     icon: '📷'
   },
   {
@@ -50,7 +50,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Fitur Properti',
     description: 'Parking, pool, garden, and amenities',
     descriptionId: 'Parkir, kolam, taman, dan fasilitas',
-    requiredLevel: 'basic',
+    requiredLevel: 'free',
     icon: '✨'
   },
   {
@@ -59,7 +59,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Gambar Extended (maks 10)',
     description: 'Upload up to 10 high-quality images',
     descriptionId: 'Unggah hingga 10 gambar berkualitas tinggi',
-    requiredLevel: 'verified',
+    requiredLevel: 'pro_agent',
     icon: '🖼️'
   },
   {
@@ -68,7 +68,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Optimisasi SEO',
     description: 'Custom SEO title and meta description',
     descriptionId: 'Judul SEO dan deskripsi meta kustom',
-    requiredLevel: 'verified',
+    requiredLevel: 'pro_agent',
     icon: '🔍'
   },
   {
@@ -77,7 +77,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Listing Prioritas',
     description: 'Your listing appears higher in search',
     descriptionId: 'Listing Anda tampil lebih tinggi di pencarian',
-    requiredLevel: 'vip',
+    requiredLevel: 'pro_agent',
     icon: '⭐'
   },
   {
@@ -86,7 +86,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Virtual Tour (360°)',
     description: 'Add Matterport or Kuula virtual tours',
     descriptionId: 'Tambahkan virtual tour Matterport atau Kuula',
-    requiredLevel: 'gold',
+    requiredLevel: 'developer',
     icon: '🎥'
   },
   {
@@ -95,7 +95,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Integrasi Model 3D',
     description: 'Add Sketchfab 3D models',
     descriptionId: 'Tambahkan model 3D Sketchfab',
-    requiredLevel: 'gold',
+    requiredLevel: 'developer',
     icon: '🏠'
   },
   {
@@ -104,7 +104,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Badge Featured',
     description: 'Show "Featured" badge on your listing',
     descriptionId: 'Tampilkan badge "Featured" di listing',
-    requiredLevel: 'platinum',
+    requiredLevel: 'developer',
     icon: '🏆'
   },
   {
@@ -113,7 +113,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Deskripsi AI',
     description: 'Generate professional description with AI',
     descriptionId: 'Buat deskripsi profesional dengan AI',
-    requiredLevel: 'platinum',
+    requiredLevel: 'developer',
     icon: '🤖'
   },
   {
@@ -122,7 +122,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Gambar Unlimited',
     description: 'Upload unlimited property images',
     descriptionId: 'Unggah gambar properti tanpa batas',
-    requiredLevel: 'diamond',
+    requiredLevel: 'vip_investor',
     icon: '📸'
   },
   {
@@ -131,7 +131,7 @@ export const PROPERTY_FORM_FEATURES: PropertyFormFeature[] = [
     nameId: 'Review Concierge',
     description: 'Personal concierge reviews your listing',
     descriptionId: 'Concierge pribadi mereview listing Anda',
-    requiredLevel: 'diamond',
+    requiredLevel: 'vip_investor',
     icon: '👔'
   }
 ];
@@ -197,7 +197,7 @@ export function usePropertyFormTiers(): PropertyFormTierResult {
     const feature = PROPERTY_FORM_FEATURES.find(f => f.id === featureId);
     return {
       accessible: canAccessFeature(featureId),
-      requiredLevel: feature?.requiredLevel || 'basic',
+      requiredLevel: (feature?.requiredLevel || 'free') as MembershipLevel,
       feature
     };
   }, [canAccessFeature]);

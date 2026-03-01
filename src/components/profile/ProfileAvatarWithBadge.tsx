@@ -14,32 +14,22 @@ interface ProfileAvatarWithBadgeProps {
 
 // TikTok/FB style badge icons for each level
 const LEVEL_BADGE_ICONS: Record<MembershipLevel, { icon: React.ComponentType<any>; bgColor: string; iconColor: string }> = {
-  basic: {
+  free: {
     icon: Shield,
     bgColor: 'bg-muted-foreground',
     iconColor: 'text-primary-foreground'
   },
-  verified: {
-    icon: CheckCircle2,
+  pro_agent: {
+    icon: Star,
     bgColor: 'bg-chart-4',
     iconColor: 'text-primary-foreground'
   },
-  vip: {
-    icon: Star,
-    bgColor: 'bg-accent',
-    iconColor: 'text-accent-foreground'
-  },
-  gold: {
+  developer: {
     icon: Award,
     bgColor: 'bg-gradient-to-br from-gold-primary to-gold-primary/80',
     iconColor: 'text-primary-foreground'
   },
-  platinum: {
-    icon: Crown,
-    bgColor: 'bg-gradient-to-br from-chart-4 to-muted-foreground',
-    iconColor: 'text-primary-foreground'
-  },
-  diamond: {
+  vip_investor: {
     icon: Gem,
     bgColor: 'bg-gradient-to-br from-chart-4 via-accent to-primary',
     iconColor: 'text-primary-foreground'
@@ -90,7 +80,7 @@ export const ProfileAvatarWithBadge: React.FC<ProfileAvatarWithBadgeProps> = ({
   const badgeConfig = LEVEL_BADGE_ICONS[membershipLevel];
   const BadgeIcon = badgeConfig.icon;
   
-  const isHighTier = ['gold', 'platinum', 'diamond'].includes(membershipLevel);
+  const isHighTier = ['developer', 'vip_investor'].includes(membershipLevel);
   const isVerified = verificationStatus === 'verified';
 
   return (
@@ -133,7 +123,7 @@ export const ProfileAvatarWithBadge: React.FC<ProfileAvatarWithBadgeProps> = ({
       </div>
 
       {/* Verification checkmark - Top Right (only if verified) */}
-      {isVerified && membershipLevel !== 'verified' && (
+      {isVerified && (
         <div 
           className={cn(
             'absolute -top-0.5 -right-0.5 flex items-center justify-center rounded-full bg-chart-4 border-2 border-background shadow-sm',

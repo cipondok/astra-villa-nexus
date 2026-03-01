@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Crown, Gem, Sparkles, Star, Shield, Users, TrendingUp } from 'lucide-react';
+import { Crown, Gem, Star, Building2, Users, TrendingUp } from 'lucide-react';
 import { getMembershipFromUserLevel, MEMBERSHIP_LEVELS } from '@/types/membership';
 import { cn } from '@/lib/utils';
 
@@ -21,12 +21,10 @@ export function VIPStatsWidget({ onNavigate }: VIPStatsWidgetProps) {
       if (error) throw error;
 
       const counts: Record<string, number> = {
-        diamond: 0,
-        platinum: 0,
-        gold: 0,
-        vip: 0,
-        verified: 0,
-        basic: 0
+        vip_investor: 0,
+        developer: 0,
+        pro_agent: 0,
+        free: 0
       };
 
       data?.forEach((profile) => {
@@ -37,25 +35,22 @@ export function VIPStatsWidget({ onNavigate }: VIPStatsWidgetProps) {
         counts[membership] = (counts[membership] || 0) + 1;
       });
 
-      // Count users without a level as basic
       const usersWithoutLevel = data?.filter(p => !p.user_level_id).length || 0;
-      counts.basic += usersWithoutLevel;
+      counts.free += usersWithoutLevel;
 
       return {
         counts,
         total: data?.length || 0,
-        totalVIP: counts.diamond + counts.platinum + counts.gold + counts.vip
+        totalPremium: counts.vip_investor + counts.developer + counts.pro_agent
       };
     },
     staleTime: 60000,
   });
 
   const tiers = [
-    { key: 'diamond', icon: Gem, label: 'Diamond' },
-    { key: 'platinum', icon: Sparkles, label: 'Platinum' },
-    { key: 'gold', icon: Crown, label: 'Gold' },
-    { key: 'vip', icon: Star, label: 'VIP' },
-    { key: 'verified', icon: Shield, label: 'Verified' },
+    { key: 'vip_investor', icon: Gem, label: 'VIP Investor' },
+    { key: 'developer', icon: Building2, label: 'Developer' },
+    { key: 'pro_agent', icon: Star, label: 'Pro Agent' },
   ];
 
   if (isLoading) {
@@ -64,7 +59,7 @@ export function VIPStatsWidget({ onNavigate }: VIPStatsWidgetProps) {
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
             <Crown className="h-4 w-4" />
-            VIP Membership
+            Premium Membership
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -83,11 +78,11 @@ export function VIPStatsWidget({ onNavigate }: VIPStatsWidgetProps) {
         <CardTitle className="text-sm flex items-center justify-between">
           <span className="flex items-center gap-2">
             <Crown className="h-4 w-4 text-chart-3" />
-            VIP Membership
+            Premium Membership
           </span>
           <Badge variant="outline" className="text-xs">
             <TrendingUp className="h-3 w-3 mr-1" />
-            {stats?.totalVIP || 0} VIPs
+            {stats?.totalPremium || 0} Premium
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -114,10 +109,9 @@ export function VIPStatsWidget({ onNavigate }: VIPStatsWidgetProps) {
             );
           })}
           
-          {/* Basic users */}
           <div className="flex items-center gap-1.5 px-2 py-1 rounded-md text-xs border bg-muted/50 border-border">
             <Users className="h-3 w-3 text-muted-foreground" />
-            <span className="text-muted-foreground">{stats?.counts.basic || 0}</span>
+            <span className="text-muted-foreground">{stats?.counts.free || 0}</span>
           </div>
         </div>
 
