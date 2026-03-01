@@ -12,7 +12,17 @@ import { useTranslation } from '@/i18n/useTranslation';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import PropertyAdvancedFilters from './PropertyAdvancedFilters';
-import { QRCodeSVG } from 'qrcode.react';
+import { lazy, Suspense } from 'react';
+
+// Lazy QR code component wrapper
+const LazyQRCode = lazy(() => 
+  import('qrcode.react').then(mod => ({
+    default: (props: { value: string; size: number; level: string; includeMargin: boolean }) => {
+      const { QRCodeSVG } = mod;
+      return <QRCodeSVG {...props} />;
+    }
+  }))
+);
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 
 // Schema for saved search name validation
@@ -1935,12 +1945,14 @@ const StickySearchPanel = ({
               </Button>
             </div>
             <div className="flex flex-col items-center gap-3 p-4 border rounded-lg bg-muted">
-              <QRCodeSVG 
-                value={shareUrl} 
-                size={200}
-                level="H"
-                includeMargin={true}
-              />
+              <Suspense fallback={<div className="w-[200px] h-[200px] bg-muted animate-pulse rounded" />}>
+                <LazyQRCode 
+                  value={shareUrl} 
+                  size={200}
+                  level="H"
+                  includeMargin={true}
+                />
+              </Suspense>
               <p className="text-sm text-muted-foreground">Scan to visit shared search</p>
             </div>
           </div>
