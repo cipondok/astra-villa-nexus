@@ -41,19 +41,167 @@ Deno.serve(async (req) => {
     }
 
     // ── Parse request ──
-    const { property_id, mode } = await req.json();
-    if (!property_id) {
-      return new Response(JSON.stringify({ error: 'property_id is required' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-    if (!mode || !['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction'].includes(mode)) {
+    const { property_id, mode, city: reqCity } = await req.json();
+    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score'];
+    if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
     const supabase = createClient(supabaseUrl, serviceKey);
+
+    // ── demand_heat_score: city-based, no property_id needed ──
+    if (mode === 'demand_heat_score') {
+      if (!reqCity) {
+        return new Response(JSON.stringify({ error: 'city is required for demand_heat_score mode' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Validate city exists
+      const { count: cityExists } = await supabase
+        .from('properties')
+        .select('id', { count: 'exact', head: true })
+        .eq('city', reqCity)
+        .limit(1);
+
+      if (!cityExists) {
+        return new Response(JSON.stringify({ error: 'No listings found for this city' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const now = Date.now();
+      const thirtyAgo = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const sixtyAgo = new Date(now - 60 * 24 * 60 * 60 * 1000).toISOString();
+
+      // Parallel fetches
+      const [publishedRes, newListingsRes, viewsRes, priceRecentRes, pricePrevRes] = await Promise.all([
+        supabase.from('properties').select('id', { count: 'exact', head: true })
+          .eq('city', reqCity).eq('status', 'published'),
+        supabase.from('properties').select('id', { count: 'exact', head: true })
+          .eq('city', reqCity).gte('created_at', thirtyAgo),
+        supabase.from('activity_logs').select('id, metadata', { count: 'exact', head: false })
+          .eq('activity_type', 'view').gte('created_at', thirtyAgo),
+        supabase.from('properties').select('price')
+          .eq('city', reqCity).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+          .gte('created_at', thirtyAgo),
+        supabase.from('properties').select('price')
+          .eq('city', reqCity).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+          .gte('created_at', sixtyAgo).lt('created_at', thirtyAgo),
+      ]);
+
+      // Filter views by city — activity_logs may store property_id in metadata or as column
+      // Count views via properties join: fetch property IDs in city, then count views
+      const { data: cityPropIds } = await supabase
+        .from('properties')
+        .select('id')
+        .eq('city', reqCity)
+        .eq('status', 'published');
+      const propIds = (cityPropIds || []).map(p => p.id);
+
+      let totalViews = 0;
+      let totalSaves = 0;
+      if (propIds.length > 0) {
+        const { count: vCount } = await supabase
+          .from('activity_logs')
+          .select('id', { count: 'exact', head: true })
+          .eq('activity_type', 'view')
+          .in('property_id', propIds)
+          .gte('created_at', thirtyAgo);
+        totalViews = vCount || 0;
+
+        const { count: sCount } = await supabase
+          .from('saved_properties')
+          .select('id', { count: 'exact', head: true })
+          .in('property_id', propIds)
+          .gte('saved_at', thirtyAgo);
+        totalSaves = sCount || 0;
+      }
+
+      const listingCount = publishedRes.count || 1;
+      const newListings = newListingsRes.count || 0;
+
+      const viewsPerListing = totalViews / listingCount;
+      const savesPerListing = totalSaves / listingCount;
+
+      // Price trend
+      const recentPrices = (priceRecentRes.data || []).map(p => Number(p.price)).filter(p => p > 0);
+      const prevPrices = (pricePrevRes.data || []).map(p => Number(p.price)).filter(p => p > 0);
+      const avgRecent = recentPrices.length > 0 ? recentPrices.reduce((a, b) => a + b, 0) / recentPrices.length : 0;
+      const avgPrev = prevPrices.length > 0 ? prevPrices.reduce((a, b) => a + b, 0) / prevPrices.length : 0;
+      const priceTrendPct = avgPrev > 0 ? ((avgRecent - avgPrev) / avgPrev) * 100 : 0;
+
+      // Scoring
+      let demandScore: number;
+      if (viewsPerListing >= 50) demandScore = 40;
+      else if (viewsPerListing >= 30) demandScore = 30;
+      else if (viewsPerListing >= 15) demandScore = 20;
+      else demandScore = 10;
+
+      let saveScore: number;
+      if (savesPerListing >= 10) saveScore = 30;
+      else if (savesPerListing >= 5) saveScore = 20;
+      else if (savesPerListing >= 2) saveScore = 10;
+      else saveScore = 5;
+
+      let priceGrowthScore: number;
+      if (priceTrendPct >= 5) priceGrowthScore = 20;
+      else if (priceTrendPct >= 2) priceGrowthScore = 15;
+      else if (priceTrendPct >= 0) priceGrowthScore = 10;
+      else priceGrowthScore = 5;
+
+      let velocityScore: number;
+      if (newListings >= 20) velocityScore = 10;
+      else if (newListings >= 10) velocityScore = 7;
+      else velocityScore = 4;
+
+      const heatScore = Math.max(0, Math.min(100, demandScore + saveScore + priceGrowthScore + velocityScore));
+
+      let heatLevel: string;
+      if (heatScore >= 80) heatLevel = 'very hot';
+      else if (heatScore >= 65) heatLevel = 'hot';
+      else if (heatScore >= 50) heatLevel = 'stable';
+      else heatLevel = 'cool';
+
+      let trend: string;
+      if (priceTrendPct > 2) trend = 'rising';
+      else if (priceTrendPct < -2) trend = 'declining';
+      else trend = 'stable';
+
+      let confidence: number;
+      if (listingCount >= 100) confidence = 90;
+      else if (listingCount >= 50) confidence = 75;
+      else if (listingCount >= 20) confidence = 60;
+      else confidence = 40;
+
+      console.log(`Demand heat for ${reqCity}: ${heatScore} (${heatLevel})`);
+
+      return new Response(JSON.stringify({
+        mode: 'demand_heat_score',
+        data: {
+          heat_score: heatScore,
+          heat_level: heatLevel,
+          trend,
+          demand_signals: {
+            views_last_30_days: totalViews,
+            saves_last_30_days: totalSaves,
+            new_listings_30_days: newListings,
+            price_trend_percent: Math.round(priceTrendPct * 100) / 100,
+          },
+          confidence_score: confidence,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!property_id) {
+      return new Response(JSON.stringify({ error: 'property_id is required' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     // ── Fetch property (superset of fields needed by both modes) ──
     const { data: property, error: pErr } = await supabase
