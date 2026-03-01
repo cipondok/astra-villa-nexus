@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, lazy, Suspense } from 'react';
+const Smart3DCompare = lazy(() => import('@/components/comparison/Smart3DCompare'));
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +14,7 @@ import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import {
   ArrowLeft, X, Eye, Trash2, Check, Minus,
   Banknote, MapPin, Building, TrendingUp, School, ShoppingBag, HeartPulse, Train,
-  Trophy, Sparkles, BarChart3, Scale
+  Trophy, Sparkles, BarChart3, Scale, Box
 } from 'lucide-react';
 import ShareComparisonButton from '@/components/property/ShareComparisonButton';
 import Price from '@/components/ui/Price';
@@ -335,9 +336,12 @@ const PropertyComparison = () => {
         {/* Tabs */}
         <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
           <Tabs defaultValue="specs" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid bg-muted/50 backdrop-blur-sm border border-border/50">
+            <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid bg-muted/50 backdrop-blur-sm border border-border/50">
               <TabsTrigger value="specs" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <Building className="h-4 w-4" />Specs
+              </TabsTrigger>
+              <TabsTrigger value="3d" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+                <Box className="h-4 w-4" />3D
               </TabsTrigger>
               <TabsTrigger value="kpr" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <Banknote className="h-4 w-4" />KPR
@@ -425,6 +429,25 @@ const PropertyComparison = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* ═══ 3D COMPARE TAB ═══ */}
+            <TabsContent value="3d">
+              {selectedProperties.length >= 2 ? (
+                <Suspense fallback={<div className="h-[500px] flex items-center justify-center bg-muted rounded-xl"><div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" /></div>}>
+                  <Smart3DCompare
+                    propertyA={selectedProperties[0]}
+                    propertyB={selectedProperties[1]}
+                  />
+                </Suspense>
+              ) : (
+                <Card className="border-border/50 bg-card/80 backdrop-blur-xl">
+                  <CardContent className="py-16 text-center">
+                    <Box className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
+                    <p className="text-muted-foreground">Add at least 2 properties to use 3D Compare mode</p>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
 
             {/* ═══ KPR TAB ═══ */}
