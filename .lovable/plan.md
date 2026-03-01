@@ -1,57 +1,58 @@
 
 
-## Premium Membership System Revamp
+## Off-Plan / New Project Investment Section
 
-### Current State
-The app already has a membership system with 6 tiers (basic → diamond), a `user_levels` table in Supabase, pricing cards on `/membership`, and an upgrade flow dialog. The existing tiers are identity-based (basic, verified, vip, gold, platinum, diamond).
-
-### What's Changing
-Reframe the membership around **role-based premium tiers** that match the user's request:
-
-| New Tier | Maps To | Monthly Price | Key Benefits |
-|----------|---------|--------------|--------------|
-| **Free** | basic | Rp 0 | Browse, save favorites, basic search |
-| **Pro Agent** | verified/vip | Rp 199,000 | More listing exposure, priority placement, agent badge |
-| **Developer** | gold/platinum | Rp 499,000 | AI analytics, bulk listings, project showcase, SEO tools |
-| **VIP Investor** | diamond | Rp 999,000 | Homepage spotlight, 3D featured badge, concierge, first access |
+### What We're Building
+A dedicated "Early Investment Opportunities" section — a new page at `/early-investment` and a CTA component on the homepage — focused on off-plan/under-construction projects with investment-grade data: progress timelines, completion %, ROI forecasts, and developer profiles.
 
 ### Implementation Plan
 
-**1. Update membership types** (`src/types/membership.ts`)
-- Rename `MembershipLevel` values to `'free' | 'pro_agent' | 'developer' | 'vip_investor'`
-- Update `MEMBERSHIP_LEVELS` config with new labels, icons, colors, and benefit lists tailored to each role
-- Update `getMembershipFromUserLevel()` mapping function
-- Keep backward compatibility by mapping old level names in the function
+**1. Create `OffPlanProjectCard` component** (`src/components/investment/OffPlanProjectCard.tsx`)
+- Visual card with: project image, title, developer name + rating, location
+- Progress timeline bar showing construction phases (Land Prep → Foundation → Structure → Finishing → Handover) with current phase highlighted
+- Completion % with animated progress ring
+- ROI forecast mini-widget (estimated appreciation at completion, rental yield post-completion)
+- Price range badge (starting from), launch date, estimated completion date
+- "Early Bird" / "Pre-Launch Price" badges for urgency
 
-**2. Update MembershipPage** (`src/pages/MembershipPage.tsx`)
-- Redesign to show 4 clear tiers instead of 6
-- Add a comparison table showing features across tiers (listing exposure multiplier, AI analytics access, homepage spotlight, 3D badge)
-- Update `TIER_PRICING` to reflect new pricing
-- Add annual discount display (save 17%)
-- Add recurring billing context ("Recurring income model")
+**2. Create `DeveloperProfileCard` component** (`src/components/investment/DeveloperProfileCard.tsx`)
+- Developer logo, name, rating (stars), total projects count
+- Track record: completed projects, on-time delivery %, average appreciation of past projects
+- Badges: "Trusted Developer", "REI Member", etc.
+- Link to developer's project portfolio
 
-**3. Update MembershipUpgradeFlow** (`src/components/membership/MembershipUpgradeFlow.tsx`)
-- Update `UPGRADE_REQUIREMENTS` for new 4 tiers
-- Simplify step flows per tier
+**3. Create `ConstructionTimeline` component** (`src/components/investment/ConstructionTimeline.tsx`)
+- Horizontal stepper showing phases: Planning → Groundbreaking → Structure → MEP → Finishing → Handover
+- Current phase highlighted with animation, past phases checked
+- Estimated dates per phase, days remaining to next milestone
 
-**4. Update useUserMembership hook** (`src/hooks/useUserMembership.ts`)
-- Map existing `user_levels` names to new tier names
-- Keep backward compatibility
+**4. Create `OffPlanROICalculator` component** (`src/components/investment/OffPlanROICalculator.tsx`)
+- Inputs: purchase price, estimated completion value, rental yield post-completion, holding period
+- Outputs: capital gain %, annualized ROI, break-even rental period
+- Uses existing `CITY_RATES` and `TYPE_YIELDS` from `PropertyInvestmentWidget`
+- Comparison: off-plan price vs estimated market price at completion
 
-**5. Update all badge/display components**
-- `UserMembershipBadge`, `VIPUpgradePrompt`, `VIPFeatureGate`, `TierFeatureBanner` — update references to new tier names and configs
+**5. Create Early Investment page** (`src/pages/EarlyInvestment.tsx`)
+- Hero section: "Early Investment Opportunities" with stats (total projects, avg ROI, avg completion)
+- Filter bar: city, property type, completion %, price range, developer
+- Grid of `OffPlanProjectCard` components
+- Sidebar or tab for `OffPlanROICalculator`
+- Developer spotlight section with `DeveloperProfileCard` carousel
+- Data source: `properties` table filtered by `development_status IN ('new_project', 'pre_launching', 'off-plan')` + demo data fallback
 
-**6. Database migration**
-- Add new rows to `user_levels` table for `Pro Agent`, `Developer`, `VIP Investor` with appropriate limits
-- Update existing level descriptions and privileges
+**6. Create homepage CTA** (`src/components/home/EarlyInvestmentCTA.tsx`)
+- Compact banner: "🏗 Early Investment Opportunities" with 2-3 featured off-plan projects
+- Mini stats: projects available, avg projected ROI, earliest handover date
+- CTA button linking to `/early-investment`
 
-**7. New benefit components**
-- Create `MembershipBenefitComparison.tsx` — a feature comparison grid
-- Add visual indicators for: listing exposure multiplier, AI analytics toggle, homepage spotlight badge, 3D featured badge availability
+**7. Wire up routing and navigation**
+- Add route `/early-investment` in `App.tsx`
+- Add to navigation menu under property listings
+- Add CTA component to `Index.tsx` homepage
 
 ### Technical Notes
-- The `user_levels` table schema stays the same — we just add/update rows via the insert tool
-- The `privileges` JSON column on `user_levels` can store feature flags like `{ ai_analytics: true, homepage_spotlight: true, 3d_badge: true }`
-- All components referencing `MembershipLevel` type will need updates
-- Stripe integration can be added later for actual recurring billing
+- Demo project data will include construction progress fields (phase, completion_percentage, estimated_completion_date) since the `properties` table may not have these columns yet
+- ROI calculations reuse existing `CITY_RATES`/`TYPE_YIELDS` constants
+- All components use existing UI primitives (Card, Badge, Progress, motion)
+- No new database columns required initially — construction metadata stored in demo objects, can be migrated to DB later
 
