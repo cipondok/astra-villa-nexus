@@ -11,7 +11,7 @@ import PropertyRatingDisplay from './PropertyRatingDisplay';
 import PropertyRatingModal from './PropertyRatingModal';
 import { usePropertyRatings } from '@/hooks/usePropertyRatings';
 import { BaseProperty } from "@/types/property";
-import VerificationBadge from '@/components/ui/VerificationBadge';
+import PropertyTrustBadges from './PropertyTrustBadges';
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
 import SocialProofWidget from "./SocialProofWidget";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
@@ -44,6 +44,10 @@ interface PropertyCardProps {
   owner_verified?: boolean;
   agent_verified?: boolean;
   agency_verified?: boolean;
+  ownership_verified?: boolean;
+  developer_certified?: boolean;
+  legal_checked?: boolean;
+  premium_partner?: boolean;
   posted_by?: {
     id: string;
     name: string;
@@ -86,6 +90,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   owner_verified,
   agent_verified,
   agency_verified,
+  ownership_verified,
+  developer_certified,
+  legal_checked,
+  premium_partner,
   posted_by,
   discount_percentage
 }) => {
@@ -227,17 +235,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             )}
           </div>
 
-          {/* Verification Badges - Bottom Left */}
-          <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
-            {owner_type === 'individual' && owner_verified && (
-              <VerificationBadge type="owner" verified={true} size="sm" />
-            )}
-            {owner_type === 'agent' && agent_verified && (
-              <VerificationBadge type="agent" verified={true} size="sm" />
-            )}
-            {owner_type === 'agency' && agency_verified && (
-              <VerificationBadge type="agency" verified={true} size="sm" />
-            )}
+          {/* Trust Badges - Bottom Left */}
+          <div className="absolute bottom-2 left-2">
+            <PropertyTrustBadges
+              property={{
+                owner_type, owner_verified, agent_verified, agency_verified,
+                ownership_verified, developer_certified, legal_checked, premium_partner
+              }}
+              size="sm"
+            />
           </div>
         </div>
         
