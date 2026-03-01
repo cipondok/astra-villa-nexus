@@ -743,15 +743,17 @@ const RoleBasedPropertyForm = () => {
                 {/* Buttons */}
                 <div className="flex flex-wrap gap-2">
                   {(!isProOrAdmin && aiUsageCount >= 5) ? (
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={() => setShowUpgradeModal(true)}
-                      className="bg-gradient-to-r from-destructive to-destructive/80 text-destructive-foreground shadow-md"
-                    >
-                      <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                      Upgrade to Continue
-                    </Button>
+                    <div onClick={() => setShowUpgradeModal(true)} className="cursor-pointer">
+                      <Button
+                        type="button"
+                        size="sm"
+                        disabled
+                        className="bg-muted text-muted-foreground shadow-none pointer-events-none"
+                      >
+                        <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                        Limit Reached – Upgrade to Pro
+                      </Button>
+                    </div>
                   ) : (
                     <Button
                       type="button"
