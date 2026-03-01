@@ -52,6 +52,35 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, serviceKey);
 
+    // ── Usage limit check ──
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('subscription_type')
+      .eq('id', userId)
+      .maybeSingle();
+
+    const subscriptionType = (profile?.subscription_type as string) || 'free';
+    const isUnlimited = ['pro', 'admin'].includes(subscriptionType);
+
+    if (!isUnlimited) {
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const { count, error: countErr } = await supabase
+        .from('ai_usage_logs')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .gte('created_at', monthStart);
+
+      if (!countErr && (count ?? 0) >= 5) {
+        return new Response(JSON.stringify({
+          error: 'Monthly AI generation limit reached',
+          upgrade_required: true,
+        }), {
+          status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
     // ── Fetch property ──
     const { data: property, error: pErr } = await supabase
       .from('properties')
