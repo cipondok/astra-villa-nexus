@@ -1496,6 +1496,15 @@ const RoleBasedPropertyForm = () => {
                           </div>
                         )}
 
+                        {/* High impact note */}
+                        {strategyData.impact_prediction === 'High' && (
+                          <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                            <p className="text-xs text-yellow-700 dark:text-yellow-400 leading-relaxed">
+                              High price correction impact detected. Adjusting price can significantly improve visibility and ranking.
+                            </p>
+                          </div>
+                        )}
+
                         {/* Apply CTA */}
                         <Button
                           type="button"
