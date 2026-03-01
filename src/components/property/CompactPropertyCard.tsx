@@ -15,7 +15,7 @@ import { VisualComparisonModal } from '@/components/search/VisualComparisonModal
 import { usePropertyRatings } from '@/hooks/usePropertyRatings';
 import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
 import { BaseProperty } from '@/types/property';
-import VerificationBadge from '@/components/ui/VerificationBadge';
+import PropertyTrustBadges from './PropertyTrustBadges';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import SharePropertyButton from './SharePropertyButton';
 import VIPLevelBadge from '@/components/ui/VIPLevelBadge';
@@ -310,18 +310,8 @@ const CompactPropertyCard = ({
               <span className="text-[9px] sm:text-[10px] md:text-xs text-white/90 truncate">{property.location}</span>
             </div>
 
-            {/* Verification Badges */}
-            <div className="flex flex-wrap gap-1 mt-1">
-              {property.owner_type === 'individual' && property.owner_verified && (
-                <VerificationBadge type="owner" verified={true} size="sm" />
-              )}
-              {property.owner_type === 'agent' && property.agent_verified && (
-                <VerificationBadge type="agent" verified={true} size="sm" />
-              )}
-              {property.owner_type === 'agency' && property.agency_verified && (
-                <VerificationBadge type="agency" verified={true} size="sm" />
-              )}
-            </div>
+            {/* Trust Badges */}
+            <PropertyTrustBadges property={property} size="sm" className="mt-1" />
           </div>
         </PropertyImageCarousel>
 

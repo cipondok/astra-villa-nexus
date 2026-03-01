@@ -41,6 +41,15 @@ export interface BaseProperty {
   // Posting information
   created_at?: string;
   posted_at?: string;
+  // Trust layer flags
+  owner_type?: string;
+  owner_verified?: boolean;
+  agent_verified?: boolean;
+  agency_verified?: boolean;
+  ownership_verified?: boolean;
+  developer_certified?: boolean;
+  legal_checked?: boolean;
+  premium_partner?: boolean;
 }
 
 // For components that need additional fields
