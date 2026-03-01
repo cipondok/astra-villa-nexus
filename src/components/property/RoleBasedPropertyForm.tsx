@@ -613,7 +613,9 @@ const RoleBasedPropertyForm = () => {
               </div>
             </div>
             <div>
-              <Label htmlFor="description">Description</Label>
+              <div className="flex items-center justify-between mb-1">
+                <Label htmlFor="description">Description ({formData.description.length} characters)</Label>
+              </div>
               <Textarea
                 id="description"
                 value={formData.description}
@@ -621,6 +623,12 @@ const RoleBasedPropertyForm = () => {
                 placeholder="Describe your property..."
                 rows={6}
               />
+              {formData.description.length > 0 && formData.description.length < 300 && (
+                <p className="text-xs mt-1.5 text-orange-500">💡 Tip: Listings with 400+ characters perform better.</p>
+              )}
+              {formData.description.length > 1000 && (
+                <p className="text-xs mt-1.5 text-muted-foreground">⚠️ Consider shortening for readability.</p>
+              )}
             </div>
 
             {/* AI Description Generator */}
