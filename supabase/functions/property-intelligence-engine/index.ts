@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
 
     // ── Parse request ──
     const { property_id, mode, city: reqCity } = await req.json();
-    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score'];
+    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -464,181 +464,235 @@ Deno.serve(async (req) => {
     }
 
     // ═══════════════════════════════════════════
+    // Shared: computeDaysOnMarket helper
+    // ═══════════════════════════════════════════
+    const computeDaysOnMarket = async (prop: typeof property, propId: string, overridePrice?: number) => {
+      const usePrice = overridePrice ?? (Number(prop.price) || 0);
+      const pLow = usePrice * 0.8;
+      const pHigh = usePrice * 1.2;
+      const t30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+      const virtualProp = overridePrice !== undefined ? { ...prop, price: overridePrice } : prop;
+
+      const [cListRes, cmpRes, vRes, sRes, ppRes] = await Promise.all([
+        supabase.from('properties').select('id', { count: 'exact', head: true })
+          .eq('city', prop.city).eq('status', 'published'),
+        supabase.from('properties').select('id', { count: 'exact', head: true })
+          .eq('city', prop.city).eq('property_type', prop.property_type)
+          .eq('status', 'published').gte('price', pLow).lte('price', pHigh).neq('id', propId),
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+          .eq('activity_type', 'view').eq('property_id', propId).gte('created_at', t30),
+        supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+          .eq('property_id', propId).gte('saved_at', t30),
+        computePricePosition(virtualProp, propId),
+      ]);
+
+      const cTotal = cListRes.count || 0;
+      const cCount = cmpRes.count || 0;
+      const eTotal = (vRes.count || 0) + (sRes.count || 0) * 3;
+      const iScore = Number(prop.investment_score) || 0;
+
+      let d: number;
+      if (cTotal >= 100) d = 30;
+      else if (cTotal >= 50) d = 45;
+      else if (cTotal >= 20) d = 60;
+      else d = 75;
+
+      const position = ppRes.price_position;
+      if (position === 'underpriced') d *= 0.8;
+      else if (position === 'overpriced') d *= 1.25;
+
+      let eLevel: string;
+      if (eTotal >= 50) { d *= 0.85; eLevel = 'high'; }
+      else if (eTotal >= 20) { d *= 0.95; eLevel = 'medium'; }
+      else { d *= 1.1; eLevel = 'low'; }
+
+      let cLevel: string;
+      if (cCount <= 5) { d *= 0.9; cLevel = 'low'; }
+      else { d *= 1.15; cLevel = 'high'; }
+
+      if (iScore >= 80) d *= 0.9;
+      else if (iScore < 50) d *= 1.1;
+
+      const days = Math.max(7, Math.min(180, Math.round(d)));
+
+      let speed: string;
+      if (days <= 30) speed = 'very fast';
+      else if (days <= 60) speed = 'fast';
+      else if (days <= 90) speed = 'moderate';
+      else speed = 'slow';
+
+      let conf: number;
+      if (cCount >= 20) conf = 90;
+      else if (cCount >= 10) conf = 75;
+      else if (cCount >= 5) conf = 60;
+      else conf = 40;
+
+      return {
+        estimated_days_on_market: days,
+        speed_category: speed,
+        confidence_score: conf,
+        factors: { price_position: position, engagement_level: eLevel, competition_level: cLevel, investment_score: iScore },
+      };
+    };
+
+    // ═══════════════════════════════════════════
     // MODE: listing_health
     // ═══════════════════════════════════════════
-    const issues: string[] = [];
-    const strengths: string[] = [];
-    const improvementPriority: string[] = [];
+    if (mode === 'listing_health') {
+      const issues: string[] = [];
+      const strengths: string[] = [];
+      const improvementPriority: string[] = [];
 
-    // ── Parallel data fetches ──
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-    const [photoRes, tour3dRes, viewRes, saveRes, pricePos] = await Promise.all([
-      supabase.from('property_media').select('id', { count: 'exact', head: true })
-        .eq('property_id', property_id).eq('media_type', 'image'),
-      supabase.from('property_media').select('id', { count: 'exact', head: true })
-        .eq('property_id', property_id).eq('media_type', '3d'),
-      supabase.from('activity_logs').select('id', { count: 'exact', head: true })
-        .eq('activity_type', 'view').eq('property_id', property_id).gte('created_at', thirtyDaysAgo),
-      supabase.from('saved_properties').select('id', { count: 'exact', head: true })
-        .eq('property_id', property_id).gte('saved_at', thirtyDaysAgo),
-      computePricePosition(property, property_id),
-    ]);
+      const [photoRes, tour3dRes, viewRes, saveRes, pricePos] = await Promise.all([
+        supabase.from('property_media').select('id', { count: 'exact', head: true })
+          .eq('property_id', property_id).eq('media_type', 'image'),
+        supabase.from('property_media').select('id', { count: 'exact', head: true })
+          .eq('property_id', property_id).eq('media_type', '3d'),
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+          .eq('activity_type', 'view').eq('property_id', property_id).gte('created_at', thirtyDaysAgo),
+        supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+          .eq('property_id', property_id).gte('saved_at', thirtyDaysAgo),
+        computePricePosition(property, property_id),
+      ]);
 
-    const photoCount = photoRes.count || 0;
-    const has3dTour = (tour3dRes.count || 0) > 0;
-    const engagementTotal = (viewRes.count || 0) + (saveRes.count || 0) * 3;
+      const photoCount = photoRes.count || 0;
+      const has3dTour = (tour3dRes.count || 0) > 0;
+      const engagementTotal = (viewRes.count || 0) + (saveRes.count || 0) * 3;
 
-    // ── PRICE (0–25) ──
-    let priceHealthScore = 10;
-    if (pricePos.price_position === 'market-aligned') { priceHealthScore = 25; strengths.push('Price is market-aligned'); }
-    else if (pricePos.price_position === 'underpriced') { priceHealthScore = 22; strengths.push('Competitive pricing — below market'); }
-    else if (pricePos.price_position === 'overpriced') { priceHealthScore = 10; issues.push('Property appears overpriced'); improvementPriority.push('Adjust price to market range'); }
-    else { priceHealthScore = 15; } // unknown
+      let priceHealthScore = 10;
+      if (pricePos.price_position === 'market-aligned') { priceHealthScore = 25; strengths.push('Price is market-aligned'); }
+      else if (pricePos.price_position === 'underpriced') { priceHealthScore = 22; strengths.push('Competitive pricing — below market'); }
+      else if (pricePos.price_position === 'overpriced') { priceHealthScore = 10; issues.push('Property appears overpriced'); improvementPriority.push('Adjust price to market range'); }
+      else { priceHealthScore = 15; }
 
-    // ── INVESTMENT SCORE (0–15) ──
-    const invS = Number(property.investment_score) || 0;
-    let investmentHealthScore = 5;
-    if (invS >= 80) { investmentHealthScore = 15; strengths.push('Strong investment score (≥80)'); }
-    else if (invS >= 65) { investmentHealthScore = 10; }
-    else { issues.push('Low investment score'); improvementPriority.push('Improve property features or pricing to boost investment score'); }
+      const invS = Number(property.investment_score) || 0;
+      let investmentHealthScore = 5;
+      if (invS >= 80) { investmentHealthScore = 15; strengths.push('Strong investment score (≥80)'); }
+      else if (invS >= 65) { investmentHealthScore = 10; }
+      else { issues.push('Low investment score'); improvementPriority.push('Improve property features or pricing to boost investment score'); }
 
-    // ── DESCRIPTION (0–15) ──
-    const descLen = (property.description || '').length;
-    let descScore = 5;
-    if (descLen > 400) { descScore = 15; strengths.push('Detailed description'); }
-    else if (descLen >= 200) { descScore = 10; }
-    else { issues.push('Description is too short (< 200 chars)'); improvementPriority.push('Write a detailed property description (400+ characters)'); }
+      const descLen = (property.description || '').length;
+      let descScore = 5;
+      if (descLen > 400) { descScore = 15; strengths.push('Detailed description'); }
+      else if (descLen >= 200) { descScore = 10; }
+      else { issues.push('Description is too short (< 200 chars)'); improvementPriority.push('Write a detailed property description (400+ characters)'); }
 
-    // ── PHOTOS (0–15) ──
-    let photoScore = 5;
-    if (photoCount >= 10) { photoScore = 15; strengths.push(`${photoCount} photos uploaded`); }
-    else if (photoCount >= 5) { photoScore = 10; }
-    else { issues.push(`Only ${photoCount} photo(s) uploaded`); improvementPriority.push('Upload at least 10 high-quality photos'); }
+      let photoScore = 5;
+      if (photoCount >= 10) { photoScore = 15; strengths.push(`${photoCount} photos uploaded`); }
+      else if (photoCount >= 5) { photoScore = 10; }
+      else { issues.push(`Only ${photoCount} photo(s) uploaded`); improvementPriority.push('Upload at least 10 high-quality photos'); }
 
-    // ── 3D TOUR (0–10) ──
-    let tourScore = 0;
-    if (has3dTour) { tourScore = 10; strengths.push('3D tour available'); }
-    else { issues.push('No 3D tour'); improvementPriority.push('Add a 3D virtual tour'); }
+      let tourScore = 0;
+      if (has3dTour) { tourScore = 10; strengths.push('3D tour available'); }
+      else { issues.push('No 3D tour'); improvementPriority.push('Add a 3D virtual tour'); }
 
-    // ── ENGAGEMENT (0–10) ──
-    let engScore = 3;
-    if (engagementTotal >= 50) { engScore = 10; strengths.push('High engagement in last 30 days'); }
-    else if (engagementTotal >= 20) { engScore = 6; }
-    else { issues.push('Low engagement in last 30 days'); }
+      let engScore = 3;
+      if (engagementTotal >= 50) { engScore = 10; strengths.push('High engagement in last 30 days'); }
+      else if (engagementTotal >= 20) { engScore = 6; }
+      else { issues.push('Low engagement in last 30 days'); }
 
-    // ── COMPLETENESS (0–10) ──
-    const majorFields = [property.price, property.description, property.city, property.property_type, property.building_area_sqm, property.land_area_sqm, property.kt, property.km];
-    const missingCount = majorFields.filter(f => f === null || f === undefined || f === '' || f === 0).length;
-    let completenessScore = 10;
-    if (missingCount > 2) { completenessScore = 5; issues.push(`${missingCount} major fields are incomplete`); improvementPriority.push('Fill in all property details (area, bedrooms, bathrooms, etc.)'); }
-    else { strengths.push('Property details are complete'); }
+      const majorFields = [property.price, property.description, property.city, property.property_type, property.building_area_sqm, property.land_area_sqm, property.kt, property.km];
+      const missingCount = majorFields.filter(f => f === null || f === undefined || f === '' || f === 0).length;
+      let completenessScore = 10;
+      if (missingCount > 2) { completenessScore = 5; issues.push(`${missingCount} major fields are incomplete`); improvementPriority.push('Fill in all property details (area, bedrooms, bathrooms, etc.)'); }
+      else { strengths.push('Property details are complete'); }
 
-    // ── FINAL SCORE & GRADE ──
-    const healthScore = Math.max(0, Math.min(100, priceHealthScore + investmentHealthScore + descScore + photoScore + tourScore + engScore + completenessScore));
-    let grade: string;
-    if (healthScore >= 90) grade = 'A';
-    else if (healthScore >= 75) grade = 'B';
-    else if (healthScore >= 60) grade = 'C';
-    else grade = 'D';
+      const healthScore = Math.max(0, Math.min(100, priceHealthScore + investmentHealthScore + descScore + photoScore + tourScore + engScore + completenessScore));
+      let grade: string;
+      if (healthScore >= 90) grade = 'A';
+      else if (healthScore >= 75) grade = 'B';
+      else if (healthScore >= 60) grade = 'C';
+      else grade = 'D';
 
-    console.log(`Listing health for ${property_id}: ${healthScore} (${grade})`);
+      console.log(`Listing health for ${property_id}: ${healthScore} (${grade})`);
 
-    return new Response(JSON.stringify({
-      mode: 'listing_health',
-      data: {
-        health_score: healthScore,
-        grade,
-        issues,
-        strengths,
-        improvement_priority: improvementPriority,
-      },
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      return new Response(JSON.stringify({
+        mode: 'listing_health',
+        data: { health_score: healthScore, grade, issues, strengths, improvement_priority: improvementPriority },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     // ═══════════════════════════════════════════
     // MODE: days_to_sell_prediction
     // ═══════════════════════════════════════════
-    const thirtyAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-    const domPrice = Number(property.price) || 0;
-    const domPriceLow = domPrice * 0.8;
-    const domPriceHigh = domPrice * 1.2;
+    if (mode === 'days_to_sell_prediction') {
+      const domResult = await computeDaysOnMarket(property, property_id);
+      console.log(`Days to sell for ${property_id}: ${domResult.estimated_days_on_market} (${domResult.speed_category})`);
 
-    const [cityListRes, compRes2, viewsRes2, savesRes2, pricePosResult2] = await Promise.all([
-      supabase.from('properties').select('id', { count: 'exact', head: true })
-        .eq('city', property.city).eq('status', 'published'),
-      supabase.from('properties').select('id', { count: 'exact', head: true })
-        .eq('city', property.city).eq('property_type', property.property_type)
-        .eq('status', 'published').gte('price', domPriceLow).lte('price', domPriceHigh).neq('id', property_id),
-      supabase.from('activity_logs').select('id', { count: 'exact', head: true })
-        .eq('activity_type', 'view').eq('property_id', property_id).gte('created_at', thirtyAgo),
-      supabase.from('saved_properties').select('id', { count: 'exact', head: true })
-        .eq('property_id', property_id).gte('saved_at', thirtyAgo),
-      computePricePosition(property, property_id),
-    ]);
+      return new Response(JSON.stringify({ mode: 'days_to_sell_prediction', data: domResult }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
-    const cityTotal = cityListRes.count || 0;
-    const compCount2 = compRes2.count || 0;
-    const eng = (viewsRes2.count || 0) + (savesRes2.count || 0) * 3;
-    const inv = Number(property.investment_score) || 0;
+    // ═══════════════════════════════════════════
+    // MODE: price_adjustment_strategy
+    // ═══════════════════════════════════════════
+    {
+      const adjPriceResult = await computePricePosition(property, property_id);
+      const curPrice = Number(property.price) || 0;
 
-    // Base DOM
-    let dom: number;
-    if (cityTotal >= 100) dom = 30;
-    else if (cityTotal >= 50) dom = 45;
-    else if (cityTotal >= 20) dom = 60;
-    else dom = 75;
+      if (adjPriceResult.price_position !== 'overpriced') {
+        return new Response(JSON.stringify({
+          mode: 'price_adjustment_strategy',
+          data: {
+            recommendation: 'No adjustment needed',
+            current_price: curPrice,
+            price_position: adjPriceResult.price_position,
+            impact_prediction: 'Low',
+            reasoning: ['Current price is within or below market range', 'No price reduction recommended'],
+          },
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
 
-    // Adjustments
-    const pp = pricePosResult2.price_position;
-    if (pp === 'underpriced') dom *= 0.8;
-    else if (pp === 'overpriced') dom *= 1.25;
+      const sugPrice = adjPriceResult.suggested_price || curPrice;
+      const redPct = Math.round(((curPrice - sugPrice) / curPrice) * 10000) / 100;
 
-    let engLevel: string;
-    if (eng >= 50) { dom *= 0.85; engLevel = 'high'; }
-    else if (eng >= 20) { dom *= 0.95; engLevel = 'medium'; }
-    else { dom *= 1.1; engLevel = 'low'; }
+      const [domCurr, domAdj] = await Promise.all([
+        computeDaysOnMarket(property, property_id),
+        computeDaysOnMarket(property, property_id, sugPrice),
+      ]);
 
-    let compLevel: string;
-    if (compCount2 <= 5) { dom *= 0.9; compLevel = 'low'; }
-    else { dom *= 1.15; compLevel = 'high'; }
+      const domRed = domCurr.estimated_days_on_market - domAdj.estimated_days_on_market;
 
-    if (inv >= 80) dom *= 0.9;
-    else if (inv < 50) dom *= 1.1;
+      let impact: string;
+      if (domRed > 20) impact = 'High';
+      else if (domRed >= 10) impact = 'Medium';
+      else impact = 'Low';
 
-    const estimatedDays = Math.max(7, Math.min(180, Math.round(dom)));
+      const reasons: string[] = [];
+      reasons.push(`Property is priced ${redPct.toFixed(1)}% above suggested market price`);
+      reasons.push(`Reducing to Rp ${sugPrice.toLocaleString('id-ID')} could save ~${domRed} days on market`);
+      if (domCurr.factors.engagement_level === 'low') reasons.push('Low engagement suggests buyers are deterred by current pricing');
+      if (domCurr.factors.competition_level === 'high') reasons.push('High competition in this segment increases pressure to price competitively');
+      if ((Number(property.investment_score) || 0) >= 80) reasons.push('Strong investment score supports faster sale at adjusted price');
 
-    let speedCategory: string;
-    if (estimatedDays <= 30) speedCategory = 'very fast';
-    else if (estimatedDays <= 60) speedCategory = 'fast';
-    else if (estimatedDays <= 90) speedCategory = 'moderate';
-    else speedCategory = 'slow';
+      console.log(`Price adjustment for ${property_id}: reduce ${redPct}%, save ${domRed} days`);
 
-    let domConf: number;
-    if (compCount2 >= 20) domConf = 90;
-    else if (compCount2 >= 10) domConf = 75;
-    else if (compCount2 >= 5) domConf = 60;
-    else domConf = 40;
-
-    console.log(`Days to sell for ${property_id}: ${estimatedDays} (${speedCategory})`);
-
-    return new Response(JSON.stringify({
-      mode: 'days_to_sell_prediction',
-      data: {
-        estimated_days_on_market: estimatedDays,
-        speed_category: speedCategory,
-        confidence_score: domConf,
-        factors: {
-          price_position: pp,
-          engagement_level: engLevel,
-          competition_level: compLevel,
-          investment_score: inv,
+      return new Response(JSON.stringify({
+        mode: 'price_adjustment_strategy',
+        data: {
+          recommendation: `Reduce price by ${redPct.toFixed(1)}%`,
+          current_price: curPrice,
+          recommended_price: sugPrice,
+          reduction_percent: redPct,
+          price_position: adjPriceResult.price_position,
+          dom_current: domCurr.estimated_days_on_market,
+          dom_adjusted: domAdj.estimated_days_on_market,
+          expected_dom_reduction_days: domRed,
+          impact_prediction: impact,
+          reasoning: reasons,
         },
-      },
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
   } catch (err) {
     console.error('property-intelligence-engine error:', err);
