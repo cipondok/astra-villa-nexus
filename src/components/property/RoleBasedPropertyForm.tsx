@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2 } from "lucide-react";
+import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import PropertyImageUpload from "./PropertyImageUpload";
 import LocationSelector from "./LocationSelector";
@@ -623,13 +623,39 @@ const RoleBasedPropertyForm = () => {
             </div>
 
             {/* AI Description Generator */}
-            <div className="p-4 border border-dashed border-primary/30 rounded-lg bg-primary/5 space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  <span className="font-semibold text-sm">AI Content Generator</span>
+            <div className="relative rounded-xl overflow-hidden shadow-lg">
+              {/* Gradient border effect */}
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/40 via-primary/20 to-accent/30 p-[1px]" />
+              <div className="relative rounded-xl backdrop-blur-md bg-background/80 border border-primary/10 p-5 space-y-5">
+                {/* Header */}
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="font-semibold text-sm">AI Content Generator</span>
+                  </div>
+                  <span className="text-[10px] font-medium tracking-wide uppercase px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
+                    Powered by AI
+                  </span>
                 </div>
-                <div className="flex gap-2">
+
+                {/* Buttons */}
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={aiLoading}
+                    onClick={() => generateAiDescription(draftPropertyId || undefined)}
+                    className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-md"
+                  >
+                    {aiLoading ? (
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                    )}
+                    {aiLoading ? 'Generating...' : aiContent ? '✨ Generate Again' : '✨ Generate AI Description'}
+                  </Button>
                   {aiContent && (
                     <>
                       <Button
@@ -637,14 +663,14 @@ const RoleBasedPropertyForm = () => {
                         variant="outline"
                         size="sm"
                         disabled={aiLoading}
-                        onClick={() => generateAiDescription(undefined)}
+                        onClick={() => generateAiDescription(draftPropertyId || undefined)}
+                        className="border-primary/20 hover:bg-primary/5"
                       >
-                        <RefreshCw className="h-3 w-3 mr-1" />
+                        <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
                         Regenerate
                       </Button>
                       <Button
                         type="button"
-                        variant="default"
                         size="sm"
                         disabled={aiLoading}
                         onClick={() => {
@@ -657,66 +683,71 @@ const RoleBasedPropertyForm = () => {
                             showSuccess('Applied', 'AI content saved to form fields.');
                           }
                         }}
+                        className="bg-green-600 hover:bg-green-700 text-white"
                       >
-                        <Save className="h-3 w-3 mr-1" />
-                        Save to Property
+                        <Check className="h-3.5 w-3.5 mr-1.5" />
+                        Apply to Form
                       </Button>
                     </>
                   )}
-                  {!aiContent && (
-                    <Button
-                      type="button"
-                      variant="default"
-                      size="sm"
-                      disabled={aiLoading}
-                      onClick={() => generateAiDescription(undefined)}
-                    >
-                      {aiLoading ? (
-                        <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                      ) : (
-                        <Sparkles className="h-3 w-3 mr-1" />
-                      )}
-                      {aiLoading ? 'Generating...' : '✨ Generate AI Description'}
-                    </Button>
-                  )}
                 </div>
+
+                {/* Loading shimmer */}
+                {aiLoading && (
+                  <div className="space-y-3 animate-pulse">
+                    <div className="h-4 bg-gradient-to-r from-muted via-muted-foreground/10 to-muted rounded-full w-3/4" />
+                    <div className="h-4 bg-gradient-to-r from-muted via-muted-foreground/10 to-muted rounded-full w-full" />
+                    <div className="h-4 bg-gradient-to-r from-muted via-muted-foreground/10 to-muted rounded-full w-5/6" />
+                    <div className="h-4 bg-gradient-to-r from-muted via-muted-foreground/10 to-muted rounded-full w-2/3" />
+                    <div className="flex gap-2 pt-2">
+                      <div className="h-7 w-24 bg-muted rounded-full" />
+                      <div className="h-7 w-28 bg-muted rounded-full" />
+                      <div className="h-7 w-20 bg-muted rounded-full" />
+                    </div>
+                  </div>
+                )}
+
+                {/* AI Content Preview */}
+                {aiContent && !aiLoading && (
+                  <div className="space-y-4 animate-fade-in">
+                    {/* SEO Description */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <Label className="text-xs font-medium text-muted-foreground">SEO Description</Label>
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                          aiContent.seo_description.length <= 160
+                            ? 'bg-green-500/10 text-green-600 border border-green-500/20'
+                            : 'bg-red-500/10 text-red-600 border border-red-500/20'
+                        }`}>
+                          {aiContent.seo_description.length}/160
+                        </span>
+                      </div>
+                      <p className="text-sm p-3 bg-muted/50 rounded-lg border border-border/50">{aiContent.seo_description}</p>
+                    </div>
+
+                    {/* Social Caption */}
+                    <div>
+                      <Label className="text-xs font-medium text-muted-foreground mb-1.5 block">Instagram Caption</Label>
+                      <p className="text-sm p-3 bg-muted/50 rounded-lg border border-border/50 whitespace-pre-wrap">{aiContent.social_caption}</p>
+                    </div>
+
+                    {/* Highlights as chips */}
+                    <div>
+                      <Label className="text-xs font-medium text-muted-foreground mb-2 block">Property Highlights</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {aiContent.highlights.map((h, i) => (
+                          <span
+                            key={i}
+                            className="inline-flex items-center text-xs font-medium px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/15 hover:bg-primary/15 transition-colors"
+                          >
+                            {h}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              {aiLoading && (
-                <div className="flex items-center justify-center py-6 text-muted-foreground">
-                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                  <span className="text-sm">Generating premium content with AI...</span>
-                </div>
-              )}
-
-              {aiContent && !aiLoading && (
-                <div className="space-y-4">
-                  {/* SEO Description Preview */}
-                  <div>
-                    <Label className="text-xs text-muted-foreground">SEO Description ({aiContent.seo_description.length}/160)</Label>
-                    <p className="text-sm p-2 bg-background rounded border">{aiContent.seo_description}</p>
-                  </div>
-
-                  {/* Social Caption Preview */}
-                  <div>
-                    <Label className="text-xs text-muted-foreground">Instagram Caption</Label>
-                    <p className="text-sm p-2 bg-background rounded border whitespace-pre-wrap">{aiContent.social_caption}</p>
-                  </div>
-
-                  {/* Highlights Preview */}
-                  <div>
-                    <Label className="text-xs text-muted-foreground">Property Highlights</Label>
-                    <ul className="text-sm p-2 bg-background rounded border space-y-1">
-                      {aiContent.highlights.map((h, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <span className="text-primary mt-0.5">•</span>
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
