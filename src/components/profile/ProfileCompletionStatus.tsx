@@ -22,7 +22,7 @@ interface ProfileCompletionStatusProps {
   } | null;
   membershipLevel: MembershipLevel;
   verificationStatus: string;
-  language: 'en' | 'id' | 'zh' | 'ja' | 'ko';
+  language: string;
 }
 
 interface CompletionStep {

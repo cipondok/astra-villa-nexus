@@ -38,7 +38,7 @@ import {
   type FilteredSuggestions
 } from "@/utils/searchSuggestions";
 interface AstraSearchPanelProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onSearch: (searchData: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
   resultsCount?: number;

@@ -42,7 +42,7 @@ interface Property {
 
 interface EnhancedPropertyCardProps {
   property: Property;
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onView?: (id: string) => void;
   onSave?: (id: string) => void;
   onShare?: (id: string) => void;

@@ -16,7 +16,7 @@ interface PropertySlideSectionProps {
   title: string;
   subtitle?: string;
   type: 'featured' | 'buy' | 'rent' | 'pre-launch' | 'new-projects' | 'vendor-services';
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   limit?: number;
 }
 

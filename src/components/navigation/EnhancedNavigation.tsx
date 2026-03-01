@@ -14,7 +14,7 @@ import { useTranslation } from "@/i18n/useTranslation";
 
 interface EnhancedNavigationProps {
   onLoginClick?: () => void;
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onLanguageToggle: () => void;
 }
 

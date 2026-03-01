@@ -9,7 +9,7 @@ interface Property3DViewModalProps {
   property: BaseProperty;
   isOpen: boolean;
   onClose: () => void;
-  language?: "en" | "id" | "zh" | "ja" | "ko";
+  language?: string;
 }
 
 const Property3DViewModal = ({ 
