@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check, PenLine, Activity, ShieldCheck, AlertTriangle, ArrowUp, Clock, Zap, BarChart3, Users, Award } from "lucide-react";
+import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check, PenLine, Activity, ShieldCheck, AlertTriangle, ArrowUp, Clock, Zap, BarChart3, Users, Award, Flame, Eye, Bookmark, PlusCircle, TrendingDown, ArrowRight } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import PropertyImageUpload from "./PropertyImageUpload";
 import LocationSelector from "./LocationSelector";
@@ -203,6 +203,36 @@ const RoleBasedPropertyForm = () => {
       investment_score: number;
     };
   } | null>(null);
+
+  // Market Heat state
+  const [heatLoading, setHeatLoading] = useState(false);
+  const [heatCity, setHeatCity] = useState('');
+  const [heatData, setHeatData] = useState<{
+    heat_score: number;
+    heat_level: string;
+    trend: string;
+    demand_signals: {
+      views_last_30_days: number;
+      saves_last_30_days: number;
+      new_listings_30_days: number;
+      price_trend_percent: number;
+    };
+    confidence_score: number;
+  } | null>(null);
+
+  // Fetch available cities
+  const { data: availableCities = [] } = useQuery({
+    queryKey: ['available-cities'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('properties')
+        .select('city')
+        .not('city', 'is', null)
+        .eq('status', 'published');
+      const unique = [...new Set((data || []).map(p => p.city).filter(Boolean))].sort();
+      return unique as string[];
+    },
+  });
 
   // AI usage tracking
   const subscriptionType = (profile as any)?.subscription_type || 'free';
@@ -441,6 +471,42 @@ const RoleBasedPropertyForm = () => {
       showError('Analysis Failed', err.message || 'Could not estimate selling time.');
     } finally {
       setSellLoading(false);
+    }
+  };
+
+  const analyzeMarketHeat = async () => {
+    setHeatLoading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      if (!token) throw new Error('Not authenticated');
+
+      if (!heatCity) {
+        showError('City Required', 'Please select a city first.');
+        return;
+      }
+
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/property-intelligence-engine`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ city: heatCity, mode: 'demand_heat_score' }),
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Failed to analyze market demand');
+
+      setHeatData(result.data || result);
+    } catch (err: any) {
+      console.error('Market heat error:', err);
+      showError('Analysis Failed', err.message || 'Could not analyze market demand.');
+    } finally {
+      setHeatLoading(false);
     }
   };
 
@@ -1117,6 +1183,162 @@ const RoleBasedPropertyForm = () => {
                         </div>
                       </div>
                     )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Market Heat Panel */}
+            <div className="relative rounded-xl overflow-hidden shadow-lg">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-destructive/15 via-accent/10 to-primary/15 p-[1px]" />
+              <div className="relative rounded-xl backdrop-blur-md bg-background/80 border border-accent/10 p-5 space-y-4">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-destructive/20 to-accent/20">
+                      <Flame className="h-5 w-5 text-destructive" />
+                    </div>
+                    <span className="font-semibold text-sm">Market Heat</span>
+                  </div>
+                </div>
+
+                {/* City selector + button */}
+                <div className="flex items-end gap-3 flex-wrap">
+                  <div className="flex-1 min-w-[160px]">
+                    <Label className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1.5 block">City</Label>
+                    <Select value={heatCity} onValueChange={setHeatCity}>
+                      <SelectTrigger className="h-9 text-xs">
+                        <SelectValue placeholder="Select city..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableCities.map((c) => (
+                          <SelectItem key={c} value={c} className="text-xs">{c}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={heatLoading || !heatCity}
+                    onClick={analyzeMarketHeat}
+                    className="border-primary/20 hover:bg-primary/5"
+                  >
+                    {heatLoading ? (
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    ) : (
+                      <Flame className="h-3.5 w-3.5 mr-1.5" />
+                    )}
+                    {heatLoading ? 'Analyzing...' : 'Analyze Market Demand'}
+                  </Button>
+                </div>
+
+                {heatData && !heatLoading && (
+                  <div className="space-y-4 animate-[ai-reveal_0.4s_ease-out_both]">
+                    {/* Heat score + level + trend */}
+                    <div className="flex items-center gap-5">
+                      {/* Large score */}
+                      <div className="relative flex-shrink-0">
+                        <div className={`w-20 h-20 rounded-2xl flex flex-col items-center justify-center shadow-sm ${
+                          heatData.heat_level === 'very hot'
+                            ? 'bg-destructive/10 border border-destructive/20'
+                          : heatData.heat_level === 'hot'
+                            ? 'bg-orange-500/10 border border-orange-500/20'
+                          : heatData.heat_level === 'stable'
+                            ? 'bg-primary/10 border border-primary/20'
+                            : 'bg-muted/50 border border-border/50'
+                        }`}>
+                          <span className={`text-2xl font-bold ${
+                            heatData.heat_level === 'very hot' ? 'text-destructive'
+                            : heatData.heat_level === 'hot' ? 'text-orange-500'
+                            : heatData.heat_level === 'stable' ? 'text-primary'
+                            : 'text-muted-foreground'
+                          }`}>{heatData.heat_score}</span>
+                          <span className="text-[8px] text-muted-foreground uppercase tracking-wider">Heat</span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        {/* Heat level badge */}
+                        <span className={`inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-full ${
+                          heatData.heat_level === 'very hot'
+                            ? 'bg-destructive/10 text-destructive border border-destructive/20'
+                          : heatData.heat_level === 'hot'
+                            ? 'bg-orange-500/10 text-orange-600 border border-orange-500/20'
+                          : heatData.heat_level === 'stable'
+                            ? 'bg-primary/10 text-primary border border-primary/20'
+                            : 'bg-muted/50 text-muted-foreground border border-border/50'
+                        }`}>
+                          {heatData.heat_level === 'very hot' ? '🔥' : heatData.heat_level === 'hot' ? '🟠' : heatData.heat_level === 'stable' ? '🔵' : '⚪'}{' '}
+                          {heatData.heat_level.charAt(0).toUpperCase() + heatData.heat_level.slice(1)}
+                        </span>
+
+                        {/* Trend */}
+                        <div className="flex items-center gap-1.5">
+                          {heatData.trend === 'rising' ? (
+                            <TrendingUp className="h-4 w-4 text-green-500" />
+                          ) : heatData.trend === 'declining' ? (
+                            <TrendingDown className="h-4 w-4 text-destructive" />
+                          ) : (
+                            <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                          )}
+                          <span className={`text-xs font-medium ${
+                            heatData.trend === 'rising' ? 'text-green-600'
+                            : heatData.trend === 'declining' ? 'text-destructive'
+                            : 'text-muted-foreground'
+                          }`}>
+                            {heatData.trend.charAt(0).toUpperCase() + heatData.trend.slice(1)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Confidence */}
+                    <div className="p-3 rounded-lg bg-muted/50 border border-border/50 inline-flex items-center gap-2">
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-wide">Confidence:</span>
+                      <span className="text-sm font-semibold">{heatData.confidence_score}%</span>
+                    </div>
+
+                    {/* Signals breakdown */}
+                    <div className="space-y-2">
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">Demand Signals (30 Days)</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/30 border border-border/30">
+                          <Eye className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-muted-foreground">Views</p>
+                            <p className="text-xs font-medium">{heatData.demand_signals.views_last_30_days.toLocaleString('id-ID')}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/30 border border-border/30">
+                          <Bookmark className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-muted-foreground">Saves</p>
+                            <p className="text-xs font-medium">{heatData.demand_signals.saves_last_30_days.toLocaleString('id-ID')}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/30 border border-border/30">
+                          <PlusCircle className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-muted-foreground">New Listings</p>
+                            <p className="text-xs font-medium">{heatData.demand_signals.new_listings_30_days}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/30 border border-border/30">
+                          <TrendingUp className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-muted-foreground">Price Growth</p>
+                            <p className={`text-xs font-medium ${
+                              heatData.demand_signals.price_trend_percent > 0 ? 'text-green-600'
+                              : heatData.demand_signals.price_trend_percent < 0 ? 'text-destructive'
+                              : 'text-muted-foreground'
+                            }`}>
+                              {heatData.demand_signals.price_trend_percent > 0 ? '+' : ''}{heatData.demand_signals.price_trend_percent}%
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
