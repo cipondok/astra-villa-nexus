@@ -41,8 +41,8 @@ Deno.serve(async (req) => {
     }
 
     // ── Parse request ──
-    const { property_id, mode, city: reqCity } = await req.json();
-    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy'];
+    const { property_id, mode, city: reqCity, hold_years: reqHoldYears } = await req.json();
+    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -688,6 +688,155 @@ Deno.serve(async (req) => {
           expected_dom_reduction_days: domRed,
           impact_prediction: impact,
           reasoning: reasons,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: roi_simulation
+    // ═══════════════════════════════════════════
+    if (mode === 'roi_simulation') {
+      const holdYears = Math.max(1, Math.min(30, Number(reqHoldYears) || 5));
+      const price = Number(property.price) || 0;
+      if (price <= 0) {
+        return new Response(JSON.stringify({ error: 'Property has no valid price' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // ── Fetch city price trend (reuse demand_heat logic inline) ──
+      const now = Date.now();
+      const thirtyAgo = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const sixtyAgo = new Date(now - 60 * 24 * 60 * 60 * 1000).toISOString();
+
+      const [priceRecentRes, pricePrevRes, publishedRes, viewsCountRes, savesCountRes] = await Promise.all([
+        supabase.from('properties').select('price')
+          .eq('city', property.city).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+          .gte('created_at', thirtyAgo),
+        supabase.from('properties').select('price')
+          .eq('city', property.city).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+          .gte('created_at', sixtyAgo).lt('created_at', thirtyAgo),
+        supabase.from('properties').select('id', { count: 'exact', head: true })
+          .eq('city', property.city).eq('status', 'published'),
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+          .eq('activity_type', 'view').gte('created_at', thirtyAgo),
+        supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+          .gte('saved_at', thirtyAgo),
+      ]);
+
+      const recentPrices = (priceRecentRes.data || []).map(p => Number(p.price)).filter(p => p > 0);
+      const prevPrices = (pricePrevRes.data || []).map(p => Number(p.price)).filter(p => p > 0);
+      const avgRecent = recentPrices.length > 0 ? recentPrices.reduce((a, b) => a + b, 0) / recentPrices.length : 0;
+      const avgPrev = prevPrices.length > 0 ? prevPrices.reduce((a, b) => a + b, 0) / prevPrices.length : 0;
+      const priceTrendPct = avgPrev > 0 ? ((avgRecent - avgPrev) / avgPrev) * 100 : 3;
+
+      // ── Compute heat level (simplified reuse) ──
+      const listingCount = publishedRes.count || 1;
+      const { data: cityPropIds } = await supabase
+        .from('properties').select('id').eq('city', property.city).eq('status', 'published');
+      const propIds = (cityPropIds || []).map(p => p.id);
+
+      let totalViews = 0;
+      let totalSaves = 0;
+      if (propIds.length > 0) {
+        const { count: vC } = await supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+          .eq('activity_type', 'view').in('property_id', propIds).gte('created_at', thirtyAgo);
+        totalViews = vC || 0;
+        const { count: sC } = await supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+          .in('property_id', propIds).gte('saved_at', thirtyAgo);
+        totalSaves = sC || 0;
+      }
+
+      const viewsPerListing = totalViews / listingCount;
+      const savesPerListing = totalSaves / listingCount;
+      let demandS = viewsPerListing >= 50 ? 40 : viewsPerListing >= 30 ? 30 : viewsPerListing >= 15 ? 20 : 10;
+      let saveS = savesPerListing >= 10 ? 30 : savesPerListing >= 5 ? 20 : savesPerListing >= 2 ? 10 : 5;
+      let priceGS = priceTrendPct >= 5 ? 20 : priceTrendPct >= 2 ? 15 : priceTrendPct >= 0 ? 10 : 5;
+      const heatScore = Math.max(0, Math.min(100, demandS + saveS + priceGS));
+      const heatLevel = heatScore >= 80 ? 'very hot' : heatScore >= 65 ? 'hot' : heatScore >= 50 ? 'stable' : 'cool';
+
+      // ── Annual appreciation ──
+      let annualAppreciation = Math.abs(priceTrendPct) > 0 ? priceTrendPct : 3;
+      if (heatLevel === 'very hot') annualAppreciation += 1;
+      else if (heatLevel === 'hot') annualAppreciation += 0.5;
+      const investScore = Number(property.investment_score) || 0;
+      if (investScore >= 80) annualAppreciation += 0.5;
+      annualAppreciation = Math.max(2, Math.min(10, annualAppreciation));
+      const appreciationRate = annualAppreciation / 100;
+
+      // ── Future value ──
+      const futureValue = price * Math.pow(1 + appreciationRate, holdYears);
+
+      // ── Rental yield by type ──
+      const typeYields: Record<string, number> = {
+        villa: 0.055, apartment: 0.065, house: 0.045, land: 0.02,
+        commercial: 0.07, townhouse: 0.05, warehouse: 0.06, office: 0.065,
+      };
+      const baseYield = typeYields[(property.property_type || 'house').toLowerCase()] || 0.045;
+      // Adjust yield by heat
+      const adjustedYield = heatLevel === 'very hot' ? baseYield * 1.1
+        : heatLevel === 'hot' ? baseYield * 1.05
+        : heatLevel === 'cool' ? baseYield * 0.9
+        : baseYield;
+
+      // ── Rental income ──
+      const annualRent = price * adjustedYield;
+      const totalRentalIncome = annualRent * holdYears;
+
+      // ── Expenses ──
+      const maintenance = price * 0.01 * holdYears;
+      const management = totalRentalIncome * 0.10;
+      const exitCost = futureValue * 0.05;
+      const totalExpenses = maintenance + management + exitCost;
+
+      // ── Net profit & ROI ──
+      const capitalGain = futureValue - price;
+      const netProfit = capitalGain + totalRentalIncome - totalExpenses;
+      const roiPercent = (netProfit / price) * 100;
+
+      // ── Annualized return ──
+      const totalReturn = futureValue + totalRentalIncome - totalExpenses;
+      const annualizedReturn = (Math.pow(totalReturn / price, 1 / holdYears) - 1) * 100;
+
+      // ── Confidence ──
+      let confidence = 50;
+      if (recentPrices.length >= 20 && prevPrices.length >= 10) confidence = 85;
+      else if (recentPrices.length >= 10) confidence = 70;
+      else if (recentPrices.length >= 5) confidence = 60;
+
+      console.log(`ROI simulation for ${property_id}: ${roiPercent.toFixed(1)}% over ${holdYears}yr`);
+
+      return new Response(JSON.stringify({
+        mode: 'roi_simulation',
+        data: {
+          hold_years: holdYears,
+          current_price: price,
+          future_value: Math.round(futureValue),
+          capital_gain: Math.round(capitalGain),
+          annual_appreciation_percent: Math.round(annualAppreciation * 100) / 100,
+          rental: {
+            annual_rent: Math.round(annualRent),
+            total_rental_income: Math.round(totalRentalIncome),
+            adjusted_yield_percent: Math.round(adjustedYield * 10000) / 100,
+          },
+          expenses: {
+            maintenance: Math.round(maintenance),
+            management: Math.round(management),
+            exit_cost: Math.round(exitCost),
+            total: Math.round(totalExpenses),
+          },
+          net_profit: Math.round(netProfit),
+          roi_percent: Math.round(roiPercent * 100) / 100,
+          annualized_return_percent: Math.round(annualizedReturn * 100) / 100,
+          market_context: {
+            heat_level: heatLevel,
+            heat_score: heatScore,
+            price_trend_percent: Math.round(priceTrendPct * 100) / 100,
+            investment_score: investScore,
+          },
+          confidence_score: confidence,
         },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
