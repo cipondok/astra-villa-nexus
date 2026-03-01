@@ -422,12 +422,12 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <AnimatePresence mode="wait">
-        {isLoading && welcomeEnabled ? (
-          <Suspense fallback={null}><InitialLoadingScreen key="loading" /></Suspense>
-        ) : (
-          <Router key="app" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <AnimatePresence mode="wait">
+          {isLoading && welcomeEnabled ? (
+            <Suspense fallback={null}><InitialLoadingScreen key="loading" /></Suspense>
+          ) : (
+            <Router key="app" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
                 <DesignSystemProvider>
                   <LanguageProvider>
@@ -458,10 +458,10 @@ function App() {
                   </LanguageProvider>
                 </DesignSystemProvider>
               </ThemeProvider>
-            </QueryClientProvider>
-          </Router>
-        )}
-      </AnimatePresence>
+            </Router>
+          )}
+        </AnimatePresence>
+      </QueryClientProvider>
     </ErrorBoundary>
   );
 }
