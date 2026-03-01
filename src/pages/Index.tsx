@@ -32,7 +32,7 @@ import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
 import { useRetrySearch } from "@/hooks/useRetrySearch";
 import { shareProperty } from "@/utils/shareUtils";
-import GoldSparkleEffect from "@/components/home/GoldSparkleEffect";
+const GoldSparkleEffect = lazy(() => import("@/components/home/GoldSparkleEffect"));
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
 import { CommandPalette } from "@/components/ui/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
@@ -614,7 +614,7 @@ const Index = () => {
           })}
 
             {/* Gold Sparkle Effect */}
-            <GoldSparkleEffect />
+            <Suspense fallback={null}><GoldSparkleEffect /></Suspense>
 
 
             {/* Cinematic overlay — theme-aware gradients */}
