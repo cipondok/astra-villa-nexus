@@ -159,6 +159,7 @@ const RoleBasedPropertyForm = () => {
   // AI Description Generator state
   const [aiLoading, setAiLoading] = useState(false);
   const [draftPropertyId, setDraftPropertyId] = useState<string | null>(null);
+  const [aiTone, setAiTone] = useState<string>('luxury');
   const [aiContent, setAiContent] = useState<{
     long_description: string;
     seo_description: string;
@@ -226,7 +227,7 @@ const RoleBasedPropertyForm = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify({ property_id: id, save_results: false }),
+          body: JSON.stringify({ property_id: id, tone: aiTone, save_results: false }),
         }
       );
 
@@ -638,6 +639,23 @@ const RoleBasedPropertyForm = () => {
                   <span className="text-[10px] font-medium tracking-wide uppercase px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
                     Powered by AI
                   </span>
+                </div>
+
+                {/* Tone Selector */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-medium text-muted-foreground">Content Tone</Label>
+                  <Select value={aiTone} onValueChange={setAiTone}>
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select tone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="luxury">🏛️ Luxury</SelectItem>
+                      <SelectItem value="investment">📈 Investment</SelectItem>
+                      <SelectItem value="family">👨‍👩‍👧‍👦 Family Living</SelectItem>
+                      <SelectItem value="minimalist">🔲 Modern Minimalist</SelectItem>
+                      <SelectItem value="resort">🌴 Resort Style</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Buttons */}

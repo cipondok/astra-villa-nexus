@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     const userId = claimsData.claims.sub as string;
 
     // ── Parse request ──
-    const { property_id, save_results } = await req.json();
+    const { property_id, save_results, tone } = await req.json();
     if (!property_id) {
       return new Response(JSON.stringify({ error: 'property_id is required' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -92,7 +92,16 @@ Deno.serve(async (req) => {
     const invScore = property.investment_score || 0;
     const rentalNote = invScore > 70 ? 'This property has a strong investment score — emphasize rental income opportunity.' : '';
 
-    const systemPrompt = `You are a luxury real estate marketing expert writing for an AI-powered property platform called ASTRA Villa. Write persuasive, elegant, investment-focused descriptions. Never use markdown symbols like #, *, or **. Use clean plain text only.`;
+    const toneGuides: Record<string, string> = {
+      luxury: 'Write in an opulent, prestigious tone. Emphasize exclusivity, premium finishes, sophisticated lifestyle, and high-end amenities. Use words like "exquisite", "bespoke", "unparalleled".',
+      investment: 'Write in a data-driven, ROI-focused tone. Emphasize rental yield, capital appreciation, market trends, and financial returns. Use concrete numbers and investment terminology.',
+      family: 'Write in a warm, welcoming tone. Emphasize safety, spacious living areas, nearby schools, parks, community feel, and family-friendly features.',
+      minimalist: 'Write in a clean, contemporary tone. Emphasize sleek design, open spaces, natural light, functional layouts, and architectural simplicity. Use precise, understated language.',
+      resort: 'Write in a tropical, relaxation-focused tone. Emphasize lush gardens, pool areas, outdoor living, spa-like bathrooms, and vacation lifestyle. Evoke serenity and escape.',
+    };
+    const toneInstruction = toneGuides[tone as string] || toneGuides.luxury;
+
+    const systemPrompt = `You are a real estate marketing expert writing for an AI-powered property platform called ASTRA Villa. ${toneInstruction} Never use markdown symbols like #, *, or **. Use clean plain text only.`;
 
     const userPrompt = `Generate premium marketing content for this property:
 
