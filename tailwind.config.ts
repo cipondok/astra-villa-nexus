@@ -159,6 +159,18 @@ const config: Config = {
             opacity: "1"
           }
         },
+        "ai-reveal": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(10px) scale(0.98)",
+            filter: "blur(4px)"
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0) scale(1)",
+            filter: "blur(0px)"
+          }
+        },
         "macos-window-in": {
           "0%": {
             opacity: "0",
