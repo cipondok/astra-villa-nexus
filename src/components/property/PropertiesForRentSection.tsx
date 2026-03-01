@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import BrandedStatusBadge from "@/components/ui/BrandedStatusBadge";
 import { useBadgeSettings } from "@/hooks/useBadgeSettings";
 import PropertyCardSkeleton from "./PropertyCardSkeleton";
+import OptimizedPropertyImage from "./OptimizedPropertyImage";
 
 interface PropertiesForRentSectionProps {
   language: "en" | "id" | "zh" | "ja" | "ko";
@@ -112,11 +113,10 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                <img
+                <OptimizedPropertyImage
                   src={getPropertyImage(property.images, property.thumbnail_url)}
                   alt={property.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="group-hover:scale-110 transition-transform duration-700"
                 />
 
                 {/* Gradient overlay bottom */}

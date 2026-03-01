@@ -18,6 +18,7 @@ import WhatsAppInquiryDialog from './WhatsAppInquiryDialog';
 import ProgressPopup from '@/components/ui/ProgressPopup';
 import { useNavigate } from 'react-router-dom';
 import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
+import OptimizedPropertyImage from './OptimizedPropertyImage';
 import Price from '@/components/ui/Price';
 
 interface ScoredProperty extends BaseProperty {
@@ -191,11 +192,10 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       >
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-          <img
+          <OptimizedPropertyImage
             src={getPropertyImage(property.images, property.thumbnail_url)}
             alt={property.title}
-            loading="lazy"
-            className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700"
+            className="group-hover/card:scale-110 transition-transform duration-700"
           />
 
           {/* Gradient overlay */}

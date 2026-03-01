@@ -2,23 +2,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const SUPABASE_STORAGE_MARKER = '/storage/v1/object/public/';
-const SRCSET_WIDTHS = [320, 640, 960, 1280] as const;
-
-/** Generate a Supabase storage render URL with width/quality transforms */
-const getResizedUrl = (url: string, width: number, quality = 75): string => {
-  if (!url.includes(SUPABASE_STORAGE_MARKER)) return url;
-  const transformed = url.replace(SUPABASE_STORAGE_MARKER, '/storage/v1/render/image/public/');
-  const sep = transformed.includes('?') ? '&' : '?';
-  return `${transformed}${sep}width=${width}&quality=${quality}`;
-};
-
-/** Generate srcSet for Supabase-hosted images */
-const buildSrcSet = (url: string): string => {
-  if (!url.includes(SUPABASE_STORAGE_MARKER)) return '';
-  return SRCSET_WIDTHS.map((w) => `${getResizedUrl(url, w)} ${w}w`).join(', ');
-};
+import { getResizedUrl, buildSrcSet } from "@/utils/responsiveImage";
 
 // Individual slide with blur placeholder and fade-in
 const CarouselSlide = ({ src, alt, imageClassName, fallbackSrc, isFirst, onImageLoad, onImageError }: {

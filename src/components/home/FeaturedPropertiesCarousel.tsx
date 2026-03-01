@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
+import OptimizedPropertyImage from "@/components/property/OptimizedPropertyImage";
 import { useTranslation } from "@/i18n/useTranslation";
 import { cn } from "@/lib/utils";
 
@@ -189,15 +190,11 @@ export default function FeaturedPropertiesCarousel() {
               <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm hover:shadow-xl hover:shadow-gold-primary/10 hover:border-gold-primary/40 hover:-translate-y-1 transition-all duration-300">
                 {/* Image */}
                 <div className="relative aspect-[16/10] overflow-hidden">
-                  <img
+                  <OptimizedPropertyImage
                     src={getPropertyImage(p.images, p.thumbnail_url)}
                     alt={p.title}
-                    width={330}
-                    height={206}
-                    loading="lazy"
-                    decoding="async"
                     sizes="(max-width: 640px) 260px, (max-width: 1024px) 310px, 330px"
-                    className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700"
+                    className="group-hover/card:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 

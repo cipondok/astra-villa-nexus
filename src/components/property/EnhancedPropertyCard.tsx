@@ -11,6 +11,7 @@ import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
 import { useTranslation } from '@/i18n/useTranslation';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import OptimizedPropertyImage from './OptimizedPropertyImage';
 
 interface Property {
   id: string;
@@ -157,11 +158,10 @@ const EnhancedPropertyCard = ({
       <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer transform hover:scale-[1.02] sm:hover:scale-105" onClick={handleViewProperty}>
         {/* Image Section */}
         <div className="relative aspect-[4/3] overflow-hidden">
-          <img
+          <OptimizedPropertyImage
             src={getPropertyImage(property.images, property.thumbnail_url, property.image_urls)}
             alt={property.title}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-            onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }}
+            className="group-hover:scale-110 transition-transform duration-500"
           />
 
           {/* Property Type Badge - Top Left Corner */}
