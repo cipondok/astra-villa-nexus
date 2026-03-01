@@ -1733,6 +1733,64 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_behavior_tracking: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          page_url: string | null
+          property_id: string | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          page_url?: string | null
+          property_id?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          page_url?: string | null
+          property_id?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_behavior_tracking_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_behavior_tracking_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_behavior_tracking_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "user_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_bot_settings: {
         Row: {
           bot_name: string
@@ -8864,6 +8922,72 @@ export type Database = {
             columns: ["inspection_id"]
             isOneToOne: false
             referencedRelation: "property_inspections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      investment_metrics: {
+        Row: {
+          area_growth_pct: number | null
+          break_even_years: number | null
+          capital_appreciation_pct: number | null
+          comparable_count: number | null
+          created_at: string
+          demand_score: number | null
+          id: string
+          investment_score: number | null
+          last_computed_at: string
+          metadata: Json | null
+          property_id: string
+          rental_yield_pct: number | null
+          risk_level: string | null
+          updated_at: string
+        }
+        Insert: {
+          area_growth_pct?: number | null
+          break_even_years?: number | null
+          capital_appreciation_pct?: number | null
+          comparable_count?: number | null
+          created_at?: string
+          demand_score?: number | null
+          id?: string
+          investment_score?: number | null
+          last_computed_at?: string
+          metadata?: Json | null
+          property_id: string
+          rental_yield_pct?: number | null
+          risk_level?: string | null
+          updated_at?: string
+        }
+        Update: {
+          area_growth_pct?: number | null
+          break_even_years?: number | null
+          capital_appreciation_pct?: number | null
+          comparable_count?: number | null
+          created_at?: string
+          demand_score?: number | null
+          id?: string
+          investment_score?: number | null
+          last_computed_at?: string
+          metadata?: Json | null
+          property_id?: string
+          rental_yield_pct?: number | null
+          risk_level?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investment_metrics_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "investment_metrics_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -21502,6 +21626,75 @@ export type Database = {
         }
         Relationships: []
       }
+      threed_assets: {
+        Row: {
+          asset_type: string
+          created_at: string
+          description: string | null
+          file_size_bytes: number | null
+          file_url: string
+          id: string
+          is_primary: boolean | null
+          metadata: Json | null
+          processing_status: string | null
+          property_id: string
+          sort_order: number | null
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          asset_type: string
+          created_at?: string
+          description?: string | null
+          file_size_bytes?: number | null
+          file_url: string
+          id?: string
+          is_primary?: boolean | null
+          metadata?: Json | null
+          processing_status?: string | null
+          property_id: string
+          sort_order?: number | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          asset_type?: string
+          created_at?: string
+          description?: string | null
+          file_size_bytes?: number | null
+          file_url?: string
+          id?: string
+          is_primary?: boolean | null
+          metadata?: Json | null
+          processing_status?: string | null
+          property_id?: string
+          sort_order?: number | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "threed_assets_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "threed_assets_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ticket_activities: {
         Row: {
           activity_type: string
@@ -21961,6 +22154,57 @@ export type Database = {
           transaction_id?: string
           transaction_type?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      transaction_logs: {
+        Row: {
+          amount: number
+          completed_at: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          payment_method: string | null
+          reference_id: string | null
+          reference_type: string | null
+          status: string
+          transaction_type: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_method?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          status?: string
+          transaction_type: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_method?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          status?: string
+          transaction_type?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
