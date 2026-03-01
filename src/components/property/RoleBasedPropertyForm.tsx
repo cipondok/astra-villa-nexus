@@ -677,44 +677,32 @@ const RoleBasedPropertyForm = () => {
                   >
                     {aiLoading ? (
                       <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    ) : aiContent ? (
+                      <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
                     ) : (
                       <Sparkles className="h-3.5 w-3.5 mr-1.5" />
                     )}
-                    {aiLoading ? 'Generating...' : aiContent ? '✨ Generate Again' : '✨ Generate AI Description'}
+                    {aiLoading ? 'Generating...' : aiContent ? '🔄 Regenerate AI Content' : '✨ Generate AI Description'}
                   </Button>
                   {aiContent && (
-                    <>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        disabled={aiLoading}
-                        onClick={() => generateAiDescription(draftPropertyId || undefined)}
-                        className="border-primary/20 hover:bg-primary/5"
-                      >
-                        <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
-                        Regenerate
-                      </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        disabled={aiLoading}
-                        onClick={() => {
-                          if (aiContent) {
-                            setFormData(prev => ({
-                              ...prev,
-                              description: aiContent.long_description,
-                              seo_description: aiContent.seo_description,
-                            }));
-                            showSuccess('Applied', 'AI content saved to form fields.');
-                          }
-                        }}
-                        className="bg-green-600 hover:bg-green-700 text-white"
-                      >
-                        <Check className="h-3.5 w-3.5 mr-1.5" />
-                        Apply to Form
-                      </Button>
-                    </>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={aiLoading}
+                      onClick={() => {
+                        setFormData(prev => ({
+                          ...prev,
+                          description: aiContent.long_description,
+                          seo_description: aiContent.seo_description,
+                        }));
+                        showSuccess('Applied', 'AI content saved to form fields.');
+                      }}
+                      className="border-primary/20 hover:bg-primary/5"
+                    >
+                      <Check className="h-3.5 w-3.5 mr-1.5" />
+                      Apply to Form
+                    </Button>
                   )}
                 </div>
 
