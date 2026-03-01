@@ -71,6 +71,7 @@ const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/Featured
 const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsShowcase"));
 const AIPriceEstimatorCTA = lazy(() => import("@/components/home/AIPriceEstimatorCTA"));
 const MarketIntelligenceCTA = lazy(() => import("@/components/home/MarketIntelligenceCTA"));
+const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -1036,6 +1037,13 @@ const Index = () => {
                     <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
                   </LazyRender>
                 </div>
+                </ScrollReveal>
+
+                {/* Early Investment CTA */}
+                <ScrollReveal direction="up" delay={50}>
+                  <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl max-w-5xl mx-auto" />}>
+                    <EarlyInvestmentCTA />
+                  </Suspense>
                 </ScrollReveal>
 
                 {/* Market Intelligence CTA */}
