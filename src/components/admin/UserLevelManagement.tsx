@@ -50,11 +50,9 @@ const getLevelIcon = (levelName: string, size: 'sm' | 'md' | 'lg' = 'sm') => {
   const membership = getMembershipFromUserLevel(levelName);
   const sizeClass = size === 'lg' ? 'h-5 w-5' : size === 'md' ? 'h-4 w-4' : 'h-3.5 w-3.5';
   switch (membership) {
-    case 'diamond': return <Gem className={`${sizeClass} text-chart-2`} />;
-    case 'platinum': return <Sparkles className={`${sizeClass} text-chart-5`} />;
-    case 'gold': return <Crown className={`${sizeClass} text-chart-3`} />;
-    case 'vip': return <Star className={`${sizeClass} text-chart-4`} />;
-    case 'verified': return <Shield className={`${sizeClass} text-primary`} />;
+    case 'vip_investor': return <Gem className={`${sizeClass} text-chart-2`} />;
+    case 'developer': return <Crown className={`${sizeClass} text-chart-3`} />;
+    case 'pro_agent': return <Star className={`${sizeClass} text-chart-4`} />;
     default: return <Users className={`${sizeClass} text-muted-foreground`} />;
   }
 };

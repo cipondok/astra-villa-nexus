@@ -23,12 +23,10 @@ interface UserMembershipBadgeProps {
 }
 
 const MEMBERSHIP_ICONS: Record<MembershipLevel, React.ReactNode> = {
-  basic: <Shield className="h-full w-full" />,
-  verified: <CheckCircle2 className="h-full w-full" />,
-  vip: <Star className="h-full w-full" />,
-  gold: <Award className="h-full w-full" />,
-  platinum: <Crown className="h-full w-full" />,
-  diamond: <Gem className="h-full w-full" />
+  free: <Shield className="h-full w-full" />,
+  pro_agent: <Star className="h-full w-full" />,
+  developer: <Award className="h-full w-full" />,
+  vip_investor: <Gem className="h-full w-full" />
 };
 
 const SIZE_CLASSES = {
@@ -68,7 +66,7 @@ export const UserMembershipBadge: React.FC<UserMembershipBadgeProps> = ({
   const config = getMembershipConfig(membershipLevel as MembershipLevel);
   const sizeClasses = SIZE_CLASSES[size];
   
-  const isHighTier = ['gold', 'platinum', 'diamond'].includes(config.level);
+  const isHighTier = ['developer', 'vip_investor'].includes(config.level);
   
   const BadgeContent = () => {
     if (variant === 'icon') {
@@ -116,7 +114,7 @@ export const UserMembershipBadge: React.FC<UserMembershipBadgeProps> = ({
             {variant === 'pill' ? config.shortLabel : config.label}
           </span>
         )}
-        {animate && config.level === 'diamond' && (
+        {animate && config.level === 'vip_investor' && (
           <Sparkles className="h-2.5 w-2.5 animate-pulse" />
         )}
       </Badge>

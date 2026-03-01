@@ -33,12 +33,10 @@ interface CompletionStep {
 }
 
 const NEXT_LEVEL_MAP: Record<MembershipLevel, MembershipLevel | null> = {
-  basic: 'verified',
-  verified: 'vip',
-  vip: 'gold',
-  gold: 'platinum',
-  platinum: 'diamond',
-  diamond: null
+  free: 'pro_agent',
+  pro_agent: 'developer',
+  developer: 'vip_investor',
+  vip_investor: null
 };
 
 export const ProfileCompletionStatus: React.FC<ProfileCompletionStatusProps> = ({

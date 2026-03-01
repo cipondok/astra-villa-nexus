@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Crown, Lock, Sparkles, Image, Box, Star, Zap, Shield } from 'lucide-react';
+import { Crown, Lock, Sparkles, Image, Box, Star, Zap, Shield, Building2, Gem } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

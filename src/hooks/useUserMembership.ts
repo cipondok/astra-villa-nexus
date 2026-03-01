@@ -29,7 +29,6 @@ export function useUserMembership(userId?: string): UserMembershipData {
     queryFn: async () => {
       if (!targetUserId) return null;
 
-      // Get user profile with level info
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select(`
@@ -52,24 +51,23 @@ export function useUserMembership(userId?: string): UserMembershipData {
       return profileData;
     },
     enabled: !!targetUserId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
 
-  // Extract user level info - handle both array and object responses
   const userLevel = data?.user_levels 
     ? (Array.isArray(data.user_levels) ? data.user_levels[0] : data.user_levels)
     : null;
 
-  // Admins get Diamond level by default if no level is set
+  // Admins get VIP Investor level by default
   const membershipLevel: MembershipLevel = isAdmin && !userLevel?.name 
-    ? 'diamond' 
+    ? 'vip_investor' 
     : getMembershipFromUserLevel(userLevel?.name);
 
   return {
     membershipLevel,
     verificationStatus: isAdmin ? 'verified' : (data?.verification_status || profile?.verification_status || 'pending'),
-    userLevelName: isAdmin && !userLevel?.name ? 'Diamond' : (userLevel?.name || null),
+    userLevelName: isAdmin && !userLevel?.name ? 'VIP Investor' : (userLevel?.name || null),
     userLevelId: data?.user_level_id || null,
     maxProperties: isAdmin ? 999 : (userLevel?.max_properties || 5),
     maxListings: isAdmin ? 999 : (userLevel?.max_listings || 10),
@@ -80,7 +78,6 @@ export function useUserMembership(userId?: string): UserMembershipData {
   };
 }
 
-// Hook to get membership level for any user by ID
 export function useUserMembershipById(userId: string | undefined) {
   return useQuery({
     queryKey: ['user-membership-by-id', userId],
