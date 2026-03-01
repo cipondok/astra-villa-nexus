@@ -15432,6 +15432,7 @@ export type Database = {
           city: string | null
           created_at: string | null
           description: string | null
+          developer_certified: boolean
           development_status: string
           discount_percentage: number | null
           drone_video_url: string | null
@@ -15451,6 +15452,7 @@ export type Database = {
           investor_highlight: boolean | null
           is_featured: boolean | null
           land_area_sqm: number | null
+          legal_checked: boolean
           legal_status: string | null
           listing_type: string
           location: string
@@ -15459,9 +15461,11 @@ export type Database = {
           online_booking_enabled: boolean | null
           owner_id: string
           owner_type: string | null
+          ownership_verified: boolean
           panorama_360_urls: string[] | null
           payment_methods: Json | null
           payment_plan_available: boolean | null
+          premium_partner: boolean
           price: number | null
           property_features: Json | null
           property_type: string
@@ -15497,6 +15501,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           description?: string | null
+          developer_certified?: boolean
           development_status?: string
           discount_percentage?: number | null
           drone_video_url?: string | null
@@ -15516,6 +15521,7 @@ export type Database = {
           investor_highlight?: boolean | null
           is_featured?: boolean | null
           land_area_sqm?: number | null
+          legal_checked?: boolean
           legal_status?: string | null
           listing_type: string
           location: string
@@ -15524,9 +15530,11 @@ export type Database = {
           online_booking_enabled?: boolean | null
           owner_id: string
           owner_type?: string | null
+          ownership_verified?: boolean
           panorama_360_urls?: string[] | null
           payment_methods?: Json | null
           payment_plan_available?: boolean | null
+          premium_partner?: boolean
           price?: number | null
           property_features?: Json | null
           property_type: string
@@ -15562,6 +15570,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           description?: string | null
+          developer_certified?: boolean
           development_status?: string
           discount_percentage?: number | null
           drone_video_url?: string | null
@@ -15581,6 +15590,7 @@ export type Database = {
           investor_highlight?: boolean | null
           is_featured?: boolean | null
           land_area_sqm?: number | null
+          legal_checked?: boolean
           legal_status?: string | null
           listing_type?: string
           location?: string
@@ -15589,9 +15599,11 @@ export type Database = {
           online_booking_enabled?: boolean | null
           owner_id?: string
           owner_type?: string | null
+          ownership_verified?: boolean
           panorama_360_urls?: string[] | null
           payment_methods?: Json | null
           payment_plan_available?: boolean | null
+          premium_partner?: boolean
           price?: number | null
           property_features?: Json | null
           property_type?: string
