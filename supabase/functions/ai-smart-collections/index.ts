@@ -58,7 +58,6 @@ serve(async (req) => {
     try {
       body = await req.json();
     } catch {
-      // If body parsing fails, return clear error
       return new Response(JSON.stringify({ error: "Invalid or missing JSON body" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
