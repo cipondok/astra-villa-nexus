@@ -649,6 +649,27 @@ const RoleBasedPropertyForm = () => {
                   </span>
                 </div>
 
+                {/* AI Insight Badges */}
+                {aiContent && !aiLoading && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {Number(formData.roi_percentage) >= 75 && (
+                      <span className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-accent/10 text-accent-foreground border border-accent/20">
+                        📊 Optimized for Investment Buyers
+                      </span>
+                    )}
+                    {formData.has_pool && (
+                      <span className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
+                        🏊 Luxury Lifestyle Emphasis
+                      </span>
+                    )}
+                    {aiContent.seo_description.length >= 140 && aiContent.seo_description.length <= 160 && (
+                      <span className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-green-500/10 text-green-600 border border-green-500/20">
+                        🔍 SEO Optimized
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 {/* Tone Selector */}
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">Content Tone</Label>
