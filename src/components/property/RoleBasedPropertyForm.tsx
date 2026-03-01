@@ -638,7 +638,7 @@ const RoleBasedPropertyForm = () => {
             </div>
 
             {/* AI Description Generator */}
-            <div className="relative rounded-xl overflow-hidden shadow-lg">
+            <div className="relative rounded-xl overflow-hidden shadow-lg animate-scale-in">
               {/* Gradient border effect */}
               <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/40 via-primary/20 to-accent/30 p-[1px]" />
               <div className="relative rounded-xl backdrop-blur-md bg-background/80 border border-primary/10 p-5 space-y-5">
@@ -763,7 +763,7 @@ const RoleBasedPropertyForm = () => {
 
                 {/* AI Content Preview */}
                 {aiContent && !aiLoading && (
-                  <div className="space-y-4 animate-fade-in">
+                  <div className="space-y-4 animate-[ai-reveal_0.4s_ease-out_both]">
                     {/* SEO Description */}
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
