@@ -92,12 +92,25 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
   }
 
   return (
-    <section className="w-full px-2 py-3 sm:p-3">
-      <div className="mb-3 flex items-center justify-center gap-2">
-        <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-chart-1 to-primary flex items-center justify-center shadow-md shadow-chart-1/30">
-          <Home className="h-3.5 w-3.5 text-white" />
+    <section className="w-full px-2 py-4 sm:p-4">
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-chart-1 to-primary flex items-center justify-center shadow-md shadow-chart-1/20">
+            <Home className="h-4 w-4 text-white" />
+          </div>
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-foreground tracking-tight">Properti Dijual</h2>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              {saleProperties.length} properti tersedia
+            </p>
+          </div>
         </div>
-        <h2 className="text-sm font-bold text-foreground">Properti Dijual</h2>
+        <button
+          onClick={() => navigate('/dijual')}
+          className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+        >
+          Lihat Semua <Plus className="h-3 w-3" />
+        </button>
       </div>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-1.5 sm:gap-3">
