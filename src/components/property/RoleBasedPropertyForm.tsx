@@ -1466,7 +1466,7 @@ const RoleBasedPropertyForm = () => {
                         </div>
 
                         {/* Reasoning */}
-                        {strategyData.reasoning.length > 0 && (
+                        {Array.isArray(strategyData.reasoning) && strategyData.reasoning.length > 0 && (
                           <div className="space-y-1.5">
                             <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">Analysis</p>
                             <ul className="space-y-1">
