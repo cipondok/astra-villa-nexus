@@ -688,6 +688,9 @@ const RoleBasedPropertyForm = () => {
                     ? '✨ Unlimited AI Generations'
                     : `AI Usage: ${Math.min(aiUsageCount, 5)} / 5 this month`}
                 </p>
+                {!isProOrAdmin && aiUsageCount === 4 && (
+                  <p className="text-[11px] text-amber-500">⚠️ Last free AI generation this month. Upgrade for unlimited access.</p>
+                )}
 
                 {/* AI Insight Badges */}
                 {aiContent && !aiLoading && (
