@@ -683,10 +683,10 @@ const RoleBasedPropertyForm = () => {
                 </div>
 
                 {/* Usage counter */}
-                <p className="text-[11px] text-muted-foreground">
+                <p className={`text-[11px] ${!isProOrAdmin && aiUsageCount >= 5 ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
                   {isProOrAdmin
                     ? '✨ Unlimited AI Generations'
-                    : `AI Usage: ${aiUsageCount} / 5 this month`}
+                    : `AI Usage: ${Math.min(aiUsageCount, 5)} / 5 this month`}
                 </p>
 
                 {/* AI Insight Badges */}
@@ -742,22 +742,34 @@ const RoleBasedPropertyForm = () => {
 
                 {/* Buttons */}
                 <div className="flex flex-wrap gap-2">
-                  <Button
-                    type="button"
-                    size="sm"
-                    disabled={aiLoading}
-                    onClick={() => generateAiDescription(draftPropertyId || undefined)}
-                    className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-md"
-                  >
-                    {aiLoading ? (
-                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
-                    ) : aiContent ? (
-                      <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
-                    ) : (
+                  {(!isProOrAdmin && aiUsageCount >= 5) ? (
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => setShowUpgradeModal(true)}
+                      className="bg-gradient-to-r from-destructive to-destructive/80 text-destructive-foreground shadow-md"
+                    >
                       <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                    )}
-                    {aiLoading ? 'Generating...' : aiContent ? '🔄 Regenerate AI Content' : '✨ Generate AI Description'}
-                  </Button>
+                      Upgrade to Continue
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={aiLoading}
+                      onClick={() => generateAiDescription(draftPropertyId || undefined)}
+                      className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-md"
+                    >
+                      {aiLoading ? (
+                        <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                      ) : aiContent ? (
+                        <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+                      ) : (
+                        <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                      )}
+                      {aiLoading ? 'Generating...' : aiContent ? '🔄 Regenerate AI Content' : '✨ Generate AI Description'}
+                    </Button>
+                  )}
                   {aiContent && (
                     <Button
                       type="button"
