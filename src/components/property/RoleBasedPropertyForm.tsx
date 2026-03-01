@@ -1486,7 +1486,11 @@ const RoleBasedPropertyForm = () => {
                           size="sm"
                           onClick={() => {
                             handleInputChange('price', String(strategyData.recommended_price));
-                            showSuccess('Price Updated', `Price set to Rp ${strategyData.recommended_price!.toLocaleString('id-ID')}`);
+                            // Seamlessly re-run dependent analyses
+                            analyzePriceIntelligence();
+                            analyzeListingHealth();
+                            analyzeDaysToSell();
+                            analyzePriceStrategy();
                           }}
                           className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90"
                         >
