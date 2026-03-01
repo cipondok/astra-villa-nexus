@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check, PenLine, Activity, ShieldCheck, AlertTriangle, ArrowUp } from "lucide-react";
+import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check, PenLine, Activity, ShieldCheck, AlertTriangle, ArrowUp, Clock, Zap, BarChart3, Users, Award } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import PropertyImageUpload from "./PropertyImageUpload";
 import LocationSelector from "./LocationSelector";
@@ -189,6 +189,21 @@ const RoleBasedPropertyForm = () => {
     strengths: string[];
     improvement_priority: string[];
   } | null>(null);
+
+  // Days to Sell Prediction state
+  const [sellLoading, setSellLoading] = useState(false);
+  const [sellData, setSellData] = useState<{
+    estimated_days_on_market: number;
+    speed_category: string;
+    confidence_score: number;
+    factors: {
+      price_position: string;
+      engagement_level: string;
+      competition_level: string;
+      investment_score: number;
+    };
+  } | null>(null);
+
   // AI usage tracking
   const subscriptionType = (profile as any)?.subscription_type || 'free';
   const isProOrAdmin = ['pro', 'admin'].includes(subscriptionType);
@@ -389,6 +404,43 @@ const RoleBasedPropertyForm = () => {
       showError('Analysis Failed', err.message || 'Could not analyze listing health.');
     } finally {
       setHealthLoading(false);
+    }
+  };
+
+  const analyzeDaysToSell = async () => {
+    setSellLoading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      if (!token) throw new Error('Not authenticated');
+
+      const id = draftPropertyId;
+      if (!id) {
+        showError('Save Required', 'Please save the property first to estimate selling time.');
+        return;
+      }
+
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/property-intelligence-engine`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ property_id: id, mode: 'days_to_sell_prediction' }),
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Failed to estimate selling time');
+
+      setSellData(result.data || result);
+    } catch (err: any) {
+      console.error('Days to sell error:', err);
+      showError('Analysis Failed', err.message || 'Could not estimate selling time.');
+    } finally {
+      setSellLoading(false);
     }
   };
 
@@ -952,6 +1004,116 @@ const RoleBasedPropertyForm = () => {
                         <div>
                           <p className="text-xs font-medium text-amber-600">Improve this listing to increase visibility.</p>
                           <p className="text-[10px] text-muted-foreground mt-0.5">Listings with a health score above 75 get 3× more views on average.</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Time to Sell Prediction Panel */}
+            <div className="relative rounded-xl overflow-hidden shadow-lg">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/20 via-primary/15 to-accent/10 p-[1px]" />
+              <div className="relative rounded-xl backdrop-blur-md bg-background/80 border border-accent/10 p-5 space-y-4">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-accent/20 to-primary/20">
+                      <Clock className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="font-semibold text-sm">Time to Sell Prediction</span>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={sellLoading || !draftPropertyId}
+                    onClick={analyzeDaysToSell}
+                    className="border-primary/20 hover:bg-primary/5"
+                  >
+                    {sellLoading ? (
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    ) : (
+                      <Clock className="h-3.5 w-3.5 mr-1.5" />
+                    )}
+                    {sellLoading ? 'Estimating...' : 'Estimate Selling Time'}
+                  </Button>
+                </div>
+
+                {!draftPropertyId && (
+                  <p className="text-[11px] text-muted-foreground">Save property first to enable time-to-sell prediction.</p>
+                )}
+
+                {sellData && !sellLoading && (
+                  <div className="space-y-4 animate-[ai-reveal_0.4s_ease-out_both]">
+                    {/* Large estimate + speed badge */}
+                    <div className="flex items-center gap-5">
+                      <div className="text-center">
+                        <p className="text-3xl font-bold tracking-tight">{sellData.estimated_days_on_market}</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Estimated Days</p>
+                      </div>
+                      <span className={`inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-full ${
+                        sellData.speed_category === 'very fast'
+                          ? 'bg-green-500/10 text-green-600 border border-green-500/20'
+                        : sellData.speed_category === 'fast'
+                          ? 'bg-primary/10 text-primary border border-primary/20'
+                        : sellData.speed_category === 'moderate'
+                          ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                          : 'bg-destructive/10 text-destructive border border-destructive/20'
+                      }`}>
+                        <Zap className="h-3.5 w-3.5 mr-1.5" />
+                        {sellData.speed_category.charAt(0).toUpperCase() + sellData.speed_category.slice(1)}
+                      </span>
+                    </div>
+
+                    {/* Confidence */}
+                    <div className="p-3 rounded-lg bg-muted/50 border border-border/50 inline-flex items-center gap-2">
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-wide">Confidence:</span>
+                      <span className="text-sm font-semibold">{sellData.confidence_score}%</span>
+                    </div>
+
+                    {/* Factors */}
+                    <div className="space-y-2">
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">Contributing Factors</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/30 border border-border/30">
+                          <TrendingUp className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-muted-foreground">Price Position</p>
+                            <p className="text-xs font-medium capitalize">{sellData.factors.price_position}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/30 border border-border/30">
+                          <BarChart3 className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-muted-foreground">Engagement</p>
+                            <p className="text-xs font-medium capitalize">{sellData.factors.engagement_level}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/30 border border-border/30">
+                          <Users className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-muted-foreground">Competition</p>
+                            <p className="text-xs font-medium capitalize">{sellData.factors.competition_level}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/30 border border-border/30">
+                          <Award className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-muted-foreground">Investment Score</p>
+                            <p className="text-xs font-medium">{sellData.factors.investment_score}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Slow recommendation */}
+                    {sellData.speed_category === 'slow' && (
+                      <div className="p-3 rounded-lg bg-destructive/5 border border-destructive/15 flex items-start gap-2.5">
+                        <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-xs font-medium text-destructive">Adjust pricing or improve listing quality to reduce time on market.</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">Optimized listings sell up to 40% faster.</p>
                         </div>
                       </div>
                     )}
