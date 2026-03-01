@@ -130,7 +130,7 @@ const MessagesPage = lazy(() => import('@/pages/MessagesPage'));
 const UserRentalDashboard = lazy(() => import('@/pages/UserRentalDashboard'));
 const AIPriceEstimator = lazy(() => import('@/pages/AIPriceEstimator'));
 const KprCalculatorPage = lazy(() => import('@/pages/KprCalculatorPage'));
-
+const MarketIntelligence = lazy(() => import('@/pages/MarketIntelligence'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -302,6 +302,8 @@ const AppContent = () => {
                 <Route path="/my-rentals" element={<UserRentalDashboard />} />
                 <Route path="/ai-pricing" element={<AIPriceEstimator />} />
                 <Route path="/price-estimator" element={<AIPriceEstimator />} />
+                <Route path="/market-intelligence" element={<MarketIntelligence />} />
+                <Route path="/market-data" element={<MarketIntelligence />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
