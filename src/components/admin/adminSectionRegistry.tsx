@@ -237,4 +237,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "media-network": { label: "Media Network", category: "Features" },
   "user-acquisition": { label: "User Acquisition", category: "Features" },
   "nearby-facilities-settings": { label: "Nearby & Payment Settings", category: "Property System" },
+  "off-plan-manager": { label: "Off-Plan Project Manager", category: "Property System" },
 };
