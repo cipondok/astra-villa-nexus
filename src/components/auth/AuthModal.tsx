@@ -14,7 +14,7 @@ import { useTranslation } from "@/i18n/useTranslation";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
 }
 
 const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {

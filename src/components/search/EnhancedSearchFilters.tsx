@@ -11,7 +11,7 @@ import { useState } from "react";
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface EnhancedSearchFiltersProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onSearch: (filters: any) => void;
 }
 

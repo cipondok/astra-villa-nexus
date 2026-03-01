@@ -17,7 +17,7 @@ interface QuickFilter {
 }
 
 interface QuickFiltersChipBarProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onFilterSelect: (filters: any) => void;
 }
 

@@ -2,9 +2,9 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { safeLocalStorage } from "@/lib/safeStorage";
 
-type Language = "en" | "id" | "zh" | "ja" | "ko";
+type Language = "en" | "id" | "zh" | "ja" | "ko" | "ru";
 
-const VALID_LANGS: Language[] = ["en", "id", "zh", "ja", "ko"];
+const VALID_LANGS: Language[] = ["en", "id", "zh", "ja", "ko", "ru"];
 
 const detectBrowserLanguage = (): Language => {
   try {

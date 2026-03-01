@@ -11,7 +11,7 @@ import { useSystemControls } from '@/hooks/useSystemControls';
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface PropertyListingsSectionProps {
-  language?: "en" | "id" | "zh" | "ja" | "ko";
+  language?: string;
   searchResults?: any[];
   isSearching?: boolean;
   hasSearched?: boolean;

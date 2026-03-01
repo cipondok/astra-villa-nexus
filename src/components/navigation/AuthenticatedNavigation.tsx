@@ -42,7 +42,7 @@ import {
 import NotificationCenter from "@/components/notifications/NotificationCenter";
 
 interface AuthenticatedNavigationProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   onLanguageToggle: () => void;
   theme: string;
   onThemeToggle: () => void;

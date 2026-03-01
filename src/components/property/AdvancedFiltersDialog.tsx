@@ -12,7 +12,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { getCurrencyFormatterShort } from "@/stores/currencyStore";
 
 interface AdvancedFiltersDialogProps {
-  language: "en" | "id" | "zh" | "ja" | "ko";
+  language: string;
   listingType: string;
   priceRange: string;
   bedrooms: string;

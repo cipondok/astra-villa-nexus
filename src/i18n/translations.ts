@@ -3,7 +3,7 @@
 
 import en from './locales/en';
 
-export type Language = 'en' | 'id' | 'zh' | 'ja' | 'ko';
+export type Language = 'en' | 'id' | 'zh' | 'ja' | 'ko' | 'ru';
 
 export interface TranslationMap {
   [key: string]: string | string[] | TranslationMap;
@@ -14,6 +14,7 @@ const lazyLoaders: Partial<Record<Language, () => Promise<{ default: Translation
   zh: () => import('./locales/zh'),
   ja: () => import('./locales/ja'),
   ko: () => import('./locales/ko'),
+  ru: () => import('./locales/ru'),
 };
 
 const cache: Partial<Record<Language, TranslationMap>> = { en };
