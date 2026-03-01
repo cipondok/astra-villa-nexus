@@ -190,7 +190,7 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.exchange-rates]
     verify_jwt = false
 
-  [functions.investment-score-engine]
+  [functions.property-intelligence-engine]
     verify_jwt = false
 
   [functions.predictive-pricing]
@@ -200,7 +200,4 @@ project_id = "zymrajuuyyfkzdmptebl"
     verify_jwt = false
 
   [functions.ai-description-generator]
-    verify_jwt = false
-
-  [functions.ai-price-suggestion-engine]
     verify_jwt = false
