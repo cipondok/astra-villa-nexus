@@ -85,9 +85,13 @@ export default function SmartCollectionsShowcase() {
                   ))}
                 </div>
               ) : properties.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  <Sparkles className="h-8 w-8 mx-auto mb-2 text-gold-primary/40" />
-                  <p className="text-sm">{t('indexPage.noCollections')}</p>
+                <div className="flex flex-col items-center justify-center py-10 gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gold-primary/10 flex items-center justify-center">
+                    <Sparkles className="h-5 w-5 text-gold-primary/60" />
+                  </div>
+                  <p className="text-sm text-muted-foreground text-center max-w-xs leading-relaxed">
+                    {t('indexPage.noCollections')}
+                  </p>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
