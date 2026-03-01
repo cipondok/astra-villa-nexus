@@ -29,6 +29,7 @@ import { KPRCalculator } from '@/components/property/KPRCalculator';
 import PropertyMortgageWidget from '@/components/mortgage/PropertyMortgageWidget';
 import { PropertyPosterInfo } from '@/components/property/PropertyPosterInfo';
 import PropertyTrustBadges from '@/components/property/PropertyTrustBadges';
+import PropertyTrustShield from '@/components/property/PropertyTrustShield';
 import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { 
   MapPin, 
@@ -1000,6 +1001,12 @@ const PropertyDetail: React.FC = () => {
 
                 {/* AI Smart Collection Badges */}
                 <SmartCollectionBadges propertyId={property.id} />
+
+                {/* Trust & Verification Shield */}
+                <PropertyTrustShield
+                  property={{ id: property.id, ...property }}
+                  className="mt-3"
+                />
 
                 {/* Quick Action Buttons - Book Survey prominently displayed */}
                 <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-border">
