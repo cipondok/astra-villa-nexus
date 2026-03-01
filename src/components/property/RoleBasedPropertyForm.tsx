@@ -169,6 +169,26 @@ const RoleBasedPropertyForm = () => {
     highlights: string[];
   } | null>(null);
 
+  // AI usage tracking
+  const subscriptionType = (profile as any)?.subscription_type || 'free';
+  const isProOrAdmin = ['pro', 'admin'].includes(subscriptionType);
+
+  const { data: aiUsageCount = 0 } = useQuery({
+    queryKey: ['ai-usage-count', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return 0;
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const { count } = await supabase
+        .from('ai_usage_logs')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('created_at', monthStart);
+      return count ?? 0;
+    },
+    enabled: !!user?.id,
+  });
+
   const saveDraftAndGetId = async (): Promise<string> => {
     if (draftPropertyId) return draftPropertyId;
 
@@ -262,6 +282,7 @@ const RoleBasedPropertyForm = () => {
         seo_description: data.seo_description,
       }));
 
+      queryClient.invalidateQueries({ queryKey: ['ai-usage-count'] });
       showSuccess('AI Content Generated', 'Description, SEO, and social content are ready.');
     } catch (err: any) {
       console.error('AI generation error:', err);
@@ -660,6 +681,13 @@ const RoleBasedPropertyForm = () => {
                     Powered by AI
                   </span>
                 </div>
+
+                {/* Usage counter */}
+                <p className="text-[11px] text-muted-foreground">
+                  {isProOrAdmin
+                    ? '✨ Unlimited AI Generations'
+                    : `AI Usage: ${aiUsageCount} / 5 this month`}
+                </p>
 
                 {/* AI Insight Badges */}
                 {aiContent && !aiLoading && (
