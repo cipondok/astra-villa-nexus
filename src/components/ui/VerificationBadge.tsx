@@ -1,4 +1,4 @@
-import { ShieldCheck, Building2, UserCheck, Scale, Landmark, BadgeCheck, Crown } from "lucide-react";
+import { ShieldCheck, Building2, UserCheck, Scale, Landmark, BadgeCheck, Crown, CreditCard, Leaf } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -10,7 +10,13 @@ export type PropertyTrustType =
   | "verified_ownership"
   | "developer_certified"
   | "legal_checked"
-  | "premium_partner";
+  | "premium_partner"
+  // Database-driven badge types
+  | "ownership_verified"
+  | "government_approved"
+  | "bank_partner"
+  | "premium_listing"
+  | "eco_certified";
 
 interface VerificationBadgeProps {
   type: PropertyTrustType;
@@ -86,6 +92,47 @@ const badgeConfig: Record<
     tooltip: "Listed by an exclusive Premium Partner with top trust rating",
     gradient: "from-gold-primary to-amber-500",
     hoverGradient: "hover:from-gold-primary/90 hover:to-amber-500/80",
+  },
+  // Database-driven badge types (from property_verification_badges table)
+  ownership_verified: {
+    label: "Ownership Verified",
+    shortLabel: "Verified",
+    icon: ShieldCheck,
+    tooltip: "Property ownership has been verified by admin review",
+    gradient: "from-chart-1 to-emerald-600",
+    hoverGradient: "hover:from-chart-1/90 hover:to-emerald-600/80",
+  },
+  government_approved: {
+    label: "Government Approved",
+    shortLabel: "Gov",
+    icon: Landmark,
+    tooltip: "Property has government approval and permits verified",
+    gradient: "from-chart-3 to-violet-600",
+    hoverGradient: "hover:from-chart-3/90 hover:to-violet-600/80",
+  },
+  bank_partner: {
+    label: "Bank Partner",
+    shortLabel: "Bank",
+    icon: CreditCard,
+    tooltip: "Property eligible for partner bank mortgage programs",
+    gradient: "from-chart-4 to-orange-600",
+    hoverGradient: "hover:from-chart-4/90 hover:to-orange-600/80",
+  },
+  premium_listing: {
+    label: "Premium Listing",
+    shortLabel: "Premium",
+    icon: Crown,
+    tooltip: "Exclusive premium listing with enhanced visibility",
+    gradient: "from-gold-primary to-amber-500",
+    hoverGradient: "hover:from-gold-primary/90 hover:to-amber-500/80",
+  },
+  eco_certified: {
+    label: "Eco Certified",
+    shortLabel: "Eco",
+    icon: Leaf,
+    tooltip: "Property meets environmental sustainability standards",
+    gradient: "from-green-500 to-emerald-600",
+    hoverGradient: "hover:from-green-500/90 hover:to-emerald-600/80",
   },
 };
 
