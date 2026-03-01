@@ -169,6 +169,17 @@ const RoleBasedPropertyForm = () => {
     highlights: string[];
   } | null>(null);
 
+  // AI Price Intelligence state
+  const [priceLoading, setPriceLoading] = useState(false);
+  const [priceData, setPriceData] = useState<{
+    recommended_min_price: number;
+    recommended_max_price: number;
+    suggested_price: number;
+    confidence_score: number;
+    price_position: string;
+    comparable_count: number;
+  } | null>(null);
+
   // AI usage tracking
   const subscriptionType = (profile as any)?.subscription_type || 'free';
   const isProOrAdmin = ['pro', 'admin'].includes(subscriptionType);
@@ -289,6 +300,48 @@ const RoleBasedPropertyForm = () => {
       showError('Generation Failed', err.message || 'Could not generate AI content.');
     } finally {
       setAiLoading(false);
+    }
+  };
+
+  const analyzePriceIntelligence = async () => {
+    setPriceLoading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      if (!token) throw new Error('Not authenticated');
+
+      const id = draftPropertyId || undefined;
+      if (!id) {
+        showError('Save Required', 'Please save the property first to analyze pricing.');
+        return;
+      }
+
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-price-suggestion-engine`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ property_id: id }),
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to analyze price');
+
+      if (data.comparable_count === 0) {
+        showError('No Comparables', 'Not enough comparable listings in this area to estimate price.');
+        return;
+      }
+
+      setPriceData(data);
+    } catch (err: any) {
+      console.error('Price analysis error:', err);
+      showError('Analysis Failed', err.message || 'Could not analyze price.');
+    } finally {
+      setPriceLoading(false);
     }
   };
 
@@ -645,6 +698,87 @@ const RoleBasedPropertyForm = () => {
                 />
               </div>
             </div>
+
+            {/* AI Price Intelligence Panel */}
+            <div className="relative rounded-xl overflow-hidden shadow-lg">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/30 via-primary/10 to-accent/20 p-[1px]" />
+              <div className="relative rounded-xl backdrop-blur-md bg-background/80 border border-accent/10 p-5 space-y-4">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-accent/20 to-primary/20">
+                      <TrendingUp className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="font-semibold text-sm">AI Price Intelligence</span>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={priceLoading || !draftPropertyId}
+                    onClick={analyzePriceIntelligence}
+                    className="border-primary/20 hover:bg-primary/5"
+                  >
+                    {priceLoading ? (
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    ) : (
+                      <TrendingUp className="h-3.5 w-3.5 mr-1.5" />
+                    )}
+                    {priceLoading ? 'Analyzing...' : 'Analyze Price'}
+                  </Button>
+                </div>
+
+                {!draftPropertyId && (
+                  <p className="text-[11px] text-muted-foreground">Save property first to enable price analysis.</p>
+                )}
+
+                {priceData && !priceLoading && (
+                  <div className="space-y-3 animate-[ai-reveal_0.4s_ease-out_both]">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">Recommended Range</p>
+                        <p className="text-sm font-semibold">
+                          Rp {priceData.recommended_min_price.toLocaleString('id-ID')} – Rp {priceData.recommended_max_price.toLocaleString('id-ID')}
+                        </p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">Suggested Price</p>
+                        <p className="text-sm font-semibold">Rp {priceData.suggested_price.toLocaleString('id-ID')}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">Confidence</p>
+                        <p className="text-sm font-semibold">{priceData.confidence_score}%</p>
+                        <p className="text-[10px] text-muted-foreground">{priceData.comparable_count} comparables</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">Market Position</p>
+                        <span className={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full ${
+                          priceData.price_position === 'underpriced'
+                            ? 'bg-green-500/10 text-green-600 border border-green-500/20'
+                            : priceData.price_position === 'market-aligned'
+                            ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                            : 'bg-destructive/10 text-destructive border border-destructive/20'
+                        }`}>
+                          {priceData.price_position === 'underpriced' ? '🟢' : priceData.price_position === 'market-aligned' ? '🟡' : '🔴'}{' '}
+                          {priceData.price_position.charAt(0).toUpperCase() + priceData.price_position.slice(1)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {priceData.price_position === 'overpriced' && (
+                      <p className="text-xs text-destructive bg-destructive/5 border border-destructive/10 rounded-lg p-3">
+                        💡 Consider reducing price by 8–12% to match market demand.
+                      </p>
+                    )}
+                    {priceData.price_position === 'underpriced' && (
+                      <p className="text-xs text-green-600 bg-green-500/5 border border-green-500/10 rounded-lg p-3">
+                        🔥 High interest potential — priced below market.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
             <div>
               <div className="flex items-center justify-between mb-1">
                 <Label htmlFor="description">Description ({formData.description.length} characters)</Label>
