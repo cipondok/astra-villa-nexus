@@ -189,3 +189,9 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.exchange-rates]
     verify_jwt = false
+
+  [functions.investment-score-engine]
+    verify_jwt = false
+
+  [functions.predictive-pricing]
+    verify_jwt = false

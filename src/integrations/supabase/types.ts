@@ -15579,6 +15579,7 @@ export type Database = {
           id: string
           image_urls: string[] | null
           images: string[] | null
+          investment_score: number | null
           investor_highlight: boolean | null
           is_early_bird: boolean | null
           is_featured: boolean | null
@@ -15659,6 +15660,7 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
+          investment_score?: number | null
           investor_highlight?: boolean | null
           is_early_bird?: boolean | null
           is_featured?: boolean | null
@@ -15739,6 +15741,7 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
+          investment_score?: number | null
           investor_highlight?: boolean | null
           is_early_bird?: boolean | null
           is_featured?: boolean | null

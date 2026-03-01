@@ -1,0 +1,2 @@
+ALTER TABLE public.properties ADD COLUMN IF NOT EXISTS investment_score integer DEFAULT NULL;
+CREATE INDEX IF NOT EXISTS idx_properties_investment_score ON public.properties (investment_score DESC) WHERE investment_score IS NOT NULL;
