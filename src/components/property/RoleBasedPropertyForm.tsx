@@ -234,6 +234,21 @@ const RoleBasedPropertyForm = () => {
     },
   });
 
+  // Price Adjustment Strategy state
+  const [strategyLoading, setStrategyLoading] = useState(false);
+  const [strategyData, setStrategyData] = useState<{
+    recommendation: string;
+    current_price: number;
+    recommended_price?: number;
+    reduction_percent?: number;
+    price_position: string;
+    dom_current?: number;
+    dom_adjusted?: number;
+    expected_dom_reduction_days?: number;
+    impact_prediction: string;
+    reasoning: string[];
+  } | null>(null);
+
   // AI usage tracking
   const subscriptionType = (profile as any)?.subscription_type || 'free';
   const isProOrAdmin = ['pro', 'admin'].includes(subscriptionType);
@@ -507,6 +522,40 @@ const RoleBasedPropertyForm = () => {
       showError('Analysis Failed', err.message || 'Could not analyze market demand.');
     } finally {
       setHeatLoading(false);
+    }
+  };
+
+  const analyzePriceStrategy = async () => {
+    setStrategyLoading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      if (!token) throw new Error('Not authenticated');
+
+      const id = draftPropertyId;
+      if (!id) {
+        showError('Save Required', 'Please save the property first.');
+        return;
+      }
+
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/property-intelligence-engine`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ property_id: id, mode: 'price_adjustment_strategy' }),
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Failed to analyze price strategy');
+
+      setStrategyData(result.data || result);
+    } catch (err: any) {
+      console.error('Price strategy error:', err);
+      showError('Analysis Failed', err.message || 'Could not analyze price strategy.');
+    } finally {
+      setStrategyLoading(false);
     }
   };
 
@@ -1339,6 +1388,121 @@ const RoleBasedPropertyForm = () => {
                         </div>
                       </div>
                     </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Smart Price Strategy Panel */}
+            <div className="relative rounded-xl overflow-hidden shadow-lg">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/25 via-accent/15 to-primary/10 p-[1px]" />
+              <div className="relative rounded-xl backdrop-blur-md bg-background/80 border border-primary/10 p-5 space-y-4">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20">
+                      <TrendingDown className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="font-semibold text-sm">Smart Price Strategy</span>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={strategyLoading || !draftPropertyId}
+                    onClick={analyzePriceStrategy}
+                    className="border-primary/20 hover:bg-primary/5"
+                  >
+                    {strategyLoading ? (
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    ) : (
+                      <TrendingDown className="h-3.5 w-3.5 mr-1.5" />
+                    )}
+                    {strategyLoading ? 'Analyzing...' : 'Analyze Price Adjustment'}
+                  </Button>
+                </div>
+
+                {!draftPropertyId && (
+                  <p className="text-[11px] text-muted-foreground">Save property first to enable price strategy analysis.</p>
+                )}
+
+                {strategyData && !strategyLoading && (
+                  <div className="space-y-4 animate-[ai-reveal_0.4s_ease-out_both]">
+                    {strategyData.price_position === 'overpriced' && strategyData.recommended_price ? (
+                      <>
+                        {/* Metrics grid */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">Suggested Price</p>
+                            <p className="text-sm font-semibold">Rp {strategyData.recommended_price.toLocaleString('id-ID')}</p>
+                          </div>
+                          <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">Reduction</p>
+                            <p className="text-sm font-semibold text-destructive">-{strategyData.reduction_percent?.toFixed(1)}%</p>
+                          </div>
+                          <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">Time-to-Sell Improvement</p>
+                            <p className="text-sm font-semibold text-green-600">
+                              {strategyData.expected_dom_reduction_days && strategyData.expected_dom_reduction_days > 0
+                                ? `-${strategyData.expected_dom_reduction_days} days`
+                                : 'Minimal'}
+                            </p>
+                            <p className="text-[10px] text-muted-foreground">
+                              {strategyData.dom_current} → {strategyData.dom_adjusted} days
+                            </p>
+                          </div>
+                          <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">Impact Level</p>
+                            <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full ${
+                              strategyData.impact_prediction === 'High'
+                                ? 'bg-green-500/10 text-green-600 border border-green-500/20'
+                              : strategyData.impact_prediction === 'Medium'
+                                ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                                : 'bg-muted/50 text-muted-foreground border border-border/50'
+                            }`}>
+                              {strategyData.impact_prediction === 'High' ? '🟢' : strategyData.impact_prediction === 'Medium' ? '🟡' : '⚪'}{' '}
+                              {strategyData.impact_prediction}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Reasoning */}
+                        {strategyData.reasoning.length > 0 && (
+                          <div className="space-y-1.5">
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">Analysis</p>
+                            <ul className="space-y-1">
+                              {strategyData.reasoning.map((r, i) => (
+                                <li key={i} className="text-xs text-foreground/70 flex items-start gap-1.5">
+                                  <span className="text-primary mt-0.5">•</span>
+                                  <span>{r}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* Apply CTA */}
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => {
+                            handleInputChange('price', String(strategyData.recommended_price));
+                            showSuccess('Price Updated', `Price set to Rp ${strategyData.recommended_price!.toLocaleString('id-ID')}`);
+                          }}
+                          className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90"
+                        >
+                          <Check className="h-3.5 w-3.5 mr-1.5" />
+                          Apply Suggested Price — Rp {strategyData.recommended_price.toLocaleString('id-ID')}
+                        </Button>
+                      </>
+                    ) : (
+                      <div className="p-4 rounded-lg bg-green-500/5 border border-green-500/15 flex items-start gap-2.5">
+                        <ShieldCheck className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-sm font-medium text-green-600">Your pricing is well positioned for current market conditions.</p>
+                          <p className="text-[10px] text-muted-foreground mt-1">No adjustment recommended at this time.</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
