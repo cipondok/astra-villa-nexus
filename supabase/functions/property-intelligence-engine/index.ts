@@ -47,8 +47,8 @@ Deno.serve(async (req) => {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    if (!mode || !['investment_score', 'price_suggestion', 'listing_health'].includes(mode)) {
-      return new Response(JSON.stringify({ error: 'mode must be "investment_score", "price_suggestion", or "listing_health"' }), {
+    if (!mode || !['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction'].includes(mode)) {
+      return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -404,6 +404,89 @@ Deno.serve(async (req) => {
         issues,
         strengths,
         improvement_priority: improvementPriority,
+      },
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+
+    // ═══════════════════════════════════════════
+    // MODE: days_to_sell_prediction
+    // ═══════════════════════════════════════════
+    const thirtyAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const domPrice = Number(property.price) || 0;
+    const domPriceLow = domPrice * 0.8;
+    const domPriceHigh = domPrice * 1.2;
+
+    const [cityListRes, compRes2, viewsRes2, savesRes2, pricePosResult2] = await Promise.all([
+      supabase.from('properties').select('id', { count: 'exact', head: true })
+        .eq('city', property.city).eq('status', 'published'),
+      supabase.from('properties').select('id', { count: 'exact', head: true })
+        .eq('city', property.city).eq('property_type', property.property_type)
+        .eq('status', 'published').gte('price', domPriceLow).lte('price', domPriceHigh).neq('id', property_id),
+      supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+        .eq('activity_type', 'view').eq('property_id', property_id).gte('created_at', thirtyAgo),
+      supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+        .eq('property_id', property_id).gte('saved_at', thirtyAgo),
+      computePricePosition(property, property_id),
+    ]);
+
+    const cityTotal = cityListRes.count || 0;
+    const compCount2 = compRes2.count || 0;
+    const eng = (viewsRes2.count || 0) + (savesRes2.count || 0) * 3;
+    const inv = Number(property.investment_score) || 0;
+
+    // Base DOM
+    let dom: number;
+    if (cityTotal >= 100) dom = 30;
+    else if (cityTotal >= 50) dom = 45;
+    else if (cityTotal >= 20) dom = 60;
+    else dom = 75;
+
+    // Adjustments
+    const pp = pricePosResult2.price_position;
+    if (pp === 'underpriced') dom *= 0.8;
+    else if (pp === 'overpriced') dom *= 1.25;
+
+    let engLevel: string;
+    if (eng >= 50) { dom *= 0.85; engLevel = 'high'; }
+    else if (eng >= 20) { dom *= 0.95; engLevel = 'medium'; }
+    else { dom *= 1.1; engLevel = 'low'; }
+
+    let compLevel: string;
+    if (compCount2 <= 5) { dom *= 0.9; compLevel = 'low'; }
+    else { dom *= 1.15; compLevel = 'high'; }
+
+    if (inv >= 80) dom *= 0.9;
+    else if (inv < 50) dom *= 1.1;
+
+    const estimatedDays = Math.max(7, Math.min(180, Math.round(dom)));
+
+    let speedCategory: string;
+    if (estimatedDays <= 30) speedCategory = 'very fast';
+    else if (estimatedDays <= 60) speedCategory = 'fast';
+    else if (estimatedDays <= 90) speedCategory = 'moderate';
+    else speedCategory = 'slow';
+
+    let domConf: number;
+    if (compCount2 >= 20) domConf = 90;
+    else if (compCount2 >= 10) domConf = 75;
+    else if (compCount2 >= 5) domConf = 60;
+    else domConf = 40;
+
+    console.log(`Days to sell for ${property_id}: ${estimatedDays} (${speedCategory})`);
+
+    return new Response(JSON.stringify({
+      mode: 'days_to_sell_prediction',
+      data: {
+        estimated_days_on_market: estimatedDays,
+        speed_category: speedCategory,
+        confidence_score: domConf,
+        factors: {
+          price_position: pp,
+          engagement_level: engLevel,
+          competition_level: compLevel,
+          investment_score: inv,
+        },
       },
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
