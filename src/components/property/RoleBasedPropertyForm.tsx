@@ -246,6 +246,7 @@ const RoleBasedPropertyForm = () => {
     dom_adjusted?: number;
     expected_dom_reduction_days?: number;
     impact_prediction: string;
+    confidence_score?: number;
     reasoning: string[];
   } | null>(null);
 
@@ -1463,6 +1464,21 @@ const RoleBasedPropertyForm = () => {
                               {strategyData.impact_prediction}
                             </span>
                           </div>
+                          {/* Confidence Score */}
+                          {strategyData.confidence_score != null && (
+                            <div>
+                              <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium mb-1">Confidence</p>
+                              <span className={`text-sm font-semibold ${
+                                strategyData.confidence_score > 80
+                                  ? 'text-green-500'
+                                  : strategyData.confidence_score >= 60
+                                    ? 'text-yellow-500'
+                                    : 'text-muted-foreground'
+                              }`}>
+                                {Math.round(strategyData.confidence_score)}%
+                              </span>
+                            </div>
+                          )}
                         </div>
 
                         {/* Reasoning */}
