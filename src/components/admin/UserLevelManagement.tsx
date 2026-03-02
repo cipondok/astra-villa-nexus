@@ -450,25 +450,41 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
             </Dialog>
           </div>
 
-          {/* Membership Tiers Visual */}
-          <Card>
-            <CardHeader className="py-3 px-4">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-chart-5" />
-                Membership Tier System
+          {/* Membership Tiers Visual - Horizontal scrollable on mobile */}
+          <Card className="overflow-hidden">
+            <CardHeader className="py-2.5 px-4 bg-gradient-to-r from-muted/50 to-transparent border-b border-border/30">
+              <CardTitle className="text-xs font-semibold flex items-center gap-2">
+                <Sparkles className="h-3.5 w-3.5 text-chart-5" />
+                Tier System
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-3">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <CardContent className="p-2.5">
+              <ScrollArea className="w-full md:hidden">
+                <div className="flex gap-2 pb-1">
+                  {Object.entries(MEMBERSHIP_LEVELS).map(([key, config]) => (
+                    <div 
+                      key={key}
+                      className={`p-2.5 rounded-lg border text-center transition-all hover:scale-105 shrink-0 w-[100px] ${config.bgColor} ${config.borderColor} ${config.glowColor ? `shadow-md ${config.glowColor}` : ''}`}
+                    >
+                      <div className="flex justify-center mb-1">
+                        <VIPLevelBadge level={key} size="sm" showTooltip={false} />
+                      </div>
+                      <p className={`text-[10px] font-bold ${config.color}`}>{config.shortLabel}</p>
+                      <p className="text-[8px] text-muted-foreground mt-0.5">P{config.priority}</p>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+              <div className="hidden md:grid grid-cols-4 gap-2.5">
                 {Object.entries(MEMBERSHIP_LEVELS).map(([key, config]) => (
                   <div 
                     key={key}
-                    className={`p-3 rounded-lg border text-center transition-all hover:scale-105 ${config.bgColor} ${config.borderColor} ${config.glowColor ? `shadow-lg ${config.glowColor}` : ''}`}
+                    className={`p-3 rounded-lg border text-center transition-all hover:scale-[1.03] ${config.bgColor} ${config.borderColor} ${config.glowColor ? `shadow-md ${config.glowColor}` : ''}`}
                   >
                     <div className="flex justify-center mb-1">
                       <VIPLevelBadge level={key} size="md" showTooltip={false} />
                     </div>
-                    <p className={`text-xs font-semibold ${config.color}`}>{config.shortLabel}</p>
+                    <p className={`text-xs font-bold ${config.color}`}>{config.shortLabel}</p>
                     <p className="text-[9px] text-muted-foreground mt-0.5">Priority: {config.priority}</p>
                   </div>
                 ))}
@@ -477,128 +493,139 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
           </Card>
 
           {/* Configured Levels */}
-          <Card>
-            <CardHeader className="py-3 px-4">
-              <CardTitle className="text-sm font-medium flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <ListChecks className="h-4 w-4 text-primary" />
-                  Configured Levels ({levels?.length || 0})
-                </span>
-              </CardTitle>
+          <Card className="overflow-hidden">
+            <CardHeader className="py-2.5 px-4 bg-gradient-to-r from-muted/50 to-transparent border-b border-border/30">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xs font-semibold flex items-center gap-2">
+                  <ListChecks className="h-3.5 w-3.5 text-primary" />
+                  Configured Levels
+                </CardTitle>
+                <Badge variant="outline" className="text-[9px] h-5 px-1.5">
+                  {levels?.length || 0} total
+                </Badge>
+              </div>
             </CardHeader>
-            <CardContent className="p-2">
+            <CardContent className="p-0">
               {isLoading ? (
-                <div className="text-center py-6 text-xs text-muted-foreground">Loading levels...</div>
+                <div className="text-center py-8 text-xs text-muted-foreground">Loading levels...</div>
               ) : levels?.length === 0 ? (
-                <div className="text-center py-6">
+                <div className="text-center py-8">
                   <Crown className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
                   <p className="text-xs text-muted-foreground">No levels configured yet.</p>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="mt-2 h-7 text-xs"
-                    onClick={() => setIsCreateModalOpen(true)}
-                  >
+                  <Button size="sm" variant="outline" className="mt-2 h-7 text-xs" onClick={() => setIsCreateModalOpen(true)}>
                     Create First Level
                   </Button>
                 </div>
               ) : (
-                <ScrollArea className="h-[420px] md:h-[480px]">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 pr-2">
-                    {levels?.map((level) => {
-                      const usersInLevel = userCounts?.counts[level.id] || 0;
-                      const membership = getMembershipFromUserLevel(level.name);
-                      const tierConfig = MEMBERSHIP_LEVELS[membership];
-                      
-                      return (
-                        <div 
-                          key={level.id} 
-                          className={`p-2.5 rounded-lg border transition-all hover:shadow-md ${tierConfig.bgColor} ${tierConfig.borderColor} flex flex-col`}
-                        >
-                          <div className="flex items-start gap-2 flex-1 min-w-0">
-                            <div className={`p-1.5 rounded-md shrink-0 ${tierConfig.bgColor} border ${tierConfig.borderColor}`}>
-                              <VIPLevelBadge level={level.name} size="sm" showTooltip={false} />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className={`text-xs font-semibold ${tierConfig.color} truncate`}>
-                                  {level.name}
-                                </span>
-                                <Badge variant="secondary" className="text-[9px] px-1 py-0 h-3.5 shrink-0">
-                                  {usersInLevel} users
-                                </Badge>
-                              </div>
-                              <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
-                                {level.description || 'No description'}
-                              </p>
-                            </div>
-                            {/* Actions */}
-                            <div className="flex items-center gap-0.5 shrink-0">
-                              <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setEditingLevel(level)}>
-                                <Edit className="h-3 w-3" />
-                              </Button>
-                              <Button
-                                size="icon" variant="ghost"
-                                className="h-6 w-6 text-destructive hover:text-destructive"
-                                onClick={() => { if (confirm('Are you sure you want to delete this level?')) deleteLevelMutation.mutate(level.id); }}
-                                disabled={deleteLevelMutation.isPending || usersInLevel > 0}
-                                title={usersInLevel > 0 ? 'Cannot delete: users assigned' : 'Delete level'}
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            </div>
+                <div className="divide-y divide-border/30">
+                  {levels?.map((level, index) => {
+                    const usersInLevel = userCounts?.counts[level.id] || 0;
+                    const membership = getMembershipFromUserLevel(level.name);
+                    const tierConfig = MEMBERSHIP_LEVELS[membership];
+                    
+                    return (
+                      <div 
+                        key={level.id} 
+                        className="flex items-center gap-2 sm:gap-3 px-3 py-2.5 transition-colors hover:bg-muted/30 group"
+                      >
+                        <div className="text-[10px] text-muted-foreground/40 font-mono w-3 text-center shrink-0">{index + 1}</div>
+                        <div className={`p-1.5 rounded-md shrink-0 ${tierConfig.bgColor} border ${tierConfig.borderColor}`}>
+                          <VIPLevelBadge level={level.name} size="xs" showTooltip={false} />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <span className={`text-[11px] font-semibold ${tierConfig.color}`}>{level.name}</span>
+                            <Badge variant="secondary" className="text-[8px] px-1 py-0 h-3.5">{usersInLevel}</Badge>
                           </div>
-                          
-                          {/* Stats row */}
-                          <div className="flex flex-wrap items-center gap-1.5 mt-2 pt-1.5 border-t border-border/30">
-                            <div className="flex items-center gap-0.5 text-[9px] text-muted-foreground">
-                              <Building className="h-2.5 w-2.5" />
-                              <span>{level.max_properties}</span>
-                            </div>
-                            <div className="flex items-center gap-0.5 text-[9px] text-muted-foreground">
-                              <ListChecks className="h-2.5 w-2.5" />
-                              <span>{level.max_listings}</span>
-                            </div>
-                            {level.can_feature_listings && (
-                              <Badge className="text-[8px] px-1 py-0 h-3.5 bg-chart-3/10 text-chart-3 border border-chart-3/30">
-                                Featured
-                              </Badge>
-                            )}
-                            {level.priority_support && (
-                              <Badge className="text-[8px] px-1 py-0 h-3.5 bg-chart-1/10 text-chart-1 border border-chart-1/30">
-                                Priority
-                              </Badge>
-                            )}
+                          <p className="text-[9px] text-muted-foreground truncate">{level.description || '—'}</p>
+                          <div className="flex items-center gap-2 mt-1 sm:hidden">
+                            <span className="text-[8px] text-muted-foreground"><Building className="h-2 w-2 inline mr-0.5" />{level.max_properties}</span>
+                            <span className="text-[8px] text-muted-foreground"><ListChecks className="h-2 w-2 inline mr-0.5" />{level.max_listings}</span>
+                            {level.can_feature_listings && <Zap className="h-2.5 w-2.5 text-chart-3" />}
+                            {level.priority_support && <HeadphonesIcon className="h-2.5 w-2.5 text-chart-1" />}
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                </ScrollArea>
+                        <div className="hidden sm:flex items-center gap-2 shrink-0">
+                          <div className="text-center px-2 py-0.5 rounded bg-muted/40">
+                            <p className="text-[8px] text-muted-foreground">Props</p>
+                            <p className="text-[10px] font-semibold">{level.max_properties}</p>
+                          </div>
+                          <div className="text-center px-2 py-0.5 rounded bg-muted/40">
+                            <p className="text-[8px] text-muted-foreground">List</p>
+                            <p className="text-[10px] font-semibold">{level.max_listings}</p>
+                          </div>
+                        </div>
+                        <div className="hidden md:flex items-center gap-1 shrink-0">
+                          {level.can_feature_listings && (
+                            <div className="h-5 w-5 rounded-full bg-chart-3/15 flex items-center justify-center" title="Featured">
+                              <Zap className="h-2.5 w-2.5 text-chart-3" />
+                            </div>
+                          )}
+                          {level.priority_support && (
+                            <div className="h-5 w-5 rounded-full bg-chart-1/15 flex items-center justify-center" title="Priority">
+                              <HeadphonesIcon className="h-2.5 w-2.5 text-chart-1" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-0.5 shrink-0 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                          <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setEditingLevel(level)}>
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            size="icon" variant="ghost"
+                            className="h-6 w-6 text-destructive hover:text-destructive"
+                            onClick={() => { if (confirm('Delete this level?')) deleteLevelMutation.mutate(level.id); }}
+                            disabled={deleteLevelMutation.isPending || usersInLevel > 0}
+                            title={usersInLevel > 0 ? 'Cannot delete: users assigned' : 'Delete level'}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               )}
             </CardContent>
           </Card>
 
           {/* Benefits Reference */}
-          <Card>
-            <CardHeader className="py-3 px-4">
-              <CardTitle className="text-sm font-medium">Tier Benefits Reference</CardTitle>
+          <Card className="overflow-hidden">
+            <CardHeader className="py-2.5 px-4 bg-gradient-to-r from-muted/50 to-transparent border-b border-border/30">
+              <CardTitle className="text-xs font-semibold">Tier Benefits</CardTitle>
             </CardHeader>
-            <CardContent className="p-3">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                {Object.entries(MEMBERSHIP_LEVELS).map(([key, config]) => (
-                  <div 
-                    key={key}
-                    className={`p-2.5 rounded-lg border ${config.bgColor} ${config.borderColor}`}
-                  >
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span className="text-lg">{config.icon}</span>
-                      <span className={`text-xs font-semibold ${config.color}`}>{config.label}</span>
+            <CardContent className="p-2.5">
+              <ScrollArea className="w-full md:hidden">
+                <div className="flex gap-2 pb-1">
+                  {Object.entries(MEMBERSHIP_LEVELS).map(([key, config]) => (
+                    <div key={key} className={`p-2.5 rounded-lg border shrink-0 w-[170px] ${config.bgColor} ${config.borderColor}`}>
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <span className="text-sm">{config.icon}</span>
+                        <span className={`text-[10px] font-bold ${config.color}`}>{config.label}</span>
+                      </div>
+                      <div className="space-y-0.5">
+                        {config.benefits.slice(0, 3).map((benefit, idx) => (
+                          <div key={idx} className="flex items-start gap-1 text-[9px] text-muted-foreground">
+                            <Check className="h-2.5 w-2.5 text-chart-1 shrink-0 mt-0.5" />
+                            <span>{benefit}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="space-y-1">
+                  ))}
+                </div>
+              </ScrollArea>
+              <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-2">
+                {Object.entries(MEMBERSHIP_LEVELS).map(([key, config]) => (
+                  <div key={key} className={`p-2.5 rounded-lg border ${config.bgColor} ${config.borderColor}`}>
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <span className="text-sm">{config.icon}</span>
+                      <span className={`text-[10px] font-bold ${config.color}`}>{config.label}</span>
+                    </div>
+                    <div className="space-y-0.5">
                       {config.benefits.slice(0, 3).map((benefit, idx) => (
-                        <div key={idx} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                          <Check className="h-2.5 w-2.5 text-chart-1" />
+                        <div key={idx} className="flex items-start gap-1 text-[9px] text-muted-foreground">
+                          <Check className="h-2.5 w-2.5 text-chart-1 shrink-0 mt-0.5" />
                           <span>{benefit}</span>
                         </div>
                       ))}
