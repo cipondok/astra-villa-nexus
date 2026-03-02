@@ -5,6 +5,35 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
+// ── Internal ranking formula ──
+function calculateRankingScore(
+  property: {
+    investment_score: number;
+    listing_health_score: number;
+    engagement_score: number;
+    demand_heat_score: number;
+    created_at: string;
+  },
+  subscriptionType: string
+): number {
+  // Recency score
+  const daysSinceCreation = (Date.now() - new Date(property.created_at).getTime()) / (1000 * 60 * 60 * 24);
+  const recencyScore = daysSinceCreation < 7 ? 10 : daysSinceCreation < 30 ? 5 : 2;
+
+  // Subscription boost
+  const subscriptionBoost = subscriptionType === 'enterprise' ? 25 : subscriptionType === 'pro' ? 15 : 0;
+
+  const finalScore =
+    (property.investment_score * 0.25) +
+    (property.listing_health_score * 0.20) +
+    (property.demand_heat_score * 0.20) +
+    (property.engagement_score * 0.15) +
+    (recencyScore * 0.10) +
+    (subscriptionBoost * 0.10);
+
+  return Math.round(finalScore * 100) / 100;
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -43,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis'];
+    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -1435,6 +1464,94 @@ Deno.serve(async (req) => {
             investment_score: investScore,
           },
           confidence_score: confidence,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: ranking_score
+    // ═══════════════════════════════════════════
+    if (mode === 'ranking_score') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id is required for ranking_score mode' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const { data: prop, error: pErr } = await supabase
+        .from('properties')
+        .select('id, investment_score, city, created_at, status, property_type')
+        .eq('id', property_id)
+        .single();
+
+      if (pErr || !prop) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const thirtyAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+      // Engagement: views + saves last 30 days
+      const [viewsRes, savesRes] = await Promise.all([
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+          .eq('activity_type', 'view').eq('property_id', property_id).gte('created_at', thirtyAgo),
+        supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+          .eq('property_id', property_id).gte('saved_at', thirtyAgo),
+      ]);
+      const engagementScore = Math.min(100, ((viewsRes.count || 0) + (savesRes.count || 0) * 3));
+
+      // Listing health (simplified inline)
+      const price = Number(prop.investment_score) || 0;
+      const listingHealthScore = price; // reuse investment_score as proxy or compute inline
+
+      // Demand heat for city
+      let demandHeatScore = 50; // default
+      if (prop.city) {
+        const { data: cityProps } = await supabase
+          .from('properties').select('id').eq('city', prop.city).eq('status', 'published');
+        const cpIds = (cityProps || []).map(p => p.id);
+        if (cpIds.length > 0) {
+          const [cvRes, csRes] = await Promise.all([
+            supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+              .eq('activity_type', 'view').in('property_id', cpIds).gte('created_at', thirtyAgo),
+            supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+              .in('property_id', cpIds).gte('saved_at', thirtyAgo),
+          ]);
+          const vpl = (cvRes.count || 0) / cpIds.length;
+          const spl = (csRes.count || 0) / cpIds.length;
+          const dS = vpl >= 50 ? 40 : vpl >= 30 ? 30 : vpl >= 15 ? 20 : 10;
+          const svS = spl >= 10 ? 30 : spl >= 5 ? 20 : spl >= 2 ? 10 : 5;
+          demandHeatScore = Math.min(100, dS + svS + 15);
+        }
+      }
+
+      const rankingScore = calculateRankingScore(
+        {
+          investment_score: Number(prop.investment_score) || 0,
+          listing_health_score: listingHealthScore,
+          engagement_score: engagementScore,
+          demand_heat_score: demandHeatScore,
+          created_at: prop.created_at,
+        },
+        subscriptionType
+      );
+
+      return new Response(JSON.stringify({
+        mode: 'ranking_score',
+        data: {
+          property_id: prop.id,
+          ranking_score: rankingScore,
+          components: {
+            investment_score: Number(prop.investment_score) || 0,
+            listing_health_score: listingHealthScore,
+            engagement_score: engagementScore,
+            demand_heat_score: demandHeatScore,
+            recency_days: Math.round((Date.now() - new Date(prop.created_at).getTime()) / (1000 * 60 * 60 * 24)),
+            subscription_type: subscriptionType,
+          },
         },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
