@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/i18n/useTranslation';
+import { formatMemberDuration } from '@/utils/dateUtils';
 import { useAlert } from '@/contexts/AlertContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -24,7 +25,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   User, Settings, LogOut, Home, Edit2, Save, X, ArrowLeft, 
   Mail, Phone, Building2, MapPin, FileText, Shield, Crown,
-  CheckCircle, Clock, Sparkles, AlertCircle, Brain
+  CheckCircle, Clock, Sparkles, AlertCircle, Brain, Calendar
 } from 'lucide-react';
 import PreferenceDashboard from '@/components/profile/PreferenceDashboard';
 import { useToast } from '@/hooks/use-toast';
@@ -403,7 +404,7 @@ const Profile = () => {
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-3 gap-3 mt-4">
+            <div className="grid grid-cols-4 gap-3 mt-4">
               <button 
                 onClick={() => navigate('/membership')}
                 className="p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10 hover:bg-gold-primary/10 transition-colors text-left"
@@ -424,6 +425,15 @@ const Profile = () => {
                   ) : (
                     <><Clock className="h-3.5 w-3.5" /> {t.pending}</>
                   )}
+                </p>
+              </div>
+              <div className="p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10">
+                <p className="text-xs text-muted-foreground mb-0.5">
+                  {language === 'id' ? 'Bergabung' : 'Member Since'}
+                </p>
+                <p className="text-sm font-semibold text-gold-primary flex items-center gap-1">
+                  <Calendar className="h-3.5 w-3.5" />
+                  {profile?.created_at ? formatMemberDuration(profile.created_at) : '< 1 Year'}
                 </p>
               </div>
               <button 

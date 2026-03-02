@@ -21,8 +21,7 @@ import {
   Award,
   Calendar
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { formatMemberDuration } from '@/utils/dateUtils';
 import { UserMembershipBadge } from '@/components/user/UserMembershipBadge';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
 
@@ -269,7 +268,7 @@ export const PropertyPosterInfo: React.FC<PropertyPosterInfoProps> = ({
             <div className="text-center p-3 bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl border border-accent/15">
               <div className="font-bold text-sm text-accent flex items-center justify-center gap-1">
                 <Calendar className="h-3.5 w-3.5" />
-                {formatDistanceToNow(new Date(poster.joining_date), { locale: id, addSuffix: false })}
+                {formatMemberDuration(poster.joining_date)}
               </div>
               <div className="text-[10px] sm:text-xs text-muted-foreground">Bergabung</div>
             </div>
