@@ -503,8 +503,8 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
                   </Button>
                 </div>
               ) : (
-                <ScrollArea className="h-[300px]">
-                  <div className="space-y-2 pr-2">
+                <ScrollArea className="h-[420px] md:h-[480px]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 pr-2">
                     {levels?.map((level) => {
                       const usersInLevel = userCounts?.counts[level.id] || 0;
                       const membership = getMembershipFromUserLevel(level.name);
@@ -513,77 +513,62 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
                       return (
                         <div 
                           key={level.id} 
-                          className={`p-3 rounded-lg border transition-all hover:shadow-md ${tierConfig.bgColor} ${tierConfig.borderColor}`}
+                          className={`p-2.5 rounded-lg border transition-all hover:shadow-md ${tierConfig.bgColor} ${tierConfig.borderColor} flex flex-col`}
                         >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex items-start gap-2.5 flex-1 min-w-0">
-                              <div className={`p-2 rounded-lg ${tierConfig.bgColor} border ${tierConfig.borderColor}`}>
-                                <VIPLevelBadge level={level.name} size="md" showTooltip={false} />
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <span className={`text-sm font-semibold ${tierConfig.color}`}>
-                                    {level.name}
-                                  </span>
-                                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
-                                    {usersInLevel} users
-                                  </Badge>
-                                </div>
-                                <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">
-                                  {level.description || 'No description'}
-                                </p>
-                                
-                                {/* Level Stats */}
-                                <div className="flex flex-wrap gap-2 mt-2">
-                                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                                    <Building className="h-3 w-3" />
-                                    <span>{level.max_properties} properties</span>
-                                  </div>
-                                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                                    <ListChecks className="h-3 w-3" />
-                                    <span>{level.max_listings} listings</span>
-                                  </div>
-                                  {level.can_feature_listings && (
-                                    <Badge className="text-[9px] px-1 py-0 h-4 bg-chart-3/10 text-chart-3 border border-chart-3/30">
-                                      <Zap className="h-2.5 w-2.5 mr-0.5" />
-                                      Featured
-                                    </Badge>
-                                  )}
-                                  {level.priority_support && (
-                                    <Badge className="text-[9px] px-1 py-0 h-4 bg-chart-1/10 text-chart-1 border border-chart-1/30">
-                                      <HeadphonesIcon className="h-2.5 w-2.5 mr-0.5" />
-                                      Priority
-                                    </Badge>
-                                  )}
-                                </div>
-                              </div>
+                          <div className="flex items-start gap-2 flex-1 min-w-0">
+                            <div className={`p-1.5 rounded-md shrink-0 ${tierConfig.bgColor} border ${tierConfig.borderColor}`}>
+                              <VIPLevelBadge level={level.name} size="sm" showTooltip={false} />
                             </div>
-                            
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className={`text-xs font-semibold ${tierConfig.color} truncate`}>
+                                  {level.name}
+                                </span>
+                                <Badge variant="secondary" className="text-[9px] px-1 py-0 h-3.5 shrink-0">
+                                  {usersInLevel} users
+                                </Badge>
+                              </div>
+                              <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
+                                {level.description || 'No description'}
+                              </p>
+                            </div>
                             {/* Actions */}
-                            <div className="flex items-center gap-1">
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                className="h-7 w-7"
-                                onClick={() => setEditingLevel(level)}
-                              >
-                                <Edit className="h-3.5 w-3.5" />
+                            <div className="flex items-center gap-0.5 shrink-0">
+                              <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setEditingLevel(level)}>
+                                <Edit className="h-3 w-3" />
                               </Button>
                               <Button
-                                size="icon"
-                                variant="ghost"
-                                className="h-7 w-7 text-destructive hover:text-destructive"
-                                onClick={() => {
-                                  if (confirm('Are you sure you want to delete this level?')) {
-                                    deleteLevelMutation.mutate(level.id);
-                                  }
-                                }}
+                                size="icon" variant="ghost"
+                                className="h-6 w-6 text-destructive hover:text-destructive"
+                                onClick={() => { if (confirm('Are you sure you want to delete this level?')) deleteLevelMutation.mutate(level.id); }}
                                 disabled={deleteLevelMutation.isPending || usersInLevel > 0}
                                 title={usersInLevel > 0 ? 'Cannot delete: users assigned' : 'Delete level'}
                               >
-                                <Trash2 className="h-3.5 w-3.5" />
+                                <Trash2 className="h-3 w-3" />
                               </Button>
                             </div>
+                          </div>
+                          
+                          {/* Stats row */}
+                          <div className="flex flex-wrap items-center gap-1.5 mt-2 pt-1.5 border-t border-border/30">
+                            <div className="flex items-center gap-0.5 text-[9px] text-muted-foreground">
+                              <Building className="h-2.5 w-2.5" />
+                              <span>{level.max_properties}</span>
+                            </div>
+                            <div className="flex items-center gap-0.5 text-[9px] text-muted-foreground">
+                              <ListChecks className="h-2.5 w-2.5" />
+                              <span>{level.max_listings}</span>
+                            </div>
+                            {level.can_feature_listings && (
+                              <Badge className="text-[8px] px-1 py-0 h-3.5 bg-chart-3/10 text-chart-3 border border-chart-3/30">
+                                Featured
+                              </Badge>
+                            )}
+                            {level.priority_support && (
+                              <Badge className="text-[8px] px-1 py-0 h-3.5 bg-chart-1/10 text-chart-1 border border-chart-1/30">
+                                Priority
+                              </Badge>
+                            )}
                           </div>
                         </div>
                       );
