@@ -22,3 +22,11 @@ export const formatDistanceToNow = (date: Date, options?: { addSuffix?: boolean 
   const diffInYears = Math.floor(diffInDays / 365);
   return `${diffInYears} year${diffInYears > 1 ? 's' : ''} ago`;
 };
+
+export function formatMemberDuration(dateString: string): string {
+  const now = new Date();
+  const joined = new Date(dateString);
+  const diffYears = Math.floor((now.getTime() - joined.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+  if (diffYears < 1) return '< 1 Year';
+  return `${diffYears} Year${diffYears > 1 ? 's' : ''}`;
+}

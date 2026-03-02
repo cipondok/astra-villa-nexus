@@ -123,11 +123,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   };
 
   const formatJoiningDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short' 
-    });
+    const now = new Date();
+    const joined = new Date(dateString);
+    const diffYears = Math.floor((now.getTime() - joined.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+    if (diffYears < 1) return '< 1 Year';
+    return `${diffYears} Year${diffYears > 1 ? 's' : ''}`;
   };
 
   const handleViewDetails = (e?: React.MouseEvent) => {
