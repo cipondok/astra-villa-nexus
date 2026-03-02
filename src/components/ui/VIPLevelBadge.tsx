@@ -16,12 +16,18 @@ interface VIPLevelBadgeProps {
 }
 
 const VIP_LEVELS: Record<string, { medalTier: MedalTier; label: string }> = {
-  platinum: { medalTier: "platinum", label: "Platinum VIP" },
-  diamond: { medalTier: "diamond", label: "Diamond VIP" },
-  gold: { medalTier: "gold", label: "Gold VIP" },
-  silver: { medalTier: "silver", label: "Silver VIP" },
-  vip: { medalTier: "gold", label: "VIP Member" },
-  premium: { medalTier: "platinum", label: "Premium" },
+  diamond: { medalTier: "diamond", label: "Diamond" },
+  platinum: { medalTier: "platinum", label: "Platinum" },
+  gold: { medalTier: "gold", label: "Gold" },
+  silver: { medalTier: "silver", label: "Silver" },
+  // Membership level key mappings
+  vip_investor: { medalTier: "diamond", label: "Diamond" },
+  vip: { medalTier: "diamond", label: "Diamond" },
+  developer: { medalTier: "platinum", label: "Platinum" },
+  pro_agent: { medalTier: "gold", label: "Gold" },
+  pro: { medalTier: "gold", label: "Gold" },
+  free: { medalTier: "silver", label: "Silver" },
+  premium: { medalTier: "platinum", label: "Platinum" },
 };
 
 const MEDAL_SIZE_MAP: Record<string, "sm" | "md" | "lg" | "xl"> = {
