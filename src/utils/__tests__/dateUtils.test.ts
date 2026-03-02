@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { formatDistanceToNow } from '../dateUtils';
+import { formatDistanceToNow, formatMemberDuration } from '../dateUtils';
 
 describe('formatDistanceToNow', () => {
   beforeEach(() => {
@@ -54,5 +54,36 @@ describe('formatDistanceToNow', () => {
   it('returns years for >= 12 months', () => {
     const date = new Date('2023-06-15T12:00:00Z');
     expect(formatDistanceToNow(date)).toBe('2 years ago');
+  });
+});
+
+describe('formatMemberDuration', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2025-06-15T12:00:00Z'));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('returns "< 1 Year" for less than a year', () => {
+    expect(formatMemberDuration('2025-01-01T00:00:00Z')).toBe('< 1 Year');
+  });
+
+  it('returns "1 Year" for exactly 1 year', () => {
+    expect(formatMemberDuration('2024-06-01T00:00:00Z')).toBe('1 Year');
+  });
+
+  it('returns "2 Years" for 2+ years', () => {
+    expect(formatMemberDuration('2023-01-01T00:00:00Z')).toBe('2 Years');
+  });
+
+  it('returns "5 Years" for 5+ years', () => {
+    expect(formatMemberDuration('2020-01-01T00:00:00Z')).toBe('5 Years');
+  });
+
+  it('returns "< 1 Year" for very recent join', () => {
+    expect(formatMemberDuration('2025-06-14T00:00:00Z')).toBe('< 1 Year');
   });
 });
