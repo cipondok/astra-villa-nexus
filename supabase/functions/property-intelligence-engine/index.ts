@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties'];
+    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -473,6 +473,260 @@ Deno.serve(async (req) => {
             comparison_score: winner.comparison_score,
           },
           decision_reasoning: reasoning,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: portfolio_analysis
+    // ═══════════════════════════════════════════
+    if (mode === 'portfolio_analysis') {
+      if (!Array.isArray(property_ids) || property_ids.length < 1) {
+        return new Response(JSON.stringify({ error: 'At least 1 property_id is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      const holdYears = Math.max(1, Math.min(30, Number(reqHoldYears) || 5));
+
+      // Fetch all properties
+      const { data: properties, error: pErr } = await supabase
+        .from('properties')
+        .select('id, title, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, user_id, agent_id, description, kt, km')
+        .in('id', property_ids);
+
+      if (pErr || !properties || properties.length < 1) {
+        return new Response(JSON.stringify({ error: 'Could not find any properties' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Reuse helpers from compare_properties scope — redefine inline
+      const computeRoiPortfolio = async (prop: typeof properties[0]) => {
+        const price = Number(prop.price) || 0;
+        if (price <= 0) return { roi_percent: 0, annualized_return: 0, projected_value: 0, net_profit: 0, annual_rent: 0 };
+
+        const now = Date.now();
+        const thirtyAgo = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
+        const sixtyAgo = new Date(now - 60 * 24 * 60 * 60 * 1000).toISOString();
+
+        const [priceRecentRes, pricePrevRes, publishedRes] = await Promise.all([
+          supabase.from('properties').select('price')
+            .eq('city', prop.city).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte('created_at', thirtyAgo),
+          supabase.from('properties').select('price')
+            .eq('city', prop.city).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte('created_at', sixtyAgo).lt('created_at', thirtyAgo),
+          supabase.from('properties').select('id', { count: 'exact', head: true })
+            .eq('city', prop.city).eq('status', 'published'),
+        ]);
+
+        const recentPrices = (priceRecentRes.data || []).map(p => Number(p.price)).filter(p => p > 0);
+        const prevPrices = (pricePrevRes.data || []).map(p => Number(p.price)).filter(p => p > 0);
+        const avgRecent = recentPrices.length > 0 ? recentPrices.reduce((a, b) => a + b, 0) / recentPrices.length : 0;
+        const avgPrev = prevPrices.length > 0 ? prevPrices.reduce((a, b) => a + b, 0) / prevPrices.length : 0;
+        const priceTrendPct = avgPrev > 0 ? ((avgRecent - avgPrev) / avgPrev) * 100 : 3;
+
+        const listingCount = publishedRes.count || 1;
+        const { data: cityPropIds } = await supabase
+          .from('properties').select('id').eq('city', prop.city).eq('status', 'published');
+        const propIds = (cityPropIds || []).map(p => p.id);
+        let totalViews = 0, totalSaves = 0;
+        if (propIds.length > 0) {
+          const [vR, sR] = await Promise.all([
+            supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+              .eq('activity_type', 'view').in('property_id', propIds).gte('created_at', thirtyAgo),
+            supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+              .in('property_id', propIds).gte('saved_at', thirtyAgo),
+          ]);
+          totalViews = vR.count || 0;
+          totalSaves = sR.count || 0;
+        }
+        const vpl = totalViews / listingCount;
+        const spl = totalSaves / listingCount;
+        const dS = vpl >= 50 ? 40 : vpl >= 30 ? 30 : vpl >= 15 ? 20 : 10;
+        const svS = spl >= 10 ? 30 : spl >= 5 ? 20 : spl >= 2 ? 10 : 5;
+        const pgS = priceTrendPct >= 5 ? 20 : priceTrendPct >= 2 ? 15 : priceTrendPct >= 0 ? 10 : 5;
+        const heatScore = Math.max(0, Math.min(100, dS + svS + pgS));
+        const heatLevel = heatScore >= 80 ? 'very hot' : heatScore >= 65 ? 'hot' : heatScore >= 50 ? 'stable' : 'cool';
+
+        let annualAppreciation = Math.abs(priceTrendPct) > 0 ? priceTrendPct : 3;
+        if (heatLevel === 'very hot') annualAppreciation += 1;
+        else if (heatLevel === 'hot') annualAppreciation += 0.5;
+        const investScore = Number(prop.investment_score) || 0;
+        if (investScore >= 80) annualAppreciation += 0.5;
+        annualAppreciation = Math.max(2, Math.min(10, annualAppreciation));
+        const appreciationRate = annualAppreciation / 100;
+
+        const futureValue = price * Math.pow(1 + appreciationRate, holdYears);
+        const typeYields: Record<string, number> = {
+          villa: 0.055, apartment: 0.065, house: 0.045, land: 0.02,
+          commercial: 0.07, townhouse: 0.05, warehouse: 0.06, office: 0.065,
+        };
+        const baseYield = typeYields[(prop.property_type || 'house').toLowerCase()] || 0.045;
+        const adjustedYield = heatLevel === 'very hot' ? baseYield * 1.1
+          : heatLevel === 'hot' ? baseYield * 1.05
+          : heatLevel === 'cool' ? baseYield * 0.9
+          : baseYield;
+
+        const annualRent = price * adjustedYield;
+        const totalRentalIncome = annualRent * holdYears;
+        const maintenance = price * 0.01 * holdYears;
+        const management = totalRentalIncome * 0.10;
+        const exitCost = futureValue * 0.05;
+        const totalExpenses = maintenance + management + exitCost;
+        const capitalGain = futureValue - price;
+        const netProfit = capitalGain + totalRentalIncome - totalExpenses;
+        const roiPercent = (netProfit / price) * 100;
+        const totalReturn = futureValue + totalRentalIncome - totalExpenses;
+        const annualizedReturn = (Math.pow(totalReturn / price, 1 / holdYears) - 1) * 100;
+
+        return {
+          roi_percent: Math.round(roiPercent * 100) / 100,
+          annualized_return: Math.round(annualizedReturn * 100) / 100,
+          projected_value: Math.round(futureValue),
+          net_profit: Math.round(netProfit),
+          annual_rent: Math.round(annualRent),
+          heat_score: heatScore,
+        };
+      };
+
+      const computeDaysPortfolio = async (prop: typeof properties[0]) => {
+        const price = Number(prop.price) || 0;
+        if (price <= 0) return 180;
+        const pLow = price * 0.8;
+        const pHigh = price * 1.2;
+        const t30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+        const [cListRes, cmpRes, vRes, sRes] = await Promise.all([
+          supabase.from('properties').select('id', { count: 'exact', head: true })
+            .eq('city', prop.city).eq('status', 'published'),
+          supabase.from('properties').select('id', { count: 'exact', head: true })
+            .eq('city', prop.city).eq('property_type', prop.property_type)
+            .eq('status', 'published').gte('price', pLow).lte('price', pHigh).neq('id', prop.id),
+          supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+            .eq('activity_type', 'view').eq('property_id', prop.id).gte('created_at', t30),
+          supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+            .eq('property_id', prop.id).gte('saved_at', t30),
+        ]);
+
+        const cTotal = cListRes.count || 0;
+        const cCount = cmpRes.count || 0;
+        const eTotal = (vRes.count || 0) + (sRes.count || 0) * 3;
+        const iScore = Number(prop.investment_score) || 0;
+
+        let d: number;
+        if (cTotal >= 100) d = 30;
+        else if (cTotal >= 50) d = 45;
+        else if (cTotal >= 20) d = 60;
+        else d = 75;
+
+        if (eTotal >= 50) d *= 0.85;
+        else if (eTotal >= 20) d *= 0.95;
+        else d *= 1.1;
+
+        if (cCount <= 5) d *= 0.9;
+        else d *= 1.15;
+
+        if (iScore >= 80) d *= 0.9;
+        else if (iScore < 50) d *= 1.1;
+
+        return Math.max(7, Math.min(180, Math.round(d)));
+      };
+
+      // Run all analyses in parallel
+      const propertyResults = await Promise.all(properties.map(async (prop) => {
+        const [roiResult, daysToSell] = await Promise.all([
+          computeRoiPortfolio(prop),
+          computeDaysPortfolio(prop),
+        ]);
+
+        return {
+          property_id: prop.id,
+          title: prop.title || prop.id,
+          city: prop.city,
+          property_type: prop.property_type,
+          purchase_price: Number(prop.price) || 0,
+          projected_value: roiResult.projected_value,
+          net_profit: roiResult.net_profit,
+          roi_percent: roiResult.roi_percent,
+          annualized_return: roiResult.annualized_return,
+          investment_score: Number(prop.investment_score) || 0,
+          heat_score: roiResult.heat_score,
+          days_to_sell: daysToSell,
+          annual_rental_income: roiResult.annual_rent,
+        };
+      }));
+
+      // Aggregations
+      const totalInvestment = propertyResults.reduce((s, p) => s + p.purchase_price, 0);
+      const projectedPortfolioValue = propertyResults.reduce((s, p) => s + p.projected_value, 0);
+      const totalProfit = propertyResults.reduce((s, p) => s + p.net_profit, 0);
+      const blendedRoiPercent = totalInvestment > 0 ? Math.round((totalProfit / totalInvestment) * 10000) / 100 : 0;
+      const totalAnnualRent = propertyResults.reduce((s, p) => s + p.annual_rental_income, 0);
+      const avgHeatScore = propertyResults.reduce((s, p) => s + p.heat_score, 0) / propertyResults.length;
+      const avgDaysToSell = propertyResults.reduce((s, p) => s + p.days_to_sell, 0) / propertyResults.length;
+
+      // Risk scoring
+      let riskScore = 50;
+      const uniqueCities = new Set(propertyResults.map(p => p.city));
+      const uniqueTypes = new Set(propertyResults.map(p => p.property_type));
+      if (uniqueCities.size === 1 && propertyResults.length > 1) riskScore += 15;
+      if (uniqueTypes.size === 1 && propertyResults.length > 1) riskScore += 10;
+      if (avgHeatScore < 50) riskScore += 10;
+      if (avgDaysToSell > 90) riskScore += 10;
+      riskScore = Math.max(0, Math.min(100, riskScore));
+
+      let riskLevel: string;
+      if (riskScore >= 75) riskLevel = 'high';
+      else if (riskScore >= 50) riskLevel = 'moderate';
+      else riskLevel = 'low';
+
+      // Diversification breakdown
+      const cityBreakdown: Record<string, number> = {};
+      const typeBreakdown: Record<string, number> = {};
+      for (const p of propertyResults) {
+        cityBreakdown[p.city || 'Unknown'] = (cityBreakdown[p.city || 'Unknown'] || 0) + 1;
+        typeBreakdown[p.property_type || 'Unknown'] = (typeBreakdown[p.property_type || 'Unknown'] || 0) + 1;
+      }
+
+      // Risk factors explanation
+      const riskFactors: string[] = [];
+      if (uniqueCities.size === 1 && propertyResults.length > 1) riskFactors.push('All properties in one city — geographic concentration risk (+15)');
+      if (uniqueTypes.size === 1 && propertyResults.length > 1) riskFactors.push('All properties same type — asset class concentration risk (+10)');
+      if (avgHeatScore < 50) riskFactors.push(`Average market heat below 50 (${Math.round(avgHeatScore)}) — weak demand signal (+10)`);
+      if (avgDaysToSell > 90) riskFactors.push(`Average days to sell above 90 (${Math.round(avgDaysToSell)}) — low liquidity risk (+10)`);
+      if (riskFactors.length === 0) riskFactors.push('Portfolio is well-diversified with no major concentration risks');
+
+      console.log(`Portfolio analysis: ${propertyResults.length} properties, blended ROI ${blendedRoiPercent}%, risk ${riskScore}`);
+
+      return new Response(JSON.stringify({
+        mode: 'portfolio_analysis',
+        data: {
+          hold_years: holdYears,
+          property_count: propertyResults.length,
+          properties: propertyResults,
+          aggregation: {
+            total_investment: totalInvestment,
+            projected_portfolio_value: projectedPortfolioValue,
+            total_profit: totalProfit,
+            blended_roi_percent: blendedRoiPercent,
+            total_annual_rental_income: totalAnnualRent,
+            avg_heat_score: Math.round(avgHeatScore),
+            avg_days_to_sell: Math.round(avgDaysToSell),
+          },
+          risk: {
+            risk_score: riskScore,
+            risk_level: riskLevel,
+            risk_factors: riskFactors,
+          },
+          diversification: {
+            cities: cityBreakdown,
+            property_types: typeBreakdown,
+            unique_cities: uniqueCities.size,
+            unique_property_types: uniqueTypes.size,
+          },
         },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
