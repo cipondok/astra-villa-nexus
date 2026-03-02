@@ -459,7 +459,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3">
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {Object.entries(MEMBERSHIP_LEVELS).map(([key, config]) => (
                   <div 
                     key={key}
