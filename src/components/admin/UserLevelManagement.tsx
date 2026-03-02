@@ -22,6 +22,8 @@ import {
   UserCog, Mail, RefreshCw, ChevronDown
 } from "lucide-react";
 import { MEMBERSHIP_LEVELS, getMembershipFromUserLevel, type MembershipLevel } from "@/types/membership";
+import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
+import UserStatusBadge from "@/components/ui/UserStatusBadge";
 
 interface UserLevel {
   id: string;
@@ -463,7 +465,9 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
                     key={key}
                     className={`p-3 rounded-lg border text-center transition-all hover:scale-105 ${config.bgColor} ${config.borderColor} ${config.glowColor ? `shadow-lg ${config.glowColor}` : ''}`}
                   >
-                    <div className="text-2xl mb-1">{config.icon}</div>
+                    <div className="flex justify-center mb-1">
+                      <VIPLevelBadge level={key} size="md" showTooltip={false} />
+                    </div>
                     <p className={`text-xs font-semibold ${config.color}`}>{config.shortLabel}</p>
                     <p className="text-[9px] text-muted-foreground mt-0.5">Priority: {config.priority}</p>
                   </div>
@@ -514,7 +518,7 @@ const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex items-start gap-2.5 flex-1 min-w-0">
                               <div className={`p-2 rounded-lg ${tierConfig.bgColor} border ${tierConfig.borderColor}`}>
-                                {getLevelIcon(level.name, 'md')}
+                                <VIPLevelBadge level={level.name} size="md" showTooltip={false} />
                               </div>
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2 flex-wrap">

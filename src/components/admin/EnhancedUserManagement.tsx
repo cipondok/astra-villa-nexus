@@ -15,6 +15,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAlert } from "@/contexts/AlertContext";
 import { UserPlus, Search, Ban, UserCheck, UserX, Shield, AlertTriangle, Monitor, MapPin } from "lucide-react";
+import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
+import UserStatusBadge from "@/components/ui/UserStatusBadge";
 
 type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin" | "customer_service";
 
@@ -173,7 +175,7 @@ const VirtualUserTable = ({
                     </td>
                     <td className="py-1.5 px-2">
                       {u.user_levels ? (
-                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4">{u.user_levels.name}</Badge>
+                        <VIPLevelBadge level={u.user_levels.name} size="xs" showLabel showTooltip={false} />
                       ) : (
                         <Select value={u.user_level_id || ""} onValueChange={(v) => onLevelChange(u.id, v)}>
                           <SelectTrigger className="w-[70px] h-5 text-[9px]"><SelectValue placeholder="--" /></SelectTrigger>
@@ -186,17 +188,20 @@ const VirtualUserTable = ({
                       )}
                     </td>
                     <td className="py-1.5 px-2">
-                      <Select value={u.verification_status || 'pending'} onValueChange={(s) => onVerificationChange(u.id, s)}>
-                        <SelectTrigger className="w-[90px] h-5 text-[9px]"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="pending" className="text-[10px]">Pending</SelectItem>
-                          <SelectItem value="verified" className="text-[10px]">Verified</SelectItem>
-                          <SelectItem value="approved" className="text-[10px]">Approved</SelectItem>
-                          <SelectItem value="rejected" className="text-[10px]">Rejected</SelectItem>
-                          <SelectItem value="suspended" className="text-[10px]">Suspended</SelectItem>
-                          <SelectItem value="unverified" className="text-[10px]">Unverified</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="flex items-center gap-1">
+                        <UserStatusBadge status={u.verification_status} size="xs" />
+                        <Select value={u.verification_status || 'pending'} onValueChange={(s) => onVerificationChange(u.id, s)}>
+                          <SelectTrigger className="w-[75px] h-5 text-[9px]"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending" className="text-[10px]">Pending</SelectItem>
+                            <SelectItem value="verified" className="text-[10px]">Verified</SelectItem>
+                            <SelectItem value="approved" className="text-[10px]">Approved</SelectItem>
+                            <SelectItem value="rejected" className="text-[10px]">Rejected</SelectItem>
+                            <SelectItem value="suspended" className="text-[10px]">Suspended</SelectItem>
+                            <SelectItem value="unverified" className="text-[10px]">Unverified</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </td>
                     <td className="py-1.5 px-2 text-[9px] text-muted-foreground">
                       {new Date(u.created_at).toLocaleDateString()}
