@@ -20,7 +20,7 @@ const detectBrowserLanguage = (): Language => {
   } catch {
     // navigator may not be available
   }
-  return "en";
+  return "id";
 };
 
 interface LanguageContextProps {
