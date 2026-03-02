@@ -41,8 +41,9 @@ Deno.serve(async (req) => {
     }
 
     // ── Parse request ──
-    const { property_id, mode, city: reqCity, hold_years: reqHoldYears } = await req.json();
-    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation'];
+    const body = await req.json();
+    const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
+    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -191,6 +192,287 @@ Deno.serve(async (req) => {
             price_trend_percent: Math.round(priceTrendPct * 100) / 100,
           },
           confidence_score: confidence,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: compare_properties
+    // ═══════════════════════════════════════════
+    if (mode === 'compare_properties') {
+      if (!Array.isArray(property_ids) || property_ids.length < 2) {
+        return new Response(JSON.stringify({ error: 'At least 2 property_ids are required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      const holdYears = Math.max(1, Math.min(30, Number(reqHoldYears) || 5));
+
+      // Fetch all properties
+      const { data: properties, error: pErr } = await supabase
+        .from('properties')
+        .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, user_id, agent_id, description, kt, km')
+        .in('id', property_ids);
+
+      if (pErr || !properties || properties.length < 2) {
+        return new Response(JSON.stringify({ error: 'Could not find at least 2 properties' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // --- Helper: inline ROI simulation for a single property ---
+      const computeRoi = async (prop: typeof properties[0]) => {
+        const price = Number(prop.price) || 0;
+        if (price <= 0) return { roi_percent: 0, annualized_return: 0 };
+
+        const now = Date.now();
+        const thirtyAgo = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
+        const sixtyAgo = new Date(now - 60 * 24 * 60 * 60 * 1000).toISOString();
+
+        const [priceRecentRes, pricePrevRes, publishedRes] = await Promise.all([
+          supabase.from('properties').select('price')
+            .eq('city', prop.city).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte('created_at', thirtyAgo),
+          supabase.from('properties').select('price')
+            .eq('city', prop.city).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte('created_at', sixtyAgo).lt('created_at', thirtyAgo),
+          supabase.from('properties').select('id', { count: 'exact', head: true })
+            .eq('city', prop.city).eq('status', 'published'),
+        ]);
+
+        const recentPrices = (priceRecentRes.data || []).map(p => Number(p.price)).filter(p => p > 0);
+        const prevPrices = (pricePrevRes.data || []).map(p => Number(p.price)).filter(p => p > 0);
+        const avgRecent = recentPrices.length > 0 ? recentPrices.reduce((a, b) => a + b, 0) / recentPrices.length : 0;
+        const avgPrev = prevPrices.length > 0 ? prevPrices.reduce((a, b) => a + b, 0) / prevPrices.length : 0;
+        const priceTrendPct = avgPrev > 0 ? ((avgRecent - avgPrev) / avgPrev) * 100 : 3;
+
+        // Simplified heat for appreciation
+        const listingCount = publishedRes.count || 1;
+        const { data: cityPropIds } = await supabase
+          .from('properties').select('id').eq('city', prop.city).eq('status', 'published');
+        const propIds = (cityPropIds || []).map(p => p.id);
+        let totalViews = 0, totalSaves = 0;
+        if (propIds.length > 0) {
+          const [vR, sR] = await Promise.all([
+            supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+              .eq('activity_type', 'view').in('property_id', propIds).gte('created_at', thirtyAgo),
+            supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+              .in('property_id', propIds).gte('saved_at', thirtyAgo),
+          ]);
+          totalViews = vR.count || 0;
+          totalSaves = sR.count || 0;
+        }
+        const vpl = totalViews / listingCount;
+        const spl = totalSaves / listingCount;
+        const dS = vpl >= 50 ? 40 : vpl >= 30 ? 30 : vpl >= 15 ? 20 : 10;
+        const svS = spl >= 10 ? 30 : spl >= 5 ? 20 : spl >= 2 ? 10 : 5;
+        const pgS = priceTrendPct >= 5 ? 20 : priceTrendPct >= 2 ? 15 : priceTrendPct >= 0 ? 10 : 5;
+        const heatScore = Math.max(0, Math.min(100, dS + svS + pgS));
+        const heatLevel = heatScore >= 80 ? 'very hot' : heatScore >= 65 ? 'hot' : heatScore >= 50 ? 'stable' : 'cool';
+
+        let annualAppreciation = Math.abs(priceTrendPct) > 0 ? priceTrendPct : 3;
+        if (heatLevel === 'very hot') annualAppreciation += 1;
+        else if (heatLevel === 'hot') annualAppreciation += 0.5;
+        const investScore = Number(prop.investment_score) || 0;
+        if (investScore >= 80) annualAppreciation += 0.5;
+        annualAppreciation = Math.max(2, Math.min(10, annualAppreciation));
+        const appreciationRate = annualAppreciation / 100;
+
+        const futureValue = price * Math.pow(1 + appreciationRate, holdYears);
+        const typeYields: Record<string, number> = {
+          villa: 0.055, apartment: 0.065, house: 0.045, land: 0.02,
+          commercial: 0.07, townhouse: 0.05, warehouse: 0.06, office: 0.065,
+        };
+        const baseYield = typeYields[(prop.property_type || 'house').toLowerCase()] || 0.045;
+        const adjustedYield = heatLevel === 'very hot' ? baseYield * 1.1
+          : heatLevel === 'hot' ? baseYield * 1.05
+          : heatLevel === 'cool' ? baseYield * 0.9
+          : baseYield;
+
+        const annualRent = price * adjustedYield;
+        const totalRentalIncome = annualRent * holdYears;
+        const maintenance = price * 0.01 * holdYears;
+        const management = totalRentalIncome * 0.10;
+        const exitCost = futureValue * 0.05;
+        const totalExpenses = maintenance + management + exitCost;
+        const capitalGain = futureValue - price;
+        const netProfit = capitalGain + totalRentalIncome - totalExpenses;
+        const roiPercent = (netProfit / price) * 100;
+        const totalReturn = futureValue + totalRentalIncome - totalExpenses;
+        const annualizedReturn = (Math.pow(totalReturn / price, 1 / holdYears) - 1) * 100;
+
+        return { roi_percent: Math.round(roiPercent * 100) / 100, annualized_return: Math.round(annualizedReturn * 100) / 100, heat_score: heatScore };
+      };
+
+      // --- Helper: inline days_to_sell for a single property ---
+      const computeDaysToSellInline = async (prop: typeof properties[0]) => {
+        const price = Number(prop.price) || 0;
+        if (price <= 0) return 180;
+        const pLow = price * 0.8;
+        const pHigh = price * 1.2;
+        const t30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+        const [cListRes, cmpRes, vRes, sRes] = await Promise.all([
+          supabase.from('properties').select('id', { count: 'exact', head: true })
+            .eq('city', prop.city).eq('status', 'published'),
+          supabase.from('properties').select('id', { count: 'exact', head: true })
+            .eq('city', prop.city).eq('property_type', prop.property_type)
+            .eq('status', 'published').gte('price', pLow).lte('price', pHigh).neq('id', prop.id),
+          supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+            .eq('activity_type', 'view').eq('property_id', prop.id).gte('created_at', t30),
+          supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+            .eq('property_id', prop.id).gte('saved_at', t30),
+        ]);
+
+        const cTotal = cListRes.count || 0;
+        const cCount = cmpRes.count || 0;
+        const eTotal = (vRes.count || 0) + (sRes.count || 0) * 3;
+        const iScore = Number(prop.investment_score) || 0;
+
+        let d: number;
+        if (cTotal >= 100) d = 30;
+        else if (cTotal >= 50) d = 45;
+        else if (cTotal >= 20) d = 60;
+        else d = 75;
+
+        if (eTotal >= 50) d *= 0.85;
+        else if (eTotal >= 20) d *= 0.95;
+        else d *= 1.1;
+
+        if (cCount <= 5) d *= 0.9;
+        else d *= 1.15;
+
+        if (iScore >= 80) d *= 0.9;
+        else if (iScore < 50) d *= 1.1;
+
+        return Math.max(7, Math.min(180, Math.round(d)));
+      };
+
+      // --- Helper: demand heat for a city ---
+      const computeHeatForCity = async (city: string) => {
+        const now = Date.now();
+        const thirtyAgo = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
+        const sixtyAgo = new Date(now - 60 * 24 * 60 * 60 * 1000).toISOString();
+
+        const [publishedRes, newListingsRes, priceRecentRes, pricePrevRes] = await Promise.all([
+          supabase.from('properties').select('id', { count: 'exact', head: true })
+            .eq('city', city).eq('status', 'published'),
+          supabase.from('properties').select('id', { count: 'exact', head: true })
+            .eq('city', city).gte('created_at', thirtyAgo),
+          supabase.from('properties').select('price')
+            .eq('city', city).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte('created_at', thirtyAgo),
+          supabase.from('properties').select('price')
+            .eq('city', city).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte('created_at', sixtyAgo).lt('created_at', thirtyAgo),
+        ]);
+
+        const listingCount = publishedRes.count || 1;
+        const { data: cityPropIds } = await supabase
+          .from('properties').select('id').eq('city', city).eq('status', 'published');
+        const propIds = (cityPropIds || []).map(p => p.id);
+        let totalViews = 0, totalSaves = 0;
+        if (propIds.length > 0) {
+          const [vR, sR] = await Promise.all([
+            supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+              .eq('activity_type', 'view').in('property_id', propIds).gte('created_at', thirtyAgo),
+            supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+              .in('property_id', propIds).gte('saved_at', thirtyAgo),
+          ]);
+          totalViews = vR.count || 0;
+          totalSaves = sR.count || 0;
+        }
+
+        const vpl = totalViews / listingCount;
+        const spl = totalSaves / listingCount;
+        const recentPrices = (priceRecentRes.data || []).map(p => Number(p.price)).filter(p => p > 0);
+        const prevPrices = (pricePrevRes.data || []).map(p => Number(p.price)).filter(p => p > 0);
+        const avgRecent = recentPrices.length > 0 ? recentPrices.reduce((a, b) => a + b, 0) / recentPrices.length : 0;
+        const avgPrev = prevPrices.length > 0 ? prevPrices.reduce((a, b) => a + b, 0) / prevPrices.length : 0;
+        const priceTrendPct = avgPrev > 0 ? ((avgRecent - avgPrev) / avgPrev) * 100 : 0;
+        const newListings = newListingsRes.count || 0;
+
+        let dS = vpl >= 50 ? 40 : vpl >= 30 ? 30 : vpl >= 15 ? 20 : 10;
+        let svS = spl >= 10 ? 30 : spl >= 5 ? 20 : spl >= 2 ? 10 : 5;
+        let pgS = priceTrendPct >= 5 ? 20 : priceTrendPct >= 2 ? 15 : priceTrendPct >= 0 ? 10 : 5;
+        let velS = newListings >= 20 ? 10 : newListings >= 10 ? 7 : 4;
+
+        return Math.max(0, Math.min(100, dS + svS + pgS + velS));
+      };
+
+      // Run all analyses in parallel per property
+      const results = await Promise.all(properties.map(async (prop) => {
+        const [roiResult, daysToSell, heatScore] = await Promise.all([
+          computeRoi(prop),
+          computeDaysToSellInline(prop),
+          computeHeatForCity(prop.city),
+        ]);
+
+        const investmentScore = Number(prop.investment_score) || 0;
+
+        // Composite comparison score
+        const comparisonScore =
+          (roiResult.roi_percent * 0.4) +
+          (investmentScore * 0.2) +
+          (heatScore * 0.2) +
+          ((180 - daysToSell) * 0.2);
+
+        return {
+          property_id: prop.id,
+          title: (prop as any).title || prop.id,
+          city: prop.city,
+          price: Number(prop.price) || 0,
+          property_type: prop.property_type,
+          roi_percent: roiResult.roi_percent,
+          annualized_return: roiResult.annualized_return,
+          investment_score: investmentScore,
+          heat_score: heatScore,
+          days_to_sell: daysToSell,
+          comparison_score: Math.round(comparisonScore * 100) / 100,
+        };
+      }));
+
+      // Sort by comparison_score desc
+      results.sort((a, b) => b.comparison_score - a.comparison_score);
+      const winner = results[0];
+
+      // Generate decision reasoning
+      const reasoning: string[] = [];
+      reasoning.push(`${winner.property_id} has the highest composite score of ${winner.comparison_score}`);
+      if (winner.roi_percent === Math.max(...results.map(r => r.roi_percent))) {
+        reasoning.push(`Best ROI at ${winner.roi_percent}% over ${holdYears} years`);
+      }
+      if (winner.investment_score === Math.max(...results.map(r => r.investment_score))) {
+        reasoning.push(`Highest investment score (${winner.investment_score}/100)`);
+      }
+      if (winner.heat_score === Math.max(...results.map(r => r.heat_score))) {
+        reasoning.push(`Located in the hottest demand area (heat score: ${winner.heat_score})`);
+      }
+      if (winner.days_to_sell === Math.min(...results.map(r => r.days_to_sell))) {
+        reasoning.push(`Fastest estimated time to sell (~${winner.days_to_sell} days)`);
+      }
+      // Add runner-up insight
+      if (results.length >= 2) {
+        const diff = results[0].comparison_score - results[1].comparison_score;
+        if (diff < 5) {
+          reasoning.push(`Close competition — only ${diff.toFixed(1)} points ahead of runner-up`);
+        }
+      }
+
+      console.log(`Compare properties: winner=${winner.property_id} score=${winner.comparison_score}`);
+
+      return new Response(JSON.stringify({
+        mode: 'compare_properties',
+        data: {
+          hold_years: holdYears,
+          properties_compared: results.length,
+          comparison: results,
+          winner: {
+            property_id: winner.property_id,
+            comparison_score: winner.comparison_score,
+          },
+          decision_reasoning: reasoning,
         },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
