@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
-export type MedalTier = 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond';
+export type MedalTier = 'silver' | 'gold' | 'platinum' | 'diamond';
 
 interface MedalBadgeProps {
   tier: MedalTier;
@@ -11,261 +11,233 @@ interface MedalBadgeProps {
   className?: string;
 }
 
+/**
+ * Google Play Store inspired badge colours per tier.
+ */
 const MEDAL_COLORS: Record<MedalTier, {
   primary: string;
   light: string;
   dark: string;
-  ribbon: string;
-  ribbonDark: string;
+  accent: string;
   sparkle: string;
-  glow: string;
+  label: string;
 }> = {
-  bronze: {
-    primary: 'hsl(25, 50%, 60%)',
-    light: 'hsl(25, 55%, 75%)',
-    dark: 'hsl(25, 45%, 40%)',
-    ribbon: 'hsl(0, 50%, 45%)',
-    ribbonDark: 'hsl(0, 50%, 35%)',
-    sparkle: 'hsl(25, 60%, 85%)',
-    glow: 'hsl(25, 50%, 60%)',
-  },
   silver: {
-    primary: 'hsl(210, 10%, 75%)',
-    light: 'hsl(210, 15%, 88%)',
-    dark: 'hsl(210, 10%, 55%)',
-    ribbon: 'hsl(185, 40%, 50%)',
-    ribbonDark: 'hsl(185, 40%, 38%)',
-    sparkle: 'hsl(210, 20%, 95%)',
-    glow: 'hsl(210, 10%, 75%)',
+    primary: '#A8B2BD',
+    light: '#CDD5DD',
+    dark: '#6B7B8D',
+    accent: '#D6DDE4',
+    sparkle: '#E8EDF2',
+    label: 'Silver',
   },
   gold: {
-    primary: 'hsl(45, 90%, 55%)',
-    light: 'hsl(45, 95%, 70%)',
-    dark: 'hsl(40, 80%, 40%)',
-    ribbon: 'hsl(25, 80%, 55%)',
-    ribbonDark: 'hsl(25, 80%, 42%)',
-    sparkle: 'hsl(45, 100%, 85%)',
-    glow: 'hsl(45, 90%, 55%)',
+    primary: '#F5C842',
+    light: '#FFE082',
+    dark: '#C49B1A',
+    accent: '#FFEB7A',
+    sparkle: '#FFF8DC',
+    label: 'Gold',
   },
   platinum: {
-    primary: 'hsl(200, 20%, 75%)',
-    light: 'hsl(200, 25%, 88%)',
-    dark: 'hsl(210, 25%, 55%)',
-    ribbon: 'hsl(190, 70%, 55%)',
-    ribbonDark: 'hsl(190, 70%, 40%)',
-    sparkle: 'hsl(190, 80%, 85%)',
-    glow: 'hsl(190, 70%, 55%)',
+    primary: '#4FC3F7',
+    light: '#B3E5FC',
+    dark: '#0277BD',
+    accent: '#81D4FA',
+    sparkle: '#E1F5FE',
+    label: 'Platinum',
   },
   diamond: {
-    primary: 'hsl(260, 60%, 65%)',
-    light: 'hsl(260, 70%, 82%)',
-    dark: 'hsl(260, 50%, 45%)',
-    ribbon: 'hsl(280, 60%, 55%)',
-    ribbonDark: 'hsl(280, 60%, 40%)',
-    sparkle: 'hsl(260, 80%, 90%)',
-    glow: 'hsl(260, 60%, 65%)',
+    primary: '#B388FF',
+    light: '#E1BEE7',
+    dark: '#7C4DFF',
+    accent: '#CE93D8',
+    sparkle: '#F3E5F5',
+    label: 'Diamond',
   },
 };
 
 const SIZE_MAP = {
-  sm: 40,
-  md: 64,
-  lg: 96,
-  xl: 128,
+  sm: 28,
+  md: 44,
+  lg: 64,
+  xl: 88,
 };
 
+/**
+ * Google Play Store style badge — clean shield shape with layered gradients,
+ * inner play-button motif and subtle sparkle animations.
+ */
 const MedalBadge: React.FC<MedalBadgeProps> = ({
   tier,
   size = 'md',
   animate = true,
   className,
 }) => {
-  const colors = MEDAL_COLORS[tier];
+  const c = MEDAL_COLORS[tier];
   const px = SIZE_MAP[size];
-  const isHexagon = tier === 'gold' || tier === 'platinum' || tier === 'diamond';
+  const uid = `gps-${tier}-${size}`;
 
-  const sparkleVariants = {
-    initial: { opacity: 0.4, scale: 0.8 },
-    animate: {
-      opacity: [0.4, 1, 0.4],
-      scale: [0.8, 1.1, 0.8],
-      transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const },
-    },
-  };
-
-  const Wrapper = animate ? motion.div : 'div' as any;
+  const Wrapper = animate ? motion.div : ('div' as any);
   const wrapperProps = animate
-    ? { initial: { scale: 0.9, opacity: 0 }, animate: { scale: 1, opacity: 1 }, transition: { type: 'spring', stiffness: 200, damping: 15 } }
+    ? {
+        initial: { scale: 0.85, opacity: 0 },
+        animate: { scale: 1, opacity: 1 },
+        transition: { type: 'spring', stiffness: 260, damping: 18 },
+      }
     : {};
 
   return (
-    <Wrapper {...wrapperProps} className={cn('inline-flex items-center justify-center', className)}>
+    <Wrapper
+      {...wrapperProps}
+      className={cn('inline-flex items-center justify-center relative', className)}
+    >
       <svg
         width={px}
-        height={px * 1.25}
-        viewBox="0 0 100 125"
+        height={px}
+        viewBox="0 0 80 80"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="drop-shadow-lg"
+        className="drop-shadow-md"
       >
         <defs>
-          <linearGradient id={`medal-grad-${tier}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={colors.light} />
-            <stop offset="50%" stopColor={colors.primary} />
-            <stop offset="100%" stopColor={colors.dark} />
+          {/* Main body gradient */}
+          <linearGradient id={`bg-${uid}`} x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor={c.light} />
+            <stop offset="45%" stopColor={c.primary} />
+            <stop offset="100%" stopColor={c.dark} />
           </linearGradient>
-          <linearGradient id={`ribbon-grad-${tier}`} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor={colors.ribbon} />
-            <stop offset="100%" stopColor={colors.ribbonDark} />
-          </linearGradient>
-          <radialGradient id={`shine-${tier}`} cx="35%" cy="35%" r="60%">
-            <stop offset="0%" stopColor="white" stopOpacity="0.35" />
+
+          {/* Highlight shine */}
+          <linearGradient id={`hi-${uid}`} x1="20" y1="0" x2="55" y2="50" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="white" stopOpacity="0.55" />
             <stop offset="100%" stopColor="white" stopOpacity="0" />
-          </radialGradient>
-          <filter id={`glow-${tier}`}>
-            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
+          </linearGradient>
+
+          {/* Inner ring gradient */}
+          <linearGradient id={`ring-${uid}`} x1="0" y1="15" x2="80" y2="65" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor={c.accent} stopOpacity="0.9" />
+            <stop offset="100%" stopColor={c.dark} stopOpacity="0.5" />
+          </linearGradient>
+
+          {/* Drop shadow filter */}
+          <filter id={`ds-${uid}`} x="-10%" y="-10%" width="120%" height="130%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor={c.dark} floodOpacity="0.35" />
           </filter>
         </defs>
 
-        {/* Ribbon tails */}
-        <polygon
-          points="38,88 50,100 44,88 50,75"
-          fill={`url(#ribbon-grad-${tier})`}
-        />
-        <polygon
-          points="62,88 50,100 56,88 50,75"
-          fill={`url(#ribbon-grad-${tier})`}
-          opacity="0.85"
+        {/* ── Shield shape (Google Play Store rounded-bottom style) ── */}
+        <path
+          d="M40 4 C18 4, 6 14, 6 30 L6 44 C6 60, 20 76, 40 76 C60 76, 74 60, 74 44 L74 30 C74 14, 62 4, 40 4Z"
+          fill={`url(#bg-${uid})`}
+          filter={`url(#ds-${uid})`}
         />
 
-        {/* Main medal body */}
-        {isHexagon ? (
-          /* Hexagonal shield shape */
+        {/* Outer border highlight */}
+        <path
+          d="M40 4 C18 4, 6 14, 6 30 L6 44 C6 60, 20 76, 40 76 C60 76, 74 60, 74 44 L74 30 C74 14, 62 4, 40 4Z"
+          fill="none"
+          stroke={c.accent}
+          strokeWidth="1.5"
+          opacity="0.6"
+        />
+
+        {/* Inner circle / ring */}
+        <circle cx="40" cy="38" r="22" fill="none" stroke={`url(#ring-${uid})`} strokeWidth="2" opacity="0.7" />
+        <circle cx="40" cy="38" r="18" fill={c.dark} opacity="0.12" />
+
+        {/* Center icon — play-triangle for Play Store feel */}
+        {tier === 'diamond' ? (
+          /* Diamond shape in center */
           <polygon
-            points="50,8 88,28 88,68 50,88 12,68 12,28"
-            fill={`url(#medal-grad-${tier})`}
-            stroke={colors.dark}
-            strokeWidth="2"
-            filter={`url(#glow-${tier})`}
+            points="40,20 54,38 40,56 26,38"
+            fill={c.accent}
+            opacity="0.85"
+            stroke={c.light}
+            strokeWidth="1"
+          />
+        ) : tier === 'platinum' ? (
+          /* Star for platinum */
+          <polygon
+            points="40,22 44,32 55,33 47,40 49,51 40,46 31,51 33,40 25,33 36,32"
+            fill={c.accent}
+            opacity="0.85"
+          />
+        ) : tier === 'gold' ? (
+          /* Crown for gold */
+          <path
+            d="M27,46 L27,34 L33,40 L40,28 L47,40 L53,34 L53,46Z"
+            fill={c.accent}
+            opacity="0.9"
+            stroke={c.dark}
+            strokeWidth="0.8"
           />
         ) : (
-          /* Circular medal shape */
-          <circle
-            cx="50"
-            cy="48"
-            r="38"
-            fill={`url(#medal-grad-${tier})`}
-            stroke={colors.dark}
-            strokeWidth="2"
-            filter={`url(#glow-${tier})`}
+          /* Check mark for silver */
+          <path
+            d="M30,38 L37,46 L52,30"
+            fill="none"
+            stroke={c.accent}
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.85"
           />
         )}
-
-        {/* Inner ring / inner hexagon */}
-        {isHexagon ? (
-          <polygon
-            points="50,18 78,34 78,62 50,78 22,62 22,34"
-            fill="none"
-            stroke={colors.light}
-            strokeWidth="1.5"
-            opacity="0.6"
-          />
-        ) : (
-          <circle
-            cx="50"
-            cy="48"
-            r="28"
-            fill="none"
-            stroke={colors.light}
-            strokeWidth="1.5"
-            opacity="0.5"
-          />
-        )}
-
-        {/* Star center */}
-        <polygon
-          points="50,25 55,40 70,40 58,50 62,65 50,56 38,65 42,50 30,40 45,40"
-          fill={isHexagon ? colors.dark : colors.dark}
-          opacity="0.35"
-        />
-        <polygon
-          points="50,28 54,40 67,40 57,49 60,62 50,54 40,62 43,49 33,40 46,40"
-          fill={colors.light}
-          opacity="0.7"
-        />
 
         {/* Shine overlay */}
-        {isHexagon ? (
-          <polygon
-            points="50,8 88,28 88,68 50,88 12,68 12,28"
-            fill={`url(#shine-${tier})`}
-          />
-        ) : (
-          <circle
-            cx="50"
-            cy="48"
-            r="38"
-            fill={`url(#shine-${tier})`}
-          />
-        )}
+        <path
+          d="M40 4 C18 4, 6 14, 6 30 L6 44 C6 60, 20 76, 40 76 C60 76, 74 60, 74 44 L74 30 C74 14, 62 4, 40 4Z"
+          fill={`url(#hi-${uid})`}
+        />
+
+        {/* Bottom tier label */}
+        <text
+          x="40"
+          y="68"
+          textAnchor="middle"
+          fontSize="8"
+          fontWeight="700"
+          fill={c.dark}
+          opacity="0.7"
+          fontFamily="system-ui, sans-serif"
+        >
+          {c.label.toUpperCase()}
+        </text>
       </svg>
 
-      {/* Sparkle effects */}
+      {/* Sparkle animations */}
       {animate && (
         <>
-          <motion.svg
-            variants={sparkleVariants}
-            initial="initial"
-            animate="animate"
-            className="absolute"
-            style={{ top: '10%', right: '5%' }}
-            width={px * 0.18}
-            height={px * 0.18}
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M8 0 L9.5 6.5 L16 8 L9.5 9.5 L8 16 L6.5 9.5 L0 8 L6.5 6.5Z"
-              fill={colors.sparkle}
-            />
-          </motion.svg>
-          <motion.svg
-            variants={sparkleVariants}
-            initial="initial"
-            animate="animate"
-            style={{ animationDelay: '0.8s' }}
-            className="absolute"
-            {...{ style: { top: '25%', left: '5%' } }}
-            width={px * 0.12}
-            height={px * 0.12}
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M8 2 L9 6 L14 8 L9 10 L8 14 L7 10 L2 8 L7 6Z"
-              fill={colors.sparkle}
-              opacity="0.7"
-            />
-          </motion.svg>
-          <motion.svg
-            variants={sparkleVariants}
-            initial="initial"
-            animate="animate"
-            style={{ animationDelay: '1.4s' }}
-            className="absolute"
-            {...{ style: { bottom: '20%', right: '8%' } }}
-            width={px * 0.1}
-            height={px * 0.1}
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M8 2 L9 6 L14 8 L9 10 L8 14 L7 10 L2 8 L7 6Z"
-              fill={colors.sparkle}
-              opacity="0.6"
-            />
-          </motion.svg>
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              width: px * 0.08,
+              height: px * 0.08,
+              background: c.sparkle,
+              top: '12%',
+              right: '10%',
+            }}
+            animate={{
+              opacity: [0.3, 1, 0.3],
+              scale: [0.7, 1.3, 0.7],
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              width: px * 0.06,
+              height: px * 0.06,
+              background: c.sparkle,
+              top: '28%',
+              left: '8%',
+            }}
+            animate={{
+              opacity: [0.2, 0.9, 0.2],
+              scale: [0.6, 1.2, 0.6],
+            }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+          />
         </>
       )}
     </Wrapper>

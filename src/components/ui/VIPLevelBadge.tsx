@@ -20,7 +20,6 @@ const VIP_LEVELS: Record<string, { medalTier: MedalTier; label: string }> = {
   diamond: { medalTier: "diamond", label: "Diamond VIP" },
   gold: { medalTier: "gold", label: "Gold VIP" },
   silver: { medalTier: "silver", label: "Silver VIP" },
-  bronze: { medalTier: "bronze", label: "Bronze VIP" },
   vip: { medalTier: "gold", label: "VIP Member" },
   premium: { medalTier: "platinum", label: "Premium" },
 };
