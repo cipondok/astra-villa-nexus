@@ -52,6 +52,37 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, serviceKey);
 
+    // ── Fetch user subscription tier for server-side gating ──
+    let subscriptionType = 'free';
+    if (userId) {
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('subscription_type')
+        .eq('id', userId)
+        .single();
+      if (profileData?.subscription_type) {
+        subscriptionType = profileData.subscription_type;
+      }
+    }
+
+    // ── Subscription-based limits ──
+    const holdYearsNum = Number(reqHoldYears) || 5;
+    if (mode === 'roi_simulation' && subscriptionType === 'free' && holdYearsNum > 3) {
+      return new Response(JSON.stringify({ error: 'Upgrade to Pro for extended projections beyond 3 years.' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    if (mode === 'portfolio_analysis' && subscriptionType === 'free' && Array.isArray(property_ids) && property_ids.length > 2) {
+      return new Response(JSON.stringify({ error: 'Free plan supports max 2 properties in portfolio analysis. Upgrade to Pro for more.' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    if (mode === 'compare_properties' && subscriptionType === 'free' && Array.isArray(property_ids) && property_ids.length > 2) {
+      return new Response(JSON.stringify({ error: 'Free plan supports max 2 property comparisons. Upgrade to Pro for more.' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     // ── demand_heat_score: city-based, no property_id needed ──
     if (mode === 'demand_heat_score') {
       if (!reqCity) {
