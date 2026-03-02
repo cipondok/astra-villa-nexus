@@ -664,6 +664,13 @@ Deno.serve(async (req) => {
         };
       }));
 
+      // Sort by ROI and add ranking
+      propertyResults.sort((a, b) => b.roi_percent - a.roi_percent);
+      propertyResults.forEach((p, i) => { (p as any).rank = i + 1; });
+
+      const topPerformer = propertyResults[0]?.property_id || null;
+      const weakest = propertyResults[propertyResults.length - 1]?.property_id || null;
+
       // Aggregations
       const totalInvestment = propertyResults.reduce((s, p) => s + p.purchase_price, 0);
       const projectedPortfolioValue = propertyResults.reduce((s, p) => s + p.projected_value, 0);
@@ -711,6 +718,8 @@ Deno.serve(async (req) => {
         data: {
           hold_years: holdYears,
           property_count: propertyResults.length,
+          top_performer_property_id: topPerformer,
+          weakest_property_id: weakest,
           properties: propertyResults,
           aggregation: {
             total_investment: totalInvestment,
