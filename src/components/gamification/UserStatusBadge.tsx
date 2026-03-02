@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
-import { Crown, Shield, Star, Sparkles } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useGamification, PROFILE_FRAMES } from '@/hooks/useGamification';
 import { cn } from '@/lib/utils';
+import MedalBadge, { type MedalTier } from '@/components/ui/MedalBadge';
 
 interface UserStatusBadgeProps {
   userId?: string;
@@ -18,13 +18,13 @@ interface UserStatusBadgeProps {
 }
 
 // Frame styles mapped by name
-const FRAME_STYLES: Record<string, { border: string; glow: string; icon?: React.ReactNode }> = {
+const FRAME_STYLES: Record<string, { border: string; glow: string; medalTier?: MedalTier }> = {
   default: { border: 'border-muted', glow: '' },
-  bronze: { border: 'border-chart-3 border-2', glow: 'shadow-chart-3/50' },
-  silver: { border: 'border-muted-foreground border-2', glow: 'shadow-muted/50' },
-  gold: { border: 'border-gold-primary border-2', glow: 'shadow-gold-primary/50 shadow-lg', icon: <Star className="h-2.5 w-2.5 text-gold-primary" /> },
-  platinum: { border: 'border-chart-4 border-2', glow: 'shadow-chart-4/50 shadow-lg', icon: <Shield className="h-2.5 w-2.5 text-chart-4" /> },
-  diamond: { border: 'border-chart-5 border-2 ring-2 ring-chart-5/50', glow: 'shadow-chart-5/50 shadow-xl', icon: <Crown className="h-2.5 w-2.5 text-chart-5" /> }
+  bronze: { border: 'border-chart-3 border-2', glow: 'shadow-chart-3/50', medalTier: 'bronze' },
+  silver: { border: 'border-muted-foreground border-2', glow: 'shadow-muted/50', medalTier: 'silver' },
+  gold: { border: 'border-gold-primary border-2', glow: 'shadow-gold-primary/50 shadow-lg', medalTier: 'gold' },
+  platinum: { border: 'border-chart-4 border-2', glow: 'shadow-chart-4/50 shadow-lg', medalTier: 'platinum' },
+  diamond: { border: 'border-chart-5 border-2 ring-2 ring-chart-5/50', glow: 'shadow-chart-5/50 shadow-xl', medalTier: 'diamond' }
 };
 
 const SIZE_STYLES = {
@@ -92,13 +92,13 @@ const UserStatusBadge = ({
               </Tooltip>
             )}
 
-            {/* Frame icon for high levels */}
-            {frameStyle.icon && (
+            {/* Medal badge for high levels */}
+            {frameStyle.medalTier && (
               <div className={cn(
-                "absolute -top-1 -right-1 rounded-full bg-background p-0.5",
-                size === 'sm' && '-top-0.5 -right-0.5'
+                "absolute -top-2 -right-2",
+                size === 'sm' && '-top-1.5 -right-1.5'
               )}>
-                {frameStyle.icon}
+                <MedalBadge tier={frameStyle.medalTier} size="sm" animate={false} />
               </div>
             )}
           </motion.div>
