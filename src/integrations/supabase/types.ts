@@ -15517,6 +15517,7 @@ export type Database = {
           profile_completion_percentage: number | null
           profile_locked_until: string | null
           specializations: string | null
+          subscription_type: string
           suspended_at: string | null
           suspended_by: string | null
           suspension_reason: string | null
@@ -15549,6 +15550,7 @@ export type Database = {
           profile_completion_percentage?: number | null
           profile_locked_until?: string | null
           specializations?: string | null
+          subscription_type?: string
           suspended_at?: string | null
           suspended_by?: string | null
           suspension_reason?: string | null
@@ -15581,6 +15583,7 @@ export type Database = {
           profile_completion_percentage?: number | null
           profile_locked_until?: string | null
           specializations?: string | null
+          subscription_type?: string
           suspended_at?: string | null
           suspended_by?: string | null
           suspension_reason?: string | null
