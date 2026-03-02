@@ -14,7 +14,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAlert } from "@/contexts/AlertContext";
-import { UserPlus, Search, Ban, UserCheck, UserX, Shield, AlertTriangle, Monitor, MapPin } from "lucide-react";
+import { UserPlus, Search, Ban, UserCheck, UserX, Shield, AlertTriangle, Monitor, MapPin, Clock } from "lucide-react";
+import { formatMemberDuration } from "@/utils/dateUtils";
 import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
 
@@ -119,7 +120,7 @@ const VirtualUserTable = ({
             <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Role</th>
             <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Level</th>
             <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Status</th>
-            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Created</th>
+            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Member</th>
             <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Actions</th>
           </tr>
         </thead>
@@ -203,8 +204,11 @@ const VirtualUserTable = ({
                         </Select>
                       </div>
                     </td>
-                    <td className="py-1.5 px-2 text-[9px] text-muted-foreground">
-                      {new Date(u.created_at).toLocaleDateString()}
+                    <td className="py-1.5 px-2">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-2.5 w-2.5 text-muted-foreground" />
+                        <span className="text-[9px] font-medium">{formatMemberDuration(u.created_at)}</span>
+                      </div>
                     </td>
                     <td className="py-1.5 px-2">
                       <div className="flex gap-1">
