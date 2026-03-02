@@ -16,6 +16,7 @@ import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { DesignSystemProvider } from '@/components/DesignSystemProvider';
 import CookieSystem from '@/components/cookies/CookieSystem';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -257,7 +258,9 @@ const AppContent = () => {
                 <Route path="/areas" element={<AreaGuides />} />
                 <Route path="/investment" element={<Investment />} />
                 <Route path="/early-investment" element={<EarlyInvestment />} />
-                <Route path="/portfolio-dashboard" element={<PortfolioDashboard />} />
+                <Route path="/portfolio-dashboard" element={<ProtectedRoute />}>
+                  <Route index element={<PortfolioDashboard />} />
+                </Route>
                 <Route path="/foreign-investment" element={<Navigate to="/investment" replace />} />
                 <Route path="/kpr-calculator" element={<KprCalculatorPage />} />
                 <Route path="/simulasi-kpr" element={<Navigate to="/kpr-calculator" replace />} />
