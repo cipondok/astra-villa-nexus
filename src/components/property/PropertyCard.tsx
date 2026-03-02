@@ -16,6 +16,7 @@ import UserStatusBadge from "@/components/ui/UserStatusBadge";
 import SocialProofWidget from "./SocialProofWidget";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import SharePropertyButton from "./SharePropertyButton";
+import OwnerSubscriptionBadge from "./OwnerSubscriptionBadge";
 
 interface PropertyCardProps {
   id: string;
@@ -61,6 +62,7 @@ interface PropertyCardProps {
     customer_feedback_count?: number;
   };
   discount_percentage?: number;
+  owner_subscription_type?: string | null;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -95,7 +97,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   legal_checked,
   premium_partner,
   posted_by,
-  discount_percentage
+  discount_percentage,
+  owner_subscription_type
 }) => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
@@ -173,7 +176,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   return (
     <>
       <Card 
-        className="group cursor-pointer overflow-hidden bg-card border border-border hover:border-gold-primary/40 hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)] hover:-translate-y-1 transition-all duration-300 ease-out" 
+        className={`group cursor-pointer overflow-hidden bg-card border ${owner_subscription_type === 'enterprise' ? 'border-[hsl(var(--gold-primary)/0.5)] shadow-[0_0_15px_-3px_hsl(var(--gold-primary)/0.15)]' : 'border-border'} hover:border-gold-primary/40 hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)] hover:-translate-y-1 transition-all duration-300 ease-out`} 
         onClick={handleViewDetails}
       >
         {/* Image Container */}
@@ -234,6 +237,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               </Badge>
             )}
           </div>
+
+          {/* Owner Subscription Badge */}
+          {owner_subscription_type && owner_subscription_type !== 'free' && (
+            <div className="absolute bottom-2 right-2 z-10">
+              <OwnerSubscriptionBadge subscriptionType={owner_subscription_type} />
+            </div>
+          )}
 
           {/* Trust Badges - Bottom Left */}
           <div className="absolute bottom-2 left-2">

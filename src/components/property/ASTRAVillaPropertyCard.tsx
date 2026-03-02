@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { cn } from "@/lib/utils";
+import OwnerSubscriptionBadge from "./OwnerSubscriptionBadge";
 
 interface ASTRAVillaPropertyCardProps {
   property: {
@@ -26,6 +27,7 @@ interface ASTRAVillaPropertyCardProps {
     state?: string;
     area?: string;
     created_at?: string;
+    owner_subscription_type?: string | null;
   };
   language?: string;
   isSaved?: boolean;
@@ -93,7 +95,10 @@ const ASTRAVillaPropertyCard = ({
       className={cn(
         "group relative overflow-hidden rounded-xl",
         "bg-card backdrop-blur-xl",
-        "border border-border hover:border-gold-primary/40",
+        property.owner_subscription_type === 'enterprise'
+          ? "border border-[hsl(var(--gold-primary)/0.5)] shadow-[0_0_15px_-3px_hsl(var(--gold-primary)/0.15)]"
+          : "border border-border",
+        "hover:border-gold-primary/40",
         "shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)]",
         "hover:-translate-y-1 transition-all duration-500 ease-out cursor-pointer",
         className
@@ -135,6 +140,13 @@ const ASTRAVillaPropertyCard = ({
             {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : "Property"}
           </span>
         </div>
+
+        {/* Owner Subscription Badge */}
+        {property.owner_subscription_type && property.owner_subscription_type !== 'free' && (
+          <div className="absolute bottom-2 right-2 z-10">
+            <OwnerSubscriptionBadge subscriptionType={property.owner_subscription_type} />
+          </div>
+        )}
 
         {/* Heart Button */}
         <Button
