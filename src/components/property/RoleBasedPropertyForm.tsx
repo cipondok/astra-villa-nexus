@@ -1,5 +1,5 @@
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +13,7 @@ import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Building2, Save, AlertCircle, ChevronDown, Ruler, TrendingUp, Cpu, Sparkles, RefreshCw, Loader2, Check, PenLine, Activity, ShieldCheck, AlertTriangle, ArrowUp, Clock, Zap, BarChart3, Users, Award, Flame, Eye, Bookmark, PlusCircle, TrendingDown, ArrowRight, DollarSign, Target, Calculator } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+const ROIProjectionChart = lazy(() => import("./ROIProjectionChart"));
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import PropertyImageUpload from "./PropertyImageUpload";
 import LocationSelector from "./LocationSelector";
@@ -1739,97 +1739,9 @@ const RoleBasedPropertyForm = () => {
                           ))}
                         </div>
                         {/* Chart */}
-                        <div className="rounded-lg bg-card border border-border/50 p-3 pt-4" style={{ background: 'hsl(var(--card) / 0.8)' }}>
-                          <ResponsiveContainer width="100%" height={180}>
-                            <LineChart data={roiData.projection} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
-                              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.3)" />
-                              <XAxis
-                                dataKey="year"
-                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-                                tickFormatter={(v) => `Yr ${v}`}
-                                axisLine={{ stroke: 'hsl(var(--border) / 0.3)' }}
-                              />
-                              <YAxis
-                                tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
-                                tickFormatter={(v) => `${(v / 1_000_000_000).toFixed(1)}B`}
-                                axisLine={false}
-                                tickLine={false}
-                                width={45}
-                              />
-                              <RechartsTooltip
-                                contentStyle={{
-                                  backgroundColor: 'hsl(var(--popover))',
-                                  border: '1px solid hsl(var(--border))',
-                                  borderRadius: '8px',
-                                  fontSize: '11px',
-                                  boxShadow: '0 4px 12px hsl(var(--foreground) / 0.1)',
-                                }}
-                                labelFormatter={(v) => `Year ${v}`}
-                                formatter={(value: number, name: string) => [
-                                  `Rp ${value.toLocaleString('id-ID')}`,
-                                  name === 'property_value' ? 'Property Value'
-                                    : name === 'cumulative_rent' ? 'Cumulative Rent'
-                                    : 'Equity Position'
-                                ]}
-                              />
-                              {(roiChartMode === 'all' || roiChartMode === 'value') && (
-                                <Line
-                                  type="monotone"
-                                  dataKey="property_value"
-                                  stroke="hsl(var(--primary))"
-                                  strokeWidth={2}
-                                  dot={{ r: 3, fill: 'hsl(var(--primary))' }}
-                                  animationDuration={800}
-                                  animationEasing="ease-out"
-                                />
-                              )}
-                              {(roiChartMode === 'all' || roiChartMode === 'rent') && (
-                                <Line
-                                  type="monotone"
-                                  dataKey="cumulative_rent"
-                                  stroke="hsl(142, 71%, 45%)"
-                                  strokeWidth={2}
-                                  dot={{ r: 3, fill: 'hsl(142, 71%, 45%)' }}
-                                  animationDuration={800}
-                                  animationEasing="ease-out"
-                                />
-                              )}
-                              {(roiChartMode === 'all' || roiChartMode === 'equity') && (
-                                <Line
-                                  type="monotone"
-                                  dataKey="equity_position"
-                                  stroke="hsl(45, 93%, 47%)"
-                                  strokeWidth={2}
-                                  strokeDasharray="5 3"
-                                  dot={{ r: 3, fill: 'hsl(45, 93%, 47%)' }}
-                                  animationDuration={800}
-                                  animationEasing="ease-out"
-                                />
-                              )}
-                            </LineChart>
-                          </ResponsiveContainer>
-                          {/* Legend */}
-                          <div className="flex items-center justify-center gap-4 mt-2">
-                            {(roiChartMode === 'all' || roiChartMode === 'value') && (
-                              <div className="flex items-center gap-1.5">
-                                <div className="w-3 h-0.5 rounded-full bg-primary" />
-                                <span className="text-[9px] text-muted-foreground">Value</span>
-                              </div>
-                            )}
-                            {(roiChartMode === 'all' || roiChartMode === 'rent') && (
-                              <div className="flex items-center gap-1.5">
-                                <div className="w-3 h-0.5 rounded-full" style={{ backgroundColor: 'hsl(142, 71%, 45%)' }} />
-                                <span className="text-[9px] text-muted-foreground">Rent</span>
-                              </div>
-                            )}
-                            {(roiChartMode === 'all' || roiChartMode === 'equity') && (
-                              <div className="flex items-center gap-1.5">
-                                <div className="w-3 h-0.5 rounded-full" style={{ backgroundColor: 'hsl(45, 93%, 47%)' }} />
-                                <span className="text-[9px] text-muted-foreground">Equity</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                        <Suspense fallback={<div className="h-[220px] animate-pulse bg-muted/30 rounded-lg" />}>
+                          <ROIProjectionChart projection={roiData.projection} chartMode={roiChartMode} />
+                        </Suspense>
                       </div>
                     )}
 
