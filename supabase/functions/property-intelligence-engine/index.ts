@@ -488,6 +488,11 @@ Deno.serve(async (req) => {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
+      if (property_ids.length > 10) {
+        return new Response(JSON.stringify({ error: 'Maximum 10 properties allowed per portfolio analysis.' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
       const holdYears = Math.max(1, Math.min(30, Number(reqHoldYears) || 5));
 
       // Fetch all properties
