@@ -20,7 +20,7 @@ interface UserStatusBadgeProps {
 // Frame styles mapped by name
 const FRAME_STYLES: Record<string, { border: string; glow: string; medalTier?: MedalTier }> = {
   default: { border: 'border-muted', glow: '' },
-  bronze: { border: 'border-chart-3 border-2', glow: 'shadow-chart-3/50', medalTier: 'bronze' },
+  bronze: { border: 'border-chart-3 border-2', glow: 'shadow-chart-3/50' },
   silver: { border: 'border-muted-foreground border-2', glow: 'shadow-muted/50', medalTier: 'silver' },
   gold: { border: 'border-gold-primary border-2', glow: 'shadow-gold-primary/50 shadow-lg', medalTier: 'gold' },
   platinum: { border: 'border-chart-4 border-2', glow: 'shadow-chart-4/50 shadow-lg', medalTier: 'platinum' },
