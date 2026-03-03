@@ -64,6 +64,7 @@ const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
+const AIPerformanceDashboard = lazy(() => import('@/components/admin/AIPerformanceDashboard'));
 const AgentDashboard = lazy(() => import('@/pages/AgentDashboard'));
 const VendorDashboard = lazy(() => import('@/pages/VendorDashboard'));
 const PropertyOwnerDashboard = lazy(() => import('@/pages/PropertyOwnerDashboard'));
@@ -175,7 +176,7 @@ const AppContent = () => {
   
   const location = useLocation();
   const { language } = useTranslation();
-  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings'].includes(location.pathname);
+  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance'].includes(location.pathname);
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();
   const { maintenanceMode, maintenanceMessage } = useMaintenanceMode();
@@ -226,6 +227,7 @@ const AppContent = () => {
                 <Route path="/province-properties" element={<ProvinceProperties />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/admin/design-system" element={<DesignSystemSettings />} />
+                <Route path="/admin/ai-performance" element={<AIPerformanceDashboard />} />
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
                 <Route path="/agent" element={<Navigate to="/agent-dashboard" replace />} />
                 <Route path="/listings" element={<Navigate to="/agent-dashboard" replace />} />
