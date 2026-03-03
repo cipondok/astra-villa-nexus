@@ -192,3 +192,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.notification-engine]
     verify_jwt = false
+
+  [functions.vendor-engine]
+    verify_jwt = false
