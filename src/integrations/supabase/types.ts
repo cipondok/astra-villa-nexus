@@ -22739,6 +22739,30 @@ export type Database = {
           },
         ]
       }
+      user_ai_cache: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          ranked_property_ids: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          ranked_property_ids?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          ranked_property_ids?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_badges: {
         Row: {
           badge_id: string
