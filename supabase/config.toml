@@ -181,6 +181,9 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.ai-match-engine]
     verify_jwt = false
 
+  [functions.ai-match-engine-v2]
+    verify_jwt = false
+
   [functions.ai-description-generator]
     verify_jwt = false
 
