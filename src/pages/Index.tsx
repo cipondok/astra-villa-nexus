@@ -60,6 +60,7 @@ const SearchLoadingDialog = lazy(() => import("@/components/SearchLoadingDialog"
 const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppInquiryDialog"));
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
 const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
+const SmartAIFeed = lazy(() => import("@/components/home/SmartAIFeed"));
 const BehaviorPatternBanner = lazy(() => import("@/components/ai/BehaviorPatternBanner"));
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
@@ -983,7 +984,35 @@ const Index = () => {
                   </div>
                 </Suspense>
 
-                {/* AI Recommended Properties */}
+                {/* Smart AI Feed - Recommended / Trending */}
+                <ScrollReveal direction="right" delay={0}>
+                <div className="mb-4">
+                  <LazyRender minHeight="280px" fallback={
+                    <div className="space-y-3 p-4" style={{ minHeight: '280px' }}>
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 bg-muted rounded-lg animate-pulse" />
+                        <div className="flex-1">
+                          <div className="h-4 bg-muted rounded w-40 mb-1.5 animate-pulse" />
+                          <div className="h-2.5 bg-muted rounded w-56 animate-pulse" />
+                        </div>
+                      </div>
+                      <div className="flex gap-3 overflow-hidden">
+                        {[...Array(5)].map((_, i) => (
+                          <div key={i} className="flex-shrink-0 w-[200px]">
+                            <div className="animate-pulse bg-muted h-36 rounded-xl mb-2" />
+                            <div className="animate-pulse bg-muted h-3 rounded w-3/4 mb-1" />
+                            <div className="animate-pulse bg-muted h-2.5 rounded w-1/2" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  }>
+                    <SmartAIFeed onPropertyClick={handlePropertyClick} />
+                  </LazyRender>
+                </div>
+                </ScrollReveal>
+
+                {/* AI Recommended Properties (legacy) */}
                 <ScrollReveal direction="right" delay={0}>
                 <div className="mb-4">
                   <LazyRender minHeight="320px" fallback={
