@@ -63,6 +63,7 @@ const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppI
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
 const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
 const SmartAIFeed = lazy(() => import("@/components/home/SmartAIFeed"));
+const SmartRecommendations = lazy(() => import("@/components/ai/SmartRecommendations"));
 const BehaviorPatternBanner = lazy(() => import("@/components/ai/BehaviorPatternBanner"));
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
@@ -1013,6 +1014,15 @@ const Index = () => {
                   }>
                     <SmartAIFeed onPropertyClick={handlePropertyClick} />
                   </LazyRender>
+                </div>
+                </ScrollReveal>
+
+                {/* Smart Recommendations - Personalized Picks */}
+                <ScrollReveal direction="left" delay={0}>
+                <div className="mb-4">
+                  <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
+                    <SmartRecommendations limit={6} className="shadow-sm" />
+                  </Suspense>
                 </div>
                 </ScrollReveal>
 
