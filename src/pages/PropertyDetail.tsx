@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
 import { useUserBehaviorAnalytics } from '@/hooks/useUserBehaviorAnalytics';
 import { useTranslation } from '@/i18n/useTranslation';
 import { SEOHead, seoSchemas } from '@/components/SEOHead';
@@ -80,6 +80,9 @@ import { SurveyBookingDialog } from '@/components/property/SurveyBookingDialog';
 import SocialShareDialog from '@/components/property/SocialShareDialog';
 import SmartCollectionBadges from '@/components/property/SmartCollectionBadges';
 import PropertyInvestmentWidget from '@/components/property/PropertyInvestmentWidget';
+import AIMatchExplainer from '@/components/property/AIMatchExplainer';
+import { useUserAiProfile } from '@/hooks/useUserAiProfile';
+import { usePropertyMatchScore } from '@/hooks/usePropertyMatchScore';
 const PropertyNeighborhoodInsights = lazy(() => import('@/components/property/PropertyNeighborhoodInsights'));
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
@@ -170,6 +173,16 @@ const PropertyDetail: React.FC = () => {
   });
 
   const { getPropertyImage } = useDefaultPropertyImage();
+
+  // AI Match data
+  const { data: userAiProfile } = useUserAiProfile();
+  const propertyForMatch = useMemo(() => property ? {
+    city: property.city,
+    price: property.price,
+    has_pool: !!(property.property_features as any)?.pool,
+    property_type: property.property_type,
+  } : null, [property]);
+  const { matchScore, confidenceScore, collaborativeOverlap } = usePropertyMatchScore(propertyForMatch, userAiProfile);
 
   // Auto-scroll refs for mobile carousels
   const similarScrollRef = useRef<HTMLDivElement>(null);
@@ -1187,6 +1200,22 @@ const PropertyDetail: React.FC = () => {
               propertyType={property.property_type}
               landArea={property.area_sqm}
             />
+
+            {/* AI Match Explainer */}
+            {userAiProfile && matchScore > 0 && (
+              <AIMatchExplainer
+                matchScore={matchScore}
+                confidenceScore={confidenceScore}
+                property={{
+                  city: property.city,
+                  price: property.price,
+                  has_pool: !!(property.property_features as any)?.pool,
+                  property_type: property.property_type,
+                }}
+                userProfile={userAiProfile}
+                collaborativeOverlap={collaborativeOverlap}
+              />
+            )}
             
             {/* Contact Information - Slim Agent Card */}
             <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
