@@ -1,5 +1,7 @@
-import React, { useEffect, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useState, useMemo, lazy, Suspense } from 'react';
 import AstraWalletPopup from '@/components/dashboard/AstraWalletPopup';
+import AIBuyerPersona from '@/components/property/AIBuyerPersona';
+import { useUserAiProfile } from '@/hooks/useUserAiProfile';
 import { Progress } from '@/components/ui/progress';
 import { MEMBERSHIP_LEVELS, MembershipLevel, getMembershipConfig } from '@/types/membership';
 import { useAuth } from '@/contexts/AuthContext';
@@ -68,6 +70,7 @@ const UserDashboardPage = () => {
   const { balance } = useAstraToken();
   const { membershipLevel } = useUserMembership();
   const [walletPopupOpen, setWalletPopupOpen] = useState(false);
+  const { data: userAiProfile } = useUserAiProfile();
 
   const primaryRoleRaw = userRoles.find(role => role !== 'general_user') || userRoles[0] || 'general_user';
   const hasUpgradedRole = userRoles.some(role => 
@@ -395,6 +398,17 @@ const UserDashboardPage = () => {
                 </motion.div>
               ))}
             </div>
+
+            {/* AI Buyer Persona */}
+            {userAiProfile && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <AIBuyerPersona profile={userAiProfile} />
+              </motion.div>
+            )}
 
             {/* Recent Activity - Slim */}
              <Card className="backdrop-blur-xl bg-card/60 border-gold-primary/15">
