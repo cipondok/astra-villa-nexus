@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score'];
+    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -1552,6 +1552,216 @@ Deno.serve(async (req) => {
             recency_days: Math.round((Date.now() - new Date(prop.created_at).getTime()) / (1000 * 60 * 60 * 24)),
             subscription_type: subscriptionType,
           },
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: listing_visibility_analytics
+    // ═══════════════════════════════════════════
+    if (mode === 'listing_visibility_analytics') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id is required for listing_visibility_analytics mode' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Step 1-2: Fetch target property
+      const { data: prop, error: pErr } = await supabase
+        .from('properties')
+        .select('id, city, investment_score, created_at, status, property_type, user_id, agent_id')
+        .eq('id', property_id)
+        .single();
+
+      if (pErr || !prop) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Fetch owner subscription
+      const ownerId = prop.user_id || prop.agent_id;
+      let ownerSubscription = 'free';
+      if (ownerId) {
+        const { data: ownerProfile } = await supabase
+          .from('profiles')
+          .select('subscription_type')
+          .eq('id', ownerId)
+          .single();
+        if (ownerProfile?.subscription_type) ownerSubscription = ownerProfile.subscription_type;
+      }
+
+      const thirtyAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const sevenAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+      // Step 3: Fetch all published listings in same city
+      const { data: cityListings } = await supabase
+        .from('properties')
+        .select('id, investment_score, created_at, status, property_type, user_id, agent_id')
+        .eq('city', prop.city)
+        .eq('status', 'published');
+
+      const allListings = cityListings || [];
+      const totalListings = allListings.length;
+
+      // Step 4-5: Calculate ranking_score for each listing and sort
+      // We need engagement + demand heat for each — batch fetch city-level demand first
+      const allIds = allListings.map(l => l.id);
+
+      // City-level demand heat (shared)
+      let demandHeatScore = 50;
+      if (allIds.length > 0) {
+        const [cvRes, csRes] = await Promise.all([
+          supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+            .eq('activity_type', 'view').in('property_id', allIds).gte('created_at', thirtyAgo),
+          supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+            .in('property_id', allIds).gte('saved_at', thirtyAgo),
+        ]);
+        const vpl = (cvRes.count || 0) / allIds.length;
+        const spl = (csRes.count || 0) / allIds.length;
+        const dS = vpl >= 50 ? 40 : vpl >= 30 ? 30 : vpl >= 15 ? 20 : 10;
+        const svS = spl >= 10 ? 30 : spl >= 5 ? 20 : spl >= 2 ? 10 : 5;
+        demandHeatScore = Math.min(100, dS + svS + 15);
+      }
+
+      // Per-listing engagement (views+saves last 30d) — batch fetch
+      const [allViewsRes, allSavesRes] = await Promise.all([
+        allIds.length > 0
+          ? supabase.from('activity_logs').select('property_id')
+              .eq('activity_type', 'view').in('property_id', allIds).gte('created_at', thirtyAgo)
+          : Promise.resolve({ data: [] }),
+        allIds.length > 0
+          ? supabase.from('saved_properties').select('property_id')
+              .in('property_id', allIds).gte('saved_at', thirtyAgo)
+          : Promise.resolve({ data: [] }),
+      ]);
+
+      // Count per property
+      const viewCounts: Record<string, number> = {};
+      const saveCounts: Record<string, number> = {};
+      for (const v of (allViewsRes.data || [])) {
+        viewCounts[v.property_id] = (viewCounts[v.property_id] || 0) + 1;
+      }
+      for (const s of (allSavesRes.data || [])) {
+        saveCounts[s.property_id] = (saveCounts[s.property_id] || 0) + 1;
+      }
+
+      // Fetch owner subscriptions for all listings
+      const ownerIds = [...new Set(allListings.map(l => l.user_id || l.agent_id).filter(Boolean))];
+      const ownerSubMap: Record<string, string> = {};
+      if (ownerIds.length > 0) {
+        const { data: ownerProfiles } = await supabase
+          .from('profiles')
+          .select('id, subscription_type')
+          .in('id', ownerIds);
+        for (const op of (ownerProfiles || [])) {
+          ownerSubMap[op.id] = op.subscription_type || 'free';
+        }
+      }
+
+      // Calculate ranking scores
+      const rankedListings = allListings.map(l => {
+        const engScore = Math.min(100, ((viewCounts[l.id] || 0) + (saveCounts[l.id] || 0) * 3));
+        const healthScore = Number(l.investment_score) || 0;
+        const lid = l.user_id || l.agent_id || '';
+        const lSub = ownerSubMap[lid] || 'free';
+        const score = calculateRankingScore(
+          {
+            investment_score: Number(l.investment_score) || 0,
+            listing_health_score: healthScore,
+            engagement_score: engScore,
+            demand_heat_score: demandHeatScore,
+            created_at: l.created_at,
+          },
+          lSub
+        );
+        return { id: l.id, ranking_score: score, subscription: lSub };
+      });
+
+      // Step 5: Sort descending
+      rankedListings.sort((a, b) => b.ranking_score - a.ranking_score);
+
+      // Step 6: Determine position
+      const currentRankPosition = rankedListings.findIndex(l => l.id === property_id) + 1;
+      const visibilityPercentile = totalListings > 0
+        ? Math.round(((totalListings - currentRankPosition) / totalListings) * 10000) / 100
+        : 0;
+
+      // Step 7: Impressions & views last 7 days
+      const [impressionsRes, viewsRes] = await Promise.all([
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+          .eq('activity_type', 'impression').eq('property_id', property_id).gte('created_at', sevenAgo),
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+          .eq('activity_type', 'view').eq('property_id', property_id).gte('created_at', sevenAgo),
+      ]);
+
+      const impressions7d = impressionsRes.count || 0;
+      const views7d = viewsRes.count || 0;
+
+      // Step 8: Engagement rate
+      const engagementRate = impressions7d > 0
+        ? Math.round((views7d / impressions7d) * 10000) / 100
+        : 0;
+
+      // Step 9: Subscription impact
+      const subscriptionImpact = ownerSubscription === 'enterprise'
+        ? 'Enterprise boost applied (+25)'
+        : ownerSubscription === 'pro'
+          ? 'Pro boost applied (+15)'
+          : 'No subscription boost';
+
+      // Step 10: Upgrade potential
+      let upgradePotentialScore = 0;
+      let simulatedRank = currentRankPosition;
+      if (ownerSubscription === 'free') {
+        // Simulate with 'pro' boost
+        const currentEntry = rankedListings.find(l => l.id === property_id);
+        if (currentEntry) {
+          const engScore = Math.min(100, ((viewCounts[property_id] || 0) + (saveCounts[property_id] || 0) * 3));
+          const healthScore = Number(prop.investment_score) || 0;
+          const simulatedScore = calculateRankingScore(
+            {
+              investment_score: Number(prop.investment_score) || 0,
+              listing_health_score: healthScore,
+              engagement_score: engScore,
+              demand_heat_score: demandHeatScore,
+              created_at: prop.created_at,
+            },
+            'pro'
+          );
+          // Count how many listings would still rank above
+          simulatedRank = rankedListings.filter(l => l.id !== property_id && l.ranking_score > simulatedScore).length + 1;
+          upgradePotentialScore = Math.max(0, currentRankPosition - simulatedRank);
+        }
+      }
+
+      console.log(`Visibility analytics for ${property_id}: rank ${currentRankPosition}/${totalListings}, percentile ${visibilityPercentile}%`);
+
+      return new Response(JSON.stringify({
+        mode: 'listing_visibility_analytics',
+        data: {
+          property_id,
+          city: prop.city,
+          current_rank_position: currentRankPosition,
+          total_listings: totalListings,
+          visibility_percentile: visibilityPercentile,
+          last_7_days: {
+            impressions: impressions7d,
+            views: views7d,
+            engagement_rate: engagementRate,
+          },
+          subscription: {
+            current: ownerSubscription,
+            impact: subscriptionImpact,
+          },
+          upgrade_potential: {
+            potential_rank_improvement: upgradePotentialScore,
+            simulated_rank_with_pro: simulatedRank,
+            current_rank: currentRankPosition,
+          },
+          ranking_score: rankedListings.find(l => l.id === property_id)?.ranking_score || 0,
         },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
