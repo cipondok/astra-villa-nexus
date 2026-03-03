@@ -281,10 +281,54 @@ Deno.serve(async (req) => {
       return { id: prop.id, ai_match_score_v2: Math.max(0, Math.min(100, score)) };
     });
 
-    // ── 6. SORT & LIMIT ──
-    scored.sort((a, b) => b.ai_match_score_v2 - a.ai_match_score_v2);
+    // ── 6. CONFIDENCE CALCULATION ──
+    const totalInteractions = (activityLogs?.length || 0) + (savedProps?.length || 0);
+    let dataDepthScore = 5;
+    if (totalInteractions > 30) dataDepthScore = 30;
+    else if (totalInteractions > 15) dataDepthScore = 20;
+    else if (totalInteractions > 5) dataDepthScore = 10;
 
-    return json({ ranked_properties: scored.slice(0, limit) });
+    let signalStrengthScore = 5;
+    if (preferredCity && avgBudget > 0) signalStrengthScore = 25;
+    else if (preferredCity || avgBudget > 0) signalStrengthScore = 15;
+
+    const scoredWithConfidence = scored.map((item) => {
+      const overlap = collaborativeCounts[item.id] || 0;
+      let collaborativeScore = 0;
+      if (overlap >= 10) collaborativeScore = 25;
+      else if (overlap >= 6) collaborativeScore = 20;
+      else if (overlap >= 3) collaborativeScore = 10;
+
+      let agreementCount = 0;
+      if (preferredCity) agreementCount++;
+      if (avgBudget > 0) agreementCount++;
+      if (poolAffinityPercent > 0) agreementCount++;
+      if (avgInvestmentScoreViewed > 0) agreementCount++;
+
+      let modelAgreementScore = 5;
+      if (agreementCount >= 4) modelAgreementScore = 20;
+      else if (agreementCount === 3) modelAgreementScore = 15;
+      else if (agreementCount === 2) modelAgreementScore = 10;
+
+      const confidence = Math.min(100, dataDepthScore + signalStrengthScore + collaborativeScore + modelAgreementScore);
+
+      return { ...item, ai_confidence_score: confidence };
+    });
+
+    // ── 7. SORT & LIMIT ──
+    scoredWithConfidence.sort((a, b) => b.ai_match_score_v2 - a.ai_match_score_v2);
+    const result = scoredWithConfidence.slice(0, limit);
+
+    // ── STORE CACHE ──
+    await supabase
+      .from('user_ai_cache')
+      .upsert({
+        user_id: userId,
+        ranked_property_ids: result,
+        expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+      });
+
+    return json({ ranked_properties: result });
 
   } catch (err) {
     console.error('ai-match-engine-v2 error:', err);
