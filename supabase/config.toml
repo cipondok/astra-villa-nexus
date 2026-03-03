@@ -199,3 +199,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.ai-description-generator]
     verify_jwt = false
+
+  [functions.payment-engine]
+    verify_jwt = false
