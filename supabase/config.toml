@@ -188,7 +188,7 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.exchange-rates]
     verify_jwt = false
 
-  [functions.property-intelligence-engine]
+  [functions.core-engine]
     verify_jwt = false
 
   [functions.predictive-pricing]

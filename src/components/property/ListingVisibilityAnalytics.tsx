@@ -61,7 +61,7 @@ export default function ListingVisibilityAnalytics({ propertyId }: ListingVisibi
       if (!token) throw new Error('Not authenticated');
 
       const { data: res, error: fnErr } = await supabase.functions.invoke(
-        'property-intelligence-engine',
+        'core-engine',
         {
           headers: { Authorization: `Bearer ${token}` },
           body: { mode: 'listing_visibility_analytics', property_id: propertyId },
