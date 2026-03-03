@@ -319,6 +319,16 @@ Deno.serve(async (req) => {
     scoredWithConfidence.sort((a, b) => b.ai_match_score_v2 - a.ai_match_score_v2);
     const result = scoredWithConfidence.slice(0, limit);
 
+    // ── BUILD USER AI PROFILE for explainer ──
+    const userAiProfile = {
+      buyer_type: buyerType,
+      preferred_city: preferredCity,
+      avg_budget: Math.round(avgBudget),
+      pool_affinity_percent: poolAffinityPercent,
+      property_type_preference: propertyTypePreference,
+      total_interactions: (activityLogs?.length || 0) + (savedProps?.length || 0),
+    };
+
     // ── STORE CACHE ──
     await supabase
       .from('user_ai_cache')
@@ -328,7 +338,7 @@ Deno.serve(async (req) => {
         expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
       });
 
-    return json({ ranked_properties: result });
+    return json({ ranked_properties: result, user_ai_profile: userAiProfile });
 
   } catch (err) {
     console.error('ai-match-engine-v2 error:', err);
