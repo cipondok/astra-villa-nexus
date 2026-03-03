@@ -13,6 +13,8 @@ import { toast } from "sonner";
 import { logSearchError } from "@/utils/errorLogger";
 import { useConnectionSpeed } from "@/hooks/useConnectionSpeed";
 import { useScrollToSection } from "@/hooks/useHomeBackLink";
+import { useUserAiProfile } from "@/hooks/useUserAiProfile";
+import { generatePersonalizedHeadline } from "@/utils/generatePersonalizedHeadline";
 
 import { supabase } from "@/integrations/supabase/client";
 import { BaseProperty } from "@/types/property";
@@ -81,6 +83,8 @@ const Index = () => {
   const { user, profile, loading } = useAuth();
   const { trackInteraction } = useUserBehaviorAnalytics();
   const { data: heroConfig } = useHeroSliderConfig();
+  const { data: userAiProfile } = useUserAiProfile();
+  const personalizedHeadline = useMemo(() => userAiProfile ? generatePersonalizedHeadline(userAiProfile) : null, [userAiProfile]);
   const navigate = useNavigate();
   const { isMobile, isTablet } = useIsMobile();
   const [searchResults, setSearchResults] = useState<BaseProperty[]>([]);
@@ -667,11 +671,11 @@ const Index = () => {
                 </div>
                 
                 <h2 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white" style={{ textShadow: '0 2px 20px hsl(45 80% 50% / 0.3), 0 4px 8px hsl(0 0% 0% / 0.3)' }}>
-                  {t('indexPage.findYour')}
+                  {personalizedHeadline?.headline || t('indexPage.findYour')}
                 </h2>
                 <p className="flex text-xs sm:text-sm text-white/80 items-center justify-center gap-2 font-medium">
                   <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gold-primary/80" />
-                  {t('indexPage.searchPowered')}
+                  {personalizedHeadline?.subtitle || t('indexPage.searchPowered')}
                 </p>
               </div>
               
