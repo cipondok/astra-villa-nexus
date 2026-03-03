@@ -125,7 +125,7 @@ const PortfolioDashboard = () => {
         return;
       }
 
-      const { data, error: fnError } = await supabase.functions.invoke('property-intelligence-engine', {
+      const { data, error: fnError } = await supabase.functions.invoke('core-engine', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

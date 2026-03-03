@@ -88,7 +88,7 @@ const InvestmentComparePanel = () => {
         return;
       }
 
-      const { data, error: fnError } = await supabase.functions.invoke('property-intelligence-engine', {
+      const { data, error: fnError } = await supabase.functions.invoke('core-engine', {
         body: {
           mode: 'compare_properties',
           property_ids: [propertyA, propertyB],
