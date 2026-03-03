@@ -146,6 +146,50 @@ Deno.serve(async (req) => {
 
     console.log(`[ai-match-engine-v2] user_id=${userId} buyer_type=${buyerType} preferred_city=${preferredCity} avg_budget=${Math.round(avgBudget)}`);
 
+    // ── 3b. COLLABORATIVE FILTERING ──
+    let collaborativeCounts: Record<string, number> = {};
+    if (interactedIds.length > 0) {
+      // Find users who interacted with the same properties
+      const { data: similarUserLogs } = await supabase
+        .from('activity_logs')
+        .select('user_id, metadata')
+        .in('activity_type', ['view', 'save', 'contact'])
+        .neq('user_id', userId)
+        .gte('created_at', oneEightyDaysAgo)
+        .limit(500);
+
+      // Filter to users who touched our interacted properties
+      const similarUserIds = new Set<string>();
+      for (const log of similarUserLogs || []) {
+        const meta = log.metadata as Record<string, unknown> | null;
+        const pid = meta?.property_id as string | undefined;
+        if (pid && interactedIds.includes(pid)) {
+          similarUserIds.add(log.user_id);
+        }
+      }
+
+      if (similarUserIds.size > 0) {
+        const ninetyDaysAgo = new Date(now - 90 * 24 * 60 * 60 * 1000).toISOString();
+        const { data: similarActivity } = await supabase
+          .from('activity_logs')
+          .select('metadata')
+          .in('user_id', [...similarUserIds].slice(0, 200))
+          .in('activity_type', ['view', 'save', 'contact'])
+          .gte('created_at', ninetyDaysAgo)
+          .limit(500);
+
+        for (const row of similarActivity || []) {
+          const meta = row.metadata as Record<string, unknown> | null;
+          const pid = meta?.property_id as string | undefined;
+          if (pid && !interactedIds.includes(pid)) {
+            collaborativeCounts[pid] = (collaborativeCounts[pid] || 0) + 1;
+          }
+        }
+      }
+    }
+
+    console.log(`[ai-match-engine-v2] collaborative signals: ${Object.keys(collaborativeCounts).length} properties from similar users`);
+
     // ── 4. FETCH CANDIDATE PROPERTIES ──
     let query = supabase
       .from('properties')
@@ -227,6 +271,12 @@ Deno.serve(async (req) => {
       if (saves >= 20) score += 15;
       else if (saves >= 10) score += 10;
       else if (saves >= 5) score += 5;
+
+      // COLLABORATIVE FILTERING (0–10)
+      const collabHits = collaborativeCounts[prop.id] || 0;
+      if (collabHits >= 5) score += 10;
+      else if (collabHits >= 3) score += 7;
+      else if (collabHits >= 1) score += 3;
 
       return { id: prop.id, ai_match_score_v2: Math.max(0, Math.min(100, score)) };
     });
