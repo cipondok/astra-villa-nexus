@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, lazy, Suspense } from 'react';
 import AstraWalletPopup from '@/components/dashboard/AstraWalletPopup';
 import AIBuyerPersona from '@/components/property/AIBuyerPersona';
+import SmartRecommendations from '@/components/ai/SmartRecommendations';
 import { useUserAiProfile } from '@/hooks/useUserAiProfile';
 import { Progress } from '@/components/ui/progress';
 import { MEMBERSHIP_LEVELS, MembershipLevel, getMembershipConfig } from '@/types/membership';
@@ -409,6 +410,15 @@ const UserDashboardPage = () => {
                 <AIBuyerPersona profile={userAiProfile} />
               </motion.div>
             )}
+
+            {/* Smart AI Recommendations */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+            >
+              <SmartRecommendations limit={4} />
+            </motion.div>
 
             {/* Recent Activity - Slim */}
              <Card className="backdrop-blur-xl bg-card/60 border-gold-primary/15">
