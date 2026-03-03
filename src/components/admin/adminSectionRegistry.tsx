@@ -127,6 +127,7 @@ export const SamplePropertyGenerator = lazyRetry(() => import("./SamplePropertyG
 export const VerificationSystemSettings = lazyRetry(() => import("./settings/VerificationSystemSettings"));
 export const AuthRegistrationSettings = lazyRetry(() => import("./settings/AuthRegistrationSettings"));
 export const NearbyFacilitiesSettings = lazyRetry(() => import("./settings/NearbyFacilitiesSettings"));
+export const AIPerformanceDashboard = lazyRetry(() => import("./AIPerformanceDashboard"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -238,4 +239,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "user-acquisition": { label: "User Acquisition", category: "Features" },
   "nearby-facilities-settings": { label: "Nearby & Payment Settings", category: "Property System" },
   "off-plan-manager": { label: "Off-Plan Project Manager", category: "Property System" },
+  "ai-performance": { label: "AI Performance", category: "Analytics" },
 };

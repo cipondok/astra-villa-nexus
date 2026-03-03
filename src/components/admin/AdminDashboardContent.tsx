@@ -105,6 +105,7 @@ import {
   VerificationSystemSettings,
   AuthRegistrationSettings,
   NearbyFacilitiesSettings,
+  AIPerformanceDashboard,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -263,6 +264,7 @@ const renderSection = (
     case "ahu-company-checker": return <AHUCompanyChecker />;
     case "auth-registration-settings": return <AuthRegistrationSettings />;
     case "off-plan-manager":        return <OffPlanProjectManager />;
+    case "ai-performance":          return <AIPerformanceDashboard />;
     default:                    return <AdminOverview />;
   }
 };
