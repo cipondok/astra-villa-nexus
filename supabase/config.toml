@@ -13,7 +13,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.listing-reviver]
     verify_jwt = false
 
-
   [functions.generate-otp]
     verify_jwt = true
 
@@ -28,9 +27,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.algorithm-controller]
     verify_jwt = false
-
-  [functions.send-email]
-    verify_jwt = true
 
   [functions.verify-captcha]
     verify_jwt = false
@@ -110,9 +106,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.enhanced-kyc]
     verify_jwt = false
 
-  [functions.push-notifications]
-    verify_jwt = false
-
   [functions.notification-scheduler]
     verify_jwt = false
 
@@ -126,9 +119,6 @@ project_id = "zymrajuuyyfkzdmptebl"
     verify_jwt = false
 
   [functions.ai-property-recommendations]
-    verify_jwt = false
-
-  [functions.email-scheduler]
     verify_jwt = false
 
   [functions.b2b-api]
@@ -155,9 +145,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.submit-mortgage-application]
     verify_jwt = false
 
-  [functions.visit-reminders]
-    verify_jwt = false
-
   [functions.ai-smart-collections]
     verify_jwt = false
 
@@ -165,9 +152,6 @@ project_id = "zymrajuuyyfkzdmptebl"
     verify_jwt = false
 
   [functions.payment-reminders]
-    verify_jwt = false
-
-  [functions.lease-expiry-alerts]
     verify_jwt = false
 
   [functions.rental-notifications]
@@ -204,4 +188,7 @@ project_id = "zymrajuuyyfkzdmptebl"
     verify_jwt = false
 
   [functions.auth-engine]
+    verify_jwt = false
+
+  [functions.notification-engine]
     verify_jwt = false
