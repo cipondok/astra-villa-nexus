@@ -417,6 +417,13 @@ export const navigationSections = {
       label: "Daily Check-in",
       icon: CheckCircle,
       description: "Monitor daily check-in activity"
+    },
+    {
+      key: "ai-performance",
+      label: "AI Performance",
+      icon: Activity,
+      description: "Monitor AI recommendation effectiveness, CTR, and engagement metrics",
+      badge: "New"
     }
   ],
 
