@@ -989,69 +989,115 @@ Deno.serve(async (req) => {
     // ═══════════════════════════════════════════
     const computePricePosition = async (prop: typeof property, propId: string) => {
       const ba = Number(prop.building_area_sqm) || 0;
-      if (ba <= 0) return { price_position: 'unknown' as string, comparable_count: 0 };
+      const la = Number(prop.land_area_sqm) || 0;
+      const primaryArea = ba > 0 ? ba : la;
+      const areaType = ba > 0 ? 'building' : 'land';
+      if (primaryArea <= 0) return { price_position: 'unknown' as string, comparable_count: 0 };
 
-      const minA = ba * 0.7;
-      const maxA = ba * 1.3;
+      const minA = primaryArea * 0.7;
+      const maxA = primaryArea * 1.3;
+      const areaCol = areaType === 'building' ? 'building_area_sqm' : 'land_area_sqm';
 
       const { data: comps } = await supabase
         .from('properties')
-        .select('price, building_area_sqm')
+        .select('price, building_area_sqm, land_area_sqm')
         .eq('city', prop.city)
         .eq('property_type', prop.property_type)
         .eq('status', 'published')
         .not('price', 'is', null)
-        .gte('building_area_sqm', minA)
-        .lte('building_area_sqm', maxA)
+        .gte(areaCol, minA)
+        .lte(areaCol, maxA)
         .neq('id', propId)
         .limit(50);
 
       const valid = (comps || []).filter(
-        (c) => Number(c.price) > 0 && Number(c.building_area_sqm) > 0
+        (c) => Number(c.price) > 0 && Number(c[areaCol]) > 0
       );
       if (valid.length === 0) return { price_position: 'unknown', comparable_count: 0 };
 
-      const ppm2 = valid.map((c) => Number(c.price) / Number(c.building_area_sqm)).sort((a, b) => a - b);
+      // Median price per sqm
+      const ppm2 = valid.map((c) => Number(c.price) / Number(c[areaCol])).sort((a, b) => a - b);
       const mid = Math.floor(ppm2.length / 2);
       const median = ppm2.length % 2 !== 0 ? ppm2[mid] : (ppm2[mid - 1] + ppm2[mid]) / 2;
+      const avgPricePerSqm = Math.round(ppm2.reduce((s, v) => s + v, 0) / ppm2.length);
 
-      let tp = median * ba;
+      // Demand multiplier based on market density (comparable volume as proxy)
+      const cc = valid.length;
+      let demandMultiplier = 1.0;
+      if (cc >= 30) demandMultiplier = 1.10;       // hot market
+      else if (cc >= 15) demandMultiplier = 1.05;   // warm market
+      else if (cc >= 5) demandMultiplier = 1.0;     // normal
+      else demandMultiplier = 0.95;                 // cool / thin market
+
+      // FMV = median_price_per_sqm * area * demand_multiplier
+      let fmv = median * primaryArea * demandMultiplier;
+
+      // Investment score adjustment
       const is2 = Number(prop.investment_score) || 0;
-      if (is2 >= 80) tp *= 1.05;
-      else if (is2 >= 65) tp *= 1.03;
-      else if (is2 < 50) tp *= 0.95;
+      if (is2 >= 80) fmv *= 1.05;
+      else if (is2 >= 65) fmv *= 1.03;
+      else if (is2 < 50) fmv *= 0.95;
 
-      const rMin = Math.round(tp * 0.95);
-      const rMax = Math.round(tp * 1.05);
-      const suggested = Math.round(tp);
+      const suggested = Math.round(fmv);
+      const rMin = Math.round(fmv * 0.90);
+      const rMax = Math.round(fmv * 1.10);
       const cur = Number(prop.price) || 0;
 
+      // Market positioning with thresholds
+      const ratio = cur > 0 ? cur / fmv : 0;
       let pos: string;
-      if (cur > rMax) pos = 'overpriced';
-      else if (cur < rMin) pos = 'underpriced';
+      if (ratio > 1.15) pos = 'overpriced';
+      else if (ratio < 0.85) pos = 'underpriced';
       else pos = 'market-aligned';
 
-      const cc = valid.length;
+      // Expected days on market prediction
+      let expectedDaysOnMarket: number;
+      if (pos === 'underpriced') {
+        expectedDaysOnMarket = Math.max(7, Math.round(30 * ratio));
+      } else if (pos === 'overpriced') {
+        expectedDaysOnMarket = Math.round(60 * (1 + (ratio - 1.15) * 3));
+      } else {
+        expectedDaysOnMarket = 60;
+      }
+
+      // Confidence score
       let conf: number;
       if (cc >= 20) conf = 95;
       else if (cc >= 10) conf = 80;
       else if (cc >= 5) conf = 65;
       else conf = 40;
 
+      // Reasoning bullets
+      const reasoning: string[] = [];
+      reasoning.push(`Based on ${cc} comparable ${prop.property_type || 'property'} listings in ${prop.city} (avg ${avgPricePerSqm.toLocaleString('id-ID')} IDR/sqm)`);
+      reasoning.push(`Demand multiplier: ${demandMultiplier}x (${demandMultiplier >= 1.05 ? 'high' : demandMultiplier >= 1.0 ? 'normal' : 'low'} market activity)`);
+      if (cur > 0) {
+        reasoning.push(`Current price is ${Math.round(ratio * 100)}% of FMV — ${pos}`);
+      } else {
+        reasoning.push(`No current price set; suggested FMV: ${suggested.toLocaleString('id-ID')} IDR`);
+      }
+
       return {
         recommended_min_price: rMin,
         recommended_max_price: rMax,
         suggested_price: suggested,
+        fair_market_value: suggested,
+        price_per_sqm: avgPricePerSqm,
+        area_type_used: areaType,
+        demand_multiplier: demandMultiplier,
         confidence_score: conf,
         price_position: pos,
+        expected_days_on_market: expectedDaysOnMarket,
         comparable_count: cc,
+        reasoning,
       };
     };
 
     if (mode === 'price_suggestion') {
       const buildingArea = Number(property.building_area_sqm) || 0;
-      if (buildingArea <= 0) {
-        return new Response(JSON.stringify({ error: 'Property must have building_area_sqm to estimate price' }), {
+      const landArea = Number(property.land_area_sqm) || 0;
+      if (buildingArea <= 0 && landArea <= 0) {
+        return new Response(JSON.stringify({ error: 'Property must have building_area_sqm or land_area_sqm to estimate price' }), {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
@@ -1066,7 +1112,7 @@ Deno.serve(async (req) => {
         });
       }
 
-      console.log(`Price suggestion for ${property_id}: ${result.suggested_price} (${result.comparable_count} comps)`);
+      console.log(`Price suggestion for ${property_id}: FMV=${result.fair_market_value} pos=${result.price_position} days=${result.expected_days_on_market} (${result.comparable_count} comps, area_type=${result.area_type_used})`);
 
       return new Response(JSON.stringify({ mode: 'price_suggestion', data: result }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
