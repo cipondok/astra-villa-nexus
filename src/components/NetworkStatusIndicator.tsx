@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useConnectionSpeed } from '@/hooks/useConnectionSpeed';
-import { WifiOff, Wifi, AlertTriangle, X } from 'lucide-react';
+import { WifiOff, AlertTriangle, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { DataSaverToggle } from '@/components/DataSaverToggle';
 
 interface NetworkStatusIndicatorProps {
   className?: string;
@@ -18,7 +19,6 @@ export const NetworkStatusIndicator = ({ className, onStatusChange }: NetworkSta
     const shouldShow = speed === 'offline' || (isSlowConnection && speed === 'slow');
     setShowBanner(shouldShow);
     
-    // Auto-dismiss slow connection after 6 seconds (not offline)
     if (speed === 'slow' && isSlowConnection) {
       const timer = setTimeout(() => setDismissed(true), 6000);
       return () => clearTimeout(timer);
@@ -31,7 +31,6 @@ export const NetworkStatusIndicator = ({ className, onStatusChange }: NetworkSta
     }
   }, [speed, isSlowConnection, onStatusChange]);
 
-  // Never hide offline banner, but allow dismissing slow connection
   if (speed === 'offline') {
     // show offline
   } else if (!showBanner || dismissed || speed === 'fast') {
@@ -53,14 +52,17 @@ export const NetworkStatusIndicator = ({ className, onStatusChange }: NetworkSta
       ) : speed === 'slow' && isSlowConnection ? (
         <Alert className="rounded-xl border shadow-lg backdrop-blur-sm bg-card/90 border-chart-3/30">
           <AlertTriangle className="h-3.5 w-3.5 text-chart-3" />
-          <AlertDescription className="flex items-center gap-2 text-foreground text-xs">
-            <span>Slow connection</span>
-            {downloadSpeed && (
-              <span className="opacity-60">{downloadSpeed.toFixed(1)} Mbps</span>
-            )}
-            <button onClick={() => setDismissed(true)} className="ml-auto p-0.5 hover:bg-muted rounded">
-              <X className="h-3 w-3 text-muted-foreground" />
-            </button>
+          <AlertDescription className="flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-foreground text-xs">
+              <span>Slow connection</span>
+              {downloadSpeed && (
+                <span className="opacity-60">{downloadSpeed.toFixed(1)} Mbps</span>
+              )}
+              <button onClick={() => setDismissed(true)} className="ml-auto p-0.5 hover:bg-muted rounded">
+                <X className="h-3 w-3 text-muted-foreground" />
+              </button>
+            </div>
+            <DataSaverToggle compact />
           </AlertDescription>
         </Alert>
       ) : null}

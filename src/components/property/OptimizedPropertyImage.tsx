@@ -1,6 +1,7 @@
 import { useState, useMemo, ImgHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 import { getResponsiveImageProps, PROPERTY_CARD_SIZES } from '@/utils/responsiveImage';
+import { useDataSaver } from '@/contexts/DataSaverContext';
 
 interface OptimizedPropertyImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> {
   src: string;
@@ -31,10 +32,11 @@ const OptimizedPropertyImage = ({
 }: OptimizedPropertyImageProps) => {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+  const { isDataSaver, imageQuality, maxImageWidth } = useDataSaver();
 
   const imgProps = useMemo(
-    () => getResponsiveImageProps(error ? fallbackSrc : src, sizes),
-    [src, error, fallbackSrc, sizes]
+    () => getResponsiveImageProps(error ? fallbackSrc : src, sizes, isDataSaver ? maxImageWidth : undefined, isDataSaver ? imageQuality : undefined),
+    [src, error, fallbackSrc, sizes, isDataSaver, maxImageWidth, imageQuality]
   );
 
   return (
