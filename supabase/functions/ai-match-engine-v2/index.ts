@@ -52,8 +52,33 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, serviceKey);
     const now = Date.now();
+    const nowIso = new Date(now).toISOString();
     const oneEightyDaysAgo = new Date(now - 180 * 24 * 60 * 60 * 1000).toISOString();
     const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+    // ── SMART CACHE CHECK ──
+    // Return cached results if: cache exists, not expired, AND no new activity since cache was built
+    const { data: cachedRow } = await supabase
+      .from('user_ai_cache')
+      .select('ranked_property_ids, expires_at, created_at, last_activity_at, recompute_needed')
+      .eq('user_id', userId)
+      .single();
+
+    if (cachedRow) {
+      const cacheValid = new Date(cachedRow.expires_at).getTime() > now;
+      const noNewActivity = !cachedRow.recompute_needed && 
+        (!cachedRow.last_activity_at || new Date(cachedRow.last_activity_at).getTime() <= new Date(cachedRow.created_at).getTime());
+
+      if (cacheValid && noNewActivity) {
+        console.log(`[ai-match-engine-v2] cache HIT for user=${userId}`);
+        return json({ 
+          ranked_properties: cachedRow.ranked_property_ids, 
+          cached: true,
+          cache_expires: cachedRow.expires_at,
+        });
+      }
+      console.log(`[ai-match-engine-v2] cache MISS for user=${userId} (expired=${!cacheValid}, recompute=${cachedRow.recompute_needed}, new_activity=${!noNewActivity})`);
+    }
 
     // ── 2. FETCH USER BEHAVIOR (parallel) ──
     const [{ data: activityLogs }, { data: savedProps }] = await Promise.all([
@@ -329,13 +354,14 @@ Deno.serve(async (req) => {
       total_interactions: (activityLogs?.length || 0) + (savedProps?.length || 0),
     };
 
-    // ── STORE CACHE ──
+    // ── STORE CACHE (with activity timestamp + reset recompute flag) ──
     await supabase
       .from('user_ai_cache')
       .upsert({
         user_id: userId,
         ranked_property_ids: result,
         expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+        recompute_needed: false,
       });
 
     // ── LOG IMPRESSION EVENTS (fire-and-forget) ──
