@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -252,6 +252,122 @@ Deno.serve(async (req) => {
             price_trend_percent: Math.round(priceTrendPct * 100) / 100,
           },
           confidence_score: confidence,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: price_suggestion_inline (no property_id needed)
+    // ═══════════════════════════════════════════
+    if (mode === 'price_suggestion_inline') {
+      const { price: inlinePrice, city: inlineCity, property_type: inlinePropType, land_area_sqm: inlineLand, building_area_sqm: inlineBuilding } = body;
+      if (!inlineCity || !inlinePropType) {
+        return new Response(JSON.stringify({ error: 'city and property_type are required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      const ba = Number(inlineBuilding) || 0;
+      const la = Number(inlineLand) || 0;
+      const primaryArea = ba > 0 ? ba : la;
+      const areaType = ba > 0 ? 'building' : 'land';
+      if (primaryArea <= 0) {
+        return new Response(JSON.stringify({ error: 'land_area_sqm or building_area_sqm is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const minA = primaryArea * 0.7;
+      const maxA = primaryArea * 1.3;
+      const areaCol = areaType === 'building' ? 'building_area_sqm' : 'land_area_sqm';
+
+      const { data: comps } = await supabase
+        .from('properties')
+        .select('price, building_area_sqm, land_area_sqm')
+        .eq('city', inlineCity)
+        .eq('property_type', inlinePropType)
+        .eq('status', 'published')
+        .not('price', 'is', null)
+        .gte(areaCol, minA)
+        .lte(areaCol, maxA)
+        .limit(50);
+
+      const valid = (comps || []).filter(c => Number(c.price) > 0 && Number(c[areaCol]) > 0);
+      if (valid.length === 0) {
+        // Fallback: try all types in same city
+        const { data: fallback } = await supabase
+          .from('properties')
+          .select('price, building_area_sqm, land_area_sqm')
+          .eq('city', inlineCity)
+          .eq('status', 'published')
+          .not('price', 'is', null)
+          .gte(areaCol, minA)
+          .lte(areaCol, maxA)
+          .limit(50);
+
+        const fallbackValid = (fallback || []).filter(c => Number(c.price) > 0 && Number(c[areaCol]) > 0);
+        if (fallbackValid.length === 0) {
+          return new Response(JSON.stringify({ mode: 'price_suggestion_inline', data: { error: 'Not enough comparable listings', comparable_count: 0 } }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        valid.push(...fallbackValid);
+      }
+
+      const ppm2 = valid.map(c => Number(c.price) / Number(c[areaCol])).sort((a, b) => a - b);
+      const mid = Math.floor(ppm2.length / 2);
+      const median = ppm2.length % 2 !== 0 ? ppm2[mid] : (ppm2[mid - 1] + ppm2[mid]) / 2;
+      const avgPricePerSqm = Math.round(ppm2.reduce((s, v) => s + v, 0) / ppm2.length);
+
+      const cc = valid.length;
+      let demandMultiplier = 1.0;
+      if (cc >= 30) demandMultiplier = 1.10;
+      else if (cc >= 15) demandMultiplier = 1.05;
+      else if (cc >= 5) demandMultiplier = 1.0;
+      else demandMultiplier = 0.95;
+
+      const fmv = Math.round(median * primaryArea * demandMultiplier);
+      const cur = Number(inlinePrice) || 0;
+      const ratio = cur > 0 ? cur / fmv : 0;
+      let pos: string;
+      if (ratio > 1.15) pos = 'overpriced';
+      else if (ratio < 0.85) pos = 'underpriced';
+      else pos = 'fair';
+
+      let expectedDaysOnMarket: number;
+      if (pos === 'underpriced') expectedDaysOnMarket = Math.max(7, Math.round(30 * ratio));
+      else if (pos === 'overpriced') expectedDaysOnMarket = Math.round(60 * (1 + (ratio - 1.15) * 3));
+      else expectedDaysOnMarket = 60;
+
+      const recommended_price = Math.round(fmv * 0.98);
+      let confidence: number;
+      if (cc >= 20) confidence = 95;
+      else if (cc >= 10) confidence = 80;
+      else if (cc >= 5) confidence = 65;
+      else confidence = 40;
+
+      const reasoning: string[] = [];
+      if (pos === 'overpriced') reasoning.push(`Listed ${Math.round((ratio - 1) * 100)}% above FMV — may deter serious buyers.`);
+      else if (pos === 'underpriced') reasoning.push(`Listed ${Math.round((1 - ratio) * 100)}% below FMV — expect fast inquiries.`);
+      else reasoning.push(`Price aligns with market avg of ${avgPricePerSqm.toLocaleString('id-ID')}/sqm.`);
+      reasoning.push(`${cc} comparable listings in ${inlineCity}.`);
+      reasoning.push(`Demand multiplier: ${demandMultiplier}x based on market density.`);
+
+      console.log(`Inline price suggestion: FMV=${fmv} pos=${pos} days=${expectedDaysOnMarket} (${cc} comps)`);
+
+      return new Response(JSON.stringify({
+        mode: 'price_suggestion_inline',
+        data: {
+          fair_market_value: fmv,
+          recommended_price,
+          price_position: pos,
+          expected_days_on_market: expectedDaysOnMarket,
+          confidence_score: confidence,
+          comparable_count: cc,
+          demand_multiplier: demandMultiplier,
+          price_per_sqm: avgPricePerSqm,
+          reasoning,
         },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
