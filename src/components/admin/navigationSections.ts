@@ -71,14 +71,6 @@ export interface NavigationSection {
   icon: LucideIcon;
   description: string;
   badge?: string;
-    },
-    {
-      key: "ai-performance",
-      label: "AI Performance",
-      icon: Activity,
-      description: "Monitor AI recommendation effectiveness, CTR, and engagement metrics",
-      badge: "New"
-    }
 
 export const categories = [
   "overview",
