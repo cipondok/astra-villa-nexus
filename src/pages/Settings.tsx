@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Trash2, User, Database, HardDrive, RefreshCw, Sun, Moon, Palette, Shield, Mail, Lock, Activity } from 'lucide-react';
+import { ArrowLeft, Trash2, User, Database, HardDrive, RefreshCw, Sun, Moon, Palette, Shield, Mail, Lock, Activity, Wifi } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserPreferences } from '@/components/settings/UserPreferences';
@@ -29,6 +29,7 @@ import { ActivityLog } from '@/components/settings/ActivityLog';
 import { SecurityAlerts } from '@/components/settings/SecurityAlerts';
 import { TwoFactorAuth } from '@/components/settings/TwoFactorAuth';
 import { DeviceManagement } from '@/components/settings/DeviceManagement';
+import { PwaSettings } from '@/components/settings/PwaSettings';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -212,6 +213,10 @@ const Settings = () => {
                 <Activity className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                 <span className="hidden xs:inline">Activity</span>
               </TabsTrigger>
+              <TabsTrigger value="pwa" className="flex-shrink-0 flex-1 min-w-fit text-[10px] sm:text-xs gap-1 px-2 sm:px-3 py-1.5 text-foreground/70 data-[state=active]:text-foreground data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md transition-all">
+                <Wifi className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <span className="hidden xs:inline">PWA</span>
+              </TabsTrigger>
               <TabsTrigger value="cache" className="flex-shrink-0 flex-1 min-w-fit text-[10px] sm:text-xs gap-1 px-2 sm:px-3 py-1.5 text-foreground/70 data-[state=active]:text-foreground data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md transition-all">
                 <Database className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                 <span className="hidden xs:inline">Cache</span>
@@ -298,6 +303,13 @@ const Settings = () => {
           <TabsContent value="activity" className="space-y-0">
             <Card className="border-gold-primary/15 bg-card/60 backdrop-blur-xl p-2">
               <ActivityLog />
+            </Card>
+          </TabsContent>
+
+          {/* PWA Settings Tab */}
+          <TabsContent value="pwa" className="space-y-0">
+            <Card className="border-gold-primary/15 bg-card/60 backdrop-blur-xl p-2">
+              <PwaSettings />
             </Card>
           </TabsContent>
 
